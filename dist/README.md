@@ -1,0 +1,2 @@
+This folder contains `react-stockcharts.js` and `react-stockcharts.min.js` these files are intended for use in a browser.
+They are compatible with both `define` style AMD and also `require` style CommonJS formats

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<title>React webpack HMR example</title>
+	<!-- include react -->
+	<!-- build:js //cdnjs.cloudflare.com/ajax/libs/react/0.12.2/react-with-addons.min.js -->
+	<!-- endbuild -->
+	<!-- build:js //cdnjs.cloudflare.com/ajax/libs/d3/3.4.13/d3.min.js -->
+	<!-- endbuild -->
+
+	<!-- build:remove  -->
+	<!--
+	<script src="react/dist/react-with-addons.js"></script>
+	<script src="d3/d3.js"></script>
+	-->
+	<!-- endbuild -->
+</head>
+<body>
+	<div id="content">
+		<!-- this is where the root react component will get rendered -->
+	</div>
+	<!-- include the bundle that contains all our scripts, produced by webpack -->
+	<!-- the bundle is served by the webpack-dev-server, so serve it also from localhost:8090 -->
+
+	<!-- build:replace build/scripts/react-stockcharts.js -->
+	<script type="text/javascript" src="http://localhost:8090/js/react-stockcharts.js"></script>
+	<!-- endbuild -->
+</body>
+</html>
