@@ -12,7 +12,7 @@ var Canvas = React.createClass({
 	},
 	getDefaultProps() {
 		return {
-			margin: {top: 20, right: 20, bottom: 30, left: 80}
+			margin: {top: 20, right: 30, bottom: 30, left: 80}
 		};
 	},
 	handleClick() {

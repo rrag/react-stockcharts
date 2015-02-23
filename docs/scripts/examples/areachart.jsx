@@ -1,7 +1,10 @@
 'use strict';
 
 var React = require('react');
-var ReStock = require('../../../src/scripts/');
+var d3 = require('d3');
+
+var ReStock = require('../../../src/styles/main.scss');
+var ReStock = require('../../../src/scripts');
 
 var ChartCanvas = ReStock.ChartCanvas
 	, XAxis = ReStock.XAxis
@@ -30,9 +33,7 @@ var Dummy = React.createClass({
 	componentWillReceiveProps(nextProps) {
 		//console.log(nextProps);
 	},
-	componentWillMount() {
-		//console.log(this.props);
-	},
+
 	handleClick() {
 		this.setState({a: 1});
 	},
@@ -44,33 +45,42 @@ var Dummy = React.createClass({
 });
 
 var AreaChart = React.createClass({
+	getInitialState() {
+		return {};
+	},
+	componentWillMount() {
+		var parseDate = d3.time.format("%Y-%m-%d").parse
+		var dateFormat = d3.time.format("%Y-%m-%d");
+		d3.tsv("data/data.tsv", function(err, data) {
+			data.forEach((d, i) => {
+				d.date = parseDate(d.date);
+				d.open = +d.open;
+				d.high = +d.high;
+				d.low = +d.low;
+				d.close = +d.close;
+				d.volume = +d.volume;
+			});
+			this.setState({ data : data });
+		}.bind(this));
+	},
 	//mixins: [ReStock.ChartScalesMixin],
 	render() {
-		var data = [
-			  { index: 0, open: 10, high: 20, low: 5, close: 10 }
-			, { index: 1, open: 10, high: 20, low: 5, close: 20 }
-			, { index: 2, open: 10, high: 20, low: 5, close: 30 }
-			, { index: 3, open: 10, high: 20, low: 5, close: 30 }
-			, { index: 4, open: 10, high: 20, low: 5, close: 20 }
-			, { index: 5, open: 10, high: 20, low: 5, close: 2 }
-			, { index: 6, open: 10, high: 20, low: 5, close: 8 }
-			, { index: 7, open: 10, high: 20, low: 5, close: 50 }
-			, { index: 8, open: 10, high: 20, low: 5, close: 25 }
-		];
-		// var xScale = this.calculateScales();
-		// var yScale = this.yScale();
+		if (this.state.data === undefined) return null;
+
 		return (
-			<ChartCanvas  width={500} height={400}>
-				<Translate ref="a" data={data}>
-					<Chart>
-						<DataSeries />
-						<Dummy sup="World" />
-						<Dummy sup="World2" />
-						<Dummy sup="World3" />
-					</Chart>
-				</Translate>
-				<g></g>
-			</ChartCanvas>
+<ChartCanvas  width={500} height={400}>
+	<Translate data={this.state.data}
+		polyLinear={true}
+		dateAccessor={(d) => d.date}>
+		<Chart>
+			<XAxis axisAt="bottom" orient="bottom"/>
+			<YAxis axisAt="left" orient="left"/>
+			<DataSeries yAccessor={(d) => d.close}>
+				<AreaSeries />
+			</DataSeries>
+		</Chart>
+	</Translate>
+</ChartCanvas>
 		);
 	}
 });
@@ -78,6 +88,29 @@ var AreaChart = React.createClass({
 module.exports = AreaChart
 
 /*
+<ChartCanvas  width={500} height={400}>
+	<Translate data={this.state.data}
+		polyLinear={true}
+		dateAccessor={(d) => d.date}>
+		<Chart>
+			<XAxis axisAt="bottom" orient="bottom"/>
+			<YAxis axisAt="left" orient="left"/>
+			<DataSeries yAccessor={(d) => d.close}>
+				<AreaSeries />
+			</DataSeries>
+		</Chart>
+	</Translate>
+</ChartCanvas>
+<ChartCanvas  width={500} height={400}>
+	<Chart data={this.state.data}>
+		<XAxis axisAt="bottom" orient="bottom"/>
+		<YAxis axisAt="left" orient="left"/>
+		<DataSeries yAccessor={(d) => d.close} xAccessor={(d) => d.date}>
+			<AreaSeries />
+		</DataSeries>
+	</Chart>
+</ChartCanvas>
+
 <Translate data={} transformDataAs={} listenTo={} fromIndex={} toIndex={}>
 	<Chart currentItemEmitter={} xScale={} yScale={} xDomainUpdate={true} yDomainUpdate={true}>
 		<XAxis axisAt="bottom" orient="bottom"/>

@@ -2,19 +2,7 @@
 var React = require('react');
 var d3 = require('d3');
 
-var polyLinearTimeScale = require('../scale/polylineartimescale');
 var ScaleUtils = require('../utils/scale-utils');
-
-function updatePropsToChild(child, data, props, from, to) {
-	if (from === undefined) from = Math.max(data.length - 30, 0);
-	if (to === undefined) to = data.length - 1;
-	//child.props.data = data.filter();
-	if (child.props.namespace === "ReStock.Chart") {
-		child.props.data = data;
-		child.props._width = props.width || props._width;
-		child.props._height = props.height || props._height;
-	}
-}
 
 var Chart = React.createClass({
 	propTypes: {
@@ -51,11 +39,12 @@ var Chart = React.createClass({
 		this.updateScales(nextProps);
 	},
 	updateScales(props) {
-		var xScale = this.props.xScale,
+		var xScale = this.props.xScale || this.props._xScale,
 			yScale = this.props.yScale;
 
 		if (xScale === undefined) {
-			xScale = polyLinearTimeScale();
+			xScale = d3.time.scale();
+			//xScale = polyLinearTimeScale();
 		}
 		if (yScale === undefined) {
 			yScale = d3.scale.linear();;
@@ -73,29 +62,45 @@ var Chart = React.createClass({
 			.forEach(function(child) {
 				// console.log(child);
 				if (child.props) {
+					var xAccesor = child.props.xAccessor || props._indexAccessor
 					yAccessors.push(child.props.yAccessor);
-					xAccessors.push(child.props.xAccessor);
+					xAccessors.push(xAccesor);
 				}
 			});
 		var result = ScaleUtils.flattenData(props.data, xAccessors, yAccessors);
+
+		xScale.range([0, this.getWidth()]);
+		xScale.domain(d3.extent(result.xValues));
+
 		if (this.props.xScale === undefined || this.props.xDomainUpdate) {
-			xScale.range([0, this.props.width]);
 			if (xScale.data !== undefined) {
 				xScale.data(this.props.data);
 			} else {
 				xScale.domain(d3.extent(result.xValues));
 			}
 		}
+
 		if (this.props.yScale === undefined || this.props.yDomainUpdate) {
-			yScale.range([0, this.props.width]);
+			yScale.range([this.getHeight(), 0]);
 
 			var domain = d3.extent(result.yValues);
-			var extraPadding = Math.abs(domain[0] - domain[1]) * 0.05;
-
-			yScale.domain([domain[0] - extraPadding, domain[1] + extraPadding]);
+			//var extraPadding = Math.abs(domain[0] - domain[1]) * 0.05;
+			//yScale.domain([domain[0] - extraPadding, domain[1] + extraPadding]);
+			yScale.domain(domain);
 		}
-		console.log(xScale.range(), yScale.range());
-		console.log(xScale.domain(), yScale.domain());
+
+		children.filter(function (eachChild) {
+				var contains = ['ReStock.DataSeries', 'ReStock.ChartOverlay', 'ReStock.XAxis', 'ReStock.YAxis']
+					.indexOf(eachChild.props.namespace) > -1;
+				return contains;
+			})
+			.forEach(function(child) {
+				child.props._xScale = xScale;
+				child.props._yScale = yScale;
+				child.props.data = props.data;
+				if (child.props.xAccessor === undefined)
+					child.props.xAccessor = props._indexAccessor;
+			});
 	},
 	render() {
 		return (

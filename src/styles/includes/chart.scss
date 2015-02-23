@@ -1,0 +1,172 @@
+.react-stockchart {
+	.axis {
+		path, line {
+			fill: none;
+			stroke: $black;
+			//shape-rendering: crispEdges;
+			//opacity: 0.2;
+		}
+	}
+	.grid.axis {
+		path, line {
+			fill: none;
+			stroke: $black;
+			shape-rendering: crispEdges;
+			opacity: 0.2;
+		}
+	}
+	.y {
+		&.axis {
+			path {
+				display: none;
+			}
+		}
+	}
+	.candle {
+		.up {
+			fill: #6BA583;
+			// stroke: $black;
+			stroke: #6BA583;
+			stroke-width: 1px;
+			shape-rendering: crispEdges;
+		}
+		.down {
+			fill: $red1;
+			// stroke: $black;
+			stroke: $red1;
+			stroke-width: 1px;
+			shape-rendering: crispEdges;
+		}
+	}
+	.wick {
+		.up, .down {
+			stroke: $black;
+			stroke-width: 1px;
+			shape-rendering: crispEdges;
+		}
+	}
+	.line {
+		fill: none;
+		stroke-width: 1px;
+	}
+	.line-stroke {
+		stroke: steelblue;
+	}
+	.overlay-stroke {
+		stroke: steelblue;
+	}
+	.yin {
+		fill: none;
+		stroke: $red1;
+		stroke-width: 2px;
+	}
+	.yang {
+		fill: none;
+		stroke: #6BA583;
+		stroke-width: 2px;
+	}
+	.point_figure_up {
+		fill: none;
+		stroke: green;
+		stroke-width: 1px;
+	}
+	.point_figure_down {
+		fill: none;
+		stroke: $red1;
+		stroke-width: 1px;
+	}
+	.area {
+		fill: lightsteelblue;
+		opacity: 0.5;
+	}
+	.backgroundText {
+		// font-size: 53px;
+		text-anchor: middle;
+		fill: $gray54;
+		opacity: 0.15;
+	}
+	.cross-hair {
+		stroke: $black;
+		stroke-width: 1px;
+		shape-rendering: crispEdges;
+		opacity: 0.8;
+	}
+
+	.horizontal2 {
+		.textbg {
+			opacity: 0.95;
+			fill: $khaki;
+		}
+		text {
+			fill: $gray46;
+		}
+	}
+	.horizontal3 {
+		.textbg {
+			opacity: 0.95;
+			fill: $black;
+		}
+		text {
+			fill: $gray46;
+		}
+	}
+	.edge-coordinate {
+		.textbg {
+			opacity: 0.95;
+		}
+		text {
+			fill: $white;
+		}
+	}
+	.vertical, .horizontal {
+		.textbg {
+			opacity: 0.5;
+			fill: $gray54;
+		}
+		text {
+			fill: $white;
+		}
+	}
+	.grab {
+		cursor: grab;
+		cursor: -moz-grab;
+		cursor: -webkit-grab;
+	}
+	.grabbing {
+		cursor: grabbing;
+		cursor: -moz-grabbing;
+		cursor: -webkit-grabbing;
+	}
+	.crosshair {
+		cursor: crosshair;
+	}
+	.toottip-hover {
+		pointer-events: all;
+		cursor: pointer;
+	}
+	.ma-container {
+		rect {
+			fill: none;
+			stroke: none;
+			//stroke-width: 1px;
+			&:hover {
+				fill: $gray54;
+				opacity: 0.3;
+			}
+		}
+		line {
+			stroke-width: 4px;
+		}
+		text {
+			//text-anchor: middle;
+		}
+	}
+	.legend {
+		font-size: 11px;
+
+		.tooltip-label {
+			fill: steelblue;
+			font-weight: bold;
+		}
+	}
+}

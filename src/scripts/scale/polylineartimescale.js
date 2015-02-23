@@ -106,7 +106,7 @@ function guided_scale(drawableData, backingLinearScale) {
 		m = (count/drawableData.length) * m;
 		var span = (end.date.getTime() - start.date.getTime());
 		var target = span/m;
-/*
+		/*
 		console.log(drawableData[drawableData.length - 1].date
 			, drawableData[0].date
 			, span
@@ -114,13 +114,13 @@ function guided_scale(drawableData, backingLinearScale) {
 			, target
 			, timeScaleStepsBisector(d3_time_scaleSteps, target)
 			);
-*/
+		*/
 		var ticks = drawableData
 						.filter(d3_time_scaleSteps[timeScaleStepsBisector(d3_time_scaleSteps, target)].f)
 						.map(function(d, i) {return d.index;})
 						;
 		// return the index of all the ticks to be displayed,
-		// console.log(target, span, m, ticks);
+		//console.log(target, span, m, ticks);
 		return ticks;
 	};
 	scale.tickFormat = function(ticks) {

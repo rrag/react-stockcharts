@@ -1,12 +1,25 @@
 'use strict';
-var React = require('react');
-var d3 = require('d3');
+var React = require('react')
+	, d3 = require('d3');
 
 var YAxis = React.createClass({
+	propTypes: {
+		axisAt: React.PropTypes.oneOfType([
+					React.PropTypes.oneOf(['left', 'right', 'middle'])
+					, React.PropTypes.number
+				]),
+		orient: React.PropTypes.oneOf(['left', 'right'])
+	},
+	getDefaultProps() {
+		return {
+			namespace: "ReStock.YAxis",
+			showGrid: false
+		};
+	},
 	getInitialState() {
 		return {};
 	},
-	componentWillMount () {
+	componentWillMount() {
 		this.state.yAxis = d3.svg.axis();
 	},
 	componentDidMount() {
@@ -16,25 +29,25 @@ var YAxis = React.createClass({
 		this.updateAxis();
 	},
 	updateAxis() {
-		this.props.height = Math.max(this.props.yScale.range()[0], this.props.yScale.range()[1]);
 		this.state.yAxis
-			.scale(this.props.yScale)
+			.scale(this.props._yScale)
 			.orient(this.props.orient)
-			.ticks(Math.ceil(this.props.height * 0.02))
-			.innerTickSize(this.props.showGrid ? this.props.innerTickSize : 5)
-			.outerTickSize(this.props.showGrid ? this.props.outerTickSize : 5)
-			.tickPadding(this.props.showGrid ? 5 : 10);
+			//.innerTickSize(this.props.showGrid ? this.props.innerTickSize : 5)
+			//.outerTickSize(this.props.showGrid ? this.props.outerTickSize : 5)
+			//.tickPadding(this.props.showGrid ? 5 : 10)
+			;
 
 		d3.select(this.getDOMNode()).call(this.state.yAxis);
 	},
-	handleDrag() {
-		// console.log('drag...');
-	},
 	render() {
+		var axisAt = this.props.axisAt
+			, range = this.props._xScale.range();
+		if (this.props.axisAt === 'left') axisAt = Math.min(range[0], range[1]);
+		if (this.props.axisAt === 'right') axisAt = Math.max(range[0], range[1]);
+		if (this.props.axisAt === 'middle') axisAt = (range[0] + range[1]) / 2;
+
 		return (
-			<g className={(this.props.showGrid ? 'grid ' : '') + 'y axis'} transform={'translate(' + this.props.axisAt + ', 0)'}>
-				<rect x='0' y='0' width='50' height={this.props.height} style={{opacity: 0}} onDrag={this.handleDrag} />
-			</g>
+			<g className='y axis' transform={'translate(' + axisAt + ', 0)'}></g>
 		);
 	}
 });
