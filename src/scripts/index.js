@@ -11,3 +11,6 @@ exports.DataSeries = require('./chart/dataseries');
 
 // chart types
 exports.AreaSeries = require('./chart/area-series');
+exports.LineSeries = require('./chart/line-series');
+exports.CandlestickSeries = require('./chart/candlestick-series');
+

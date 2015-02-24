@@ -2,11 +2,11 @@
 
 var d3 = require('d3');
 
-var polylineartimescale = function() {
-	return guided_scale([0, 1], d3.scale.linear());
+var polylineartimescale = function(indexAccessor) {
+	return guided_scale([0, 1], indexAccessor, d3.scale.linear());
 };
 
-function guided_scale(drawableData, backingLinearScale) {
+function guided_scale(drawableData, indexAccessor, backingLinearScale) {
 	//var  = 'week'; //valid values 'day', 'week', 'month'
 
 	var d3_time_scaleSteps = [
@@ -33,7 +33,7 @@ function guided_scale(drawableData, backingLinearScale) {
 		{ step: 91536e15, f: function (d) {return d.date !== undefined && (d.startOfYear && d.date.getFullYear() % 2 == 0); }}  // 2-year
 	];
 	var timeScaleStepsBisector = d3.bisector(function(d) { return d.step; }).left;
-	var __BISECT = d3.bisector(function(d) { return d.index; }).left;
+	var __BISECT = d3.bisector(function(d) { return indexAccessor(d); }).left;
 	var tickFormat = [
 		[d3.time.format("%Y"), function(d) { return d.startOfYear; }],
 		[d3.time.format("%b %Y"), function(d) { return d.startOfQuarter; }],
@@ -50,9 +50,13 @@ function guided_scale(drawableData, backingLinearScale) {
 	};
 
 	var ticks;
+
 	function scale(x) {
 		return backingLinearScale(x);
 	};
+	scale.isPolyLinear = function() {
+		return true;
+	}
 	scale.invert = function(x) {
 		return backingLinearScale.invert(x);
 	};
@@ -62,7 +66,7 @@ function guided_scale(drawableData, backingLinearScale) {
 		} else {
 			drawableData = x;
 			//this.domain([drawableData.first().index, drawableData.last().index]);
-			this.domain([drawableData[0].index, drawableData[drawableData.length - 1].index]);
+			this.domain([indexAccessor(drawableData[0]), indexAccessor(drawableData[drawableData.length - 1])]);
 			return scale;
 		}
 	};
@@ -117,7 +121,7 @@ function guided_scale(drawableData, backingLinearScale) {
 		*/
 		var ticks = drawableData
 						.filter(d3_time_scaleSteps[timeScaleStepsBisector(d3_time_scaleSteps, target)].f)
-						.map(function(d, i) {return d.index;})
+						.map(function(d, i) {return indexAccessor(d);})
 						;
 		// return the index of all the ticks to be displayed,
 		//console.log(target, span, m, ticks);
@@ -137,7 +141,7 @@ function guided_scale(drawableData, backingLinearScale) {
 		return scale;
 	};
 	scale.copy = function() {
-		return guided_scale(drawableData, backingLinearScale.copy());
+		return guided_scale(drawableData, indexAccessor, backingLinearScale.copy());
 	};
 	return scale;
 }

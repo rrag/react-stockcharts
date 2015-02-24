@@ -20,10 +20,14 @@ var Chart = React.createClass({
 		xDomainUpdate: React.PropTypes.bool,
 		yDomainUpdate: React.PropTypes.bool
 	},
+	statics: {
+		type: 'someType'
+	},
 	getDefaultProps() {
 		return {
 			namespace: "ReStock.Chart",
-			transformDataAs: "none"
+			transformDataAs: "none",
+			yDomainUpdate: true
 		};
 	},
 	getWidth() {
@@ -43,7 +47,15 @@ var Chart = React.createClass({
 			yScale = this.props.yScale;
 
 		if (xScale === undefined) {
-			xScale = d3.time.scale();
+			var each = props.data[0];
+			if (typeof each === 'object') {
+				Object.keys(each).forEach((key) => {
+					if (Object.prototype.toString.call(each[key]) === '[object Date]') {
+						xScale = d3.time.scale();
+					}
+				});
+			}
+			if (xScale === undefined) xScale = d3.scale.linear();
 			//xScale = polyLinearTimeScale();
 		}
 		if (yScale === undefined) {
@@ -54,13 +66,11 @@ var Chart = React.createClass({
 			children = [props.children];
 		}
 		var yAccessors = [], xAccessors = [];
-		children.filter(function (eachChild) {
-				var contains = ['ReStock.DataSeries', 'ReStock.ChartOverlay']
-					.indexOf(eachChild.props.namespace) > -1;
-				return contains;
+		children.filter((eachChild) => {
+				return ['ReStock.DataSeries', 'ReStock.ChartOverlay']
+					.indexOf(eachChild.props.namespace) > -1
 			})
-			.forEach(function(child) {
-				// console.log(child);
+			.forEach((child) => {
 				if (child.props) {
 					var xAccesor = child.props.xAccessor || props._indexAccessor
 					yAccessors.push(child.props.yAccessor);
@@ -69,24 +79,24 @@ var Chart = React.createClass({
 			});
 		var result = ScaleUtils.flattenData(props.data, xAccessors, yAccessors);
 
-		xScale.range([0, this.getWidth()]);
-		xScale.domain(d3.extent(result.xValues));
-
 		if (this.props.xScale === undefined || this.props.xDomainUpdate) {
+			xScale.range([0, this.getWidth()]);
+			// if polylinear scale then set data
 			if (xScale.data !== undefined) {
 				xScale.data(this.props.data);
 			} else {
+				// else set the domain
 				xScale.domain(d3.extent(result.xValues));
 			}
 		}
 
 		if (this.props.yScale === undefined || this.props.yDomainUpdate) {
 			yScale.range([this.getHeight(), 0]);
-
 			var domain = d3.extent(result.yValues);
 			//var extraPadding = Math.abs(domain[0] - domain[1]) * 0.05;
 			//yScale.domain([domain[0] - extraPadding, domain[1] + extraPadding]);
 			yScale.domain(domain);
+			console.log(domain);
 		}
 
 		children.filter(function (eachChild) {
@@ -98,9 +108,13 @@ var Chart = React.createClass({
 				child.props._xScale = xScale;
 				child.props._yScale = yScale;
 				child.props.data = props.data;
-				if (child.props.xAccessor === undefined)
+				if (child.props.xAccessor === undefined){
 					child.props.xAccessor = props._indexAccessor;
-			});
+				} else if (this.props._polyLinear) {
+					console.warn('xAccessor defined in DataSeries will override the indexAccessor of the polylinear scale. This might not be the right configuration');
+					console.warn('Either remove the xAccessor configuration on the DataSeries or change the polyLinear=false in Translate');
+				}
+			}.bind(this));
 	},
 	render() {
 		return (
