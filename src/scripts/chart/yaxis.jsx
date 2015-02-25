@@ -16,12 +16,14 @@ var YAxis = React.createClass({
 		tickSize: React.PropTypes.number,
 		ticks: React.PropTypes.number,
 		tickValues: React.PropTypes.array,
-		percentScale: React.PropTypes.bool
+		percentScale: React.PropTypes.bool,
+		axisPadding: React.PropTypes.number
 	},
 	getDefaultProps() {
 		return {
 			namespace: "ReStock.YAxis",
-			showGrid: false
+			showGrid: false,
+			axisPadding: 0
 		};
 	},
 	getInitialState() {
@@ -59,9 +61,9 @@ var YAxis = React.createClass({
 	render() {
 		var axisAt = this.props.axisAt
 			, range = this.props._xScale.range();
-		if (this.props.axisAt === 'left') axisAt = Math.min(range[0], range[1]);
-		if (this.props.axisAt === 'right') axisAt = Math.max(range[0], range[1]);
-		if (this.props.axisAt === 'middle') axisAt = (range[0] + range[1]) / 2;
+		if (this.props.axisAt === 'left') axisAt = Math.min(range[0], range[1]) + this.props.axisPadding;
+		if (this.props.axisAt === 'right') axisAt = Math.max(range[0], range[1]) + this.props.axisPadding;
+		if (this.props.axisAt === 'middle') axisAt = (range[0] + range[1]) / 2 + this.props.axisPadding;
 
 		return (
 			<g className='y axis' transform={'translate(' + axisAt + ', 0)'}></g>

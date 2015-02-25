@@ -14,3 +14,6 @@ exports.AreaSeries = require('./chart/area-series');
 exports.LineSeries = require('./chart/line-series');
 exports.CandlestickSeries = require('./chart/candlestick-series');
 
+// interaction components
+exports.EventCapture = require('./chart/event-capture');
+exports.MouseCoordinates = require('./chart/mouse-coordinates');

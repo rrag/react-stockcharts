@@ -13,7 +13,7 @@ function updatePropsToChildren(props) {
 		.forEach((child) => {
 			child.props._xScale = props._xScale;
 			child.props._yScale = props._yScale;
-			child.props._xAccessor = props.xAccessor;
+			child.props._xAccessor = props.xAccessor || props._xAccessor;
 			child.props._yAccessor = props.yAccessor;
 			child.props.data = props.data;
 		});
@@ -23,6 +23,7 @@ var DataSeries = React.createClass({
 	//namespace: "ReStock.DataSeries",
 	propTypes: {
 		xAccessor: React.PropTypes.func,
+		_xAccessor: React.PropTypes.func,
 		yAccessor: React.PropTypes.func.isRequired
 	},
 	getDefaultProps() {

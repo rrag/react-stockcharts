@@ -1,5 +1,7 @@
 'use strict';
-var React = require('react');
+var React = require('react/addons');
+var PureRenderMixin = React.addons.PureRenderMixin;
+
 var d3 = require('d3');
 
 var ScaleUtils = require('../utils/scale-utils');
@@ -20,12 +22,9 @@ var Chart = React.createClass({
 		xDomainUpdate: React.PropTypes.bool,
 		yDomainUpdate: React.PropTypes.bool
 	},
-	statics: {
-		type: 'someType'
-	},
+	mixins: [PureRenderMixin],
 	getDefaultProps() {
 		return {
-			namespace: "ReStock.Chart",
 			transformDataAs: "none",
 			yDomainUpdate: true
 		};
@@ -36,13 +35,35 @@ var Chart = React.createClass({
 	getHeight() {
 		return this.props.height || this.props._height;
 	},
-	componentWillMount() {
+/*	componentWillMount() {
 		this.updateScales(this.props);
 	},
 	componentWillReceiveProps(nextProps) {
 		this.updateScales(nextProps);
+	},*/
+	renderChildren(height, width) {
+		return React.Children.map(this.props.children, (child) => {
+			if (typeof child.type === 'string') return child;
+			var newChild = child;
+			/*if (child.type === Chart.type || child.type === Translate.type) {
+				newChild = React.addons.cloneWithProps(newChild, {
+					_data: this.state.dataStore.get().data
+				});
+			}*/
+			if (child.type === EventCapture.type) {
+				newChild = React.addons.cloneWithProps(newChild, {
+					_eventStore: this.state.eventStore
+				});
+			}
+			return React.addons.cloneWithProps(newChild, {
+				_width: width
+				, _height: height
+			});
+		});
 	},
 	updateScales(props) {
+		console.log('updateScales');
+
 		var xScale = this.props.xScale || this.props._xScale,
 			yScale = this.props.yScale;
 
@@ -109,7 +130,7 @@ var Chart = React.createClass({
 				child.props._yScale = yScale;
 				child.props.data = props.data;
 				if (child.props.xAccessor === undefined){
-					child.props.xAccessor = props._indexAccessor;
+					child.props._xAccessor = props._indexAccessor;
 				} else if (this.props._polyLinear) {
 					console.warn('xAccessor defined in DataSeries will override the indexAccessor of the polylinear scale. This might not be the right configuration');
 					console.warn('Either remove the xAccessor configuration on the DataSeries or change the polyLinear=false in Translate');
@@ -117,6 +138,23 @@ var Chart = React.createClass({
 			}.bind(this));
 	},
 	render() {
+		console.log('render');
+		console.log('render');
+		console.log('render');
+		console.log('render');
+		console.log('render');
+		console.log('render');
+		console.log('render');
+		console.log('render');
+		console.log('render');
+		console.log('render');
+		console.log('render');
+		console.log('render');
+		console.log('render');
+		console.log('render');
+		console.log('render');
+		console.log('render');
+		this.updateScales(this.props);
 		return (
 			<g>{this.props.children}</g>
 		);

@@ -181,7 +181,7 @@ module.exports = AreaChart
 		<DataSeries yAccessor={} xAccesor={} tooltipDisplayEmitter={}>
 			<CandlestickSeries/>
 		</DataSeries
-		<ChartOverlay type="sma" options={{ period: 10 }} xAccesor={} yAccesor={}>
+		<ChartOverlay type="sma" options={{ period: 10 }} xAccesor={} yAccesor={} toolTipId={}>
 			<LineSeries />
 		</ChartOverlay>
 		<ChartOverlay type="macrossover" options={{ period: 10 }} id={0}> //moving average crossover
@@ -204,7 +204,14 @@ module.exports = AreaChart
 	<MouseCoordinates listenTo={} /> // this is here so it is above all charts
 	<EdgeCoordinate /> // this is here so it is above all charts and I can click and bring an edge coordinate to the front
 	<EdgeCoordinate edgeAt="" orient="" />
-	<EventCapture actions={} />
-	<Tooltip listenTo={currentItemStore} actions={} />
+	<EventCapture mouseMove={true} zoom={true} pan={true} />
+	<TooltipContainer>
+		<OHLCTooltip />
+		<MovingAverageTooltipContainer>
+			<MATooltip onClick={} onToggle={} onRemove={} toolTipId={} />
+			<MATooltip toolTipId={} />
+			<MATooltip toolTipId={} />
+		</MovingAverageTooltipContainer>
+	</TooltipContainer>
 </Translate>
 */

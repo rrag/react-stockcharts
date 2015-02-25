@@ -15,7 +15,7 @@ var ChartCanvas = ReStock.ChartCanvas
 	, DataSeries = ReStock.DataSeries;
 ;
 
-var LineChart = React.createClass({
+var CandleStickChart = React.createClass({
 	getInitialState() {
 		return {};
 	},
@@ -38,21 +38,25 @@ var LineChart = React.createClass({
 	render() {
 		if (this.state.data === undefined) return null;
 		var parseDate = d3.time.format("%Y-%m-%d").parse
-		var dateRange = { from: parseDate("2012-06-01"), to: parseDate("2012-12-31")}
+		var dateRange = { from: parseDate("2012-12-01"), to: parseDate("2012-12-31")}
 
 		return (
 <ChartCanvas  width={500} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}}>
-	<Chart data={this.state.data}>
-		<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
-		<YAxis axisAt="right" orient="right" percentScale={true} tickFormat={d3.format(".0%")}/>
-		<YAxis axisAt="left" orient="left" />
-		<DataSeries yAccessor={CandlestickSeries.yAccessor} xAccessor={(d) => d.date}>
-			<CandlestickSeries />
-		</DataSeries>
-	</Chart>
+	<Translate data={this.state.data} interval="D"
+		polyLinear={true}
+		viewRange={dateRange}>
+		<Chart data={this.state.data}>
+			<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
+			<YAxis axisAt="right" axisPadding={10} orient="right" percentScale={true} tickFormat={d3.format(".0%")} ticks={3}/>
+			<YAxis axisAt="left" orient="left" />
+			<DataSeries yAccessor={CandlestickSeries.yAccessor}>
+				<CandlestickSeries />
+			</DataSeries>
+		</Chart>
+	</Translate>
 </ChartCanvas>
 		);
 	}
 });
 
-module.exports = LineChart
+module.exports = CandleStickChart

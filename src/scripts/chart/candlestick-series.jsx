@@ -28,7 +28,9 @@ var CandlestickSeries = React.createClass({
 						x2 = x1,
 						y2 = this.props._yScale(ohlc.low),
 						className = (ohlc.open >= ohlc.close) ? 'up' : 'down';
-
+					var path = 'M' + x1 + ' ' + y1 + 'L' + x2 + ' ' + y2;
+					//return <path key={idx} d={path} className={className} />
+					/* */
 					return <line key={idx}
 									className={className}
 									x1={x1}

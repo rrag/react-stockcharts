@@ -9,7 +9,7 @@ function updatePropsToChild(child, data, props, from, to) {
 	if (from === undefined) from = Math.max(data.length - 30, 0);
 	if (to === undefined) to = data.length - 1;
 	//child.props.data = data.filter();
-	if (child.props.namespace === "ReStock.Chart") {
+	if (child.type === Chart.type) {
 		child.props.data = data;
 		child.props._width = props.width || props._width;
 		child.props._height = props.height || props._height;
