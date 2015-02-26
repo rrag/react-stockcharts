@@ -21,13 +21,13 @@ var EventCapture = React.createClass({
 	},
 	handleEnter() {
 		if (this.props._eventStore) {
-			console.log('in');
+			//console.log('in');
 			this.props._eventStore.get().mouseOver.set({'value': true});
 		}
 	},
 	handleLeave() {
 		if (this.props._eventStore) {
-			console.log('out');
+			//console.log('out');
 			this.props._eventStore.get().mouseOver.set({'value': false});
 		}
 	},

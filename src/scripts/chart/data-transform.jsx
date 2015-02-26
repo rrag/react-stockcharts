@@ -9,7 +9,7 @@ function updatePropsToChild(child, data, props, from, to) {
 	if (from === undefined) from = Math.max(data.length - 30, 0);
 	if (to === undefined) to = data.length - 1;
 	//child.props.data = data.filter();
-	if (child.type === Chart.type) {
+	if (child.type === Chart.type || child.type === DataTransform.type) {
 		child.props.data = data;
 		child.props._width = props.width || props._width;
 		child.props._height = props.height || props._height;
@@ -20,7 +20,7 @@ function updatePropsToChild(child, data, props, from, to) {
 	}
 }
 
-var Translate = React.createClass({
+var DataTransform = React.createClass({
 	propTypes: {
 		data: React.PropTypes.array.isRequired,
 		transformDataAs: React.PropTypes.string.isRequired,
@@ -36,7 +36,7 @@ var Translate = React.createClass({
 	},
 	getDefaultProps() {
 		return {
-			namespace: "ReStock.Translate",
+			namespace: "ReStock.DataTransform",
 			transformDataAs: "none",
 			polyLinear: false,
 			dateAccesor: (d) => d.date,
@@ -76,4 +76,4 @@ var Translate = React.createClass({
 	}
 });
 
-module.exports = Translate;
+module.exports = DataTransform;

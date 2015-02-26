@@ -10,7 +10,7 @@ var ChartCanvas = ReStock.ChartCanvas
 	, XAxis = ReStock.XAxis
 	, YAxis = ReStock.YAxis
 	, CandlestickSeries = ReStock.CandlestickSeries
-	, Translate = ReStock.Translate
+	, DataTransform = ReStock.DataTransform
 	, Chart = ReStock.Chart
 	, DataSeries = ReStock.DataSeries;
 ;
@@ -42,7 +42,7 @@ var CandleStickChart = React.createClass({
 
 		return (
 <ChartCanvas  width={500} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}}>
-	<Translate data={this.state.data} interval="D"
+	<DataTransform data={this.state.data} interval="D"
 		polyLinear={true}
 		viewRange={dateRange}>
 		<Chart data={this.state.data}>
@@ -53,7 +53,7 @@ var CandleStickChart = React.createClass({
 				<CandlestickSeries />
 			</DataSeries>
 		</Chart>
-	</Translate>
+	</DataTransform>
 </ChartCanvas>
 		);
 	}

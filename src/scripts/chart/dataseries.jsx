@@ -1,6 +1,6 @@
 'use strict';
-var React = require('react');
-
+var React = require('react'),
+	PureRenderMixin = require('../mixin/restock-pure-render-mixin');
 
 function updatePropsToChildren(props) {
 	var children = props.children;
@@ -21,6 +21,7 @@ function updatePropsToChildren(props) {
 
 var DataSeries = React.createClass({
 	//namespace: "ReStock.DataSeries",
+	mixins: [PureRenderMixin],
 	propTypes: {
 		xAccessor: React.PropTypes.func,
 		_xAccessor: React.PropTypes.func,

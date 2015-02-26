@@ -116,7 +116,7 @@ module.exports = AreaChart
 	</Chart>
 </ChartCanvas>
 <ChartCanvas  width={500} height={400}>
-	<Translate data={this.state.data} interval="D"
+	<DataTransform data={this.state.data} interval="D"
 		polyLinear={false}
 		viewRange={dateRange}>
 		<Chart>
@@ -126,10 +126,10 @@ module.exports = AreaChart
 				<AreaSeries />
 			</DataSeries>
 		</Chart>
-	</Translate>
+	</DataTransform>
 </ChartCanvas>
 <ChartCanvas  width={500} height={400}>
-	<Translate data={this.state.data} interval="D"
+	<DataTransform data={this.state.data} interval="D"
 		polyLinear={false}
 		viewRange={dateRange}>
 		<Chart>
@@ -139,10 +139,10 @@ module.exports = AreaChart
 				<AreaSeries />
 			</DataSeries>
 		</Chart>
-	</Translate>
+	</DataTransform>
 </ChartCanvas>
 <ChartCanvas  width={500} height={400}>
-	<Translate data={this.state.data}
+	<DataTransform data={this.state.data}
 		polyLinear={true}
 		dateAccessor={(d) => d.date}>
 		<Chart>
@@ -152,7 +152,7 @@ module.exports = AreaChart
 				<AreaSeries />
 			</DataSeries>
 		</Chart>
-	</Translate>
+	</DataTransform>
 </ChartCanvas>
 <ChartCanvas  width={500} height={400}>
 	<Chart data={this.state.data}>
@@ -174,28 +174,32 @@ module.exports = AreaChart
 </ChartCanvas>
 
 
-<Translate data={} transformDataAs={} listenTo={} fromIndex={} toIndex={}>
-	<Chart currentItemEmitter={} xScale={} yScale={} xDomainUpdate={true} yDomainUpdate={true}>
-		<XAxis axisAt="bottom" orient="bottom"/>
-		<YAxis axisAt="left" orient="left"/>
-		<DataSeries yAccessor={} xAccesor={} tooltipDisplayEmitter={}>
-			<CandlestickSeries/>
-		</DataSeries
-		<ChartOverlay type="sma" options={{ period: 10 }} xAccesor={} yAccesor={} toolTipId={}>
+<DataTransform data={} transformDataAs={POLYLINEAR}>
+	<DataTransform transformDataAs={RENKO}>
+		<Chart currentItemEmitter={} xScale={} yScale={} xDomainUpdate={true} yDomainUpdate={true}>
+			<XAxis axisAt="bottom" orient="bottom"/>
+			<YAxis axisAt="left" orient="left"/>
+			<DataSeries yAccessor={} xAccesor={} tooltipDisplayEmitter={}>
+				<CandlestickSeries/>
+			</DataSeries
+			<ChartOverlay type="sma" options={{ period: 10 }} xAccesor={} yAccesor={} toolTipId={}>
+				<LineSeries />
+			</ChartOverlay>
+			<ChartOverlay type="macrossover" options={{ period: 10 }} id={0}> //moving average crossover
+				<Markers />
+			</ChartOverlay>
+		</Chart>
+	</DataTransform>
+	<DataTransform transformDataAs={VOLUMEPROFILE}>
+		<Chart xAccesor={} yAccesor={}>
+			<YAxis />
 			<LineSeries />
-		</ChartOverlay>
-		<ChartOverlay type="macrossover" options={{ period: 10 }} id={0}> //moving average crossover
-			<Markers />
-		</ChartOverlay>
-	</Chart>
-	<Chart xAccesor={} yAccesor={}>
-		<YAxis />
-		<LineSeries />
-		<ChartOverlay type="sma" options={{ period: 10 }} id={0}>
-			<LineSeries />
-		</ChartOverlay>
-		<TooltipEmitter sendUsing={} />
-	</Chart>
+			<ChartOverlay type="sma" options={{ period: 10 }} id={0}>
+				<LineSeries />
+			</ChartOverlay>
+			<TooltipEmitter sendUsing={} />
+		</Chart>
+	</DataTransform>
 	<Chart xAccesor={} yAccesor={}>
 		<YAxis />
 		<HistogramSeries  />
@@ -213,5 +217,5 @@ module.exports = AreaChart
 			<MATooltip toolTipId={} />
 		</MovingAverageTooltipContainer>
 	</TooltipContainer>
-</Translate>
+</DataTransform>
 */

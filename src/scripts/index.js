@@ -2,7 +2,7 @@
 
 // common components
 exports.ChartCanvas = require('./chart/chart-canvas');
-exports.Translate = require('./chart/translate');
+exports.DataTransform = require('./chart/data-transform');
 
 exports.XAxis = require('./chart/xaxis');
 exports.YAxis = require('./chart/yaxis');

@@ -1,8 +1,11 @@
 'use strict';
-var React = require('react')
-	, d3 = require('d3');
+var React = require('react'),
+	d3 = require('d3'),
+	PureRenderMixin = require('../mixin/restock-pure-render-mixin');
+
 
 var CandlestickSeries = React.createClass({
+	mixins: [PureRenderMixin],
 	propTypes: {
 		_xScale: React.PropTypes.func.isRequired,
 		_yScale: React.PropTypes.func.isRequired,

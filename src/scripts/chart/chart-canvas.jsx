@@ -2,15 +2,13 @@
 var React = require('react/addons');
 // var TestUtils = React.addons.TestUtils;
 
-var Freezer = require('freezer-js');
-// Let's create a freezer store
-
 var Chart = require('./chart');
-var Translate = require('./translate');
 var EventCapture = require('./event-capture');
 var MouseCoordinates = require('./mouse-coordinates');
+var EventCaptureMixin = require('../mixin/event-capture-mixin');
 
 var ChartCanvas = React.createClass({
+	mixins: [EventCaptureMixin],
 	propTypes: {
 		width: React.PropTypes.number.isRequired
 		, height: React.PropTypes.number.isRequired
@@ -18,58 +16,6 @@ var ChartCanvas = React.createClass({
 	},
 	getInitialState() {
 		return {};
-	},
-	componentWillMount() {
-		var eventStore = new Freezer({
-			mouseXY: [0, 0],
-			mouseOver: { value: false },
-			inFocus: { value: false },
-			zoom: { value : 0 }
-		});
-
-		var dataStore  = new Freezer({
-			tooltip: {},
-			currentItem: {},
-			lastItem: {},
-			data: []
-		});
-		var stores = { eventStore: eventStore, dataStore: dataStore };
-		this.updateStore(stores);
-
-		this.listen(stores);
-	},
-	updateStore(store) {
-		this.unListen();
-
-		var eventStore = store.eventStore === undefined ? this.state.eventStore : store.eventStore;
-		var dataStore = store.dataStore === undefined ? this.state.dataStore : store.dataStore;
-		var newState = {
-				eventStore: eventStore,
-				dataStore: dataStore
-			}
-		this.setState(newState, function() { this.listen(newState) });
-	},
-	componentWillUnmount() {
-		this.unListen();
-	},
-	unListen() {
-		if (this.state.eventStore !== undefined) {
-			this.state.eventStore.off('update', this.eventListener);
-		}
-		if (this.state.dataStore !== undefined) {
-			this.state.dataStore.off('update', this.dataListener);
-		}
-	},
-	listen(stores) {
-		console.log('begining to listen1...', stores.eventStore, stores.dataStore);
-
-		stores.eventStore.on('update', function(d) {
-			console.log('events updated...', d);
-			this.forceUpdate();
-		}.bind(this))
-		stores.dataStore.on('update', function(d) {
-			console.log('events updated...', d);
-		}.bind(this))
 	},
 	getDefaultProps() {
 		return {
@@ -92,7 +38,8 @@ var ChartCanvas = React.createClass({
 			} else if (child.type === MouseCoordinates.type) {
 				newChild = React.addons.cloneWithProps(newChild, {
 					_show: this.state.eventStore.get().mouseOver.value,
-					//_mouseXY: this.state.eventStore.get().mouseXY
+					_mouseXY: this.state.eventStore.get().mouseXY,
+					_currentItem: this.state.dataStore.get().currentItem
 				});
 			}
 			return React.addons.cloneWithProps(newChild, {

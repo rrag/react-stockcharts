@@ -48,7 +48,10 @@ var Dummy = React.createClass({
 
 var AreaChartWithMousePointer = React.createClass({
 	getInitialState() {
-		return {};
+		return {
+			width: 500,
+			height: 400
+		};
 	},
 	componentWillMount() {
 		var parseDate = d3.time.format("%Y-%m-%d").parse
@@ -65,6 +68,11 @@ var AreaChartWithMousePointer = React.createClass({
 			this.setState({ data : data });
 		}.bind(this));
 	},
+	changeWidth() {
+		this.setState({
+			width: this.state.width + 10
+		});
+	},
 	//mixins: [ReStock.ChartScalesMixin],
 	render() {
 		if (this.state.data === undefined) return null;
@@ -72,7 +80,7 @@ var AreaChartWithMousePointer = React.createClass({
 		var dateRange = { from: parseDate("2012-06-01"), to: parseDate("2012-12-31")}
 
 		return (
-<ChartCanvas  width={500} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}}>
+<ChartCanvas  width={this.state.width} height={this.state.height} margin={{left: 50, right: 50, top:10, bottom: 30}}>
 	<Chart data={this.state.data} >
 		<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 		<YAxis axisAt="right" orient="right" percentScale={true} tickFormat={d3.format(".0%")}/>
@@ -83,7 +91,7 @@ var AreaChartWithMousePointer = React.createClass({
 	</Chart>
 	<MouseCoordinates />
 	<EventCapture mouseMove={true} />
-	<g></g>
+	<rect width={100} height={100} onClick={this.changeWidth}/>
 </ChartCanvas>
 		);
 	}
