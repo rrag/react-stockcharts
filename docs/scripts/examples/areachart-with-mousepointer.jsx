@@ -89,7 +89,6 @@ var AreaChartWithMousePointer = React.createClass({
 			<AreaSeries />
 		</DataSeries>
 	</Chart>
-	<MouseCoordinates />
 	<EventCapture mouseMove={true} />
 	<rect width={100} height={100} onClick={this.changeWidth}/>
 </ChartCanvas>

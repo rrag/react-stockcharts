@@ -1,5 +1,7 @@
 "use strict";
 var React = require('react/addons');
+var EventCapture = require('../chart/event-capture');
+var MouseCoordinates = require('../chart/mouse-coordinates');
 
 var Freezer = require('freezer-js');
 // Let's create a freezer store
@@ -64,6 +66,24 @@ var EventCaptureMixin = {
 
 		stores.eventStore.on('update', this.eventListener);
 		stores.dataStore.get().data.getListener().on('update', this.dataListener);
+	},
+	updatePropsForEventCapture(child) {
+		if (child.type === EventCapture.type) {
+			return React.addons.cloneWithProps(child, {
+				_eventStore: this.state.eventStore
+			});
+		}
+		return child;
+	},
+	updatePropsForMouseCoordinates(child) {
+		if (child.type === MouseCoordinates.type) {
+			return React.addons.cloneWithProps(child, {
+				_show: this.state.eventStore.get().mouseOver.value,
+				_mouseXY: this.state.eventStore.get().mouseXY,
+				_currentItem: this.state.dataStore.get().currentItem
+			});
+		}
+		return child;
 	},
 };
 

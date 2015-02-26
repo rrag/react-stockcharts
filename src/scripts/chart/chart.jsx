@@ -43,7 +43,7 @@ var Chart = React.createClass({
 			scales.yScale));
 	},
 	componentWillReceiveProps(nextProps) {
-		if (! shallowEqual(nextProps, this.props.data)) {
+		if (! shallowEqual(nextProps, this.props)) {
 			var scales = this.defineScales(nextProps, this.state.xScale, this.state.yScale);
 			var xyAccessors = this.getXYAccessors(nextProps);
 			this.setState(this.updateScales(nextProps

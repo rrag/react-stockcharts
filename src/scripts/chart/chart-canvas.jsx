@@ -3,8 +3,6 @@ var React = require('react/addons');
 // var TestUtils = React.addons.TestUtils;
 
 var Chart = require('./chart');
-var EventCapture = require('./event-capture');
-var MouseCoordinates = require('./mouse-coordinates');
 var EventCaptureMixin = require('../mixin/event-capture-mixin');
 
 var ChartCanvas = React.createClass({
@@ -26,22 +24,9 @@ var ChartCanvas = React.createClass({
 		return React.Children.map(this.props.children, (child) => {
 			if (typeof child.type === 'string') return child;
 			var newChild = child;
-			/*if (child.type === Chart.type || child.type === Translate.type) {
-				newChild = React.addons.cloneWithProps(newChild, {
-					_data: this.state.dataStore.get().data
-				});
-			}*/
-			if (child.type === EventCapture.type) {
-				newChild = React.addons.cloneWithProps(newChild, {
-					_eventStore: this.state.eventStore
-				});
-			} else if (child.type === MouseCoordinates.type) {
-				newChild = React.addons.cloneWithProps(newChild, {
-					_show: this.state.eventStore.get().mouseOver.value,
-					_mouseXY: this.state.eventStore.get().mouseXY,
-					_currentItem: this.state.dataStore.get().currentItem
-				});
-			}
+			newChild = this.updatePropsForEventCapture(child);
+			newChild = this.updatePropsForMouseCoordinates(newChild);
+
 			return React.addons.cloneWithProps(newChild, {
 				_width: width
 				, _height: height
