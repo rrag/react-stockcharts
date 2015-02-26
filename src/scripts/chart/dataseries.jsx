@@ -1,6 +1,7 @@
 'use strict';
 var React = require('react'),
-	PureRenderMixin = require('../mixin/restock-pure-render-mixin');
+	PureRenderMixin = require('../mixin/restock-pure-render-mixin'),
+	Utils = require('../utils/utils');
 
 function updatePropsToChildren(props) {
 	var children = props.children;
@@ -37,6 +38,19 @@ var DataSeries = React.createClass({
 	},
 	componentWillReceiveProps(nextProps) {
 		this.updatePropsToChildren(nextProps);
+		if (nextProps._mouseXY !== this.props._mouseXY) {
+			console.log('here......', nextProps._mouseXY, this.props._mouseXY);
+
+			var xAccessor = nextProps.xAccessor || nextProps._xAccessor
+			if (nextProps._currentItem) {
+				var xValue = nextProps._xScale.invert(nextProps._mouseXY[0]);
+				//var item = Utils.getClosestItem(nextProps.data, xValue, xAccessor);
+				//nextProps._currentItem.set(item);
+			}
+			if (nextProps._lastItem) {
+				nextProps._lastItem.set(nextProps.data[nextProps.data.length - 1]);
+			}
+		}
 	},
 	updatePropsToChildren(props) {
 		updatePropsToChildren(props)

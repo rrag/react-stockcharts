@@ -55,17 +55,17 @@ var EventCaptureMixin = {
 	},
 	eventListener(d) {
 		console.log('events updated...', d);
-		this.state.dataStore.get().currentItem.set({value : new Date().getTime()});
+		//this.state.dataStore.get().currentItem.set({value : new Date().getTime()});
 		this.forceUpdate();
 	},
 	dataListener(d) {
 		console.log('data updated...', d);
 	},
 	listen(stores) {
-		console.log('begining to listen1...', stores.eventStore, stores.dataStore);
+		console.log('begining to listen...', stores.eventStore, stores.dataStore);
 
 		stores.eventStore.on('update', this.eventListener);
-		stores.dataStore.get().data.getListener().on('update', this.dataListener);
+		stores.dataStore.get().currentItem.getListener().on('update', this.dataListener);
 	},
 	updatePropsForEventCapture(child) {
 		if (child.type === EventCapture.type) {
@@ -85,6 +85,16 @@ var EventCaptureMixin = {
 		}
 		return child;
 	},
+	updatePropsForChart(child) {
+		if ("ReStock.Chart" === child.props.namespace) {
+			return React.addons.cloneWithProps(child, {
+				_mouseXY: this.state.eventStore.get().mouseXY,
+				_currentItem: this.state.dataStore.get().currentItem,
+				_lastItem: this.state.dataStore.get().currentItem
+			});
+		}
+		return child;
+	}
 };
 
 module.exports = EventCaptureMixin;

@@ -29,6 +29,7 @@ var Chart = React.createClass({
 	//mixins: [PureRenderMixin],
 	getDefaultProps() {
 		return {
+			namespace: "ReStock.Chart",
 			transformDataAs: "none",
 			yDomainUpdate: true
 		};
@@ -130,12 +131,23 @@ var Chart = React.createClass({
 				data: this.props.data,
 				_xAccessor: this.props._indexAccessor
 			});
+			newChild = this.updatePropsForDataSeries(newChild);
 			if (newChild.props.xAccessor !== undefined && this.props._polyLinear) {
 				console.warn('xAccessor defined in DataSeries will override the indexAccessor of the polylinear scale. This might not be the right configuration');
 				console.warn('Either remove the xAccessor configuration on the DataSeries or change the polyLinear=false in Translate');
 			}
 			return newChild;
 		}, this);
+	},
+	updatePropsForDataSeries(child) {
+		if ("ReStock.DataSeries" === child.props.namespace) {
+			return React.addons.cloneWithProps(child, {
+				_mouseXY: this.props._mouseXY,
+				_currentItem: this.props._currentItem,
+				_lastItem: this.props._lastItem
+			});
+		}
+		return child;
 	},
 	render() {
 		return (

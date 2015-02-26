@@ -26,6 +26,7 @@ var ChartCanvas = React.createClass({
 			var newChild = child;
 			newChild = this.updatePropsForEventCapture(child);
 			newChild = this.updatePropsForMouseCoordinates(newChild);
+			newChild = this.updatePropsForChart(newChild);
 
 			return React.addons.cloneWithProps(newChild, {
 				_width: width
