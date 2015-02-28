@@ -64,7 +64,7 @@ var EventCaptureMixin = {
 		this.forceUpdate();
 	},
 	listen(stores) {
-		console.log('begining to listen...', stores.eventStore, stores.dataStore);
+		//console.log('begining to listen...', stores.eventStore, stores.dataStore);
 
 		stores.eventStore.on('update', this.eventListener);
 		stores.dataStore.on('update', this.dataListener);
@@ -91,15 +91,19 @@ var EventCaptureMixin = {
 		return child;
 	},
 	updatePropsForChart(child) {
+		var newChild = child;
 		if ("ReStock.Chart" === child.props.namespace) {
-			return React.addons.cloneWithProps(child, {
-				_mouseXY: this.state.eventStore.get().mouseXY,
-				_currentItem: this.state.dataStore.get().currentItem,
-				_currentValue: this.state.dataStore.get().currentValue,
-				_lastItem: this.state.dataStore.get().lastItem
-			});
+			if (this.state.eventStore && this.state.dataStore) {
+				newChild = React.addons.cloneWithProps(newChild, {
+					_showCurrent: this.state.eventStore.get().mouseOver.value,
+					_mouseXY: this.state.eventStore.get().mouseXY,
+					_currentItem: this.state.dataStore.get().currentItem,
+					_currentValue: this.state.dataStore.get().currentValue,
+					_lastItem: this.state.dataStore.get().lastItem
+				});
+			}
 		}
-		return child;
+		return newChild;
 	}
 };
 

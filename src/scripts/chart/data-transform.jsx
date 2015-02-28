@@ -63,8 +63,6 @@ var DataTransform = React.createClass({
 		var children = Array.isArray(props.children) ? props.children : [props.children];
 
 		children.forEach(function (child) {
-			console.log(typeof child)
-			console.log(child instanceof Chart)
 			updatePropsToChild(child, data, props)
 		});
 	},

@@ -17,3 +17,6 @@ exports.CandlestickSeries = require('./chart/candlestick-series');
 // interaction components
 exports.EventCapture = require('./chart/event-capture');
 exports.MouseCoordinates = require('./chart/mouse-coordinates');
+exports.CrossHair = require('./chart/crosshair');
+exports.VerticalMousePointer = require('./chart/vertical-mouse-pointer');
+exports.CurrentCoordinate = require('./chart/current-coordinate');

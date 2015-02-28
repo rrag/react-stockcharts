@@ -7,6 +7,11 @@
 			//opacity: 0.2;
 		}
 	}
+	.current-coordinate {
+		fill: none;
+		stroke: steelblue;
+		stroke-width: 3px;
+	}
 	.grid.axis {
 		path, line {
 			fill: none;
@@ -90,7 +95,7 @@
 		stroke: $black;
 		stroke-width: 1px;
 		shape-rendering: crispEdges;
-		opacity: 0.8;
+		opacity: 0.2;
 	}
 
 	.horizontal2 {
@@ -121,7 +126,7 @@
 	}
 	.vertical, .horizontal {
 		.textbg {
-			opacity: 0.5;
+			opacity: 0.9;
 			fill: $gray54;
 		}
 		text {

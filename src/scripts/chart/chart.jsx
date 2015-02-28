@@ -17,6 +17,7 @@ var Chart = React.createClass({
 		width: React.PropTypes.number,
 		_height: React.PropTypes.number,
 		_width: React.PropTypes.number,
+		_showCurrent: React.PropTypes.bool,
 		// if xScale and/or yScale is passed as props
 		// the user needs to set 
 		// xDomainUpdate=false and yDomainUpdate=false
@@ -103,7 +104,7 @@ var Chart = React.createClass({
 		return { xAccessors: xAccessors, yAccessors: yAccessors };
 	},
 	updateScales(props, xAccessors, yAccessors, xScale, yScale) {
-		console.log('updateScales');
+		// console.log('updateScales');
 
 		var result = ScaleUtils.flattenData(props.data, xAccessors, yAccessors);
 
@@ -154,6 +155,7 @@ var Chart = React.createClass({
 	updatePropsForDataSeries(child) {
 		if ("ReStock.DataSeries" === child.props.namespace) {
 			return React.addons.cloneWithProps(child, {
+				_showCurrent: this.props._showCurrent,
 				_mouseXY: this.props._mouseXY,
 				_currentItem: this.props._currentItem,
 				_lastItem: this.props._lastItem,

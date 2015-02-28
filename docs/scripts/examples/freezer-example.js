@@ -27,9 +27,12 @@ listener.on('update', function(d) {
 */
 var currentItem = {_idx: 1, displayDate: '2011-02-02', open: 10, high: 20, low: 5, close: 15};
 
-console.log(currentItem);
+/*console.log(currentItem);
 console.log(store.get().currentItem);
+*/
+var storeCurrentItem = store.get().currentItem;
+console.log(storeCurrentItem);
+currentItem = storeCurrentItem.set(currentItem);
 
-currentItem = store.get().currentItem.set(currentItem);
-
+console.log(storeCurrentItem);
 console.log(currentItem);

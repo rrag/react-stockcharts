@@ -42,8 +42,7 @@ var CandleStickChart = React.createClass({
 
 		return (
 <ChartCanvas  width={500} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}}>
-	<DataTransform data={this.state.data} interval="D"
-		polyLinear={true}
+	<DataTransform data={this.state.data} polyLinear={true}
 		viewRange={dateRange}>
 		<Chart data={this.state.data}>
 			<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
