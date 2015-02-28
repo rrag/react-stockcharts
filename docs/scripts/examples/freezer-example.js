@@ -10,12 +10,11 @@ var store = new Freezer({
 	currentItem: {_idx: 0, displayDate: '2010-02-02', open: 10, high: 20, low: 5, close: 15},
 	lastItem: {_idx: 0, displayDate: '2010-02-02', open: 10, high: 20, low: 5, close: 15}
 });
-console.log(typeof store);
 // Let's get the data stored
 var data = store.get();
 
 // Listen on changes in the store
-store.on('update', function(){
+/*store.on('update', function(){
 	console.log( 'I was updated, \n', store.get());
 });
 
@@ -25,13 +24,12 @@ listener.on('update', function(d) {
 	console.log('%s is updated', d);
 	console.log(store.get());
 })
+*/
+var currentItem = {_idx: 1, displayDate: '2011-02-02', open: 10, high: 20, low: 5, close: 15};
 
-// But it is immutable, so...
-// data.d = 3; console.log( data.d ); // logs null
-//data.e = 4; console.log( data.e ); // logs undefined
+console.log(currentItem);
+console.log(store.get().currentItem);
 
-// to update use methods like set
-//var updated = data.set( 'e', 4 ); // On next tick it will log 'I was updated'
-console.log(data.mouseXY);
-//data.tooltip.push('a');
-data.mouseXY.set([10, 10]);
+currentItem = store.get().currentItem.set(currentItem);
+
+console.log(currentItem);

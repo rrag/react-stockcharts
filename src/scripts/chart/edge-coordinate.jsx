@@ -4,15 +4,13 @@ var React = require('react/addons');
 var EdgeCoordinate = React.createClass({
 	propTypes: {
 		type: React.PropTypes.oneOf(['vertical', 'horizontal']).isRequired,
-		coordinate: React.PropTypes.oneOfType([
-							React.PropTypes.string,
-							React.PropTypes.number
-						]),
+		coordinate: React.PropTypes.any.isRequired,
 		x1: React.PropTypes.number.isRequired,
 		y1: React.PropTypes.number.isRequired,
 		x2: React.PropTypes.number.isRequired,
 		y2: React.PropTypes.number.isRequired,
-		orient: React.PropTypes.oneOf(['bottom', 'top', 'left', 'right'])
+		orient: React.PropTypes.oneOf(['bottom', 'top', 'left', 'right']),
+		rectWidth: React.PropTypes.number
 	},
 	getDefaultProps: function() {
 		return {
@@ -22,23 +20,27 @@ var EdgeCoordinate = React.createClass({
 	render: function() {
 		if (!this.props.show) return null;
 
-		var displayCoordinate = Utils.isNumeric(this.props.coordinate)
-									? this.props.coordinate.toFixed(2)
-									: this.props.coordinate;
-		var rectWidth = (this.props.type === 'horizontal') ? 60 : 100, rectHeight = 20;
+		var displayCoordinate = this.props.coordinate;
+		var rectWidth = this.props.rectWidth
+			? this.props.rectWidth
+			: (this.props.type === 'horizontal')
+				? 60
+				: 100,
+			rectHeight = 20;
+
 		var edgeXRect, edgeYRect, edgeXText, edgeYText;
 
 		if (this.props.type === 'horizontal') {
 
 			edgeXRect = (this.props.orient === 'right') ? this.props.edgeAt + 1 : this.props.edgeAt - rectWidth - 1;
-			edgeYRect = this.props.y1 - 10;
-			edgeXText = (this.props.orient === 'right') ? this.props.edgeAt + 30 : this.props.edgeAt - 30;
+			edgeYRect = this.props.y1 - (rectHeight / 2);
+			edgeXText = (this.props.orient === 'right') ? this.props.edgeAt + (rectWidth / 2) : this.props.edgeAt - (rectWidth / 2);
 			edgeYText = this.props.y1;
 		} else {
-			edgeXRect = this.props.x1 - 50;
+			edgeXRect = this.props.x1 - (rectWidth / 2);
 			edgeYRect = (this.props.orient === 'bottom') ? this.props.edgeAt : this.props.edgeAt - rectHeight;
 			edgeXText = this.props.x1;
-			edgeYText = (this.props.orient === 'bottom') ? this.props.edgeAt + 10 : this.props.edgeAt - 10;
+			edgeYText = (this.props.orient === 'bottom') ? this.props.edgeAt + (rectHeight / 2) : this.props.edgeAt - (rectHeight / 2);
 		}
 		var coordinateBase = null, coordinate = null;
 		if (displayCoordinate !== undefined) {

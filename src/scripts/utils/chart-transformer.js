@@ -2,23 +2,7 @@
 
 var d3 = require('d3');
 var dateFormat = d3.time.format("%Y-%m-%d");
-
-function cloneMe(obj) {
-	if(obj == null || typeof(obj) !== 'object')
-		return obj;
-	if (obj instanceof Date) {
-		return new Date(obj.getTime());
-	}
-	var temp = {};//obj.constructor(); // changed
-
-	for(var key in obj) {
-		if(obj.hasOwnProperty(key)) {
-			temp[key] = cloneMe(obj[key]);
-		}
-	}
-	return temp;
-}
-
+var Utils = require('./utils');
 
 var ChartTransformer = {
 	getTransformerFor(type) {
@@ -40,7 +24,7 @@ var ChartTransformer = {
 		var responseData = data
 			//.filter((each) => Math.random() > 0.9)
 			.map((each, i) => {
-				var row = cloneMe(each);
+				var row = Utils.cloneMe(each);
 				// console.log(each);
 				//console.log(row);
 				indexMutator(row,  i);
@@ -50,7 +34,7 @@ var ChartTransformer = {
 				row.startOfQuarter = false;
 				row.startOfYear = false;
 				var date = dateAccesor(row);
-				row.displayDate = dateFormat(date);
+				//row.displayDate = dateFormat(date);
 				if (prevDate !== undefined) {
 					// According to ISO calendar
 					// Sunday = 0, Monday = 1, ... Saturday = 6

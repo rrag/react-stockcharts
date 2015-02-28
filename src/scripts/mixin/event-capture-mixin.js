@@ -20,6 +20,7 @@ var EventCaptureMixin = {
 
 				var dataStore  = new Freezer({
 					tooltip: {},
+					currentValue: { xy: [], values: [] },
 					currentItem: { value: 0 },
 					lastItem: {},
 					data: []
@@ -54,18 +55,20 @@ var EventCaptureMixin = {
 		}
 	},
 	eventListener(d) {
-		console.log('events updated...', d);
+		//console.log('events updated...', d);
 		//this.state.dataStore.get().currentItem.set({value : new Date().getTime()});
 		this.forceUpdate();
 	},
 	dataListener(d) {
-		console.log('data updated...', d);
+		//console.log('data updated from ', this.state.dataStore.get().currentItem, ' to ', d);
+		this.forceUpdate();
 	},
 	listen(stores) {
 		console.log('begining to listen...', stores.eventStore, stores.dataStore);
 
 		stores.eventStore.on('update', this.eventListener);
-		stores.dataStore.get().currentItem.getListener().on('update', this.dataListener);
+		stores.dataStore.on('update', this.dataListener);
+		// stores.dataStore.get().currentItem.getListener().on('update', this.dataListener);
 	},
 	updatePropsForEventCapture(child) {
 		if (child.type === EventCapture.type) {
@@ -76,11 +79,13 @@ var EventCaptureMixin = {
 		return child;
 	},
 	updatePropsForMouseCoordinates(child) {
-		if (child.type === MouseCoordinates.type) {
+		if ("ReStock.MouseCoordinates" === child.props.namespace) {
 			return React.addons.cloneWithProps(child, {
 				_show: this.state.eventStore.get().mouseOver.value,
 				_mouseXY: this.state.eventStore.get().mouseXY,
-				_currentItem: this.state.dataStore.get().currentItem
+				_currentValue: this.state.dataStore.get().currentValue.values,
+				_snapMouseX: (this.state.dataStore.get().currentValue.xy[0] || 0)
+				//_currentItem: this.state.dataStore.get().currentItem
 			});
 		}
 		return child;
@@ -90,7 +95,8 @@ var EventCaptureMixin = {
 			return React.addons.cloneWithProps(child, {
 				_mouseXY: this.state.eventStore.get().mouseXY,
 				_currentItem: this.state.dataStore.get().currentItem,
-				_lastItem: this.state.dataStore.get().currentItem
+				_currentValue: this.state.dataStore.get().currentValue,
+				_lastItem: this.state.dataStore.get().lastItem
 			});
 		}
 		return child;

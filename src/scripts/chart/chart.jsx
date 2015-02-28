@@ -24,7 +24,10 @@ var Chart = React.createClass({
 		xScale: React.PropTypes.func,
 		yScale: React.PropTypes.func,
 		xDomainUpdate: React.PropTypes.bool,
-		yDomainUpdate: React.PropTypes.bool
+		yDomainUpdate: React.PropTypes.bool,
+		_mouseXY: React.PropTypes.object,
+		_currentItem: React.PropTypes.object,
+		_lastItem: React.PropTypes.object
 	},
 	//mixins: [PureRenderMixin],
 	getDefaultProps() {
@@ -44,7 +47,16 @@ var Chart = React.createClass({
 			scales.yScale));
 	},
 	componentWillReceiveProps(nextProps) {
-		if (! shallowEqual(nextProps, this.props)) {
+		// ignoring  _mouseXY, _currentItem, _lastItem
+
+		var scaleRecalculationNeeded = !(Chart.getWidth(this.props) === Chart.getWidth(nextProps)
+			&& Chart.getHeight(this.props) === Chart.getHeight(nextProps)
+			&& this.props.data === nextProps.data
+			&& this.props.xScale === nextProps.xScale
+			&& this.props.yScale === nextProps.yScale
+			&& this.props.xDomainUpdate === nextProps.xDomainUpdate
+			&& this.props.yDomainUpdate === nextProps.yDomainUpdate)
+		if (scaleRecalculationNeeded) {
 			var scales = this.defineScales(nextProps, this.state.xScale, this.state.yScale);
 			var xyAccessors = this.getXYAccessors(nextProps);
 			this.setState(this.updateScales(nextProps
@@ -144,7 +156,8 @@ var Chart = React.createClass({
 			return React.addons.cloneWithProps(child, {
 				_mouseXY: this.props._mouseXY,
 				_currentItem: this.props._currentItem,
-				_lastItem: this.props._lastItem
+				_lastItem: this.props._lastItem,
+				_currentValue: this.props._currentValue
 			});
 		}
 		return child;

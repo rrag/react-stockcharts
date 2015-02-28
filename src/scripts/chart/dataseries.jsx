@@ -37,20 +37,26 @@ var DataSeries = React.createClass({
 		this.updatePropsToChildren(this.props);
 	},
 	componentWillReceiveProps(nextProps) {
-		this.updatePropsToChildren(nextProps);
 		if (nextProps._mouseXY !== this.props._mouseXY) {
-			console.log('here......', nextProps._mouseXY, this.props._mouseXY);
+			//console.log('here......', nextProps._mouseXY);
 
-			var xAccessor = nextProps.xAccessor || nextProps._xAccessor
+			var xAccessor = nextProps.xAccessor || nextProps._xAccessor;
+			var yAccessor = nextProps.yAccessor;
+
 			if (nextProps._currentItem) {
 				var xValue = nextProps._xScale.invert(nextProps._mouseXY[0]);
-				//var item = Utils.getClosestItem(nextProps.data, xValue, xAccessor);
-				//nextProps._currentItem.set(item);
+				var yValue = nextProps._yScale.invert(nextProps._mouseXY[1]);
+				var item = Utils.getClosestItem(nextProps.data, xValue, xAccessor);
+
+				item = nextProps._currentItem.set(item);
+				nextProps._currentValue.xy.set([Math.round(nextProps._xScale(xAccessor(item))), nextProps._mouseXY[1]]);
+				nextProps._currentValue.values.set([xAccessor(item), yValue]);
 			}
 			if (nextProps._lastItem) {
 				nextProps._lastItem.set(nextProps.data[nextProps.data.length - 1]);
 			}
 		}
+		this.updatePropsToChildren(nextProps);
 	},
 	updatePropsToChildren(props) {
 		updatePropsToChildren(props)
