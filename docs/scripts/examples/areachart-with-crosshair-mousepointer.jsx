@@ -3,7 +3,6 @@
 var React = require('react');
 var d3 = require('d3');
 
-var ReStock = require('../../../src/styles/main.scss');
 var ReStock = require('../../../src/scripts');
 
 var ChartCanvas = ReStock.ChartCanvas

@@ -4,11 +4,11 @@ All the documentation are developed in markdown (`.md`) format, and are converte
 
 See the [examples page](http://rrag.github.io/react-stockcharts) for a complete list of all the chart types supported
 
-###Area chart
+### Area chart
 
-###Area chart with line overlay
+### Area chart with line overlay
 
-###Server side rendering
+### Server side rendering
 
 ###Candlestick
 

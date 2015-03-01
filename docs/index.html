@@ -1,28 +1,73 @@
 <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
 
-<html>
-<head>
-	<title>React webpack HMR example</title>
-	<!-- include react -->
-	<!-- build:js //cdnjs.cloudflare.com/ajax/libs/react/0.12.2/react-with-addons.min.js -->
-	<!-- endbuild -->
-	<!-- build:js //cdnjs.cloudflare.com/ajax/libs/d3/3.4.13/d3.min.js -->
-	<!-- endbuild -->
+    <title>Jumbotron Template for Bootstrap</title>
+    <!-- custom:jsinclude //cdnjs.cloudflare.com/ajax/libs/react/0.12.2/react-with-addons.min.js -->
+    <!-- custom:jsinclude //cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js -->
 
-	<!-- build:remove  -->
-	<!--
-	<script src="react/dist/react-with-addons.js"></script>
-	<script src="d3/d3.js"></script>
-	-->
-	<!-- endbuild -->
-</head>
-<body>
-	<div id="content" class="react-stockchart"></div>
-	<!-- include the bundle that contains all our scripts, produced by webpack -->
-	<!-- the bundle is served by the webpack-dev-server, so serve it also from localhost:8090 -->
+    <!-- custom:cssinclude https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css -->
 
-	<!-- build:replace scripts/react-stockcharts.js -->
-	<script type="text/javascript" src="http://localhost:8090/js/react-stockcharts.js"></script>
-	<!-- endbuild -->
-</body>
+    <!-- custom:remove -->
+    <link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- endcustom -->
+  </head>
+
+  <body>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container" id="README.md">
+        <div class="row">
+          <div class="col-md-8" id="content">
+          </div>
+          <div class="col-md-4">
+            <div class="pull-right top-spacing">
+              <a href="https://github.com/rrag/react-stockcharts" class="btn btn-lg button"><small>View project on</small><br/> GitHub</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-6">
+          <h2>AreaChart1</h2>
+          <div id="area" class="react-stockchart"></div>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-md-6">
+          <h2>LineChart</h2>
+          <div id="line" class="react-stockchart"></div>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+       </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <h2>CandlestickChart</h2>
+          <div id="candlestick" class="react-stockchart"></div>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+      </div>
+
+      <hr>
+
+      <footer>
+        <p>&copy; Company 2014</p>
+      </footer>
+    </div> <!-- /container -->
+
+  <!-- custom:jsinclude    scripts/react-stockcharts-docs.js   -->
+  <!-- custom:remove -->
+  <script type="text/javascript" src="http://localhost:8090/js/react-stockcharts.js"></script>
+  <!-- endcustom -->
+  </body>
 </html>
