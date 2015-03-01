@@ -1,4 +1,4 @@
 'use strict';
 
-require('./styles/main');
+require('./styles/react-stockcharts');
 require('./index');
