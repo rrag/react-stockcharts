@@ -1,0 +1,30 @@
+/* Move down content because we have a fixed navbar that is 50px tall */
+/*! normalize.css v3.0.2 | MIT License | git.io/normalize */
+
+a.button {
+    background: transparent url(../images/github-button.png) 0 0 no-repeat;
+    width: 203px;
+    height: 80px;
+    padding-left: 60px;
+    color: #fff;
+}
+
+a.button:hover {
+    color: yellow;
+}
+
+
+a.button small {
+    display: inline;
+    font-size: 13px;
+}
+
+.jumbotron {
+    background: steelblue;
+    padding: 0px;
+    color: white;
+}
+
+.top-spacing {
+    padding-top: 10px;
+}
