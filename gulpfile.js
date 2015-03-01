@@ -27,7 +27,7 @@ gulp.task('default', function() {
 });
 
 gulp.task('clean', function(cb) {
-	del(['build'], cb);
+	del(['build', '.sass-cache'], cb);
 });
 
 function build(myConfig, cb) {
@@ -87,7 +87,7 @@ gulp.task('docs', ['html'], function(cb) {
 		myConfig = Object.create(webpackConfig);
 
 	myConfig.entry = [];
-	myConfig.entry.push('./docs/scripts/index.js');
+	myConfig.entry.push('./docs/index.js');
 
 	myConfig.output.filename = 'react-stockcharts-docs.js'
 	build(myConfig, cb);
@@ -151,8 +151,9 @@ gulp.task('watch', ['serve'], function(callback) {
 gulp.task('serve', function() {
 	browserSync({
 		server: {
-			baseDir: ['docs/', 'node_modules/', 'build/']
+			baseDir: ['build/', 'node_modules/', 'docs/']
 		},
+		browser: "google chrome",
 		ui: {
 			port: 9080
 		},
@@ -192,13 +193,13 @@ gulp.task('release', ['build'], function(cb) {
 
 	// replacement for jsx --harmony -x jsx src build/cjs && jsx --harmony src build/cjs
 	var react = require('gulp-react');
-	gulp.src(['src/scripts/**/*.js', 'src/scripts/**/*.jsx'])
+	gulp.src(['src/**/*.js', 'src/**/*.jsx'])
 				.pipe(react({harmony: true}))
-				.pipe(gulp.dest('build/cjs'));
+				.pipe(gulp.dest('build'));
 
 	// replacement for cp *.md build/cjs && cp .npmignore build/cjs
 	gulp.src(['*.md', '.npmignore'])
-				.pipe(gulp.dest('build/cjs'));
+				.pipe(gulp.dest('build'));
 
 	var fs  = require('fs');
 	var path = require('path');
@@ -206,29 +207,22 @@ gulp.task('release', ['build'], function(cb) {
 	var pkg = require(path.join(__dirname, 'package.json'));
 	var mkdirp = require('mkdirp');
 
-	mkdirp(path.join(__dirname, 'build', 'cjs'), function(err) {
-		if (err) {
-			console.error(err);
-			return;
-		}
+	var origPackage = fs.readFileSync(path.join(__dirname, 'package.json')).toString();
 
-		var origPackage = fs.readFileSync(path.join(__dirname, 'package.json')).toString();
+	try {
+		var pkg = JSON.parse(origPackage);
+		var jsonFormat = require('json-format');
+		delete pkg.devDependencies;
+		delete pkg.scripts;
+		pkg.main = 'index.js';
+		buildPackage = jsonFormat(pkg).replace(/\t/g, '  ');
+	} catch (er) {
+		console.error('package.json parse error: ', er);
+		process.exit(1);
+	}
 
-		try {
-			var pkg = JSON.parse(origPackage);
-			var jsonFormat = require('json-format');
-			delete pkg.devDependencies;
-			delete pkg.scripts;
-			pkg.main = 'index.js';
-			buildPackage = jsonFormat(pkg).replace(/\t/g, '  ');
-		} catch (er) {
-			console.error('package.json parse error: ', er);
-			process.exit(1);
-		}
-
-		fs.writeFile(path.join(__dirname, 'build', 'cjs', 'package.json'), buildPackage, function() {
-			console.log('CJS package.json file rendered');
-			cb();
-		});
+	fs.writeFile(path.join(__dirname, 'build', 'package.json'), buildPackage, function() {
+		console.log('CJS package.json file rendered');
+		cb();
 	});
 });

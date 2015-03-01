@@ -1,7 +1,7 @@
 "use strict";
 var React = require('react/addons');
-var EventCapture = require('../chart/event-capture');
-var MouseCoordinates = require('../chart/mouse-coordinates');
+var EventCapture = require('../event-capture');
+var MouseCoordinates = require('../mouse-coordinates');
 
 var Freezer = require('freezer-js');
 // Let's create a freezer store

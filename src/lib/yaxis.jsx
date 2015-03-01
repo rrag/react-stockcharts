@@ -1,7 +1,7 @@
 'use strict';
 var React = require('react')
 	, d3 = require('d3'),
-	PureRenderMixin = require('../mixin/restock-pure-render-mixin');
+	PureRenderMixin = require('./mixin/restock-pure-render-mixin');
 
 
 var YAxis = React.createClass({

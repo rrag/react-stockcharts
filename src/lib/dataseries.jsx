@@ -1,7 +1,7 @@
 'use strict';
 var React = require('react'),
-	PureRenderMixin = require('../mixin/restock-pure-render-mixin'),
-	Utils = require('../utils/utils');
+	PureRenderMixin = require('./mixin/restock-pure-render-mixin'),
+	Utils = require('./utils/utils');
 
 var DataSeries = React.createClass({
 	//namespace: "ReStock.DataSeries",

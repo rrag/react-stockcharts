@@ -3,7 +3,7 @@ var React = require('react/addons');
 // var TestUtils = React.addons.TestUtils;
 
 var Chart = require('./chart');
-var EventCaptureMixin = require('../mixin/event-capture-mixin');
+var EventCaptureMixin = require('./mixin/event-capture-mixin');
 
 var ChartCanvas = React.createClass({
 	mixins: [EventCaptureMixin],

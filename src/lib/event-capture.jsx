@@ -1,6 +1,6 @@
 'use strict';
 var React = require('react');
-var Utils = require('../utils/utils.js')
+var Utils = require('./utils/utils.js')
 
 var EventCapture = React.createClass({
 	propTypes: {

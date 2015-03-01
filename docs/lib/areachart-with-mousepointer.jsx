@@ -3,7 +3,7 @@
 var React = require('react');
 var d3 = require('d3');
 
-var ReStock = require('../../../src/scripts');
+var ReStock = require('../../src/');
 
 var ChartCanvas = ReStock.ChartCanvas
 	, XAxis = ReStock.XAxis
@@ -14,10 +14,11 @@ var ChartCanvas = ReStock.ChartCanvas
 	, DataSeries = ReStock.DataSeries
 	, EventCapture = ReStock.EventCapture
 	, MouseCoordinates = ReStock.MouseCoordinates
-	, CrossHair = ReStock.CrossHair
+	, VerticalMousePointer = ReStock.VerticalMousePointer
+	, CurrentCoordinate = ReStock.CurrentCoordinate
 ;
 
-var AreaChartWithCrossHairMousePointer = React.createClass({
+var AreaChartWithVerticalMousePointer = React.createClass({
 	getInitialState() {
 		return {
 			width: 500,
@@ -39,7 +40,12 @@ var AreaChartWithCrossHairMousePointer = React.createClass({
 			this.setState({ data : data });
 		}.bind(this));
 	},
-
+	changeWidth() {
+		this.setState({
+			width: this.state.width + 10
+		});
+	},
+	//mixins: [ReStock.ChartScalesMixin],
 	render() {
 		if (this.state.data === undefined) return null;
 		var parseDate = d3.time.format("%Y-%m-%d").parse
@@ -54,10 +60,11 @@ var AreaChartWithCrossHairMousePointer = React.createClass({
 		<YAxis axisAt="left" orient="left" />
 		<DataSeries yAccessor={(d) => d.close} xAccessor={(d) => d.date}>
 			<AreaSeries />
+			<CurrentCoordinate />
 		</DataSeries>
 	</Chart>
 	<MouseCoordinates xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
-		<CrossHair />
+		<VerticalMousePointer />
 	</MouseCoordinates>
 	<EventCapture mouseMove={true} />
 </ChartCanvas>
@@ -65,13 +72,4 @@ var AreaChartWithCrossHairMousePointer = React.createClass({
 	}
 });
 
-module.exports = AreaChartWithCrossHairMousePointer
-
-/*
-	changeWidth() {
-		this.setState({
-			width: this.state.width + 10
-		});
-	},
-		<rect width={100} height={100} onClick={this.changeWidth}/>
-*/
+module.exports = AreaChartWithVerticalMousePointer

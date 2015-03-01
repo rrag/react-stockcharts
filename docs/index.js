@@ -1,20 +1,18 @@
 'use strict';
 /**/
 var React = require('react');
-require('../../src/styles/main');
-require('../stylesheets/re-stock.scss');
+require('../src/styles/main.scss');
+require('./stylesheets/re-stock.scss');
 
-/**/
-
-var ReadME = require('../md/MAIN.md');
+var ReadME = require('./md/MAIN.md');
 
 document.getElementById("content").innerHTML = ReadME;
 
-var AreaChart = require('./examples/areachart');
-var LineChart = require('./examples/linechart');
-var CandleStickChart = require('./examples/candlestickchart');
-var AreaChartWithCrossHairMousePointer = require('./examples/areachart-with-crosshair-mousepointer');
-var AreaChartWithVerticalMousePointer = require('./examples/areachart-with-mousepointer');
+var AreaChart = require('./lib/areachart');
+var LineChart = require('./lib/linechart');
+var CandleStickChart = require('./lib/candlestickchart');
+var AreaChartWithCrossHairMousePointer = require('./lib/areachart-with-crosshair-mousepointer');
+var AreaChartWithVerticalMousePointer = require('./lib/areachart-with-mousepointer');
 
 
 React.render(<AreaChart />, document.getElementById("area"));

@@ -1,8 +1,8 @@
 'use strict';
 var React = require('react');
-var ChartTransformer = require('../utils/chart-transformer');
+var ChartTransformer = require('./utils/chart-transformer');
 
-var polyLinearTimeScale = require('../scale/polylineartimescale');
+var polyLinearTimeScale = require('./scale/polylineartimescale');
 var Chart = require('./chart');
 
 function updatePropsToChild(child, data, props, from, to) {

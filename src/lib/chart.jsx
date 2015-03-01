@@ -4,7 +4,7 @@ var shallowEqual = require("react/lib/shallowEqual");
 
 var d3 = require('d3');
 
-var ScaleUtils = require('../utils/scale-utils');
+var ScaleUtils = require('./utils/scale-utils');
 
 var Chart = React.createClass({
 	statics: {

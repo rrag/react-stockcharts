@@ -9,7 +9,7 @@ config.module.loaders.forEach(function(each) {
 });
 
 config.entry = [];
-config.entry.push('./docs/scripts/index.js');
+config.entry.push('./docs/index.js');
 config.entry.push('webpack-dev-server/client?http://localhost:8090');
 config.entry.push('webpack/hot/only-dev-server');
 
