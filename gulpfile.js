@@ -30,11 +30,7 @@ gulp.task('clean', function(cb) {
 	del(['build'], cb);
 });
 
-gulp.task('build', function(cb) {
-	// run webpack
-	var webpackConfig = require('./webpack.config.js'),
-		myConfig = Object.create(webpackConfig);
-
+function build(myConfig, cb) {
 	myConfig.plugins = myConfig.plugins.concat(
 		new webpack.DefinePlugin({
 			'process.env': {
@@ -55,6 +51,59 @@ gulp.task('build', function(cb) {
 		}));
 		cb();
 	});
+}
+
+gulp.task('styles', ['clean'], function() {
+	var compass = require('gulp-compass'),
+		autoprefixer = require('gulp-autoprefixer'),
+		concatCss = require('gulp-concat-css');
+
+	return gulp.src('src/styles/*.scss')
+		.pipe(compass({
+			project: __dirname, //path.join(__dirname, '.'),
+			css: 'build/styles/unmodified',
+			sass: 'src/styles',
+			image: 'images'
+		}))
+		.pipe(autoprefixer({
+			browsers: ['last 6 versions'],
+			cascade: false
+		}))
+		.pipe(concatCss("react-stockcharts.css"))
+		.pipe(gulp.dest('build/styles'));
+});
+
+gulp.task('build', ['styles', 'dev'], function(cb) {
+	// run webpack
+	var webpackConfig = require('./webpack.config.js'),
+		myConfig = Object.create(webpackConfig);
+	myConfig.output.filename = myConfig.output.filename.replace('.js', '.min.js');
+	build(myConfig, cb);
+});
+
+gulp.task('docs', ['html'], function(cb) {
+	// run webpack
+	var webpackConfig = require('./webpack.config.js'),
+		myConfig = Object.create(webpackConfig);
+
+	myConfig.entry = [];
+	myConfig.entry.push('./docs/scripts/index.js');
+
+	myConfig.output.filename = 'react-stockcharts-docs.js'
+	build(myConfig, cb);
+});
+
+gulp.task('html', ['clean'], function () {
+	var replace = require('gulp-replace');
+
+	gulp.src('./docs/**/*.html')
+		.pipe(replace(/<!-- *custom:jsinclude *([^ ]*) *-->/g,
+			'<script type="text/javascript" src="$1"></script>'))
+		.pipe(replace(/<!-- *custom:cssinclude *([^ ]*) *-->/g,
+			'<link href="$1" rel="stylesheet">'))
+		.pipe(replace(/<!-- *custom:remove(.|\n)*?endcustom -->/g,
+			''))
+		.pipe(gulp.dest('./build'));
 });
 
 gulp.task('dev', ['clean'], function(callback) {
@@ -95,6 +144,7 @@ gulp.task('watch', ['serve'], function(callback) {
 		if (err) throw new gutil.PluginError('webpack-dev-server', err);
 		gutil.log('[webpack-dev-server]', 'http://localhost:8090/webpack-dev-server/index.html');
 	});
+	gulp.watch(["./docs/images/**/*", "./docs/md/**/*", "./docs/*.html"], browserSync.reload);
 	callback();
 });
 
@@ -138,7 +188,7 @@ gulp.task('lint', function() {
 		.pipe(jshint.reporter(stylish));
 });
 
-gulp.task('release', function(cb) {
+gulp.task('release', ['build'], function(cb) {
 
 	// replacement for jsx --harmony -x jsx src build/cjs && jsx --harmony src build/cjs
 	var react = require('gulp-react');

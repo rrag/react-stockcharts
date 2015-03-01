@@ -6,9 +6,10 @@ config.module.loaders.forEach(function(each) {
 	if ('filename.jsx'.match(each.test) !== null) {
 		each.loaders.unshift('react-hot');
 	}
-
 });
 
+config.entry = [];
+config.entry.push('./docs/scripts/index.js');
 config.entry.push('webpack-dev-server/client?http://localhost:8090');
 config.entry.push('webpack/hot/only-dev-server');
 
