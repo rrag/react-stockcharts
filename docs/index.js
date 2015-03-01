@@ -1,8 +1,8 @@
 'use strict';
 /**/
 var React = require('react');
-require('../src/styles/main.scss');
-require('./stylesheets/re-stock.scss');
+require('../src/styles/react-stockcharts');
+require('./stylesheets/re-stock');
 
 var ReadME = require('./md/MAIN.md');
 

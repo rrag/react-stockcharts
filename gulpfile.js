@@ -86,6 +86,12 @@ gulp.task('docs', ['html'], function(cb) {
 	var webpackConfig = require('./webpack.config.js'),
 		myConfig = Object.create(webpackConfig);
 
+	gulp.src(['./docs/images/*'])
+		.pipe(gulp.dest('build/images'));
+
+	gulp.src(['./docs/data/*'])
+		.pipe(gulp.dest('build/data'));
+
 	myConfig.entry = [];
 	myConfig.entry.push('./docs/index.js');
 
