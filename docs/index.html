@@ -8,7 +8,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>Jumbotron Template for Bootstrap</title>
+    <title>React Stockcharts - Home</title>
     <!-- custom:jsinclude //cdnjs.cloudflare.com/ajax/libs/react/0.12.2/react-with-addons.min.js -->
     <!-- custom:jsinclude //cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js -->
 
@@ -39,37 +39,43 @@
     <div class="container">
       <!-- Example row of columns -->
       <div class="row">
+        <div class="col-md-12">
+        <h2>A galery of the different charts available</h2>
+        <a class="btn btn-primary" href="#" role="button">Get Started</a>
+       </div>
+      </div>
+      <div class="row">
         <div class="col-md-6">
-          <h2>AreaChart</h2>
+          <h3>AreaChart</h3>
           <div id="area" class="react-stockchart"></div>
           <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
         </div>
         <div class="col-md-6">
-          <h2>AreaChart 2</h2>
+          <h3>AreaChart w/ Cross hair</h3>
           <div id="area2" class="react-stockchart"></div>
           <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
        </div>
       </div>
       <div class="row">
         <div class="col-md-6">
-          <h2>AreaChart3</h2>
+          <h3>AreaChart w/ Vertical mouse pointer</h3>
           <div id="area3" class="react-stockchart"></div>
           <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
         </div>
         <div class="col-md-6">
-          <h2>???</h2>
-          <div class="react-stockchart"></div>
+          <h3>AreaChart w/ CH &amp; Tooltip</h3>
+          <div id="area4" class="react-stockchart"></div>
           <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
        </div>
       </div>
       <div class="row">
         <div class="col-md-6">
-          <h2>CandlestickChart</h2>
+          <h3>CandlestickChart</h3>
           <div id="candlestick" class="react-stockchart"></div>
           <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
         </div>
         <div class="col-md-6">
-          <h2>LineChart</h2>
+          <h3>LineChart</h3>
           <div id="line" class="react-stockchart"></div>
           <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
        </div>
@@ -77,7 +83,7 @@
       <hr>
 
       <footer>
-        <p>&copy; Company 2014</p>
+        <p>MIT license</p>
       </footer>
     </div> <!-- /container -->
 

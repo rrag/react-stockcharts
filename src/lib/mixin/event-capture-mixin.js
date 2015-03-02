@@ -88,6 +88,11 @@ var EventCaptureMixin = {
 				//_currentItem: this.state.dataStore.get().currentItem
 			});
 		}
+		if ("ReStock.TooltipContainer" === child.props.namespace) {
+			return React.addons.cloneWithProps(child, {
+				_currentItem: this.state.dataStore.get().currentItem
+			});
+		}
 		return child;
 	},
 	updatePropsForChart(child) {

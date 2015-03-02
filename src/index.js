@@ -20,3 +20,5 @@ exports.MouseCoordinates = require('./lib/mouse-coordinates');
 exports.CrossHair = require('./lib/crosshair');
 exports.VerticalMousePointer = require('./lib/vertical-mouse-pointer');
 exports.CurrentCoordinate = require('./lib/current-coordinate');
+exports.TooltipContainer = require('./lib/tooltip-container');
+exports.OHLCTooltip = require('./lib/ohlc-tooltip');

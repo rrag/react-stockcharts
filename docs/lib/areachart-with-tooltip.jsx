@@ -15,11 +15,13 @@ var ChartCanvas = ReStock.ChartCanvas
 	, EventCapture = ReStock.EventCapture
 	, MouseCoordinates = ReStock.MouseCoordinates
 	, CrossHair = ReStock.CrossHair
+	, TooltipContainer = ReStock.TooltipContainer
+	, OHLCTooltip = ReStock.OHLCTooltip
 ;
 
 module.exports = {
 	init(data) {
-		var AreaChartWithCrossHairMousePointer = React.createClass({
+		var AreaChartWithToolTip = React.createClass({
 			getInitialState() {
 				return {
 					width: 500,
@@ -44,12 +46,15 @@ module.exports = {
 							<CrossHair />
 						</MouseCoordinates>
 						<EventCapture mouseMove={true} />
+						<TooltipContainer>
+							<OHLCTooltip />
+						</TooltipContainer>
 					</ChartCanvas>
 				);
 			}
 		});
 
-		return AreaChartWithCrossHairMousePointer;
+		return AreaChartWithToolTip;
 	}
 }
 
@@ -58,6 +63,7 @@ module.exports = {
 		this.setState({
 			width: this.state.width + 10
 		});
-	},
+	},							<OHLCTooltip xDisplayFormat={dateFormat} accessor={(d) => {return {open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume}}}/>
+
 		<rect width={100} height={100} onClick={this.changeWidth}/>
 */
