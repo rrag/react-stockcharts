@@ -129,7 +129,7 @@ gulp.task('dev', ['clean'], function(callback) {
 	});
 });
 
-gulp.task('watch', ['serve'], function(callback) {
+gulp.task('watch', ['clean', 'serve'], function(callback) {
 	var WebpackDevServer = require('webpack-dev-server');
 	var webpackConfig = require('./webpack.config.watch.js'),
 		watchConfig = Object.create(webpackConfig);
