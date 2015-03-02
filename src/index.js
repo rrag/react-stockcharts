@@ -22,3 +22,4 @@ exports.VerticalMousePointer = require('./lib/vertical-mouse-pointer');
 exports.CurrentCoordinate = require('./lib/current-coordinate');
 exports.TooltipContainer = require('./lib/tooltip-container');
 exports.OHLCTooltip = require('./lib/ohlc-tooltip');
+exports.OverlaySeries = require('./lib/overlay-series');

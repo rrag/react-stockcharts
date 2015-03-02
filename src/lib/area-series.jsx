@@ -9,7 +9,8 @@ var AreaSeries = React.createClass({
 		_xScale: React.PropTypes.func.isRequired,
 		_yScale: React.PropTypes.func.isRequired,
 		_xAccessor: React.PropTypes.func.isRequired,
-		_yAccessor: React.PropTypes.func.isRequired
+		_yAccessor: React.PropTypes.func.isRequired,
+		data: React.PropTypes.array.isRequired
 	},
 	getDefaultProps() {
 		return {

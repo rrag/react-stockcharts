@@ -3,38 +3,23 @@ var React = require('react'),
 	PureRenderMixin = require('./mixin/restock-pure-render-mixin'),
 	Utils = require('./utils/utils');
 
-var DataSeries = React.createClass({
-	//namespace: "ReStock.DataSeries",
+var OverlaySeries = React.createClass({
+	//namespace: "ReStock.OverlaySeries",
 	mixins: [PureRenderMixin],
 	propTypes: {
-		xAccessor: React.PropTypes.func,
-		_xAccessor: React.PropTypes.func,
-		yAccessor: React.PropTypes.func.isRequired
+		_xScale: React.PropTypes.func.isRequired,
+		_yScale: React.PropTypes.func.isRequired,
+		_xAccessor: React.PropTypes.func.isRequired,
+		_yAccessor: React.PropTypes.func.isRequired,
+		data: React.PropTypes.array.isRequired,
+		type: React.PropTypes.oneOf(['sma', 'ema']),
+		options: React.PropTypes.object.isRequired,
+		id: React.PropTypes.number.isRequired
 	},
 	getDefaultProps() {
 		return {
-			namespace: "ReStock.DataSeries"
+			namespace: "ReStock.OverlaySeries"
 		};
-	},
-	componentWillReceiveProps(nextProps) {
-		if (nextProps._mouseXY !== this.props._mouseXY) {
-			//console.log('here......', nextProps._mouseXY);
-
-			var xAccessor = nextProps.xAccessor || nextProps._xAccessor;
-			var yAccessor = nextProps.yAccessor;
-
-			if (nextProps._currentItem) {
-				var xValue = nextProps._xScale.invert(nextProps._mouseXY[0]);
-				var yValue = nextProps._yScale.invert(nextProps._mouseXY[1]);
-				var item = Utils.getClosestItem(nextProps.data, xValue, xAccessor);
-				item = nextProps._currentItem.set(item);
-				nextProps._currentValue.xy.set([Math.round(nextProps._xScale(xAccessor(item))), nextProps._mouseXY[1]]);
-				nextProps._currentValue.values.set([xAccessor(item), yValue]);
-			}
-			if (nextProps._lastItem) {
-				nextProps._lastItem.set(nextProps.data[nextProps.data.length - 1]);
-			}
-		}
 	},
 	renderChildren() {
 		return React.Children.map(this.props.children, (child) => {
@@ -68,9 +53,11 @@ var DataSeries = React.createClass({
 	render() {
 		//throw new Error();
 		return (
-			<g>{this.renderChildren()}</g>
+			<g></g>
 		);
 	}
 });
 
-module.exports = DataSeries;
+module.exports = OverlaySeries;
+
+//{this.renderChildren()}
