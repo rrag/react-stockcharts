@@ -3,10 +3,9 @@ var React = require('react/addons');
 var shallowEqual = require("react/lib/shallowEqual");
 
 var d3 = require('d3');
-var overlayColors = d3.scale.category10();
 
-var ScaleUtils = require('./utils/scale-utils');
-var OverlayUtils = require('./utils/overlay-utils');
+var ScaleUtils = require('./utils/scale-utils'),
+	OverlayUtils = require('./utils/overlay-utils');
 
 var Chart = React.createClass({
 	statics: {
@@ -44,13 +43,13 @@ var Chart = React.createClass({
 		var scales = this.defineScales(this.props);
 		var xyAccessors = this.getXYAccessors(this.props);
 
-		var data = this.calculateOverlays(this.props);
+		var newState = this.updateScales(this.props,
+					xyAccessors.xAccessors,
+					xyAccessors.yAccessors,
+					scales.xScale,
+					scales.yScale);
 
-		this.setState(this.updateScales(this.props,
-			xyAccessors.xAccessors,
-			xyAccessors.yAccessors,
-			scales.xScale,
-			scales.yScale));
+		this.setState(newState);
 	},
 	componentWillReceiveProps(nextProps) {
 		// ignoring  _mouseXY, _currentItem, _lastItem
@@ -61,69 +60,34 @@ var Chart = React.createClass({
 			|| this.props.yScale !== nextProps.yScale
 			|| this.props.xDomainUpdate !== nextProps.xDomainUpdate
 			|| this.props.yDomainUpdate !== nextProps.yDomainUpdate)
-		if (this.props.data !== nextProps.data || this.newOverlayFound(nextProps)) {
-			var data = this.calculateOverlays(nextProps);
+
+		if (this.props.data !== nextProps.data) {
+			scaleRecalculationNeeded = true;
+		}
+		if (this.props._overlays !== nextProps._overlays /* or if the data interval changes */) {
+			// calculate overlays
+			// console.log(nextProps._overlays);
+			this.calculateOverlays(nextProps.data, nextProps._overlays);
 			scaleRecalculationNeeded = true;
 		}
 		if (scaleRecalculationNeeded) {
 			var scales = this.defineScales(nextProps, this.state.xScale, this.state.yScale);
 			var xyAccessors = this.getXYAccessors(nextProps);
-			this.setState(this.updateScales(nextProps
+			var newState = this.updateScales(nextProps
 				, xyAccessors.xAccessors
 				, xyAccessors.yAccessors
 				, scales.xScale
-				, scales.yScale));
+				, scales.yScale);
+
+			this.setState(newState);
 		};
 	},
-	calculateOverlays(props) {
-		var overlays = [];
-		React.Children.forEach(props.children, (child) => {
-			if (['ReStock.DataSeries']
-					.indexOf(child.props.namespace) > -1) {
-				if (child.props) {
-					if (child.props.children) {
-						React.Children.forEach(child.props.children, (grandChild) => {
-							if (['ReStock.OverlaySeries'].indexOf(grandChild.props.namespace) > -1) {
-								var overlay = {
-									id: grandChild.props.id,
-									color: grandChild.props.color || overlayColors(grandChild.props.id),
-									yAccessor: OverlayUtils.getYAccessor(grandChild.props),
-									options: grandChild.props.options,
-									type: grandChild.props.type,
-									tooltipLabel: OverlayUtils.getToolTipLabel(grandChild.props)
-								}
-								console.log(overlay);
-								overlays.push(overlay);
-							}
-						});
-					}
-				}
-			}
-		})
-		return props.data;
-	},
-	newOverlayFound(nextProps) {
-		/*React.Children.forEach(props.children, (child) => {
-			if (['ReStock.DataSeries']
-					.indexOf(child.props.namespace) > -1) {
-				if (child.props) {
-					var xAccesor = child.props.xAccessor || props._indexAccessor
-					yAccessors.push(child.props.yAccessor);
-					xAccessors.push(xAccesor);
-					if (child.props.children) {
-						React.Children.forEach(child.props.children, (grandChild) => {
-							if (['ReStock.OverlaySeries'].indexOf(grandChild.props.namespace) > -1) {
-								// OverlaySeries found inside DataSeries
-								var overlayY = OverlayUtils.getYAccessor(grandChild.props);
-								console.log(overlayY);
-								yAccessors.push(overlayY);
-							}
-						});
-					}
-				}
-			}
-		})*/
-		return false;
+	calculateOverlays(data, _overlays) {
+		Object.keys(_overlays)
+			.filter((key) => key.indexOf('overlay') > -1)
+			.forEach((overlay) => {
+				OverlayUtils.calculateOverlay(data, _overlays[overlay]);
+			});
 	},
 	defineScales(props, xScaleFromState, yScaleFromState) {
 		var xScale = props.xScale || xScaleFromState || props._xScale,
@@ -142,7 +106,7 @@ var Chart = React.createClass({
 			//xScale = polyLinearTimeScale();
 		}
 		if (yScale === undefined) {
-			yScale = d3.scale.linear();;
+			yScale = d3.scale.linear();
 		}
 		return { xScale: xScale, yScale: yScale };
 	},
@@ -156,23 +120,15 @@ var Chart = React.createClass({
 					var xAccesor = child.props.xAccessor || props._indexAccessor
 					yAccessors.push(child.props.yAccessor);
 					xAccessors.push(xAccesor);
-					if (child.props.children) {
-						React.Children.forEach(child.props.children, (grandChild) => {
-							if (['ReStock.OverlaySeries'].indexOf(grandChild.props.namespace) > -1) {
-								// OverlaySeries found inside DataSeries
-								var overlayY = OverlayUtils.getYAccessor(grandChild.props);
-								console.log(overlayY);
-								yAccessors.push(overlayY);
-							}
-						});
-					}
 				}
 			}
 		})
+		// yAccessors.push(overlayY);
+
 		return { xAccessors: xAccessors, yAccessors: yAccessors };
 	},
 	updateScales(props, xAccessors, yAccessors, xScale, yScale) {
-		// console.log('updateScales');
+		console.log('updateScales');
 
 		var result = ScaleUtils.flattenData(props.data, xAccessors, yAccessors);
 
@@ -227,7 +183,8 @@ var Chart = React.createClass({
 				_mouseXY: this.props._mouseXY,
 				_currentItem: this.props._currentItem,
 				_lastItem: this.props._lastItem,
-				_currentValue: this.props._currentValue
+				_currentValue: this.props._currentValue,
+				_overlays: this.props._overlays
 			});
 		}
 		return child;

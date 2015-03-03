@@ -1,4 +1,6 @@
 'use strict';
+
+// DataSeries has to hold OverlaySeries since DataSeries might define the xAccessor and it needs to be sent to OverlaySeries
 var React = require('react'),
 	PureRenderMixin = require('./mixin/restock-pure-render-mixin'),
 	Utils = require('./utils/utils');
@@ -50,6 +52,17 @@ var DataSeries = React.createClass({
 					_yAccessor: this.props.yAccessor,
 					data: this.props.data
 				});
+				if (/OverlaySeries$/.test(newChild.props.namespace)) {
+					var key = 'overlay' + newChild.props.id;
+					var overlay = this.props._overlays[key];
+					if (overlay === undefined) {
+						overlay = this.props._overlays.set(key, {})[key];
+					}
+
+					newChild = React.addons.cloneWithProps(newChild, {
+						_overlay: overlay,
+					});
+				}
 			}
 			else {
 				newChild = React.addons.cloneWithProps(newChild, {

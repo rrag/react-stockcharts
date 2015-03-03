@@ -23,6 +23,7 @@ var EventCaptureMixin = {
 					currentValue: { xy: [], values: [] },
 					currentItem: { value: 0 },
 					lastItem: {},
+					overlays: {},
 					data: []
 				});
 				var stores = { eventStore: eventStore, dataStore: dataStore };
@@ -104,7 +105,8 @@ var EventCaptureMixin = {
 					_mouseXY: this.state.eventStore.get().mouseXY,
 					_currentItem: this.state.dataStore.get().currentItem,
 					_currentValue: this.state.dataStore.get().currentValue,
-					_lastItem: this.state.dataStore.get().lastItem
+					_lastItem: this.state.dataStore.get().lastItem,
+					_overlays: this.state.dataStore.get().overlays
 				});
 			}
 		}

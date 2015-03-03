@@ -42,7 +42,7 @@ module.exports = {
 							<YAxis axisAt="right" orient="right" />
 							<DataSeries yAccessor={(d) => d.close} xAccessor={(d) => d.date}>
 								<AreaSeries />
-								<OverlaySeries type="sma" options={{ period: 10 }} id={1} >
+								<OverlaySeries id={1} type="sma" options={{ period: 10 }} >
 								</OverlaySeries>
 							</DataSeries>
 						</Chart>

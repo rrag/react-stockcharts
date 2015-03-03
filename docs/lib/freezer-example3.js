@@ -11,9 +11,11 @@ var data = store.get();
 var foo = {_idx: 0, bar: 'foobar'};
 
 console.log(foo);
-console.log(store.get().foo);
 
-foo = store.get().foo.set(foo);
+var foo = store.get().foo;
+console.log(foo);
+
+store.get().foo.set(foo);
 
 console.log(foo);
 
