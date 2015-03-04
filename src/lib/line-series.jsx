@@ -10,14 +10,19 @@ var LineSeries = React.createClass({
 		_xScale: React.PropTypes.func.isRequired,
 		_yScale: React.PropTypes.func.isRequired,
 		_xAccessor: React.PropTypes.func.isRequired,
-		_yAccessor: React.PropTypes.func.isRequired
+		_yAccessor: React.PropTypes.func.isRequired,
+		data: React.PropTypes.array.isRequired,
+		className: React.PropTypes.string,
+		stroke: React.PropTypes.string
 	},
 	getDefaultProps() {
 		return {
-			namespace: "ReStock.LineSeries"
+			namespace: "ReStock.LineSeries",
+			className: "line "
 		}
 	},
 	getPath() {
+		console.log('LineSeries.getPath');
 		var props = this.props;
 		var dataSeries = d3.svg.line()
 			.defined(function(d, i) {
@@ -29,9 +34,10 @@ var LineSeries = React.createClass({
 		return dataSeries(props.data);
 	},
 	render() {
+		var className = this.props.className + (this.props.stroke) ? '' : ' line-stroke';
 		return (
 			<g>
-				<path d={this.getPath()} className="line line-stroke" />
+				<path d={this.getPath()} stroke={this.props.stroke} fill="none"/>
 			</g>
 		);
 	}

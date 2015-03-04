@@ -1,11 +1,13 @@
 'use strict';
-var React = require('react/addons');
-var shallowEqual = require("react/lib/shallowEqual");
 
-var d3 = require('d3');
+var React = require('react/addons'),
+	d3 = require('d3'),
+	ScaleUtils = require('./utils/scale-utils'),
+	OverlayUtils = require('./utils/overlay-utils'),
+	Utils = require('./utils/utils');
 
-var ScaleUtils = require('./utils/scale-utils'),
-	OverlayUtils = require('./utils/overlay-utils');
+var pluck = Utils.pluck;
+var keysAsArray = Utils.keysAsArray;
 
 var Chart = React.createClass({
 	statics: {
@@ -27,9 +29,11 @@ var Chart = React.createClass({
 		yScale: React.PropTypes.func,
 		xDomainUpdate: React.PropTypes.bool,
 		yDomainUpdate: React.PropTypes.bool,
-		_mouseXY: React.PropTypes.object,
+		_mouseXY: React.PropTypes.array,
 		_currentItem: React.PropTypes.object,
-		_lastItem: React.PropTypes.object
+		_lastItem: React.PropTypes.object,
+		_currentMouseXY: React.PropTypes.array,
+		_currentXYValue: React.PropTypes.array
 	},
 	//mixins: [PureRenderMixin],
 	getDefaultProps() {
@@ -65,17 +69,17 @@ var Chart = React.createClass({
 			scaleRecalculationNeeded = true;
 		}
 		if (this.props._overlays !== nextProps._overlays /* or if the data interval changes */) {
-			// calculate overlays
-			// console.log(nextProps._overlays);
+
 			this.calculateOverlays(nextProps.data, nextProps._overlays);
 			scaleRecalculationNeeded = true;
 		}
 		if (scaleRecalculationNeeded) {
 			var scales = this.defineScales(nextProps, this.state.xScale, this.state.yScale);
 			var xyAccessors = this.getXYAccessors(nextProps);
+
 			var newState = this.updateScales(nextProps
 				, xyAccessors.xAccessors
-				, xyAccessors.yAccessors
+				, xyAccessors.yAccessors.concat(pluck(keysAsArray(nextProps._overlays), 'yAccessor'))
 				, scales.xScale
 				, scales.yScale);
 
@@ -83,11 +87,17 @@ var Chart = React.createClass({
 		};
 	},
 	calculateOverlays(data, _overlays) {
-		Object.keys(_overlays)
+		/*Object.keys(_overlays)
 			.filter((key) => key.indexOf('overlay') > -1)
 			.forEach((overlay) => {
 				OverlayUtils.calculateOverlay(data, _overlays[overlay]);
+			});*/
+		_overlays
+			.filter((eachOverlay) => eachOverlay.id !== undefined)
+			.forEach((overlay) => {
+				OverlayUtils.calculateOverlay(data, overlay);
 			});
+		console.log(_overlays);
 	},
 	defineScales(props, xScaleFromState, yScaleFromState) {
 		var xScale = props.xScale || xScaleFromState || props._xScale,
@@ -183,7 +193,8 @@ var Chart = React.createClass({
 				_mouseXY: this.props._mouseXY,
 				_currentItem: this.props._currentItem,
 				_lastItem: this.props._lastItem,
-				_currentValue: this.props._currentValue,
+				_currentMouseXY: this.props._currentMouseXY,
+				_currentXYValue: this.props._currentXYValue,
 				_overlays: this.props._overlays
 			});
 		}

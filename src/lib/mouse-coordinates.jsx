@@ -10,9 +10,9 @@ var MouseCoordinates = React.createClass({
 		_height: React.PropTypes.number.isRequired,
 		_width: React.PropTypes.number.isRequired,
 		_show: React.PropTypes.bool.isRequired,
-		_mouseXY: React.PropTypes.object.isRequired,
-		_snapMouseX: React.PropTypes.number.isRequired,
-		_currentValue: React.PropTypes.object.isRequired, // response of xAccessor and yAccessor of currentItem from DataSeries
+		_mouseXY: React.PropTypes.array.isRequired,
+		_currentMouseXY: React.PropTypes.array.isRequired,
+		_currentXYValue: React.PropTypes.array.isRequired,
 		xDisplayFormat: React.PropTypes.func.isRequired,
 		yDisplayFormat: React.PropTypes.func.isRequired,
 		yAxisPad: React.PropTypes.number.isRequired
@@ -33,8 +33,8 @@ var MouseCoordinates = React.createClass({
 		}
 	},
 	renderChildren() {
-		var display = this.props._currentValue;
-		var x = this.props.snapX ? this.props._snapMouseX : this.props._mouseXY[0];
+		var display = this.props._currentXYValue;
+		var x = this.props.snapX ? this.props._currentMouseXY[0] : this.props._mouseXY[0];
 		var y = this.props._mouseXY[1];
 
 		return React.Children.map(this.props.children, (child) => {
@@ -51,7 +51,7 @@ var MouseCoordinates = React.createClass({
 	},
 	render() {
 		var children = null;
-		if (this.props._show && this.props._currentValue[0] !== undefined) {
+		if (this.props._show && this.props._currentXYValue[0] !== undefined) {
 			children = this.renderChildren();
 		};
 

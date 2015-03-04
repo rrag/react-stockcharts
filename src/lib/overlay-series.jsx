@@ -3,9 +3,7 @@
 var React = require('react'),
 	PureRenderMixin = require('./mixin/restock-pure-render-mixin'),
 	Utils = require('./utils/utils'),
-	OverlayUtils = require('./utils/overlay-utils'),
-	d3 = require('d3'),
-	overlayColors = d3.scale.category10();
+	OverlayUtils = require('./utils/overlay-utils');
 
 var OverlaySeries = React.createClass({
 	//namespace: "ReStock.OverlaySeries",
@@ -19,27 +17,30 @@ var OverlaySeries = React.createClass({
 		data: React.PropTypes.array.isRequired,
 		type: React.PropTypes.oneOf(['sma', 'ema']),
 		options: React.PropTypes.object.isRequired,
-		id: React.PropTypes.number.isRequired
+		id: React.PropTypes.number.isRequired,
+		stroke: React.PropTypes.string
 	},
 	getDefaultProps() {
 		return {
 			namespace: "ReStock.OverlaySeries"
 		};
 	},
-	componentWillMount() {
-		// register self
-		//console.log(this.props._overlay);
+/*	componentWillMount: function () {
 		var overlay = {
-			id: this.props.id,
-			color: this.props.color || overlayColors(this.props.id),
-			yAccessor: OverlayUtils.getYAccessor(this.props),
-			options: this.props.options,
-			type: this.props.type,
-			tooltipLabel: OverlayUtils.getToolTipLabel(this.props)
+			id: newChild.props.id,
+			yAccessor: OverlayUtils.getYAccessor(newChild.props),
+			options: newChild.props.options,
+			type: newChild.props.type,
+			tooltipLabel: OverlayUtils.getToolTipLabel(newChild.props),
+			stroke: newChild.stroke || overlayColors(newChild.props.id)
 		};
-		this.props._overlay.set(overlay);
-	},
+	},*/
 	componentWillUnMount() {
+		console.log('componentWillUnMount');
+		console.log('componentWillUnMount');
+		console.log('componentWillUnMount');
+		console.log('componentWillUnMount');
+		console.log('componentWillUnMount');
 		// unregister self
 		this.props._overlay.set(null);
 	},
@@ -48,6 +49,7 @@ var OverlaySeries = React.createClass({
 
 		// if optinos have changed - update the options
 		if (this.props.options !== nextProps.options) {
+			console.log('updating props.....');
 			// var overlay = this.props._overlays[key];
 			this.props._overlay.set('options', nextProps.options);
 		}
@@ -63,32 +65,23 @@ var OverlaySeries = React.createClass({
 					_xScale: this.props._xScale,
 					_yScale: this.props._yScale,
 					_xAccessor: (this.props.xAccessor || this.props._xAccessor),
-					_yAccessor: this.props.yAccessor,
-					data: this.props.data
+					_yAccessor: this.props._overlay.yAccessor,
+					data: this.props.data,
+					stroke: this.props._overlay.stroke,
+					className: "overlay"
 				});
 			}
-			else {
-				newChild = React.addons.cloneWithProps(newChild, {
-					_xScale: this.props._xScale,
-					_yScale: this.props._yScale,
-					_xAccessor: (this.props.xAccessor || this.props._xAccessor),
-					_yAccessor: this.props.yAccessor,
-					_currentItem: this.props._currentItem,
-					_showCurrent: this.props._showCurrent
-				});
-			}
-
 			return newChild;
 		}, this);
 	},
 	render() {
-		//throw new Error();
+		if (this.props._overlay.yAccessor === undefined) return null;
 		return (
-			<g></g>
+			<g>{this.renderChildren()}</g>
 		);
 	}
 });
 
 module.exports = OverlaySeries;
 
-//{this.renderChildren()}
+//

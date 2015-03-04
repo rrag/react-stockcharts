@@ -22,7 +22,7 @@
     "del": "^1.1.1",
     "esprima-fb": "^12001.1.0-dev-harmony-fb",
     "file-loader": "^0.8.1",
-    "freezer-js": "^0.3.3",
+    "freezer-js": "file:../freezer",
     "gulp": "^3.8.11",
     "gulp-autoprefixer": "^2.1.0",
     "gulp-compass": "^2.0.3",

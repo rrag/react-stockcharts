@@ -20,10 +20,11 @@ var EventCaptureMixin = {
 
 				var dataStore  = new Freezer({
 					tooltip: {},
-					currentValue: { xy: [], values: [] },
+					currentMouseXY: [0, 0],
+					currentXYValue: [],
 					currentItem: { value: 0 },
 					lastItem: {},
-					overlays: {},
+					overlays: [],
 					data: []
 				});
 				var stores = { eventStore: eventStore, dataStore: dataStore };
@@ -58,11 +59,15 @@ var EventCaptureMixin = {
 	eventListener(d) {
 		//console.log('events updated...', d);
 		//this.state.dataStore.get().currentItem.set({value : new Date().getTime()});
-		this.forceUpdate();
+		requestAnimationFrame(function () {
+			this.forceUpdate();
+		}.bind(this));
 	},
 	dataListener(d) {
-		//console.log('data updated from ', this.state.dataStore.get().currentItem, ' to ', d);
-		this.forceUpdate();
+		// console.log('data updated from ', this.state.dataStore.get().currentItem, ' to ', d);
+		requestAnimationFrame(function () {
+			this.forceUpdate();
+		}.bind(this));
 	},
 	listen(stores) {
 		//console.log('begining to listen...', stores.eventStore, stores.dataStore);
@@ -84,8 +89,9 @@ var EventCaptureMixin = {
 			return React.addons.cloneWithProps(child, {
 				_show: this.state.eventStore.get().mouseOver.value,
 				_mouseXY: this.state.eventStore.get().mouseXY,
-				_currentValue: this.state.dataStore.get().currentValue.values,
-				_snapMouseX: (this.state.dataStore.get().currentValue.xy[0] || 0)
+				//_currentValue: this.state.dataStore.get().currentValue.values,
+				_currentMouseXY: this.state.dataStore.get().currentMouseXY,
+				_currentXYValue: this.state.dataStore.get().currentXYValue
 				//_currentItem: this.state.dataStore.get().currentItem
 			});
 		}
@@ -104,7 +110,8 @@ var EventCaptureMixin = {
 					_showCurrent: this.state.eventStore.get().mouseOver.value,
 					_mouseXY: this.state.eventStore.get().mouseXY,
 					_currentItem: this.state.dataStore.get().currentItem,
-					_currentValue: this.state.dataStore.get().currentValue,
+					_currentMouseXY: this.state.dataStore.get().currentMouseXY,
+					_currentXYValue: this.state.dataStore.get().currentXYValue,
 					_lastItem: this.state.dataStore.get().lastItem,
 					_overlays: this.state.dataStore.get().overlays
 				});

@@ -42,7 +42,14 @@ module.exports = {
 							<YAxis axisAt="right" orient="right" />
 							<DataSeries yAccessor={(d) => d.close} xAccessor={(d) => d.date}>
 								<AreaSeries />
-								<OverlaySeries id={1} type="sma" options={{ period: 10 }} >
+								<OverlaySeries id={0} type="sma" options={{ period: 30 }} >
+									<LineSeries/>
+								</OverlaySeries>
+								<OverlaySeries id={1} type="sma" options={{ period: 130 }} >
+									<LineSeries/>
+								</OverlaySeries>
+								<OverlaySeries id={2} type="sma" options={{ period: 130 }} >
+									<LineSeries/>
 								</OverlaySeries>
 							</DataSeries>
 						</Chart>
@@ -63,7 +70,7 @@ module.exports = {
 }
 
 /*
-									<LineSeries />
+									
 
 	changeWidth() {
 		this.setState({

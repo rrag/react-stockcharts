@@ -21,10 +21,11 @@ var OverlayUtils = {
 	calculateOverlay(data, overlay) {
 		console.log(overlay);
 		if (overlay.type === 'sma') {
-			MACalculator.calculateSMA(data, overlay.options.period);
+			data = MACalculator.calculateSMA(data, overlay.options.period);
 		} else if (overlay.type === 'ema') {
-			MACalculator.calculateEMA(data, overlay.options.period);
+			data = MACalculator.calculateEMA(data, overlay.options.period);
 		}
+		return data;
 	}
 }
 

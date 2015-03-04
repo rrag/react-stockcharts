@@ -2,9 +2,12 @@
 
 var d3 = require('d3');
 
+var overlayColors = d3.scale.category10();
+
 function Utils() {
 }
 
+Utils.overlayColors = overlayColors;
 Utils.cloneMe = function(obj) {
 	if(obj == null || typeof(obj) !== 'object')
 		return obj;
@@ -61,6 +64,18 @@ Utils.getClosestItem = function(array, value, accessor) {
 						: array[hi]
 	//console.log(array[lo], array[hi], closest, lo, hi);
 	return Utils.cloneMe(closest);
+}
+Utils.pluck = function(array, key) {
+	return array.map((each) => each[key])
+}
+Utils.keysAsArray = function(obj) {
+	// console.log(obj);
+	return Object.keys(obj)
+		.filter((key) => obj[key] !== null)
+		.map((key) => obj[key]);
+}
+Utils.sum = function(array) {
+	return array.reduce((d1, d2) => d1 + d2);
 }
 
 module.exports = Utils;
