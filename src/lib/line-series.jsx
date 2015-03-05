@@ -5,7 +5,7 @@ var React = require('react'),
 
 
 var LineSeries = React.createClass({
-	mixins: [PureRenderMixin],
+	// mixins: [PureRenderMixin],
 	propTypes: {
 		_xScale: React.PropTypes.func.isRequired,
 		_yScale: React.PropTypes.func.isRequired,
@@ -22,7 +22,7 @@ var LineSeries = React.createClass({
 		}
 	},
 	getPath() {
-		// console.log('LineSeries.getPath');
+		console.log('LineSeries.getPath');
 		var props = this.props;
 		var dataSeries = d3.svg.line()
 			.defined(function(d, i) {
@@ -34,10 +34,12 @@ var LineSeries = React.createClass({
 		return dataSeries(props.data);
 	},
 	render() {
-		var className = this.props.className + (this.props.stroke) ? '' : ' line-stroke';
+		var className = this.props.className.concat((this.props.stroke !== undefined) ? '' : ' line-stroke');
+		console.log('%s, %s, %s', className, this.props.className, this.props.stroke);
+
 		return (
 			<g>
-				<path d={this.getPath()} stroke={this.props.stroke} fill="none"/>
+				<path d={this.getPath()} stroke={this.props.stroke} fill="none" className={className}/>
 			</g>
 		);
 	}
