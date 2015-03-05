@@ -22,7 +22,7 @@ var LineSeries = React.createClass({
 		}
 	},
 	getPath() {
-		console.log('LineSeries.getPath');
+		// console.log('LineSeries.getPath');
 		var props = this.props;
 		var dataSeries = d3.svg.line()
 			.defined(function(d, i) {

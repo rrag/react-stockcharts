@@ -41,14 +41,15 @@ var DataSeries = React.createClass({
 				var yValue = nextProps._yScale.invert(nextProps._mouseXY[1]);
 
 				var item = Utils.getClosestItem(nextProps.data, xValue, xAccessor);
-				item = nextProps._currentItem.set(item);
+				item = nextProps._currentItem.set(item); 
 
 				var a = nextProps._currentMouseXY.set([Math.round(nextProps._xScale(xAccessor(item))), nextProps._mouseXY[1]]);
 				var b = nextProps._currentXYValue.set([xAccessor(item), yValue]);
 				//console.log('here......', a, b);
 			}
 			if (nextProps._lastItem) {
-				nextProps._lastItem.set(nextProps.data[nextProps.data.length - 1]);
+				var lastItem = Utils.cloneMe(nextProps.data[nextProps.data.length - 1]);
+				nextProps._lastItem.set(lastItem);
 			}
 		}
 	},

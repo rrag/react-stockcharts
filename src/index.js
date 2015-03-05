@@ -23,3 +23,4 @@ exports.CurrentCoordinate = require('./lib/current-coordinate');
 exports.TooltipContainer = require('./lib/tooltip-container');
 exports.OHLCTooltip = require('./lib/ohlc-tooltip');
 exports.OverlaySeries = require('./lib/overlay-series');
+exports.MovingAverageTooltip = require('./lib/moving-average-tooltip');

@@ -19,6 +19,7 @@ var ChartCanvas = ReStock.ChartCanvas
 	, OHLCTooltip = ReStock.OHLCTooltip
 	, OverlaySeries = ReStock.OverlaySeries
 	, LineSeries = ReStock.LineSeries
+	, MovingAverageTooltip = ReStock.MovingAverageTooltip
 ;
 
 module.exports = {
@@ -29,6 +30,9 @@ module.exports = {
 					width: 500,
 					height: 400
 				};
+			},
+			handleMATooltipClick(overlay) {
+				console.log('You clicked on ', overlay, ' handle your onclick event here...');
 			},
 			render() {
 				var parseDate = d3.time.format("%Y-%m-%d").parse
@@ -42,13 +46,19 @@ module.exports = {
 							<YAxis axisAt="right" orient="right" />
 							<DataSeries yAccessor={(d) => d.close} xAccessor={(d) => d.date}>
 								<AreaSeries />
-								<OverlaySeries id={0} type="sma" options={{ period: 30 }} >
+								<OverlaySeries id={0} type="sma" options={{ period: 50 }} >
 									<LineSeries/>
 								</OverlaySeries>
-								<OverlaySeries id={1} type="sma" options={{ period: 130 }} >
+								<OverlaySeries id={1} type="sma" options={{ period: 150 }} >
 									<LineSeries/>
 								</OverlaySeries>
-								<OverlaySeries id={2} type="sma" options={{ period: 130 }} >
+								<OverlaySeries id={3} type="sma" options={{ period: 250 }} >
+									<LineSeries/>
+								</OverlaySeries>
+								<OverlaySeries id={4} type="sma" options={{ period: 350 }} >
+									<LineSeries/>
+								</OverlaySeries>
+								<OverlaySeries id={5} type="sma" options={{ period: 450 }} >
 									<LineSeries/>
 								</OverlaySeries>
 							</DataSeries>
@@ -59,6 +69,7 @@ module.exports = {
 						<EventCapture mouseMove={true} />
 						<TooltipContainer>
 							<OHLCTooltip />
+							<MovingAverageTooltip onClick={this.handleMATooltipClick} />
 						</TooltipContainer>
 					</ChartCanvas>
 				);
@@ -68,15 +79,3 @@ module.exports = {
 		return AreaChartWithMA;
 	}
 }
-
-/*
-									
-
-	changeWidth() {
-		this.setState({
-			width: this.state.width + 10
-		});
-	},							<OHLCTooltip xDisplayFormat={dateFormat} accessor={(d) => {return {open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume}}}/>
-
-		<rect width={100} height={100} onClick={this.changeWidth}/>
-*/

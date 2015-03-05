@@ -3,10 +3,12 @@ var React = require('react');
 
 var TooltipContainer = React.createClass({
 	propTypes: {
-		_currentItem: React.PropTypes.object.isRequired
+		_currentItem: React.PropTypes.object.isRequired,
+		_overlays: React.PropTypes.array
 	},
 	shouldComponentUpdate(nextProps, nextState) {
-		return (nextProps._currentItem !== this.props._currentItem);
+		return (nextProps._currentItem !== this.props._currentItem
+			|| nextProps._overlays != this.props._overlays);
 	},
 	getDefaultProps() {
 		return {
@@ -17,9 +19,15 @@ var TooltipContainer = React.createClass({
 		return React.Children.map(this.props.children, (child) => {
 			if (typeof child.type === 'string') return child;
 			var newChild = child;
-			return React.addons.cloneWithProps(newChild, {
+			newChild = React.addons.cloneWithProps(newChild, {
 				_currentItem: this.props._currentItem
 			});
+			if (/MovingAverageTooltip$/.test(newChild.props.namespace)) {
+				newChild = React.addons.cloneWithProps(newChild, {
+					_overlays: this.props._overlays
+				});
+			}
+			return newChild;
 		});
 	},
 	render() {

@@ -19,8 +19,10 @@ var MouseCoordinates = React.createClass({
 	},
 	shouldComponentUpdate(nextProps, nextState) {
 		return (nextProps.snapX
-			? nextProps._snapMouseX !== this.props._snapMouseX || nextProps._mouseXY[1] !== this.props._mouseXY[1]
-			: nextProps._mouseXY !== this.props._mouseXY) || nextProps._show !== this.props._show;
+				? nextProps._currentMouseXY[0] !== this.props._currentMouseXY[0]
+					|| nextProps._currentMouseXY[1] !== this.props._currentMouseXY[1]
+				: nextProps._mouseXY !== this.props._mouseXY)
+			|| nextProps._show !== this.props._show;
 	},
 	getDefaultProps() {
 		return {
