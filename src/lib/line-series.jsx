@@ -22,7 +22,7 @@ var LineSeries = React.createClass({
 		}
 	},
 	getPath() {
-		console.log('LineSeries.getPath');
+		// console.log('LineSeries.getPath');
 		var props = this.props;
 		var dataSeries = d3.svg.line()
 			.defined(function(d, i) {
@@ -35,7 +35,7 @@ var LineSeries = React.createClass({
 	},
 	render() {
 		var className = this.props.className.concat((this.props.stroke !== undefined) ? '' : ' line-stroke');
-		console.log('%s, %s, %s', className, this.props.className, this.props.stroke);
+		// console.log('%s, %s, %s', className, this.props.className, this.props.stroke);
 
 		return (
 			<g>
