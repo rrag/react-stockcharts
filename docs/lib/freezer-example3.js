@@ -5,7 +5,7 @@ var Freezer = require('freezer-js');
 // Let's create a freezer store
 var store = new Freezer({
 	foo: {_idx: 0, bar: 'bar'},
-    arr: [99, 17]
+	arr: [99, 17]
 });
 
 store.on('update', function(){
@@ -14,25 +14,10 @@ store.on('update', function(){
 
 var data = store.get();
 
-var foo = {_idx: 0, bar: 'foobar'};
+var foo = {_idx: 22, foo: 'foobar'};
 
-console.log(foo);
-console.log(store.get().foo);
+var newFoo = store.get().foo.replace(foo);
 
-store.get().foo.set(foo);
-
-var i = 0,j = 0;
-for (i = 0; i < 10000000; i++) {
-	j++;
-}
-
-var arr = [];
-for (i = 0; i < 10; i++) {
-    arr.push(i);
-}
-
-data.arr.append(arr);
-
-console.log('herehere', arr);
+console.log('herehere', newFoo);
 
 //store.set().foo.set(foo);

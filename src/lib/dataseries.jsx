@@ -41,11 +41,11 @@ var DataSeries = React.createClass({
 				var yValue = nextProps._yScale.invert(nextProps._mouseXY[1]);
 
 				var item = Utils.getClosestItem(nextProps.data, xValue, xAccessor);
-				item = nextProps._currentItem.set(item); 
+				var keysToKeep = Object.keys(item);
+				item = nextProps._currentItem.replace(item); 
 
 				var a = nextProps._currentMouseXY.set([Math.round(nextProps._xScale(xAccessor(item))), nextProps._mouseXY[1]]);
 				var b = nextProps._currentXYValue.set([xAccessor(item), yValue]);
-				//console.log('here......', a, b);
 			}
 			if (nextProps._lastItem) {
 				var lastItem = Utils.cloneMe(nextProps.data[nextProps.data.length - 1]);

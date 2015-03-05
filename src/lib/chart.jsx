@@ -97,6 +97,7 @@ var Chart = React.createClass({
 			.forEach((overlay) => {
 				OverlayUtils.calculateOverlay(data, overlay);
 			});
+		// console.table(data);
 		// console.log(_overlays);
 	},
 	defineScales(props, xScaleFromState, yScaleFromState) {

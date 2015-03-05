@@ -56,6 +56,7 @@ var MovingAverageTooltip = React.createClass({
 			<g transform={"translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")"} className="ma-container">
 				{this.props._overlays.map((eachOverlay, idx) => {
 					var yValue = eachOverlay.yAccessor(this.props._currentItem);
+					// console.log(yValue);
 					var yDisplayValue = yValue ? this.props.displayFormat(yValue) : "n/a";
 					return <SingleMAToolTip 
 						key={idx}
