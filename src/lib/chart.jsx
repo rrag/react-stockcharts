@@ -1,5 +1,7 @@
 'use strict';
 
+// Overlays have to be calculated here so scales can be modified according to that
+
 var React = require('react/addons'),
 	d3 = require('d3'),
 	ScaleUtils = require('./utils/scale-utils'),
@@ -69,8 +71,10 @@ var Chart = React.createClass({
 			scaleRecalculationNeeded = true;
 		}
 		if (this.props._overlays !== nextProps._overlays /* or if the data interval changes */) {
-
+			// TODO
+			// if any overlay.toBeRemoved = true then _overlays.splice that one out
 			this.calculateOverlays(nextProps.data, nextProps._overlays);
+			this.updateOverlayFirstLast(nextProps.data, nextProps._overlays, nextProps._overlayValues, nextProps._updateMode)
 			scaleRecalculationNeeded = true;
 		}
 		if (scaleRecalculationNeeded) {
@@ -99,6 +103,26 @@ var Chart = React.createClass({
 			});
 		// console.table(data);
 		// console.log(_overlays);
+	},
+	updateOverlayFirstLast(data,
+		_overlays,
+		_overlayValues,
+		_updateMode) {
+
+		console.log('updateOverlayFirstLast');
+		_updateMode = _updateMode.set({ immediate: false });
+
+		_overlays.map((eachOverlay) => eachOverlay.yAccessor)
+			.forEach((yAccessor, idx) => {
+				var first = OverlayUtils.firstDefined(data, yAccessor);
+				// console.log(JSON.stringify(first), Object.keys(first), yAccessor(first));
+				_overlayValues = _overlayValues.set(idx, {
+					first: OverlayUtils.firstDefined(data, yAccessor),
+					last: OverlayUtils.lastDefined(data, yAccessor)
+				})/**/
+			})
+		// console.log(_overlayValues);
+		_updateMode = _updateMode.set({ immediate: true });
 	},
 	defineScales(props, xScaleFromState, yScaleFromState) {
 		var xScale = props.xScale || xScaleFromState || props._xScale,
@@ -194,6 +218,7 @@ var Chart = React.createClass({
 				_mouseXY: this.props._mouseXY,
 				_currentItem: this.props._currentItem,
 				_lastItem: this.props._lastItem,
+				_firstItem: this.props._firstItem,
 				_currentMouseXY: this.props._currentMouseXY,
 				_currentXYValue: this.props._currentXYValue,
 				_overlays: this.props._overlays

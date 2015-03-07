@@ -20,11 +20,13 @@ var ChartCanvas = ReStock.ChartCanvas
 	, OverlaySeries = ReStock.OverlaySeries
 	, LineSeries = ReStock.LineSeries
 	, MovingAverageTooltip = ReStock.MovingAverageTooltip
+	, EdgeContainer = ReStock.EdgeContainer
+	, EdgeIndicator = ReStock.EdgeIndicator
 ;
 
 module.exports = {
 	init(data) {
-		var AreaChartWithMA = React.createClass({
+		var AreaChartWithEdgeCoordinates = React.createClass({
 			getInitialState() {
 				return {
 					width: 500,
@@ -67,6 +69,8 @@ module.exports = {
 							<CrossHair />
 						</MouseCoordinates>
 						<EventCapture mouseMove={true} />
+						<EdgeContainer>
+						</EdgeContainer>
 						<TooltipContainer>
 							<OHLCTooltip />
 							<MovingAverageTooltip onClick={this.handleMATooltipClick} />
@@ -76,6 +80,27 @@ module.exports = {
 			}
 		});
 
-		return AreaChartWithMA;
+		return AreaChartWithEdgeCoordinates;
 	}
 }
+
+/*
+							<EdgeIndicator
+								type="horizontal"
+								className="horizontal"
+								itemType="last"
+								orient="right"
+								edgeAt="right"
+								forSeries={1}
+								displayFormat={(d) => (d)}
+								/>
+							<EdgeIndicator
+								type="horizontal"
+								className="horizontal"
+								itemType="first"
+								orient="left"
+								edgeAt="left"
+								forSeries={1}
+								displayFormat={(d) => (d)}
+								/>
+*/

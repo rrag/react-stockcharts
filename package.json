@@ -10,7 +10,8 @@
   "license": "MIT",
   "dependencies": {
     "d3": "^3.5.5",
-    "react": "^0.12.2"
+    "react": "^0.12.2",
+    "freezer-js": "file:../freezer"
   },
   "devDependencies": {
     "autoprefixer-loader": "^1.1.0",
@@ -22,7 +23,6 @@
     "del": "^1.1.1",
     "esprima-fb": "^12001.1.0-dev-harmony-fb",
     "file-loader": "^0.8.1",
-    "freezer-js": "file:../freezer",
     "gulp": "^3.8.11",
     "gulp-autoprefixer": "^2.1.0",
     "gulp-compass": "^2.0.3",
@@ -66,11 +66,17 @@
   },
   "scripts": {
     "test": "echo 'test'",
-    "publish": "echo 'publish'",
-    "lint": "jsxhint"
+    "publish": "echo 'publish'"
   },
   "keywords": [
-    "react,stockcharts,charts,ReactJS,d3,react-component"
+    "react",
+    "stockcharts",
+    "charts",
+    "ReactJS",
+    "d3",
+    "react-component",
+    "react-charts",
+    "chart-components"
   ],
   "repository": {
     "type": "git",

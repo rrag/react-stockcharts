@@ -8,6 +8,9 @@ var React = require('react'),
 var OverlaySeries = React.createClass({
 	//namespace: "ReStock.OverlaySeries",
 	mixins: [PureRenderMixin],
+	/*shouldComponentUpdate(nextProps, nextState) {
+		return false;
+	},*/
 	propTypes: {
 		_xScale: React.PropTypes.func.isRequired,
 		_yScale: React.PropTypes.func.isRequired,
@@ -24,8 +27,8 @@ var OverlaySeries = React.createClass({
 		return {
 			namespace: "ReStock.OverlaySeries"
 		};
-	},
-/*	componentWillMount: function () {
+	},/*
+	componentWillMount: function () {
 		var overlay = {
 			id: newChild.props.id,
 			yAccessor: OverlayUtils.getYAccessor(newChild.props),
@@ -75,6 +78,7 @@ var OverlaySeries = React.createClass({
 		}, this);
 	},
 	render() {
+		console.log('OverlaySeries.render');
 		if (this.props._overlay.yAccessor === undefined) return null;
 		return (
 			<g>{this.renderChildren()}</g>

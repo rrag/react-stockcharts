@@ -26,6 +26,26 @@ var OverlayUtils = {
 			data = MACalculator.calculateEMA(data, overlay.options.period);
 		}
 		return data;
+	},
+	firstDefined(data, accessor) {
+		var each;
+		for (var i = 0; i < data.length; i++) {
+			if (accessor(data[i]) === undefined) continue;
+			each = data[i];
+			// console.log(i, each, accessor(each));
+			break;
+		};
+		return Utils.cloneMe(each);
+	},
+	lastDefined(data, accessor) {
+		var each;
+		for (var i = data.length - 1; i >= 0; i--) {
+			if (accessor(data[i]) === undefined) continue;
+			each = data[i];
+			// console.log(i, each, accessor(each));
+			break;
+		};
+		return Utils.cloneMe(each);
 	}
 }
 

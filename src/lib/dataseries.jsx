@@ -1,6 +1,9 @@
 'use strict';
 
 // DataSeries has to hold OverlaySeries since DataSeries might define the xAccessor and it needs to be sent to OverlaySeries
+// Data series has to pass the current mouse position to the children so this has no benefit
+//     of PureRenderMixin
+
 var React = require('react'),
 	PureRenderMixin = require('./mixin/restock-pure-render-mixin'),
 	Utils = require('./utils/utils'),
@@ -16,13 +19,16 @@ function getOverlayFromList(overlays, id) {
 
 var DataSeries = React.createClass({
 	//namespace: "ReStock.DataSeries",
-	//mixins: [PureRenderMixin],
+	mixins: [PureRenderMixin],
 	propTypes: {
 		xAccessor: React.PropTypes.func,
 		_xAccessor: React.PropTypes.func,
 		yAccessor: React.PropTypes.func.isRequired,
 		_currentMouseXY: React.PropTypes.array,
-		_currentXYValue: React.PropTypes.array
+		_currentXYValue: React.PropTypes.array,
+		_currentItem: React.PropTypes.object,
+		_lastItem: React.PropTypes.object,
+		_firstItem: React.PropTypes.object
 	},
 	getDefaultProps() {
 		return {
@@ -30,6 +36,8 @@ var DataSeries = React.createClass({
 		};
 	},
 	componentWillReceiveProps(nextProps) {
+		// TODO
+		// if overlays are different, recalculate the data for the overlay that changed
 		if (nextProps._mouseXY !== this.props._mouseXY) {
 
 			var xAccessor = nextProps.xAccessor || nextProps._xAccessor;
@@ -42,16 +50,30 @@ var DataSeries = React.createClass({
 
 				var item = Utils.getClosestItem(nextProps.data, xValue, xAccessor);
 				var keysToKeep = Object.keys(item);
-				item = nextProps._currentItem.replace(item); 
+				item = nextProps._currentItem.reset(item); 
 
 				var a = nextProps._currentMouseXY.set([Math.round(nextProps._xScale(xAccessor(item))), nextProps._mouseXY[1]]);
 				var b = nextProps._currentXYValue.set([xAccessor(item), yValue]);
 			}
+		}
+		if (false /* do this only when the first or last is different, FIXME later */) {
 			if (nextProps._lastItem) {
 				var lastItem = Utils.cloneMe(nextProps.data[nextProps.data.length - 1]);
-				nextProps._lastItem.set(lastItem);
+				lastItem = nextProps._lastItem.set(lastItem);
+				// console.log(lastItem);
+			}
+			if (nextProps._firstItem) {
+				var first = Utils.cloneMe(nextProps.data[0]);
+				nextProps._firstItem.set(first);
 			}
 		}
+	},
+	componentWillMount() {
+		var last = Utils.cloneMe(this.props.data[this.props.data.length - 1]);
+		last = this.props._lastItem.set(last);
+
+		var first = Utils.cloneMe(this.props.data[0]);
+		first = this.props._firstItem.set(first);
 	},
 	renderChildren() {
 		var overlaysToAdd = [];
@@ -71,11 +93,11 @@ var DataSeries = React.createClass({
 				if (/OverlaySeries$/.test(newChild.props.namespace)) {
 					var key = newChild.props.id;
 					var overlay = getOverlayFromList(this.props._overlays, newChild.props.id);
-
+					var yAccessor = OverlayUtils.getYAccessor(newChild.props);
 					if (overlay === undefined) {
 						overlay = {
 							id: newChild.props.id,
-							yAccessor: OverlayUtils.getYAccessor(newChild.props),
+							yAccessor: yAccessor,
 							options: newChild.props.options,
 							type: newChild.props.type,
 							tooltipLabel: OverlayUtils.getToolTipLabel(newChild.props),

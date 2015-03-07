@@ -34,6 +34,6 @@ module.exports = {
 		typographer: true
 	},
 	resolve: {
-		extensions: ['', '.js', '.jsx', '.scss']
+		extensions: ['', '.js', '.jsx', '.scss', '.md']
 	}
 };

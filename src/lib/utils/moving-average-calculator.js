@@ -18,8 +18,11 @@ MACalculator.calculateSMA = function(data, period) {
 		.map((array) => sum(array))
 		.map((sum) => sum / period)
 		.reverse()
-		.forEach((avg, i) => data[l - i][key] = avg);
-
+		.forEach((avg, i) => {
+			// Object.defineProperty(data[l - i], key, { value: avg });
+			data[l - i][key] = avg;
+			// console.log(data[l - i][key]);
+		})
 	return data;
 }
 

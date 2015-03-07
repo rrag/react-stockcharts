@@ -24,8 +24,11 @@ var EventCaptureMixin = {
 					currentXYValue: [],
 					currentItem: { value: 0 },
 					lastItem: {},
+					firstItem: {},
 					overlays: [],
-					data: []
+					data: [],
+					overlayValues: [],
+					updateMode: { immediate : true }
 				});
 				var stores = { eventStore: eventStore, dataStore: dataStore };
 				this.updateStore(stores);
@@ -60,14 +63,19 @@ var EventCaptureMixin = {
 		//console.log('events updated...', d);
 		//this.state.dataStore.get().currentItem.set({value : new Date().getTime()});
 		requestAnimationFrame(function () {
-			this.forceUpdate();
+			if (this.state.dataStore.get().updateMode.immediate)
+				this.forceUpdate();
 		}.bind(this));
 	},
 	dataListener(d) {
 		// console.log('data updated from ', this.state.dataStore.get().currentItem, ' to ', d);
 		requestAnimationFrame(function () {
-			this.forceUpdate();
+			if (this.state.dataStore.get().updateMode.immediate)
+				this.forceUpdate();
 		}.bind(this));
+	},
+	componentDidMount() {
+		//this.state.dataStore.get().updateMode.set({ immediate: true });
 	},
 	listen(stores) {
 		//console.log('begining to listen...', stores.eventStore, stores.dataStore);
@@ -95,10 +103,25 @@ var EventCaptureMixin = {
 				//_currentItem: this.state.dataStore.get().currentItem
 			});
 		}
+		return child;
+	},
+	updatePropsForTooltipContainer(child) {
 		if ("ReStock.TooltipContainer" === child.props.namespace) {
 			return React.addons.cloneWithProps(child, {
 				_currentItem: this.state.dataStore.get().currentItem,
 				_overlays: this.state.dataStore.get().overlays
+			});
+		}
+		return child;
+	},
+	updatePropsForEdgeContainer(child) {
+		if ("ReStock.EdgeContainer" === child.props.namespace) {
+			return React.addons.cloneWithProps(child, {
+				_currentItem: this.state.dataStore.get().currentItem,
+				_overlays: this.state.dataStore.get().overlays,
+				_overlayValues: this.state.dataStore.get().overlayValues,
+				_lastItem: this.state.dataStore.get().lastItem,
+				_firstItem: this.state.dataStore.get().firstItem
 			});
 		}
 		return child;
@@ -114,7 +137,10 @@ var EventCaptureMixin = {
 					_currentMouseXY: this.state.dataStore.get().currentMouseXY,
 					_currentXYValue: this.state.dataStore.get().currentXYValue,
 					_lastItem: this.state.dataStore.get().lastItem,
-					_overlays: this.state.dataStore.get().overlays
+					_firstItem: this.state.dataStore.get().firstItem,
+					_overlays: this.state.dataStore.get().overlays,
+					_overlayValues: this.state.dataStore.get().overlayValues,
+					_updateMode: this.state.dataStore.get().updateMode
 				});
 			}
 		}
