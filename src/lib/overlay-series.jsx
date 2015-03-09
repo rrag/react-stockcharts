@@ -15,7 +15,7 @@ var OverlaySeries = React.createClass({
 		_xScale: React.PropTypes.func.isRequired,
 		_yScale: React.PropTypes.func.isRequired,
 		_xAccessor: React.PropTypes.func.isRequired,
-		_yAccessor: React.PropTypes.func.isRequired,
+		// _yAccessor: React.PropTypes.func.isRequired,
 		_overlay: React.PropTypes.object.isRequired,
 		data: React.PropTypes.array.isRequired,
 		type: React.PropTypes.oneOf(['sma', 'ema']),
@@ -78,7 +78,7 @@ var OverlaySeries = React.createClass({
 		}, this);
 	},
 	render() {
-		console.log('OverlaySeries.render');
+		// console.log('OverlaySeries.render');
 		if (this.props._overlay.yAccessor === undefined) return null;
 		return (
 			<g>{this.renderChildren()}</g>

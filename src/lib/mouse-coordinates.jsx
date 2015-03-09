@@ -11,18 +11,16 @@ var MouseCoordinates = React.createClass({
 		_width: React.PropTypes.number.isRequired,
 		_show: React.PropTypes.bool.isRequired,
 		_mouseXY: React.PropTypes.array.isRequired,
-		_currentMouseXY: React.PropTypes.array.isRequired,
-		_currentXYValue: React.PropTypes.array.isRequired,
+		_chartData: React.PropTypes.object.isRequired,
+		_currentItem: React.PropTypes.object.isRequired,
+
+		forChart: React.PropTypes.number.isRequired, 
 		xDisplayFormat: React.PropTypes.func.isRequired,
 		yDisplayFormat: React.PropTypes.func.isRequired,
 		yAxisPad: React.PropTypes.number.isRequired
 	},
 	shouldComponentUpdate(nextProps, nextState) {
-		return (nextProps.snapX
-				? nextProps._currentMouseXY[0] !== this.props._currentMouseXY[0]
-					|| nextProps._currentMouseXY[1] !== this.props._currentMouseXY[1]
-				: nextProps._mouseXY !== this.props._mouseXY)
-			|| nextProps._show !== this.props._show;
+		return nextProps._mouseXY !== this.props._mouseXY
 	},
 	getDefaultProps() {
 		return {
@@ -35,9 +33,18 @@ var MouseCoordinates = React.createClass({
 		}
 	},
 	renderChildren() {
-		var display = this.props._currentXYValue;
-		var x = this.props.snapX ? this.props._currentMouseXY[0] : this.props._mouseXY[0];
+		var chartData = this.props._chartData;
+		var item = this.props._currentItem.data;
+
+		var xValue =chartData.accessors.xAccessor(item);
+		var yValue = chartData.scales.yScale.invert(this.props._mouseXY[1]);
+
+		if (xValue === undefined || yValue === undefined) return null;
+		var x = this.props.snapX ? Math.round(chartData.scales.xScale(xValue)) : this.props._mouseXY[0];
 		var y = this.props._mouseXY[1];
+
+		//console.log(xValue, this.props.xDisplayFormat(xValue));
+		//console.log(yValue, this.props.yDisplayFormat(yValue));
 
 		return React.Children.map(this.props.children, (child) => {
 			if (typeof child.type === 'string') return child;
@@ -46,14 +53,14 @@ var MouseCoordinates = React.createClass({
 				_width: this.props._width
 				, _height: this.props._height
 				, _mouseXY: [x, y]
-				, _xDisplayValue: this.props.xDisplayFormat(display[0])
-				, _yDisplayValue: this.props.yDisplayFormat(display[1])
+				, _xDisplayValue: this.props.xDisplayFormat(xValue)
+				, _yDisplayValue: this.props.yDisplayFormat(yValue)
 			});
-		});
+		}, this);
 	},
 	render() {
 		var children = null;
-		if (this.props._show && this.props._currentXYValue[0] !== undefined) {
+		if (this.props._show) {
 			children = this.renderChildren();
 		};
 

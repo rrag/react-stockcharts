@@ -69,7 +69,6 @@ Utils.pluck = function(array, key) {
 	return array.map((each) => each[key])
 }
 Utils.keysAsArray = function(obj) {
-	// console.log(obj);
 	return Object.keys(obj)
 		.filter((key) => obj[key] !== null)
 		.map((key) => obj[key]);

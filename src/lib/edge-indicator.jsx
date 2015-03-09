@@ -1,68 +1,59 @@
 'use strict';
-var React = require('react/addons');
+var React = require('react');
+var Utils = require('./utils/utils')
+var EdgeCoordinate = require('./edge-coordinate')
 
-var EdgeCoordinate = React.createClass({
+
+var EdgeIndicator = React.createClass({
 	propTypes: {
-		type: React.PropTypes.oneOf(['vertical', 'horizontal']).isRequired,
-		coordinate: React.PropTypes.any.isRequired,
-		x1: React.PropTypes.number.isRequired,
-		y1: React.PropTypes.number.isRequired,
-		x2: React.PropTypes.number.isRequired,
-		y2: React.PropTypes.number.isRequired,
-		orient: React.PropTypes.oneOf(['bottom', 'top', 'left', 'right']),
-		rectWidth: React.PropTypes.number
+		type: React.PropTypes.oneOf(['horizontal']).isRequired,
+		className: React.PropTypes.string,
+		itemType: React.PropTypes.oneOf(['first', 'last', 'current']).isRequired,
+		orient: React.PropTypes.oneOf(['left', 'right']),
+		edgeAt: React.PropTypes.oneOf(['left', 'right']),
+
+		forChart: React.PropTypes.number.isRequired,
+		forOverlay: React.PropTypes.number, // undefined means main Data series of that chart
+
+		displayFormat: React.PropTypes.func.isRequired,
+
+		// _overlay: React.PropTypes.object, // needed only when forSeries is present
+		// _item: React.PropTypes.object.isRequired, // depending on first/last/current
+		_value: React.PropTypes.any.isRequired, // value to be displayed
+
+		_width: React.PropTypes.number.isRequired,
+		_x1: React.PropTypes.number.isRequired,
+		_x2: React.PropTypes.number.isRequired/*,
+		_y1: React.PropTypes.number.isRequired,
+		_y2: React.PropTypes.number.isRequired*/
 	},
-	getDefaultProps: function() {
+	getDefaultProps() {
 		return {
-			orient: 'left'
+			type: 'horizontal',
+			orient: 'left',
+			edgeAt: 'left',
+			displayFormat: Utils.displayNumberFormat,
+			namespace: "ReStock.EdgeIndicator"
 		};
 	},
-	render: function() {
-		if (!this.props.show) return null;
-
-		var displayCoordinate = this.props.coordinate;
-		var rectWidth = this.props.rectWidth
-			? this.props.rectWidth
-			: (this.props.type === 'horizontal')
-				? 60
-				: 100,
-			rectHeight = 20;
-
-		var edgeXRect, edgeYRect, edgeXText, edgeYText;
-
-		if (this.props.type === 'horizontal') {
-
-			edgeXRect = (this.props.orient === 'right') ? this.props.edgeAt + 1 : this.props.edgeAt - rectWidth - 1;
-			edgeYRect = this.props.y1 - (rectHeight / 2);
-			edgeXText = (this.props.orient === 'right') ? this.props.edgeAt + (rectWidth / 2) : this.props.edgeAt - (rectWidth / 2);
-			edgeYText = this.props.y1;
-		} else {
-			edgeXRect = this.props.x1 - (rectWidth / 2);
-			edgeYRect = (this.props.orient === 'bottom') ? this.props.edgeAt : this.props.edgeAt - rectHeight;
-			edgeXText = this.props.x1;
-			edgeYText = (this.props.orient === 'bottom') ? this.props.edgeAt + (rectHeight / 2) : this.props.edgeAt - (rectHeight / 2);
-		}
-		var coordinateBase = null, coordinate = null;
-		if (displayCoordinate !== undefined) {
-				coordinateBase = (<rect key={1} className="textbg"
-									x={edgeXRect}
-									y={edgeYRect}
-									height={rectHeight} width={rectWidth} fill={this.props.fill} />);
-				coordinate = (<text key={2} x={edgeXText}
-									y={edgeYText}
-									style={{"textAnchor": "middle"}}
-									dy=".32em">{displayCoordinate}</text>);
-		}
+	render() {
 		return (
-			<g className={(this.props.show ? 'show ' : 'hide ') + this.props.className}>
-					<line className="cross-hair"
-						x1={this.props.x1} y1={this.props.y1}
-						x2={this.props.x2} y2={this.props.y2} />
-					{coordinateBase}
-					{coordinate}
-			</g>
+			null
 		);
 	}
 });
 
-module.exports = EdgeCoordinate;
+module.exports = EdgeIndicator;
+
+/*
+<EdgeCoordinate
+				type={this.props.type}
+				className={this.props.className}
+				show={true}
+				x1={this.props._x1} y1={this.props._y1}
+				x2={this.props._width + this.props.yAxisPad} y2={this.props._mouseXY[1]}
+				coordinate={this.props._yDisplayValue}
+				edgeAt={this.props._width + this.props.yAxisPad}
+				orient="right"
+				/>
+*/

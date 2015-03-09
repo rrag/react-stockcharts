@@ -20,7 +20,9 @@ module.exports = {
 		]
 	},
 	plugins: [
-		new webpack.NoErrorsPlugin()
+		new webpack.NoErrorsPlugin(),
+		new webpack.ContextReplacementPlugin(/colors$/, /^$/),
+		new webpack.IgnorePlugin(/(dtrace-provider)|(source-map-support)$/)
 	],
 	externals: {
 		react: 'React'
@@ -35,5 +37,10 @@ module.exports = {
 	},
 	resolve: {
 		extensions: ['', '.js', '.jsx', '.scss', '.md']
+	},
+	node: {
+		fs: "empty",
+		"dtrace-provider": "empty",
+		"source-map-support": "empty"
 	}
 };

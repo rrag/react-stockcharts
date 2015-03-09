@@ -20,8 +20,8 @@ var ChartCanvas = ReStock.ChartCanvas
 	, OverlaySeries = ReStock.OverlaySeries
 	, LineSeries = ReStock.LineSeries
 	, MovingAverageTooltip = ReStock.MovingAverageTooltip
-	, EdgeContainer = ReStock.EdgeContainer
-	, EdgeIndicator = ReStock.EdgeIndicator
+	//, EdgeContainer = ReStock.EdgeContainer
+	//, EdgeIndicator = ReStock.EdgeIndicator
 ;
 
 module.exports = {
@@ -42,8 +42,10 @@ module.exports = {
 				var dateFormat = d3.time.format("%Y-%m-%d");
 
 				return (
-					<ChartCanvas  width={this.state.width} height={this.state.height} margin={{left: 5, right: 90, top:10, bottom: 30}}>
-						<Chart data={data} >
+					<ChartCanvas 
+						width={this.state.width} height={this.state.height}
+						margin={{left: 5, right: 90, top:10, bottom: 30}} data={data}>
+						<Chart id={1} >
 							<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 							<YAxis axisAt="right" orient="right" />
 							<DataSeries yAccessor={(d) => d.close} xAccessor={(d) => d.date}>
@@ -65,15 +67,11 @@ module.exports = {
 								</OverlaySeries>
 							</DataSeries>
 						</Chart>
-						<MouseCoordinates xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
+						<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
 							<CrossHair />
 						</MouseCoordinates>
 						<EventCapture mouseMove={true} />
-						<EdgeContainer>
-						</EdgeContainer>
 						<TooltipContainer>
-							<OHLCTooltip />
-							<MovingAverageTooltip onClick={this.handleMATooltipClick} />
 						</TooltipContainer>
 					</ChartCanvas>
 				);
@@ -85,6 +83,22 @@ module.exports = {
 }
 
 /*
+
+							<OHLCTooltip />
+							<MovingAverageTooltip onClick={this.handleMATooltipClick} />
+
+						<EdgeContainer>
+							<EdgeIndicator
+								className="horizontal"
+								itemType="last"
+								orient="right"
+								edgeAt="right"
+								forChart={1}
+								forOverlay={1}
+								/>
+						</EdgeContainer>
+
+
 							<EdgeIndicator
 								type="horizontal"
 								className="horizontal"

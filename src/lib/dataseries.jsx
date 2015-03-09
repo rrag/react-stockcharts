@@ -24,11 +24,17 @@ var DataSeries = React.createClass({
 		xAccessor: React.PropTypes.func,
 		_xAccessor: React.PropTypes.func,
 		yAccessor: React.PropTypes.func.isRequired,
-		_currentMouseXY: React.PropTypes.array,
-		_currentXYValue: React.PropTypes.array,
+
+		_xScale: React.PropTypes.func,
+		_yScale: React.PropTypes.func,
+
+		// _currentMouseXY: React.PropTypes.array,
+		// _currentXYValue: React.PropTypes.array,
 		_currentItem: React.PropTypes.object,
 		_lastItem: React.PropTypes.object,
-		_firstItem: React.PropTypes.object
+		_firstItem: React.PropTypes.object,
+		_overlays: React.PropTypes.array,
+		_updateMode: React.PropTypes.object
 	},
 	getDefaultProps() {
 		return {
@@ -36,44 +42,40 @@ var DataSeries = React.createClass({
 		};
 	},
 	componentWillReceiveProps(nextProps) {
+
+		var xAccessor = nextProps.xAccessor || nextProps._xAccessor;
+		var yAccessor = nextProps.yAccessor;
+
 		// TODO
 		// if overlays are different, recalculate the data for the overlay that changed
+		/*
 		if (nextProps._mouseXY !== this.props._mouseXY) {
-
-			var xAccessor = nextProps.xAccessor || nextProps._xAccessor;
-			var yAccessor = nextProps.yAccessor;
-
 			if (nextProps._currentItem) {
 
 				var xValue = nextProps._xScale.invert(nextProps._mouseXY[0]);
-				var yValue = nextProps._yScale.invert(nextProps._mouseXY[1]);
-
 				var item = Utils.getClosestItem(nextProps.data, xValue, xAccessor);
-				var keysToKeep = Object.keys(item);
-				item = nextProps._currentItem.reset(item); 
-
-				var a = nextProps._currentMouseXY.set([Math.round(nextProps._xScale(xAccessor(item))), nextProps._mouseXY[1]]);
-				var b = nextProps._currentXYValue.set([xAccessor(item), yValue]);
+				var currentItem = nextProps._currentItem.reset(item); 
 			}
-		}
-		if (false /* do this only when the first or last is different, FIXME later */) {
+		}*/
+		if (false /* do this only when the (first or last) data or xScale or yScale is different, FIXME later */) {
 			if (nextProps._lastItem) {
-				var lastItem = Utils.cloneMe(nextProps.data[nextProps.data.length - 1]);
-				lastItem = nextProps._lastItem.set(lastItem);
-				// console.log(lastItem);
+				var last = Utils.cloneMe(nextProps.data[nextProps.data.length - 1]);
+				var lastItem = nextProps._lastItem.reset(last);
 			}
 			if (nextProps._firstItem) {
 				var first = Utils.cloneMe(nextProps.data[0]);
-				nextProps._firstItem.set(first);
+				var firstItem = nextProps._firstItem.reset(first);
 			}
 		}
 	},
 	componentWillMount() {
 		var last = Utils.cloneMe(this.props.data[this.props.data.length - 1]);
-		last = this.props._lastItem.set(last);
+		var lastItem = this.props._lastItem.reset(last);
+		// console.log(lastItem);
 
 		var first = Utils.cloneMe(this.props.data[0]);
-		first = this.props._firstItem.set(first);
+		var firstItem = this.props._firstItem.reset(first);
+		// console.log(firstItem);
 	},
 	renderChildren() {
 		var overlaysToAdd = [];
@@ -111,16 +113,16 @@ var DataSeries = React.createClass({
 						});
 					}
 				}
-			} else {
+			}/* else {
 				newChild = React.addons.cloneWithProps(newChild, {
 					_xScale: this.props._xScale,
 					_yScale: this.props._yScale,
 					_xAccessor: (this.props.xAccessor || this.props._xAccessor),
 					_yAccessor: this.props.yAccessor,
-					_currentItem: this.props._currentItem,
-					_showCurrent: this.props._showCurrent
+					//_currentItem: this.props._currentItem,
+					//_showCurrent: this.props._showCurrent
 				});
-			}
+			}*/
 
 			return newChild;
 		}, this);

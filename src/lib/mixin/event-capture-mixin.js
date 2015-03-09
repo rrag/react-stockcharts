@@ -2,6 +2,7 @@
 var React = require('react/addons');
 var EventCapture = require('../event-capture');
 var MouseCoordinates = require('../mouse-coordinates');
+var Utils = require('../utils/utils');
 
 var Freezer = require('freezer-js');
 // Let's create a freezer store
@@ -9,44 +10,73 @@ var Freezer = require('freezer-js');
 var EventCaptureMixin = {
 	componentWillMount() {
 		//console.log('EventCaptureMixin.componentWillMount');
-		React.Children.forEach(this.props.children, (child) => {
+		/*React.Children.forEach(this.props.children, (child) => {
 			if ("ReStock.EventCapture" === child.props.namespace) {
-				var eventStore = new Freezer({
-					mouseXY: [0, 0],
-					mouseOver: { value: false },
-					inFocus: { value: false },
-					zoom: { value : 0 }
-				});
-
-				var dataStore  = new Freezer({
-					tooltip: {},
-					currentMouseXY: [0, 0],
-					currentXYValue: [],
-					currentItem: { value: 0 },
-					lastItem: {},
-					firstItem: {},
-					overlays: [],
-					data: [],
-					overlayValues: [],
-					updateMode: { immediate : true }
-				});
-				var stores = { eventStore: eventStore, dataStore: dataStore };
-				this.updateStore(stores);
-
-				this.listen(stores);
+				
 			}
-		}, this);
+		}, this);*/
+		var eventStore = new Freezer({
+			mouseXY: [0, 0],
+			mouseOver: { value: false },
+			inFocus: { value: false },
+			zoom: { value : 0 }
+		});
+
+		var chartStore  = new Freezer({
+			//tooltip: {},
+			//currentMouseXY: [0, 0],
+			//currentXYValue: [],
+			charts: [],
+			/*
+			{
+				id: 0,
+				scales: { xScale: null, yScale: null },
+				accessors: { xAccessor: null, yAccessor: null }
+				currentItem: {},
+				lastItem: {},
+				firstItem: {},
+				overlays: [
+					{
+						id: 0,
+						....
+						...
+					}
+				],
+				overlayValues: [
+					{
+						id: 0,
+						first: {},
+						last: {}
+					},
+					{
+						id: 1,
+						first: {},
+						last: {}
+					},
+				],
+				data: []
+			} */
+			updateMode: { immediate : false }
+		});
+		var currentItemStore = new Freezer({
+			currentItems: []
+		});
+
+		var stores = { eventStore: eventStore, chartStore: chartStore, currentItemStore: currentItemStore };
+		console.log(stores);
+		this.setState(stores);
+
+		this.listen(stores);
 	},
-	updateStore(store) {
+	updateEventStore(eventStore) {
 		this.unListen();
 
-		var eventStore = store.eventStore === undefined ? this.state.eventStore : store.eventStore;
-		var dataStore = store.dataStore === undefined ? this.state.dataStore : store.dataStore;
 		var newState = {
-				eventStore: eventStore,
-				dataStore: dataStore
-			}
-		this.setState(newState, function() { this.listen(newState) });
+			eventStore: eventStore,
+			chartStore: this.state.chartStore,
+			currentItemStore: this.state.currentItemStore
+		};
+		this.setState(newState, () => { this.listen(newState) });
 	},
 	componentWillUnmount() {
 		this.unListen();
@@ -55,34 +85,47 @@ var EventCaptureMixin = {
 		if (this.state.eventStore !== undefined) {
 			this.state.eventStore.off('update', this.eventListener);
 		}
-		if (this.state.dataStore !== undefined) {
-			this.state.dataStore.off('update', this.dataListener);
+		if (this.state.chartStore !== undefined) {
+			this.state.chartStore.off('update', this.dataListener);
 		}
 	},
 	eventListener(d) {
 		//console.log('events updated...', d);
-		//this.state.dataStore.get().currentItem.set({value : new Date().getTime()});
-		requestAnimationFrame(function () {
-			if (this.state.dataStore.get().updateMode.immediate)
+		//this.state.chartStore.get().currentItem.set({value : new Date().getTime()});
+		if (this.state.chartStore.get().updateMode.immediate) {
+			requestAnimationFrame(function () {
+				// console.log('************UPDATING NOW**************');
+				this.state.chartStore.get().charts.forEach((chart) => {
+					this.updateCurrentItemForChart(chart);
+				});
+				
 				this.forceUpdate();
-		}.bind(this));
+			}.bind(this));
+		}
 	},
 	dataListener(d) {
-		// console.log('data updated from ', this.state.dataStore.get().currentItem, ' to ', d);
-		requestAnimationFrame(function () {
-			if (this.state.dataStore.get().updateMode.immediate)
+		// console.log('data updated from ', this.state.chartStore.get().currentItem, ' to ', d);
+		if (this.state.chartStore.get().updateMode.immediate) {
+			requestAnimationFrame(function () {
+				console.log('************UPDATING NOW**************');
+				// console.log(this.state.chartStore.get().charts[0].overlays);
 				this.forceUpdate();
-		}.bind(this));
+			}.bind(this));
+		}
 	},
 	componentDidMount() {
-		//this.state.dataStore.get().updateMode.set({ immediate: true });
+		this.state.chartStore.get().updateMode.set({ immediate: true });
+	},
+	componentDidUpdate() {
+		if (! this.state.chartStore.get().updateMode.immediate)
+			this.state.chartStore.get().updateMode.set({ immediate: true });
 	},
 	listen(stores) {
-		//console.log('begining to listen...', stores.eventStore, stores.dataStore);
+		console.log('begining to listen...', stores);
 
 		stores.eventStore.on('update', this.eventListener);
-		stores.dataStore.on('update', this.dataListener);
-		// stores.dataStore.get().currentItem.getListener().on('update', this.dataListener);
+		stores.chartStore.on('update', this.dataListener);
+		// stores.chartStore.get().currentItem.getListener().on('update', this.dataListener);
 	},
 	updatePropsForEventCapture(child) {
 		if (child.type === EventCapture.type) {
@@ -94,13 +137,18 @@ var EventCaptureMixin = {
 	},
 	updatePropsForMouseCoordinates(child) {
 		if ("ReStock.MouseCoordinates" === child.props.namespace) {
+			var chart = this.getChartForId(child.props.forChart);
+			var currentItem = this.getCurrentItemForChart(child.props.forChart);
+
 			return React.addons.cloneWithProps(child, {
 				_show: this.state.eventStore.get().mouseOver.value,
 				_mouseXY: this.state.eventStore.get().mouseXY,
-				//_currentValue: this.state.dataStore.get().currentValue.values,
-				_currentMouseXY: this.state.dataStore.get().currentMouseXY,
-				_currentXYValue: this.state.dataStore.get().currentXYValue
-				//_currentItem: this.state.dataStore.get().currentItem
+				_chartData: chart,
+				_currentItem: currentItem
+				//_currentValue: this.state.chartStore.get().currentValue.values,
+				//_currentMouseXY: this.state.chartStore.get().currentMouseXY,
+				//_currentXYValue: this.state.chartStore.get().currentXYValue
+				//_currentItem: this.state.chartStore.get().currentItem
 			});
 		}
 		return child;
@@ -108,8 +156,8 @@ var EventCaptureMixin = {
 	updatePropsForTooltipContainer(child) {
 		if ("ReStock.TooltipContainer" === child.props.namespace) {
 			return React.addons.cloneWithProps(child, {
-				_currentItem: this.state.dataStore.get().currentItem,
-				_overlays: this.state.dataStore.get().overlays
+				_currentItem: this.state.chartStore.get().currentItem,
+				_overlays: this.state.chartStore.get().overlays
 			});
 		}
 		return child;
@@ -117,11 +165,12 @@ var EventCaptureMixin = {
 	updatePropsForEdgeContainer(child) {
 		if ("ReStock.EdgeContainer" === child.props.namespace) {
 			return React.addons.cloneWithProps(child, {
-				_currentItem: this.state.dataStore.get().currentItem,
-				_overlays: this.state.dataStore.get().overlays,
-				_overlayValues: this.state.dataStore.get().overlayValues,
-				_lastItem: this.state.dataStore.get().lastItem,
-				_firstItem: this.state.dataStore.get().firstItem
+				_currentItem: this.state.chartStore.get().currentItem,
+				_overlays: this.state.chartStore.get().overlays,
+				_overlayValues: this.state.chartStore.get().overlayValues,
+				_lastItem: this.state.chartStore.get().lastItem,
+				_firstItem: this.state.chartStore.get().firstItem,
+				_currentMouseXY: this.state.chartStore.get().currentMouseXY
 			});
 		}
 		return child;
@@ -129,22 +178,78 @@ var EventCaptureMixin = {
 	updatePropsForChart(child) {
 		var newChild = child;
 		if ("ReStock.Chart" === child.props.namespace) {
-			if (this.state.eventStore && this.state.dataStore) {
+			if (this.state.eventStore && this.state.chartStore) {
+				var chart = this.getChartForId(newChild.props.id);
 				newChild = React.addons.cloneWithProps(newChild, {
-					_showCurrent: this.state.eventStore.get().mouseOver.value,
+					/*_showCurrent: this.state.eventStore.get().mouseOver.value,
 					_mouseXY: this.state.eventStore.get().mouseXY,
-					_currentItem: this.state.dataStore.get().currentItem,
-					_currentMouseXY: this.state.dataStore.get().currentMouseXY,
-					_currentXYValue: this.state.dataStore.get().currentXYValue,
-					_lastItem: this.state.dataStore.get().lastItem,
-					_firstItem: this.state.dataStore.get().firstItem,
-					_overlays: this.state.dataStore.get().overlays,
-					_overlayValues: this.state.dataStore.get().overlayValues,
-					_updateMode: this.state.dataStore.get().updateMode
+					_currentItem: this.state.chartStore.get().currentItem,
+					_currentMouseXY: this.state.chartStore.get().currentMouseXY,
+					_currentXYValue: this.state.chartStore.get().currentXYValue,
+					_lastItem: this.state.chartStore.get().lastItem,
+					_firstItem: this.state.chartStore.get().firstItem,
+					_overlays: this.state.chartStore.get().overlays,
+					_overlayValues: this.state.chartStore.get().overlayValues,*/
+					_updateMode: this.state.chartStore.get().updateMode,
+					_chartData: chart,
+					data: this.props.data
 				});
 			}
 		}
 		return newChild;
+	},
+	getChartForId(chartId) {
+		var charts = this.state.chartStore.get().charts;
+		var filteredCharts = charts.filter((eachChart) => eachChart.id === chartId);
+		if (filteredCharts.length > 1) {
+			var errorMessage = `multiple charts with the same id ${ chartId } found`;
+			console.warn(errorMessage);
+			throw new Error(errorMessage);
+		}
+		if (filteredCharts.length === 0) {
+			var chart = {
+				id: chartId,
+				scales: { xScale: null, yScale: null },
+				accessors: { xAccessor: null, yAccessor: null },
+				//currentItem: {},
+				lastItem: {},
+				firstItem: {},
+				overlays: [],
+				overlayValues: []
+				//data: []
+			};
+			charts = charts.push(chart);
+			return this.getChartForId(chartId);
+		}
+		return filteredCharts[0];
+	},
+	getCurrentItemForChart(chartId) {
+		var currentItems = this.state.currentItemStore.get().currentItems;
+		var filteredCurrentItems = currentItems.filter((each) => each.id === chartId);
+		if (filteredCurrentItems.length > 1) {
+			var errorMessage = `multiple filteredCurrentItems with the same id ${ chartId } found`;
+			console.warn(errorMessage);
+			throw new Error(errorMessage);
+		}
+		if (filteredCurrentItems.length === 0) {
+			var currentItem = {
+				id: chartId,
+				data: {}
+			};
+			currentItems = currentItems.push(currentItem);
+			return this.getCurrentItemForChart(chartId);
+		}
+		return filteredCurrentItems[0];
+	},
+	updateCurrentItemForChart(chartData) {
+		var currentItem = this.getCurrentItemForChart(chartData.id);
+		var mouseXY = this.state.eventStore.get().mouseXY;
+
+		var xValue = chartData.scales.xScale.invert(mouseXY[0]);
+		var item = Utils.getClosestItem(this.props.data, xValue, chartData.accessors.xAccessor);
+
+		currentItem = currentItem.data.reset(item);
+		// console.log(currentItem);
 	}
 };
 
