@@ -10,7 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "d3": "^3.5.5",
-    "freezer-js": "file:../freezer",
+    "freezer-js": "git://github.com/rrag/freezer.git",
     "react": "^0.12.2"
   },
   "devDependencies": {
