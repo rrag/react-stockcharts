@@ -20,7 +20,7 @@ var MouseCoordinates = React.createClass({
 		yAxisPad: React.PropTypes.number.isRequired
 	},
 	shouldComponentUpdate(nextProps, nextState) {
-		return nextProps._mouseXY !== this.props._mouseXY
+		return nextProps._mouseXY !== this.props._mouseXY || nextProps._show !== this.props._show
 	},
 	getDefaultProps() {
 		return {

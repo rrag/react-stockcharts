@@ -20,8 +20,8 @@ var ChartCanvas = ReStock.ChartCanvas
 	, OverlaySeries = ReStock.OverlaySeries
 	, LineSeries = ReStock.LineSeries
 	, MovingAverageTooltip = ReStock.MovingAverageTooltip
-	//, EdgeContainer = ReStock.EdgeContainer
-	//, EdgeIndicator = ReStock.EdgeIndicator
+	, EdgeContainer = ReStock.EdgeContainer
+	, EdgeIndicator = ReStock.EdgeIndicator
 ;
 
 module.exports = {
@@ -71,7 +71,27 @@ module.exports = {
 							<CrossHair />
 						</MouseCoordinates>
 						<EventCapture mouseMove={true} />
+						<EdgeContainer>
+							<EdgeIndicator
+								className="horizontal"
+								itemType="last"
+								orient="right"
+								edgeAt="right"
+								forChart={1}
+								forOverlay={1}
+								/>
+							<EdgeIndicator
+								className="horizontal"
+								itemType="last"
+								orient="right"
+								edgeAt="right"
+								forChart={1}
+								forOverlay={5}
+								/>
+						</EdgeContainer>
 						<TooltipContainer>
+							<OHLCTooltip forChart={1} />
+							<MovingAverageTooltip forChart={1} onClick={this.handleMATooltipClick} />
 						</TooltipContainer>
 					</ChartCanvas>
 				);
@@ -84,18 +104,11 @@ module.exports = {
 
 /*
 
-							<OHLCTooltip />
-							<MovingAverageTooltip onClick={this.handleMATooltipClick} />
+							
+							
 
 						<EdgeContainer>
-							<EdgeIndicator
-								className="horizontal"
-								itemType="last"
-								orient="right"
-								edgeAt="right"
-								forChart={1}
-								forOverlay={1}
-								/>
+
 						</EdgeContainer>
 
 

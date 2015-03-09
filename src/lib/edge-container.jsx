@@ -3,12 +3,8 @@ var React = require('react/addons');
 
 var EdgeContainer = React.createClass({
 	propTypes: {
-		_overlays: React.PropTypes.array.isRequired,
-		_currentItem: React.PropTypes.object.isRequired,
-		_lastItem: React.PropTypes.object.isRequired,
-		_firstItem: React.PropTypes.object.isRequired,
-		_overlayValues: React.PropTypes.array.isRequired,
-		//_currentMouseXY: React.PropTypes.array.isRequired,
+		_currentItems: React.PropTypes.array.isRequired,
+		_charts: React.PropTypes.array.isRequired,
 		_height: React.PropTypes.number.isRequired,
 		_width: React.PropTypes.number.isRequired,
 	},
@@ -16,61 +12,93 @@ var EdgeContainer = React.createClass({
 		return {
 			namespace: "ReStock.EdgeContainer",
 		}
-	},
+	},/*
 	renderChildren() {
 		return React.Children.map(this.props.children, (child) => {
 			if (typeof child.type === 'string') return child;
 			var newChild = child;
 			if (/EdgeIndicator$/.test(newChild.props.namespace)) {
-				/*var item = newChild.props.itemType === 'first'
-					? this.props._firstItem
-					: newChild.props.itemType === 'last'
-						? this.props._lastItem
-						: this.props._currentItem;*/
+				var chart = this.props._charts.filter((chart) => chart.id === newChild.props.forChart)[0];
+				var currentItem = this.props._currentItems.filter((item) => item.id === newChild.props.forChart)[0];
 
-				if (newChild.props.forOverlay !== undefined) {
-					var overlay = this.props._overlays
+				var item, yAccessor;
+				if (newChild.props.forOverlay !== undefined
+						&& chart.overlays.length > 0
+						&& chart.overlayValues.length > 0) {
+					var overlay = chart.overlays
 						.filter((eachOverlay) => eachOverlay.id === newChild.props.forOverlay);
-					var overlayValue = this.props._overlayValues
+					var overlayValue = chart.overlayValues
 						.filter((eachOverlayValue) => eachOverlayValue.id === newChild.props.forOverlay);
 
-					console.log(overlay, overlayValue);
+					// console.log(overlay, overlayValue);
 
 					if (overlay.length !== 1) {
-						console.warn('%s overlays found with same id %s, correct the OverlaySeries so there is exactly one for each id', overlay.length, newChild.props.forOverlay)
+						console.warn('%s overlays found with id %s, correct the OverlaySeries so there is exactly one for each id', overlay.length, newChild.props.forOverlay)
 						throw new Error('Unable to identify unique Overlay for the id');
 					}
 					if (overlayValue.length !== 1 && overlay.length === 1) {
 						console.warn('Something is wrong!!!, There should be 1 overlayValue, report the issue on github');
 					}
 
-					var item = newChild.props.itemType === 'first'
+					item = newChild.props.itemType === 'first'
 						? overlayValue[0].first
 						: newChild.props.itemType === 'last'
 							? overlayValue[0].last
-							: this.props._currentItem;
-					var value = overlay[0].yAccessor(item);
-					console.log(overlay[0], overlayValue[0]);
-				}
+							: currentItem;
+					yAccessor = overlay[0].yAccessor;
 
+					newChild = this.getNewChild(newChild, item, yAccessor, chart) 
+				} else if (newChild.props.forOverlay === undefined) {
+					item = newChild.props.itemType === 'first'
+						? chart.firstItem
+						: newChild.props.itemType === 'last'
+							? chart.lastItem
+							: currentItem;
+
+					yAccessor = chart.accessors.yAccessor;
+					newChild = this.getNewChild(newChild, item, yAccessor, chart) 
+				}
+			}
+			return newChild;
+		});
+	},
+	getNewChild(newChild, item, yAccessor, chart) {
+		var yValue = yAccessor(item), xValue = chart.accessors.xAccessor(item);
+		var x1 = Math.round(chart.scales.xScale(xValue)), y1 = Math.round(chart.scales.yScale(yValue));
+
+		// console.log(item, yValue, xValue, x1, y1);
+
+		return React.addons.cloneWithProps(newChild, {
+			_width: this.props._width,
+			_x1: x1,
+			_y1: y1,
+			_value: yValue
+		});
+	},*/
+	renderChildren() {
+		return React.Children.map(this.props.children, (child) => {
+			if (typeof child.type === 'string') return child;
+			var newChild = child;
+			if (/EdgeIndicator$/.test(newChild.props.namespace)) {
+				var chart = this.props._charts.filter((chart) => chart.id === newChild.props.forChart)[0];
+				var currentItem = this.props._currentItems.filter((item) => item.id === newChild.props.forChart)[0];
 				newChild = React.addons.cloneWithProps(newChild, {
 					_width: this.props._width,
-					_value: value,
-					//x1: 
+					_chart: chart,
+					_currentItem: currentItem
 				});
 			}
 			return newChild;
 		});
 	},
 	render() {
-		if (this.props._overlays.length > 0 && this.props._overlayValues.length > 0) {
-			return (
-				<g>{this.renderChildren()}</g>
-			);
-		} else {
-			return null;
-		}
+		return <g>{this.renderChildren()}</g>
 	}
 });
 
 module.exports = EdgeContainer;
+
+
+/*
+this.props._overlays.length > 0 && this.props._overlayValues.length > 0
+*/

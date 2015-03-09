@@ -22,10 +22,10 @@ module.exports = {
 				var dateRange = { from: parseDate("2012-12-01"), to: parseDate("2012-12-31")}
 
 				return (
-					<ChartCanvas  width={500} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}}>
+					<ChartCanvas width={500} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}}>
 						<DataTransform data={data} polyLinear={true}
 							viewRange={dateRange}>
-							<Chart data={data}>
+							<Chart id={1} >
 								<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 								<YAxis axisAt="right" axisPadding={10} orient="right" percentScale={true} tickFormat={d3.format(".0%")} ticks={3}/>
 								<YAxis axisAt="left" orient="left" />

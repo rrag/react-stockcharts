@@ -18,8 +18,8 @@ module.exports = {
 		var AreaChart = React.createClass({
 			render() {
 				return (
-					<ChartCanvas  width={500} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}}>
-						<Chart data={data} >
+					<ChartCanvas width={500} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}} data={data}>
+						<Chart id={0} >
 							<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 							<YAxis axisAt="right" orient="right" percentScale={true} tickFormat={d3.format(".0%")}/>
 							<YAxis axisAt="left" orient="left" />

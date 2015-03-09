@@ -23,9 +23,6 @@ var EventCaptureMixin = {
 		});
 
 		var chartStore  = new Freezer({
-			//tooltip: {},
-			//currentMouseXY: [0, 0],
-			//currentXYValue: [],
 			charts: [],
 			/*
 			{
@@ -63,7 +60,7 @@ var EventCaptureMixin = {
 		});
 
 		var stores = { eventStore: eventStore, chartStore: chartStore, currentItemStore: currentItemStore };
-		console.log(stores);
+		// console.log(stores);
 		this.setState(stores);
 
 		this.listen(stores);
@@ -121,7 +118,7 @@ var EventCaptureMixin = {
 			this.state.chartStore.get().updateMode.set({ immediate: true });
 	},
 	listen(stores) {
-		console.log('begining to listen...', stores);
+		// console.log('begining to listen...', stores);
 
 		stores.eventStore.on('update', this.eventListener);
 		stores.chartStore.on('update', this.dataListener);
@@ -145,10 +142,6 @@ var EventCaptureMixin = {
 				_mouseXY: this.state.eventStore.get().mouseXY,
 				_chartData: chart,
 				_currentItem: currentItem
-				//_currentValue: this.state.chartStore.get().currentValue.values,
-				//_currentMouseXY: this.state.chartStore.get().currentMouseXY,
-				//_currentXYValue: this.state.chartStore.get().currentXYValue
-				//_currentItem: this.state.chartStore.get().currentItem
 			});
 		}
 		return child;
@@ -156,8 +149,8 @@ var EventCaptureMixin = {
 	updatePropsForTooltipContainer(child) {
 		if ("ReStock.TooltipContainer" === child.props.namespace) {
 			return React.addons.cloneWithProps(child, {
-				_currentItem: this.state.chartStore.get().currentItem,
-				_overlays: this.state.chartStore.get().overlays
+				_currentItems: this.state.currentItemStore.get().currentItems,
+				_charts: this.state.chartStore.get().charts
 			});
 		}
 		return child;
@@ -165,12 +158,8 @@ var EventCaptureMixin = {
 	updatePropsForEdgeContainer(child) {
 		if ("ReStock.EdgeContainer" === child.props.namespace) {
 			return React.addons.cloneWithProps(child, {
-				_currentItem: this.state.chartStore.get().currentItem,
-				_overlays: this.state.chartStore.get().overlays,
-				_overlayValues: this.state.chartStore.get().overlayValues,
-				_lastItem: this.state.chartStore.get().lastItem,
-				_firstItem: this.state.chartStore.get().firstItem,
-				_currentMouseXY: this.state.chartStore.get().currentMouseXY
+				_currentItems: this.state.currentItemStore.get().currentItems,
+				_charts: this.state.chartStore.get().charts
 			});
 		}
 		return child;
@@ -181,15 +170,6 @@ var EventCaptureMixin = {
 			if (this.state.eventStore && this.state.chartStore) {
 				var chart = this.getChartForId(newChild.props.id);
 				newChild = React.addons.cloneWithProps(newChild, {
-					/*_showCurrent: this.state.eventStore.get().mouseOver.value,
-					_mouseXY: this.state.eventStore.get().mouseXY,
-					_currentItem: this.state.chartStore.get().currentItem,
-					_currentMouseXY: this.state.chartStore.get().currentMouseXY,
-					_currentXYValue: this.state.chartStore.get().currentXYValue,
-					_lastItem: this.state.chartStore.get().lastItem,
-					_firstItem: this.state.chartStore.get().firstItem,
-					_overlays: this.state.chartStore.get().overlays,
-					_overlayValues: this.state.chartStore.get().overlayValues,*/
 					_updateMode: this.state.chartStore.get().updateMode,
 					_chartData: chart,
 					data: this.props.data
@@ -211,12 +191,10 @@ var EventCaptureMixin = {
 				id: chartId,
 				scales: { xScale: null, yScale: null },
 				accessors: { xAccessor: null, yAccessor: null },
-				//currentItem: {},
 				lastItem: {},
 				firstItem: {},
 				overlays: [],
 				overlayValues: []
-				//data: []
 			};
 			charts = charts.push(chart);
 			return this.getChartForId(chartId);
