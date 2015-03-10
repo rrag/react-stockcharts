@@ -10,7 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "d3": "^3.5.5",
-    "freezer-js": "git://github.com/rrag/freezer.git",
+    "freezer-js": "git://github.com/rrag/freezer.git#feature/resetmixin",
     "react": "^0.12.2"
   },
   "devDependencies": {
