@@ -90,14 +90,19 @@ var EventCaptureMixin = {
 		//console.log('events updated...', d);
 		//this.state.chartStore.get().currentItem.set({value : new Date().getTime()});
 		if (this.state.chartStore.get().updateMode.immediate) {
-			requestAnimationFrame(function () {
+			/*requestAnimationFrame(function () {
 				// console.log('************UPDATING NOW**************');
 				this.state.chartStore.get().charts.forEach((chart) => {
 					this.updateCurrentItemForChart(chart);
 				});
 				
 				this.forceUpdate();
-			}.bind(this));
+			}.bind(this));*/
+			this.state.chartStore.get().charts.forEach((chart) => {
+				this.updateCurrentItemForChart(chart);
+			});
+			
+			this.forceUpdate();
 		}
 	},
 	dataListener(d) {

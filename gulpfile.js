@@ -150,7 +150,7 @@ gulp.task('watch', ['clean', 'serve'], function(callback) {
 		if (err) throw new gutil.PluginError('webpack-dev-server', err);
 		gutil.log('[webpack-dev-server]', 'http://localhost:8090/webpack-dev-server/index.html');
 	});
-	gulp.watch(["./docs/images/**/*", "./docs/md/**/*", "./docs/*.html"], browserSync.reload);
+	gulp.watch(["./docs/images/**/*", "./docs/md/**/*", "./docs/*.html", "./docs/data/*.tsv"], browserSync.reload);
 	callback();
 });
 
