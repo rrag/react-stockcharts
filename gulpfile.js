@@ -138,7 +138,7 @@ gulp.task('watch', ['clean', 'serve'], function(callback) {
 	// Start a webpack-dev-server
 	var server = new WebpackDevServer(watchCompiler, {
 		publicPath: watchConfig.output.publicPath,
-		hot: true,
+		// hot: true,
 		quiet: false,
 		noInfo: false,
 		stats: {
