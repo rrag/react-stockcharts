@@ -137,6 +137,19 @@ var EventCaptureMixin = {
 		}
 		return child;
 	},
+	updatePropsForCurrentCoordinate(child) {
+		if ("ReStock.CurrentCoordinate" === child.props.namespace) {
+			var chart = this.getChartForId(child.props.forChart);
+			var currentItem = this.getCurrentItemForChart(child.props.forChart);
+
+			return React.addons.cloneWithProps(child, {
+				_show: this.state.eventStore.get().mouseOver.value,
+				_chartData: chart,
+				_currentItem: currentItem
+			});
+		}
+		return child;
+	},
 	updatePropsForMouseCoordinates(child) {
 		if ("ReStock.MouseCoordinates" === child.props.namespace) {
 			var chart = this.getChartForId(child.props.forChart);
@@ -227,7 +240,9 @@ var EventCaptureMixin = {
 	updateCurrentItemForChart(chartData) {
 		var currentItem = this.getCurrentItemForChart(chartData.id);
 		var mouseXY = this.state.eventStore.get().mouseXY;
-
+		if (chartData.scales.xScale === null) {
+			console.warn('Verify if the the <Chart id=... > matches with the forChart=... This error likely because a Chart defined with id={%s} is not found', chartData.id);
+		}
 		var xValue = chartData.scales.xScale.invert(mouseXY[0]);
 		var item = Utils.getClosestItem(this.props.data, xValue, chartData.accessors.xAccessor);
 

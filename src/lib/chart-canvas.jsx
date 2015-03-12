@@ -29,6 +29,7 @@ var ChartCanvas = React.createClass({
 			newChild = this.updatePropsForTooltipContainer(newChild);
 			newChild = this.updatePropsForEdgeContainer(newChild);
 			newChild = this.updatePropsForChart(newChild);
+			newChild = this.updatePropsForCurrentCoordinate(newChild);
 
 			return React.addons.cloneWithProps(newChild, {
 				_width: width

@@ -19,6 +19,7 @@ var ChartCanvas = ReStock.ChartCanvas
 	, OHLCTooltip = ReStock.OHLCTooltip
 	, OverlaySeries = ReStock.OverlaySeries
 	, LineSeries = ReStock.LineSeries
+	, CurrentCoordinate = ReStock.CurrentCoordinate
 	, MovingAverageTooltip = ReStock.MovingAverageTooltip
 ;
 
@@ -63,6 +64,7 @@ module.exports = {
 								</OverlaySeries>
 							</DataSeries>
 						</Chart>
+						<CurrentCoordinate forChart={1} />
 						<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
 							<CrossHair />
 						</MouseCoordinates>

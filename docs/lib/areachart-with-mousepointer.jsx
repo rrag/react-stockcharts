@@ -41,6 +41,7 @@ module.exports = {
 								<AreaSeries />
 							</DataSeries>
 						</Chart>
+						<CurrentCoordinate forChart={0} />
 						<MouseCoordinates forChart={0} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
 							<VerticalMousePointer />
 						</MouseCoordinates>
@@ -54,6 +55,6 @@ module.exports = {
 }
 
 /*
-								<CurrentCoordinate />
+								
 
 */

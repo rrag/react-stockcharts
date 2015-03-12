@@ -22,6 +22,8 @@ var ChartCanvas = ReStock.ChartCanvas
 	, MovingAverageTooltip = ReStock.MovingAverageTooltip
 	, EdgeContainer = ReStock.EdgeContainer
 	, EdgeIndicator = ReStock.EdgeIndicator
+	, CurrentCoordinate = ReStock.CurrentCoordinate
+
 ;
 
 module.exports = {
@@ -67,6 +69,8 @@ module.exports = {
 								</OverlaySeries>
 							</DataSeries>
 						</Chart>
+						<CurrentCoordinate forChart={1} />
+						<CurrentCoordinate forChart={1} forOverlay={1} />
 						<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
 							<CrossHair />
 						</MouseCoordinates>

@@ -7,27 +7,53 @@ var CurrentCoordinate = React.createClass({
 	//namespace: "ReStock.DataSeries",
 	mixins: [PureRenderMixin],
 	propTypes: {
-		_showCurrent: React.PropTypes.bool.isRequired,
-		_xScale: React.PropTypes.func.isRequired,
-		_yScale: React.PropTypes.func.isRequired,
-		_xAccessor: React.PropTypes.func.isRequired,
-		_yAccessor: React.PropTypes.func.isRequired,
-		_currentItem: React.PropTypes.object
+		forChart: React.PropTypes.number.isRequired,
+		forOverlay: React.PropTypes.number,
+		yAccessor: React.PropTypes.func,
+		r: React.PropTypes.number.isRequired,
+		className: React.PropTypes.string,
+
+		_show: React.PropTypes.bool.isRequired,
+		_chartData: React.PropTypes.object.isRequired,
+		_currentItem: React.PropTypes.object.isRequired,
 	},
 	getDefaultProps() {
 		return {
-			namespace: "ReStock.CurrentCoordinate"
+			namespace: "ReStock.CurrentCoordinate",
+			r: 3
 		};
 	},
 	render() {
-		var content = null;
-		if (this.props._showCurrent && this.props._xAccessor(this.props._currentItem) !== undefined) {
-			var x = this.props._xScale(this.props._xAccessor(this.props._currentItem));
-			var y = this.props._yScale(this.props._yAccessor(this.props._currentItem));
-			content = <circle cx={x} cy={y} r={2} />;
+
+		var chartData = this.props._chartData;
+		var item = this.props._currentItem.data;
+		var fill = 'black';
+
+		if (! this.props._show || item === undefined) return null;
+		var yAccessor =  this.props.yAccessor || chartData.accessors.yAccessor;
+
+		if (this.props.forOverlay !== undefined) {
+			var overlays = chartData.overlays
+				.filter((each) => each.id === this.props.forOverlay);
+
+			if (overlays.length != 1) {
+				console.warn('Unique overlay with id={%s} not found', this.props.forOverlay);
+				throw new Error('Unique overlay not found');
+			}
+			fill = overlays[0].stroke;
+			yAccessor = overlays[0].yAccessor;
 		}
+
+		var xValue = chartData.accessors.xAccessor(item);
+		var yValue = yAccessor(item);
+
+		if (yValue === undefined) return null;
+
+		var x = Math.round(chartData.scales.xScale(xValue));
+		var y = Math.round(chartData.scales.yScale(yValue));
+
 		return (
-			<g className="current-coordinate">{content}</g>
+			<circle className={this.props.className} cx={x} cy={y} r={this.props.r} fill={fill} />
 		);
 	}
 });
