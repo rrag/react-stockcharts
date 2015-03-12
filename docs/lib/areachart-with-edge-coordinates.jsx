@@ -71,10 +71,6 @@ module.exports = {
 						</Chart>
 						<CurrentCoordinate forChart={1} />
 						<CurrentCoordinate forChart={1} forOverlay={1} />
-						<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
-							<CrossHair />
-						</MouseCoordinates>
-						<EventCapture mouseMove={true} />
 						<EdgeContainer>
 							<EdgeIndicator
 								className="horizontal"
@@ -93,6 +89,10 @@ module.exports = {
 								forOverlay={5}
 								/>
 						</EdgeContainer>
+						<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
+							<CrossHair />
+						</MouseCoordinates>
+						<EventCapture mouseMove={true} />
 						<TooltipContainer>
 							<OHLCTooltip forChart={1} />
 							<MovingAverageTooltip forChart={1} onClick={this.handleMATooltipClick} />

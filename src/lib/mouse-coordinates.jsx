@@ -16,8 +16,7 @@ var MouseCoordinates = React.createClass({
 
 		forChart: React.PropTypes.number.isRequired, 
 		xDisplayFormat: React.PropTypes.func.isRequired,
-		yDisplayFormat: React.PropTypes.func.isRequired,
-		yAxisPad: React.PropTypes.number.isRequired
+		yDisplayFormat: React.PropTypes.func.isRequired
 	},
 	shouldComponentUpdate(nextProps, nextState) {
 		return nextProps._mouseXY !== this.props._mouseXY || nextProps._show !== this.props._show
@@ -29,7 +28,6 @@ var MouseCoordinates = React.createClass({
 			snapX: true,
 			xDisplayFormat: Utils.displayDateFormat,
 			yDisplayFormat: Utils.displayNumberFormat,
-			yAxisPad: 10
 		}
 	},
 	renderChildren() {

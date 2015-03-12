@@ -18,7 +18,7 @@ var CrossHair = React.createClass({
 	getDefaultProps() {
 		return {
 			namespace: "ReStock.CrossHair",
-			yAxisPad: 10
+			yAxisPad: 5
 		}
 	},
 	render() {
