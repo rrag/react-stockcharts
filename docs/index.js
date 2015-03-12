@@ -27,9 +27,9 @@ d3.tsv("data/data.tsv", function(err, data) {
 	var AreaChartWithMA = require('./lib/areachart-with-ma').init(data);
 	var AreaChartWithEdgeCoordinates = require('./lib/areachart-with-edge-coordinates').init(data);
 	var LineChart = require('./lib/linechart').init(data);
-	/*
+	/**/
 	var CandleStickChart = require('./lib/candlestickchart').init(data);
-*/
+
 	React.render(<AreaChart />, document.getElementById("area"));
 	React.render(<AreaChartWithCrossHairMousePointer />, document.getElementById("area2"));
 	React.render(<AreaChartWithVerticalMousePointer />, document.getElementById("area3"));
@@ -37,9 +37,9 @@ d3.tsv("data/data.tsv", function(err, data) {
 	React.render(<AreaChartWithMA />, document.getElementById("area5"));
 	React.render(<AreaChartWithEdgeCoordinates />, document.getElementById("area6"));
 	React.render(<LineChart />, document.getElementById("line"));
-	/*
+	/**/
 	React.render(<CandleStickChart />, document.getElementById("candlestick"));
-*/
+
 	/**/
 });
 

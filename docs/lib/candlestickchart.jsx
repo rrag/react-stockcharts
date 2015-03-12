@@ -23,8 +23,7 @@ module.exports = {
 
 				return (
 					<ChartCanvas width={500} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}}>
-						<DataTransform data={data} polyLinear={true}
-							viewRange={dateRange}>
+						<DataTransform transformType="stockscale" data={data}>
 							<Chart id={1} >
 								<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 								<YAxis axisAt="right" axisPadding={10} orient="right" percentScale={true} tickFormat={d3.format(".0%")} ticks={3}/>

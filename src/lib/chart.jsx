@@ -177,7 +177,7 @@ var Chart = React.createClass({
 			if (['ReStock.DataSeries']
 					.indexOf(child.props.namespace) > -1) {
 				if (child.props) {
-					var xAccesor = child.props.xAccessor || props._indexAccessor
+					var xAccesor = props._stockScale ? props._indexAccessor : child.props.xAccessor
 					accessor.xAccessor = xAccesor;
 					accessor.yAccessor = child.props.yAccessor;
 				}
@@ -229,7 +229,7 @@ var Chart = React.createClass({
 				_xAccessor: this.props._indexAccessor
 			});
 			newChild = this.updatePropsForDataSeries(newChild);
-			if (newChild.props.xAccessor !== undefined && this.props._polyLinear) {
+			if (newChild.props.xAccessor !== undefined && this.props._stockScale) {
 				console.warn('xAccessor defined in DataSeries will override the indexAccessor of the polylinear scale. This might not be the right configuration');
 				console.warn('Either remove the xAccessor configuration on the DataSeries or change the polyLinear=false in Translate');
 			}

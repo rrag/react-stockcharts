@@ -1,9 +1,11 @@
 'use strict';
 var React = require('react');
 var ChartTransformer = require('./utils/chart-transformer');
+var EventCaptureMixin = require('./mixin/event-capture-mixin');
 
 var polyLinearTimeScale = require('./scale/polylineartimescale');
-var Chart = require('./chart');
+
+var doNotPassThrough = ['transformType', 'options', 'children', 'namespace'];
 
 function updatePropsToChild(child, data, props, from, to) {
 	if (from === undefined) from = Math.max(data.length - 30, 0);
@@ -21,55 +23,56 @@ function updatePropsToChild(child, data, props, from, to) {
 }
 
 var DataTransform = React.createClass({
+	mixins: [EventCaptureMixin],
 	propTypes: {
-		data: React.PropTypes.array.isRequired,
-		transformDataAs: React.PropTypes.string.isRequired,
-		height: React.PropTypes.number,
-		width: React.PropTypes.number,
 		_height: React.PropTypes.number,
 		_width: React.PropTypes.number,
-		polyLinear: React.PropTypes.bool.isRequired,
-		dateAccesor: React.PropTypes.func.isRequired,
-		viewRange: React.PropTypes.object,
-		_indexAccessor: React.PropTypes.func.isRequired,
-		_indexMutator: React.PropTypes.func.isRequired,
+
+		data: React.PropTypes.array.isRequired,
+		transformType: React.PropTypes.string.isRequired, // stockscale, none
+		options: React.PropTypes.object
+	},
+	getInitialState() {
+		return {};
 	},
 	getDefaultProps() {
 		return {
 			namespace: "ReStock.DataTransform",
-			transformDataAs: "none",
-			polyLinear: false,
-			dateAccesor: (d) => d.date,
-			_indexAccessor: (d) => d._idx,
-			_indexMutator: (d, i) => {d._idx = i;}
+			transformType: "none"
 		};
 	},
 	componentWillMount() {
-		this.updatePropsToChild(this.props);
+		this.transformData(this.props);
 	},
 	componentWillReceiveProps(nextProps) {
-		this.updatePropsToChild(nextProps);
+		this.transformData(nextProps);
 	},
-	updatePropsToChild(props) {
-		var transformer = ChartTransformer.getTransformerFor(props.transformDataAs);
-		var data = props.data;
-		if (props.polyLinear && transformer) {
-			data = ChartTransformer.populateDisplayFlags(props.data
-				, props.dateAccesor
-				, props._indexMutator)
-		}
-		data = transformer(data);
-		data = ChartTransformer.filter(data, props.dateAccesor, props.viewRange.from, props.viewRange.to);
-		var children = Array.isArray(props.children) ? props.children : [props.children];
+	transformData(props) {
+		var transformer = ChartTransformer.getTransformerFor(props.transformType);
+		var passThroughProps = transformer(props.data, props.options)
 
-		children.forEach(function (child) {
-			updatePropsToChild(child, data, props)
+		this.setState({ passThroughProps: passThroughProps });
+	},
+	renderChildren(height, width) {
+		var children = React.Children.map(this.props.children, (child) => {
+			if (typeof child.type === 'string') return child;
+			var newChild = child;
+			var props = {};
+			Object.keys(this.props)
+				.filter((eachProp) => doNotPassThrough.indexOf(eachProp) === -1)
+				.forEach((key) => props[key] = this.props[key]);
+
+			Object.keys(this.state.passThroughProps)
+				.forEach((key) => props[key] = this.state.passThroughProps[key]);
+
+			console.log(Object.keys(props));
+			return React.addons.cloneWithProps(newChild, props);
 		});
+		return this._renderChildren(children);
 	},
 	render() {
-
 		return (
-			<g>{this.props.children}</g>
+			<g>{this.renderChildren()}</g>
 		);
 	}
 });

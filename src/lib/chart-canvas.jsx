@@ -21,16 +21,11 @@ var ChartCanvas = React.createClass({
 		};
 	},
 	renderChildren(height, width) {
-		return React.Children.map(this.props.children, (child) => {
+		var children = this._renderChildren(this.props.children);
+
+		return React.Children.map(children, (child) => {
 			if (typeof child.type === 'string') return child;
 			var newChild = child;
-			newChild = this.updatePropsForEventCapture(child);
-			newChild = this.updatePropsForMouseCoordinates(newChild);
-			newChild = this.updatePropsForTooltipContainer(newChild);
-			newChild = this.updatePropsForEdgeContainer(newChild);
-			newChild = this.updatePropsForChart(newChild);
-			newChild = this.updatePropsForCurrentCoordinate(newChild);
-
 			return React.addons.cloneWithProps(newChild, {
 				_width: width
 				, _height: height

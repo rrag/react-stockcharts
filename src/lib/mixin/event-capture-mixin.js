@@ -8,62 +8,39 @@ var Freezer = require('freezer-js');
 // Let's create a freezer store
 
 var EventCaptureMixin = {
+	doesContainChart() {
+		var children = Array.isArray(this.props.children)
+			? this.props.children
+			: [this.props.children];
+
+		return children
+			.filter((child) => /Chart$/.test(child.props.namespace))
+			.length > 0;
+	},
 	componentWillMount() {
 		//console.log('EventCaptureMixin.componentWillMount');
-		/*React.Children.forEach(this.props.children, (child) => {
-			if ("ReStock.EventCapture" === child.props.namespace) {
-				
-			}
-		}, this);*/
-		var eventStore = new Freezer({
-			mouseXY: [0, 0],
-			mouseOver: { value: false },
-			inFocus: { value: false },
-			zoom: { value : 0 }
-		});
+		if (this.doesContainChart()) {
+			var eventStore = new Freezer({
+				mouseXY: [0, 0],
+				mouseOver: { value: false },
+				inFocus: { value: false },
+				zoom: { value : 0 }
+			});
 
-		var chartStore  = new Freezer({
-			charts: [],
-			/*
-			{
-				id: 0,
-				scales: { xScale: null, yScale: null },
-				accessors: { xAccessor: null, yAccessor: null }
-				currentItem: {},
-				lastItem: {},
-				firstItem: {},
-				overlays: [
-					{
-						id: 0,
-						....
-						...
-					}
-				],
-				overlayValues: [
-					{
-						id: 0,
-						first: {},
-						last: {}
-					},
-					{
-						id: 1,
-						first: {},
-						last: {}
-					},
-				],
-				data: []
-			} */
-			updateMode: { immediate : false }
-		});
-		var currentItemStore = new Freezer({
-			currentItems: []
-		});
+			var chartStore  = new Freezer({
+				charts: [],
+				updateMode: { immediate : false }
+			});
+			var currentItemStore = new Freezer({
+				currentItems: []
+			});
 
-		var stores = { eventStore: eventStore, chartStore: chartStore, currentItemStore: currentItemStore };
-		// console.log(stores);
-		this.setState(stores);
+			var stores = { eventStore: eventStore, chartStore: chartStore, currentItemStore: currentItemStore };
+			// console.log(stores);
+			this.setState(stores);
 
-		this.listen(stores);
+			this.listen(stores);
+		}
 	},
 	updateEventStore(eventStore) {
 		this.unListen();
@@ -76,7 +53,9 @@ var EventCaptureMixin = {
 		this.setState(newState, () => { this.listen(newState) });
 	},
 	componentWillUnmount() {
-		this.unListen();
+		if (this.doesContainChart()) {
+			this.unListen();
+		}
 	},
 	unListen() {
 		if (this.state.eventStore !== undefined) {
@@ -116,11 +95,15 @@ var EventCaptureMixin = {
 		}
 	},
 	componentDidMount() {
-		this.state.chartStore.get().updateMode.set({ immediate: true });
+		if (this.doesContainChart()) {
+			this.state.chartStore.get().updateMode.set({ immediate: true });
+		}
 	},
 	componentDidUpdate() {
-		if (! this.state.chartStore.get().updateMode.immediate)
-			this.state.chartStore.get().updateMode.set({ immediate: true });
+		if (this.doesContainChart()) {
+			if (! this.state.chartStore.get().updateMode.immediate)
+				this.state.chartStore.get().updateMode.set({ immediate: true });
+		}
 	},
 	listen(stores) {
 		// console.log('begining to listen...', stores);
@@ -190,11 +173,14 @@ var EventCaptureMixin = {
 				newChild = React.addons.cloneWithProps(newChild, {
 					_updateMode: this.state.chartStore.get().updateMode,
 					_chartData: chart,
-					data: this.props.data
+					data: this.getData()
 				});
 			}
 		}
 		return newChild;
+	},
+	getData() {
+		return this.state.data || this.props.data;
 	},
 	getChartForId(chartId) {
 		var charts = this.state.chartStore.get().charts;
@@ -244,10 +230,26 @@ var EventCaptureMixin = {
 			console.warn('Verify if the the <Chart id=... > matches with the forChart=... This error likely because a Chart defined with id={%s} is not found', chartData.id);
 		}
 		var xValue = chartData.scales.xScale.invert(mouseXY[0]);
-		var item = Utils.getClosestItem(this.props.data, xValue, chartData.accessors.xAccessor);
+		var item = Utils.getClosestItem(this.getData(), xValue, chartData.accessors.xAccessor);
 
 		currentItem = currentItem.data.reset(item);
 		// console.log(currentItem);
+	},
+	_renderChildren(children) {
+		if (this.doesContainChart()) {
+			return React.Children.map(children, (child) => {
+				if (typeof child.type === 'string') return child;
+				var newChild = child;
+				newChild = this.updatePropsForEventCapture(child);
+				newChild = this.updatePropsForMouseCoordinates(newChild);
+				newChild = this.updatePropsForTooltipContainer(newChild);
+				newChild = this.updatePropsForEdgeContainer(newChild);
+				newChild = this.updatePropsForChart(newChild);
+				newChild = this.updatePropsForCurrentCoordinate(newChild);
+				return newChild;
+			});
+		}
+		return children;
 	}
 };
 
