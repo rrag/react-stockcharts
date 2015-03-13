@@ -49,22 +49,22 @@ var EventCapture = React.createClass({
 
 	},
 	handleWheel(e) {
-		if (this.props._eventStore && this.props._eventStore.get().inFocus.value) {
+		if (this.props.zoom && this.props._eventStore && this.props._eventStore.get().inFocus.value) {
 			e.preventDefault();
-			//if (this.props.)
+			var speed = 1,
+				zoomDir = e.deltaY > 0 ? speed : -speed;
+			this.props._eventStore.get().zoom.set({ value : zoomDir });
 		}
 	},
 	render() {
 		return (
-			<g>
-				<rect width={this.props._width} height={this.props._height} style={{opacity: 0}}
-					onMouseEnter={this.handleEnter}
-					onMouseLeave={this.handleLeave}
-					onMouseMove={this.handleMouseMove}
-					onMouseDown={this.handleMouseDown}
-					onMouseUp={this.handleMouseUp}
-					onWheel={this.handleWheel} />
-			</g>
+			<rect width={this.props._width} height={this.props._height} style={{opacity: 0}}
+				onMouseEnter={this.handleEnter}
+				onMouseLeave={this.handleLeave}
+				onMouseMove={this.handleMouseMove}
+				onMouseDown={this.handleMouseDown}
+				onMouseUp={this.handleMouseUp}
+				onWheel={this.handleWheel} />
 		);
 	}
 });

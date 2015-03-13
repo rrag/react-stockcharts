@@ -29,7 +29,7 @@ var EventCaptureMixin = {
 
 			var chartStore  = new Freezer({
 				charts: [],
-				updateMode: { immediate : false }
+				updateMode: { immediate : true }
 			});
 			var currentItemStore = new Freezer({
 				currentItems: []
@@ -39,7 +39,6 @@ var EventCaptureMixin = {
 			// console.log(stores);
 			this.setState(stores);
 
-			this.listen(stores);
 		}
 	},
 	getEventStore() {
@@ -72,6 +71,7 @@ var EventCaptureMixin = {
 		//console.log('events updated...', d);
 		//this.state.chartStore.get().currentItem.set({value : new Date().getTime()});
 		if (this.state.chartStore.get().updateMode.immediate) {
+			console.log('************UPDATING NOW**************');
 			/*requestAnimationFrame(function () {
 				// console.log('************UPDATING NOW**************');
 				this.state.chartStore.get().charts.forEach((chart) => {
@@ -99,7 +99,8 @@ var EventCaptureMixin = {
 	},
 	componentDidMount() {
 		if (this.doesContainChart()) {
-			this.state.chartStore.get().updateMode.set({ immediate: true });
+			// this.state.chartStore.get().updateMode.set({ immediate: true });
+			this.listen(this.state);
 		}
 	},
 	componentDidUpdate() {
@@ -119,7 +120,7 @@ var EventCaptureMixin = {
 		if (child.type === EventCapture.type) {
 			return React.addons.cloneWithProps(child, {
 				_eventStore: this.state.eventStore
-			});
+			}); 
 		}
 		return child;
 	},
@@ -176,13 +177,17 @@ var EventCaptureMixin = {
 				newChild = React.addons.cloneWithProps(newChild, {
 					_updateMode: this.state.chartStore.get().updateMode,
 					_chartData: chart,
-					data: this.getData()
+					data: this.getData(chart.range),
+					fullData: this.getFullData()
 				});
 			}
 		}
 		return newChild;
 	},
-	getData() {
+	getData(range) {
+		return this.state.data || this.props.data;
+	},
+	getFullData() {
 		return this.state.data || this.props.data;
 	},
 	getChartForId(chartId) {

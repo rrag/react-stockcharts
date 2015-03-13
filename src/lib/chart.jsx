@@ -6,11 +6,18 @@ var React = require('react/addons'),
 	d3 = require('d3'),
 	ScaleUtils = require('./utils/scale-utils'),
 	OverlayUtils = require('./utils/overlay-utils'),
-	Utils = require('./utils/utils');
+	Utils = require('./utils/utils'),
+	overlayColors = Utils.overlayColors;
 	// logger = require('./utils/logger')
 
 var pluck = Utils.pluck;
 var keysAsArray = Utils.keysAsArray;
+
+function getOverlayFromList(overlays, id) {
+	return overlays.map((each) => [each.id, each])
+		.filter((eachMap) => eachMap[0] === id)
+		.map((eachMap) => eachMap[1])[0];
+}
 
 var Chart = React.createClass({
 	statics: {
@@ -50,17 +57,54 @@ var Chart = React.createClass({
 			yDomainUpdate: true
 		};
 	},
+	identifyOverlaysToAdd(props) {
+		var overlaysToAdd = [];
+		React.Children.forEach(props.children, (child) => {
+			if (/DataSeries$/.test(child.props.namespace)) {
+				React.Children.forEach(child.props.children, (grandChild) => {
+					if (/OverlaySeries$/.test(grandChild.props.namespace)) {
+						var overlay = getOverlayFromList(props._chartData.overlays, grandChild.props.id)
+						var yAccessor = OverlayUtils.getYAccessor(grandChild.props);
+						if (overlay === undefined) {
+							overlay = {
+								id: grandChild.props.id,
+								yAccessor: yAccessor,
+								options: grandChild.props.options,
+								type: grandChild.props.type,
+								tooltipLabel: OverlayUtils.getToolTipLabel(grandChild.props),
+								stroke: grandChild.stroke || overlayColors(grandChild.props.id)
+							};
+							overlaysToAdd.push(overlay);
+						}
+					}
+				});
+			}
+		})
+		return overlaysToAdd;
+	},
 	componentWillMount() {
+		var _chartData = this.props._chartData;
+
 		var scales = this.defineScales(this.props);
 		var accessors = this.getXYAccessors(this.props);
+		// identify overlays
+		var overlaysToAdd = this.identifyOverlaysToAdd(this.props);
+		_chartData = _chartData.set({ overlays: overlaysToAdd });
+		// console.log(overlaysToAdd);
+		// calculate overlays
+		this.calculateOverlays(this.props.fullData, _chartData.overlays);
 
-		scales = this.updateScales(this.props,
-					[accessors.xAccessor],
-					[accessors.yAccessor],
-					scales.xScale,
-					scales.yScale);
+		var overlayValues = this.updateOverlayFirstLast(this.props.data, _chartData.overlays)
+		_chartData = _chartData.set( { overlayValues: overlayValues } ); // replace everything
 
-		var _chartData = this.props._chartData;
+		var overlayYAccessors = pluck(keysAsArray(_chartData.overlays), 'yAccessor');
+
+		scales = this.updateScales(this.props
+			, [accessors.xAccessor]
+			, [accessors.yAccessor].concat(overlayYAccessors)
+			, scales.xScale
+			, scales.yScale);
+
 		_chartData = _chartData.set({ accessors: accessors });
 		_chartData = _chartData.set({ scales: scales });
 
@@ -78,19 +122,24 @@ var Chart = React.createClass({
 
 		var _updateMode = nextProps._updateMode;
 		var _chartData = nextProps._chartData;
+		var overlaysToAdd = this.identifyOverlaysToAdd(nextProps);
+
+		var overlays = _chartData.overlays;
+		if (overlaysToAdd.length > 0)
+			overlays = overlays.push(overlaysToAdd);
 
 		if (this.props.data !== nextProps.data) {
 			scaleRecalculationNeeded = true;
 		}
 		// console.log(this.props._chartData.overlays !== nextProps._chartData.overlays);
-		if (this.props._chartData.overlays !== nextProps._chartData.overlays /* or if the data interval changes */) {
+		if (this.state.chartData.overlays !== overlays /* or if the data interval changes */) {
 			// TODO
 			// if any overlay.toBeRemoved = true then overlays.splice that one out
-			this.calculateOverlays(nextProps.data, nextProps._chartData.overlays);
+			this.calculateOverlays(nextProps.fullData, overlays);
 
 			_updateMode = _updateMode.set({ immediate: false });
 
-			var overlayValues = this.updateOverlayFirstLast(nextProps.data, nextProps._chartData.overlays, nextProps._chartData._overlayValues)
+			var overlayValues = this.updateOverlayFirstLast(nextProps.data, nextProps._chartData.overlays)
 			_chartData = _chartData.set( { overlayValues: overlayValues } ); // replace everything
 
 			scaleRecalculationNeeded = true;
@@ -100,7 +149,9 @@ var Chart = React.createClass({
 			var xyAccessors = this.getXYAccessors(nextProps);
 
 			_updateMode = _updateMode.set({ immediate: false });
-			var overlayYAccessors = pluck(keysAsArray(nextProps._chartData.overlays), 'yAccessor');
+			var overlayYAccessors = pluck(keysAsArray(overlays), 'yAccessor');
+
+			console.log(xyAccessors, overlayYAccessors);
 
 			scales = this.updateScales(nextProps
 				, [xyAccessors.xAccessor]

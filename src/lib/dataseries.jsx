@@ -78,7 +78,6 @@ var DataSeries = React.createClass({
 		// console.log(firstItem);
 	},
 	renderChildren() {
-		var overlaysToAdd = [];
 		var newChildren = React.Children.map(this.props.children, (child) => {
 			var newChild = child;
 
@@ -95,23 +94,9 @@ var DataSeries = React.createClass({
 				if (/OverlaySeries$/.test(newChild.props.namespace)) {
 					var key = newChild.props.id;
 					var overlay = getOverlayFromList(this.props._overlays, newChild.props.id);
-					var yAccessor = OverlayUtils.getYAccessor(newChild.props);
-					if (overlay === undefined) {
-						overlay = {
-							id: newChild.props.id,
-							yAccessor: yAccessor,
-							options: newChild.props.options,
-							type: newChild.props.type,
-							tooltipLabel: OverlayUtils.getToolTipLabel(newChild.props),
-							stroke: newChild.stroke || overlayColors(newChild.props.id)
-						};
-						// this.props._overlays.set(key, overlay);
-						overlaysToAdd.push(overlay);
-					} else {
-						newChild = React.addons.cloneWithProps(newChild, {
-							_overlay: overlay
-						});
-					}
+					newChild = React.addons.cloneWithProps(newChild, {
+						_overlay: overlay
+					});
 				}
 			}/* else {
 				newChild = React.addons.cloneWithProps(newChild, {
@@ -126,27 +111,6 @@ var DataSeries = React.createClass({
 
 			return newChild;
 		}, this);
-
-		// console.log(overlaysToAdd);
-
-		if (overlaysToAdd.length > 0) {
-			var overlays = this.props._overlays.append(overlaysToAdd);
-			var keys = Object.keys(newChildren);
-
-			for (var i = 0; i < keys.length; i++) {
-				var newChild = newChildren[keys[i]];
-				if (newChild.props
-						&& newChild.props._overlay === undefined
-						&& /OverlaySeries$/.test(newChild.props.namespace)) {
-					var overlayToAdd = getOverlayFromList(overlays, newChild.props.id);
-					newChild = React.addons.cloneWithProps(newChild, {
-						_overlay: overlayToAdd
-					});
-					//console.log(newChild, overlayToAdd);
-				}
-				newChildren[keys[i]] = newChild;
-			}
-		}
 
 		//if (!Array.isArray(newChildren)) newChildren = [newChildren];
 		// console.log(newChildren);

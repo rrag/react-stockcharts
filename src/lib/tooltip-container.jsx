@@ -7,7 +7,7 @@ var TooltipContainer = React.createClass({
 		_charts: React.PropTypes.array.isRequired
 	},
 	shouldComponentUpdate(nextProps, nextState) {
-		return nextProps._currentItems !== this.props._currentItems;
+		return nextProps._charts !== this.props._charts || nextProps._currentItems !== this.props._currentItems;
 	},
 	getDefaultProps() {
 		return {
