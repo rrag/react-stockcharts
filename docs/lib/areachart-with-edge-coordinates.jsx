@@ -35,6 +35,12 @@ module.exports = {
 					height: 400
 				};
 			},
+			getEventStore() {
+				return this.refs.eventStore.getEventStore();
+			},
+			updateEventStore(eventStore) {
+				return this.refs.eventStore.updateEventStore(eventStore);
+			},
 			handleMATooltipClick(overlay) {
 				console.log('You clicked on ', overlay, ' handle your onclick event here...');
 			},
@@ -46,7 +52,7 @@ module.exports = {
 				return (
 					<ChartCanvas 
 						width={this.state.width} height={this.state.height}
-						margin={{left: 5, right: 90, top:10, bottom: 30}} data={data}>
+						margin={{left: 5, right: 90, top:10, bottom: 30}} data={data} ref="eventStore">
 						<Chart id={1} >
 							<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 							<YAxis axisAt="right" orient="right" />

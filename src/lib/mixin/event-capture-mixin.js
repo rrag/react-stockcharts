@@ -42,6 +42,9 @@ var EventCaptureMixin = {
 			this.listen(stores);
 		}
 	},
+	getEventStore() {
+		return this.state.eventStore;
+	},
 	updateEventStore(eventStore) {
 		this.unListen();
 
