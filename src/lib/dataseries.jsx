@@ -18,7 +18,6 @@ function getOverlayFromList(overlays, id) {
 }
 
 var DataSeries = React.createClass({
-	//namespace: "ReStock.DataSeries",
 	mixins: [PureRenderMixin],
 	propTypes: {
 		xAccessor: React.PropTypes.func,
@@ -28,8 +27,6 @@ var DataSeries = React.createClass({
 		_xScale: React.PropTypes.func,
 		_yScale: React.PropTypes.func,
 
-		// _currentMouseXY: React.PropTypes.array,
-		// _currentXYValue: React.PropTypes.array,
 		_currentItem: React.PropTypes.object,
 		_lastItem: React.PropTypes.object,
 		_firstItem: React.PropTypes.object,
@@ -46,17 +43,6 @@ var DataSeries = React.createClass({
 		var xAccessor = nextProps.xAccessor || nextProps._xAccessor;
 		var yAccessor = nextProps.yAccessor;
 
-		// TODO
-		// if overlays are different, recalculate the data for the overlay that changed
-		/*
-		if (nextProps._mouseXY !== this.props._mouseXY) {
-			if (nextProps._currentItem) {
-
-				var xValue = nextProps._xScale.invert(nextProps._mouseXY[0]);
-				var item = Utils.getClosestItem(nextProps.data, xValue, xAccessor);
-				var currentItem = nextProps._currentItem.reset(item); 
-			}
-		}*/
 		if (false /* do this only when the (first or last) data or xScale or yScale is different, FIXME later */) {
 			if (nextProps._lastItem) {
 				var last = Utils.cloneMe(nextProps.data[nextProps.data.length - 1]);
@@ -98,22 +84,10 @@ var DataSeries = React.createClass({
 						_overlay: overlay
 					});
 				}
-			}/* else {
-				newChild = React.addons.cloneWithProps(newChild, {
-					_xScale: this.props._xScale,
-					_yScale: this.props._yScale,
-					_xAccessor: (this.props.xAccessor || this.props._xAccessor),
-					_yAccessor: this.props.yAccessor,
-					//_currentItem: this.props._currentItem,
-					//_showCurrent: this.props._showCurrent
-				});
-			}*/
-
+			}
 			return newChild;
 		}, this);
 
-		//if (!Array.isArray(newChildren)) newChildren = [newChildren];
-		// console.log(newChildren);
 		return newChildren;
 	},
 	render() {

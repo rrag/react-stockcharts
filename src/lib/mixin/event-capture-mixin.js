@@ -23,8 +23,10 @@ var EventCaptureMixin = {
 			var eventStore = new Freezer({
 				mouseXY: [0, 0],
 				mouseOver: { value: false },
-				inFocus: { value: false },
-				zoom: { value : 0 }
+				inFocus: { value: false }
+			});
+			var zoomEventStore = new Freezer({
+				zoom: 0
 			});
 
 			var chartStore  = new Freezer({
@@ -35,7 +37,12 @@ var EventCaptureMixin = {
 				currentItems: []
 			});
 
-			var stores = { eventStore: eventStore, chartStore: chartStore, currentItemStore: currentItemStore };
+			var stores = {
+					eventStore: eventStore,
+					chartStore: chartStore,
+					currentItemStore: currentItemStore,
+					zoomEventStore: zoomEventStore
+				};
 			// console.log(stores);
 			this.setState(stores);
 
@@ -44,13 +51,14 @@ var EventCaptureMixin = {
 	getEventStore() {
 		return this.state.eventStore;
 	},
-	updateEventStore(eventStore) {
+	updateEventStore(eventStore, zoomEventStore) {
 		this.unListen();
 
 		var newState = {
 			eventStore: eventStore,
 			chartStore: this.state.chartStore,
-			currentItemStore: this.state.currentItemStore
+			currentItemStore: this.state.currentItemStore,
+			zoomEventStore: zoomEventStore || this.state.zoomEventStore
 		};
 		this.setState(newState, () => { this.listen(newState) });
 	},
@@ -66,12 +74,15 @@ var EventCaptureMixin = {
 		if (this.state.chartStore !== undefined) {
 			this.state.chartStore.off('update', this.dataListener);
 		}
+		if (this.state.zoomEventStore !== undefined) {
+			this.state.zoomEventStore.off('update', this.zoomEventListener);
+		}
 	},
 	eventListener(d) {
 		//console.log('events updated...', d);
 		//this.state.chartStore.get().currentItem.set({value : new Date().getTime()});
 		if (this.state.chartStore.get().updateMode.immediate) {
-			console.log('************UPDATING NOW**************');
+			//console.log('************UPDATING NOW**************');
 			/*requestAnimationFrame(function () {
 				// console.log('************UPDATING NOW**************');
 				this.state.chartStore.get().charts.forEach((chart) => {
@@ -80,11 +91,43 @@ var EventCaptureMixin = {
 				
 				this.forceUpdate();
 			}.bind(this));*/
+			//console.log(this.state.zoomEventStore.get().zoom);
 			this.state.chartStore.get().charts.forEach((chart) => {
 				this.updateCurrentItemForChart(chart);
 			});
 			
 			this.forceUpdate();
+		}
+	},
+	zoomEventListener(d) {
+		//console.log('events updated...', d);
+		//this.state.chartStore.get().currentItem.set({value : new Date().getTime()});
+		if (this.state.chartStore.get().updateMode.immediate) {
+
+			var zoomDir = this.state.zoomEventStore.get().zoom;
+			console.log('************UPDATING NOW**************- zoomDir = ', zoomDir);
+			// find mainChart
+			// get new domainL & R
+			// if (this.props.changeIntervalIfNeeded) is present
+			//		call this.props.changeIntervalIfNeeded
+			//		if ^ returns false
+			//			requestAnimationFrame and send down new data
+			//			update currentItem
+			//		if true
+			//			update currentItem
+			// else
+			//		requestAnimationFrame and send down new data
+			//		update currentItem
+/*
+			requestAnimationFrame(function () {
+				this.state.chartStore.get().charts.forEach((chart) => {
+					this.updateCurrentItemForChart(chart);
+				});
+
+
+				this.forceUpdate();
+			}.bind(this));*/
+
 		}
 	},
 	dataListener(d) {
@@ -114,12 +157,14 @@ var EventCaptureMixin = {
 
 		stores.eventStore.on('update', this.eventListener);
 		stores.chartStore.on('update', this.dataListener);
+		stores.zoomEventStore.on('update', this.zoomEventListener);
 		// stores.chartStore.get().currentItem.getListener().on('update', this.dataListener);
 	},
 	updatePropsForEventCapture(child) {
 		if (child.type === EventCapture.type) {
 			return React.addons.cloneWithProps(child, {
-				_eventStore: this.state.eventStore
+				_eventStore: this.state.eventStore,
+				_zoomEventStore: this.state.zoomEventStore
 			}); 
 		}
 		return child;

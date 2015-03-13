@@ -20,7 +20,7 @@ d3.tsv("data/data.tsv", function(err, data) {
 		d.volume = +d.volume;
 		// console.log(d);
 	});
-	/*
+	/**/
 	var AreaChart = require('./lib/areachart').init(data);
 	var AreaChartWithCrossHairMousePointer = require('./lib/areachart-with-crosshair-mousepointer').init(data);
 	var AreaChartWithVerticalMousePointer = require('./lib/areachart-with-mousepointer').init(data);
@@ -30,10 +30,10 @@ d3.tsv("data/data.tsv", function(err, data) {
 	var LineChart = require('./lib/linechart').init(data);
 	var CandleStickChart = require('./lib/candlestickchart').init(data);
 	var SyncMouseMove = require('./lib/synchronized-mouse-move').init(data);
-	*/var AreaChartWithZoom = require('./lib/areachart-with-zoom').init(data);
+	var AreaChartWithZoom = require('./lib/areachart-with-zoom').init(data);
 	
 
-	/*
+	/**/
 	React.render(<AreaChart />, document.getElementById("area"));
 	React.render(<AreaChartWithCrossHairMousePointer />, document.getElementById("area2"));
 	React.render(<AreaChartWithVerticalMousePointer />, document.getElementById("area3"));
@@ -43,7 +43,7 @@ d3.tsv("data/data.tsv", function(err, data) {
 	React.render(<LineChart />, document.getElementById("line"));
 	React.render(<CandleStickChart />, document.getElementById("candlestick"));
 	React.render(<SyncMouseMove />, document.getElementById("sync"));
-	*/React.render(<AreaChartWithZoom />, document.getElementById("areazoom"));
+	React.render(<AreaChartWithZoom />, document.getElementById("areazoom"));
 
 	/**/
 });
