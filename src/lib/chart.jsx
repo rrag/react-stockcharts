@@ -151,7 +151,7 @@ var Chart = React.createClass({
 			_updateMode = _updateMode.set({ immediate: false });
 			var overlayYAccessors = pluck(keysAsArray(overlays), 'yAccessor');
 
-			console.log(xyAccessors, overlayYAccessors);
+			// console.log(xyAccessors, overlayYAccessors);
 
 			scales = this.updateScales(nextProps
 				, [xyAccessors.xAccessor]

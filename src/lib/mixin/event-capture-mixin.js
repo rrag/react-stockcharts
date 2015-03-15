@@ -6,7 +6,12 @@ var Utils = require('../utils/utils');
 
 var Freezer = require('freezer-js');
 // Let's create a freezer store
-
+function getLongValue(value) {
+	if (value instanceof Date) {
+		return value.getTime();
+	}
+	return value;
+}
 var EventCaptureMixin = {
 	doesContainChart() {
 		var children = Array.isArray(this.props.children)
@@ -28,20 +33,23 @@ var EventCaptureMixin = {
 			var zoomEventStore = new Freezer({
 				zoom: 0
 			});
-
 			var chartStore  = new Freezer({
 				charts: [],
 				updateMode: { immediate : true }
 			});
 			var currentItemStore = new Freezer({
-				currentItems: []
+				currentItems: [],
+				viewPortXRange: [],
+				viewPortXDelta: 30
 			});
 
 			var stores = {
 					eventStore: eventStore,
 					chartStore: chartStore,
 					currentItemStore: currentItemStore,
-					zoomEventStore: zoomEventStore
+					zoomEventStore: zoomEventStore,
+					fullData: this.props.data,
+					data: this.props.data
 				};
 			// console.log(stores);
 			this.setState(stores);
@@ -99,13 +107,82 @@ var EventCaptureMixin = {
 			this.forceUpdate();
 		}
 	},
+	componentWillReceiveProps(nextProps) {
+		console.log('EventCaptureMixin.componentWillReceiveProps');
+		console.log('EventCaptureMixin.componentWillReceiveProps');
+		console.log('EventCaptureMixin.componentWillReceiveProps');
+		this.calculateViewableData();
+	},
+	calculateViewableData() {
+		var xRange = this.state.currentItemStore.get().viewPortXRange;
+		if (xRange.length > 0) {
+			var mainChart = this.state.currentItemStore.get().mainChart,
+				chart = this.getChartForId(mainChart);
+			var data = this.getFullData();
+			var filteredData = [];
+			for (var i = 0; i < data.length - 1; i++) {
+				var each = data[i];
+				var nextEach = data[i + 1];
+
+				if (chart.accessors.xAccessor(each) > xRange[0]
+					&& chart.accessors.xAccessor(each) < xRange[1]) {
+					filteredData.push(each);
+				}
+
+				if (filteredData.length > 0 
+						&& chart.accessors.xAccessor(each) < xRange[1]
+						&& chart.accessors.xAccessor(nextEach) > xRange[1]) {
+					filteredData.push(nextEach);
+					break;
+				}
+
+				if (filteredData.length == 0 
+						&& chart.accessors.xAccessor(each) < xRange[0]
+						&& chart.accessors.xAccessor(nextEach) > xRange[0]) {
+					filteredData.push(each);
+				}
+			}
+			console.log(filteredData.length);
+			return filteredData;
+		}
+		return this.getFullData();
+	},
 	zoomEventListener(d) {
 		//console.log('events updated...', d);
 		//this.state.chartStore.get().currentItem.set({value : new Date().getTime()});
 		if (this.state.chartStore.get().updateMode.immediate) {
 
-			var zoomDir = this.state.zoomEventStore.get().zoom;
-			console.log('************UPDATING NOW**************- zoomDir = ', zoomDir);
+
+			var zoomData = this.state.zoomEventStore.get(),
+				zoomDir = zoomData.zoom,
+				mainChart = this.state.currentItemStore.get().mainChart,
+				chart = this.getChartForId(mainChart);
+
+			// console.log('************UPDATING NOW**************- zoomDir = ', zoomDir, mainChart);
+
+			this.updateCurrentItemForChart(chart);
+
+			var item = this.getCurrentItemForChart(mainChart).data,
+				domain = chart.scales.xScale.domain(),
+				centerX = chart.accessors.xAccessor(item),
+				leftX = centerX - domain[0],
+				rightX = domain[1] - centerX,
+				zoom = Math.pow(1 + Math.abs(zoomDir)/2 , zoomDir),
+				domainL = (getLongValue(centerX) - ( leftX * zoom)),
+				domainR = (getLongValue(centerX) + (rightX * zoom));
+
+			if (centerX instanceof Date) {
+				domainL = new Date(domainL);
+				domainR = new Date(domainR);
+			}
+
+			this.state.currentItemStore.get().viewPortXRange.set([domainL, domainR]);
+			// console.log(domainL, domainR);
+
+			this.setState({
+				data: this.calculateViewableData()
+			})
+
 			// find mainChart
 			// get new domainL & R
 			// if (this.props.changeIntervalIfNeeded) is present
@@ -161,7 +238,13 @@ var EventCaptureMixin = {
 		// stores.chartStore.get().currentItem.getListener().on('update', this.dataListener);
 	},
 	updatePropsForEventCapture(child) {
-		if (child.type === EventCapture.type) {
+		if ("ReStock.EventCapture" === child.props.namespace) {
+			// find mainChart and add to zoomeventstores
+			if (this.state.currentItemStore.get().mainChart === undefined
+				|| this.state.currentItemStore.get().mainChart !== child.props.mainChart) {
+
+				this.state.currentItemStore.get().set({ mainChart: child.props.mainChart });
+			}
 			return React.addons.cloneWithProps(child, {
 				_eventStore: this.state.eventStore,
 				_zoomEventStore: this.state.zoomEventStore
@@ -222,7 +305,7 @@ var EventCaptureMixin = {
 				newChild = React.addons.cloneWithProps(newChild, {
 					_updateMode: this.state.chartStore.get().updateMode,
 					_chartData: chart,
-					data: this.getData(chart.range),
+					data: this.getData(),
 					fullData: this.getFullData()
 				});
 			}
@@ -230,10 +313,10 @@ var EventCaptureMixin = {
 		return newChild;
 	},
 	getData(range) {
-		return this.state.data || this.props.data;
+		return this.state.data;
 	},
 	getFullData() {
-		return this.state.data || this.props.data;
+		return this.state.fullData; // || this.props.data
 	},
 	getChartForId(chartId) {
 		var charts = this.state.chartStore.get().charts;

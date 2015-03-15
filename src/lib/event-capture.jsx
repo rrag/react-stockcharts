@@ -4,6 +4,7 @@ var Utils = require('./utils/utils.js')
 
 var EventCapture = React.createClass({
 	propTypes: {
+		mainChart: React.PropTypes.number.isRequired,
 		mouseMove: React.PropTypes.bool.isRequired,
 		zoom: React.PropTypes.bool.isRequired,
 		pan: React.PropTypes.bool.isRequired,

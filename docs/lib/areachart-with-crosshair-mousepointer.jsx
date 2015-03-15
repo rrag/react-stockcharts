@@ -43,7 +43,7 @@ module.exports = {
 						<MouseCoordinates forChart={3} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
 							<CrossHair />
 						</MouseCoordinates>
-						<EventCapture mouseMove={true} />
+						<EventCapture mouseMove={true} mainChart={3}/>
 					</ChartCanvas>
 				);
 			}

@@ -98,7 +98,7 @@ module.exports = {
 						<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
 							<CrossHair />
 						</MouseCoordinates>
-						<EventCapture mouseMove={true} />
+						<EventCapture mouseMove={true}  mainChart={1}/>
 						<TooltipContainer>
 							<OHLCTooltip forChart={1} />
 							<MovingAverageTooltip forChart={1} onClick={this.handleMATooltipClick} />

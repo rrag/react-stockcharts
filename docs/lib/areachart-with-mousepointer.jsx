@@ -45,7 +45,7 @@ module.exports = {
 						<MouseCoordinates forChart={0} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
 							<VerticalMousePointer />
 						</MouseCoordinates>
-						<EventCapture mouseMove={true} />
+						<EventCapture mouseMove={true}  mainChart={0}/>
 					</ChartCanvas>
 				);
 			}
