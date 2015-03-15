@@ -52,7 +52,7 @@ module.exports = {
 				return (
 					<ChartCanvas 
 						width={this.state.width} height={this.state.height}
-						margin={{left: 5, right: 90, top:10, bottom: 30}} data={data} ref="eventStore">
+						margin={{left: 65, right: 90, top:10, bottom: 30}} data={data} ref="eventStore">
 						<Chart id={1} >
 							<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 							<YAxis axisAt="right" orient="right" />
@@ -64,13 +64,13 @@ module.exports = {
 								<OverlaySeries id={1} type="sma" options={{ period: 150 }} >
 									<LineSeries/>
 								</OverlaySeries>
-								<OverlaySeries id={3} type="sma" options={{ period: 250 }} >
+								<OverlaySeries id={2} type="sma" options={{ period: 250 }} >
 									<LineSeries/>
 								</OverlaySeries>
-								<OverlaySeries id={4} type="sma" options={{ period: 350 }} >
+								<OverlaySeries id={3} type="sma" options={{ period: 350 }} >
 									<LineSeries/>
 								</OverlaySeries>
-								<OverlaySeries id={5} type="sma" options={{ period: 450 }} >
+								<OverlaySeries id={4} type="sma" options={{ period: 450 }} >
 									<LineSeries/>
 								</OverlaySeries>
 							</DataSeries>
@@ -84,7 +84,7 @@ module.exports = {
 								orient="right"
 								edgeAt="right"
 								forChart={1}
-								forOverlay={1}
+								forOverlay={0}
 								/>
 							<EdgeIndicator
 								className="horizontal"
@@ -92,7 +92,29 @@ module.exports = {
 								orient="right"
 								edgeAt="right"
 								forChart={1}
-								forOverlay={5}
+								/>
+							<EdgeIndicator
+								className="horizontal"
+								itemType="first"
+								orient="left"
+								edgeAt="left"
+								forChart={1}
+								/>
+							<EdgeIndicator
+								className="horizontal"
+								itemType="last"
+								orient="right"
+								edgeAt="right"
+								forChart={1}
+								forOverlay={2}
+								/>
+							<EdgeIndicator
+								className="horizontal"
+								itemType="last"
+								orient="right"
+								edgeAt="right"
+								forChart={1}
+								forOverlay={3}
 								/>
 						</EdgeContainer>
 						<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
@@ -100,8 +122,8 @@ module.exports = {
 						</MouseCoordinates>
 						<EventCapture mouseMove={true} zoom={true} mainChart={1}/>
 						<TooltipContainer>
-							<OHLCTooltip forChart={1} />
-							<MovingAverageTooltip forChart={1} onClick={this.handleMATooltipClick} />
+							<OHLCTooltip forChart={1} origin={[-60, 0]}/>
+							<MovingAverageTooltip forChart={1} onClick={this.handleMATooltipClick}  origin={[-60, 10]}/>
 						</TooltipContainer>
 					</ChartCanvas>
 				);

@@ -108,6 +108,12 @@ var Chart = React.createClass({
 		_chartData = _chartData.set({ accessors: accessors });
 		_chartData = _chartData.set({ scales: scales });
 
+		var last = Utils.cloneMe(this.props.data[this.props.data.length - 1]);
+		_chartData = _chartData.set({ lastItem: last });
+
+		var first = Utils.cloneMe(this.props.data[0]);
+		_chartData = _chartData.set({ firstItem: first });
+
 		this.setState({ chartData: _chartData });
 	},
 	componentWillReceiveProps(nextProps) {
@@ -139,8 +145,6 @@ var Chart = React.createClass({
 
 			_updateMode = _updateMode.set({ immediate: false });
 
-			var overlayValues = this.updateOverlayFirstLast(nextProps.data, nextProps._chartData.overlays)
-			_chartData = _chartData.set( { overlayValues: overlayValues } ); // replace everything
 
 			scaleRecalculationNeeded = true;
 		}
@@ -150,6 +154,10 @@ var Chart = React.createClass({
 
 			_updateMode = _updateMode.set({ immediate: false });
 			var overlayYAccessors = pluck(keysAsArray(overlays), 'yAccessor');
+
+
+			var overlayValues = this.updateOverlayFirstLast(nextProps.data, _chartData.overlays)
+			_chartData = _chartData.set( { overlayValues: overlayValues } ); // replace everything
 
 			// console.log(xyAccessors, overlayYAccessors);
 
@@ -161,6 +169,12 @@ var Chart = React.createClass({
 
 			_chartData = _chartData.set({ accessors: xyAccessors });
 			_chartData = _chartData.set({ scales: scales });
+
+			var last = Utils.cloneMe(nextProps.data[nextProps.data.length - 1]);
+			_chartData = _chartData.set({ lastItem: last });
+
+			var first = Utils.cloneMe(nextProps.data[0]);
+			_chartData = _chartData.set({ firstItem: first });
 
 			this.setState({ chartData: _chartData });
 		} else {

@@ -11,7 +11,8 @@ var OHLCTooltip = React.createClass({
 	propTypes: {
 		_currentItem: React.PropTypes.object.isRequired,
 		accessor: React.PropTypes.func.isRequired,
-		xDisplayFormat: React.PropTypes.func.isRequired
+		xDisplayFormat: React.PropTypes.func.isRequired,
+		origin: React.PropTypes.array.isRequired,
 	},
 	shouldComponentUpdate(nextProps, nextState) {
 		return (nextProps._currentItem !== this.props._currentItem);
@@ -20,7 +21,8 @@ var OHLCTooltip = React.createClass({
 		return {
 			namespace: "ReStock.OHLCTooltip",
 			accessor: (d) => {return {date: d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume}},
-			xDisplayFormat: Utils.displayDateFormat
+			xDisplayFormat: Utils.displayDateFormat,
+			origin: [0, 0]
 		}
 	},
 	render() {
@@ -46,15 +48,17 @@ var OHLCTooltip = React.createClass({
 		}
 
 		return (
-			<text x={0} y={0} className="legend">
-				<tspan key="label" x={0} dy="5" className="tooltip-label">Date: </tspan>
-				<tspan key="value">{displayDate}</tspan>
-				<tspan key="label_O" className="tooltip-label"> O: </tspan><tspan key="value_O">{open}</tspan>
-				<tspan key="label_H" className="tooltip-label"> H: </tspan><tspan key="value_H">{high}</tspan>
-				<tspan key="label_L" className="tooltip-label"> L: </tspan><tspan key="value_L">{low}</tspan>
-				<tspan key="label_C" className="tooltip-label"> C: </tspan><tspan key="value_C">{close}</tspan>
-				<tspan key="label_Vol" className="tooltip-label"> Vol: </tspan><tspan key="value_Vol">{volume}</tspan>
-			</text>
+			<g transform={"translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")"}>
+				<text x={0} y={0} className="legend">
+					<tspan key="label" x={0} dy="5" className="tooltip-label">Date: </tspan>
+					<tspan key="value">{displayDate}</tspan>
+					<tspan key="label_O" className="tooltip-label"> O: </tspan><tspan key="value_O">{open}</tspan>
+					<tspan key="label_H" className="tooltip-label"> H: </tspan><tspan key="value_H">{high}</tspan>
+					<tspan key="label_L" className="tooltip-label"> L: </tspan><tspan key="value_L">{low}</tspan>
+					<tspan key="label_C" className="tooltip-label"> C: </tspan><tspan key="value_C">{close}</tspan>
+					<tspan key="label_Vol" className="tooltip-label"> Vol: </tspan><tspan key="value_Vol">{volume}</tspan>
+				</text>
+			</g>
 		);
 	}
 });

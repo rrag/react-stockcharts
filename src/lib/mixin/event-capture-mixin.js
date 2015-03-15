@@ -28,7 +28,7 @@ var EventCaptureMixin = {
 			var eventStore = new Freezer({
 				mouseXY: [0, 0],
 				mouseOver: { value: false },
-				inFocus: { value: false }
+				inFocus: { value: true } // TODO change to false later
 			});
 			var zoomEventStore = new Freezer({
 				zoom: 0
@@ -142,7 +142,11 @@ var EventCaptureMixin = {
 					filteredData.push(each);
 				}
 			}
-			console.log(filteredData.length);
+			// console.log(filteredData.length);
+
+			if (filteredData.length < 5) {
+				return this.state.data
+			}
 			return filteredData;
 		}
 		return this.getFullData();
@@ -211,7 +215,7 @@ var EventCaptureMixin = {
 		// console.log('data updated from ', this.state.chartStore.get().currentItem, ' to ', d);
 		if (this.state.chartStore.get().updateMode.immediate) {
 			requestAnimationFrame(function () {
-				console.log('************UPDATING NOW**************');
+				// console.log('************UPDATING NOW**************');
 				// console.log(this.state.chartStore.get().charts[0].overlays);
 				this.forceUpdate();
 			}.bind(this));

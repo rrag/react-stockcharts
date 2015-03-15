@@ -27,9 +27,9 @@ var DataSeries = React.createClass({
 		_xScale: React.PropTypes.func,
 		_yScale: React.PropTypes.func,
 
-		_currentItem: React.PropTypes.object,
+		/*_currentItem: React.PropTypes.object,
 		_lastItem: React.PropTypes.object,
-		_firstItem: React.PropTypes.object,
+		_firstItem: React.PropTypes.object,*/
 		_overlays: React.PropTypes.array,
 		_updateMode: React.PropTypes.object
 	},
@@ -37,13 +37,13 @@ var DataSeries = React.createClass({
 		return {
 			namespace: "ReStock.DataSeries"
 		};
-	},
+	},/*
 	componentWillReceiveProps(nextProps) {
 
 		var xAccessor = nextProps.xAccessor || nextProps._xAccessor;
 		var yAccessor = nextProps.yAccessor;
-
-		if (false /* do this only when the (first or last) data or xScale or yScale is different, FIXME later */) {
+		// do this only when the (first or last) data or xScale or yScale is different, FIXME later
+		if (false) {
 			if (nextProps._lastItem) {
 				var last = Utils.cloneMe(nextProps.data[nextProps.data.length - 1]);
 				var lastItem = nextProps._lastItem.reset(last);
@@ -62,7 +62,7 @@ var DataSeries = React.createClass({
 		var first = Utils.cloneMe(this.props.data[0]);
 		var firstItem = this.props._firstItem.reset(first);
 		// console.log(firstItem);
-	},
+	},*/
 	renderChildren() {
 		var newChildren = React.Children.map(this.props.children, (child) => {
 			var newChild = child;

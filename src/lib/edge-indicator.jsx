@@ -65,23 +65,25 @@ var EdgeIndicator = React.createClass({
 					: this.props._currentItem;
 			yAccessor = overlay[0].yAccessor;
 
-			var yValue = yAccessor(item), xValue = this.props._chart.accessors.xAccessor(item);
-			var x1 = Math.round(this.props._chart.scales.xScale(xValue)), y1 = Math.round(this.props._chart.scales.yScale(yValue));
-			var edgeX = this.props.edgeAt === 'left'
-				? 0 - this.props.yAxisPad
-				: this.props._width + this.props.yAxisPad
+			if (item !== undefined) {
+				var yValue = yAccessor(item), xValue = this.props._chart.accessors.xAccessor(item);
+				var x1 = Math.round(this.props._chart.scales.xScale(xValue)), y1 = Math.round(this.props._chart.scales.yScale(yValue));
+				var edgeX = this.props.edgeAt === 'left'
+					? 0 - this.props.yAxisPad
+					: this.props._width + this.props.yAxisPad
 
-			edge = <EdgeCoordinate
-					type={this.props.type}
-					className="edge-coordinate"
-					fill={overlay[0].stroke}
-					show={true}
-					x1={x1} y1={y1}
-					x2={edgeX} y2={y1}
-					coordinate={this.props.displayFormat(yValue)}
-					edgeAt={edgeX}
-					orient={this.props.orient}
-					/>
+				edge = <EdgeCoordinate
+						type={this.props.type}
+						className="edge-coordinate"
+						fill={overlay[0].stroke}
+						show={true}
+						x1={x1} y1={y1}
+						x2={edgeX} y2={y1}
+						coordinate={this.props.displayFormat(yValue)}
+						edgeAt={edgeX}
+						orient={this.props.orient}
+						/>
+			}
 
 		}
 		return edge;
