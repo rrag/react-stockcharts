@@ -88,6 +88,14 @@ module.exports = {
 								/>
 							<EdgeIndicator
 								className="horizontal"
+								itemType="first"
+								orient="left"
+								edgeAt="left"
+								forChart={1}
+								forOverlay={1}
+								/>
+							<EdgeIndicator
+								className="horizontal"
 								itemType="last"
 								orient="right"
 								edgeAt="right"
