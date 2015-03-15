@@ -84,7 +84,34 @@ var EdgeIndicator = React.createClass({
 						orient={this.props.orient}
 						/>
 			}
+		} else if (this.props.forOverlay === undefined) {
+			item = this.props.itemType === 'first'
+				? this.props._chart.firstItem
+				: this.props.itemType === 'last'
+					? this.props._chart.lastItem
+					: this.props._currentItem;
+			yAccessor = this.props._chart.accessors.yAccessor;
 
+			if (item !== undefined && yAccessor !== null) {
+				var yValue = yAccessor(item);
+				var xValue = this.props._chart.accessors.xAccessor(item);
+
+				var x1 = Math.round(this.props._chart.scales.xScale(xValue)), y1 = Math.round(this.props._chart.scales.yScale(yValue));
+				var edgeX = this.props.edgeAt === 'left'
+					? 0 - this.props.yAxisPad
+					: this.props._width + this.props.yAxisPad
+
+				edge = <EdgeCoordinate
+						type={this.props.type}
+						className="edge-coordinate"
+						show={true}
+						x1={x1} y1={y1}
+						x2={edgeX} y2={y1}
+						coordinate={this.props.displayFormat(yValue)}
+						edgeAt={edgeX}
+						orient={this.props.orient}
+						/>
+			}
 		}
 		return edge;
 	},
