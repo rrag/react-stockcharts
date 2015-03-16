@@ -4,13 +4,20 @@ var React = require('react/addons');
 
 var Chart = require('./chart');
 var EventCaptureMixin = require('./mixin/event-capture-mixin');
+var ChartContainerMixin = require('./mixin/chart-container-mixin');
 
 var ChartCanvas = React.createClass({
-	mixins: [EventCaptureMixin],
+	mixins: [ChartContainerMixin, EventCaptureMixin],
 	propTypes: {
 		width: React.PropTypes.number.isRequired
 		, height: React.PropTypes.number.isRequired
 		, margin: React.PropTypes.object
+	},
+	getAvailableHeight() {
+		return this.props.height - this.props.margin.top - this.props.margin.bottom;
+	},
+	getAvailableWidth() {
+		return this.props.width - this.props.margin.left - this.props.margin.right;
 	},
 	getInitialState() {
 		return {};
@@ -20,27 +27,26 @@ var ChartCanvas = React.createClass({
 			margin: {top: 20, right: 30, bottom: 30, left: 80}
 		};
 	},
-	renderChildren(height, width) {
-		var children = this._renderChildren(this.props.children);
+	renderChildren() {
 
-		return React.Children.map(children, (child) => {
+		var children = React.Children.map(this.props.children, (child) => {
 			if (typeof child.type === 'string') return child;
 			var newChild = child;
 			return React.addons.cloneWithProps(newChild, {
-				_width: width
-				, _height: height
+				_width: this.getAvailableWidth()
+				, _height: this.getAvailableHeight()
 			});
 		});
+		return this._renderChildren(children);
 	},
 	render() {
-		var w = this.props.width - this.props.margin.left - this.props.margin.right;
-		var h = this.props.height - this.props.margin.top - this.props.margin.bottom;
+
 		var transform = 'translate(' + this.props.margin.left + ',' +  this.props.margin.top + ')';
 		var clipPath = '<clipPath id="chart-area-clip">'
-							+ '<rect x="0" y="0" width="' + w + '" height="' + h + '" />'
+							+ '<rect x="0" y="0" width="' + this.getAvailableWidth() + '" height="' + this.getAvailableHeight() + '" />'
 						+ '</clipPath>';
 
-		var children = this.renderChildren(h, w);
+		var children = this.renderChildren();
 
 		return (
 			<svg width={this.props.width} height={this.props.height}>

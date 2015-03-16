@@ -23,8 +23,8 @@ var EventCaptureMixin = {
 			.length > 0;
 	},
 	componentWillMount() {
-		//console.log('EventCaptureMixin.componentWillMount');
 		if (this.doesContainChart()) {
+			console.log('EventCaptureMixin.componentWillMount', this.state);
 			var eventStore = new Freezer({
 				mouseXY: [0, 0],
 				mouseOver: { value: false },
@@ -37,6 +37,21 @@ var EventCaptureMixin = {
 				charts: [],
 				updateMode: { immediate : true }
 			});
+
+			var passThroughProps;
+			if (this.isDataDransform && this.isDataDransform()) {
+				passThroughProps = this.transformData(this.props);
+			}
+
+			React.Children.forEach(this.props.children, (child) => {
+				if ("ReStock.Chart" === child.props.namespace) {
+					var _chartData = this.createChartData(child.props.id);
+					var charts = chartStore.get().charts.push(_chartData);
+
+					this.getChartDataFor(child, charts[charts.length - 1], this.props.data, this.props.data, passThroughProps)
+				}
+			})
+
 			var currentItemStore = new Freezer({
 				currentItems: [],
 				viewPortXRange: [],
@@ -49,7 +64,8 @@ var EventCaptureMixin = {
 					currentItemStore: currentItemStore,
 					zoomEventStore: zoomEventStore,
 					fullData: this.props.data,
-					data: this.props.data
+					data: this.props.data,
+					passThroughProps: passThroughProps
 				};
 			// console.log(stores);
 			this.setState(stores);
@@ -103,8 +119,26 @@ var EventCaptureMixin = {
 			this.state.chartStore.get().charts.forEach((chart) => {
 				this.updateCurrentItemForChart(chart);
 			});
-			
-			this.forceUpdate();
+			if (this.state.eventStore.get().pan) {
+				requestAnimationFrame(() => {
+					console.log('pan in progress...', this.state.eventStore.get().dx);
+					// get mainChart
+					// domain = mainChart.scales.xScale.domain(),
+					// domainRange = domain[1] - domain[0];
+					// get width of mainChart
+					// newDomainStart = Math.round(domain[0] - dx/width * domainRange)
+
+					// update the viewPortXRange
+					// this.state.currentItemStore.get().viewPortXRange
+
+					/*this.setState({
+						data: this.calculateViewableData()
+					})*/
+					this.forceUpdate();
+				});
+			} else {
+				this.forceUpdate();
+			}
 		}
 	},
 	componentWillReceiveProps(nextProps) {
@@ -112,7 +146,13 @@ var EventCaptureMixin = {
 		console.log('EventCaptureMixin.componentWillReceiveProps');
 		console.log('EventCaptureMixin.componentWillReceiveProps');
 		this.calculateViewableData();
-	},
+	},/*
+	componentWillUpdate() {
+		console.log('EventCaptureMixin.componentWillUpdate');
+		console.log('EventCaptureMixin.componentWillUpdate');
+		console.log('EventCaptureMixin.componentWillUpdate');
+		// this.calculateViewableData();
+	},*/
 	calculateViewableData() {
 		var xRange = this.state.currentItemStore.get().viewPortXRange;
 		if (xRange.length > 0) {
@@ -181,11 +221,25 @@ var EventCaptureMixin = {
 			}
 
 			this.state.currentItemStore.get().viewPortXRange.set([domainL, domainR]);
-			// console.log(domainL, domainR);
 
-			this.setState({
-				data: this.calculateViewableData()
-			})
+			requestAnimationFrame(() => {
+				var data = this.calculateViewableData();
+				// console.log(domainL, domainR);
+				var passThroughProps = this.state.passThroughProps;
+
+				React.Children.forEach(this.props.children, (child) => {
+					if ("ReStock.Chart" === child.props.namespace) {
+						var _chartData = this.getChartForId(child.props.id);
+
+						this.updateChartDataFor(child, _chartData, data)
+					}
+				})
+
+
+				this.setState({
+					data: data
+				})
+			});
 
 			// find mainChart
 			// get new domainL & R
@@ -237,7 +291,7 @@ var EventCaptureMixin = {
 		// console.log('begining to listen...', stores);
 
 		stores.eventStore.on('update', this.eventListener);
-		stores.chartStore.on('update', this.dataListener);
+		// stores.chartStore.on('update', this.dataListener);
 		stores.zoomEventStore.on('update', this.zoomEventListener);
 		// stores.chartStore.get().currentItem.getListener().on('update', this.dataListener);
 	},
@@ -305,10 +359,11 @@ var EventCaptureMixin = {
 		var newChild = child;
 		if ("ReStock.Chart" === child.props.namespace) {
 			if (this.state.eventStore && this.state.chartStore) {
-				var chart = this.getChartForId(newChild.props.id);
+				var _chartData = this.getChartForId(newChild.props.id);
+				// _chartData = this.getChartDataFor(newChild, _chartData, this.getData(), this.getFullData())
 				newChild = React.addons.cloneWithProps(newChild, {
 					_updateMode: this.state.chartStore.get().updateMode,
-					_chartData: chart,
+					_chartData: _chartData,
 					data: this.getData(),
 					fullData: this.getFullData()
 				});
@@ -331,7 +386,13 @@ var EventCaptureMixin = {
 			throw new Error(errorMessage);
 		}
 		if (filteredCharts.length === 0) {
-			var chart = {
+			charts = charts.push(createChartData(chartId));
+			return this.getChartForId(chartId);
+		}
+		return filteredCharts[0];
+	},
+	createChartData(chartId) {
+		var chart = {
 				id: chartId,
 				scales: { xScale: null, yScale: null },
 				accessors: { xAccessor: null, yAccessor: null },
@@ -340,10 +401,7 @@ var EventCaptureMixin = {
 				overlays: [],
 				overlayValues: []
 			};
-			charts = charts.push(chart);
-			return this.getChartForId(chartId);
-		}
-		return filteredCharts[0];
+		return chart;
 	},
 	getCurrentItemForChart(chartId) {
 		var currentItems = this.state.currentItemStore.get().currentItems;

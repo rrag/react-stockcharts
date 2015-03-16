@@ -49,14 +49,14 @@ var Chart = React.createClass({
 		_currentMouseXY: React.PropTypes.array,
 		_currentXYValue: React.PropTypes.array*/
 	},
-	//mixins: [PureRenderMixin],
+	mixins: [React.addons.PureRenderMixin],
 	getDefaultProps() {
 		return {
 			namespace: "ReStock.Chart",
 			transformDataAs: "none",
 			yDomainUpdate: true
 		};
-	},
+	},/*
 	identifyOverlaysToAdd(props) {
 		var overlaysToAdd = [];
 		React.Children.forEach(props.children, (child) => {
@@ -82,7 +82,7 @@ var Chart = React.createClass({
 		})
 		return overlaysToAdd;
 	},
-	componentWillMount() {
+	componentWillNOTMount() {
 		var _chartData = this.props._chartData;
 
 		var scales = this.defineScales(this.props);
@@ -116,7 +116,7 @@ var Chart = React.createClass({
 
 		this.setState({ chartData: _chartData });
 	},
-	componentWillReceiveProps(nextProps) {
+	componentWillNOTReceiveProps(nextProps) {
 		// ignoring  _mouseXY, _currentItem, _lastItem
 
 		var scaleRecalculationNeeded = (Chart.getWidth(this.props) !== Chart.getWidth(nextProps)
@@ -138,7 +138,7 @@ var Chart = React.createClass({
 			scaleRecalculationNeeded = true;
 		}
 		// console.log(this.props._chartData.overlays !== nextProps._chartData.overlays);
-		if (this.state.chartData.overlays !== overlays /* or if the data interval changes */) {
+		if (this.state.chartData.overlays !== overlays) { //or if the data interval changes
 			// TODO
 			// if any overlay.toBeRemoved = true then overlays.splice that one out
 			this.calculateOverlays(nextProps.fullData, overlays);
@@ -182,11 +182,6 @@ var Chart = React.createClass({
 		}
 	},
 	calculateOverlays(data, overlays) {
-		/*Object.keys(overlays)
-			.filter((key) => key.indexOf('overlay') > -1)
-			.forEach((overlay) => {
-				OverlayUtils.calculateOverlay(data, overlays[overlay]);
-			});*/
 		overlays
 			.filter((eachOverlay) => eachOverlay.id !== undefined)
 			.forEach((overlay) => {
@@ -209,7 +204,7 @@ var Chart = React.createClass({
 					id: eachOverlay.id,
 					first: OverlayUtils.firstDefined(data, eachOverlay.yAccessor),
 					last: OverlayUtils.lastDefined(data, eachOverlay.yAccessor)
-				})/**/
+				})
 			})
 		// console.log(_overlayValues);
 		return overlayValues;
@@ -279,7 +274,7 @@ var Chart = React.createClass({
 			xScale: xScale.copy(),
 			yScale: yScale.copy()
 		};
-	},
+	},*/
 	renderChildren() {
 		return React.Children.map(this.props.children, (child) => {
 			if (typeof child.type === 'string') return child;
@@ -288,8 +283,8 @@ var Chart = React.createClass({
 
 			var newChild = child;
 			newChild = React.addons.cloneWithProps(newChild, {
-				_xScale: this.state.chartData.scales.xScale,
-				_yScale: this.state.chartData.scales.yScale,
+				_xScale: this.props._chartData.scales.xScale,
+				_yScale: this.props._chartData.scales.yScale,
 				data: this.props.data,
 				_xAccessor: this.props._indexAccessor
 			});
@@ -308,18 +303,18 @@ var Chart = React.createClass({
 				//_showCurrent: this.props._showCurrent,
 				//_mouseXY: this.props._mouseXY,
 				//_currentItem: this.state.chartData.currentItem,
-				_lastItem: this.state.chartData.lastItem,
-				_firstItem: this.state.chartData.firstItem,
+				_lastItem: this.props._chartData.lastItem,
+				_firstItem: this.props._chartData.firstItem,
 				/*_currentMouseXY: this.props._currentMouseXY,
 				_currentXYValue: this.props._currentXYValue,*/
-				_overlays: this.state.chartData.overlays,
+				_overlays: this.props._chartData.overlays,
 				_updateMode: this.props._updateMode
 			});
 		}
 		return child;
 	},
 	render() {
-		// console.log(this.props._chartData.overlays);
+		console.log(this.props._chartData);
 		return (
 			<g>{this.renderChildren()}</g>
 		);

@@ -13,6 +13,9 @@ var EventCapture = React.createClass({
 		_eventStore: React.PropTypes.object.isRequired,
 		_zoomEventStore: React.PropTypes.object
 	},
+	getInitialState() {
+		return {};
+	},
 	getDefaultProps() {
 		return {
 			namespace: "ReStock.EventCapture"
@@ -49,24 +52,37 @@ var EventCapture = React.createClass({
 	},
 	handleMouseMove(e) {
 		if (this.props._eventStore && this.props.mouseMove) {
+			var eventData = this.props._eventStore.get();
 			var newPos = Utils.mousePosition(e);
-			var oldPos = this.props._eventStore.get().mouseXY;
+			var oldPos = eventData.mouseXY;
 			if (! (oldPos[0] === newPos[0] && oldPos[1] === newPos[1])) {
-				this.props._eventStore.get().mouseXY.set(newPos);
+				if (this.state.dragging) {
+					eventData = eventData.set({ dx: (newPos[0] - oldPos[0]) });
+				}
+				eventData = eventData.set( { mouseXY: newPos } );
+				eventData = eventData.set({ pan: this.state.dragging });
+				// console.log('eventData....', eventData);
 			}
 		}
 	},
 	handleMouseDown(e) {
 		if (this.props._eventStore) {
 			this.props._eventStore.get().inFocus.set({'value': true});
-			if (this.props.pan) {
-
+			if (this.props.pan && this.props._zoomEventStore) {
+				this.setState({
+					dragging: true/*,
+					dragOrigin: Utils.mousePosition(e)*/
+				})
+				// this.props._zoomEventStore.get().set({ dragging: true });
 			}
 		}
 		e.preventDefault();
 	},
 	handleMouseUp(e) {
-
+		if (this.props.pan && this.props._zoomEventStore) {
+			this.setState({ dragging: false/*, dragOrigin: [0, 0]*/ })
+		}
+		e.preventDefault();
 	},
 	render() {
 		return (

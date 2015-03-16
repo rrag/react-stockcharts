@@ -1,7 +1,8 @@
 'use strict';
 var React = require('react');
-var ChartTransformer = require('./utils/chart-transformer');
 var EventCaptureMixin = require('./mixin/event-capture-mixin');
+var ChartContainerMixin = require('./mixin/chart-container-mixin');
+var DataTransformMixin = require('./mixin/data-transform-mixin');
 
 var polyLinearTimeScale = require('./scale/polylineartimescale');
 
@@ -23,7 +24,7 @@ function updatePropsToChild(child, data, props, from, to) {
 }
 
 var DataTransform = React.createClass({
-	mixins: [EventCaptureMixin],
+	mixins: [DataTransformMixin, ChartContainerMixin, EventCaptureMixin],
 	propTypes: {
 		_height: React.PropTypes.number,
 		_width: React.PropTypes.number,
@@ -41,18 +42,7 @@ var DataTransform = React.createClass({
 			transformType: "none"
 		};
 	},
-	componentWillMount() {
-		this.transformData(this.props);
-	},
-	componentWillReceiveProps(nextProps) {
-		this.transformData(nextProps);
-	},
-	transformData(props) {
-		var transformer = ChartTransformer.getTransformerFor(props.transformType);
-		var passThroughProps = transformer(props.data, props.options)
 
-		this.setState({ passThroughProps: passThroughProps });
-	},
 	renderChildren(height, width) {
 		var children = React.Children.map(this.props.children, (child) => {
 			if (typeof child.type === 'string') return child;
