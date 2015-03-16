@@ -106,40 +106,76 @@ var EventCaptureMixin = {
 		//console.log('events updated...', d);
 		//this.state.chartStore.get().currentItem.set({value : new Date().getTime()});
 		if (this.state.chartStore.get().updateMode.immediate) {
-			//console.log('************UPDATING NOW**************');
-			/*requestAnimationFrame(function () {
-				// console.log('************UPDATING NOW**************');
-				this.state.chartStore.get().charts.forEach((chart) => {
-					this.updateCurrentItemForChart(chart);
-				});
-				
-				this.forceUpdate();
-			}.bind(this));*/
-			//console.log(this.state.zoomEventStore.get().zoom);
 			this.state.chartStore.get().charts.forEach((chart) => {
 				this.updateCurrentItemForChart(chart);
 			});
 			if (this.state.eventStore.get().pan) {
 				requestAnimationFrame(() => {
-					console.log('pan in progress...', this.state.eventStore.get().dx);
-					// get mainChart
-					// domain = mainChart.scales.xScale.domain(),
+
+					var mainChart = this.state.currentItemStore.get().mainChart;
+					var chart = this.getChartForId(mainChart);
+					var domain = chart.scales.xScale.domain();
+					var domainRange = domain[1] - domain[0];
+
 					// domainRange = domain[1] - domain[0];
 					// get width of mainChart
-					// newDomainStart = Math.round(domain[0] - dx/width * domainRange)
+					var last = this.state.fullData[this.state.fullData.length - 1];
+					var domainStart = Math.round(getLongValue(domain[0]) - this.state.eventStore.get().dx/chart.width * domainRange)
+					domainStart = Math.max( Math.floor(-domainRange/2), domainStart); //Math.max(chartData[0].index, domainStart);
+					domainStart = Math.min(getLongValue(chart.accessors.xAccessor(last))
+							+ Math.ceil(domainRange/2), domainStart + domainRange) - domainRange;
+
+					console.log('pan in progress...', this.state.eventStore.get().dx, domain[0], domainRange
+						, new Date(domainStart));
+
+					var domainL = domainStart, domainR = domainStart + domainRange
+					if (domain[0] instanceof Date) {
+						domainL = new Date(domainL);
+						domainR = new Date(domainR);
+					}
+
+					this.state.currentItemStore.get().viewPortXRange.set([domainL, domainR]);
+
+					var data = this.calculateViewableData();
 
 					// update the viewPortXRange
 					// this.state.currentItemStore.get().viewPortXRange
+					this.updateChartDataFor(chart, data)
+					var newXScale = this.updateXScaleDomain(chart.scales.xScale, [domainL, domainR])
 
-					/*this.setState({
-						data: this.calculateViewableData()
-					})*/
-					this.forceUpdate();
+					chart.scales.set({ xScale: newXScale });
+
+					this.setState({
+						data: data
+					})
+					// this.forceUpdate();
 				});
 			} else {
 				this.forceUpdate();
 			}
 		}
+	},
+	show(domainL, domainR, chart) {
+		var chartData = this.state.fullData;
+
+		// console.table(chartData);
+		// console.log(newDomainL, newDomainR);
+
+		// console.log(chartData.size(), newDomainL, newDomainR);
+		var drawableChartData = chartData.filter(function (d) {
+			return chart.accessors.xAccessor(d) >= domainL && chart.accessors.xAccessor(d) <= (domainR);
+		});
+		var start = chart.accessors.xAccessor(drawableChartData[0]),
+			end = chart.accessors.xAccessor(drawableChartData[drawableChartData.length - 1]);
+
+		for (var i = start - 1; i >= domainL; i--) {
+			drawableChartData.unshift({ index : i});
+		}
+		for (var i = end + 1; i <= domainR; i++) {
+			drawableChartData.push({ index : i});
+		}
+		this.state.viewRange = [domainL, domainR];
+		this.trigger(drawableChartData, this.state.interval, this.state.overlays);
 	},
 	componentWillReceiveProps(nextProps) {
 		console.log('EventCaptureMixin.componentWillReceiveProps');
@@ -231,7 +267,7 @@ var EventCaptureMixin = {
 					if ("ReStock.Chart" === child.props.namespace) {
 						var _chartData = this.getChartForId(child.props.id);
 
-						this.updateChartDataFor(child, _chartData, data)
+						this.updateChartDataFor(_chartData, data)
 					}
 				})
 
@@ -253,15 +289,6 @@ var EventCaptureMixin = {
 			// else
 			//		requestAnimationFrame and send down new data
 			//		update currentItem
-/*
-			requestAnimationFrame(function () {
-				this.state.chartStore.get().charts.forEach((chart) => {
-					this.updateCurrentItemForChart(chart);
-				});
-
-
-				this.forceUpdate();
-			}.bind(this));*/
 
 		}
 	},

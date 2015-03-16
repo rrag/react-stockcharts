@@ -303,8 +303,8 @@ var Chart = React.createClass({
 				//_showCurrent: this.props._showCurrent,
 				//_mouseXY: this.props._mouseXY,
 				//_currentItem: this.state.chartData.currentItem,
-				_lastItem: this.props._chartData.lastItem,
-				_firstItem: this.props._chartData.firstItem,
+				//_lastItem: this.props._chartData.lastItem,
+				//_firstItem: this.props._chartData.firstItem,
 				/*_currentMouseXY: this.props._currentMouseXY,
 				_currentXYValue: this.props._currentXYValue,*/
 				_overlays: this.props._chartData.overlays,
@@ -314,7 +314,7 @@ var Chart = React.createClass({
 		return child;
 	},
 	render() {
-		console.log(this.props._chartData);
+		// console.log(this.props._chartData);
 		return (
 			<g>{this.renderChildren()}</g>
 		);

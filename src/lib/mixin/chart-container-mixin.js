@@ -36,14 +36,20 @@ var ChartContainerMixin = {
 
 		var overlayYAccessors = pluck(keysAsArray(_chartData.overlays), 'yAccessor');
 
-		scales = this.updateScales(props
-			, [accessors.xAccessor]
+		_chartData = _chartData.set({
+				width: props.width || this.props._width || this.getAvailableWidth(),
+				height: props.height || this.props._height || this.getAvailableHeight()
+			})
+
+		scales = this.updateScales(
+			[accessors.xAccessor]
 			, [accessors.yAccessor].concat(overlayYAccessors)
 			, scales.xScale
 			, scales.yScale
 			, data
-			, this.props._width || this.getAvailableWidth()
-			, this.props._height || this.getAvailableHeight());
+			, _chartData.width
+			, _chartData.height
+			, true, true);
 
 		_chartData = _chartData.set({ accessors: accessors });
 		_chartData = _chartData.set({ scales: scales });
@@ -148,37 +154,42 @@ var ChartContainerMixin = {
 		// console.log(_overlayValues);
 		return overlayValues;
 	},
-	updateScales(props, xAccessors, yAccessors, xScale, yScale, data, width, height) {
+	updateScales(xAccessors, yAccessors, xScale, yScale, data, width, height, xDomainUpdate, yDomainUpdate) {
 		console.log('updateScales');
 
 		var result = ScaleUtils.flattenData(data, xAccessors, yAccessors);
 
-		if (props.xScale === undefined || props.xDomainUpdate) {
-			xScale.range([0, props.width || width]);
+		if (xDomainUpdate) {
+			xScale.range([0, width]);
 			// if polylinear scale then set data
-			if (xScale.data !== undefined) {
-				xScale.data(data);
-			} else {
-				// else set the domain
-				xScale.domain(d3.extent(result.xValues));
-			}
+			xScale = this.updateXScaleDomain(xScale, d3.extent(result.xValues), data)
 		}
 
-		if (props.yScale === undefined || props.yDomainUpdate) {
-			yScale.range([props.height || height, 0]);
+		if (yDomainUpdate) {
+			yScale.range([height, 0]);
 			var domain = d3.extent(result.yValues);
 			//var extraPadding = Math.abs(domain[0] - domain[1]) * 0.05;
 			//yScale.domain([domain[0] - extraPadding, domain[1] + extraPadding]);
 			yScale.domain(domain);
 		}
 		return {
-			xScale: xScale.copy(),
+			xScale: xScale,
 			yScale: yScale.copy()
 		};
 	},
-	updateChartDataFor(chartComponent, _chartData, data) {
-		var props = chartComponent.props;
+	updateXScaleDomain(xScale, domain, data) {
+		if (xScale.isPolyLinear && xScale.isPolyLinear()) {
+			xScale.data(data);
+		} else {
+			// else set the domain
+			xScale.domain(domain);
+		}
+		return xScale.copy();
+	},
+	updateyScaleDomain(yScale) {
 
+	},
+	updateChartDataFor(_chartData, data) {
 		var scales = _chartData.scales;
 
 		var accessors = _chartData.accessors;
@@ -188,14 +199,15 @@ var ChartContainerMixin = {
 
 		var overlayYAccessors = pluck(keysAsArray(_chartData.overlays), 'yAccessor');
 
-		scales = this.updateScales(props
-			, [accessors.xAccessor]
+		scales = this.updateScales(
+			[accessors.xAccessor]
 			, [accessors.yAccessor].concat(overlayYAccessors)
 			, scales.xScale
 			, scales.yScale
 			, data
-			, this.props._width || this.getAvailableWidth()
-			, this.props._height || this.getAvailableHeight());
+			, _chartData.width
+			, _chartData.height
+			, true, true);
 
 		_chartData = _chartData.set({ scales: scales });
 

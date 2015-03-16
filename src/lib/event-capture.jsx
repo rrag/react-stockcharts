@@ -33,7 +33,10 @@ var EventCapture = React.createClass({
 	handleLeave() {
 		if (this.props._eventStore) {
 			// console.log('out');
+			var eventData = this.props._eventStore.get();
 			this.props._eventStore.get().mouseOver.set({'value': false});
+			this.props._eventStore.get().set({ pan: false });
+			this.setState({ dragging: false })
 		}
 	},
 	handleWheel(e) {
@@ -57,7 +60,7 @@ var EventCapture = React.createClass({
 			var oldPos = eventData.mouseXY;
 			if (! (oldPos[0] === newPos[0] && oldPos[1] === newPos[1])) {
 				if (this.state.dragging) {
-					eventData = eventData.set({ dx: (newPos[0] - oldPos[0]) });
+					eventData = eventData.set({ dx: (newPos[0] - oldPos[0]) * 2.5 });
 				}
 				eventData = eventData.set( { mouseXY: newPos } );
 				eventData = eventData.set({ pan: this.state.dragging });
