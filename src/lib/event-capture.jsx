@@ -60,7 +60,7 @@ var EventCapture = React.createClass({
 			var oldPos = eventData.mouseXY;
 			if (! (oldPos[0] === newPos[0] && oldPos[1] === newPos[1])) {
 				if (this.state.dragging) {
-					eventData = eventData.set({ dx: (newPos[0] - oldPos[0]) * 2.5 });
+					eventData = eventData.set({ dx: (newPos[0] - oldPos[0]) * 1.5 });
 				}
 				eventData = eventData.set( { mouseXY: newPos } );
 				eventData = eventData.set({ pan: this.state.dragging });

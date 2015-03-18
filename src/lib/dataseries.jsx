@@ -94,7 +94,7 @@ var DataSeries = React.createClass({
 		//throw new Error();
 		// console.log('rendering dataseries...');
 		return (
-			<g>{this.renderChildren()}</g>
+			<g  style={{ "clipPath": "url(#chart-area-clip)" }}>{this.renderChildren()}</g>
 		);
 	}
 });

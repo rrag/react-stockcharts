@@ -186,9 +186,7 @@ var ChartContainerMixin = {
 		}
 		return xScale.copy();
 	},
-	updateyScaleDomain(yScale) {
 
-	},
 	updateChartDataFor(_chartData, data) {
 		var scales = _chartData.scales;
 

@@ -140,10 +140,11 @@ var EventCaptureMixin = {
 
 					// update the viewPortXRange
 					// this.state.currentItemStore.get().viewPortXRange
-					this.updateChartDataFor(chart, data)
-					var newXScale = this.updateXScaleDomain(chart.scales.xScale, [domainL, domainR])
+					chart = this.updateChartDataFor(chart, data)
+					chart.scales.xScale.domain([domainL, domainR]);
+					//var newXScale = this.updateXScaleDomain(chart.scales.xScale, [domainL, domainR])
 
-					chart.scales.set({ xScale: newXScale });
+					//chart.scales.set({ xScale: newXScale });
 
 					this.setState({
 						data: data
