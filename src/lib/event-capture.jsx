@@ -7,7 +7,9 @@ var EventCapture = React.createClass({
 		mainChart: React.PropTypes.number.isRequired,
 		mouseMove: React.PropTypes.bool.isRequired,
 		zoom: React.PropTypes.bool.isRequired,
+		zoomMultiplier: React.PropTypes.number.isRequired,
 		pan: React.PropTypes.bool.isRequired,
+		panSpeedMultiplier: React.PropTypes.number.isRequired,
 		_height: React.PropTypes.number.isRequired,
 		_width: React.PropTypes.number.isRequired,
 		_eventStore: React.PropTypes.object.isRequired,
@@ -21,7 +23,9 @@ var EventCapture = React.createClass({
 			namespace: "ReStock.EventCapture"
 			, mouseMove: false
 			, zoom: false
+			, zoomMultiplier: 1
 			, pan: false
+			, panSpeedMultiplier: 1.3
 		}
 	},
 	handleEnter() {
@@ -46,8 +50,7 @@ var EventCapture = React.createClass({
 				&& this.props._zoomEventStore) {
 			e.stopPropagation();
 			e.preventDefault();
-			var speed = 1,
-				zoomDir = e.deltaY > 0 ? speed : -speed;
+			var zoomDir = e.deltaY > 0 ? this.props.zoomMultiplier : -this.props.zoomMultiplier;
 			//console.log(zoomDir);
 
 			this.props._zoomEventStore.get().set({ zoom : zoomDir });
@@ -60,7 +63,7 @@ var EventCapture = React.createClass({
 			var oldPos = eventData.mouseXY;
 			if (! (oldPos[0] === newPos[0] && oldPos[1] === newPos[1])) {
 				if (this.state.dragging) {
-					eventData = eventData.set({ dx: (newPos[0] - oldPos[0]) * 1.5 });
+					eventData = eventData.set({ dx: (newPos[0] - oldPos[0]) * this.props.panSpeedMultiplier });
 				}
 				eventData = eventData.set( { mouseXY: newPos } );
 				eventData = eventData.set({ pan: this.state.dragging });

@@ -120,10 +120,17 @@ var EventCaptureMixin = {
 					// domainRange = domain[1] - domain[0];
 					// get width of mainChart
 					var last = this.state.fullData[this.state.fullData.length - 1];
+					var first = this.state.fullData[0];
+
 					var domainStart = Math.round(getLongValue(domain[0]) - this.state.eventStore.get().dx/chart.width * domainRange)
-					domainStart = Math.max( Math.floor(-domainRange/2), domainStart); //Math.max(chartData[0].index, domainStart);
-					domainStart = Math.min(getLongValue(chart.accessors.xAccessor(last))
+					if (domainStart < getLongValue(chart.accessors.xAccessor(first)) - Math.floor(domainRange/2)) {
+						domainStart = getLongValue(chart.accessors.xAccessor(first)) - Math.floor(domainRange/2)
+						console.log('domainstart..........');
+					} else {
+						domainStart = Math.min(getLongValue(chart.accessors.xAccessor(last))
 							+ Math.ceil(domainRange/2), domainStart + domainRange) - domainRange;
+					}
+					
 
 					console.log('pan in progress...', this.state.eventStore.get().dx, domain[0], domainRange
 						, new Date(domainStart));
@@ -196,8 +203,11 @@ var EventCaptureMixin = {
 			var mainChart = this.state.currentItemStore.get().mainChart,
 				chart = this.getChartForId(mainChart);
 			var data = this.getFullData();
-			var filteredData = [];
-			for (var i = 0; i < data.length - 1; i++) {
+			var filteredData = data.filter((each) => {
+				return chart.accessors.xAccessor(each) > xRange[0]
+					&& chart.accessors.xAccessor(each) < xRange[1];
+			});
+			/*for (var i = 0; i < data.length - 1; i++) {
 				var each = data[i];
 				var nextEach = data[i + 1];
 
@@ -223,7 +233,7 @@ var EventCaptureMixin = {
 
 			if (filteredData.length < 5) {
 				return this.state.data
-			}
+			}*/
 			return filteredData;
 		}
 		return this.getFullData();
