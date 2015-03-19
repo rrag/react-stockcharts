@@ -21,7 +21,7 @@ var ChartContainerMixin = {
 	getChartDataFor(chartComponent, _chartData, data, fullData, passThroughProps) {
 		var props = chartComponent.props;
 
-		var scales = this.defineScales(props, data);
+		var scales = this.defineScales(props, data, passThroughProps);
 
 		var accessors = this.getXYAccessors(props, passThroughProps);
 		// identify overlays
@@ -61,9 +61,11 @@ var ChartContainerMixin = {
 		_chartData = _chartData.set({ firstItem: first });
 		return _chartData;
 	},
-	defineScales(props, data, xScaleFromState, yScaleFromState) {
-		var xScale = props.xScale || xScaleFromState || props._xScale,
-			yScale = props.yScale || yScaleFromState;
+	defineScales(props, data, passThroughProps) {
+		var xScale = props.xScale || props._xScale,
+			yScale = props.yScale;
+
+		if (xScale === undefined && passThroughProps) xScale = passThroughProps._xScale;
 
 		if (xScale === undefined) {
 			var each = data[0];
