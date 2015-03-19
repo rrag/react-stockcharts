@@ -24,7 +24,7 @@ var EventCaptureMixin = {
 	},
 	componentWillMount() {
 		if (this.doesContainChart()) {
-			console.log('EventCaptureMixin.componentWillMount', this.state);
+			// console.log('EventCaptureMixin.componentWillMount', this.state);
 			var eventStore = new Freezer({
 				mouseXY: [0, 0],
 				mouseOver: { value: false },
@@ -123,17 +123,16 @@ var EventCaptureMixin = {
 					var first = this.state.fullData[0];
 
 					var domainStart = Math.round(getLongValue(domain[0]) - this.state.eventStore.get().dx/chart.width * domainRange)
-					if (domainStart < getLongValue(chart.accessors.xAccessor(first)) - Math.floor(domainRange/2)) {
-						domainStart = getLongValue(chart.accessors.xAccessor(first)) - Math.floor(domainRange/2)
-						console.log('domainstart..........');
+					if (domainStart < getLongValue(chart.accessors.xAccessor(first)) - Math.floor(domainRange/3)) {
+						domainStart = getLongValue(chart.accessors.xAccessor(first)) - Math.floor(domainRange/3)
 					} else {
 						domainStart = Math.min(getLongValue(chart.accessors.xAccessor(last))
-							+ Math.ceil(domainRange/2), domainStart + domainRange) - domainRange;
+							+ Math.ceil(domainRange/3), domainStart + domainRange) - domainRange;
 					}
 					
 
-					console.log('pan in progress...', this.state.eventStore.get().dx, domain[0], domainRange
-						, new Date(domainStart));
+					/*console.log('pan in progress...', this.state.eventStore.get().dx, domain[0], domainRange
+						, new Date(domainStart));*/
 
 					var domainL = domainStart, domainR = domainStart + domainRange
 					if (domain[0] instanceof Date) {
@@ -163,40 +162,12 @@ var EventCaptureMixin = {
 			}
 		}
 	},
-	show(domainL, domainR, chart) {
-		var chartData = this.state.fullData;
-
-		// console.table(chartData);
-		// console.log(newDomainL, newDomainR);
-
-		// console.log(chartData.size(), newDomainL, newDomainR);
-		var drawableChartData = chartData.filter(function (d) {
-			return chart.accessors.xAccessor(d) >= domainL && chart.accessors.xAccessor(d) <= (domainR);
-		});
-		var start = chart.accessors.xAccessor(drawableChartData[0]),
-			end = chart.accessors.xAccessor(drawableChartData[drawableChartData.length - 1]);
-
-		for (var i = start - 1; i >= domainL; i--) {
-			drawableChartData.unshift({ index : i});
-		}
-		for (var i = end + 1; i <= domainR; i++) {
-			drawableChartData.push({ index : i});
-		}
-		this.state.viewRange = [domainL, domainR];
-		this.trigger(drawableChartData, this.state.interval, this.state.overlays);
-	},
 	componentWillReceiveProps(nextProps) {
 		console.log('EventCaptureMixin.componentWillReceiveProps');
 		console.log('EventCaptureMixin.componentWillReceiveProps');
 		console.log('EventCaptureMixin.componentWillReceiveProps');
 		this.calculateViewableData();
-	},/*
-	componentWillUpdate() {
-		console.log('EventCaptureMixin.componentWillUpdate');
-		console.log('EventCaptureMixin.componentWillUpdate');
-		console.log('EventCaptureMixin.componentWillUpdate');
-		// this.calculateViewableData();
-	},*/
+	},
 	calculateViewableData() {
 		var xRange = this.state.currentItemStore.get().viewPortXRange;
 		if (xRange.length > 0) {
@@ -207,33 +178,9 @@ var EventCaptureMixin = {
 				return chart.accessors.xAccessor(each) > xRange[0]
 					&& chart.accessors.xAccessor(each) < xRange[1];
 			});
-			/*for (var i = 0; i < data.length - 1; i++) {
-				var each = data[i];
-				var nextEach = data[i + 1];
-
-				if (chart.accessors.xAccessor(each) > xRange[0]
-					&& chart.accessors.xAccessor(each) < xRange[1]) {
-					filteredData.push(each);
-				}
-
-				if (filteredData.length > 0 
-						&& chart.accessors.xAccessor(each) < xRange[1]
-						&& chart.accessors.xAccessor(nextEach) > xRange[1]) {
-					filteredData.push(nextEach);
-					break;
-				}
-
-				if (filteredData.length == 0 
-						&& chart.accessors.xAccessor(each) < xRange[0]
-						&& chart.accessors.xAccessor(nextEach) > xRange[0]) {
-					filteredData.push(each);
-				}
-			}
-			// console.log(filteredData.length);
-
 			if (filteredData.length < 5) {
 				return this.state.data
-			}*/
+			}
 			return filteredData;
 		}
 		return this.getFullData();
@@ -262,6 +209,13 @@ var EventCaptureMixin = {
 				domainL = (getLongValue(centerX) - ( leftX * zoom)),
 				domainR = (getLongValue(centerX) + (rightX * zoom));
 
+			var domainRange = Math.abs(domain[1] - domain[0]);
+			var last = this.state.fullData[this.state.fullData.length - 1];
+			var first = this.state.fullData[0];
+
+			domainL = Math.max(getLongValue(chart.accessors.xAccessor(first)) - Math.floor(domainRange/3), domainL)
+			domainR = Math.min(getLongValue(chart.accessors.xAccessor(last)) + Math.floor(domainRange/3), domainR)
+
 			if (centerX instanceof Date) {
 				domainL = new Date(domainL);
 				domainR = new Date(domainR);
@@ -278,7 +232,8 @@ var EventCaptureMixin = {
 					if ("ReStock.Chart" === child.props.namespace) {
 						var _chartData = this.getChartForId(child.props.id);
 
-						this.updateChartDataFor(_chartData, data)
+						_chartData = this.updateChartDataFor(_chartData, data)
+						_chartData.scales.xScale.domain([domainL, domainR]);
 					}
 				})
 

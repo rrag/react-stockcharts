@@ -138,7 +138,7 @@ var ChartContainerMixin = {
 	updateOverlayFirstLast(data,
 		overlays) {
 
-		console.log('updateOverlayFirstLast');
+		// console.log('updateOverlayFirstLast');
 
 		var overlayValues = [];
 

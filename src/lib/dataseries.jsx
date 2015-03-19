@@ -37,32 +37,7 @@ var DataSeries = React.createClass({
 		return {
 			namespace: "ReStock.DataSeries"
 		};
-	},/*
-	componentWillReceiveProps(nextProps) {
-
-		var xAccessor = nextProps.xAccessor || nextProps._xAccessor;
-		var yAccessor = nextProps.yAccessor;
-		// do this only when the (first or last) data or xScale or yScale is different, FIXME later
-		if (false) {
-			if (nextProps._lastItem) {
-				var last = Utils.cloneMe(nextProps.data[nextProps.data.length - 1]);
-				var lastItem = nextProps._lastItem.reset(last);
-			}
-			if (nextProps._firstItem) {
-				var first = Utils.cloneMe(nextProps.data[0]);
-				var firstItem = nextProps._firstItem.reset(first);
-			}
-		}
 	},
-	componentWillMount() {
-		var last = Utils.cloneMe(this.props.data[this.props.data.length - 1]);
-		var lastItem = this.props._lastItem.reset(last);
-		// console.log(lastItem);
-
-		var first = Utils.cloneMe(this.props.data[0]);
-		var firstItem = this.props._firstItem.reset(first);
-		// console.log(firstItem);
-	},*/
 	renderChildren() {
 		var newChildren = React.Children.map(this.props.children, (child) => {
 			var newChild = child;
