@@ -170,15 +170,21 @@ var EventCaptureMixin = {
 	},
 	calculateViewableData() {
 		var xRange = this.state.currentItemStore.get().viewPortXRange;
+
 		if (xRange.length > 0) {
 			var mainChart = this.state.currentItemStore.get().mainChart,
 				chart = this.getChartForId(mainChart);
 			var data = this.getFullData();
-			var filteredData = data.filter((each) => {
-				return chart.accessors.xAccessor(each) > xRange[0]
-					&& chart.accessors.xAccessor(each) < xRange[1];
-			});
+
+			var leftX = Utils.getClosestItemIndexes(data, xRange[0], chart.accessors.xAccessor);
+			var rightX = Utils.getClosestItemIndexes(data, xRange[1], chart.accessors.xAccessor);
+
+			var filteredData = data.slice(leftX.left, rightX.right);
 			if (filteredData.length < 5) {
+				var l = getLongValue(chart.accessors.xAccessor(this.state.data[0]));
+				var r = getLongValue(chart.accessors.xAccessor(this.state.data[this.state.data.length - 1]));
+				this.state.currentItemStore.get().set({ viewPortXRange : [l, r] });
+
 				return this.state.data
 			}
 			return filteredData;
@@ -233,7 +239,7 @@ var EventCaptureMixin = {
 						var _chartData = this.getChartForId(child.props.id);
 
 						_chartData = this.updateChartDataFor(_chartData, data)
-						_chartData.scales.xScale.domain([domainL, domainR]);
+						_chartData.scales.xScale.domain(this.state.currentItemStore.get().viewPortXRange);
 					}
 				})
 

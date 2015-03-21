@@ -21,6 +21,11 @@ var EventCapture = React.createClass({
 			dragOrigin: [0, 0]
 		};
 	},
+	componentWillMount: function () {
+		this.setState({
+			className: this.props.className
+		});
+	},
 	getDefaultProps() {
 		return {
 			namespace: "ReStock.EventCapture"
@@ -29,6 +34,7 @@ var EventCapture = React.createClass({
 			, zoomMultiplier: 1
 			, pan: false
 			, panSpeedMultiplier: 1
+			, className: "crosshair"
 		}
 	},
 	handleEnter() {
@@ -86,7 +92,8 @@ var EventCapture = React.createClass({
 				this.setState({
 					dragging: true,
 					dragOrigin: Utils.mousePosition(e),
-					dragOriginDomain: this.props._chartData.scales.xScale.domain()
+					dragOriginDomain: this.props._chartData.scales.xScale.domain(),
+					className: "grabbing"
 				})
 			}
 		}
@@ -94,13 +101,19 @@ var EventCapture = React.createClass({
 	},
 	handleMouseUp(e) {
 		if (this.props.pan && this.props._zoomEventStore) {
-			this.setState({ dragging: false, dragOrigin: [0, 0] })
+			this.setState({
+				dragging: false,
+				dragOrigin: [0, 0],
+				className: this.props.className
+			})
 		}
 		e.preventDefault();
 	},
 	render() {
 		return (
-			<rect width={this.props._width} height={this.props._height} style={{opacity: 0}}
+			<rect 
+				className={this.state.className}
+				width={this.props._width} height={this.props._height} style={{opacity: 0}}
 				onMouseEnter={this.handleEnter}
 				onMouseLeave={this.handleLeave}
 				onMouseMove={this.handleMouseMove}
