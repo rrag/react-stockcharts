@@ -10,13 +10,16 @@ var EventCapture = React.createClass({
 		zoomMultiplier: React.PropTypes.number.isRequired,
 		pan: React.PropTypes.bool.isRequired,
 		panSpeedMultiplier: React.PropTypes.number.isRequired,
+		_chartData: React.PropTypes.object.isRequired,
 		_height: React.PropTypes.number.isRequired,
 		_width: React.PropTypes.number.isRequired,
 		_eventStore: React.PropTypes.object.isRequired,
 		_zoomEventStore: React.PropTypes.object
 	},
 	getInitialState() {
-		return {};
+		return {
+			dragOrigin: [0, 0]
+		};
 	},
 	getDefaultProps() {
 		return {
@@ -25,7 +28,7 @@ var EventCapture = React.createClass({
 			, zoom: false
 			, zoomMultiplier: 1
 			, pan: false
-			, panSpeedMultiplier: 1.3
+			, panSpeedMultiplier: 1
 		}
 	},
 	handleEnter() {
@@ -60,10 +63,15 @@ var EventCapture = React.createClass({
 		if (this.props._eventStore && this.props.mouseMove) {
 			var eventData = this.props._eventStore.get();
 			var newPos = Utils.mousePosition(e);
-			var oldPos = eventData.mouseXY;
-			if (! (oldPos[0] === newPos[0] && oldPos[1] === newPos[1])) {
+			//var oldPos = eventData.mouseXY;
+			var startPos = this.state.dragOrigin;
+			if (! (startPos[0] === newPos[0] && startPos[1] === newPos[1])) {
 				if (this.state.dragging) {
-					eventData = eventData.set({ dx: (newPos[0] - oldPos[0]) * this.props.panSpeedMultiplier });
+					eventData = eventData.set({
+						dx: (newPos[0] - startPos[0]) * this.props.panSpeedMultiplier,
+						dragOriginDomain: this.state.dragOriginDomain
+					});
+
 				}
 				eventData = eventData.set( { mouseXY: newPos } );
 				eventData = eventData.set({ pan: this.state.dragging });
@@ -76,17 +84,17 @@ var EventCapture = React.createClass({
 			this.props._eventStore.get().inFocus.set({'value': true});
 			if (this.props.pan && this.props._zoomEventStore) {
 				this.setState({
-					dragging: true/*,
-					dragOrigin: Utils.mousePosition(e)*/
+					dragging: true,
+					dragOrigin: Utils.mousePosition(e),
+					dragOriginDomain: this.props._chartData.scales.xScale.domain()
 				})
-				// this.props._zoomEventStore.get().set({ dragging: true });
 			}
 		}
 		e.preventDefault();
 	},
 	handleMouseUp(e) {
 		if (this.props.pan && this.props._zoomEventStore) {
-			this.setState({ dragging: false/*, dragOrigin: [0, 0]*/ })
+			this.setState({ dragging: false, dragOrigin: [0, 0] })
 		}
 		e.preventDefault();
 	},

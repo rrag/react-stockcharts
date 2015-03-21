@@ -114,7 +114,8 @@ var EventCaptureMixin = {
 
 					var mainChart = this.state.currentItemStore.get().mainChart;
 					var chart = this.getChartForId(mainChart);
-					var domain = chart.scales.xScale.domain();
+					//var domain = chart.scales.xScale.domain();
+					var domain = this.state.eventStore.get().dragOriginDomain;
 					var domainRange = domain[1] - domain[0];
 
 					// domainRange = domain[1] - domain[0];
@@ -129,7 +130,6 @@ var EventCaptureMixin = {
 						domainStart = Math.min(getLongValue(chart.accessors.xAccessor(last))
 							+ Math.ceil(domainRange/3), domainStart + domainRange) - domainRange;
 					}
-					
 
 					/*console.log('pan in progress...', this.state.eventStore.get().dx, domain[0], domainRange
 						, new Date(domainStart));*/
@@ -152,7 +152,7 @@ var EventCaptureMixin = {
 
 					//chart.scales.set({ xScale: newXScale });
 
-					this.setState({
+					/**/this.setState({
 						data: data
 					})
 					// this.forceUpdate();
@@ -298,7 +298,8 @@ var EventCaptureMixin = {
 			}
 			return React.addons.cloneWithProps(child, {
 				_eventStore: this.state.eventStore,
-				_zoomEventStore: this.state.zoomEventStore
+				_zoomEventStore: this.state.zoomEventStore,
+				_chartData: this.getChartForId(child.props.mainChart)
 			}); 
 		}
 		return child;
