@@ -3,7 +3,7 @@
 var React = require('react');
 var d3 = require('d3');
 
-var ReStock = require('../../src/');
+var ReStock = require('src/');
 
 var ChartCanvas = ReStock.ChartCanvas
 	, XAxis = ReStock.XAxis
@@ -15,13 +15,11 @@ var ChartCanvas = ReStock.ChartCanvas
 	, EventCapture = ReStock.EventCapture
 	, MouseCoordinates = ReStock.MouseCoordinates
 	, CrossHair = ReStock.CrossHair
-	, TooltipContainer = ReStock.TooltipContainer
-	, OHLCTooltip = ReStock.OHLCTooltip
 ;
 
 module.exports = {
 	init(data) {
-		var AreaChartWithToolTip = React.createClass({
+		var AreaChartWithCrossHairMousePointer = React.createClass({
 			getInitialState() {
 				return {
 					width: 500,
@@ -35,26 +33,23 @@ module.exports = {
 
 				return (
 					<ChartCanvas data={data} width={this.state.width} height={this.state.height} margin={{left: 5, right: 90, top:10, bottom: 30}}>
-						<Chart id={1}>
+						<Chart id={3}>
 							<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 							<YAxis axisAt="right" orient="right" />
 							<DataSeries yAccessor={(d) => d.close} xAccessor={(d) => d.date}>
 								<AreaSeries />
 							</DataSeries>
 						</Chart>
-						<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
+						<MouseCoordinates forChart={3} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
 							<CrossHair />
 						</MouseCoordinates>
-						<EventCapture mouseMove={true} mainChart={1} />
-						<TooltipContainer>
-							<OHLCTooltip forChart={1} />
-						</TooltipContainer>
+						<EventCapture mouseMove={true} mainChart={3}/>
 					</ChartCanvas>
 				);
 			}
 		});
 
-		return AreaChartWithToolTip;
+		return AreaChartWithCrossHairMousePointer;
 	}
 }
 
@@ -63,7 +58,6 @@ module.exports = {
 		this.setState({
 			width: this.state.width + 10
 		});
-	},							<OHLCTooltip xDisplayFormat={dateFormat} accessor={(d) => {return {open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume}}}/>
-
+	},
 		<rect width={100} height={100} onClick={this.changeWidth}/>
 */

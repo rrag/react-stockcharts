@@ -1,6 +1,7 @@
 var webpack = require('webpack');
 
 module.exports = {
+	context: __dirname,
 	entry: [
 		'./src/index.js'
 	],
@@ -36,6 +37,7 @@ module.exports = {
 		typographer: true
 	},
 	resolve: {
+		root: __dirname,
 		extensions: ['', '.js', '.jsx', '.scss', '.md']
 	},
 	node: {

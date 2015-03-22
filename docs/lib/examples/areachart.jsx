@@ -2,7 +2,7 @@
 
 var React = require('react');
 
-var ReStock = require('../../src/');
+var ReStock = require('src/');
 
 var ChartCanvas = ReStock.ChartCanvas
 	, XAxis = ReStock.XAxis

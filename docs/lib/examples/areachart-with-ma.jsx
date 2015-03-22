@@ -3,7 +3,7 @@
 var React = require('react');
 var d3 = require('d3');
 
-var ReStock = require('../../src/');
+var ReStock = require('src/');
 
 var ChartCanvas = ReStock.ChartCanvas
 	, XAxis = ReStock.XAxis
@@ -19,27 +19,18 @@ var ChartCanvas = ReStock.ChartCanvas
 	, OHLCTooltip = ReStock.OHLCTooltip
 	, OverlaySeries = ReStock.OverlaySeries
 	, LineSeries = ReStock.LineSeries
-	, MovingAverageTooltip = ReStock.MovingAverageTooltip
-	, EdgeContainer = ReStock.EdgeContainer
-	, EdgeIndicator = ReStock.EdgeIndicator
 	, CurrentCoordinate = ReStock.CurrentCoordinate
-
+	, MovingAverageTooltip = ReStock.MovingAverageTooltip
 ;
 
 module.exports = {
 	init(data) {
-		var AreaChartWithEdgeCoordinates = React.createClass({
+		var AreaChartWithMA = React.createClass({
 			getInitialState() {
 				return {
 					width: 500,
 					height: 400
 				};
-			},
-			getEventStore() {
-				return this.refs.eventStore.getEventStore();
-			},
-			updateEventStore(eventStore) {
-				return this.refs.eventStore.updateEventStore(eventStore);
 			},
 			handleMATooltipClick(overlay) {
 				console.log('You clicked on ', overlay, ' handle your onclick event here...');
@@ -50,10 +41,8 @@ module.exports = {
 				var dateFormat = d3.time.format("%Y-%m-%d");
 
 				return (
-					<ChartCanvas 
-						width={this.state.width} height={this.state.height}
-						margin={{left: 5, right: 90, top:10, bottom: 30}} data={data} ref="eventStore">
-						<Chart id={1} >
+					<ChartCanvas data={data} width={this.state.width} height={this.state.height} margin={{left: 5, right: 90, top:10, bottom: 30}}>
+						<Chart id={1}>
 							<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 							<YAxis axisAt="right" orient="right" />
 							<DataSeries yAccessor={(d) => d.close} xAccessor={(d) => d.date}>
@@ -76,25 +65,6 @@ module.exports = {
 							</DataSeries>
 						</Chart>
 						<CurrentCoordinate forChart={1} />
-						<CurrentCoordinate forChart={1} forOverlay={1} />
-						<EdgeContainer>
-							<EdgeIndicator
-								className="horizontal"
-								itemType="last"
-								orient="right"
-								edgeAt="right"
-								forChart={1}
-								forOverlay={1}
-								/>
-							<EdgeIndicator
-								className="horizontal"
-								itemType="last"
-								orient="right"
-								edgeAt="right"
-								forChart={1}
-								forOverlay={5}
-								/>
-						</EdgeContainer>
 						<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
 							<CrossHair />
 						</MouseCoordinates>
@@ -108,36 +78,6 @@ module.exports = {
 			}
 		});
 
-		return AreaChartWithEdgeCoordinates;
+		return AreaChartWithMA;
 	}
 }
-
-/*
-
-							
-							
-
-						<EdgeContainer>
-
-						</EdgeContainer>
-
-
-							<EdgeIndicator
-								type="horizontal"
-								className="horizontal"
-								itemType="last"
-								orient="right"
-								edgeAt="right"
-								forSeries={1}
-								displayFormat={(d) => (d)}
-								/>
-							<EdgeIndicator
-								type="horizontal"
-								className="horizontal"
-								itemType="first"
-								orient="left"
-								edgeAt="left"
-								forSeries={1}
-								displayFormat={(d) => (d)}
-								/>
-*/

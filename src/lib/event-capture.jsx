@@ -21,7 +21,7 @@ var EventCapture = React.createClass({
 			dragOrigin: [0, 0]
 		};
 	},
-	componentWillMount: function () {
+	componentWillMount() {
 		this.setState({
 			className: this.props.className
 		});
@@ -49,7 +49,11 @@ var EventCapture = React.createClass({
 			var eventData = this.props._eventStore.get();
 			this.props._eventStore.get().mouseOver.set({'value': false});
 			this.props._eventStore.get().set({ pan: false });
-			this.setState({ dragging: false })
+			this.setState({
+				dragging: false,
+				dragOrigin: [0, 0],
+				className: this.props.className
+			})
 		}
 	},
 	handleWheel(e) {

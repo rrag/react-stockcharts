@@ -3,7 +3,7 @@
 var React = require('react');
 var d3 = require('d3');
 
-var ReStock = require('../../src/');
+var ReStock = require('src/');
 
 var ChartCanvas = ReStock.ChartCanvas
 	, XAxis = ReStock.XAxis
@@ -28,7 +28,7 @@ var ChartCanvas = ReStock.ChartCanvas
 
 module.exports = {
 	init(data) {
-		var AreaChartWithZoom = React.createClass({
+		var AreaChartWithZoomPan = React.createClass({
 			getInitialState() {
 				return {
 					width: 500,
@@ -122,7 +122,7 @@ module.exports = {
 						<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
 							<CrossHair />
 						</MouseCoordinates>
-						<EventCapture mouseMove={true} zoom={true} mainChart={1}/>
+						<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1}/>
 						<TooltipContainer>
 							<OHLCTooltip forChart={1} origin={[-60, -20]}/>
 							<MovingAverageTooltip forChart={1} onClick={this.handleMATooltipClick}  origin={[-60, -10]}/>
@@ -132,6 +132,6 @@ module.exports = {
 			}
 		});
 
-		return AreaChartWithZoom;
+		return AreaChartWithZoomPan;
 	}
 }

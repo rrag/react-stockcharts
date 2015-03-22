@@ -3,7 +3,7 @@
 var React = require('react');
 var d3 = require('d3');
 
-var ReStock = require('../../src/');
+var ReStock = require('src/');
 
 var ChartCanvas = ReStock.ChartCanvas
 	, XAxis = ReStock.XAxis
@@ -14,12 +14,13 @@ var ChartCanvas = ReStock.ChartCanvas
 	, DataSeries = ReStock.DataSeries
 	, EventCapture = ReStock.EventCapture
 	, MouseCoordinates = ReStock.MouseCoordinates
-	, CrossHair = ReStock.CrossHair
+	, VerticalMousePointer = ReStock.VerticalMousePointer
+	, CurrentCoordinate = ReStock.CurrentCoordinate
 ;
 
 module.exports = {
 	init(data) {
-		var AreaChartWithCrossHairMousePointer = React.createClass({
+		var AreaChartWithVerticalMousePointer = React.createClass({
 			getInitialState() {
 				return {
 					width: 500,
@@ -30,34 +31,30 @@ module.exports = {
 				var parseDate = d3.time.format("%Y-%m-%d").parse
 				var dateRange = { from: parseDate("2012-06-01"), to: parseDate("2012-12-31")}
 				var dateFormat = d3.time.format("%Y-%m-%d");
-
 				return (
-					<ChartCanvas data={data} width={this.state.width} height={this.state.height} margin={{left: 5, right: 90, top:10, bottom: 30}}>
-						<Chart id={3}>
+					<ChartCanvas data={data} width={this.state.width} height={this.state.height} margin={{left: 50, right: 100, top:10, bottom: 30}}>
+						<Chart id={0} >
 							<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
-							<YAxis axisAt="right" orient="right" />
+							<YAxis axisAt="right" orient="right" percentScale={true} tickFormat={d3.format(".0%")}/>
+							<YAxis axisAt="left" orient="left" />
 							<DataSeries yAccessor={(d) => d.close} xAccessor={(d) => d.date}>
 								<AreaSeries />
 							</DataSeries>
 						</Chart>
-						<MouseCoordinates forChart={3} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
-							<CrossHair />
+						<CurrentCoordinate forChart={0} />
+						<MouseCoordinates forChart={0} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
+							<VerticalMousePointer />
 						</MouseCoordinates>
-						<EventCapture mouseMove={true} mainChart={3}/>
+						<EventCapture mouseMove={true}  mainChart={0}/>
 					</ChartCanvas>
 				);
 			}
 		});
-
-		return AreaChartWithCrossHairMousePointer;
+		return AreaChartWithVerticalMousePointer;
 	}
 }
 
 /*
-	changeWidth() {
-		this.setState({
-			width: this.state.width + 10
-		});
-	},
-		<rect width={100} height={100} onClick={this.changeWidth}/>
+								
+
 */

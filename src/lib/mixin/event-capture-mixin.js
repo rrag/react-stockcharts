@@ -180,7 +180,8 @@ var EventCaptureMixin = {
 			var rightX = Utils.getClosestItemIndexes(data, xRange[1], chart.accessors.xAccessor);
 
 			var filteredData = data.slice(leftX.left, rightX.right);
-			if (filteredData.length < 5) {
+			if (filteredData.length / chart.width > 1.8  // do not display more than 1.8 data points in 1 pixel
+					|| filteredData.length / chart.width < .03) {
 				var l = getLongValue(chart.accessors.xAccessor(this.state.data[0]));
 				var r = getLongValue(chart.accessors.xAccessor(this.state.data[this.state.data.length - 1]));
 				this.state.currentItemStore.get().set({ viewPortXRange : [l, r] });
