@@ -31,7 +31,7 @@ gulp.task('clean', function(cb) {
 });
 
 function build(myConfig, cb) {
-	myConfig.plugins = myConfig.plugins.concat(
+	/**/myConfig.plugins = myConfig.plugins.concat(
 		new webpack.DefinePlugin({
 			'process.env': {
 				// This has effect on the react lib size
@@ -83,7 +83,7 @@ gulp.task('build', ['styles', 'dev'], function(cb) {
 
 gulp.task('docs', ['html'], function(cb) {
 	// run webpack
-	var webpackConfig = require('./webpack.config.js'),
+	var webpackConfig = require('./webpack.config.docs.js'),
 		myConfig = Object.create(webpackConfig);
 
 	gulp.src(['./docs/images/*'])
@@ -92,10 +92,6 @@ gulp.task('docs', ['html'], function(cb) {
 	gulp.src(['./docs/data/*'])
 		.pipe(gulp.dest('build/data'));
 
-	myConfig.entry = [];
-	myConfig.entry.push('./docs/index.js');
-
-	myConfig.output.filename = 'react-stockcharts-docs.js'
 	build(myConfig, cb);
 });
 

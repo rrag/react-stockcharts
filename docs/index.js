@@ -1,11 +1,12 @@
 'use strict';
 /**/
 var React = require('react');
-require('src/styles/react-stockcharts');
-require('docs/stylesheets/re-stock');
 var d3 = require('d3');
 
-var ReadME = require('docs/md/MAIN.md');
+require('styles/react-stockcharts');
+require('stylesheets/re-stock');
+
+var ReadME = require('md/MAIN.md');
 
 document.getElementById("content").innerHTML = ReadME;
 
@@ -49,8 +50,5 @@ d3.tsv("data/data.tsv", function(err, data) {
 	/**/
 	/**/
 });
-
-
-
 
 //require('./examples/freezer-example');

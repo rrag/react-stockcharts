@@ -9,7 +9,11 @@ module.exports = {
 		path: __dirname + '/build/dist/',
 		filename: 'react-stockcharts.js',
 		publicPath: 'js/'
-	},
+	}/*,
+	output: {
+		library: 'ReStock',
+		libraryTarget: 'umd'
+	}*/,
 	module: {
 		loaders: [
 			{ test: /\.json$/, loader: 'json' },
@@ -21,9 +25,9 @@ module.exports = {
 		]
 	},
 	plugins: [
-		new webpack.NoErrorsPlugin(),
+		new webpack.NoErrorsPlugin()/*,
 		new webpack.ContextReplacementPlugin(/colors$/, /^$/),
-		new webpack.IgnorePlugin(/(dtrace-provider)|(source-map-support)$/)
+		new webpack.IgnorePlugin(/(dtrace-provider)|(source-map-support)$/)*/
 	],
 	externals: {
 		react: 'React'
@@ -37,12 +41,12 @@ module.exports = {
 		typographer: true
 	},
 	resolve: {
-		root: __dirname,
+		root: [__dirname, __dirname + '/src', __dirname + '/docs'],
 		extensions: ['', '.js', '.jsx', '.scss', '.md']
-	},
+	}/*,
 	node: {
 		fs: "empty",
 		"dtrace-provider": "empty",
 		"source-map-support": "empty"
-	}
+	}*/
 };
