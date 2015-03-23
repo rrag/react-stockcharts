@@ -1,6 +1,10 @@
 /* Move down content because we have a fixed navbar that is 50px tall */
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
-
+/* #MainContainer {
+   position: fixed;
+   top: 50px;
+   padding-left: 100px;
+} */
 a.button {
     background: transparent url(../images/github-button.png) 0 0 no-repeat;
     width: 203px;
