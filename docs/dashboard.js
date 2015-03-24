@@ -2,6 +2,7 @@
 /**/
 var React = require('react');
 var d3 = require('d3');
+var parseDate = d3.time.format("%Y-%m-%d").parse
 
 require('styles/react-stockcharts');
 require('stylesheets/re-stock');
@@ -14,105 +15,95 @@ var MenuItem = require('lib/menu-item');
 var ContentSection = require('lib/content-section');
 var Row = require('lib/row');
 var Section = require('lib/section');
+var ScrollMixin = require('lib/scroll-mixin');
 
 
-var ExamplesPage = React.createClass({
-	componentDidMount() {
-		var topRange      = 200,  // measure from the top of the viewport to X pixels down
-			edgeMargin    = 20,   // margin above the top or margin from the end of the page
-			animationTime = 400, // time in milliseconds
-			contentTop = [];
-		// Stop animated scroll if the user does something
-		$('html,body').bind('scroll mousedown DOMMouseScroll mousewheel keyup', function(e) {
-			if ( e.which > 0 || e.type == 'mousedown' || e.type == 'mousewheel' ) {
-				$('html,body').stop();
-			}
-		});
-		//$('div#ContentSection').scrollTop(-50)
-		console.log($('html,body').scrollTop());
-		// Set up content an array of locations
-		$('.nav-sidebar').find('a').each(function(){
-			contentTop.push( $( $(this).attr('href') ).offset().top );
-		})
-		// Animate menu scroll to content
-		$('.nav-sidebar').find('a').click(function() {
-			var sel = this,
-			newTop = Math.min( contentTop[ $('.nav-sidebar a').index( $(this) ) ], $(document).height() - $(window).height() ) - 50; // get content top or top position if at the document bottom
-			console.log(newTop)
-			$('html,body')
-				.stop()
-				.animate({
-						'scrollTop' : newTop
-					},
-					animationTime/*,
-					function() {
-						window.location.hash = $(sel).attr('href');
-					}*/);
-			return false;
-		});
-		$(window).scroll(function(e) {
-			// console.log(e)
-		})
-		$(window).on('hashchange', function() {
-			var top = $('html,body').scrollTop() - 50
-			console.log($('html,body').scrollTop(top));
-		});
-	},
-	render() {
-		return (
-			<body>
-				<Nav />
-				<MainContainer>
-					<Sidebar>
-						<MenuGroup>
-							<MenuItem label="Overview" active={true} />
-							<MenuItem label="AreaChart" />
-							<MenuItem label="CandlestickChart" />
-							<MenuItem label="LineChart" />
-							<MenuItem label="LineChart2" />
-							<MenuItem label="LineChart3" />
-							<MenuItem label="LineChart4" />
-						</MenuGroup>
-					</Sidebar>
-					<ContentSection title="Title goes here">
-						<Row anchor="Overview" title="Home">
-							<Section>
-							</Section>
-							<Section>
-							</Section>
-						</Row>
-						<Row title="AreaChart">
-							<Section colspan={2}>
-							</Section>
-						</Row>
-						<Row title="CandlestickChart">
-							<Section colspan={2}>
-							</Section>
-						</Row>
-						<Row title="LineChart">
-							<Section colspan={2}>
-							</Section>
-						</Row>
-						<Row title="LineChart2">
-							<Section colspan={2}>
-							</Section>
-						</Row>
-						<Row title="LineChart3">
-							<Section colspan={2}>
-							</Section>
-						</Row>
-						<Row title="LineChart4">
-							<Section colspan={2}>
-							</Section>
-						</Row>
-					</ContentSection>
-				</MainContainer>
-			</body>
-		);
-	}
+d3.tsv("data/data.tsv", function(err, data) {
+	data.forEach((d, i) => {
+		d.date = new Date(parseDate(d.date).getTime());
+		d.open = +d.open;
+		d.high = +d.high;
+		d.low = +d.low;
+		d.close = +d.close;
+		d.volume = +d.volume;
+		// console.log(d);
+	});
+
+	var AreaChart = require('./lib/examples/areachart').init(data);
+	var AreaChartWithCrossHairMousePointer = require('./lib/examples/areachart-with-crosshair-mousepointer').init(data);
+	var AreaChartWithVerticalMousePointer = require('./lib/examples/areachart-with-mousepointer').init(data);
+	var AreaChartWithToolTip = require('./lib/examples/areachart-with-tooltip').init(data);
+	var AreaChartWithMA = require('./lib/examples/areachart-with-ma').init(data);
+	var AreaChartWithEdgeCoordinates = require('./lib/examples/areachart-with-edge-coordinates').init(data);
+	var LineChart = require('./lib/examples/linechart').init(data);
+	var CandleStickChart = require('./lib/examples/candlestickchart').init(data);
+	var SyncMouseMove = require('./lib/examples/synchronized-mouse-move').init(data);
+	var AreaChartWithZoom = require('./lib/examples/areachart-with-zoom').init(data);
+	var AreaChartWithZoomPan = require('./lib/examples/areachart-with-zoom-and-pan').init(data);
+
+	var ExamplesPage = React.createClass({
+		mixins: [ScrollMixin],
+		render() {
+			return (
+				<body>
+					<Nav />
+					<MainContainer>
+						<Sidebar>
+							<MenuGroup>
+								<MenuItem label="Overview" active={true} />
+								<MenuItem label="AreaChart" />
+								<MenuItem label="CandlestickChart" />
+								<MenuItem label="LineChart" />
+								<MenuItem label="LineChart2" />
+								<MenuItem label="LineChart3" />
+								<MenuItem label="LineChart4" />
+							</MenuGroup>
+						</Sidebar>
+						<ContentSection title="Getting Started">
+							<Row anchor="Overview" title="Home">
+								<Section  colSpan={2}>
+									<aside dangerouslySetInnerHTML={{__html: require('md/OVERVIEW')}}></aside>
+								</Section>
+							</Row>
+							<Row title="AreaChart">
+								<Section colSpan={2} className="react-stockchart">
+									<AreaChart />
+								</Section>
+							</Row>
+							<Row>
+								<Section colSpan={2}>
+									<aside dangerouslySetInnerHTML={{__html: require('md/AREACHART')}}></aside>
+								</Section>
+							</Row>
+							<Row title="CandlestickChart">
+								<Section colSpan={2}>
+								</Section>
+							</Row>
+							<Row title="LineChart">
+								<Section colSpan={2}>
+								</Section>
+							</Row>
+							<Row title="LineChart2">
+								<Section colSpan={2}>
+								</Section>
+							</Row>
+							<Row title="LineChart3">
+								<Section colSpan={2}>
+								</Section>
+							</Row>
+							<Row title="LineChart4">
+								<Section colSpan={2}>
+								</Section>
+							</Row>
+						</ContentSection>
+					</MainContainer>
+				</body>
+			);
+		}
+	});
+
+	React.render(<ExamplesPage />, document.body);
 });
-console.log('herer............')
-React.render(<ExamplesPage />, document.body);
 // React.render(<ExamplesPage />, document.getElementById("area"));
 
 //module.exports = ExamplesPage;

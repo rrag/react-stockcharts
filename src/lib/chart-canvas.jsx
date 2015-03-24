@@ -13,11 +13,11 @@ var ChartCanvas = React.createClass({
 		, height: React.PropTypes.number.isRequired
 		, margin: React.PropTypes.object
 	},
-	getAvailableHeight() {
-		return this.props.height - this.props.margin.top - this.props.margin.bottom;
+	getAvailableHeight(props) {
+		return props.height - props.margin.top - props.margin.bottom;
 	},
-	getAvailableWidth() {
-		return this.props.width - this.props.margin.left - this.props.margin.right;
+	getAvailableWidth(props) {
+		return props.width - props.margin.left - props.margin.right;
 	},
 	getInitialState() {
 		return {};
@@ -33,8 +33,8 @@ var ChartCanvas = React.createClass({
 			if (typeof child.type === 'string') return child;
 			var newChild = child;
 			return React.addons.cloneWithProps(newChild, {
-				_width: this.getAvailableWidth()
-				, _height: this.getAvailableHeight()
+				_width: this.getAvailableWidth(this.props)
+				, _height: this.getAvailableHeight(this.props)
 			});
 		});
 		return this._renderChildren(children);
@@ -43,7 +43,7 @@ var ChartCanvas = React.createClass({
 
 		var transform = 'translate(' + this.props.margin.left + ',' +  this.props.margin.top + ')';
 		var clipPath = '<clipPath id="chart-area-clip">'
-							+ '<rect x="0" y="0" width="' + this.getAvailableWidth() + '" height="' + this.getAvailableHeight() + '" />'
+							+ '<rect x="0" y="0" width="' + this.getAvailableWidth(this.props) + '" height="' + this.getAvailableHeight(this.props) + '" />'
 						+ '</clipPath>';
 
 		var children = this.renderChildren();

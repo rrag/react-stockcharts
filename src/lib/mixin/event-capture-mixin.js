@@ -48,7 +48,7 @@ var EventCaptureMixin = {
 					var _chartData = this.createChartData(child.props.id);
 					var charts = chartStore.get().charts.push(_chartData);
 
-					this.getChartDataFor(child, charts[charts.length - 1], this.props.data, this.props.data, passThroughProps)
+					this.getChartDataFor(this.props, child, charts[charts.length - 1], this.props.data, this.props.data, passThroughProps)
 				}
 			})
 
@@ -163,10 +163,26 @@ var EventCaptureMixin = {
 		}
 	},
 	componentWillReceiveProps(nextProps) {
-		console.log('EventCaptureMixin.componentWillReceiveProps');
-		console.log('EventCaptureMixin.componentWillReceiveProps');
-		console.log('EventCaptureMixin.componentWillReceiveProps');
-		this.calculateViewableData();
+		if (this.doesContainChart()) {
+			/*console.log('EventCaptureMixin.componentWillReceiveProps');
+			console.log('EventCaptureMixin.componentWillReceiveProps');
+			console.log('EventCaptureMixin.componentWillReceiveProps');*/
+
+			var passThroughProps;
+			if (this.isDataDransform && this.isDataDransform()) {
+				passThroughProps = this.transformData(this.props);
+			}
+
+			React.Children.forEach(nextProps.children, (child) => {
+				if ("ReStock.Chart" === child.props.namespace) {
+					var _chartData = this.getChartForId(child.props.id);
+
+					this.getChartDataFor(nextProps, child, _chartData, nextProps.data, nextProps.data, passThroughProps);
+				}
+			})
+
+			//this.calculateViewableData();
+		}
 	},
 	calculateViewableData() {
 		var xRange = this.state.currentItemStore.get().viewPortXRange;

@@ -18,7 +18,7 @@ function getOverlayFromList(overlays, id) {
 
 
 var ChartContainerMixin = {
-	getChartDataFor(chartComponent, _chartData, data, fullData, passThroughProps) {
+	getChartDataFor(_props, chartComponent, _chartData, data, fullData, passThroughProps) {
 		var props = chartComponent.props;
 
 		var scales = this.defineScales(props, data, passThroughProps);
@@ -37,8 +37,8 @@ var ChartContainerMixin = {
 		var overlayYAccessors = pluck(keysAsArray(_chartData.overlays), 'yAccessor');
 
 		_chartData = _chartData.set({
-				width: props.width || this.props._width || this.getAvailableWidth(),
-				height: props.height || this.props._height || this.getAvailableHeight()
+				width: props.width || _props._width || this.getAvailableWidth(_props),
+				height: props.height || _props._height || this.getAvailableHeight(_props)
 			})
 
 		scales = this.updateScales(

@@ -13,7 +13,7 @@ var Row = React.createClass({
 				: null;
 
 		return (
-			<div className="row" style={{ height: 600 }}>
+			<div className="row">
 				{title}
 				{this.props.children}
 			</div>
