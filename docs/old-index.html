@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>React Stockcharts - Home</title>
+    <!-- custom:jsinclude //cdnjs.cloudflare.com/ajax/libs/react/0.12.2/react-with-addons.min.js -->
+    <!-- custom:jsinclude //cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js -->
+
+    <!-- custom:cssinclude https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css -->
+
+    <!-- custom:remove -->
+    <link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- endcustom -->
+  </head>
+
+  <body>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container" id="README.md">
+        <div class="row">
+          <div class="col-md-8" id="content">
+          </div>
+          <div class="col-md-4">
+            <div class="pull-right top-spacing">
+              <a href="https://github.com/rrag/react-stockcharts" class="btn btn-lg button"><small>View project on</small><br/> GitHub</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-12">
+        <h2>A galery of the different charts available</h2>
+        <a class="btn btn-primary" href="#" role="button">Get Started</a>
+       </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <h3>AreaChart</h3>
+          <div id="area" class="react-stockchart"></div>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-md-6">
+          <h3>AreaChart w/ Cross hair</h3>
+          <div id="area2" class="react-stockchart"></div>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+       </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <h3>AreaChart w/ Vertical mouse pointer</h3>
+          <div id="area3" class="react-stockchart"></div>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-md-6">
+          <h3>AreaChart w/ CH &amp; Tooltip</h3>
+          <div id="area4" class="react-stockchart"></div>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+       </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <h3>AreaChart w/ Moving Average overlay</h3>
+          <div id="area5" class="react-stockchart"></div>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-md-6">
+          <h3>AreaChart w/ Edge coordinates</h3>
+          <div id="area6" class="react-stockchart"></div>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+       </div>
+      </div>
+      <div class="row">
+        <h3 style="padding-left: 15px">Synchronized mouse move</h3>
+        <div id="sync">
+        </div>
+        <p style="padding-left: 15px"><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <h3>Zoom</h3>
+          <div id="areazoom" class="react-stockchart"></div>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-md-6">
+          <h3>Zoom &amp; Pan</h3>
+          <div id="areazoompan" class="react-stockchart"></div>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+       </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <h3>Synchronized Zoom &amp; Pan</h3>
+          <div class="react-stockchart"></div>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-md-6">
+          <h3>Synchronized Zoom &amp; Pan</h3>
+          <div class="react-stockchart"></div>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+       </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <h3>Synchronized Z &amp; P w/ varying interval</h3>
+          <div class="react-stockchart"></div>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-md-6">
+          <h3>Synchronized Z &amp; P w/ varying interval</h3>
+          <div class="react-stockchart"></div>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+       </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <h3>w/ Volume chart</h3>
+          <div class="react-stockchart"></div>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-md-6">
+          <h3>w/ Volume Profile</h3>
+          <div class="react-stockchart"></div>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+       </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <h3>CandlestickChart</h3>
+          <div id="candlestick" class="react-stockchart"></div>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-md-6">
+          <h3>LineChart</h3>
+          <div id="line" class="react-stockchart"></div>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+       </div>
+      </div>
+      <p>
+        Comming soon...
+        <ul>
+          <li>EMA</li>
+          <li>Bolinger Bands</li>
+          <li>MAC-D</li>
+          <li>RSI</li>
+          <li>Stochastics</li>
+          <li>Compare with another</li>
+          <li>Overlay with another</li>
+        </ul>
+      </p>
+      <hr>
+      <footer>
+        <p>MIT license</p>
+      </footer>
+    </div> <!-- /container -->
+
+
+    <!-- Placed at the end of the document so the pages load faster -->
+
+    <!-- custom:jsinclude //code.jquery.com/jquery-2.1.3.min.js -->
+
+    <!-- custom:remove -->
+    <script src="jquery/dist/cdn/jquery-2.1.3.js"></script>
+    <!-- endcustom -->
+
+
+    <!-- custom:jsinclude    dist/react-stockcharts-docs-core.js   -->
+    <!-- custom:jsinclude    dist/react-stockcharts-home.js   -->
+    <!-- custom:remove -->
+    <script type="text/javascript" src="http://localhost:8090/js/react-stockcharts-docs-core.js"></script>
+    <script type="text/javascript" src="http://localhost:8090/js/react-stockcharts-home.js"></script>
+    <script type="text/javascript" src="http://localhost:8090/webpack-dev-server.js"></script>
+    <!-- endcustom -->
+  </body>
+</html>

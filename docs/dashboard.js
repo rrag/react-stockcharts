@@ -30,6 +30,7 @@ d3.tsv("data/data.tsv", function(err, data) {
 	});
 
 	var AreaChart = require('./lib/examples/areachart').init(data);
+	var AreaChartWithYPercent = require('./lib/examples/areachart-with-ypercent').init(data);
 	var AreaChartWithCrossHairMousePointer = require('./lib/examples/areachart-with-crosshair-mousepointer').init(data);
 	var AreaChartWithVerticalMousePointer = require('./lib/examples/areachart-with-mousepointer').init(data);
 	var AreaChartWithToolTip = require('./lib/examples/areachart-with-tooltip').init(data);
@@ -73,6 +74,11 @@ d3.tsv("data/data.tsv", function(err, data) {
 							<Row>
 								<Section colSpan={2}>
 									<aside dangerouslySetInnerHTML={{__html: require('md/AREACHART')}}></aside>
+								</Section>
+							</Row>
+							<Row>
+								<Section colSpan={2} className="react-stockchart">
+									<AreaChartWithYPercent />
 								</Section>
 							</Row>
 							<Row title="CandlestickChart">
