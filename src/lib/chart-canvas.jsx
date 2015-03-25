@@ -32,6 +32,11 @@ var ChartCanvas = React.createClass({
 		var children = React.Children.map(this.props.children, (child) => {
 			if (typeof child.type === 'string') return child;
 			var newChild = child;
+			if ('ReStock.DataTransform' === newChild.props.namespace) {
+				newChild = React.addons.cloneWithProps(newChild, {
+					data: this.props.data
+				});
+			}
 			return React.addons.cloneWithProps(newChild, {
 				_width: this.getAvailableWidth(this.props)
 				, _height: this.getAvailableHeight(this.props)

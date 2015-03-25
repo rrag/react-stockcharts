@@ -28,13 +28,15 @@ module.exports = {
 
 				return (
 					<ChartCanvas width={this.state.width} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}} data={data}>
-						<Chart id={1} >
-							<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
-							<YAxis axisAt="left" orient="left" ticks={5} />
-							<DataSeries yAccessor={CandlestickSeries.yAccessor} xAccessor={(d) => d.date}>
-								<CandlestickSeries />
-							</DataSeries>
-						</Chart>
+						<DataTransform transformType="stockscale">
+							<Chart id={1} >
+								<XAxis axisAt="bottom" orient="bottom" ticks={5}/>
+								<YAxis axisAt="right" orient="right" ticks={5} />
+								<DataSeries yAccessor={CandlestickSeries.yAccessor} >
+									<CandlestickSeries />
+								</DataSeries>
+							</Chart>
+						</DataTransform>
 					</ChartCanvas>
 				);
 			}

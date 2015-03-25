@@ -103,8 +103,10 @@ Want to display `YAxis` on both left and right? add
 ```
 next to the existing `YAxis`
 
+Create custom components and use them, it is explained [here](http://add.link.here)
+
 Want to add a `YAxis` with a percent scale on the right? add
 ```html
 <YAxis axisAt="right" orient="right" percentScale={true} tickFormat={d3.format(".0%")}/>
 ```
-and you will get.
+and you get.

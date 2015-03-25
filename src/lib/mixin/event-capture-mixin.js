@@ -43,19 +43,22 @@ var EventCaptureMixin = {
 				passThroughProps = this.transformData(this.props);
 			}
 
-			React.Children.forEach(this.props.children, (child) => {
-				if ("ReStock.Chart" === child.props.namespace) {
-					var _chartData = this.createChartData(child.props.id);
-					var charts = chartStore.get().charts.push(_chartData);
-
-					this.getChartDataFor(this.props, child, charts[charts.length - 1], this.props.data, this.props.data, passThroughProps)
-				}
-			})
-
 			var currentItemStore = new Freezer({
 				currentItems: [],
 				viewPortXRange: [],
 				viewPortXDelta: 30
+			});
+
+			React.Children.forEach(this.props.children, (child) => {
+				if ("ReStock.Chart" === child.props.namespace) {
+					//var charts = chartStore.get().charts.push(this.createChartData(child.props.id));
+					//var _chartData = charts[charts.length - 1];
+					var chartProps = child.props;
+
+					var _chartData = this.getChartDataFor(this.props, chartProps, this.props.data, this.props.data, passThroughProps);
+					_chartData.id = child.props.id;
+					chartStore.get().charts.push(_chartData);
+				}
 			});
 
 			var stores = {
@@ -69,7 +72,6 @@ var EventCaptureMixin = {
 				};
 			// console.log(stores);
 			this.setState(stores);
-
 		}
 	},
 	getEventStore() {
@@ -175,9 +177,15 @@ var EventCaptureMixin = {
 
 			React.Children.forEach(nextProps.children, (child) => {
 				if ("ReStock.Chart" === child.props.namespace) {
-					var _chartData = this.getChartForId(child.props.id);
 
-					this.getChartDataFor(nextProps, child, _chartData, nextProps.data, nextProps.data, passThroughProps);
+
+					var chartProps = child.props;
+
+					var _chartData = this.getChartDataFor(nextProps, chartProps, nextProps.data, nextProps.data, passThroughProps);
+					_chartData.id = child.props.id;
+
+					var chartData = this.getChartForId(child.props.id);
+					chartData.reset(_chartData);
 				}
 			})
 
@@ -377,7 +385,6 @@ var EventCaptureMixin = {
 		if ("ReStock.Chart" === child.props.namespace) {
 			if (this.state.eventStore && this.state.chartStore) {
 				var _chartData = this.getChartForId(newChild.props.id);
-				// _chartData = this.getChartDataFor(newChild, _chartData, this.getData(), this.getFullData())
 				newChild = React.addons.cloneWithProps(newChild, {
 					_updateMode: this.state.chartStore.get().updateMode,
 					_chartData: _chartData,

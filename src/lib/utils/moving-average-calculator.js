@@ -9,11 +9,12 @@ function MACalculator() {
 
 };
 MACalculator.calculateSMA = function(data, period) {
+	console.log('calculateSMA');
 
 	var l = data.length - 1, key = 'sma' + period;
 
 	data.map((each, i) => data.slice(i - period, i))
-		.filter((array) => array.length > 0)
+		.filter((array) => array.length === period && array.length > 0)
 		.map((array) => pluck(array, "close"))
 		.map((array) => sum(array))
 		.map((sum) => sum / period)

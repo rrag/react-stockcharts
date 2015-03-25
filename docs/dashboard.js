@@ -38,6 +38,7 @@ d3.tsv("data/data.tsv", function(err, data) {
 	var AreaChartWithEdgeCoordinates = require('./lib/examples/areachart-with-edge-coordinates').init(data);
 	var LineChart = require('./lib/examples/linechart').init(data);
 	var CandleStickChart = require('./lib/examples/candlestickchart').init(data);
+	var CandleStickStockScaleChart = require('./lib/examples/candlestickchart-stockscale').init(data);
 	var SyncMouseMove = require('./lib/examples/synchronized-mouse-move').init(data);
 	var AreaChartWithZoom = require('./lib/examples/areachart-with-zoom').init(data);
 	var AreaChartWithZoomPan = require('./lib/examples/areachart-with-zoom-and-pan').init(data);
@@ -54,14 +55,14 @@ d3.tsv("data/data.tsv", function(err, data) {
 								<MenuItem label="Overview" active={true} />
 								<MenuItem label="AreaChart" />
 								<MenuItem label="CandlestickChart" />
-								<MenuItem label="LineChart" />
+								<MenuItem label="stocktime/financetime scale" />
 								<MenuItem label="LineChart2" />
 								<MenuItem label="LineChart3" />
 								<MenuItem label="LineChart4" />
 							</MenuGroup>
 						</Sidebar>
 						<ContentSection title="Getting Started">
-							<Row anchor="Overview" title="Home">
+							<Row title="Overview">
 								<Section  colSpan={2}>
 									<aside dangerouslySetInnerHTML={{__html: require('md/OVERVIEW')}}></aside>
 								</Section>
@@ -82,23 +83,28 @@ d3.tsv("data/data.tsv", function(err, data) {
 								</Section>
 							</Row>
 							<Row title="CandlestickChart">
-								<Section colSpan={2}>
+								<Section colSpan={2} className="react-stockchart">
+									<CandleStickChart />
 								</Section>
 							</Row>
-							<Row title="LineChart">
+							<Row>
 								<Section colSpan={2}>
+									<aside dangerouslySetInnerHTML={{__html: require('md/CANDLESTICK')}}></aside>
 								</Section>
 							</Row>
-							<Row title="LineChart2">
-								<Section colSpan={2}>
+							<Row>
+								<Section colSpan={2} className="react-stockchart">
+									<CandleStickStockScaleChart />
 								</Section>
 							</Row>
-							<Row title="LineChart3">
+							<Row>
 								<Section colSpan={2}>
+									<aside dangerouslySetInnerHTML={{__html: require('md/CANDLESTICK-IMPROVED')}}></aside>
 								</Section>
 							</Row>
-							<Row title="LineChart4">
+							<Row title="stocktime/financetime scale">
 								<Section colSpan={2}>
+									<aside dangerouslySetInnerHTML={{__html: require('md/FINANCETIMESCALE')}}></aside>
 								</Section>
 							</Row>
 						</ContentSection>

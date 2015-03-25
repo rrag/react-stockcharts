@@ -21,7 +21,6 @@ module.exports = {
 			mixins: [InitialStateMixin, ChartWidthMixin],
 			render() {
 				if (!this.state.width) return <div />;
-				console.log(this.state.width);
 				return (
 					<ChartCanvas width={this.state.width} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}} data={data}>
 						<Chart id={0} >

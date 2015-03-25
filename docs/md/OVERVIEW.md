@@ -9,7 +9,7 @@ The motivation of the React Stockcharts project is to provide flexible library t
 There are many charting libraries available, but I feel there are very few that provide the features and flexibility to create stock charts that compete with the likes of the ones provided by commercial trading systems.
 
 #### SVG vs Canvas
-When deciding on a web technology for charts - not just charts, but ones which are interactive too -  representing many many data points, the decision of performance is bound to come up, and HTML5 presents options. React Stockcharts is built on SVG
+When deciding on a web technology for charts - not just charts, but ones which are interactive too -  representing many many data points, the decision of performance is bound to come up, and HTML5 presents options.
 
 I am not going to debate between the pros and cons between SVG and Canvas. They are discussed at great length [here](http://stackoverflow.com/questions/12310024/fast-and-responsive-interactive-charts-graphs-svg-canvas-other) and [here](http://stackoverflow.com/questions/5882716/html5-canvas-vs-svg-vs-div). Needless to say they are both very powerful and for charting, there really is no right answer. I have chosen to use SVG for React Stockcharts because,
 

@@ -13,7 +13,7 @@ var CandlestickSeries = React.createClass({
 		_yAccessor: React.PropTypes.func.isRequired
 	},
 	statics: {
-		yAccessor: (d) => { return {open: d.open, high: d.high, low: d.low, close: d.close}}
+		yAccessor: (d) => ({open: d.open, high: d.high, low: d.low, close: d.close})
 	},
 	getDefaultProps() {
 		return {
