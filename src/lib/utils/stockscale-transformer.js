@@ -49,7 +49,7 @@ function StockScaleTransformer(data, options) {
 	// console.table(responseData);
 	return {
 			data: responseData,
-			_dateAccesor: dateAccesor,
+			_dateAccessor: dateAccesor,
 			_indexAccessor: options.indexAccessor,
 			// _indexMutator: indexMutator,
 			_stockScale: true,

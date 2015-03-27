@@ -45,6 +45,7 @@ d3.tsv("data/MSFT.tsv", function(err, data) {
 	var CandleStickStockScaleChart = require('./lib/examples/candlestickchart-stockscale').init(data);
 	var CandleStickStockScaleChartWithVolumeHistogramV1 = require('./lib/examples/candlestickchart-with-volume-histogram').init(data);
 	var CandleStickStockScaleChartWithVolumeHistogramV2 = require('./lib/examples/candlestickchart-with-volume-histogram2').init(data);
+	var CandleStickChartWithCHMousePointer = require('./lib/examples/candlestickchart-with-crosshair').init(data);
 	var ExamplesPage = React.createClass({
 		//mixins: [ScrollMixin],
 		render() {
@@ -130,6 +131,16 @@ d3.tsv("data/MSFT.tsv", function(err, data) {
 							<Row>
 								<Section colSpan={2}>
 									<aside dangerouslySetInnerHTML={{__html: require('md/VOLUME-HISTOGRAM-Contd')}}></aside>
+								</Section>
+							</Row>
+							<Row title="Mouse pointer">
+								<Section colSpan={2} className="react-stockchart">
+									<CandleStickChartWithCHMousePointer />
+								</Section>
+							</Row>
+							<Row>
+								<Section colSpan={2}>
+									<aside dangerouslySetInnerHTML={{__html: require('md/MOUSEPOINTER')}}></aside>
 								</Section>
 							</Row>
 						</ContentSection>
