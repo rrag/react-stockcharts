@@ -58,7 +58,7 @@ d3.tsv("data/MSFT.tsv", function(err, data) {
 								<MenuItem label="AreaChart" />
 								<MenuItem label="CandlestickChart" />
 								<MenuItem label="stocktime" />
-								<MenuItem label="Volumehistogram" />
+								<MenuItem label="Volume histogram" />
 							</MenuGroup>
 						</Sidebar>
 						<ContentSection title="Getting Started">

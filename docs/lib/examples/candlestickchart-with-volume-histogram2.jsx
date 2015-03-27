@@ -40,7 +40,7 @@ module.exports = {
 							<Chart id={2} height={150} origin={(w, h) => [0, h - 150]}>
 								<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 								<DataSeries yAccessor={(d) => d.volume} >
-									<HistogramSeries />
+									<HistogramSeries className={(d) => d.close > d.open ? 'up' : 'down'} />
 								</DataSeries>
 							</Chart>
 						</DataTransform>

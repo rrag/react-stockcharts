@@ -150,10 +150,22 @@
 		pointer-events: all;
 		cursor: pointer;
 	}
-	.bar {
-		fill: steelblue;
-		opacity: 0.3;
-		stroke: none;
+	.histogram {
+		.bar {
+			fill: steelblue;
+			opacity: 0.3;
+			stroke: none;
+		}
+		.up {
+			fill: #6BA583;
+			opacity: 0.3;
+			stroke: none;
+		}
+		.down {
+			fill: $red1;
+			opacity: 0.3;
+			stroke: none;
+		}
 	}
 	.ma-container {
 		rect {

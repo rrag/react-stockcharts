@@ -61,9 +61,9 @@ var HistogramSeries = React.createClass({
 					}
 
 					return <rect key={idx} className={className}
-								x={Math.round(x)}
+								x={Math.floor(x)}
 								y={Math.round(y)}
-								width={Math.round(barWidth)}
+								width={Math.floor(barWidth)}
 								height={Math.round(height)} />
 				}, this);
 		return bars;

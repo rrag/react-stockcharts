@@ -23,7 +23,7 @@ Look!!! there is more than one `Chart` there.
 
 Each `Chart` has a pair of `xScale` and `yScale` since `volume` is on a different domain from `open`/`high`/`low`/`close`, It has to be created as a different `Chart`.
 
-To summarize, All `Chart`s use the same `data` but each `Chart` as different `xScale` and `yScale`. In this example above the `xScale` of chart 2 has the same `domain` and `range` as the `xScale` of `Chart` 1, so we did not draw the `XAxis` again for the Volume.
+To summarize, All `Chart`s use the same `data` but each `Chart` has different `xScale` and `yScale`. In this example above the `xScale` of chart 2 has the same `domain` and `range` as the `xScale` of `Chart` 1, so we did not draw the `XAxis` again for the Volume.
 
 ##### But... I dont want the Volume chart to span the whole chart height.
 
