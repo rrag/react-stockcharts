@@ -150,6 +150,11 @@
 		pointer-events: all;
 		cursor: pointer;
 	}
+	.bar {
+		fill: steelblue;
+		opacity: 0.3;
+		stroke: none;
+	}
 	.ma-container {
 		rect {
 			fill: none;

@@ -18,7 +18,7 @@ var Section = require('lib/section');
 var ScrollMixin = require('lib/scroll-mixin');
 
 
-d3.tsv("data/data.tsv", function(err, data) {
+d3.tsv("data/MSFT.tsv", function(err, data) {
 	data.forEach((d, i) => {
 		d.date = new Date(parseDate(d.date).getTime());
 		d.open = +d.open;
@@ -42,9 +42,11 @@ d3.tsv("data/data.tsv", function(err, data) {
 	var SyncMouseMove = require('./lib/examples/synchronized-mouse-move').init(data);
 	var AreaChartWithZoom = require('./lib/examples/areachart-with-zoom').init(data);
 	var AreaChartWithZoomPan = require('./lib/examples/areachart-with-zoom-and-pan').init(data);
-
+	var CandleStickStockScaleChart = require('./lib/examples/candlestickchart-stockscale').init(data);
+	var CandleStickStockScaleChartWithVolumeHistogramV1 = require('./lib/examples/candlestickchart-with-volume-histogram').init(data);
+	var CandleStickStockScaleChartWithVolumeHistogramV2 = require('./lib/examples/candlestickchart-with-volume-histogram2').init(data);
 	var ExamplesPage = React.createClass({
-		mixins: [ScrollMixin],
+		//mixins: [ScrollMixin],
 		render() {
 			return (
 				<body>
@@ -55,10 +57,8 @@ d3.tsv("data/data.tsv", function(err, data) {
 								<MenuItem label="Overview" active={true} />
 								<MenuItem label="AreaChart" />
 								<MenuItem label="CandlestickChart" />
-								<MenuItem label="stocktime/financetime scale" />
-								<MenuItem label="LineChart2" />
-								<MenuItem label="LineChart3" />
-								<MenuItem label="LineChart4" />
+								<MenuItem label="stocktime" />
+								<MenuItem label="Volumehistogram" />
 							</MenuGroup>
 						</Sidebar>
 						<ContentSection title="Getting Started">
@@ -102,9 +102,34 @@ d3.tsv("data/data.tsv", function(err, data) {
 									<aside dangerouslySetInnerHTML={{__html: require('md/CANDLESTICK-IMPROVED')}}></aside>
 								</Section>
 							</Row>
-							<Row title="stocktime/financetime scale">
+							<Row title="stocktime scale">
 								<Section colSpan={2}>
 									<aside dangerouslySetInnerHTML={{__html: require('md/FINANCETIMESCALE')}}></aside>
+								</Section>
+							</Row>
+							<Row title="Volume histogram">
+								<Section colSpan={2}>
+									<aside dangerouslySetInnerHTML={{__html: require('md/VOLUME-HISTOGRAM-INTRO')}}></aside>
+								</Section>
+							</Row>
+							<Row>
+								<Section colSpan={2} className="react-stockchart">
+									<CandleStickStockScaleChartWithVolumeHistogramV1 />
+								</Section>
+							</Row>
+							<Row>
+								<Section colSpan={2}>
+									<aside dangerouslySetInnerHTML={{__html: require('md/VOLUME-HISTOGRAM')}}></aside>
+								</Section>
+							</Row>
+							<Row>
+								<Section colSpan={2} className="react-stockchart">
+									<CandleStickStockScaleChartWithVolumeHistogramV2 />
+								</Section>
+							</Row>
+							<Row>
+								<Section colSpan={2}>
+									<aside dangerouslySetInnerHTML={{__html: require('md/VOLUME-HISTOGRAM-Contd')}}></aside>
 								</Section>
 							</Row>
 						</ContentSection>
