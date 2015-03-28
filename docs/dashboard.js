@@ -48,6 +48,7 @@ d3.tsv("data/MSFT.tsv", function(err, data) {
 	var CandleStickChartWithCHMousePointer = require('./lib/examples/candlestickchart-with-crosshair').init(data);
 	var CandleStickChartWithZoomPan = require('./lib/examples/candlestickchart-with-zoompan').init(data);
 	var CandleStickChartWithMA = require('./lib/examples/candlestickchart-with-ma').init(data);
+	var CandleStickChartWithEdge = require('./lib/examples/candlestickchart-with-edge').init(data);
 	var ExamplesPage = React.createClass({
 		//mixins: [ScrollMixin],
 		render() {
@@ -65,6 +66,7 @@ d3.tsv("data/MSFT.tsv", function(err, data) {
 								<MenuItem label="Mouse pointer" />
 								<MenuItem label="Zoom and Pan" />
 								<MenuItem label="Overlay" />
+								<MenuItem label="Edge coordinate" />
 							</MenuGroup>
 						</Sidebar>
 						<ContentSection title="Getting Started">
@@ -166,6 +168,16 @@ d3.tsv("data/MSFT.tsv", function(err, data) {
 							<Row>
 								<Section colSpan={2}>
 									<aside dangerouslySetInnerHTML={{__html: require('md/MOVING-AVERAGE-OVERLAY')}}></aside>
+								</Section>
+							</Row>
+							<Row title="Edge coordinate">
+								<Section colSpan={2} className="react-stockchart">
+									<CandleStickChartWithEdge />
+								</Section>
+							</Row>
+							<Row>
+								<Section colSpan={2}>
+									<aside dangerouslySetInnerHTML={{__html: require('md/EDGE-COORDINATE')}}></aside>
 								</Section>
 							</Row>
 						</ContentSection>

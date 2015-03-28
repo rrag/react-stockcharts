@@ -77,8 +77,8 @@ var EdgeIndicator = React.createClass({
 						className="edge-coordinate"
 						fill={overlay[0].stroke}
 						show={true}
-						x1={x1} y1={y1}
-						x2={edgeX} y2={y1}
+						x1={x1 + this.props._chart.origin[0]} y1={y1 + this.props._chart.origin[1]}
+						x2={edgeX + this.props._chart.origin[0]} y2={y1 + this.props._chart.origin[1]}
 						coordinate={this.props.displayFormat(yValue)}
 						edgeAt={edgeX}
 						orient={this.props.orient}
@@ -105,8 +105,8 @@ var EdgeIndicator = React.createClass({
 						type={this.props.type}
 						className="edge-coordinate"
 						show={true}
-						x1={x1} y1={y1}
-						x2={edgeX} y2={y1}
+						x1={x1 + this.props._chart.origin[0]} y1={y1 + this.props._chart.origin[1]}
+						x2={edgeX + this.props._chart.origin[0]} y2={y1 + this.props._chart.origin[1]}
 						coordinate={this.props.displayFormat(yValue)}
 						edgeAt={edgeX}
 						orient={this.props.orient}

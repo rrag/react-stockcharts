@@ -154,7 +154,10 @@ var EventCaptureMixin = {
 							var _chartData = this.getChartForId(child.props.id);
 
 							_chartData = this.updateChartDataFor(_chartData, data)
+
 							_chartData.scales.xScale.domain([domainL, domainR]);
+							//_chartData.scales.xScale.domain(this.state.currentItemStore.get().viewPortXRange);
+
 						}
 					})
 /*					var thisChart = this.getChartForId(mainChart);
