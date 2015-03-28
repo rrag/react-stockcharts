@@ -1,6 +1,6 @@
 #### React Stockcharts - Built with [React JS](http://facebook.github.io/react/) and [d3](http://d3js.org/)
 
-The motivation of the React Stockcharts project is to provide flexible library to create charts to represent time series data, easy to learn, ability to customize by means of 
+React Stockcharts project provides a flexible library to create charts that represent time series data. It is easy to learn and can be customized by 
 
 - adding custom chart components
 - access the `svg` elements

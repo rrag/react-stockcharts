@@ -46,6 +46,7 @@ d3.tsv("data/MSFT.tsv", function(err, data) {
 	var CandleStickStockScaleChartWithVolumeHistogramV1 = require('./lib/examples/candlestickchart-with-volume-histogram').init(data);
 	var CandleStickStockScaleChartWithVolumeHistogramV2 = require('./lib/examples/candlestickchart-with-volume-histogram2').init(data);
 	var CandleStickChartWithCHMousePointer = require('./lib/examples/candlestickchart-with-crosshair').init(data);
+	var CandleStickChartWithZoomPan = require('./lib/examples/candlestickchart-with-zoompan').init(data);
 	var ExamplesPage = React.createClass({
 		//mixins: [ScrollMixin],
 		render() {
@@ -58,8 +59,10 @@ d3.tsv("data/MSFT.tsv", function(err, data) {
 								<MenuItem label="Overview" active={true} />
 								<MenuItem label="AreaChart" />
 								<MenuItem label="CandlestickChart" />
-								<MenuItem label="stocktime" />
+								<MenuItem label="stocktime scale" />
 								<MenuItem label="Volume histogram" />
+								<MenuItem label="Mouse pointer" />
+								<MenuItem label="Zoom and Pan" />
 							</MenuGroup>
 						</Sidebar>
 						<ContentSection title="Getting Started">
@@ -141,6 +144,16 @@ d3.tsv("data/MSFT.tsv", function(err, data) {
 							<Row>
 								<Section colSpan={2}>
 									<aside dangerouslySetInnerHTML={{__html: require('md/MOUSEPOINTER')}}></aside>
+								</Section>
+							</Row>
+							<Row title="Zoom and Pan">
+								<Section colSpan={2} className="react-stockchart">
+									<CandleStickChartWithZoomPan />
+								</Section>
+							</Row>
+							<Row>
+								<Section colSpan={2}>
+									<aside dangerouslySetInnerHTML={{__html: require('md/ZOOM-AND-PAN')}}></aside>
 								</Section>
 							</Row>
 						</ContentSection>

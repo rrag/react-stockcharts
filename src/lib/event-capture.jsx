@@ -14,16 +14,19 @@ var EventCapture = React.createClass({
 		_height: React.PropTypes.number.isRequired,
 		_width: React.PropTypes.number.isRequired,
 		_eventStore: React.PropTypes.object.isRequired,
-		_zoomEventStore: React.PropTypes.object
+		_zoomEventStore: React.PropTypes.object,
+		defaultFocus: React.PropTypes.bool.isRequired
 	},
 	getInitialState() {
 		return {
-			dragOrigin: [0, 0]
+			dragOrigin: [0, 0],
+			defaultFocus: false
 		};
 	},
 	componentWillMount() {
 		this.setState({
-			className: this.props.className
+			className: this.props.className,
+			inFocus: this.props.defaultFocus
 		});
 	},
 	getDefaultProps() {
@@ -35,7 +38,16 @@ var EventCapture = React.createClass({
 			, pan: false
 			, panSpeedMultiplier: 1
 			, className: "crosshair"
+			, defaultFocus: false
 		}
+	},
+	toggleFocus() {
+		this.setFocus(!this.state.defaultFocus);
+	},
+	setFocus(focus) {
+		this.setState({
+			defaultFocus: focus
+		});
 	},
 	handleEnter() {
 		if (this.props._eventStore) {
@@ -59,7 +71,8 @@ var EventCapture = React.createClass({
 	handleWheel(e) {
 		if (this.props.zoom
 				&& this.props._eventStore
-				&& this.props._eventStore.get().inFocus.value
+				//&& this.props._eventStore.get().inFocus.value
+				&& this.state.inFocus
 				&& this.props._zoomEventStore) {
 			e.stopPropagation();
 			e.preventDefault();
@@ -91,13 +104,19 @@ var EventCapture = React.createClass({
 	},
 	handleMouseDown(e) {
 		if (this.props._eventStore) {
-			this.props._eventStore.get().inFocus.set({'value': true});
+			// this.props._eventStore.get().inFocus.set({'value': true});
+			var inFocus = true
 			if (this.props.pan && this.props._zoomEventStore) {
 				this.setState({
 					dragging: true,
 					dragOrigin: Utils.mousePosition(e),
 					dragOriginDomain: this.props._chartData.scales.xScale.domain(),
-					className: "grabbing"
+					className: "grabbing",
+					inFocus: inFocus
+				})
+			} else {
+				this.setState({
+					inFocus: inFocus
 				})
 			}
 		}

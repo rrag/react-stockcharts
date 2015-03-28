@@ -148,9 +148,19 @@ var EventCaptureMixin = {
 
 					// update the viewPortXRange
 					// this.state.currentItemStore.get().viewPortXRange
-					chart = this.updateChartDataFor(chart, data)
-					chart.scales.xScale.domain([domainL, domainR]);
-					//var newXScale = this.updateXScaleDomain(chart.scales.xScale, [domainL, domainR])
+
+					React.Children.forEach(this.props.children, (child) => {
+						if ("ReStock.Chart" === child.props.namespace) {
+							var _chartData = this.getChartForId(child.props.id);
+
+							_chartData = this.updateChartDataFor(_chartData, data)
+							_chartData.scales.xScale.domain([domainL, domainR]);
+						}
+					})
+/*					var thisChart = this.getChartForId(mainChart);
+					thisChart = this.updateChartDataFor(thisChart, data)
+					thisChart.scales.xScale.domain([domainL, domainR]);
+*/					//var newXScale = this.updateXScaleDomain(chart.scales.xScale, [domainL, domainR])
 
 					//chart.scales.set({ xScale: newXScale });
 

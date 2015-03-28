@@ -44,12 +44,12 @@ var HistogramSeries = React.createClass({
 			getClassName = this.props.className;
 		}
 		var width = Math.abs(this.props._xScale.range()[0] - this.props._xScale.range()[1]);
-		var barWidth = width / (this.props.data.length);
+		var barWidth = width / (this.props.data.length) * 0.5;
 		var bars = this.props.data
 				.filter((d) => (this.props._yAccessor(d) !== undefined) )
 				.map((d, idx) => {
 					var yValue = this.props._yAccessor(d);
-					var x = this.props._xScale(this.props._xAccessor(d)) - 0.5 * barWidth,
+					var x = Math.round(this.props._xScale(this.props._xAccessor(d))) - 0.5 * barWidth,
 						className = getClassName(d) ,
 						y, height;
 					if (dir > 0) {
@@ -61,9 +61,9 @@ var HistogramSeries = React.createClass({
 					}
 
 					return <rect key={idx} className={className}
-								x={Math.floor(x)}
+								x={Math.round(x)}
 								y={Math.round(y)}
-								width={Math.floor(barWidth)}
+								width={Math.round(barWidth)}
 								height={Math.round(height)} />
 				}, this);
 		return bars;
