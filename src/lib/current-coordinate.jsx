@@ -49,8 +49,8 @@ var CurrentCoordinate = React.createClass({
 
 		if (yValue === undefined) return null;
 
-		var x = Math.round(chartData.scales.xScale(xValue));
-		var y = Math.round(chartData.scales.yScale(yValue));
+		var x = Math.round(chartData.scales.xScale(xValue)) + chartData.origin[0];
+		var y = Math.round(chartData.scales.yScale(yValue)) + chartData.origin[1];
 
 		return (
 			<circle className={this.props.className} cx={x} cy={y} r={this.props.r} fill={fill} />

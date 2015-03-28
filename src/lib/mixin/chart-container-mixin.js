@@ -32,8 +32,11 @@ var ChartContainerMixin = {
 
 		var overlayYAccessors = pluck(keysAsArray(overlaysToAdd), 'yAccessor');
 
-		var width = chartProps.width || _props._width || this.getAvailableWidth(_props);
-		var height = chartProps.height || _props._height || this.getAvailableHeight(_props);
+		var availableWidth = _props._width || this.getAvailableWidth(_props);
+		var availableHeight = _props._height || this.getAvailableHeight(_props);
+
+		var width = chartProps.width || availableWidth;
+		var height = chartProps.height || availableHeight
 
 		var xyValues = ScaleUtils.flattenData(data, [accessors.xAccessor], [accessors.yAccessor].concat(overlayYAccessors));
 
@@ -46,10 +49,13 @@ var ChartContainerMixin = {
 
 		var last = Utils.cloneMe(data[data.length - 1]);
 		var first = Utils.cloneMe(data[0]);
-
+		var origin = typeof chartProps.origin === 'function'
+			? chartProps.origin(availableWidth, availableHeight)
+			: chartProps.origin;
 		var _chartData = {
 				width: width,
 				height: height,
+				origin: origin,
 				overlayValues: overlayValues,
 				overlays: overlaysToAdd,
 				accessors: accessors,
@@ -109,10 +115,12 @@ var ChartContainerMixin = {
 				React.Children.forEach(child.props.children, (grandChild) => {
 					if (/OverlaySeries$/.test(grandChild.props.namespace)) {
 						// var overlay = getOverlayFromList(overlays, grandChild.props.id)
-						var yAccessor = OverlayUtils.getYAccessor(grandChild.props);
+						var key = OverlayUtils.getYAccessorKey(props.id, grandChild.props);
 						var overlay = {
 							id: grandChild.props.id,
-							yAccessor: yAccessor,
+							chartId: props.id,
+							key: key,
+							yAccessor: (d) => d[key],
 							options: grandChild.props.options,
 							type: grandChild.props.type,
 							tooltipLabel: OverlayUtils.getToolTipLabel(grandChild.props),

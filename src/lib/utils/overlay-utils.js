@@ -10,20 +10,27 @@ var OverlayUtils = {
 			return tooltip;
 		}
 		return 'N/A';
-	},
-	getYAccessor(props) {
+	},/*
+	getYAccessor(chartId, props) {
 		if (props.type === "sma" || props.type === "ema") {
-			var key = props.type + props.options.period;
+			var key = props.type + props.options.period + '_chart_' + chartId;
 			return (d) => d[key];
+		}
+		return false;
+	},*/
+	getYAccessorKey(chartId, props) {
+		if (props.type === "sma" || props.type === "ema") {
+			var key = props.type + props.options.period + '_chart_' + chartId;
+			return key;
 		}
 		return false;
 	},
 	calculateOverlay(data, overlay) {
-		//console.log(overlay);
+		console.log(overlay);
 		if (overlay.type === 'sma') {
-			data = MACalculator.calculateSMA(data, overlay.options.period);
+			data = MACalculator.calculateSMA(data, overlay.options.period, overlay.key, overlay.options.pluck);
 		} else if (overlay.type === 'ema') {
-			data = MACalculator.calculateEMA(data, overlay.options.period);
+			data = MACalculator.calculateEMA(data, overlay.options.period, overlay.key, overlay.options.pluck);
 		}
 		return data;
 	},

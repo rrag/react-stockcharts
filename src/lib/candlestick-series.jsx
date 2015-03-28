@@ -55,7 +55,7 @@ var CandlestickSeries = React.createClass({
 						height = Math.abs(this.props._yScale(ohlc.open) - this.props._yScale(ohlc.close)),
 						className = (ohlc.open <= ohlc.close) ? 'up' : 'down';
 					if (ohlc.open === ohlc.close) {
-						return <line x1={x} y1={y} x2={x + candleWidth} y2={y} />
+						return <line key={idx} x1={x} y1={y} x2={x + candleWidth} y2={y} />
 					}
 					return <rect key={idx} className={className}
 								x={x}
