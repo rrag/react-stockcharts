@@ -8,5 +8,5 @@ scale provides ticks of the format
 - Start of Week as `dd mmm` e.g. 25 Nov
 - day as `a dd` e.g. Wed 27
 
-**Comming Soon** updated financetime scale for intra day
+**Coming Soon** updated financetime scale for intra day
 

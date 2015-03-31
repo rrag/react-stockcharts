@@ -60,6 +60,11 @@ var HistogramSeries = React.createClass({
 						height = base - y;
 					}
 
+					if (Math.round(barWidth) <= 1) {
+						return <line key={idx} className={className}
+									x1={Math.round(x)} y1={Math.round(y)}
+									x2={Math.round(x)} y2={Math.round(y + height)} />
+					}
 					return <rect key={idx} className={className}
 								x={Math.round(x)}
 								y={Math.round(y)}

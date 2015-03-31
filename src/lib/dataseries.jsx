@@ -56,7 +56,9 @@ var DataSeries = React.createClass({
 					var key = newChild.props.id;
 					var overlay = getOverlayFromList(this.props._overlays, newChild.props.id);
 					newChild = React.addons.cloneWithProps(newChild, {
-						_overlay: overlay
+						_overlay: overlay,
+						_pan: this.props._pan,
+						_isMainChart: this.props._isMainChart
 					});
 				}
 			}

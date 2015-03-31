@@ -169,6 +169,12 @@
 			opacity: 0.3;
 			stroke: none;
 		}
+		line.up {
+			stroke: #6BA583;
+		}
+		line.down {
+			stroke: $red1;
+		}
 	}
 	.ma-container {
 		rect {

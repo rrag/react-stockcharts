@@ -313,7 +313,9 @@ var Chart = React.createClass({
 				/*_currentMouseXY: this.props._currentMouseXY,
 				_currentXYValue: this.props._currentXYValue,*/
 				_overlays: this.props._chartData.overlays,
-				_updateMode: this.props._updateMode
+				_updateMode: this.props._updateMode,
+				_pan: this.props._pan,
+				_isMainChart: this.props._isMainChart
 			});
 		}
 		return child;
@@ -323,7 +325,9 @@ var Chart = React.createClass({
 		var width = this.props._width;
 		var origin = typeof this.props.origin === 'function' ? this.props.origin(width, height) : this.props.origin;
 		var transform = 'translate(' + origin[0] + ',' +  origin[1] + ')';
-
+		if (this.props._pan && !this.props._isMainChart) {
+			return <g></g>
+		}
 		// console.log(this.props._chartData);
 		return (
 			<g transform={transform}>{this.renderChildren()}</g>

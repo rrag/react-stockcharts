@@ -43,7 +43,7 @@ module.exports = {
 				var dateFormat = d3.time.format("%Y-%m-%d");
 
 				return (
-					<ChartCanvas width={this.state.width} height={400} margin={{left: 90, right: 70, top:10, bottom: 30}} data={data}>
+					<ChartCanvas width={this.state.width} height={400} margin={{left: 90, right: 70, top:10, bottom: 30}} data={data} interval="1D" >
 						<DataTransform transformType="stockscale">
 							<Chart id={1} >
 								<XAxis axisAt="bottom" orient="bottom"/>

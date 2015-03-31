@@ -18,7 +18,24 @@ function getOverlayFromList(overlays, id) {
 
 
 var ChartContainerMixin = {
+	getDimensions(_props, chartProps) {
+
+		var availableWidth = _props._width || this.getAvailableWidth(_props);
+		var availableHeight = _props._height || this.getAvailableHeight(_props);
+
+		var width = chartProps.width || availableWidth;
+		var height = chartProps.height || availableHeight
+
+		return {
+			availableWidth: availableWidth,
+			availableHeight: availableHeight,
+			width: width,
+			height: height
+		}
+	},
 	getChartDataFor(_props, chartProps, data, fullData, passThroughProps) {
+		var dimensions = this.getDimensions(_props, chartProps);
+
 		var scales = this.defineScales(chartProps, data, passThroughProps);
 
 		var accessors = this.getXYAccessors(chartProps, passThroughProps);
@@ -28,33 +45,32 @@ var ChartContainerMixin = {
 		// calculate overlays
 		this.calculateOverlays(fullData, overlaysToAdd);
 
-		var overlayValues = this.updateOverlayFirstLast(data, overlaysToAdd)
-
 		var overlayYAccessors = pluck(keysAsArray(overlaysToAdd), 'yAccessor');
 
-		var availableWidth = _props._width || this.getAvailableWidth(_props);
-		var availableHeight = _props._height || this.getAvailableHeight(_props);
-
-		var width = chartProps.width || availableWidth;
-		var height = chartProps.height || availableHeight
-
 		var xyValues = ScaleUtils.flattenData(data, [accessors.xAccessor], [accessors.yAccessor].concat(overlayYAccessors));
+
+		var overlayValues = this.updateOverlayFirstLast(data, overlaysToAdd)
 
 		scales = this.updateScales(
 			xyValues
 			, scales
 			, data
-			, width
-			, height);
+			, dimensions.width
+			, dimensions.height);
 
 		var last = Utils.cloneMe(data[data.length - 1]);
 		var first = Utils.cloneMe(data[0]);
 		var origin = typeof chartProps.origin === 'function'
-			? chartProps.origin(availableWidth, availableHeight)
+			? chartProps.origin(dimensions.availableWidth, dimensions.availableHeight)
 			: chartProps.origin;
+
+		var drawableWidth = scales.xScale(accessors.xAccessor(data[data.length - 1]))
+			- scales.xScale(accessors.xAccessor(data[0]));
+
 		var _chartData = {
-				width: width,
-				height: height,
+				width: dimensions.width,
+				height: dimensions.height,
+				drawableWidth: drawableWidth,
 				origin: origin,
 				overlayValues: overlayValues,
 				overlays: overlaysToAdd,
@@ -162,6 +178,7 @@ var ChartContainerMixin = {
 	},
 	updateScales(xyValues, scales, data, width, height) {
 		console.log('updateScales');
+
 
 		scales.xScale.range([0, width]);
 		// if polylinear scale then set data

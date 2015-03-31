@@ -10,12 +10,13 @@ var EventCapture = React.createClass({
 		zoomMultiplier: React.PropTypes.number.isRequired,
 		pan: React.PropTypes.bool.isRequired,
 		panSpeedMultiplier: React.PropTypes.number.isRequired,
+		defaultFocus: React.PropTypes.bool.isRequired,
+
 		_chartData: React.PropTypes.object.isRequired,
 		_height: React.PropTypes.number.isRequired,
 		_width: React.PropTypes.number.isRequired,
 		_eventStore: React.PropTypes.object.isRequired,
-		_zoomEventStore: React.PropTypes.object,
-		defaultFocus: React.PropTypes.bool.isRequired
+		_zoomEventStore: React.PropTypes.object
 	},
 	getInitialState() {
 		return {
@@ -124,6 +125,8 @@ var EventCapture = React.createClass({
 	},
 	handleMouseUp(e) {
 		if (this.props.pan && this.props._zoomEventStore) {
+
+			this.props._eventStore.get().set({ pan: false })
 			this.setState({
 				dragging: false,
 				dragOrigin: [0, 0],

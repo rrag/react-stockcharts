@@ -17,9 +17,18 @@ var Row = require('lib/row');
 var Section = require('lib/section');
 var ScrollMixin = require('lib/scroll-mixin');
 
-
-d3.tsv("data/MSFT.tsv", function(err, data) {
+function renderPage(data, dataFull) {
 	data.forEach((d, i) => {
+		d.date = new Date(parseDate(d.date).getTime());
+		d.open = +d.open;
+		d.high = +d.high;
+		d.low = +d.low;
+		d.close = +d.close;
+		d.volume = +d.volume;
+		// console.log(d);
+	});
+
+	dataFull.forEach((d, i) => {
 		d.date = new Date(parseDate(d.date).getTime());
 		d.open = +d.open;
 		d.high = +d.high;
@@ -49,6 +58,7 @@ d3.tsv("data/MSFT.tsv", function(err, data) {
 	var CandleStickChartWithZoomPan = require('./lib/examples/candlestickchart-with-zoompan').init(data);
 	var CandleStickChartWithMA = require('./lib/examples/candlestickchart-with-ma').init(data);
 	var CandleStickChartWithEdge = require('./lib/examples/candlestickchart-with-edge').init(data);
+	var CandleStickChartWithLotsOfData = require('./lib/examples/candlestickchart-with-edge').init(dataFull);
 	var ExamplesPage = React.createClass({
 		//mixins: [ScrollMixin],
 		render() {
@@ -67,6 +77,8 @@ d3.tsv("data/MSFT.tsv", function(err, data) {
 								<MenuItem label="Zoom and Pan" />
 								<MenuItem label="Overlay" />
 								<MenuItem label="Edge coordinate" />
+								<MenuItem label="Lots of data" />
+								<MenuItem label="Coming soon..." />
 							</MenuGroup>
 						</Sidebar>
 						<ContentSection title="Getting Started">
@@ -180,6 +192,21 @@ d3.tsv("data/MSFT.tsv", function(err, data) {
 									<aside dangerouslySetInnerHTML={{__html: require('md/EDGE-COORDINATE')}}></aside>
 								</Section>
 							</Row>
+							<Row title="Lots of data">
+								<Section colSpan={2}>
+									<aside dangerouslySetInnerHTML={{__html: require('md/LOTS-OF-DATA')}}></aside>
+								</Section>
+							</Row>
+							<Row>
+								<Section colSpan={2} className="react-stockchart">
+									<CandleStickChartWithLotsOfData />
+								</Section>
+							</Row>
+							<Row title="Coming soon...">
+								<Section colSpan={2} className="react-stockchart">
+									<aside dangerouslySetInnerHTML={{__html: require('md/COMING-SOON')}}></aside>
+								</Section>
+							</Row>
 						</ContentSection>
 					</MainContainer>
 				</body>
@@ -188,7 +215,15 @@ d3.tsv("data/MSFT.tsv", function(err, data) {
 	});
 
 	React.render(<ExamplesPage />, document.body);
-});
+}
 // React.render(<ExamplesPage />, document.getElementById("area"));
 
 //module.exports = ExamplesPage;
+
+
+d3.tsv("data/MSFT.tsv", (err, MSFT) => {
+	d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
+		renderPage(MSFT, MSFTFull)
+	});
+})
+

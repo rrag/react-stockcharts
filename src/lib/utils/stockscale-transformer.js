@@ -17,7 +17,8 @@ function StockScaleTransformer(data, options) {
 	var indexMutator = options.indexMutator;
 
 	var prevDate;
-	var responseData = data
+	var responseData = {}
+	responseData.D = data
 		//.filter((each) => Math.random() > 0.9)
 		.map((each, i) => {
 			var row = each;//Utils.cloneMe(each);
@@ -47,14 +48,104 @@ function StockScaleTransformer(data, options) {
 			return row;
 		});
 	// console.table(responseData);
+	responseData.W = buildWeeklyData(responseData.D, indexMutator, dateAccesor);
+	responseData.M = buildMonthlyData(responseData.D, indexMutator, dateAccesor);
+
+	// console.table(responseData.W);
+
 	return {
 			data: responseData,
 			_dateAccessor: dateAccesor,
 			_indexAccessor: options.indexAccessor,
 			// _indexMutator: indexMutator,
 			_stockScale: true,
-			_xScale: stockScale(options.indexAccessor)
+			_xScale: stockScale(options.indexAccessor),
+			_multiInterval: true
 		};
+}
+
+function buildWeeklyData(daily, indexMutator, dateAccesor) {
+	var weekly = [], prevWeek, eachWeek = {};
+	for (var i = 0; i < daily.length; i++) {
+		var d = daily[i];
+
+		if (!eachWeek.date) indexMutator(eachWeek,  i);
+
+		eachWeek.date = dateAccesor(d);
+
+		eachWeek.startOfWeek = eachWeek.startOfWeek || d.startOfWeek;
+		eachWeek.startOfMonth = eachWeek.startOfMonth || d.startOfMonth;
+		eachWeek.startOfQuarter = eachWeek.startOfQuarter || d.startOfQuarter;
+		eachWeek.startOfYear = eachWeek.startOfYear || d.startOfYear;
+
+		if (!eachWeek.open) eachWeek.open = d.open;
+		if (!eachWeek.high) eachWeek.high = d.high;
+		if (!eachWeek.low) eachWeek.low = d.low;
+
+		eachWeek.close = d.close;
+
+		eachWeek.high = Math.max(eachWeek.high, d.high);
+		eachWeek.low = Math.min(eachWeek.low, d.low);
+
+		if (!eachWeek.volume) eachWeek.volume = 0;
+		eachWeek.volume += d.volume;
+
+		if (d.startOfWeek) {
+			if (prevWeek) {
+				eachWeek.trueRange = Math.max(
+					eachWeek.high - eachWeek.low
+					, eachWeek.high - prevWeek.close
+					, eachWeek.low - prevWeek.close
+				);
+			}
+			prevWeek = eachWeek
+			weekly.push(eachWeek);
+			eachWeek = {};
+		}
+	}
+	return weekly;
+}
+
+function buildMonthlyData(daily, indexMutator, dateAccesor) {
+	var monthly = [], prevMonth, eachMonth = {};
+	for (var i = 0; i < daily.length; i++) {
+		var d = daily[i];
+
+		if (!eachMonth.date) indexMutator(eachMonth,  i);
+
+		eachMonth.date = dateAccesor(d);
+
+		eachMonth.startOfMonth = eachMonth.startOfMonth || d.startOfMonth;
+		eachMonth.startOfQuarter = eachMonth.startOfQuarter || d.startOfQuarter;
+		eachMonth.startOfYear = eachMonth.startOfYear || d.startOfYear;
+
+		if (!eachMonth.open) eachMonth.open = d.open;
+		if (!eachMonth.high) eachMonth.high = d.high;
+		if (!eachMonth.low) eachMonth.low = d.low;
+
+		eachMonth.close = d.close;
+
+		eachMonth.high = Math.max(eachMonth.high, d.high);
+		eachMonth.low = Math.min(eachMonth.low, d.low);
+
+		if (!eachMonth.volume) eachMonth.volume = 0;
+		eachMonth.volume += d.volume;
+
+		if (d.startOfMonth) {
+			eachMonth.startOfWeek = d.startOfWeek;
+			if (prevMonth) {
+				eachMonth.trueRange = Math.max(
+					eachMonth.high - eachMonth.low
+					, eachMonth.high - prevMonth.close
+					, eachMonth.low - prevMonth.close
+				);
+			}
+			prevMonth = eachMonth
+			monthly.push(eachMonth);
+			eachMonth = {};
+		}
+	}
+	return monthly;
 }
 
 module.exports = StockScaleTransformer;

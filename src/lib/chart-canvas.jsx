@@ -12,6 +12,7 @@ var ChartCanvas = React.createClass({
 		width: React.PropTypes.number.isRequired
 		, height: React.PropTypes.number.isRequired
 		, margin: React.PropTypes.object
+		, interval: React.PropTypes.string.isRequired
 	},
 	getAvailableHeight(props) {
 		return props.height - props.margin.top - props.margin.bottom;
@@ -24,7 +25,8 @@ var ChartCanvas = React.createClass({
 	},
 	getDefaultProps() {
 		return {
-			margin: {top: 20, right: 30, bottom: 30, left: 80}
+			margin: {top: 20, right: 30, bottom: 30, left: 80},
+			interval: "D"
 		};
 	},
 	renderChildren() {
@@ -34,7 +36,8 @@ var ChartCanvas = React.createClass({
 			var newChild = child;
 			if ('ReStock.DataTransform' === newChild.props.namespace) {
 				newChild = React.addons.cloneWithProps(newChild, {
-					data: this.props.data
+					data: this.props.data,
+					interval: this.props.interval
 				});
 			}
 			return React.addons.cloneWithProps(newChild, {

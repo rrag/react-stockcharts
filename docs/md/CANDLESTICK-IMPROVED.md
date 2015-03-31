@@ -54,7 +54,7 @@ It is the same as for `AreaChart`
 
 Converting the data provided as input which when taken as a linear scale includes weekend time breaks, into a linear scale over the input domain. More usecases of `DataTransform` are listed below.
 
-**Comming Soon** Create your own transforms and register them for use
+**Coming Soon** Create your own transforms and register them for use
 
 ```html
 <Chart id={1} >
