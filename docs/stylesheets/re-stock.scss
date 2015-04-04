@@ -1,5 +1,31 @@
 /* Move down content because we have a fixed navbar that is 50px tall */
 /*! normalize.css v3.0.2 | MIT License | git.io/normalize */
+/* #MainContainer {
+   position: fixed;
+   top: 50px;
+   padding-left: 100px;
+} */
+
+aside {
+  table {
+    border: 1;
+    border-spacing: 1px;
+    border-collapse: collapse;
+    max-width: 100%;
+    margin-bottom: 20px;
+    tbody > tr > td,
+    tbody > tr > th,
+    tfoot > tr > td,
+    tfoot > tr > th,
+    thead > tr > td,
+    thead > tr > th {
+      padding: 8px;
+      line-height: 1.42857;
+      vertical-align: top;
+      border-top: 1px solid #DDD;
+    }
+  }
+}
 
 a.button {
     background: transparent url(../images/github-button.png) 0 0 no-repeat;

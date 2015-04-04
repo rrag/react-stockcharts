@@ -18,47 +18,67 @@ function getOverlayFromList(overlays, id) {
 
 
 var ChartContainerMixin = {
-	getChartDataFor(chartComponent, _chartData, data, fullData, passThroughProps) {
-		var props = chartComponent.props;
+	getDimensions(_props, chartProps) {
 
-		var scales = this.defineScales(props, data, passThroughProps);
+		var availableWidth = _props._width || this.getAvailableWidth(_props);
+		var availableHeight = _props._height || this.getAvailableHeight(_props);
 
-		var accessors = this.getXYAccessors(props, passThroughProps);
+		var width = chartProps.width || availableWidth;
+		var height = chartProps.height || availableHeight
+
+		return {
+			availableWidth: availableWidth,
+			availableHeight: availableHeight,
+			width: width,
+			height: height
+		}
+	},
+	getChartDataFor(_props, chartProps, data, fullData, passThroughProps) {
+		var dimensions = this.getDimensions(_props, chartProps);
+
+		var scales = this.defineScales(chartProps, data, passThroughProps);
+
+		var accessors = this.getXYAccessors(chartProps, passThroughProps);
 		// identify overlays
-		var overlaysToAdd = this.identifyOverlaysToAdd(props, _chartData.overlays);
-		_chartData = _chartData.set({ overlays: overlaysToAdd });
+		var overlaysToAdd = this.identifyOverlaysToAdd(chartProps);
 		// console.log(overlaysToAdd);
 		// calculate overlays
-		this.calculateOverlays(fullData, _chartData.overlays);
+		this.calculateOverlays(fullData, overlaysToAdd);
 
-		var overlayValues = this.updateOverlayFirstLast(data, _chartData.overlays)
-		_chartData = _chartData.set( { overlayValues: overlayValues } ); // replace everything
+		var overlayYAccessors = pluck(keysAsArray(overlaysToAdd), 'yAccessor');
 
-		var overlayYAccessors = pluck(keysAsArray(_chartData.overlays), 'yAccessor');
+		var xyValues = ScaleUtils.flattenData(data, [accessors.xAccessor], [accessors.yAccessor].concat(overlayYAccessors));
 
-		_chartData = _chartData.set({
-				width: props.width || this.props._width || this.getAvailableWidth(),
-				height: props.height || this.props._height || this.getAvailableHeight()
-			})
+		var overlayValues = this.updateOverlayFirstLast(data, overlaysToAdd)
 
 		scales = this.updateScales(
-			[accessors.xAccessor]
-			, [accessors.yAccessor].concat(overlayYAccessors)
-			, scales.xScale
-			, scales.yScale
+			xyValues
+			, scales
 			, data
-			, _chartData.width
-			, _chartData.height
-			, true, true);
-
-		_chartData = _chartData.set({ accessors: accessors });
-		_chartData = _chartData.set({ scales: scales });
+			, dimensions.width
+			, dimensions.height);
 
 		var last = Utils.cloneMe(data[data.length - 1]);
-		_chartData = _chartData.set({ lastItem: last });
-
 		var first = Utils.cloneMe(data[0]);
-		_chartData = _chartData.set({ firstItem: first });
+		var origin = typeof chartProps.origin === 'function'
+			? chartProps.origin(dimensions.availableWidth, dimensions.availableHeight)
+			: chartProps.origin;
+
+		var drawableWidth = scales.xScale(accessors.xAccessor(data[data.length - 1]))
+			- scales.xScale(accessors.xAccessor(data[0]));
+
+		var _chartData = {
+				width: dimensions.width,
+				height: dimensions.height,
+				drawableWidth: drawableWidth,
+				origin: origin,
+				overlayValues: overlayValues,
+				overlays: overlaysToAdd,
+				accessors: accessors,
+				scales: scales,
+				lastItem: last,
+				firstItem: first
+			};
 		return _chartData;
 	},
 	defineScales(props, data, passThroughProps) {
@@ -104,37 +124,49 @@ var ChartContainerMixin = {
 
 		return accessor;
 	},
-	identifyOverlaysToAdd(props, overlays) {
+	identifyOverlaysToAdd(props) {
 		var overlaysToAdd = [];
 		React.Children.forEach(props.children, (child) => {
 			if (/DataSeries$/.test(child.props.namespace)) {
 				React.Children.forEach(child.props.children, (grandChild) => {
 					if (/OverlaySeries$/.test(grandChild.props.namespace)) {
-						var overlay = getOverlayFromList(overlays, grandChild.props.id)
-						var yAccessor = OverlayUtils.getYAccessor(grandChild.props);
-						if (overlay === undefined) {
-							overlay = {
-								id: grandChild.props.id,
-								yAccessor: yAccessor,
-								options: grandChild.props.options,
-								type: grandChild.props.type,
-								tooltipLabel: OverlayUtils.getToolTipLabel(grandChild.props),
-								stroke: grandChild.stroke || overlayColors(grandChild.props.id)
-							};
-							overlaysToAdd.push(overlay);
-						}
+						// var overlay = getOverlayFromList(overlays, grandChild.props.id)
+						var key = OverlayUtils.getYAccessorKey(props.id, grandChild.props);
+						var overlay = {
+							id: grandChild.props.id,
+							chartId: props.id,
+							key: key,
+							yAccessor: (d) => d[key],
+							options: grandChild.props.options,
+							type: grandChild.props.type,
+							tooltipLabel: OverlayUtils.getToolTipLabel(grandChild.props),
+							stroke: grandChild.stroke || overlayColors(grandChild.props.id)
+						};
+						overlaysToAdd.push(overlay);
 					}
 				});
 			}
 		})
 		return overlaysToAdd;
 	},
-	calculateOverlays(data, overlays) {
-		overlays
-			.filter((eachOverlay) => eachOverlay.id !== undefined)
-			.forEach((overlay) => {
-				OverlayUtils.calculateOverlay(data, overlay);
-			});
+	calculateOverlays(fullData, overlays) {
+		if (Array.isArray(fullData)) {
+			overlays
+				.filter((eachOverlay) => eachOverlay.id !== undefined)
+				.forEach((overlay) => {
+					OverlayUtils.calculateOverlay(fullData, overlay);
+				});
+		} else {
+			Object.keys(fullData)
+				.filter((key) => ['D', 'W', 'M'].indexOf(key) > -1)
+				.forEach((key) => {
+					overlays
+						.filter((eachOverlay) => eachOverlay.id !== undefined)
+						.forEach((overlay) => {
+							OverlayUtils.calculateOverlay(fullData[key], overlay);
+						});
+				})
+		}
 		// console.log(overlays);
 	},
 	updateOverlayFirstLast(data,
@@ -156,40 +188,34 @@ var ChartContainerMixin = {
 		// console.log(_overlayValues);
 		return overlayValues;
 	},
-	updateScales(xAccessors, yAccessors, xScale, yScale, data, width, height, xDomainUpdate, yDomainUpdate) {
+	updateScales(xyValues, scales, data, width, height) {
 		console.log('updateScales');
 
-		var result = ScaleUtils.flattenData(data, xAccessors, yAccessors);
 
-		if (xDomainUpdate) {
-			xScale.range([0, width]);
-			// if polylinear scale then set data
-			xScale = this.updateXScaleDomain(xScale, d3.extent(result.xValues), data)
-		}
-
-		if (yDomainUpdate) {
-			yScale.range([height, 0]);
-			var domain = d3.extent(result.yValues);
-			//var extraPadding = Math.abs(domain[0] - domain[1]) * 0.05;
-			//yScale.domain([domain[0] - extraPadding, domain[1] + extraPadding]);
-			yScale.domain(domain);
-		}
-		return {
-			xScale: xScale,
-			yScale: yScale.copy()
-		};
-	},
-	updateXScaleDomain(xScale, domain, data) {
-		if (xScale.isPolyLinear && xScale.isPolyLinear()) {
-			xScale.data(data);
+		scales.xScale.range([0, width]);
+		// if polylinear scale then set data
+		if (scales.xScale.isPolyLinear && scales.xScale.isPolyLinear()) {
+			scales.xScale.data(data);
 		} else {
 			// else set the domain
-			xScale.domain(domain);
+			scales.xScale.domain(d3.extent(xyValues.xValues));
 		}
-		return xScale.copy();
+
+		scales.yScale.range([height, 0]);
+
+		var domain = d3.extent(xyValues.yValues);
+		//var extraPadding = Math.abs(domain[0] - domain[1]) * 0.05;
+		//yScale.domain([domain[0] - extraPadding, domain[1] + extraPadding]);
+		scales.yScale.domain(domain);
+
+		return {
+			xScale: scales.xScale.copy(),
+			yScale: scales.yScale.copy()
+		};
 	},
 
 	updateChartDataFor(_chartData, data) {
+		console.log('updateChartDataFor');
 		var scales = _chartData.scales;
 
 		var accessors = _chartData.accessors;
@@ -199,15 +225,15 @@ var ChartContainerMixin = {
 
 		var overlayYAccessors = pluck(keysAsArray(_chartData.overlays), 'yAccessor');
 
+
+		var xyValues = ScaleUtils.flattenData(data, [accessors.xAccessor], [accessors.yAccessor].concat(overlayYAccessors));
+
 		scales = this.updateScales(
-			[accessors.xAccessor]
-			, [accessors.yAccessor].concat(overlayYAccessors)
-			, scales.xScale
-			, scales.yScale
+			xyValues
+			, scales
 			, data
 			, _chartData.width
-			, _chartData.height
-			, true, true);
+			, _chartData.height);
 
 		_chartData = _chartData.set({ scales: scales });
 

@@ -12,12 +12,12 @@ var EdgeCoordinate = React.createClass({
 		orient: React.PropTypes.oneOf(['bottom', 'top', 'left', 'right']),
 		rectWidth: React.PropTypes.number
 	},
-	getDefaultProps: function() {
+	getDefaultProps() {
 		return {
 			orient: 'left'
 		};
 	},
-	render: function() {
+	render() {
 		if (!this.props.show) return null;
 
 		var displayCoordinate = this.props.coordinate;

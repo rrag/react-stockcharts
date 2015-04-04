@@ -1,0 +1,1 @@
+There are a couple of ways Volume histogram is usually displayed. Let us see them.

@@ -28,6 +28,10 @@ var Chart = React.createClass({
 		data: React.PropTypes.array.isRequired,
 		height: React.PropTypes.number,
 		width: React.PropTypes.number,
+		origin: React.PropTypes.oneOfType([
+					React.PropTypes.array
+					, React.PropTypes.func
+				]).isRequired,
 		id: React.PropTypes.number.isRequired,
 		_height: React.PropTypes.number,
 		_width: React.PropTypes.number,
@@ -54,7 +58,8 @@ var Chart = React.createClass({
 		return {
 			namespace: "ReStock.Chart",
 			transformDataAs: "none",
-			yDomainUpdate: true
+			yDomainUpdate: true,
+			origin: [0, 0]
 		};
 	},/*
 	identifyOverlaysToAdd(props) {
@@ -308,15 +313,25 @@ var Chart = React.createClass({
 				/*_currentMouseXY: this.props._currentMouseXY,
 				_currentXYValue: this.props._currentXYValue,*/
 				_overlays: this.props._chartData.overlays,
-				_updateMode: this.props._updateMode
+				_updateMode: this.props._updateMode,
+				_pan: this.props._pan,
+				_isMainChart: this.props._isMainChart
 			});
 		}
 		return child;
 	},
 	render() {
+		var height = this.props._height;
+		var width = this.props._width;
+		var origin = typeof this.props.origin === 'function' ? this.props.origin(width, height) : this.props.origin;
+		var transform = 'translate(' + origin[0] + ',' +  origin[1] + ')';
+		if (this.props._pan && !this.props._isMainChart) {
+		// if (this.props._pan) {
+			return <g></g>
+		}
 		// console.log(this.props._chartData);
 		return (
-			<g>{this.renderChildren()}</g>
+			<g transform={transform}>{this.renderChildren()}</g>
 		);
 	}
 });

@@ -80,6 +80,9 @@ var OverlaySeries = React.createClass({
 	render() {
 		// console.log('OverlaySeries.render');
 		if (this.props._overlay.yAccessor === undefined) return null;
+		if (this.props._pan && this.props._isMainChart) {
+			return <g></g>
+		}
 		return (
 			<g>{this.renderChildren()}</g>
 		);

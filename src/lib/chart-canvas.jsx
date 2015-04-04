@@ -12,19 +12,21 @@ var ChartCanvas = React.createClass({
 		width: React.PropTypes.number.isRequired
 		, height: React.PropTypes.number.isRequired
 		, margin: React.PropTypes.object
+		, interval: React.PropTypes.string.isRequired
 	},
-	getAvailableHeight() {
-		return this.props.height - this.props.margin.top - this.props.margin.bottom;
+	getAvailableHeight(props) {
+		return props.height - props.margin.top - props.margin.bottom;
 	},
-	getAvailableWidth() {
-		return this.props.width - this.props.margin.left - this.props.margin.right;
+	getAvailableWidth(props) {
+		return props.width - props.margin.left - props.margin.right;
 	},
 	getInitialState() {
 		return {};
 	},
 	getDefaultProps() {
 		return {
-			margin: {top: 20, right: 30, bottom: 30, left: 80}
+			margin: {top: 20, right: 30, bottom: 30, left: 80},
+			interval: "D"
 		};
 	},
 	renderChildren() {
@@ -32,9 +34,15 @@ var ChartCanvas = React.createClass({
 		var children = React.Children.map(this.props.children, (child) => {
 			if (typeof child.type === 'string') return child;
 			var newChild = child;
+			if ('ReStock.DataTransform' === newChild.props.namespace) {
+				newChild = React.addons.cloneWithProps(newChild, {
+					data: this.props.data,
+					interval: this.props.interval
+				});
+			}
 			return React.addons.cloneWithProps(newChild, {
-				_width: this.getAvailableWidth()
-				, _height: this.getAvailableHeight()
+				_width: this.getAvailableWidth(this.props)
+				, _height: this.getAvailableHeight(this.props)
 			});
 		});
 		return this._renderChildren(children);
@@ -43,7 +51,7 @@ var ChartCanvas = React.createClass({
 
 		var transform = 'translate(' + this.props.margin.left + ',' +  this.props.margin.top + ')';
 		var clipPath = '<clipPath id="chart-area-clip">'
-							+ '<rect x="0" y="0" width="' + this.getAvailableWidth() + '" height="' + this.getAvailableHeight() + '" />'
+							+ '<rect x="0" y="0" width="' + this.getAvailableWidth(this.props) + '" height="' + this.getAvailableHeight(this.props) + '" />'
 						+ '</clipPath>';
 
 		var children = this.renderChildren();

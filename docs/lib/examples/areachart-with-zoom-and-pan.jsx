@@ -23,29 +23,27 @@ var ChartCanvas = ReStock.ChartCanvas
 	, EdgeContainer = ReStock.EdgeContainer
 	, EdgeIndicator = ReStock.EdgeIndicator
 	, CurrentCoordinate = ReStock.CurrentCoordinate
-
+	, ChartWidthMixin = require('./mixin/chart-width-mixin')
+	, InitialStateMixin = require('./mixin/initial-state-mixin')
 ;
 
 module.exports = {
 	init(data) {
 		var AreaChartWithZoomPan = React.createClass({
-			getInitialState() {
-				return {
-					width: 500,
-					height: 400
-				};
-			},
+			mixins: [InitialStateMixin, ChartWidthMixin],
 			handleMATooltipClick(overlay) {
 				console.log('You clicked on ', overlay, ' handle your onclick event here...');
 			},
 			render() {
+				if (!this.state.width) return <div />;
+
 				var parseDate = d3.time.format("%Y-%m-%d").parse
 				var dateRange = { from: parseDate("2012-06-01"), to: parseDate("2012-12-31")}
 				var dateFormat = d3.time.format("%Y-%m-%d");
 
 				return (
 					<ChartCanvas 
-						width={this.state.width} height={this.state.height}
+						width={this.state.width} height={500}
 						margin={{left: 65, right: 90, top:30, bottom: 30}} data={data} ref="eventStore">
 						<Chart id={1} >
 							<XAxis axisAt="bottom" orient="bottom" ticks={6}/>

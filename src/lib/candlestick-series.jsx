@@ -13,7 +13,7 @@ var CandlestickSeries = React.createClass({
 		_yAccessor: React.PropTypes.func.isRequired
 	},
 	statics: {
-		yAccessor: (d) => { return {open: d.open, high: d.high, low: d.low, close: d.close}}
+		yAccessor: (d) => ({open: d.open, high: d.high, low: d.low, close: d.close})
 	},
 	getDefaultProps() {
 		return {
@@ -26,7 +26,7 @@ var CandlestickSeries = React.createClass({
 				.map(function(d, idx) {
 					var ohlc = this.props._yAccessor(d);
 
-					var x1 = this.props._xScale(this.props._xAccessor(d)),
+					var x1 = Math.round(this.props._xScale(this.props._xAccessor(d))),
 						y1 = this.props._yScale(ohlc.high),
 						x2 = x1,
 						y2 = this.props._yScale(ohlc.low),
@@ -44,17 +44,25 @@ var CandlestickSeries = React.createClass({
 		return wicks;
 	},
 	getCandles() {
-		var width = Math.abs(this.props._xScale.range()[0] - this.props._xScale.range()[1]);
-		var candleWidth = (width / (this.props.data.length)) * 0.5;
+		var width = this.props._xScale(this.props._xAccessor(this.props.data[this.props.data.length - 1]))
+			- this.props._xScale(this.props._xAccessor(this.props.data[0]));
+		var cw = (width / (this.props.data.length)) * 0.5;
+		var candleWidth = Math.floor(cw) % 2 === 0 ? Math.floor(cw) : Math.round(cw); // 
 		var candles = this.props.data
 				.filter(function (d) { return d.close !== undefined; })
 				.map(function(d, idx) {
 					var ohlc = this.props._yAccessor(d);
-					var x = this.props._xScale(this.props._xAccessor(d)) - 0.5 * candleWidth,
+					var x = Math.round(this.props._xScale(this.props._xAccessor(d)))
+							- (candleWidth === 1 ? 0 : 0.5 * candleWidth),
 						y = this.props._yScale(Math.max(ohlc.open, ohlc.close)),
 						height = Math.abs(this.props._yScale(ohlc.open) - this.props._yScale(ohlc.close)),
 						className = (ohlc.open <= ohlc.close) ? 'up' : 'down';
-
+					if (ohlc.open === ohlc.close) {
+						return <line key={idx} x1={x} y1={y} x2={x + candleWidth} y2={y} />
+					}
+					if (candleWidth <= 1) {
+						return <line  className={className} key={idx} x1={x} y1={y} x2={x} y2={y + height} />
+					}
 					return <rect key={idx} className={className}
 								x={x}
 								y={y}

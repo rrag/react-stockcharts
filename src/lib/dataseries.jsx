@@ -56,7 +56,9 @@ var DataSeries = React.createClass({
 					var key = newChild.props.id;
 					var overlay = getOverlayFromList(this.props._overlays, newChild.props.id);
 					newChild = React.addons.cloneWithProps(newChild, {
-						_overlay: overlay
+						_overlay: overlay,
+						_pan: this.props._pan,
+						_isMainChart: this.props._isMainChart
 					});
 				}
 			}
@@ -68,6 +70,9 @@ var DataSeries = React.createClass({
 	render() {
 		//throw new Error();
 		// console.log('rendering dataseries...');
+		/*if (this.props._pan) {
+			return <g></g>
+		}*/
 		return (
 			<g  style={{ "clipPath": "url(#chart-area-clip)" }}>{this.renderChildren()}</g>
 		);

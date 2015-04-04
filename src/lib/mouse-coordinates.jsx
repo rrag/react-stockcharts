@@ -35,8 +35,13 @@ var MouseCoordinates = React.createClass({
 	renderChildren() {
 		var chartData = this.props._chartData;
 		var item = this.props._currentItem.data;
+		
 
-		var xValue =chartData.accessors.xAccessor(item);
+		var xValue = chartData.accessors.xAccessor(item);
+		var xDisplayValue = this.props._dateAccessor === undefined
+			? xValue
+			: this.props._dateAccessor(item);
+
 		var yValue = chartData.scales.yScale.invert(this.props._mouseXY[1]);
 
 		if (xValue === undefined || yValue === undefined) return null;
@@ -53,7 +58,7 @@ var MouseCoordinates = React.createClass({
 				_width: this.props._width
 				, _height: this.props._height
 				, _mouseXY: [x, y]
-				, _xDisplayValue: this.props.xDisplayFormat(xValue)
+				, _xDisplayValue: this.props.xDisplayFormat(xDisplayValue)
 				, _yDisplayValue: this.props.yDisplayFormat(yValue)
 			});
 		}, this);
