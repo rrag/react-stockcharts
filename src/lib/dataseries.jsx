@@ -70,6 +70,9 @@ var DataSeries = React.createClass({
 	render() {
 		//throw new Error();
 		// console.log('rendering dataseries...');
+		/*if (this.props._pan) {
+			return <g></g>
+		}*/
 		return (
 			<g  style={{ "clipPath": "url(#chart-area-clip)" }}>{this.renderChildren()}</g>
 		);

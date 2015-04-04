@@ -326,6 +326,7 @@ var Chart = React.createClass({
 		var origin = typeof this.props.origin === 'function' ? this.props.origin(width, height) : this.props.origin;
 		var transform = 'translate(' + origin[0] + ',' +  origin[1] + ')';
 		if (this.props._pan && !this.props._isMainChart) {
+		// if (this.props._pan) {
 			return <g></g>
 		}
 		// console.log(this.props._chartData);

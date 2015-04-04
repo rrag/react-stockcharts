@@ -149,12 +149,24 @@ var ChartContainerMixin = {
 		})
 		return overlaysToAdd;
 	},
-	calculateOverlays(data, overlays) {
-		overlays
-			.filter((eachOverlay) => eachOverlay.id !== undefined)
-			.forEach((overlay) => {
-				OverlayUtils.calculateOverlay(data, overlay);
-			});
+	calculateOverlays(fullData, overlays) {
+		if (Array.isArray(fullData)) {
+			overlays
+				.filter((eachOverlay) => eachOverlay.id !== undefined)
+				.forEach((overlay) => {
+					OverlayUtils.calculateOverlay(fullData, overlay);
+				});
+		} else {
+			Object.keys(fullData)
+				.filter((key) => ['D', 'W', 'M'].indexOf(key) > -1)
+				.forEach((key) => {
+					overlays
+						.filter((eachOverlay) => eachOverlay.id !== undefined)
+						.forEach((overlay) => {
+							OverlayUtils.calculateOverlay(fullData[key], overlay);
+						});
+				})
+		}
 		// console.log(overlays);
 	},
 	updateOverlayFirstLast(data,
@@ -203,6 +215,7 @@ var ChartContainerMixin = {
 	},
 
 	updateChartDataFor(_chartData, data) {
+		console.log('updateChartDataFor');
 		var scales = _chartData.scales;
 
 		var accessors = _chartData.accessors;

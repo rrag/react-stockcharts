@@ -52,11 +52,13 @@ var EventCaptureMixin = {
 			if (passThroughProps && passThroughProps._stockScale) {
 				currentItemStore.get().set({ interval : 'D' });
 
-				fullData = passThroughProps.data[currentItemStore.get().interval];
+				//fullData = passThroughProps.data[currentItemStore.get().interval];
+				fullData = passThroughProps.data;
+				data = fullData[currentItemStore.get().interval];
 			} else {
 				fullData = this.props.data;
+				data = fullData;
 			}
-			var data = fullData;
 
 			React.Children.forEach(this.props.children, (child) => {
 				if ("ReStock.Chart" === child.props.namespace) {
@@ -137,8 +139,9 @@ var EventCaptureMixin = {
 
 					// domainRange = domain[1] - domain[0];
 					// get width of mainChart
-					var last = this.state.fullData[this.state.fullData.length - 1];
-					var first = this.state.fullData[0];
+					var fullData = this.state.fullData[this.state.currentItemStore.get().interval];
+					var last = fullData[fullData.length - 1];
+					var first = fullData[0];
 
 					var domainStart = Math.round(getLongValue(domain[0]) - this.state.eventStore.get().dx/chart.width * domainRange)
 					if (domainStart < getLongValue(chart.accessors.xAccessor(first)) - Math.floor(domainRange/3)) {
@@ -185,7 +188,6 @@ var EventCaptureMixin = {
 						data: data
 					})*/
 					this.setState({
-						fullData: data.fullData,
 						data: data.data
 					})
 					// this.forceUpdate();
@@ -228,7 +230,7 @@ var EventCaptureMixin = {
 	},
 	calculateViewableData() {
 		var xRange = this.state.currentItemStore.get().viewPortXRange;
-		var fullData = this.getFullData();
+		var fullData = this.getFullData()[this.state.currentItemStore.get().interval];
 		var data = this.state.data;
 
 		if (xRange.length > 0) {
@@ -240,11 +242,12 @@ var EventCaptureMixin = {
 						console.log('whoa whoa whoa');
 			var currentInterval = this.state.currentItemStore.get().interval;
 			var filteredData = fullData.slice(leftX.left, rightX.right);
-			if (this.state.passThroughProps && this.state.passThroughProps._stockScale && filteredData.length > chart.width / 3) {
+			if (this.state.passThroughProps && this.state.passThroughProps._stockScale
+					&& filteredData.length > chart.width / 3) {
 				if (this.state.passThroughProps._multiInterval && currentInterval ==='D' ) {
 					var interval = 'W';
 					this.state.currentItemStore.get().set({ interval : interval });
-					fullData = this.state.passThroughProps.data[interval];
+					fullData = this.state.fullData[interval];
 
 					leftX = Utils.getClosestItemIndexes(fullData, xRange[0], chart.accessors.xAccessor);
 					rightX = Utils.getClosestItemIndexes(fullData, xRange[1], chart.accessors.xAccessor);
@@ -253,7 +256,7 @@ var EventCaptureMixin = {
 				} else if (this.state.passThroughProps._multiInterval && currentInterval ==='W' ) {
 					var interval = 'M';
 					this.state.currentItemStore.get().set({ interval : interval });
-					fullData = this.state.passThroughProps.data[interval];
+					fullData = this.state.fullData[interval];
 
 					leftX = Utils.getClosestItemIndexes(fullData, xRange[0], chart.accessors.xAccessor);
 					rightX = Utils.getClosestItemIndexes(fullData, xRange[1], chart.accessors.xAccessor);
@@ -263,7 +266,6 @@ var EventCaptureMixin = {
 					var r = getLongValue(chart.accessors.xAccessor(this.state.data[this.state.data.length - 1]));
 					this.state.currentItemStore.get().set({ viewPortXRange : [l, r] });
 					return {
-						fullData: fullData,
 						data: this.state.data
 					};
 				}
@@ -276,17 +278,14 @@ var EventCaptureMixin = {
 				this.state.currentItemStore.get().set({ viewPortXRange : [l, r] });
 
 				return {
-					fullData: fullData,
 					data: this.state.data
 				};
 			}
 			return {
-				fullData: fullData,
 				data: filteredData
 			};
 		}
 		return {
-			fullData: fullData,
 			data: data
 		}
 	},
@@ -315,8 +314,9 @@ var EventCaptureMixin = {
 				domainR = (getLongValue(centerX) + (rightX * zoom));
 
 			var domainRange = Math.abs(domain[1] - domain[0]);
-			var last = this.state.fullData[this.state.fullData.length - 1];
-			var first = this.state.fullData[0];
+			var fullData = this.state.fullData[this.state.currentItemStore.get().interval];
+			var last = fullData[fullData.length - 1];
+			var first = fullData[0];
 
 			domainL = Math.max(getLongValue(chart.accessors.xAccessor(first)) - Math.floor(domainRange/3), domainL)
 			domainR = Math.min(getLongValue(chart.accessors.xAccessor(last)) + Math.floor(domainRange/3), domainR)
@@ -351,7 +351,6 @@ var EventCaptureMixin = {
 
 
 				this.setState({
-					fullData: data.fullData,
 					data: data.data
 				})
 			});
@@ -471,8 +470,8 @@ var EventCaptureMixin = {
 					_updateMode: this.state.chartStore.get().updateMode,
 					_chartData: _chartData,
 					data: this.getData(),
-					_pan: this.state.eventStore.get().pan,
-					_isMainChart: newChild.props.id === this.state.currentItemStore.get().mainChart/**/
+					//_pan: this.state.eventStore.get().pan,
+					//_isMainChart: newChild.props.id === this.state.currentItemStore.get().mainChart/**/
 				});
 			}
 		}

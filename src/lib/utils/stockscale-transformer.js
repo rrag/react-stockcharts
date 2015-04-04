@@ -14,6 +14,7 @@ var defaultOptions = {
 function StockScaleTransformer(data, options) {
 	if (options === undefined) options = defaultOptions;
 	var dateAccesor = options.dateAccesor;
+	var dateMutator = options.dateMutator || function(d, date) {d.date = date};
 	var indexMutator = options.indexMutator;
 
 	var prevDate;
@@ -48,8 +49,8 @@ function StockScaleTransformer(data, options) {
 			return row;
 		});
 	// console.table(responseData);
-	responseData.W = buildWeeklyData(responseData.D, indexMutator, dateAccesor);
-	responseData.M = buildMonthlyData(responseData.D, indexMutator, dateAccesor);
+	responseData.W = buildWeeklyData(responseData.D, indexMutator, dateAccesor, dateMutator);
+	responseData.M = buildMonthlyData(responseData.D, indexMutator, dateAccesor, dateMutator);
 
 	// console.table(responseData.W);
 
@@ -64,14 +65,14 @@ function StockScaleTransformer(data, options) {
 		};
 }
 
-function buildWeeklyData(daily, indexMutator, dateAccesor) {
+function buildWeeklyData(daily, indexMutator, dateAccesor, dateMutator) {
 	var weekly = [], prevWeek, eachWeek = {};
 	for (var i = 0; i < daily.length; i++) {
 		var d = daily[i];
 
-		if (!eachWeek.date) indexMutator(eachWeek,  i);
+		if (dateAccesor(eachWeek)) indexMutator(eachWeek,  i);
 
-		eachWeek.date = dateAccesor(d);
+		dateMutator(eachWeek, dateAccesor(d));
 
 		eachWeek.startOfWeek = eachWeek.startOfWeek || d.startOfWeek;
 		eachWeek.startOfMonth = eachWeek.startOfMonth || d.startOfMonth;
