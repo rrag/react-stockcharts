@@ -1,0 +1,172 @@
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+}
+
+.react-stockchart .axis path, .react-stockchart .axis line {
+  fill: none;
+  stroke: #000000;
+}
+.react-stockchart .current-coordinate {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+.react-stockchart .grid.axis path, .react-stockchart .grid.axis line {
+  fill: none;
+  stroke: #000000;
+  shape-rendering: crispEdges;
+  opacity: 0.2;
+}
+.react-stockchart .y.axis path {
+  display: none;
+}
+.react-stockchart .candle .up {
+  fill: #6BA583;
+  stroke: #6BA583;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
+.react-stockchart .candle .down {
+  fill: #ff0000;
+  stroke: #ff0000;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
+.react-stockchart .candle line {
+  stroke: #000000;
+}
+.react-stockchart .wick .up, .react-stockchart .wick .down {
+  stroke: #000000;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
+}
+.react-stockchart .line {
+  fill: none;
+  stroke-width: 1px;
+}
+.react-stockchart .line-stroke {
+  shape-rendering: crispEdges;
+  stroke: steelblue;
+}
+.react-stockchart .overlay-stroke {
+  stroke: steelblue;
+}
+.react-stockchart .yin {
+  fill: none;
+  stroke: #ff0000;
+  stroke-width: 2px;
+}
+.react-stockchart .yang {
+  fill: none;
+  stroke: #6BA583;
+  stroke-width: 2px;
+}
+.react-stockchart .point_figure_up {
+  fill: none;
+  stroke: green;
+  stroke-width: 1px;
+}
+.react-stockchart .point_figure_down {
+  fill: none;
+  stroke: #ff0000;
+  stroke-width: 1px;
+}
+.react-stockchart .area {
+  fill: lightsteelblue;
+  opacity: 0.5;
+}
+.react-stockchart .backgroundText {
+  text-anchor: middle;
+  fill: #8a8a8a;
+  opacity: 0.15;
+}
+.react-stockchart .cross-hair {
+  stroke: #000000;
+  stroke-width: 1px;
+  shape-rendering: crispEdges;
+  opacity: 0.2;
+}
+.react-stockchart .horizontal2 .textbg {
+  opacity: 0.95;
+  fill: #f0e68c;
+}
+.react-stockchart .horizontal2 text {
+  fill: #757575;
+}
+.react-stockchart .horizontal3 .textbg {
+  opacity: 0.95;
+  fill: #000000;
+}
+.react-stockchart .horizontal3 text {
+  fill: #757575;
+}
+.react-stockchart .edge-coordinate .textbg {
+  opacity: 0.95;
+}
+.react-stockchart .edge-coordinate text {
+  fill: #ffffff;
+}
+.react-stockchart .vertical .textbg, .react-stockchart .horizontal .textbg {
+  opacity: 0.9;
+  fill: #8a8a8a;
+}
+.react-stockchart .vertical text, .react-stockchart .horizontal text {
+  fill: #ffffff;
+}
+.react-stockchart .grab {
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+.react-stockchart .grabbing {
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+}
+.react-stockchart .crosshair {
+  cursor: crosshair;
+}
+.react-stockchart .toottip-hover {
+  pointer-events: all;
+  cursor: pointer;
+}
+.react-stockchart .histogram .bar {
+  fill: steelblue;
+  opacity: 0.3;
+  stroke: none;
+}
+.react-stockchart .histogram .up {
+  fill: #6BA583;
+  opacity: 0.3;
+  stroke: none;
+}
+.react-stockchart .histogram .down {
+  fill: #ff0000;
+  opacity: 0.3;
+  stroke: none;
+}
+.react-stockchart .histogram line.up {
+  stroke: #6BA583;
+}
+.react-stockchart .histogram line.down {
+  stroke: #ff0000;
+}
+.react-stockchart .ma-container rect {
+  fill: none;
+  stroke: none;
+}
+.react-stockchart .ma-container rect:hover {
+  fill: #8a8a8a;
+  opacity: 0.3;
+}
+.react-stockchart .ma-container line {
+  stroke-width: 4px;
+}
+.react-stockchart .legend {
+  font-size: 11px;
+}
+.react-stockchart .legend .tooltip-label {
+  fill: steelblue;
+  font-weight: bold;
+}

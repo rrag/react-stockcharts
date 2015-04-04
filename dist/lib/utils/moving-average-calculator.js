@@ -1,0 +1,39 @@
+'use strict';
+
+var Utils = require('./utils');
+
+var pluck = Utils.pluck;
+var sum = Utils.sum;
+
+function MACalculator() {
+
+};
+MACalculator.calculateSMA = function(data, period, key, pluckKey) {
+	console.log('calculateSMA');
+
+	var l = data.length - 1;//, key = 'sma' + period;
+	var maKey = pluckKey || 'close';
+
+	data.map(function(each, i)  {return data.slice(i - period, i);})
+		.filter(function(array)  {return array.length === period && array.length > 0;})
+		.map(function(array)  {return pluck(array, maKey);})
+		.map(function(array)  {return sum(array);})
+		.map(function(sum)  {return sum / period;})
+		.reverse()
+		.forEach(function(avg, i)  {
+			// Object.defineProperty(data[l - i], key, { value: avg });
+			data[l - i][key] = avg;
+			// console.log(data[l - i][key]);
+		})
+	if (key === 'sma53_chart_2') {
+		console.table(data);
+	}
+	return data;
+}
+
+MACalculator.calculateEMA = function (data, period) {
+	console.log('calculating EMA');
+	return false;
+}
+
+module.exports = MACalculator;

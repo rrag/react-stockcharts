@@ -8,12 +8,10 @@ module.exports = {
 	output: {
 		path: __dirname + '/build/dist/',
 		filename: 'react-stockcharts.js',
-		publicPath: 'js/'
-	}/*,
-	output: {
+		publicPath: 'js/',
 		library: 'ReStock',
 		libraryTarget: 'umd'
-	}*/,
+	},
 	module: {
 		loaders: [
 			{ test: /\.json$/, loader: 'json' },
