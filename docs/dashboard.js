@@ -59,6 +59,7 @@ function renderPage(data, dataFull) {
 	var CandleStickChartWithMA = require('./lib/examples/candlestickchart-with-ma').init(data);
 	var CandleStickChartWithEdge = require('./lib/examples/candlestickchart-with-edge').init(data);
 	var CandleStickChartWithLotsOfData = require('./lib/examples/candlestickchart-with-edge').init(dataFull);
+	var HeikinAshiChart = require('./lib/examples/HaikinAshi').init(data);
 	var ExamplesPage = React.createClass({
 		//mixins: [ScrollMixin],
 		render() {
@@ -78,6 +79,7 @@ function renderPage(data, dataFull) {
 								<MenuItem label="Overlay" />
 								<MenuItem label="Edge coordinate" />
 								<MenuItem label="Lots of data" />
+								<MenuItem label="Heiken Ashi" />
 								<MenuItem label="Coming soon..." />
 							</MenuGroup>
 						</Sidebar>
@@ -200,6 +202,19 @@ function renderPage(data, dataFull) {
 							<Row>
 								<Section colSpan={2} className="react-stockchart">
 									<CandleStickChartWithLotsOfData />
+								</Section>
+							</Row>
+							<Row>
+								<h2>Advanced chart types</h2>
+							</Row>
+							<Row title="Heikin Ashi">
+								<Section colSpan={2}>
+									<aside dangerouslySetInnerHTML={{__html: require('md/HEIKIN-ASHI')}}></aside>
+								</Section>
+							</Row>
+							<Row>
+								<Section colSpan={2} className="react-stockchart">
+									<HeikinAshiChart />
 								</Section>
 							</Row>
 							<Row title="Coming soon...">

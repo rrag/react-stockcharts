@@ -33,5 +33,4 @@
 #### Open issues
 
 - Window Resize after zoom/pan messes up the chart
-- Candle width increases if data spans less than the width
-- Zoom out after threshold, slowly zooms in by 1 period at a time
+- zoom out changes the interval, but zoom in does not change

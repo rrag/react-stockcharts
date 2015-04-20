@@ -1,6 +1,7 @@
 'use strict';
 
 var StockScaleTransformer = require('./stockscale-transformer');
+var HeikinAshiTransformer = require('./HeikinAshiTransformer');
 
 var ChartTransformer = {
 	getTransformerFor(type) {
@@ -8,6 +9,8 @@ var ChartTransformer = {
 			return (d) => d;
 		if (type === "stockscale")
 			return StockScaleTransformer;
+		if (type === "heikinashi")
+			return HeikinAshiTransformer;
 		return false;
 	},
 	filter(data, dateAccesor, fromDate, toDate) {
