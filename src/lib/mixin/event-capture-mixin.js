@@ -23,6 +23,11 @@ var EventCaptureMixin = {
 			.length > 0;
 	},
 	componentWillMount() {
+		var passThroughProps = {};
+		if (this.isDataDransform && this.isDataDransform()) {
+			passThroughProps = this.transformData(this.props);
+		}
+
 		if (this.doesContainChart()) {
 			// console.log('EventCaptureMixin.componentWillMount', this.state);
 			var eventStore = new Freezer({
@@ -38,18 +43,13 @@ var EventCaptureMixin = {
 				updateMode: { immediate : true }
 			});
 
-			var passThroughProps = {};
-			if (this.isDataDransform && this.isDataDransform()) {
-				passThroughProps = this.transformData(this.props);
-			}
-
 			var currentItemStore = new Freezer({
 				currentItems: [],
 				viewPortXRange: [],
 				viewPortXDelta: 30
 			});
-			var fullData, data;
-			if (passThroughProps && passThroughProps._stockScale) {
+			var fullData, data, stockScale = passThroughProps._stockScale || this.props._stockScale;
+			if (passThroughProps && stockScale) {
 				currentItemStore.get().set({ interval : 'D' });
 
 				//fullData = passThroughProps.data[currentItemStore.get().interval];
@@ -89,6 +89,10 @@ var EventCaptureMixin = {
 				};
 			// console.log(stores);
 			this.setState(stores);
+		} else {
+			this.setState({
+				passThroughProps: passThroughProps
+			});
 		}
 	},
 	getEventStore() {

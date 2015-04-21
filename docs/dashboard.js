@@ -79,7 +79,7 @@ function renderPage(data, dataFull) {
 								<MenuItem label="Overlay" />
 								<MenuItem label="Edge coordinate" />
 								<MenuItem label="Lots of data" />
-								<MenuItem label="Heiken Ashi" />
+								<MenuItem label="Heikin Ashi" />
 								<MenuItem label="Coming soon..." />
 							</MenuGroup>
 						</Sidebar>
@@ -238,7 +238,47 @@ function renderPage(data, dataFull) {
 
 d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 	d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
-		renderPage(MSFT, MSFTFull)
+		//renderPage(MSFT, MSFTFull);
+		renderPartialPage(MSFT, MSFTFull);
 	});
 })
 
+function renderPartialPage(data, dataFull) {
+	data.forEach((d, i) => {
+		d.date = new Date(parseDate(d.date).getTime());
+		d.open = +d.open;
+		d.high = +d.high;
+		d.low = +d.low;
+		d.close = +d.close;
+		d.volume = +d.volume;
+		// console.log(d);
+	});
+
+	dataFull.forEach((d, i) => {
+		d.date = new Date(parseDate(d.date).getTime());
+		d.open = +d.open;
+		d.high = +d.high;
+		d.low = +d.low;
+		d.close = +d.close;
+		d.volume = +d.volume;
+		// console.log(d);
+	});
+	var HeikinAshiChart = require('./lib/examples/HaikinAshi').init(data);
+	var ExamplesPage = React.createClass({
+		//mixins: [ScrollMixin],
+		render() {
+			return (
+				<body>
+					<div className="container">
+					<Row title="Heikin Ashi">
+						<Section colSpan={2} className="react-stockchart">
+							<HeikinAshiChart />
+						</Section>
+					</Row>
+					</div>
+				</body>
+			)
+		}
+	});
+	React.render(<ExamplesPage />, document.body);
+}

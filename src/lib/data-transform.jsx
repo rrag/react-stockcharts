@@ -29,7 +29,7 @@ var DataTransform = React.createClass({
 		_height: React.PropTypes.number,
 		_width: React.PropTypes.number,
 
-		data: React.PropTypes.array.isRequired,
+		data: React.PropTypes.any.isRequired,
 		transformType: React.PropTypes.string.isRequired, // stockscale, none
 		options: React.PropTypes.object
 	},

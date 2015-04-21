@@ -7,7 +7,7 @@ var DataTransformMixin = {
 	},
 	transformData(props) {
 		var transformer = ChartTransformer.getTransformerFor(props.transformType);
-		var passThroughProps = transformer(props.data, props.options)
+		var passThroughProps = transformer(props.data, props.options, props)
 		// console.log('passThroughProps-------', passThroughProps);
 
 		// this.setState({ passThroughProps: passThroughProps });

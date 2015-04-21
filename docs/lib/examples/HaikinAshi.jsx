@@ -45,6 +45,7 @@ module.exports = {
 				return (
 					<ChartCanvas width={this.state.width} height={400} margin={{left: 90, right: 70, top:10, bottom: 30}} data={data} interval="1D" >
 						<DataTransform transformType="stockscale">
+						<DataTransform transformType="heikinashi">
 							<Chart id={1} >
 								<XAxis axisAt="bottom" orient="bottom"/>
 								<YAxis axisAt="right" orient="right" ticks={5} />
@@ -115,6 +116,7 @@ module.exports = {
 								<OHLCTooltip forChart={1} origin={[-50, 0]}/>
 								<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-48, 15]}/>
 							</TooltipContainer>
+						</DataTransform>
 						</DataTransform>
 					</ChartCanvas>
 				);

@@ -1,8 +1,5 @@
 'use strict';
 
-var d3 = require('d3');
-var dateFormat = d3.time.format("%Y-%m-%d");
-var Utils = require('./utils');
 var stockScale = require('../scale/polylineartimescale');
 
 var defaultOptions = {
@@ -22,7 +19,7 @@ function StockScaleTransformer(data, options) {
 	responseData.D = data
 		//.filter((each) => Math.random() > 0.9)
 		.map((each, i) => {
-			var row = each;//Utils.cloneMe(each);
+			var row = each;
 			// console.log(each);
 			//console.log(row);
 			indexMutator(row,  i);
@@ -57,7 +54,9 @@ function StockScaleTransformer(data, options) {
 	return {
 			data: responseData,
 			_dateAccessor: dateAccesor,
+			_dateMutator: dateMutator,
 			_indexAccessor: options.indexAccessor,
+			_indexMutator: indexMutator,
 			// _indexMutator: indexMutator,
 			_stockScale: true,
 			_xScale: stockScale(options.indexAccessor),
