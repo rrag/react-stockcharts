@@ -74,6 +74,8 @@ var EventCaptureMixin = {
 					//var _chartData = charts[charts.length - 1];
 					var _chartData = this.getChartDataFor(this.props, chartProps, data, fullData, passThroughProps);
 					_chartData.id = child.props.id;
+
+
 					chartStore.get().charts.push(_chartData);
 				}
 			});
@@ -87,6 +89,8 @@ var EventCaptureMixin = {
 					data: data,
 					passThroughProps: passThroughProps
 				};
+
+			console.log(Object.keys(stores));
 			// console.log(stores);
 			this.setState(stores);
 		} else {
@@ -467,6 +471,7 @@ var EventCaptureMixin = {
 	},
 	updatePropsForChart(child) {
 		var newChild = child;
+			console.log('here here...........');
 		if ("ReStock.Chart" === child.props.namespace) {
 			if (this.state.eventStore && this.state.chartStore) {
 				var _chartData = this.getChartForId(newChild.props.id);

@@ -1,5 +1,8 @@
 'use strict';
 
+var excludeList = ['transformType', 'options', 'children', 'namespace'];
+
+
 function HeikinAshiTransformer(data, options, props) {
 	if (options === undefined) options = {};
 	var dateAccesor = options.dateAccesor || props._dateAccessor;
@@ -13,10 +16,13 @@ function HeikinAshiTransformer(data, options, props) {
 		Object.keys(data)
 			.forEach((key) => haData[key] = buildHA(data[key], indexAccessor, indexMutator, dateAccesor, dateMutator));
 		var response = {};
-		for (var key in props) {
-			response[key] = props[key];
-		}
+
+		Object.keys(props)
+			.filter((key) => excludeList.indexOf(key) < 0)
+			.forEach((key) => response[key] = props[key]);
+
 		response.data = haData;
+
 		return response;
 	}
 	return {
@@ -59,7 +65,7 @@ function buildHA(data, indexAccessor, indexMutator, dateAccesor, dateMutator) {
 		prevEach = each;
 		return each;
 	});
-	console.table(haData);
+	// console.table(haData);
 	return haData;
 };
 
