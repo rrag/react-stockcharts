@@ -11,7 +11,7 @@ var ReadME = require('md/MAIN.md');
 document.getElementById("content").innerHTML = ReadME;
 
 var parseDate = d3.time.format("%Y-%m-%d").parse
-d3.tsv("data/data.tsv", function(err, data) {
+d3.tsv("data/MSFT.tsv", function(err, data) {
 	data.forEach((d, i) => {
 		d.date = new Date(parseDate(d.date).getTime());
 		d.open = +d.open;
@@ -22,12 +22,9 @@ d3.tsv("data/data.tsv", function(err, data) {
 		// console.log(d);
 	});
 
-	var AreaChartWithZoomPan = require('./lib/examples/areachart-with-zoom-and-pan').init(data);
-	/**/
+	var CandleStickChartWithEdge = require('./lib/examples/candlestickchart-with-edge').init(data);
 
-	/**/
-	React.render(<AreaChartWithZoomPan />, document.getElementById("area"));
-	/**/
+	React.render(<CandleStickChartWithEdge />, document.getElementById("chart"));
 });
 
 //require('./examples/freezer-example');

@@ -14,6 +14,10 @@
 
     <!-- custom:cssinclude https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css -->
     <!-- custom:cssinclude //cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/default.min.css -->
+    <!-- custom:remove -->
+    <script src="d3/d3.js"></script>
+    <script src="react/dist/react-with-addons.js"></script>
+    <!-- endcustom -->
 
     <!-- custom:remove -->
     <link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -40,8 +44,8 @@
   <body>
     <!-- Placed at the end of the document so the pages load faster -->
 
-    <!-- custom:jsinclude //maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js -->
     <!-- custom:jsinclude //code.jquery.com/jquery-2.1.3.min.js -->
+    <!-- custom:jsinclude //maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js -->
 
     <!-- custom:remove -->
     <script src="jquery/dist/cdn/jquery-2.1.3.js"></script>
@@ -51,8 +55,13 @@
     <!-- custom:jsinclude    dist/react-stockcharts-docs-core.js   -->
     <!-- custom:jsinclude    dist/react-stockcharts-dashboard.js   -->
     <!-- custom:remove -->
+    <!--
+    <script type="text/javascript" src="http://localhost:8090/js/react-stockcharts.js"></script>
+-->
     <script type="text/javascript" src="http://localhost:8090/js/react-stockcharts-docs-core.js"></script>
+    
     <script type="text/javascript" src="http://localhost:8090/js/react-stockcharts-dashboard.js"></script>
+    
     <script type="text/javascript" src="http://localhost:8090/webpack-dev-server.js"></script>
     <!-- endcustom -->
   </body>
