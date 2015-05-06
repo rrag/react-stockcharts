@@ -15,6 +15,8 @@ exports.LineSeries = require('./lib/line-series');
 exports.CandlestickSeries = require('./lib/candlestick-series');
 exports.OverlaySeries = require('./lib/overlay-series');
 exports.HistogramSeries = require('./lib/histogram-series');
+exports.KagiSeries = require('./lib/KagiSeries');
+
 // interaction components
 exports.EventCapture = require('./lib/event-capture');
 exports.MouseCoordinates = require('./lib/mouse-coordinates');

@@ -17,7 +17,7 @@ function pushToValues(values, eachValue) {
 
 var ScaleUtils = {
 	flattenData(data, xAccessors, yAccessors) {
-		console.log(xAccessors, yAccessors);
+		// console.log(xAccessors, yAccessors);
 		var xValues = [];
 		var yValues = [];
 		data.forEach( (row) => {

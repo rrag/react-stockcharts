@@ -90,7 +90,7 @@ var EventCaptureMixin = {
 					passThroughProps: passThroughProps
 				};
 
-			console.log(Object.keys(stores));
+			// console.log(Object.keys(stores));
 			// console.log(stores);
 			this.setState(stores);
 		} else {
@@ -247,7 +247,7 @@ var EventCaptureMixin = {
 
 			var leftX = Utils.getClosestItemIndexes(fullData, xRange[0], chart.accessors.xAccessor);
 			var rightX = Utils.getClosestItemIndexes(fullData, xRange[1], chart.accessors.xAccessor);
-						console.log('whoa whoa whoa');
+			// console.log('whoa whoa whoa');
 			var currentInterval = this.state.currentItemStore.get().interval;
 			var filteredData = fullData.slice(leftX.left, rightX.right);
 			if (this.state.passThroughProps && this.state.passThroughProps._stockScale
@@ -341,7 +341,7 @@ var EventCaptureMixin = {
 
 			requestAnimationFrame(() => {
 				var data = this.calculateViewableData();
-				console.log(domainL, domainR);
+				// console.log(domainL, domainR);
 				var passThroughProps = this.state.passThroughProps;
 
 				React.Children.forEach(this.props.children, (child) => {
@@ -471,7 +471,7 @@ var EventCaptureMixin = {
 	},
 	updatePropsForChart(child) {
 		var newChild = child;
-			console.log('here here...........');
+		// console.log('here here...........');
 		if ("ReStock.Chart" === child.props.namespace) {
 			if (this.state.eventStore && this.state.chartStore) {
 				var _chartData = this.getChartForId(newChild.props.id);

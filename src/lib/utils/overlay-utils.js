@@ -26,7 +26,7 @@ var OverlayUtils = {
 		return false;
 	},
 	calculateOverlay(data, overlay) {
-		console.log(overlay);
+		// console.log(overlay);
 		if (overlay.type === 'sma') {
 			data = MACalculator.calculateSMA(data, overlay.options.period, overlay.key, overlay.options.pluck);
 		} else if (overlay.type === 'ema') {

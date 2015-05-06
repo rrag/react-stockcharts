@@ -60,6 +60,7 @@ function renderPage(data, dataFull) {
 	var CandleStickChartWithEdge = require('./lib/examples/candlestickchart-with-edge').init(data);
 	var CandleStickChartWithLotsOfData = require('./lib/examples/candlestickchart-with-edge').init(dataFull);
 	var HeikinAshiChart = require('./lib/examples/HaikinAshi').init(data);
+	var Kagi = require('./lib/examples/Kagi').init(dataFull);
 	var ExamplesPage = React.createClass({
 		//mixins: [ScrollMixin],
 		render() {
@@ -80,6 +81,7 @@ function renderPage(data, dataFull) {
 								<MenuItem label="Edge coordinate" />
 								<MenuItem label="Lots of data" />
 								<MenuItem label="Heikin Ashi" />
+								<MenuItem label="Kagi" />
 								<MenuItem label="Coming soon..." />
 							</MenuGroup>
 						</Sidebar>
@@ -217,6 +219,16 @@ function renderPage(data, dataFull) {
 									<HeikinAshiChart />
 								</Section>
 							</Row>
+							<Row title="Kagi">
+								<Section colSpan={2}>
+									<aside dangerouslySetInnerHTML={{__html: require('md/KAGI')}}></aside>
+								</Section>
+							</Row>
+							<Row>
+								<Section colSpan={2} className="react-stockchart">
+									<Kagi />
+								</Section>
+							</Row>
 							<Row title="Coming soon...">
 								<Section colSpan={2} className="react-stockchart">
 									<aside dangerouslySetInnerHTML={{__html: require('md/COMING-SOON')}}></aside>
@@ -239,7 +251,7 @@ function renderPage(data, dataFull) {
 d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 	d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
 		renderPage(MSFT, MSFTFull);
-		//renderPartialPage(MSFT, MSFTFull);
+		// renderPartialPage(MSFT, MSFTFull);
 	});
 })
 
@@ -263,18 +275,14 @@ function renderPartialPage(data, dataFull) {
 		d.volume = +d.volume;
 		// console.log(d);
 	});
-	var HeikinAshiChart = require('./lib/examples/HaikinAshi').init(data);
+	var Kagi = require('./lib/examples/Kagi').init(dataFull);
 	var ExamplesPage = React.createClass({
 		//mixins: [ScrollMixin],
 		render() {
 			return (
 				<body>
-					<div className="container">
-					<Row title="Heikin Ashi">
-						<Section colSpan={2} className="react-stockchart">
-							<HeikinAshiChart />
-						</Section>
-					</Row>
+					<div className="container react-stockchart">
+						<Kagi />
 					</div>
 				</body>
 			)

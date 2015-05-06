@@ -9,7 +9,7 @@ function MACalculator() {
 
 };
 MACalculator.calculateSMA = function(data, period, key, pluckKey) {
-	console.log('calculateSMA');
+	// console.log('calculateSMA');
 
 	var l = data.length - 1;//, key = 'sma' + period;
 	var maKey = pluckKey || 'close';
