@@ -3,6 +3,7 @@
 var StockScaleTransformer = require('./stockscale-transformer');
 var HeikinAshiTransformer = require('./HeikinAshiTransformer');
 var KagiTransformer = require('./KagiTransformer');
+var PointAndFigureTransformer = require('./PointAndFigureTransformer');
 
 var ChartTransformer = {
 	getTransformerFor(type) {
@@ -14,6 +15,8 @@ var ChartTransformer = {
 			return HeikinAshiTransformer;
 		if (type === "kagi")
 			return KagiTransformer;
+		if (type === "pointandfigure")
+			return PointAndFigureTransformer;
 		return false;
 	},
 	filter(data, dateAccesor, fromDate, toDate) {

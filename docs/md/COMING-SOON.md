@@ -15,7 +15,7 @@
 
 - ~~Heikin Ashi - v0.1~~
 - ~~Kagi - v0.1~~
-- Point and Figure - v0.1
+- ~~Point and Figure - v0.1~~
 - Renko - v0.1
 - Better Renko/Mean Renko - v0.2
 - Line break - v0.2
