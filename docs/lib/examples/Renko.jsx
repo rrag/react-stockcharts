@@ -8,7 +8,7 @@ var ReStock = require('src/');
 var ChartCanvas = ReStock.ChartCanvas
 	, XAxis = ReStock.XAxis
 	, YAxis = ReStock.YAxis
-	, PointAndFigureSeries = ReStock.PointAndFigureSeries
+	, RenkoSeries = ReStock.RenkoSeries
 	, DataTransform = ReStock.DataTransform
 	, Chart = ReStock.Chart
 	, DataSeries = ReStock.DataSeries
@@ -31,7 +31,7 @@ var ChartCanvas = ReStock.ChartCanvas
 
 module.exports = {
 	init(data) {
-		var Kagi = React.createClass({
+		var Renko = React.createClass({
 			mixins: [InitialStateMixin, ChartWidthMixin],
 			render() {
 				if (!this.state.width) return <div />;
@@ -43,12 +43,12 @@ module.exports = {
 				return (
 					<ChartCanvas width={this.state.width} height={400} margin={{left: 90, right: 70, top:10, bottom: 30}} data={data} interval="1D" >
 						<DataTransform transformType="stockscale">
-						<DataTransform transformType="pointandfigure" options={{ boxSize: 0.5 }}>
+						<DataTransform transformType="renko">
 							<Chart id={1} >
 								<XAxis axisAt="bottom" orient="bottom"/>
 								<YAxis axisAt="right" orient="right" ticks={5} />
-								<DataSeries yAccessor={PointAndFigureSeries.yAccessor} >
-									<PointAndFigureSeries />
+								<DataSeries yAccessor={RenkoSeries.yAccessor} >
+									<RenkoSeries />
 								</DataSeries>
 							</Chart>
 							<Chart id={2} height={150} origin={(w, h) => [0, h - 150]}>
@@ -73,7 +73,7 @@ module.exports = {
 				);
 			}
 		});
-		return Kagi;
+		return Renko;
 	}
 }
 

@@ -42,8 +42,8 @@ function updateColumns(columnData, dateAccesor, dateMutator) {
 			// if (d.displayDate === undefined) d.displayDate = eachBox.displayDate;
 			d.toDate = eachBox.toDate;
 
-			if (d.startOfYear !== true && eachBox.startOfYear) {
-				d.startOfYear = eachBox.startOfYear;
+			if (eachBox.startOfYear) {
+				d.startOfYear = d.startOfYear || eachBox.startOfYear;
 				d.startOfQuarter = eachBox.startOfQuarter;
 				d.startOfMonth = eachBox.startOfMonth;
 				d.startOfWeek = eachBox.startOfWeek;
@@ -104,34 +104,35 @@ function PointAndFigureTransformer(rawData, options, props) {
 	rawData.D.forEach( function (d) {
 		column.volume = column.volume || 0;
 		column.volume += d.volume;
+
 		if (!box.startOfYear) {
 			box.startOfYear = d.startOfYear;
 			if (box.startOfYear) {
-				box.date = d.date;
-				box.displayDate = d.displayDate;
+				dateMutator(box, dateAccesor(d));
+				// box.displayDate = d.displayDate;
 			}
 		}
 
-		if (!box.startOfQuarter) {
+		if (!box.startOfYear && !box.startOfQuarter) {
 			box.startOfQuarter = d.startOfQuarter;
 			if (box.startOfQuarter && !box.startOfYear) {
-				box.date = d.date;
-				box.displayDate = d.displayDate;
+				dateMutator(box, dateAccesor(d));
+				// box.displayDate = d.displayDate;
 			}
 		}
 
-		if (!box.startOfMonth) {
+		if (!box.startOfQuarter && !box.startOfMonth) {
 			box.startOfMonth = d.startOfMonth;
 			if (box.startOfMonth && !box.startOfQuarter) {
-				box.date = d.date;
-				box.displayDate = d.displayDate;
+				dateMutator(box, dateAccesor(d));
+				// box.displayDate = d.displayDate;
 			}
 		}
-		if (!box.startOfWeek) {
+		if (!box.startOfMonth && !box.startOfWeek) {
 			box.startOfWeek = d.startOfWeek;
 			if (box.startOfWeek && !box.startOfMonth) {
-				box.date = d.date;
-				box.displayDate = d.displayDate;
+				dateMutator(box, dateAccesor(d));
+				// box.displayDate = d.displayDate;
 			}
 		}
 
@@ -182,10 +183,10 @@ function PointAndFigureTransformer(rawData, options, props) {
 				box.toDate = dateAccesor(d);
 				// box.displayDate = d.displayDate;
 				dateMutator(box, dateAccesor(d));
-				box.startOfYear = d.startOfYear;
-				box.startOfQuarter = d.startOfQuarter;
-				box.startOfMonth = d.startOfMonth;
-				box.startOfWeek = d.startOfWeek;
+				// box.startOfYear = d.startOfYear;
+				// box.startOfQuarter = d.startOfQuarter;
+				// box.startOfMonth = d.startOfMonth;
+				// box.startOfWeek = d.startOfWeek;
 				// console.table(column.boxes);
 				var idx = indexAccessor(column) + 1;
 				column = {
@@ -211,7 +212,7 @@ function PointAndFigureTransformer(rawData, options, props) {
 	});
 	updateColumns(columnData, dateAccesor, dateMutator);
 
-	// console.table(columnData);
+	//console.table(columnData);
 	// console.table(data);
 	var response = {};
 	Object.keys(props)

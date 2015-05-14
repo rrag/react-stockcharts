@@ -62,6 +62,7 @@ function renderPage(data, dataFull) {
 	var HeikinAshiChart = require('./lib/examples/HaikinAshi').init(data);
 	var Kagi = require('./lib/examples/Kagi').init(dataFull);
 	var PointAndFigure = require('./lib/examples/PointAndFigure').init(data);
+	var Renko = require('./lib/examples/Renko').init(dataFull);
 	var ExamplesPage = React.createClass({
 		//mixins: [ScrollMixin],
 		render() {
@@ -84,6 +85,7 @@ function renderPage(data, dataFull) {
 								<MenuItem label="Heikin Ashi" />
 								<MenuItem label="Kagi" />
 								<MenuItem label="Point & Figure" />
+								<MenuItem label="Renko" />
 								<MenuItem label="Coming soon..." />
 							</MenuGroup>
 						</Sidebar>
@@ -241,6 +243,16 @@ function renderPage(data, dataFull) {
 									<PointAndFigure />
 								</Section>
 							</Row>
+							<Row title="Renko">
+								<Section colSpan={2}>
+									<aside dangerouslySetInnerHTML={{__html: require('md/RENKO')}}></aside>
+								</Section>
+							</Row>
+							<Row>
+								<Section colSpan={2} className="react-stockchart">
+									<Renko />
+								</Section>
+							</Row>
 							<Row title="Coming soon...">
 								<Section colSpan={2} className="react-stockchart">
 									<aside dangerouslySetInnerHTML={{__html: require('md/COMING-SOON')}}></aside>
@@ -287,14 +299,14 @@ function renderPartialPage(data, dataFull) {
 		d.volume = +d.volume;
 		// console.log(d);
 	});
-	var PointAndFigure = require('./lib/examples/PointAndFigure').init(dataFull);
+	var Renko = require('./lib/examples/Renko').init(dataFull);
 	var ExamplesPage = React.createClass({
 		//mixins: [ScrollMixin],
 		render() {
 			return (
 				<body>
 					<div className="container react-stockchart">
-						<PointAndFigure />
+						<Renko />
 					</div>
 				</body>
 			)

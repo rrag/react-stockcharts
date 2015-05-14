@@ -21,6 +21,9 @@ var PointAndFigureSeries = React.createClass({
 			namespace: "ReStock.PointAndFigureSeries"
 		}
 	},
+	handleClick(idx) {
+		console.log(this.props.data[idx]);
+	},
 	render() {
 		var width = this.props._xScale(this.props._xAccessor(this.props.data[this.props.data.length - 1]))
 			- this.props._xScale(this.props._xAccessor(this.props.data[0]));
@@ -41,7 +44,7 @@ var PointAndFigureSeries = React.createClass({
 		// console.log(columnWidth, boxHeight);
 		var columns = this.props.data
 				.filter(function (d) { return d.close !== undefined; })
-				.map(function(d, idx) {
+				.map((d, idx) => {
 					var ohlc = d;
 					var boxes = d.boxes.map(function (box, i) {
 						var boxshape;
@@ -60,11 +63,13 @@ var PointAndFigureSeries = React.createClass({
 						}
 						return boxshape;
 					});
+					var debug = false
+						? <rect x={0} y={0} height={980} width={columnWidth} style={{ opacity: 0.1 }} onClick={this.handleClick.bind(this, idx)}/>
+						: null;
 					var col = (<g key={idx}
 									transform={"translate(" + (props._xScale(this.props._xAccessor(d)) - (columnWidth / 2)) + ", 0)"}>
 									{boxes}
-									<rect x={0} y={0} height={this.props.height} width={columnWidth}
-										style={{ opacity: 0 }}/>
+									{debug}
 								</g>);
 					return col;
 				}, this);
