@@ -11,11 +11,25 @@ var Nav = require('lib/navbar');
 var Sidebar = require('lib/sidebar');
 var MainContainer = require('lib/main-container');
 var MenuGroup = require('lib/menu-group');
-var MenuItem = require('lib/menu-item');
-var ContentSection = require('lib/content-section');
-var Row = require('lib/row');
-var Section = require('lib/section');
-var ScrollMixin = require('lib/scroll-mixin');
+var MenuItem = require('lib/MenuItem');
+
+
+var pages = [
+	require('lib/page/OverviewPage'),
+	require('lib/page/AreaChartPage'),
+	require('lib/page/CandleStickChartPage'),
+	require('lib/page/VolumeHistogramPage'),
+	require('lib/page/MousePointerPage'),
+	require('lib/page/ZoomAndPanPage'),
+	require('lib/page/OverlayPage'),
+	require('lib/page/EdgeCoordinatesPage'),
+	require('lib/page/LotsOfDataPage'),
+	require('lib/page/HeikinAshiPage'),
+	require('lib/page/KagiPage'),
+	require('lib/page/PointAndFigurePage'),
+	require('lib/page/RenkoPage'),
+	require('lib/page/ComingSoonPage')
+];
 
 function renderPage(data, dataFull) {
 	data.forEach((d, i) => {
@@ -38,227 +52,42 @@ function renderPage(data, dataFull) {
 		// console.log(d);
 	});
 
-	var AreaChart = require('./lib/examples/areachart').init(data);
-	var AreaChartWithYPercent = require('./lib/examples/areachart-with-ypercent').init(data);
-	var AreaChartWithCrossHairMousePointer = require('./lib/examples/areachart-with-crosshair-mousepointer').init(data);
-	var AreaChartWithVerticalMousePointer = require('./lib/examples/areachart-with-mousepointer').init(data);
-	var AreaChartWithToolTip = require('./lib/examples/areachart-with-tooltip').init(data);
-	var AreaChartWithMA = require('./lib/examples/areachart-with-ma').init(data);
-	var AreaChartWithEdgeCoordinates = require('./lib/examples/areachart-with-edge-coordinates').init(data);
-	var LineChart = require('./lib/examples/linechart').init(data);
-	var CandleStickChart = require('./lib/examples/candlestickchart').init(data);
-	var CandleStickStockScaleChart = require('./lib/examples/candlestickchart-stockscale').init(data);
 	var SyncMouseMove = require('./lib/examples/synchronized-mouse-move').init(data);
 	var AreaChartWithZoom = require('./lib/examples/areachart-with-zoom').init(data);
 	var AreaChartWithZoomPan = require('./lib/examples/areachart-with-zoom-and-pan').init(data);
-	var CandleStickStockScaleChart = require('./lib/examples/candlestickchart-stockscale').init(data);
-	var CandleStickStockScaleChartWithVolumeHistogramV1 = require('./lib/examples/candlestickchart-with-volume-histogram').init(data);
-	var CandleStickStockScaleChartWithVolumeHistogramV2 = require('./lib/examples/candlestickchart-with-volume-histogram2').init(data);
-	var CandleStickChartWithCHMousePointer = require('./lib/examples/candlestickchart-with-crosshair').init(data);
-	var CandleStickChartWithZoomPan = require('./lib/examples/candlestickchart-with-zoompan').init(data);
-	var CandleStickChartWithMA = require('./lib/examples/candlestickchart-with-ma').init(data);
-	var CandleStickChartWithEdge = require('./lib/examples/candlestickchart-with-edge').init(data);
-	var CandleStickChartWithLotsOfData = require('./lib/examples/candlestickchart-with-edge').init(dataFull);
-	var HeikinAshiChart = require('./lib/examples/HaikinAshi').init(data);
-	var Kagi = require('./lib/examples/Kagi').init(dataFull);
-	var PointAndFigure = require('./lib/examples/PointAndFigure').init(data);
-	var Renko = require('./lib/examples/Renko').init(dataFull);
+
+
+	var selected = location.hash.replace('#/', '');
+	var selectedPage = pages.filter((page) => (page.title == selected));
+
+	var firstPage = (selectedPage.length === 0) ? pages[0] : selectedPage[0];
+
+	// console.log(selected, selectedPage, firstPage);
+
 	var ExamplesPage = React.createClass({
 		//mixins: [ScrollMixin],
+		getInitialState() {
+			return {
+				selectedPage: firstPage
+			};
+		},
+		handleRouteChange(newPage) {
+			this.setState({
+				selectedPage: newPage
+			});
+		},
 		render() {
+			var Page = this.state.selectedPage;
 			return (
 				<body>
 					<Nav />
 					<MainContainer>
 						<Sidebar>
 							<MenuGroup>
-								<MenuItem label="Overview" active={true} />
-								<MenuItem label="AreaChart" />
-								<MenuItem label="CandlestickChart" />
-								<MenuItem label="stocktime scale" />
-								<MenuItem label="Volume histogram" />
-								<MenuItem label="Mouse pointer" />
-								<MenuItem label="Zoom and Pan" />
-								<MenuItem label="Overlay" />
-								<MenuItem label="Edge coordinate" />
-								<MenuItem label="Lots of data" />
-								<MenuItem label="Heikin Ashi" />
-								<MenuItem label="Kagi" />
-								<MenuItem label="Point & Figure" />
-								<MenuItem label="Renko" />
-								<MenuItem label="Coming soon..." />
+								{pages.map((eachPage, idx) => <MenuItem key={idx} page={eachPage} selectedPage={this.state.selectedPage} handleRouteChange={this.handleRouteChange} />)}
 							</MenuGroup>
 						</Sidebar>
-						<ContentSection title="Getting Started">
-							<Row title="Overview">
-								<Section  colSpan={2}>
-									<aside dangerouslySetInnerHTML={{__html: require('md/OVERVIEW')}}></aside>
-								</Section>
-							</Row>
-							<Row title="AreaChart">
-								<Section colSpan={2} className="react-stockchart">
-									<AreaChart />
-								</Section>
-							</Row>
-							<Row>
-								<Section colSpan={2}>
-									<aside dangerouslySetInnerHTML={{__html: require('md/AREACHART')}}></aside>
-								</Section>
-							</Row>
-							<Row>
-								<Section colSpan={2} className="react-stockchart">
-									<AreaChartWithYPercent />
-								</Section>
-							</Row>
-							<Row title="CandlestickChart">
-								<Section colSpan={2} className="react-stockchart">
-									<CandleStickChart />
-								</Section>
-							</Row>
-							<Row>
-								<Section colSpan={2}>
-									<aside dangerouslySetInnerHTML={{__html: require('md/CANDLESTICK')}}></aside>
-								</Section>
-							</Row>
-							<Row>
-								<Section colSpan={2} className="react-stockchart">
-									<CandleStickStockScaleChart />
-								</Section>
-							</Row>
-							<Row>
-								<Section colSpan={2}>
-									<aside dangerouslySetInnerHTML={{__html: require('md/CANDLESTICK-IMPROVED')}}></aside>
-								</Section>
-							</Row>
-							<Row title="stocktime scale">
-								<Section colSpan={2}>
-									<aside dangerouslySetInnerHTML={{__html: require('md/FINANCETIMESCALE')}}></aside>
-								</Section>
-							</Row>
-							<Row title="Volume histogram">
-								<Section colSpan={2}>
-									<aside dangerouslySetInnerHTML={{__html: require('md/VOLUME-HISTOGRAM-INTRO')}}></aside>
-								</Section>
-							</Row>
-							<Row>
-								<Section colSpan={2} className="react-stockchart">
-									<CandleStickStockScaleChartWithVolumeHistogramV1 />
-								</Section>
-							</Row>
-							<Row>
-								<Section colSpan={2}>
-									<aside dangerouslySetInnerHTML={{__html: require('md/VOLUME-HISTOGRAM')}}></aside>
-								</Section>
-							</Row>
-							<Row>
-								<Section colSpan={2} className="react-stockchart">
-									<CandleStickStockScaleChartWithVolumeHistogramV2 />
-								</Section>
-							</Row>
-							<Row>
-								<Section colSpan={2}>
-									<aside dangerouslySetInnerHTML={{__html: require('md/VOLUME-HISTOGRAM-Contd')}}></aside>
-								</Section>
-							</Row>
-							<Row title="Mouse pointer">
-								<Section colSpan={2} className="react-stockchart">
-									<CandleStickChartWithCHMousePointer />
-								</Section>
-							</Row>
-							<Row>
-								<Section colSpan={2}>
-									<aside dangerouslySetInnerHTML={{__html: require('md/MOUSEPOINTER')}}></aside>
-								</Section>
-							</Row>
-							<Row title="Zoom and Pan">
-								<Section colSpan={2} className="react-stockchart">
-									<CandleStickChartWithZoomPan />
-								</Section>
-							</Row>
-							<Row>
-								<Section colSpan={2}>
-									<aside dangerouslySetInnerHTML={{__html: require('md/ZOOM-AND-PAN')}}></aside>
-								</Section>
-							</Row>
-							<Row title="Overlay">
-								<Section colSpan={2} className="react-stockchart">
-									<CandleStickChartWithMA />
-								</Section>
-							</Row>
-							<Row>
-								<Section colSpan={2}>
-									<aside dangerouslySetInnerHTML={{__html: require('md/MOVING-AVERAGE-OVERLAY')}}></aside>
-								</Section>
-							</Row>
-							<Row title="Edge coordinate">
-								<Section colSpan={2} className="react-stockchart">
-									<CandleStickChartWithEdge />
-								</Section>
-							</Row>
-							<Row>
-								<Section colSpan={2}>
-									<aside dangerouslySetInnerHTML={{__html: require('md/EDGE-COORDINATE')}}></aside>
-								</Section>
-							</Row>
-							<Row title="Lots of data">
-								<Section colSpan={2}>
-									<aside dangerouslySetInnerHTML={{__html: require('md/LOTS-OF-DATA')}}></aside>
-								</Section>
-							</Row>
-							<Row>
-								<Section colSpan={2} className="react-stockchart">
-									<CandleStickChartWithLotsOfData />
-								</Section>
-							</Row>
-							<Row>
-								<h2>Advanced chart types</h2>
-							</Row>
-							<Row title="Heikin Ashi">
-								<Section colSpan={2}>
-									<aside dangerouslySetInnerHTML={{__html: require('md/HEIKIN-ASHI')}}></aside>
-								</Section>
-							</Row>
-							<Row>
-								<Section colSpan={2} className="react-stockchart">
-									<HeikinAshiChart />
-								</Section>
-							</Row>
-							<Row title="Kagi">
-								<Section colSpan={2}>
-									<aside dangerouslySetInnerHTML={{__html: require('md/KAGI')}}></aside>
-								</Section>
-							</Row>
-							<Row>
-								<Section colSpan={2} className="react-stockchart">
-									<Kagi />
-								</Section>
-							</Row>
-							<Row title="Point & Figure">
-								<Section colSpan={2}>
-									<aside dangerouslySetInnerHTML={{__html: require('md/POINT-AND-FIGURE')}}></aside>
-								</Section>
-							</Row>
-							<Row>
-								<Section colSpan={2} className="react-stockchart">
-									<PointAndFigure />
-								</Section>
-							</Row>
-							<Row title="Renko">
-								<Section colSpan={2}>
-									<aside dangerouslySetInnerHTML={{__html: require('md/RENKO')}}></aside>
-								</Section>
-							</Row>
-							<Row>
-								<Section colSpan={2} className="react-stockchart">
-									<Renko />
-								</Section>
-							</Row>
-							<Row title="Coming soon...">
-								<Section colSpan={2} className="react-stockchart">
-									<aside dangerouslySetInnerHTML={{__html: require('md/COMING-SOON')}}></aside>
-								</Section>
-							</Row>
-						</ContentSection>
+						<Page someData={data} lotsOfData={dataFull} />
 					</MainContainer>
 				</body>
 			);

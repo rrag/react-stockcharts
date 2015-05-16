@@ -8,7 +8,7 @@ var ReStock = require('src/');
 var ChartCanvas = ReStock.ChartCanvas
 	, XAxis = ReStock.XAxis
 	, YAxis = ReStock.YAxis
-	, KagiSeries = ReStock.KagiSeries
+	, CandlestickSeries = ReStock.CandlestickSeries
 	, DataTransform = ReStock.DataTransform
 	, Chart = ReStock.Chart
 	, DataSeries = ReStock.DataSeries
@@ -20,16 +20,10 @@ var ChartCanvas = ReStock.ChartCanvas
 	, CrossHair = ReStock.CrossHair
 	, TooltipContainer = ReStock.TooltipContainer
 	, OHLCTooltip = ReStock.OHLCTooltip
-	, OverlaySeries = ReStock.OverlaySeries
-	, LineSeries = ReStock.LineSeries
-	, MovingAverageTooltip = ReStock.MovingAverageTooltip
-	, CurrentCoordinate = ReStock.CurrentCoordinate
-	, AreaSeries = ReStock.AreaSeries
-	, EdgeContainer = ReStock.EdgeContainer
-	, EdgeIndicator = ReStock.EdgeIndicator
+
 ;
 
-var Kagi = React.createClass({
+var CandleStickChart = React.createClass({
 	mixins: [InitialStateMixin, ChartWidthMixin],
 	render() {
 		if (!this.state.width) return <div />;
@@ -38,37 +32,45 @@ var Kagi = React.createClass({
 
 		return (
 			<ChartCanvas width={this.state.width} height={400}
-				margin={{left: 90, right: 70, top:10, bottom: 30}} data={this.props.data} interval="1D" >
+				margin={{left: 40, right: 70, top:10, bottom: 30}} data={this.props.data}>
 				<DataTransform transformType="stockscale">
-				<DataTransform transformType="kagi">
 					<Chart id={1} >
 						<XAxis axisAt="bottom" orient="bottom"/>
 						<YAxis axisAt="right" orient="right" ticks={5} />
-						<DataSeries yAccessor={KagiSeries.yAccessor} >
-							<KagiSeries />
+						<DataSeries yAccessor={CandlestickSeries.yAccessor} >
+							<CandlestickSeries />
 						</DataSeries>
 					</Chart>
 					<Chart id={2} height={150} origin={(w, h) => [0, h - 150]}>
 						<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 						<DataSeries yAccessor={(d) => d.volume} >
 							<HistogramSeries className={(d) => d.close > d.open ? 'up' : 'down'} />
-							<OverlaySeries id={3} type="sma" options={{ period: 10, pluck:'volume' }} >
-								<AreaSeries/>
-							</OverlaySeries>
 						</DataSeries>
 					</Chart>
 					<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
 						<CrossHair />
 					</MouseCoordinates>
-					<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
+					<EventCapture mouseMove={true} mainChart={1}/>
 					<TooltipContainer>
-						<OHLCTooltip forChart={1} origin={[-50, 0]}/>
+						<OHLCTooltip forChart={1} origin={[-40, 0]}/>
 					</TooltipContainer>
-				</DataTransform>
 				</DataTransform>
 			</ChartCanvas>
 		);
 	}
 });
 
-module.exports = Kagi;
+module.exports = CandleStickChart;
+
+
+/*
+ xScaleDependsOn={1}
+							<Chart id={1} >
+								<XAxis axisAt="bottom" orient="bottom" ticks={5}/>
+								<YAxis axisAt="right" orient="right" ticks={5} />
+								<DataSeries yAccessor={CandlestickSeries.yAccessor} >
+									<CandlestickSeries />
+								</DataSeries>
+							</Chart>
+
+*/

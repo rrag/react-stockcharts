@@ -15,30 +15,29 @@ var ChartCanvas = ReStock.ChartCanvas
 	, InitialStateMixin = require('./mixin/initial-state-mixin')
 ;
 
-module.exports = {
-	init(data) {
-		var AreaChartWithYPercent = React.createClass({/**/
-			mixins: [InitialStateMixin, ChartWidthMixin],
-			render() {
-				if (!this.state.width) return <div />;
-				console.log(this.state.width);
-				return (
-					<ChartCanvas width={this.state.width} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}} data={data}>
-						<Chart id={0} >
-							<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
-							<YAxis axisAt="left" orient="left" />
-							<YAxis axisAt="right" orient="right" percentScale={true} tickFormat={d3.format(".0%")}/>
-							<DataSeries yAccessor={(d) => d.close} xAccessor={(d) => d.date}>
-								<AreaSeries />
-							</DataSeries>
-						</Chart>
-					</ChartCanvas>
-				);
-			}
-		});
-		return AreaChartWithYPercent;
+var AreaChartWithYPercent = React.createClass({/**/
+	mixins: [InitialStateMixin, ChartWidthMixin],
+	render() {
+		if (!this.state.width) return <div />;
+		console.log(this.state.width);
+		return (
+			<ChartCanvas width={this.state.width} height={400}
+				margin={{left: 50, right: 50, top:10, bottom: 30}} data={this.props.data}>
+				<Chart id={0} >
+					<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
+					<YAxis axisAt="left" orient="left" />
+					<YAxis axisAt="right" orient="right" percentScale={true} tickFormat={d3.format(".0%")}/>
+					<DataSeries yAccessor={(d) => d.close} xAccessor={(d) => d.date}>
+						<AreaSeries />
+					</DataSeries>
+				</Chart>
+			</ChartCanvas>
+		);
 	}
-}
+});
+
+
+module.exports = AreaChartWithYPercent;
 
 /*
 

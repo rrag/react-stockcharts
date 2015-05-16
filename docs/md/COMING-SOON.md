@@ -10,6 +10,7 @@
 
 - Moving Average Convergence Divergence (MACD) - v0.1
 - Relative Strength Index (RSI) - v0.2
+- Stochastics - v0.2
 
 #### Chart types
 

@@ -29,106 +29,46 @@ var ChartCanvas = ReStock.ChartCanvas
 	, EdgeIndicator = ReStock.EdgeIndicator
 ;
 
-module.exports = {
-	init(data) {
-		var Renko = React.createClass({
-			mixins: [InitialStateMixin, ChartWidthMixin],
-			render() {
-				if (!this.state.width) return <div />;
+var Renko = React.createClass({
+	mixins: [InitialStateMixin, ChartWidthMixin],
+	render() {
+		if (!this.state.width) return <div />;
 
-				var parseDate = d3.time.format("%Y-%m-%d").parse
-				var dateRange = { from: parseDate("2012-12-01"), to: parseDate("2012-12-31")}
-				var dateFormat = d3.time.format("%Y-%m-%d");
+		var dateFormat = d3.time.format("%Y-%m-%d");
 
-				return (
-					<ChartCanvas width={this.state.width} height={400} margin={{left: 90, right: 70, top:10, bottom: 30}} data={data} interval="1D" >
-						<DataTransform transformType="stockscale">
-						<DataTransform transformType="renko">
-							<Chart id={1} >
-								<XAxis axisAt="bottom" orient="bottom"/>
-								<YAxis axisAt="right" orient="right" ticks={5} />
-								<DataSeries yAccessor={RenkoSeries.yAccessor} >
-									<RenkoSeries />
-								</DataSeries>
-							</Chart>
-							<Chart id={2} height={150} origin={(w, h) => [0, h - 150]}>
-								<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-								<DataSeries yAccessor={(d) => d.volume} >
-									<HistogramSeries className={(d) => d.close > d.open ? 'up' : 'down'} />
-									<OverlaySeries id={3} type="sma" options={{ period: 10, pluck:'volume' }} >
-										<AreaSeries/>
-									</OverlaySeries>
-								</DataSeries>
-							</Chart>
-							<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
-								<CrossHair />
-							</MouseCoordinates>
-							<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
-							<TooltipContainer>
-								<OHLCTooltip forChart={1} origin={[-50, 0]}/>
-							</TooltipContainer>
-						</DataTransform>
-						</DataTransform>
-					</ChartCanvas>
-				);
-			}
-		});
-		return Renko;
+		return (
+			<ChartCanvas width={this.state.width} height={400}
+				margin={{left: 90, right: 70, top:10, bottom: 30}} data={this.props.data} interval="1D" >
+				<DataTransform transformType="stockscale">
+				<DataTransform transformType="renko">
+					<Chart id={1} >
+						<XAxis axisAt="bottom" orient="bottom"/>
+						<YAxis axisAt="right" orient="right" ticks={5} />
+						<DataSeries yAccessor={RenkoSeries.yAccessor} >
+							<RenkoSeries />
+						</DataSeries>
+					</Chart>
+					<Chart id={2} height={150} origin={(w, h) => [0, h - 150]}>
+						<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+						<DataSeries yAccessor={(d) => d.volume} >
+							<HistogramSeries className={(d) => d.close > d.open ? 'up' : 'down'} />
+							<OverlaySeries id={3} type="sma" options={{ period: 10, pluck:'volume' }} >
+								<AreaSeries/>
+							</OverlaySeries>
+						</DataSeries>
+					</Chart>
+					<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
+						<CrossHair />
+					</MouseCoordinates>
+					<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
+					<TooltipContainer>
+						<OHLCTooltip forChart={1} origin={[-50, 0]}/>
+					</TooltipContainer>
+				</DataTransform>
+				</DataTransform>
+			</ChartCanvas>
+		);
 	}
-}
+});
 
-
-/*
-
-							<Chart id={2} height={150} origin={(w, h) => [0, h - 150]}>
-								<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-								<DataSeries yAccessor={(d) => d.volume} >
-									<HistogramSeries className={(d) => d.close > d.open ? 'up' : 'down'} />
-									<OverlaySeries id={3} type="sma" options={{ period: 10, pluck:'volume' }} >
-										<AreaSeries/>
-									</OverlaySeries>
-								</DataSeries>
-							</Chart>
-							<CurrentCoordinate forChart={2} forOverlay={3} />
-							<CurrentCoordinate forChart={2}/>
-							<EdgeContainer>
-								<EdgeIndicator className="horizontal" itemType="last" orient="right"
-									edgeAt="right" forChart={1} forOverlay={0}
-									/>
-								<EdgeIndicator className="horizontal" itemType="last" orient="right"
-									edgeAt="right" forChart={1} forOverlay={1}
-									/>
-								<EdgeIndicator className="horizontal" itemType="last" orient="right"
-									edgeAt="right" forChart={1} forOverlay={2}
-									/>
-								<EdgeIndicator className="horizontal" itemType="first" orient="left"
-									edgeAt="left" forChart={1} forOverlay={0}
-									/>
-								<EdgeIndicator className="horizontal" itemType="first" orient="left"
-									edgeAt="left" forChart={1} forOverlay={1}
-									/>
-								<EdgeIndicator className="horizontal" itemType="first" orient="left"
-									edgeAt="left" forChart={1} forOverlay={2}
-									/>
-								<EdgeIndicator className="horizontal" itemType="first" orient="left"
-									edgeAt="left" forChart={2} forOverlay={3} displayFormat={d3.format(".4s")}
-									/>
-								<EdgeIndicator className="horizontal" itemType="last" orient="right"
-									edgeAt="right" forChart={2} forOverlay={3} displayFormat={d3.format(".4s")}
-									/>
-								<EdgeIndicator className="horizontal" itemType="first" orient="left"
-									edgeAt="left" forChart={2} displayFormat={d3.format(".4s")}
-									/>
-								<EdgeIndicator className="horizontal" itemType="last" orient="right"
-									edgeAt="right" forChart={2} displayFormat={d3.format(".4s")}
-									/>
-							</EdgeContainer>
-							<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
-								<CrossHair />
-							</MouseCoordinates>
-							<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
-							<TooltipContainer>
-								<OHLCTooltip forChart={1} origin={[-50, 0]}/>
-								<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-48, 15]}/>
-							</TooltipContainer>
-*/
+module.exports = Renko;

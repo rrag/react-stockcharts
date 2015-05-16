@@ -28,18 +28,20 @@ var ChartCanvas = ReStock.ChartCanvas
 	, EdgeContainer = ReStock.EdgeContainer
 	, EdgeIndicator = ReStock.EdgeIndicator
 ;
-var HaikinAshi = React.createClass({
+
+var CandleStickChart = React.createClass({
 	mixins: [InitialStateMixin, ChartWidthMixin],
 	render() {
 		if (!this.state.width) return <div />;
 
+		var parseDate = d3.time.format("%Y-%m-%d").parse
+		var dateRange = { from: parseDate("2012-12-01"), to: parseDate("2012-12-31")}
 		var dateFormat = d3.time.format("%Y-%m-%d");
 
 		return (
 			<ChartCanvas width={this.state.width} height={400}
 				margin={{left: 90, right: 70, top:10, bottom: 30}} data={this.props.data} interval="1D" >
 				<DataTransform transformType="stockscale">
-				<DataTransform transformType="heikinashi">
 					<Chart id={1} >
 						<XAxis axisAt="bottom" orient="bottom"/>
 						<YAxis axisAt="right" orient="right" ticks={5} />
@@ -72,35 +74,25 @@ var HaikinAshi = React.createClass({
 					<CurrentCoordinate forChart={2}/>
 					<EdgeContainer>
 						<EdgeIndicator className="horizontal" itemType="last" orient="right"
-							edgeAt="right" forChart={1} forOverlay={0}
-							/>
+							edgeAt="right" forChart={1} forOverlay={0} />
 						<EdgeIndicator className="horizontal" itemType="last" orient="right"
-							edgeAt="right" forChart={1} forOverlay={1}
-							/>
+							edgeAt="right" forChart={1} forOverlay={1} />
 						<EdgeIndicator className="horizontal" itemType="last" orient="right"
-							edgeAt="right" forChart={1} forOverlay={2}
-							/>
+							edgeAt="right" forChart={1} forOverlay={2} />
 						<EdgeIndicator className="horizontal" itemType="first" orient="left"
-							edgeAt="left" forChart={1} forOverlay={0}
-							/>
+							edgeAt="left" forChart={1} forOverlay={0} />
 						<EdgeIndicator className="horizontal" itemType="first" orient="left"
-							edgeAt="left" forChart={1} forOverlay={1}
-							/>
+							edgeAt="left" forChart={1} forOverlay={1} />
 						<EdgeIndicator className="horizontal" itemType="first" orient="left"
-							edgeAt="left" forChart={1} forOverlay={2}
-							/>
+							edgeAt="left" forChart={1} forOverlay={2} />
 						<EdgeIndicator className="horizontal" itemType="first" orient="left"
-							edgeAt="left" forChart={2} forOverlay={3} displayFormat={d3.format(".4s")}
-							/>
+							edgeAt="left" forChart={2} forOverlay={3} displayFormat={d3.format(".4s")} />
 						<EdgeIndicator className="horizontal" itemType="last" orient="right"
-							edgeAt="right" forChart={2} forOverlay={3} displayFormat={d3.format(".4s")}
-							/>
+							edgeAt="right" forChart={2} forOverlay={3} displayFormat={d3.format(".4s")} />
 						<EdgeIndicator className="horizontal" itemType="first" orient="left"
-							edgeAt="left" forChart={2} displayFormat={d3.format(".4s")}
-							/>
+							edgeAt="left" forChart={2} displayFormat={d3.format(".4s")} />
 						<EdgeIndicator className="horizontal" itemType="last" orient="right"
-							edgeAt="right" forChart={2} displayFormat={d3.format(".4s")}
-							/>
+							edgeAt="right" forChart={2} displayFormat={d3.format(".4s")} />
 					</EdgeContainer>
 					<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
 						<CrossHair />
@@ -111,13 +103,12 @@ var HaikinAshi = React.createClass({
 						<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-48, 15]}/>
 					</TooltipContainer>
 				</DataTransform>
-				</DataTransform>
 			</ChartCanvas>
 		);
 	}
 });
 
-module.exports = HaikinAshi;
+module.exports = CandleStickChart;
 
 /*
  xScaleDependsOn={1}

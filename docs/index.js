@@ -22,9 +22,9 @@ d3.tsv("data/MSFT.tsv", function(err, data) {
 		// console.log(d);
 	});
 
-	var CandleStickChartWithEdge = require('./lib/examples/candlestickchart-with-edge').init(data);
+	var CandleStickChartWithEdge = require('lib/examples/CandleStickChartWithEdge');
 
-	React.render(<CandleStickChartWithEdge />, document.getElementById("chart"));
+	React.render(<CandleStickChartWithEdge data={data} />, document.getElementById("chart"));
 });
 
 //require('./examples/freezer-example');
