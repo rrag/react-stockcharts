@@ -54,7 +54,7 @@ var MouseCoordinates = React.createClass({
 		return React.Children.map(this.props.children, (child) => {
 			if (typeof child.type === 'string') return child;
 			var newChild = child;
-			return React.addons.cloneWithProps(newChild, {
+			return React.cloneElement(newChild, {
 				_width: this.props._width
 				, _height: this.props._height
 				, _mouseXY: [x, y]

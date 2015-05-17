@@ -58,7 +58,7 @@ var OverlaySeries = React.createClass({
 			if (typeof child.type === 'string') return newChild;
 
 			if (/Series$/.test(newChild.props.namespace)) {
-				newChild = React.addons.cloneWithProps(newChild, {
+				newChild = React.cloneElement(newChild, {
 					_xScale: this.props._xScale,
 					_yScale: this.props._yScale,
 					_xAccessor: (this.props.xAccessor || this.props._xAccessor),

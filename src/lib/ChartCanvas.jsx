@@ -34,12 +34,12 @@ var ChartCanvas = React.createClass({
 			if (typeof child.type === 'string') return child;
 			var newChild = child;
 			if ('ReStock.DataTransform' === newChild.props.namespace) {
-				newChild = React.addons.cloneWithProps(newChild, {
+				newChild = React.cloneElement(newChild, {
 					data: this.props.data,
 					interval: this.props.interval
 				});
 			}
-			return React.addons.cloneWithProps(newChild, {
+			return React.cloneElement(newChild, {
 				_width: this.getAvailableWidth(this.props)
 				, _height: this.getAvailableHeight(this.props)
 			});

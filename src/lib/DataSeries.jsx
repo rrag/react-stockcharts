@@ -39,7 +39,7 @@ var DataSeries = React.createClass({
 			if (typeof child.type === 'string') return newChild;
 
 			if (/Series$/.test(newChild.props.namespace)) {
-				newChild = React.addons.cloneWithProps(newChild, {
+				newChild = React.cloneElement(newChild, {
 					_xScale: this.props._xScale,
 					_yScale: this.props._yScale,
 					_xAccessor: (this.props.xAccessor || this.props._xAccessor),
@@ -49,7 +49,7 @@ var DataSeries = React.createClass({
 				if (/OverlaySeries$/.test(newChild.props.namespace)) {
 					var key = newChild.props.id;
 					var overlay = getOverlayFromList(this.props._overlays, newChild.props.id);
-					newChild = React.addons.cloneWithProps(newChild, {
+					newChild = React.cloneElement(newChild, {
 						_overlay: overlay,
 						_pan: this.props._pan,
 						_isMainChart: this.props._isMainChart

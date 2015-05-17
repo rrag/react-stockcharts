@@ -416,7 +416,7 @@ var EventCaptureMixin = {
 
 				this.state.currentItemStore.get().set({ mainChart: child.props.mainChart });
 			}
-			return React.addons.cloneWithProps(child, {
+			return React.cloneElement(child, {
 				_eventStore: this.state.eventStore,
 				_zoomEventStore: this.state.zoomEventStore,
 				_chartData: this.getChartForId(child.props.mainChart)
@@ -429,7 +429,7 @@ var EventCaptureMixin = {
 			var chart = this.getChartForId(child.props.forChart);
 			var currentItem = this.getCurrentItemForChart(child.props.forChart);
 
-			return React.addons.cloneWithProps(child, {
+			return React.cloneElement(child, {
 				_show: this.state.eventStore.get().mouseOver.value,
 				_chartData: chart,
 				_currentItem: currentItem
@@ -442,7 +442,7 @@ var EventCaptureMixin = {
 			var chart = this.getChartForId(child.props.forChart);
 			var currentItem = this.getCurrentItemForChart(child.props.forChart);
 
-			return React.addons.cloneWithProps(child, {
+			return React.cloneElement(child, {
 				_show: this.state.eventStore.get().mouseOver.value,
 				_mouseXY: this.state.eventStore.get().mouseXY,
 				_chartData: chart,
@@ -453,7 +453,7 @@ var EventCaptureMixin = {
 	},
 	updatePropsForTooltipContainer(child) {
 		if ("ReStock.TooltipContainer" === child.props.namespace) {
-			return React.addons.cloneWithProps(child, {
+			return React.cloneElement(child, {
 				_currentItems: this.state.currentItemStore.get().currentItems,
 				_charts: this.state.chartStore.get().charts
 			});
@@ -462,7 +462,7 @@ var EventCaptureMixin = {
 	},
 	updatePropsForEdgeContainer(child) {
 		if ("ReStock.EdgeContainer" === child.props.namespace) {
-			return React.addons.cloneWithProps(child, {
+			return React.cloneElement(child, {
 				_currentItems: this.state.currentItemStore.get().currentItems,
 				_charts: this.state.chartStore.get().charts
 			});
@@ -475,7 +475,7 @@ var EventCaptureMixin = {
 		if ("ReStock.Chart" === child.props.namespace) {
 			if (this.state.eventStore && this.state.chartStore) {
 				var _chartData = this.getChartForId(newChild.props.id);
-				newChild = React.addons.cloneWithProps(newChild, {
+				newChild = React.cloneElement(newChild, {
 					_updateMode: this.state.chartStore.get().updateMode,
 					_chartData: _chartData,
 					data: this.getData(),

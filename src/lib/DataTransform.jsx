@@ -56,7 +56,7 @@ var DataTransform = React.createClass({
 				.forEach((key) => props[key] = this.state.passThroughProps[key]);
 
 			// console.log(Object.keys(props));
-			return React.addons.cloneWithProps(newChild, props);
+			return React.cloneElement(newChild, props);
 		});
 		return this._renderChildren(children);
 	},

@@ -20,11 +20,11 @@ var TooltipContainer = React.createClass({
 			var newChild = child;
 			var chart = this.props._charts.filter((chart) => chart.id === newChild.props.forChart)[0];
 			var currentItem = this.props._currentItems.filter((item) => item.id === newChild.props.forChart)[0];
-			newChild = React.addons.cloneWithProps(newChild, {
+			newChild = React.cloneElement(newChild, {
 				_currentItem: currentItem.data
 			});
 			if (/MovingAverageTooltip$/.test(newChild.props.namespace)) {
-				newChild = React.addons.cloneWithProps(newChild, {
+				newChild = React.cloneElement(newChild, {
 					_overlays: chart.overlays
 				});
 			}

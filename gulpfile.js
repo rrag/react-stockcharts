@@ -155,7 +155,7 @@ gulp.task('serve', function() {
 		server: {
 			baseDir: ['build/', 'node_modules/', 'docs/']
 		},
-		browser: "google chrome",
+		browser: "google-chrome-stable",
 		ui: {
 			port: 9080
 		},
@@ -207,7 +207,7 @@ gulp.task('release', ['build'], function(cb) {
 	var path = require('path');
 
 	var pkg = require(path.join(__dirname, 'package.json'));
-	var mkdirp = require('mkdirp');
+	// var mkdirp = require('mkdirp');
 
 	var origPackage = fs.readFileSync(path.join(__dirname, 'package.json')).toString();
 

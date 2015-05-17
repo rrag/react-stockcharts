@@ -20,7 +20,7 @@ var EdgeContainer = React.createClass({
 			if (/EdgeIndicator$/.test(newChild.props.namespace)) {
 				var chart = this.props._charts.filter((chart) => chart.id === newChild.props.forChart)[0];
 				var currentItem = this.props._currentItems.filter((item) => item.id === newChild.props.forChart)[0];
-				newChild = React.addons.cloneWithProps(newChild, {
+				newChild = React.cloneElement(newChild, {
 					_width: this.props._width,
 					_chart: chart,
 					_currentItem: currentItem

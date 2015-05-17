@@ -20,8 +20,8 @@ var CandlestickSeries = React.createClass({
 	},
 	getWicks() {
 		var wicks = this.props.data
-				.filter(function (d) { return d.close !== undefined; })
-				.map(function(d, idx) {
+				.filter((d) => d.close !== undefined)
+				.map((d, idx) => {
 					var ohlc = this.props._yAccessor(d);
 
 					var x1 = Math.round(this.props._xScale(this.props._xAccessor(d))),

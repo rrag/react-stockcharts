@@ -69,7 +69,7 @@ var Chart = React.createClass({
 				.indexOf(child.props.namespace) < 0) return child;
 
 			var newChild = child;
-			newChild = React.addons.cloneWithProps(newChild, {
+			newChild = React.cloneElement(newChild, {
 				_xScale: this.props._chartData.scales.xScale,
 				_yScale: this.props._chartData.scales.yScale,
 				data: this.props.data,
@@ -86,7 +86,7 @@ var Chart = React.createClass({
 	updatePropsForDataSeries(child) {
 		if ("ReStock.DataSeries" === child.props.namespace) {
 			// console.log(this.state.chartData.overlays);
-			return React.addons.cloneWithProps(child, {
+			return React.cloneElement(child, {
 				//_showCurrent: this.props._showCurrent,
 				//_mouseXY: this.props._mouseXY,
 				//_currentItem: this.state.chartData.currentItem,
