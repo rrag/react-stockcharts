@@ -1,9 +1,9 @@
 'use strict';
 var React = require('react/addons');
-var EdgeCoordinate = require('./edge-coordinate')
+var EdgeCoordinate = require('./EdgeCoordinate')
 var Utils = require('./utils/utils')
 
-var VerticalMousePointer = React.createClass({
+var CrossHair = React.createClass({
 	propTypes: {
 		_height: React.PropTypes.number.isRequired,
 		_width: React.PropTypes.number.isRequired,
@@ -17,13 +17,23 @@ var VerticalMousePointer = React.createClass({
 	},
 	getDefaultProps() {
 		return {
-			namespace: "ReStock.VerticalMousePointer",
-			yAxisPad: 10
+			namespace: "ReStock.CrossHair",
+			yAxisPad: 5
 		}
 	},
 	render() {
 		return (
 			<g className={'crosshair '}>
+				<EdgeCoordinate
+					type="horizontal"
+					className="horizontal"
+					show={true}
+					x1={0} y1={this.props._mouseXY[1]}
+					x2={this.props._width + this.props.yAxisPad} y2={this.props._mouseXY[1]}
+					coordinate={this.props._yDisplayValue}
+					edgeAt={this.props._width + this.props.yAxisPad}
+					orient="right"
+					/>
 				<EdgeCoordinate
 					type="vertical"
 					className="horizontal"
@@ -34,10 +44,9 @@ var VerticalMousePointer = React.createClass({
 					edgeAt={this.props._height}
 					orient="bottom"
 					/>
-				
 			</g>
 		);
 	}
 });
 
-module.exports = VerticalMousePointer;
+module.exports = CrossHair;

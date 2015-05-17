@@ -1,8 +1,8 @@
 'use strict';
 var React = require('react');
-var EventCaptureMixin = require('./mixin/event-capture-mixin');
-var ChartContainerMixin = require('./mixin/chart-container-mixin');
-var DataTransformMixin = require('./mixin/data-transform-mixin');
+var EventCaptureMixin = require('./mixin/EventCaptureMixin');
+var ChartContainerMixin = require('./mixin/ChartContainerMixin');
+var DataTransformMixin = require('./mixin/DataTransformMixin');
 
 var polyLinearTimeScale = require('./scale/polylineartimescale');
 

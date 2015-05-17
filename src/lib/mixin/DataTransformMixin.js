@@ -1,5 +1,5 @@
 "use strict";
-var ChartTransformer = require('../utils/chart-transformer');
+var ChartTransformer = require('../utils/ChartTransformer');
 
 var DataTransformMixin = {
 	isDataDransform() {

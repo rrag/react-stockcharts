@@ -1,7 +1,7 @@
 'use strict';
 
 var Utils = require('./utils');
-var MACalculator = require('./moving-average-calculator');
+var MACalculator = require('./MovingAverageCalculator');
 
 var OverlayUtils = {
 	getToolTipLabel(props) {

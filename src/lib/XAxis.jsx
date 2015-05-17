@@ -1,10 +1,8 @@
 'use strict';
 var React = require('react'),
-	d3 = require('d3'),
-	PureRenderMixin = require('./mixin/restock-pure-render-mixin');
+	d3 = require('d3');
 
 var XAxis = React.createClass({
-	mixins: [PureRenderMixin],
 	propTypes: {
 		axisAt: React.PropTypes.oneOfType([
 					React.PropTypes.oneOf(['top', 'bottom', 'middle'])

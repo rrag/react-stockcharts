@@ -1,10 +1,8 @@
 'use strict';
 var React = require('react'),
-	d3 = require('d3'),
-	PureRenderMixin = require('./mixin/restock-pure-render-mixin');
+	d3 = require('d3');
 
 var AreaSeries = React.createClass({
-	mixins: [PureRenderMixin],
 	propTypes: {
 		_xScale: React.PropTypes.func.isRequired,
 		_yScale: React.PropTypes.func.isRequired,

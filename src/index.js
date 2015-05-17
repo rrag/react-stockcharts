@@ -1,36 +1,36 @@
 'use strict';
 
 // common components
-exports.ChartCanvas = require('./lib/chart-canvas');
-exports.DataTransform = require('./lib/data-transform');
+exports.ChartCanvas = require('./lib/ChartCanvas');
+exports.DataTransform = require('./lib/DataTransform');
 
-exports.XAxis = require('./lib/xaxis');
-exports.YAxis = require('./lib/yaxis');
-exports.Chart = require('./lib/chart');
-exports.DataSeries = require('./lib/dataseries');
+exports.XAxis = require('./lib/XAxis');
+exports.YAxis = require('./lib/YAxis');
+exports.Chart = require('./lib/Chart');
+exports.DataSeries = require('./lib/DataSeries');
 
 // chart types & Series
-exports.AreaSeries = require('./lib/area-series');
-exports.LineSeries = require('./lib/line-series');
-exports.CandlestickSeries = require('./lib/candlestick-series');
-exports.OverlaySeries = require('./lib/overlay-series');
-exports.HistogramSeries = require('./lib/histogram-series');
+exports.AreaSeries = require('./lib/AreaSeries');
+exports.LineSeries = require('./lib/LineSeries');
+exports.CandlestickSeries = require('./lib/CandleStickSeries');
+exports.OverlaySeries = require('./lib/OverlaySeries');
+exports.HistogramSeries = require('./lib/HistogramSeries');
 exports.KagiSeries = require('./lib/KagiSeries');
 exports.PointAndFigureSeries = require('./lib/PointAndFigureSeries');
 exports.RenkoSeries = require('./lib/RenkoSeries');
 
 // interaction components
-exports.EventCapture = require('./lib/event-capture');
-exports.MouseCoordinates = require('./lib/mouse-coordinates');
-exports.CrossHair = require('./lib/crosshair');
-exports.VerticalMousePointer = require('./lib/vertical-mouse-pointer');
-exports.CurrentCoordinate = require('./lib/current-coordinate');
+exports.EventCapture = require('./lib/EventCapture');
+exports.MouseCoordinates = require('./lib/MouseCoordinates');
+exports.CrossHair = require('./lib/CrossHair');
+exports.VerticalMousePointer = require('./lib/VerticalMousePointer');
+exports.CurrentCoordinate = require('./lib/CurrentCoordinate');
 
 // Tooltips
-exports.TooltipContainer = require('./lib/tooltip-container');
-exports.OHLCTooltip = require('./lib/ohlc-tooltip');
-exports.MovingAverageTooltip = require('./lib/moving-average-tooltip');
+exports.TooltipContainer = require('./lib/TooltipContainer');
+exports.OHLCTooltip = require('./lib/OHLCTooltip');
+exports.MovingAverageTooltip = require('./lib/MovingAverageTooltip');
 
 // misc
-exports.EdgeContainer = require('./lib/edge-container');
-exports.EdgeIndicator = require('./lib/edge-indicator');
+exports.EdgeContainer = require('./lib/EdgeContainer');
+exports.EdgeIndicator = require('./lib/EdgeIndicator');

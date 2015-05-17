@@ -1,7 +1,7 @@
 "use strict";
 var React = require('react/addons');
-var EventCapture = require('../event-capture');
-var MouseCoordinates = require('../mouse-coordinates');
+var EventCapture = require('../EventCapture');
+var MouseCoordinates = require('../MouseCoordinates');
 var Utils = require('../utils/utils');
 
 var Freezer = require('freezer-js');

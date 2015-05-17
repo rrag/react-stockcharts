@@ -1,6 +1,6 @@
 'use strict';
 
-var StockScaleTransformer = require('./stockscale-transformer');
+var StockScaleTransformer = require('./StockscaleTransformer');
 var HeikinAshiTransformer = require('./HeikinAshiTransformer');
 var KagiTransformer = require('./KagiTransformer');
 var PointAndFigureTransformer = require('./PointAndFigureTransformer');

@@ -1,14 +1,9 @@
 'use strict';
 
-// DataSeries has to hold OverlaySeries since DataSeries might define the xAccessor and it needs to be sent to OverlaySeries
-// Data series has to pass the current mouse position to the children so this has no benefit
-//     of PureRenderMixin
-
-var React = require('react'),
-	PureRenderMixin = require('./mixin/restock-pure-render-mixin'),
+var React = require('react/addons'),
 	Utils = require('./utils/utils'),
 	d3 = require('d3'),
-	OverlayUtils = require('./utils/overlay-utils'),
+	OverlayUtils = require('./utils/OverlayUtils'),
 	overlayColors = Utils.overlayColors;
 
 function getOverlayFromList(overlays, id) {
@@ -18,7 +13,6 @@ function getOverlayFromList(overlays, id) {
 }
 
 var DataSeries = React.createClass({
-	mixins: [PureRenderMixin],
 	propTypes: {
 		xAccessor: React.PropTypes.func,
 		_xAccessor: React.PropTypes.func,

@@ -1,7 +1,7 @@
 'use strict';
 var React = require('react');
 var Utils = require('./utils/utils')
-var EdgeCoordinate = require('./edge-coordinate')
+var EdgeCoordinate = require('./EdgeCoordinate')
 
 
 var EdgeIndicator = React.createClass({

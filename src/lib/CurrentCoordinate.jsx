@@ -1,11 +1,8 @@
 'use strict';
 var React = require('react'),
-	PureRenderMixin = require('./mixin/restock-pure-render-mixin'),
 	Utils = require('./utils/utils');
 
 var CurrentCoordinate = React.createClass({
-	//namespace: "ReStock.DataSeries",
-	mixins: [PureRenderMixin],
 	propTypes: {
 		forChart: React.PropTypes.number.isRequired,
 		forOverlay: React.PropTypes.number,

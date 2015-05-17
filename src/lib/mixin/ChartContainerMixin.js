@@ -1,10 +1,9 @@
 "use strict";
 var React = require('react/addons'),
 	d3 = require('d3'),
-	ScaleUtils = require('../utils/scale-utils'),
-	OverlayUtils = require('../utils/overlay-utils'),
+	ScaleUtils = require('../utils/ScaleUtils'),
+	OverlayUtils = require('../utils/OverlayUtils'),
 	Utils = require('../utils/utils'),
-	Chart = require('../chart'),
 	overlayColors = Utils.overlayColors;
 var pluck = Utils.pluck;
 var keysAsArray = Utils.keysAsArray;

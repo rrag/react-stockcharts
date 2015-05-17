@@ -1,16 +1,10 @@
 'use strict';
 
 var React = require('react'),
-	PureRenderMixin = require('./mixin/restock-pure-render-mixin'),
 	Utils = require('./utils/utils'),
-	OverlayUtils = require('./utils/overlay-utils');
+	OverlayUtils = require('./utils/OverlayUtils');
 
 var OverlaySeries = React.createClass({
-	//namespace: "ReStock.OverlaySeries",
-	mixins: [PureRenderMixin],
-	/*shouldComponentUpdate(nextProps, nextState) {
-		return false;
-	},*/
 	propTypes: {
 		_xScale: React.PropTypes.func.isRequired,
 		_yScale: React.PropTypes.func.isRequired,

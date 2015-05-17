@@ -1,6 +1,6 @@
 'use strict';
 var React = require('react/addons');
-var EdgeCoordinate = require('./edge-coordinate')
+var EdgeCoordinate = require('./EdgeCoordinate')
 var Utils = require('./utils/utils')
 
 // Should not use xScale and yScale here as MouseCoordinate is common across all charts
