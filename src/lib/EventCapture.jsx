@@ -12,17 +12,22 @@ var EventCapture = React.createClass({
 		panSpeedMultiplier: React.PropTypes.number.isRequired,
 		defaultFocus: React.PropTypes.bool.isRequired,
 
-		_chartData: React.PropTypes.object.isRequired,
-		_height: React.PropTypes.number.isRequired,
-		_width: React.PropTypes.number.isRequired,
-		_eventStore: React.PropTypes.object.isRequired,
-		_zoomEventStore: React.PropTypes.object
+		//_chartData: React.PropTypes.object.isRequired,
+		// _height: React.PropTypes.number.isRequired,
+		// _width: React.PropTypes.number.isRequired
 	},
 	getInitialState() {
 		return {
 			dragOrigin: [0, 0],
 			defaultFocus: false
 		};
+	},
+	contextTypes: {
+		_width: React.PropTypes.number.isRequired,
+		_height: React.PropTypes.number.isRequired,
+		_eventStore: React.PropTypes.object.isRequired,
+		_zoomEventStore: React.PropTypes.object,
+		_chartData: React.PropTypes.array
 	},
 	componentWillMount() {
 		this.setState({
@@ -51,17 +56,17 @@ var EventCapture = React.createClass({
 		});
 	},
 	handleEnter() {
-		if (this.props._eventStore) {
+		if (this.context._eventStore) {
 			// console.log('in');
-			this.props._eventStore.get().mouseOver.set({'value': true});
+			this.context._eventStore.get().mouseOver.set({'value': true});
 		}
 	},
 	handleLeave() {
-		if (this.props._eventStore) {
+		if (this.context._eventStore) {
 			// console.log('out');
-			var eventData = this.props._eventStore.get();
-			this.props._eventStore.get().mouseOver.set({'value': false});
-			this.props._eventStore.get().set({ pan: false });
+			var eventData = this.context._eventStore.get();
+			this.context._eventStore.get().mouseOver.set({'value': false});
+			this.context._eventStore.get().set({ pan: false });
 			this.setState({
 				dragging: false,
 				dragOrigin: [0, 0],
@@ -71,21 +76,21 @@ var EventCapture = React.createClass({
 	},
 	handleWheel(e) {
 		if (this.props.zoom
-				&& this.props._eventStore
-				//&& this.props._eventStore.get().inFocus.value
+				&& this.context._eventStore
+				//&& this.context._eventStore.get().inFocus.value
 				&& this.state.inFocus
-				&& this.props._zoomEventStore) {
+				&& this.context._zoomEventStore) {
 			e.stopPropagation();
 			e.preventDefault();
 			var zoomDir = e.deltaY > 0 ? this.props.zoomMultiplier : -this.props.zoomMultiplier;
 			//console.log(zoomDir);
 
-			this.props._zoomEventStore.get().set({ zoom : zoomDir });
+			this.context._zoomEventStore.get().set({ zoom : zoomDir });
 		}
 	},
 	handleMouseMove(e) {
-		if (this.props._eventStore && this.props.mouseMove) {
-			var eventData = this.props._eventStore.get();
+		if (this.context._eventStore && this.props.mouseMove) {
+			var eventData = this.context._eventStore.get();
 			var newPos = Utils.mousePosition(e);
 			//var oldPos = eventData.mouseXY;
 			var startPos = this.state.dragOrigin;
@@ -104,14 +109,15 @@ var EventCapture = React.createClass({
 		}
 	},
 	handleMouseDown(e) {
-		if (this.props._eventStore) {
-			// this.props._eventStore.get().inFocus.set({'value': true});
+		if (this.context._eventStore) {
+			// this.context._eventStore.get().inFocus.set({'value': true});
 			var inFocus = true
-			if (this.props.pan && this.props._zoomEventStore) {
+			if (this.props.pan && this.context._zoomEventStore) {
+				var chartData = this.context._chartData.filter((each) => each.id === this.props.mainChart) [0];
 				this.setState({
 					dragging: true,
 					dragOrigin: Utils.mousePosition(e),
-					dragOriginDomain: this.props._chartData.scales.xScale.domain(),
+					dragOriginDomain: chartData.scales.xScale.domain(),
 					className: "grabbing",
 					inFocus: inFocus
 				})
@@ -124,9 +130,9 @@ var EventCapture = React.createClass({
 		e.preventDefault();
 	},
 	handleMouseUp(e) {
-		if (this.props.pan && this.props._zoomEventStore) {
+		if (this.props.pan && this.context._zoomEventStore) {
 
-			this.props._eventStore.get().set({ pan: false })
+			this.context._eventStore.get().set({ pan: false })
 			this.setState({
 				dragging: false,
 				dragOrigin: [0, 0],
@@ -139,7 +145,7 @@ var EventCapture = React.createClass({
 		return (
 			<rect 
 				className={this.state.className}
-				width={this.props._width} height={this.props._height} style={{opacity: 0}}
+				width={this.context._width} height={this.context._height} style={{opacity: 0}}
 				onMouseEnter={this.handleEnter}
 				onMouseLeave={this.handleLeave}
 				onMouseMove={this.handleMouseMove}

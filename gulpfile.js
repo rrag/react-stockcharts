@@ -163,6 +163,15 @@ gulp.task('serve', function() {
 	});
 });
 
+gulp.task('serve2', function() {
+	var express = require('express');
+	var app = express();
+	app.use(express.static('build')); // path.join(__dirname, 'build')
+	app.use(express.static('node_modules'));
+	app.use(express.static('docs'));
+	app.listen(4000);
+});
+
 gulp.task('test', function(cb) {
 	var karma = require('karma').server;
 

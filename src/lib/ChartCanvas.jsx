@@ -1,5 +1,5 @@
 'use strict';
-var React = require('react/addons');
+var React = require('react');
 // var TestUtils = React.addons.TestUtils;
 
 var EventCaptureMixin = require('./mixin/EventCaptureMixin');
@@ -29,7 +29,6 @@ var ChartCanvas = React.createClass({
 		};
 	},
 	renderChildren() {
-
 		var children = React.Children.map(this.props.children, (child) => {
 			if (typeof child.type === 'string') return child;
 			var newChild = child;
@@ -39,10 +38,11 @@ var ChartCanvas = React.createClass({
 					interval: this.props.interval
 				});
 			}
-			return React.cloneElement(newChild, {
+			return newChild;
+			/*React.cloneElement(newChild, {
 				_width: this.getAvailableWidth(this.props)
 				, _height: this.getAvailableHeight(this.props)
-			});
+			});*/
 		});
 		return this._renderChildren(children);
 	},

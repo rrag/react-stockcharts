@@ -4,10 +4,6 @@ var React = require('react'),
 
 var HistogramSeries = React.createClass({
 	propTypes: {
-		_xScale: React.PropTypes.func.isRequired,
-		_yScale: React.PropTypes.func.isRequired,
-		_xAccessor: React.PropTypes.func.isRequired,
-		_yAccessor: React.PropTypes.func.isRequired,
 		baseAt: React.PropTypes.oneOfType([
 					React.PropTypes.oneOf(['top', 'bottom', 'middle'])
 					, React.PropTypes.number
@@ -25,13 +21,20 @@ var HistogramSeries = React.createClass({
 			className: 'bar'
 		}
 	},
+	contextTypes: {
+		xScale: React.PropTypes.func.isRequired,
+		yScale: React.PropTypes.func.isRequired,
+		xAccessor: React.PropTypes.func.isRequired,
+		yAccessor: React.PropTypes.func.isRequired,
+		_data: React.PropTypes.array.isRequired,
+	},
 	getBars() {
 		var base = this.props.baseAt === 'top'
 					? 0
 					: this.props.baseAt === 'bottom'
-						? this.props._yScale.range()[0]
+						? this.context.yScale.range()[0]
 						: this.props.baseAt === 'middle'
-							? (this.props._yScale.range()[0] + this.props._yScale.range()[1]) / 2
+							? (this.context.yScale.range()[0] + this.context.yScale.range()[1]) / 2
 							: this.props.baseAt;
 
 		var dir = this.props.direction === 'up' ? -1 : 1;
@@ -40,20 +43,20 @@ var HistogramSeries = React.createClass({
 		if (typeof this.props.className === 'function') {
 			getClassName = this.props.className;
 		}
-		var width = Math.abs(this.props._xScale.range()[0] - this.props._xScale.range()[1]);
-		var barWidth = width / (this.props.data.length) * 0.5;
-		var bars = this.props.data
-				.filter((d) => (this.props._yAccessor(d) !== undefined) )
+		var width = Math.abs(this.context.xScale.range()[0] - this.context.xScale.range()[1]);
+		var barWidth = width / (this.context._data.length) * 0.5;
+		var bars = this.context._data
+				.filter((d) => (this.context.yAccessor(d) !== undefined) )
 				.map((d, idx) => {
-					var yValue = this.props._yAccessor(d);
-					var x = Math.round(this.props._xScale(this.props._xAccessor(d))) - 0.5 * barWidth,
+					var yValue = this.context.yAccessor(d);
+					var x = Math.round(this.context.xScale(this.context.xAccessor(d))) - 0.5 * barWidth,
 						className = getClassName(d) ,
 						y, height;
 					if (dir > 0) {
 						y = base;
-						height = this.props._yScale.range()[0] - this.props._yScale(yValue);
+						height = this.context.yScale.range()[0] - this.context.yScale(yValue);
 					} else {
-						y = this.props._yScale(yValue);
+						y = this.context.yScale(yValue);
 						height = base - y;
 					}
 

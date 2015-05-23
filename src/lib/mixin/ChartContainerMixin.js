@@ -1,5 +1,5 @@
 "use strict";
-var React = require('react/addons'),
+var React = require('react'),
 	d3 = require('d3'),
 	ScaleUtils = require('../utils/ScaleUtils'),
 	OverlayUtils = require('../utils/OverlayUtils'),
@@ -17,10 +17,10 @@ function getOverlayFromList(overlays, id) {
 
 
 var ChartContainerMixin = {
-	getDimensions(_props, chartProps) {
+	getDimensions(innerDimension, chartProps) {
 
-		var availableWidth = _props._width || this.getAvailableWidth(_props);
-		var availableHeight = _props._height || this.getAvailableHeight(_props);
+		var availableWidth = innerDimension.width;
+		var availableHeight = innerDimension.height;
 
 		var width = chartProps.width || availableWidth;
 		var height = chartProps.height || availableHeight
@@ -32,8 +32,8 @@ var ChartContainerMixin = {
 			height: height
 		}
 	},
-	getChartDataFor(_props, chartProps, data, fullData, passThroughProps) {
-		var dimensions = this.getDimensions(_props, chartProps);
+	getChartDataFor(innerDimension, chartProps, data, fullData, passThroughProps) {
+		var dimensions = this.getDimensions(innerDimension, chartProps);
 
 		var scales = this.defineScales(chartProps, data, passThroughProps);
 
@@ -78,6 +78,7 @@ var ChartContainerMixin = {
 				lastItem: last,
 				firstItem: first
 			};
+
 		return _chartData;
 	},
 	defineScales(props, data, passThroughProps) {
@@ -220,10 +221,8 @@ var ChartContainerMixin = {
 		var accessors = _chartData.accessors;
 
 		var overlayValues = this.updateOverlayFirstLast(data, _chartData.overlays)
-		_chartData = _chartData.set( { overlayValues: overlayValues } ); // replace everything
 
 		var overlayYAccessors = pluck(keysAsArray(_chartData.overlays), 'yAccessor');
-
 
 		var xyValues = ScaleUtils.flattenData(data, [accessors.xAccessor], [accessors.yAccessor].concat(overlayYAccessors));
 
@@ -234,13 +233,16 @@ var ChartContainerMixin = {
 			, _chartData.width
 			, _chartData.height);
 
-		_chartData = _chartData.set({ scales: scales });
-
 		var last = Utils.cloneMe(data[data.length - 1]);
-		_chartData = _chartData.set({ lastItem: last });
-
 		var first = Utils.cloneMe(data[0]);
-		_chartData = _chartData.set({ firstItem: first });
+
+		_chartData = _chartData.set({
+			overlayValues: overlayValues,
+			scales: scales,
+			lastItem: last,
+			firstItem: first
+		} ); // replace everything
+
 		return _chartData;
 	}
 };

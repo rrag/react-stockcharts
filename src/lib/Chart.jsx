@@ -2,7 +2,8 @@
 
 // Overlays have to be calculated here so scales can be modified according to that
 
-var React = require('react/addons'),
+var React = require('react'),
+	PureRenderMixin = require('react/addons/PureRenderMixin'),
 	d3 = require('d3'),
 	ScaleUtils = require('./utils/ScaleUtils'),
 	OverlayUtils = require('./utils/OverlayUtils'),
@@ -25,7 +26,7 @@ var Chart = React.createClass({
 		getHeight(props) { return props.height || props._height; }
 	},
 	propTypes: {
-		data: React.PropTypes.array.isRequired,
+		//data: React.PropTypes.array.isRequired,
 		height: React.PropTypes.number,
 		width: React.PropTypes.number,
 		origin: React.PropTypes.oneOfType([
@@ -33,8 +34,8 @@ var Chart = React.createClass({
 					, React.PropTypes.func
 				]).isRequired,
 		id: React.PropTypes.number.isRequired,
-		_height: React.PropTypes.number,
-		_width: React.PropTypes.number,
+		// _height: React.PropTypes.number,
+		// _width: React.PropTypes.number,
 		// _showCurrent: React.PropTypes.bool,
 		// if xScale and/or yScale is passed as props
 		// the user needs to set 
@@ -45,15 +46,41 @@ var Chart = React.createClass({
 		xDomainUpdate: React.PropTypes.bool,
 		yDomainUpdate: React.PropTypes.bool,
 		// _mouseXY: React.PropTypes.array,
-		_chartData: React.PropTypes.object.isRequired,
-		_updateMode: React.PropTypes.object.isRequired
+		// _chartData: React.PropTypes.object.isRequired,
+		// _updateMode: React.PropTypes.object.isRequired
 		/*,
 		_currentItem: React.PropTypes.object,
 		_lastItem: React.PropTypes.object,
 		_currentMouseXY: React.PropTypes.array,
 		_currentXYValue: React.PropTypes.array*/
 	},
-	mixins: [React.addons.PureRenderMixin],
+	mixins: [React.PureRenderMixin],
+
+	contextTypes: {
+		_width: React.PropTypes.number.isRequired,
+		_height: React.PropTypes.number.isRequired,
+		_data: React.PropTypes.array.isRequired,
+		_chartData: React.PropTypes.array,
+		_updateMode: React.PropTypes.object
+	},
+	childContextTypes: {
+		xScale: React.PropTypes.func.isRequired,
+		yScale: React.PropTypes.func.isRequired,
+		xAccessor: React.PropTypes.func.isRequired,
+		yAccessor: React.PropTypes.func.isRequired,
+		overlays: React.PropTypes.array.isRequired,
+	},
+	getChildContext() {
+		var chartData = this.context._chartData.filter((each) => each.id === this.props.id)[0];
+		console.log(chartData);
+		return {
+			xScale: chartData.scales.xScale,
+			yScale: chartData.scales.yScale,
+			xAccessor: chartData.accessors.xAccessor,
+			yAccessor: chartData.accessors.yAccessor,
+			overlays: chartData.overlays
+		}
+	},
 	getDefaultProps() {
 		return {
 			namespace: "ReStock.Chart",
@@ -63,6 +90,7 @@ var Chart = React.createClass({
 		};
 	},
 	renderChildren() {
+		var chartData = this.context._chartData.filter((each) => each.id === this.props.id)[0];
 		return React.Children.map(this.props.children, (child) => {
 			if (typeof child.type === 'string') return child;
 			if (['ReStock.DataSeries', 'ReStock.ChartOverlay', 'ReStock.XAxis', 'ReStock.YAxis']
@@ -70,12 +98,12 @@ var Chart = React.createClass({
 
 			var newChild = child;
 			newChild = React.cloneElement(newChild, {
-				_xScale: this.props._chartData.scales.xScale,
-				_yScale: this.props._chartData.scales.yScale,
-				data: this.props.data,
+				_xScale: chartData.scales.xScale,
+				_yScale: chartData.scales.yScale,
+				data: this.context._data,
 				_xAccessor: this.props._indexAccessor
 			});
-			newChild = this.updatePropsForDataSeries(newChild);
+			newChild = this.updatePropsForDataSeries(newChild, chartData);
 			if (newChild.props.xAccessor !== undefined && this.props._stockScale) {
 				console.warn('xAccessor defined in DataSeries will override the indexAccessor of the polylinear scale. This might not be the right configuration');
 				console.warn('Either remove the xAccessor configuration on the DataSeries or change the polyLinear=false in Translate');
@@ -83,7 +111,7 @@ var Chart = React.createClass({
 			return newChild;
 		}, this);
 	},
-	updatePropsForDataSeries(child) {
+	updatePropsForDataSeries(child, chartData) {
 		if ("ReStock.DataSeries" === child.props.namespace) {
 			// console.log(this.state.chartData.overlays);
 			return React.cloneElement(child, {
@@ -94,8 +122,8 @@ var Chart = React.createClass({
 				//_firstItem: this.props._chartData.firstItem,
 				/*_currentMouseXY: this.props._currentMouseXY,
 				_currentXYValue: this.props._currentXYValue,*/
-				_overlays: this.props._chartData.overlays,
-				_updateMode: this.props._updateMode,
+				_overlays: chartData.overlays,
+				_updateMode: this.context._updateMode,
 				_pan: this.props._pan,
 				_isMainChart: this.props._isMainChart
 			});
@@ -103,9 +131,10 @@ var Chart = React.createClass({
 		return child;
 	},
 	render() {
-		var height = this.props._height;
-		var width = this.props._width;
+		var height = this.context._height;
+		var width = this.context._width;
 		var origin = typeof this.props.origin === 'function' ? this.props.origin(width, height) : this.props.origin;
+		console.log(origin);
 		var transform = 'translate(' + origin[0] + ',' +  origin[1] + ')';
 		if (this.props._pan && !this.props._isMainChart) {
 		// if (this.props._pan) {

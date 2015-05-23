@@ -9,10 +9,11 @@ var CurrentCoordinate = React.createClass({
 		yAccessor: React.PropTypes.func,
 		r: React.PropTypes.number.isRequired,
 		className: React.PropTypes.string,
-
+	},
+	contextTypes: {
 		_show: React.PropTypes.bool.isRequired,
-		_chartData: React.PropTypes.object.isRequired,
-		_currentItem: React.PropTypes.object.isRequired,
+		_currentItems: React.PropTypes.array.isRequired,
+		_chartData: React.PropTypes.array.isRequired,
 	},
 	getDefaultProps() {
 		return {
@@ -22,11 +23,12 @@ var CurrentCoordinate = React.createClass({
 	},
 	render() {
 
-		var chartData = this.props._chartData;
-		var item = this.props._currentItem.data;
+		var chartData = this.context._chartData.filter((each) => each.id === this.props.forChart)[0];
+		var currentItem = this.context._currentItems.filter((each) => each.id === this.props.forChart)[0];
+		var item = currentItem ? currentItem.data : undefined;
 		var fill = 'black';
 
-		if (! this.props._show || item === undefined) return null;
+		if (! this.context._show || item === undefined) return null;
 		var yAccessor =  this.props.yAccessor || chartData.accessors.yAccessor;
 
 		if (this.props.forOverlay !== undefined) {

@@ -1,5 +1,5 @@
 'use strict';
-var React = require('react/addons')
+var React = require('react')
 	, d3 = require('d3');
 
 var YAxis = React.createClass({
@@ -29,7 +29,9 @@ var YAxis = React.createClass({
 	getInitialState() {
 		return {};
 	},
-
+	contextTypes: {
+		yScale: React.PropTypes.func.isRequired,
+	},
 	componentDidMount() {
 		this.updateAxis();
 	},
@@ -37,7 +39,7 @@ var YAxis = React.createClass({
 		this.updateAxis();
 	},
 	updateAxis() {
-		var scale = this.props._yScale;
+		var scale = this.context.yScale;
 		if (this.props.percentScale) scale = scale.copy().domain([0, 1]);
 
 		var axis = d3.svg.axis()
@@ -55,8 +57,8 @@ var YAxis = React.createClass({
 		if (this.props.tickSize) axis.tickSize(this.props.tickSize);
 		if (this.props.ticks) axis.ticks(this.props.ticks);
 		if (this.props.tickValues) axis.tickValues(this.props.tickValues);
-
-		d3.select(this.getDOMNode()).call(axis);
+		
+		d3.select(React.findDOMNode(this)).call(axis);
 	},
 	render() {
 		var axisAt = this.props.axisAt

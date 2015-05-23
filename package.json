@@ -11,7 +11,7 @@
   "dependencies": {
     "d3": "^3.5.5",
     "freezer-js": "^0.5.2",
-    "react": "^0.13.3"
+    "react": "^0.14.0-alpha2"
   },
   "devDependencies": {
     "autoprefixer-loader": "^1.2.0",
@@ -21,6 +21,7 @@
     "css-loader": "^0.12.1",
     "del": "^1.1.1",
     "esprima-fb": "^15001.1.0-dev-harmony-fb",
+    "express": "^4.12.4",
     "file-loader": "^0.8.1",
     "gulp": "^3.8.11",
     "gulp-autoprefixer": "^2.3.0",
@@ -52,7 +53,6 @@
     "merge-stream": "^0.1.7",
     "mkdirp": "^0.5.1",
     "mocha": "^2.2.5",
-    "react-hot-loader": "^1.2.7",
     "react-tools": "^0.13.3",
     "remarkable-loader": "0.0.3",
     "sass-loader": "^1.0.2",

@@ -103,8 +103,8 @@ function renderPage(data, dataFull) {
 
 d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 	d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
-		renderPage(MSFT, MSFTFull);
-		// renderPartialPage(MSFT, MSFTFull);
+		// renderPage(MSFT, MSFTFull);
+		renderPartialPage(MSFT, MSFTFull);
 	});
 })
 
@@ -128,14 +128,16 @@ function renderPartialPage(data, dataFull) {
 		d.volume = +d.volume;
 		// console.log(d);
 	});
-	var Renko = require('./lib/examples/Renko').init(dataFull);
+	//var Renko = require('./lib/examples/Renko').init(dataFull);
+	var CandleStickChart = require('lib/examples/CandleStickChartWithEdge');
+
 	var ExamplesPage = React.createClass({
 		//mixins: [ScrollMixin],
 		render() {
 			return (
 				<body>
 					<div className="container react-stockchart">
-						<Renko />
+						<CandleStickChart data={data} />
 					</div>
 				</body>
 			)

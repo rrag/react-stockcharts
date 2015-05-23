@@ -73,8 +73,9 @@ function guided_scale(drawableData, indexAccessor, backingLinearScale) {
 	scale.domain = function(x) {
 		if (!arguments.length) return backingLinearScale.domain();
 		//console.log("before = %s, after = %s", JSON.stringify(backingLinearScale.domain()), JSON.stringify(x))
-		var d = [Math.floor(x[0]), Math.ceil(x[1])]
-
+		//var d = [Math.floor(x[0]), Math.ceil(x[1])]
+		var d = [x[0], x[1]]
+		//console.log(d);
 		backingLinearScale.domain(d);
 		return scale;
 	};

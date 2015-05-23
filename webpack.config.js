@@ -28,8 +28,8 @@ module.exports = {
 		new webpack.IgnorePlugin(/(dtrace-provider)|(source-map-support)$/)*/
 	],
 	externals: {
-		"react": 'React',
-		"react/addons": 'React',
+		//"react": 'React',
+		//"react/addons": 'React',
 		"d3": 'd3'
 	},
 	remarkable: {

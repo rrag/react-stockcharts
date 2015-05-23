@@ -37,8 +37,9 @@ var SingleMAToolTip = React.createClass({
 
 var MovingAverageTooltip = React.createClass({
 	propTypes: {
-		_currentItem: React.PropTypes.object.isRequired,
-		_overlays: React.PropTypes.array.isRequired,
+		// _currentItem: React.PropTypes.object.isRequired,
+		// _overlays: React.PropTypes.array.isRequired,
+		forChart: React.PropTypes.number.isRequired,
 		displayFormat: React.PropTypes.func.isRequired,
 		origin: React.PropTypes.array.isRequired,
 		onClick: React.PropTypes.func
@@ -51,11 +52,18 @@ var MovingAverageTooltip = React.createClass({
 			width: 65
 		}
 	},
+	contextTypes: {
+		_chartData: React.PropTypes.array.isRequired,
+		_currentItems: React.PropTypes.array.isRequired,
+	},
 	render() {
+		var chartData = this.context._chartData.filter((each) => each.id === this.props.forChart)[0];
+		var currentItem = this.context._currentItems.filter((each) => each.id === this.props.forChart)[0];
+		var item = currentItem ? currentItem.data : {}
 		return (
 			<g transform={"translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")"} className="ma-container">
-				{this.props._overlays.map((eachOverlay, idx) => {
-					var yValue = eachOverlay.yAccessor(this.props._currentItem);
+				{chartData.overlays.map((eachOverlay, idx) => {
+					var yValue = eachOverlay.yAccessor(item);
 					// console.log(yValue);
 					var yDisplayValue = yValue ? this.props.displayFormat(yValue) : "n/a";
 					return <SingleMAToolTip 

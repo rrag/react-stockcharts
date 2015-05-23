@@ -9,13 +9,18 @@ var thousand = 1 * 1000;
 
 var OHLCTooltip = React.createClass({
 	propTypes: {
-		_currentItem: React.PropTypes.object.isRequired,
+		// _currentItem: React.PropTypes.object.isRequired,
+		forChart: React.PropTypes.number.isRequired,
 		accessor: React.PropTypes.func.isRequired,
 		xDisplayFormat: React.PropTypes.func.isRequired,
 		origin: React.PropTypes.array.isRequired,
 	},
-	shouldComponentUpdate(nextProps, nextState) {
-		return (nextProps._currentItem !== this.props._currentItem);
+	shouldComponentUpdate(nextProps, nextState, nextContext) {
+		return (nextContext._currentItems !== this.context._currentItems);
+	},
+	contextTypes: {
+		_chartData: React.PropTypes.array.isRequired,
+		_currentItems: React.PropTypes.array.isRequired,
 	},
 	getDefaultProps() {
 		return {
@@ -26,10 +31,12 @@ var OHLCTooltip = React.createClass({
 		}
 	},
 	render() {
+		console.log(this.context._chartData, this.context._currentItems);
 		var displayDate, fromDate, toDate, open, high, low, close, volume;
 
 		displayDate = fromDate = toDate = open = high = low = close = volume = "n/a";
-		var item = this.props.accessor(this.props._currentItem);
+		var currentItem = this.context._currentItems.filter((each) => each.id === this.props.forChart)[0];
+		var item = this.props.accessor(currentItem || {});
 
 		if (item !== undefined && item.close !== undefined) {
 			volume = (item.volume / billion > 1)

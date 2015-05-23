@@ -23,6 +23,9 @@ var XAxis = React.createClass({
 			showGrid: false
 		};
 	},
+	contextTypes: {
+		xScale: React.PropTypes.func.isRequired
+	},
 	getInitialState() {
 		return {};
 	},
@@ -37,7 +40,7 @@ var XAxis = React.createClass({
 	},
 	updateAxis() {
 		var axis = d3.svg.axis()
-			.scale(this.props._xScale)
+			.scale(this.context.xScale)
 			.orient(this.props.orient)
 			//.innerTickSize(this.props.showGrid ? this.props.innerTickSize : 5)
 			//.outerTickSize(this.props.showGrid ? this.props.outerTickSize : 5)
@@ -47,7 +50,7 @@ var XAxis = React.createClass({
 		if (this.props.innerTickSize) axis.innerTickSize(this.props.innerTickSize);
 		if (this.props.outerTickSize) axis.outerTickSize(this.props.outerTickSize);
 		if (this.props.tickFormat) {
-			if (this.props._xScale.isPolyLinear && this.props._xScale.isPolyLinear())
+			if (this.context.xScale.isPolyLinear && this.context.xScale.isPolyLinear())
 				console.warn('Cannot set tickFormat on a poly linear scale, ignoring tickFormat on XAxis');
 			else
 				axis.tickFormat(this.props.tickFormat)
@@ -56,7 +59,7 @@ var XAxis = React.createClass({
 		if (this.props.tickSize) axis.tickSize(this.props.tickSize);
 		if (this.props.ticks) axis.ticks(this.props.ticks);
 		if (this.props.tickValues) axis.tickValues(this.props.tickValues);
-		d3.select(this.getDOMNode()).call(axis);
+		d3.select(React.findDOMNode(this)).call(axis);
 	},
 	render() {
 		var axisAt = this.props.axisAt

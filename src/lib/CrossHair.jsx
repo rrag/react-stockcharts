@@ -1,5 +1,5 @@
 'use strict';
-var React = require('react/addons');
+var React = require('react');
 var EdgeCoordinate = require('./EdgeCoordinate')
 var Utils = require('./utils/utils')
 

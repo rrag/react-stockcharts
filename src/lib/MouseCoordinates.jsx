@@ -1,5 +1,5 @@
 'use strict';
-var React = require('react/addons');
+var React = require('react');
 var EdgeCoordinate = require('./EdgeCoordinate')
 var Utils = require('./utils/utils')
 
@@ -7,19 +7,19 @@ var Utils = require('./utils/utils')
 // if it is made to be inside a Chart another Chart might be displayed over it
 var MouseCoordinates = React.createClass({
 	propTypes: {
-		_height: React.PropTypes.number.isRequired,
+		/* _height: React.PropTypes.number.isRequired,
 		_width: React.PropTypes.number.isRequired,
 		_show: React.PropTypes.bool.isRequired,
 		_mouseXY: React.PropTypes.array.isRequired,
 		_chartData: React.PropTypes.object.isRequired,
-		_currentItem: React.PropTypes.object.isRequired,
+		_currentItem: React.PropTypes.object.isRequired, */
 
 		forChart: React.PropTypes.number.isRequired, 
 		xDisplayFormat: React.PropTypes.func.isRequired,
 		yDisplayFormat: React.PropTypes.func.isRequired
 	},
-	shouldComponentUpdate(nextProps, nextState) {
-		return nextProps._currentItem != this.props._currentItem
+	shouldComponentUpdate(nextProps, nextState, nextContext) {
+		return nextContext._currentItems != this.context._currentItems
 				|| nextProps._mouseXY !== this.props._mouseXY
 				|| nextProps._show !== this.props._show
 	},
@@ -32,11 +32,18 @@ var MouseCoordinates = React.createClass({
 			yDisplayFormat: Utils.displayNumberFormat,
 		}
 	},
+	mixins: [require('./mixin/ForChartMixin')],
+	contextTypes: {
+		_width: React.PropTypes.number.isRequired,
+		_height: React.PropTypes.number.isRequired,
+		_show: React.PropTypes.bool,
+		_mouseXY: React.PropTypes.array,
+	},
 	renderChildren() {
-		var chartData = this.props._chartData;
-		var item = this.props._currentItem.data;
-		
+		var chartData = this.getChartData();
+		var item = this.getCurrentItem();
 
+		console.log(item);
 		var xValue = chartData.accessors.xAccessor(item);
 		var xDisplayValue = this.props._dateAccessor === undefined
 			? xValue
@@ -55,8 +62,8 @@ var MouseCoordinates = React.createClass({
 			if (typeof child.type === 'string') return child;
 			var newChild = child;
 			return React.cloneElement(newChild, {
-				_width: this.props._width
-				, _height: this.props._height
+				_width: this.context._width
+				, _height: this.context._height
 				, _mouseXY: [x, y]
 				, _xDisplayValue: this.props.xDisplayFormat(xDisplayValue)
 				, _yDisplayValue: this.props.yDisplayFormat(yValue)
@@ -65,12 +72,12 @@ var MouseCoordinates = React.createClass({
 	},
 	render() {
 		var children = null;
-		if (this.props._show) {
+		if (this.context._show) {
 			children = this.renderChildren();
 		};
 
 		return (
-			<g className={this.props._show ? 'show' : 'hide'}>
+			<g className={this.context._show ? 'show' : 'hide'}>
 				{children}
 			</g>
 		);
