@@ -4,14 +4,15 @@ var React = require('react');
 
 var EventCaptureMixin = require('./mixin/EventCaptureMixin');
 var ChartContainerMixin = require('./mixin/ChartContainerMixin');
+var Canvas = require('./Canvas');
 
 var ChartCanvas = React.createClass({
-	mixins: [ChartContainerMixin, EventCaptureMixin],
+	// mixins: [ChartContainerMixin, EventCaptureMixin],
 	propTypes: {
-		width: React.PropTypes.number.isRequired
-		, height: React.PropTypes.number.isRequired
-		, margin: React.PropTypes.object
-		, interval: React.PropTypes.string.isRequired
+		width: React.PropTypes.number.isRequired,
+		height: React.PropTypes.number.isRequired,
+		margin: React.PropTypes.object,
+		interval: React.PropTypes.string.isRequired
 	},
 	getAvailableHeight(props) {
 		return props.height - props.margin.top - props.margin.bottom;
@@ -28,40 +29,52 @@ var ChartCanvas = React.createClass({
 			interval: "D"
 		};
 	},
-	renderChildren() {
-		var children = React.Children.map(this.props.children, (child) => {
-			if (typeof child.type === 'string') return child;
-			var newChild = child;
-			if ('ReStock.DataTransform' === newChild.props.namespace) {
-				newChild = React.cloneElement(newChild, {
-					data: this.props.data,
-					interval: this.props.interval
-				});
-			}
-			return newChild;
-			/*React.cloneElement(newChild, {
-				_width: this.getAvailableWidth(this.props)
-				, _height: this.getAvailableHeight(this.props)
-			});*/
-		});
-		return this._renderChildren(children);
+	childContextTypes: {
+		_width: React.PropTypes.number.isRequired,
+		_height: React.PropTypes.number.isRequired,
+		data: React.PropTypes.array.isRequired,
+		interval: React.PropTypes.string.isRequired,
+		canvas: React.PropTypes.any,
+	},
+	getChildContext() {
+		return {
+			_width: this.getAvailableWidth(this.props),
+			_height: this.getAvailableHeight(this.props),
+			data: this.props.data,
+			interval: this.props.interval,
+			//canvas: 
+		}
+	},
+	componentDidMount() {
+		// console.log(this.getCanvas());
+	},
+	getCanvas() {
+		return this.refs.canvas.getCanvas();
 	},
 	render() {
-
-		var transform = 'translate(' + this.props.margin.left + ',' +  this.props.margin.top + ')';
-		var clipPath = '<clipPath id="chart-area-clip">'
-							+ '<rect x="0" y="0" width="' + this.getAvailableWidth(this.props) + '" height="' + this.getAvailableHeight(this.props) + '" />'
-						+ '</clipPath>';
-
-		var children = this.renderChildren();
+		var w = this.getAvailableWidth(this.props), h = this.getAvailableHeight(this.props);
+		var children = this.props.children;
+		// var children = this.renderChildren();
 
 		return (
-			<svg width={this.props.width} height={this.props.height}>
-				<defs dangerouslySetInnerHTML={{ __html: clipPath}}></defs>
-				<g transform={transform}>{children}</g>
-			</svg>
+			<div style={{position: 'relative'}}>
+				<svg width={this.props.width} height={this.props.height}>
+					<defs>
+						<clipPath id="chart-area-clip">
+							<rect x="0" y="0" width={w} height={h} />
+						</clipPath>
+					</defs>
+					<g transform={`translate(${this.props.margin.left}, ${this.props.margin.top})`}>
+						{this.props.children}
+					</g>
+				</svg>
+			</div>
 		);
 	}
 });
 
 module.exports = ChartCanvas;
+
+/*
+				<Canvas ref="canvas" width={w} height={h} left={this.props.margin.left} top={this.props.margin.top} />
+*/

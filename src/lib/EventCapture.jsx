@@ -11,10 +11,6 @@ var EventCapture = React.createClass({
 		pan: React.PropTypes.bool.isRequired,
 		panSpeedMultiplier: React.PropTypes.number.isRequired,
 		defaultFocus: React.PropTypes.bool.isRequired,
-
-		//_chartData: React.PropTypes.object.isRequired,
-		// _height: React.PropTypes.number.isRequired,
-		// _width: React.PropTypes.number.isRequired
 	},
 	getInitialState() {
 		return {
@@ -158,7 +154,3 @@ var EventCapture = React.createClass({
 });
 
 module.exports = EventCapture;
-
-/*				
-
-*/

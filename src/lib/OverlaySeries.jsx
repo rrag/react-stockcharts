@@ -19,11 +19,13 @@ var OverlaySeries = React.createClass({
 	},
 	childContextTypes: {
 		yAccessor: React.PropTypes.func.isRequired,
+		stroke: React.PropTypes.string.isRequired,
 	},
 	getChildContext() {
 		var overlay = this.context.overlays.filter((each) => each.id === this.props.id)[0];
 		return {
-			yAccessor: overlay.yAccessor
+			yAccessor: overlay.yAccessor,
+			stroke: overlay.stroke
 		};
 	},
 	render() {
@@ -34,5 +36,3 @@ var OverlaySeries = React.createClass({
 });
 
 module.exports = OverlaySeries;
-
-//

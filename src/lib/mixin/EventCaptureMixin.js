@@ -101,7 +101,7 @@ var EventCaptureMixin = {
 
 			// console.log(Object.keys(stores));
 			// console.log(stores);
-			console.log('before = ', chartStore.get().charts.map((c) => c.scales.xScale.domain()));
+			// console.log('before = ', chartStore.get().charts.map((c) => c.scales.xScale.domain()));
 			this.setState(stores);
 		} else {
 			this.setState({
@@ -442,8 +442,8 @@ var EventCaptureMixin = {
 		_currentItems: React.PropTypes.array,
 		_show: React.PropTypes.bool,
 		_mouseXY: React.PropTypes.array,
-		_updateMode: React.PropTypes.object
-		// data
+		_updateMode: React.PropTypes.object,
+		interval: React.PropTypes.string,
 		// xDomain
 		// xRange
 		// interval
@@ -453,10 +453,11 @@ var EventCaptureMixin = {
 		var innerDimensions = this.getInnerDimensions(this.context, this.props);
 		var chartData = this.state.chartStore ? this.state.chartStore.get().charts : null;
 		var currentItems = this.state.currentItemStore ? this.state.currentItemStore.get().currentItems : null;
+		var interval = this.state.currentItemStore ? this.state.currentItemStore.get().interval : this.context.interval;
 		var isMouseOver = this.state.eventStore ? this.state.eventStore.get().mouseOver.value : false;
 		var mouseXY = this.state.eventStore ? this.state.eventStore.get().mouseXY : [0, 0];
 
-		console.log('adskljfdslfjadslfhdsjfhsdkl = ', currentItems);
+		console.log('adskljfdslfjadslfhdsjfhsdkl = ', interval);
 		return {
 			_width: innerDimensions.width,
 			_height: innerDimensions.height,
@@ -468,87 +469,9 @@ var EventCaptureMixin = {
 			_updateMode: {},
 			_eventStore: this.state.eventStore,
 			_zoomEventStore: this.state.zoomEventStore,
+			interval: interval
 		};
 	},
-	/*
-	updatePropsForEventCapture(child) {
-		if ("ReStock.EventCapture" === child.props.namespace) {
-			// find mainChart and add to zoomeventstores
-			if (this.state.currentItemStore.get().mainChart === undefined
-				|| this.state.currentItemStore.get().mainChart !== child.props.mainChart) {
-
-				this.state.currentItemStore.get().set({ mainChart: child.props.mainChart });
-			}
-			return React.cloneElement(child, {
-				// _eventStore: this.state.eventStore,
-				// _zoomEventStore: this.state.zoomEventStore,
-				_chartData: this.getChartForId(child.props.mainChart)
-			});
-		}
-		return child;
-	},
-	updatePropsForCurrentCoordinate(child) {
-		if ("ReStock.CurrentCoordinate" === child.props.namespace) {
-			var chart = this.getChartForId(child.props.forChart);
-			var currentItem = this.getCurrentItemForChart(child.props.forChart);
-
-			return React.cloneElement(child, {
-				_show: this.state.eventStore.get().mouseOver.value,
-				_chartData: chart,
-				_currentItem: currentItem
-			});
-		}
-		return child;
-	},
-	updatePropsForMouseCoordinates(child) {
-		if ("ReStock.MouseCoordinates" === child.props.namespace) {
-			var chart = this.getChartForId(child.props.forChart);
-			var currentItem = this.getCurrentItemForChart(child.props.forChart);
-
-			return React.cloneElement(child, {
-				_show: this.state.eventStore.get().mouseOver.value,
-				_mouseXY: this.state.eventStore.get().mouseXY,
-				_chartData: chart,
-				_currentItem: currentItem
-			});
-		}
-		return child;
-	},
-	updatePropsForTooltipContainer(child) {
-		if ("ReStock.TooltipContainer" === child.props.namespace) {
-			return React.cloneElement(child, {
-				_currentItems: this.state.currentItemStore.get().currentItems,
-				_charts: this.state.chartStore.get().charts
-			});
-		}
-		return child;
-	},
-	updatePropsForEdgeContainer(child) {
-		if ("ReStock.EdgeContainer" === child.props.namespace) {
-			return React.cloneElement(child, {
-				_currentItems: this.state.currentItemStore.get().currentItems,
-				_charts: this.state.chartStore.get().charts
-			});
-		}
-		return child;
-	},
-	updatePropsForChart(child) {
-		var newChild = child;
-		// console.log('here here...........');
-		if ("ReStock.Chart" === child.props.namespace) {
-			if (this.state.eventStore && this.state.chartStore) {
-				var _chartData = this.getChartForId(newChild.props.id);
-				newChild = React.cloneElement(newChild, {
-					_updateMode: this.state.chartStore.get().updateMode,
-					_chartData: _chartData,
-					data: this.getData(),
-					//_pan: this.state.eventStore.get().pan,
-					//_isMainChart: newChild.props.id === this.state.currentItemStore.get().mainChart
-				});
-			}
-		}
-		return newChild;
-	},*/
 	getData(range) {
 		return this.state.data;
 	},
@@ -611,9 +534,9 @@ var EventCaptureMixin = {
 
 		currentItem = currentItem.data.reset(item);
 		// console.log(currentItem);
-	},
+	}/*,
 	_renderChildren(children) {
-		/*
+		
 		if (this.doesContainChart()) {
 			return React.Children.map(children, (child) => {
 				if (typeof child.type === 'string') return child;
@@ -626,9 +549,9 @@ var EventCaptureMixin = {
 				// newChild = this.updatePropsForCurrentCoordinate(newChild);
 				return newChild;
 			});
-		}*/
+		}
 		return children;
-	}
+	}*/
 };
 
 module.exports = EventCaptureMixin;

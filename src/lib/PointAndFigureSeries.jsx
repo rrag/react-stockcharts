@@ -3,12 +3,12 @@ var React = require('react'),
 	d3 = require('d3');
 
 var PointAndFigureSeries = React.createClass({
-	propTypes: {
-		_xScale: React.PropTypes.func.isRequired,
-		_yScale: React.PropTypes.func.isRequired,
-		_xAccessor: React.PropTypes.func.isRequired,
-		_yAccessor: React.PropTypes.func.isRequired,
-		data: React.PropTypes.array.isRequired
+	contextTypes: {
+		xScale: React.PropTypes.func.isRequired,
+		yScale: React.PropTypes.func.isRequired,
+		xAccessor: React.PropTypes.func.isRequired,
+		yAccessor: React.PropTypes.func.isRequired,
+		_data: React.PropTypes.array.isRequired,
 	},
 	statics: {
 		yAccessor: (d) => ({open: d.open, high: d.high, low: d.low, close: d.close})
@@ -19,42 +19,42 @@ var PointAndFigureSeries = React.createClass({
 		}
 	},
 	handleClick(idx) {
-		console.log(this.props.data[idx]);
+		console.log(this.context._data[idx]);
 	},
 	render() {
-		var width = this.props._xScale(this.props._xAccessor(this.props.data[this.props.data.length - 1]))
-			- this.props._xScale(this.props._xAccessor(this.props.data[0]));
+		var width = this.context.xScale(this.context.xAccessor(this.context._data[this.context._data.length - 1]))
+			- this.context.xScale(this.context.xAccessor(this.context._data[0]));
 
-		var columnWidth = (width / (this.props.data.length - 1));
+		var columnWidth = (width / (this.context._data.length - 1));
 
 		var anyBox, j = 0;
 		while (anyBox === undefined) {
-			if (this.props.data[j].close !== undefined) {
-				anyBox= this.props.data[j].boxes[0];
+			if (this.context._data[j].close !== undefined) {
+				anyBox= this.context._data[j].boxes[0];
 			}
 			j++;
 		}
 
 		var props = this.props;
-		var boxHeight = Math.abs(props._yScale(anyBox.open) - props._yScale(anyBox.close));
+		var boxHeight = Math.abs(this.context.yScale(anyBox.open) - this.context.yScale(anyBox.close));
 
 		// console.log(columnWidth, boxHeight);
-		var columns = this.props.data
-				.filter(function (d) { return d.close !== undefined; })
+		var columns = this.context._data
+				.filter((d) => d.close !== undefined)
 				.map((d, idx) => {
 					var ohlc = d;
-					var boxes = d.boxes.map(function (box, i) {
+					var boxes = d.boxes.map((box, i) => {
 						var boxshape;
 						if (d.direction > 0) {
 							boxshape = (
 								<g key={idx + "-" + i}>
-									<line className="point_figure_up" x1={0} y1={props._yScale(box.open)} x2={columnWidth} y2={props._yScale(box.close)} />
-									<line className="point_figure_up" x1={0} y1={props._yScale(box.close)} x2={columnWidth} y2={props._yScale(box.open)} />
+									<line className="point_figure_up" x1={0} y1={this.context.yScale(box.open)} x2={columnWidth} y2={this.context.yScale(box.close)} />
+									<line className="point_figure_up" x1={0} y1={this.context.yScale(box.close)} x2={columnWidth} y2={this.context.yScale(box.open)} />
 								</g>
 								);
 						} else {
 							boxshape = (
-								<ellipse  key={idx + "-" + i} className="point_figure_down" cx={columnWidth/2} cy={props._yScale((box.open + box.close) / 2)}
+								<ellipse  key={idx + "-" + i} className="point_figure_down" cx={columnWidth/2} cy={this.context.yScale((box.open + box.close) / 2)}
 									rx={columnWidth/2} ry={boxHeight / 2} />
 								);
 						}
@@ -64,12 +64,12 @@ var PointAndFigureSeries = React.createClass({
 						? <rect x={0} y={0} height={980} width={columnWidth} style={{ opacity: 0.1 }} onClick={this.handleClick.bind(this, idx)}/>
 						: null;
 					var col = (<g key={idx}
-									transform={"translate(" + (props._xScale(this.props._xAccessor(d)) - (columnWidth / 2)) + ", 0)"}>
+									transform={"translate(" + (this.context.xScale(this.context.xAccessor(d)) - (columnWidth / 2)) + ", 0)"}>
 									{boxes}
 									{debug}
 								</g>);
 					return col;
-				}, this);
+				});
 
 		return (
 			<g>

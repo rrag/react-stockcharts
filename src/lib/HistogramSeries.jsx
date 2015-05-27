@@ -83,7 +83,3 @@ var HistogramSeries = React.createClass({
 });
 
 module.exports = HistogramSeries;
-
-/*				
-
-*/

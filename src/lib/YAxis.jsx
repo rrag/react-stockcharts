@@ -30,7 +30,8 @@ var YAxis = React.createClass({
 		return {};
 	},
 	contextTypes: {
-		yScale: React.PropTypes.func.isRequired,
+		xScale: React.PropTypes.func.isRequired,
+		yScale: React.PropTypes.func.isRequired
 	},
 	componentDidMount() {
 		this.updateAxis();
@@ -44,11 +45,8 @@ var YAxis = React.createClass({
 
 		var axis = d3.svg.axis()
 			.scale(scale)
-			.orient(this.props.orient)
-			//.innerTickSize(this.props.showGrid ? this.props.innerTickSize : 5)
-			//.outerTickSize(this.props.showGrid ? this.props.outerTickSize : 5)
-			//.tickPadding(this.props.showGrid ? 5 : 10)
-			;
+			.orient(this.props.orient);
+
 		if (this.props.orient) axis.orient(this.props.orient);
 		if (this.props.innerTickSize) axis.innerTickSize(this.props.innerTickSize);
 		if (this.props.outerTickSize) axis.outerTickSize(this.props.outerTickSize);
@@ -62,7 +60,7 @@ var YAxis = React.createClass({
 	},
 	render() {
 		var axisAt = this.props.axisAt
-			, range = this.props._xScale.range();
+			, range = this.context.xScale.range();
 		if (this.props.axisAt === 'left') axisAt = Math.min(range[0], range[1]) + this.props.axisPadding;
 		if (this.props.axisAt === 'right') axisAt = Math.max(range[0], range[1]) + this.props.axisPadding;
 		if (this.props.axisAt === 'middle') axisAt = (range[0] + range[1]) / 2 + this.props.axisPadding;

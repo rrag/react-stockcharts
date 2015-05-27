@@ -9,7 +9,6 @@ var thousand = 1 * 1000;
 
 var OHLCTooltip = React.createClass({
 	propTypes: {
-		// _currentItem: React.PropTypes.object.isRequired,
 		forChart: React.PropTypes.number.isRequired,
 		accessor: React.PropTypes.func.isRequired,
 		xDisplayFormat: React.PropTypes.func.isRequired,
@@ -31,7 +30,6 @@ var OHLCTooltip = React.createClass({
 		}
 	},
 	render() {
-		console.log(this.context._chartData, this.context._currentItems);
 		var displayDate, fromDate, toDate, open, high, low, close, volume;
 
 		displayDate = fromDate = toDate = open = high = low = close = volume = "n/a";

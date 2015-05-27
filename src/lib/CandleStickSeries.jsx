@@ -86,7 +86,3 @@ var CandlestickSeries = React.createClass({
 });
 
 module.exports = CandlestickSeries;
-
-/*				
-
-*/

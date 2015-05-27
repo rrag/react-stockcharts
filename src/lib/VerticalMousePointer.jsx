@@ -4,21 +4,17 @@ var EdgeCoordinate = require('./EdgeCoordinate')
 var Utils = require('./utils/utils')
 
 var VerticalMousePointer = React.createClass({
-	propTypes: {
+	contextTypes: {
 		_height: React.PropTypes.number.isRequired,
-		_width: React.PropTypes.number.isRequired,
 		_mouseXY: React.PropTypes.array.isRequired,
 		_xDisplayValue: React.PropTypes.string.isRequired,
-		_yDisplayValue: React.PropTypes.string.isRequired,
-		yAxisPad: React.PropTypes.number.isRequired
 	},
-	shouldComponentUpdate(nextProps, nextState) {
-		return nextProps._mouseXY !== this.props._mouseXY
+	shouldComponentUpdate(nextProps, nextState, nextContext) {
+		return nextContext._mouseXY !== this.nextContext._mouseXY
 	},
 	getDefaultProps() {
 		return {
 			namespace: "ReStock.VerticalMousePointer",
-			yAxisPad: 10
 		}
 	},
 	render() {
@@ -28,10 +24,10 @@ var VerticalMousePointer = React.createClass({
 					type="vertical"
 					className="horizontal"
 					show={true}
-					x1={this.props._mouseXY[0]} y1={0}
-					x2={this.props._mouseXY[0]} y2={this.props._height}
-					coordinate={this.props._xDisplayValue}
-					edgeAt={this.props._height}
+					x1={this.context._mouseXY[0]} y1={0}
+					x2={this.context._mouseXY[0]} y2={this.context._height}
+					coordinate={this.context._xDisplayValue}
+					edgeAt={this.context._height}
 					orient="bottom"
 					/>
 				

@@ -11,13 +11,14 @@ var doNotPassThrough = ['transformType', 'options', 'children', 'namespace'];
 var DataTransform = React.createClass({
 	mixins: [DataTransformMixin, ChartContainerMixin, EventCaptureMixin],
 	propTypes: {
-		data: React.PropTypes.any.isRequired,
 		transformType: React.PropTypes.string.isRequired, // stockscale, none
 		options: React.PropTypes.object
 	},
 	contextTypes: {
 		_width: React.PropTypes.number.isRequired,
-		_height: React.PropTypes.number.isRequired
+		_height: React.PropTypes.number.isRequired,
+		data: React.PropTypes.array.isRequired,
+		interval: React.PropTypes.string.isRequired
 	},
 	getInitialState() {
 		return {};
@@ -28,26 +29,9 @@ var DataTransform = React.createClass({
 			transformType: "none"
 		};
 	},
-	renderChildren(height, width) {
-		var children = React.Children.map(this.props.children, (child) => {
-			if (typeof child.type === 'string') return child;
-			var newChild = child;
-			var props = {};
-			Object.keys(this.props)
-				.filter((eachProp) => doNotPassThrough.indexOf(eachProp) === -1)
-				.forEach((key) => props[key] = this.props[key]);
-
-			Object.keys(this.state.passThroughProps)
-				.forEach((key) => props[key] = this.state.passThroughProps[key]);
-
-			// console.log(Object.keys(props));
-			return React.cloneElement(newChild, props);
-		});
-		return this._renderChildren(children);
-	},
 	render() {
 		return (
-			<g>{this.renderChildren()}</g>
+			<g>{this.props.children}</g>
 		);
 	}
 });

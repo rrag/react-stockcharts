@@ -24,7 +24,8 @@ var XAxis = React.createClass({
 		};
 	},
 	contextTypes: {
-		xScale: React.PropTypes.func.isRequired
+		xScale: React.PropTypes.func.isRequired,
+		yScale: React.PropTypes.func.isRequired
 	},
 	getInitialState() {
 		return {};
@@ -41,11 +42,8 @@ var XAxis = React.createClass({
 	updateAxis() {
 		var axis = d3.svg.axis()
 			.scale(this.context.xScale)
-			.orient(this.props.orient)
-			//.innerTickSize(this.props.showGrid ? this.props.innerTickSize : 5)
-			//.outerTickSize(this.props.showGrid ? this.props.outerTickSize : 5)
-			//.tickPadding(this.props.showGrid ? 5 : 10)
-			;
+			.orient(this.props.orient);
+
 		if (this.props.orient) axis.orient(this.props.orient);
 		if (this.props.innerTickSize) axis.innerTickSize(this.props.innerTickSize);
 		if (this.props.outerTickSize) axis.outerTickSize(this.props.outerTickSize);
@@ -63,7 +61,7 @@ var XAxis = React.createClass({
 	},
 	render() {
 		var axisAt = this.props.axisAt
-			, range = this.props._yScale.range();
+			, range = this.context.yScale.range();
 		if (this.props.axisAt === 'top') axisAt = Math.min(range[0], range[1]);
 		if (this.props.axisAt === 'bottom') axisAt = Math.max(range[0], range[1]);
 		if (this.props.axisAt === 'middle') axisAt = (range[0] + range[1]) / 2;
