@@ -17,6 +17,35 @@ function getOverlayFromList(overlays, id) {
 
 
 var ChartContainerMixin = {
+	containsChart(props) {
+		return this.getCharts(props).length > 0;
+	},
+	getCharts(props) {
+		var children = Array.isArray(props.children)
+			? props.children
+			: [props.children];
+
+		return children
+			.filter((child) => /Chart$/.test(child.props.namespace))
+	},
+	getChartData(props, context, partialData, fullData, other) {
+
+		var charts = this.getCharts(props);
+		var innerDimensions = this.getInnerDimensions(context);
+
+		return charts.map((each) => {
+			var chartProps = each.props;
+			var _chartData = this.getChartDataFor(innerDimensions, chartProps, partialData, fullData, other);
+			_chartData.id = each.props.id;
+			return _chartData;
+		});
+	},
+	getInnerDimensions(ctx) {
+		return {
+			width: ctx._width,
+			height: ctx._height
+		}
+	},
 	getDimensions(innerDimension, chartProps) {
 
 		var availableWidth = innerDimension.width;
@@ -32,10 +61,10 @@ var ChartContainerMixin = {
 			height: height
 		}
 	},
-	getChartDataFor(innerDimension, chartProps, data, fullData, passThroughProps) {
+	getChartDataFor(innerDimension, chartProps, partialData, fullData, passThroughProps) {
 		var dimensions = this.getDimensions(innerDimension, chartProps);
 
-		var scales = this.defineScales(chartProps, data, passThroughProps);
+		var scales = this.defineScales(chartProps, partialData, passThroughProps);
 
 		var accessors = this.getXYAccessors(chartProps, passThroughProps);
 		// identify overlays
@@ -46,25 +75,26 @@ var ChartContainerMixin = {
 
 		var overlayYAccessors = pluck(keysAsArray(overlaysToAdd), 'yAccessor');
 
-		var xyValues = ScaleUtils.flattenData(data, [accessors.xAccessor], [accessors.yAccessor].concat(overlayYAccessors));
+		console.log('herehhhhhhhhhh', overlayYAccessors);
+		var xyValues = ScaleUtils.flattenData(partialData, [accessors.xAccessor], [accessors.yAccessor].concat(overlayYAccessors));
 
-		var overlayValues = this.updateOverlayFirstLast(data, overlaysToAdd)
+		var overlayValues = this.updateOverlayFirstLast(partialData, overlaysToAdd)
 
 		scales = this.updateScales(
 			xyValues
 			, scales
-			, data
+			, partialData
 			, dimensions.width
 			, dimensions.height);
 
-		var last = Utils.cloneMe(data[data.length - 1]);
-		var first = Utils.cloneMe(data[0]);
+		var last = Utils.cloneMe(partialData[partialData.length - 1]);
+		var first = Utils.cloneMe(partialData[0]);
 		var origin = typeof chartProps.origin === 'function'
 			? chartProps.origin(dimensions.availableWidth, dimensions.availableHeight)
 			: chartProps.origin;
 
-		var drawableWidth = scales.xScale(accessors.xAccessor(data[data.length - 1]))
-			- scales.xScale(accessors.xAccessor(data[0]));
+		var drawableWidth = scales.xScale(accessors.xAccessor(partialData[partialData.length - 1]))
+			- scales.xScale(accessors.xAccessor(partialData[0]));
 
 		var _chartData = {
 				width: dimensions.width,
@@ -112,10 +142,10 @@ var ChartContainerMixin = {
 					.indexOf(child.props.namespace) > -1) {
 				if (child.props) {
 
-					var xAccesor = passThroughProps !== undefined && passThroughProps._stockScale
-						? passThroughProps._indexAccessor
+					var xAccessor = passThroughProps !== undefined && passThroughProps._stockScale
+						? passThroughProps._xAccessor
 						: child.props.xAccessor
-					accessor.xAccessor = xAccesor;
+					accessor.xAccessor = xAccessor;
 					accessor.yAccessor = child.props.yAccessor;
 				}
 			}

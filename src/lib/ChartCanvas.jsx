@@ -12,7 +12,7 @@ var ChartCanvas = React.createClass({
 		width: React.PropTypes.number.isRequired,
 		height: React.PropTypes.number.isRequired,
 		margin: React.PropTypes.object,
-		interval: React.PropTypes.string.isRequired
+		interval: React.PropTypes.oneOf(['D']).isRequired //,'m1', 'm5', 'm15', 'W', 'M'
 	},
 	getAvailableHeight(props) {
 		return props.height - props.margin.top - props.margin.bottom;
@@ -32,15 +32,15 @@ var ChartCanvas = React.createClass({
 	childContextTypes: {
 		_width: React.PropTypes.number.isRequired,
 		_height: React.PropTypes.number.isRequired,
-		data: React.PropTypes.array.isRequired,
+		data: React.PropTypes.object.isRequired,
 		interval: React.PropTypes.string.isRequired,
-		canvas: React.PropTypes.any,
+		// canvas: React.PropTypes.any,
 	},
 	getChildContext() {
 		return {
 			_width: this.getAvailableWidth(this.props),
 			_height: this.getAvailableHeight(this.props),
-			data: this.props.data,
+			data: { 'D': this.props.data },
 			interval: this.props.interval,
 			//canvas: 
 		}

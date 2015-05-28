@@ -53,14 +53,18 @@ function StockScaleTransformer(data, options) {
 
 	return {
 			data: responseData,
-			_dateAccessor: dateAccesor,
-			_dateMutator: dateMutator,
-			_indexAccessor: options.indexAccessor,
-			_indexMutator: indexMutator,
-			// _indexMutator: indexMutator,
-			_stockScale: true,
-			_xScale: stockScale(options.indexAccessor),
-			_multiInterval: true
+			other: {
+				_xScale: stockScale(options.indexAccessor),
+				_xAccessor: options.indexAccessor,
+				_stockScale: true,
+			},
+			// _multiInterval: true,
+			options: {
+				_dateAccessor: dateAccesor,
+				_dateMutator: dateMutator,
+				_indexAccessor: options.indexAccessor,
+				_indexMutator: indexMutator,
+			}
 		};
 }
 

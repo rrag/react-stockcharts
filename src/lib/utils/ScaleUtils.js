@@ -14,7 +14,6 @@ function pushToValues(values, eachValue) {
 	}
 }
 
-
 var ScaleUtils = {
 	flattenData(data, xAccessors, yAccessors) {
 		// console.log(xAccessors, yAccessors);

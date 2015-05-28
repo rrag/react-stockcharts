@@ -21,9 +21,14 @@ var EventCapture = React.createClass({
 	contextTypes: {
 		_width: React.PropTypes.number.isRequired,
 		_height: React.PropTypes.number.isRequired,
-		_eventStore: React.PropTypes.object.isRequired,
-		_zoomEventStore: React.PropTypes.object,
-		_chartData: React.PropTypes.array
+		// _eventStore: React.PropTypes.object.isRequired,
+		// _zoomEventStore: React.PropTypes.object,
+		_chartData: React.PropTypes.array,
+		onMouseMove: React.PropTypes.func,
+		onMouseEnter: React.PropTypes.func,
+		onMouseLeave: React.PropTypes.func,
+		onZoom: React.PropTypes.func,
+		onPan: React.PropTypes.func,
 	},
 	componentWillMount() {
 		this.setState({
