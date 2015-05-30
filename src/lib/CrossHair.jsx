@@ -15,7 +15,7 @@ var CrossHair = React.createClass({
 		_yDisplayValue: React.PropTypes.string.isRequired
 	},
 	shouldComponentUpdate(nextProps, nextState, nextContext) {
-		return nextContext._mouseXY !== this.nextContext._mouseXY
+		return nextContext._mouseXY !== this.context._mouseXY
 	},
 	getDefaultProps() {
 		return {

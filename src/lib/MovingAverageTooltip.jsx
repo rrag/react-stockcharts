@@ -52,14 +52,11 @@ var MovingAverageTooltip = React.createClass({
 			width: 65
 		}
 	},
-	contextTypes: {
-		_chartData: React.PropTypes.array.isRequired,
-		_currentItems: React.PropTypes.array.isRequired,
-	},
+	mixins: [require('./mixin/ForChartMixin')],
 	render() {
-		var chartData = this.context._chartData.filter((each) => each.id === this.props.forChart)[0];
-		var currentItem = this.context._currentItems.filter((each) => each.id === this.props.forChart)[0];
-		var item = currentItem ? currentItem.data : {}
+		var chartData = this.getChartData();
+		var item = this.getCurrentItem();
+
 		return (
 			<g transform={"translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")"} className="ma-container">
 				{chartData.overlays.map((eachOverlay, idx) => {

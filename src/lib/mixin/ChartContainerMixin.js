@@ -21,12 +21,15 @@ var ChartContainerMixin = {
 		return this.getCharts(props).length > 0;
 	},
 	getCharts(props) {
-		var children = Array.isArray(props.children)
-			? props.children
-			: [props.children];
+		return this.getChildren(props.children, /Chart$/)
+	},
+	getChildren(children, regex) {
+		var newChildren = Array.isArray(children)
+			? children
+			: [children];
 
-		return children
-			.filter((child) => /Chart$/.test(child.props.namespace))
+		return newChildren
+			.filter((child) => regex.test(child.props.namespace))
 	},
 	getChartData(props, context, partialData, fullData, other) {
 
@@ -39,6 +42,11 @@ var ChartContainerMixin = {
 			_chartData.id = each.props.id;
 			return _chartData;
 		});
+	},
+	getMainChart(children) {
+		var eventCapture = this.getChildren(children, /EventCapture$/);
+		if (eventCapture.length > 1) throw new Error("only one EventCapture allowed");
+		if (eventCapture.length > 0) return eventCapture[0].props.mainChart;
 	},
 	getInnerDimensions(ctx) {
 		return {

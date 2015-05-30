@@ -18,9 +18,10 @@ var TooltipContainer = React.createClass({
 		console.log('here', this.props.c());
 	},*/
 	render() {
+		var children = React.Children.map(this.props.children, (child) => React.cloneElement(child));
 		return (
 			<g className="toottip-hover">
-				{this.props.children}
+				{children}
 			</g>
 		);
 	}

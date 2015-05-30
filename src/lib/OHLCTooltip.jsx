@@ -14,13 +14,7 @@ var OHLCTooltip = React.createClass({
 		xDisplayFormat: React.PropTypes.func.isRequired,
 		origin: React.PropTypes.array.isRequired,
 	},
-	shouldComponentUpdate(nextProps, nextState, nextContext) {
-		return (nextContext._currentItems !== this.context._currentItems);
-	},
-	contextTypes: {
-		_chartData: React.PropTypes.array.isRequired,
-		_currentItems: React.PropTypes.array.isRequired,
-	},
+	mixins: [require('./mixin/ForChartMixin')],
 	getDefaultProps() {
 		return {
 			namespace: "ReStock.OHLCTooltip",
@@ -33,8 +27,8 @@ var OHLCTooltip = React.createClass({
 		var displayDate, fromDate, toDate, open, high, low, close, volume;
 
 		displayDate = fromDate = toDate = open = high = low = close = volume = "n/a";
-		var currentItem = this.context._currentItems.filter((each) => each.id === this.props.forChart)[0];
-		var item = this.props.accessor(currentItem || {});
+
+		var item = this.getCurrentItem();
 
 		if (item !== undefined && item.close !== undefined) {
 			volume = (item.volume / billion > 1)
@@ -51,7 +45,6 @@ var OHLCTooltip = React.createClass({
 			low = Utils.displayNumberFormat(item.low);
 			close = Utils.displayNumberFormat(item.close);
 		}
-
 		return (
 			<g transform={"translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")"}>
 				<text x={0} y={0} className="legend">

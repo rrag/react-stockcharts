@@ -12,12 +12,6 @@ var EventCapture = React.createClass({
 		panSpeedMultiplier: React.PropTypes.number.isRequired,
 		defaultFocus: React.PropTypes.bool.isRequired,
 	},
-	getInitialState() {
-		return {
-			dragOrigin: [0, 0],
-			defaultFocus: false
-		};
-	},
 	contextTypes: {
 		_width: React.PropTypes.number.isRequired,
 		_height: React.PropTypes.number.isRequired,
@@ -32,12 +26,11 @@ var EventCapture = React.createClass({
 		onPan: React.PropTypes.func,
 		onPanEnd: React.PropTypes.func,
 		panInProgress: React.PropTypes.bool,
+		focus: React.PropTypes.bool.isRequired,
+		onFocus: React.PropTypes.func,
 	},
 	componentWillMount() {
-		this.setState({
-			className: this.props.className,
-			inFocus: this.props.defaultFocus
-		});
+		if (this.context.onFocus) this.context.onFocus(this.props.defaultFocus);
 	},
 	getDefaultProps() {
 		return {
@@ -52,14 +45,14 @@ var EventCapture = React.createClass({
 		}
 	},
 	componentWillReceiveProps(nextProps, nextContext) {
-		console.log('hererasdfdsfs');
+		// console.log('hererasdfdsfs');
 	},
 	toggleFocus() {
-		this.setFocus(!this.state.defaultFocus);
+		this.setFocus(!this.state.inFocus);
 	},
 	setFocus(focus) {
 		this.setState({
-			defaultFocus: focus
+			inFocus: focus
 		});
 	},
 	handleEnter() {
@@ -86,7 +79,7 @@ var EventCapture = React.createClass({
 	handleWheel(e) {
 		if (this.props.zoom
 				&& this.context.onZoom
-				&& this.state.inFocus) {
+				&& this.context.focus) {
 			e.stopPropagation();
 			e.preventDefault();
 			var zoomDir = e.deltaY > 0 ? this.props.zoomMultiplier : -this.props.zoomMultiplier;
@@ -108,10 +101,9 @@ var EventCapture = React.createClass({
 		var chartData = this.context._chartData.filter((each) => each.id === this.props.mainChart) [0];
 		if (this.props.pan && this.context.onPanStart) {
 			this.context.onPanStart(chartData.scales.xScale.domain())
+		} else {
+			if (!this.context.focus && this.context.onFocus) this.context.onFocus(true);
 		}
-		this.setState({
-			inFocus: inFocus
-		});
 		e.preventDefault();
 	},
 	handleMouseUp(e) {
@@ -122,7 +114,6 @@ var EventCapture = React.createClass({
 	},
 	render() {
 		var className = this.context.panInProgress ? 'grabbing' : 'crosshair';
-		console.log(this.context.panInProgress, className);
 		return (
 			<rect 
 				className={className}

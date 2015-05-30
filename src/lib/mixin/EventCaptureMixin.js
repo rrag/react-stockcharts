@@ -15,9 +15,11 @@ var EventCaptureMixin = {
 		onPan: React.PropTypes.func,
 		onPanEnd: React.PropTypes.func,
 		panInProgress: React.PropTypes.bool.isRequired,
+		focus: React.PropTypes.bool.isRequired,
+		onFocus: React.PropTypes.func,
 	},
 	getChildContext() {
-		console.log('panInProgress - ', this.state.panInProgress);
+		// console.log('panInProgress - ', this.state.panInProgress);
 		return {
 			onMouseMove: this.handleMouseMove,
 			onMouseEnter: this.handleMouseEnter,
@@ -26,15 +28,24 @@ var EventCaptureMixin = {
 			onPanStart: this.handlePanStart,
 			onPan: this.handlePan,
 			onPanEnd: this.handlePanEnd,
-			panInProgress: this.state.panInProgress
+			onFocus: this.handleFocus,
+			panInProgress: this.state.panInProgress,
+			focus: this.state.focus
 		};
 	},
-	handleMouseMove(mousePosition) {
-		console.log('mouse move - ', mousePosition);
-		// set up _xDisplayValue, _yDisplayValue
-		/*this.setState({
-			_mouseXY: mousePosition,
-		});*/
+	handleMouseMove(mouseXY) {
+		console.log('mouse move - ', mouseXY);
+		var currentItems = this.state._chartData
+			// .filter((eachChartData) => eachChartData.id === this.state.mainChart)
+			.map((eachChartData) => {
+				var xValue = eachChartData.scales.xScale.invert(mouseXY[0]);
+				var item = Utils.getClosestItem(this.state._data, xValue, eachChartData.accessors.xAccessor);
+				return { id: eachChartData.id, data: item };
+			});
+		this.setState({
+			_mouseXY: mouseXY,
+			_currentItems: currentItems
+		});
 	},
 	handleMouseEnter() {
 		console.log('enter');
@@ -55,16 +66,23 @@ var EventCaptureMixin = {
 		console.log('panStartDomain - ', panStartDomain);
 		this.setState({
 			panInProgress: true,
-			panStartDomain: panStartDomain
+			panStartDomain: panStartDomain,
+			focus: true,
 		});
 	},
 	handlePan(mousePosition) {
-		console.log('pan -- mouse move - ', mousePosition);
+		console.log('pan -- mouse move - ', mousePosition, ' pan start from ', this.state.panStartDomain);
 	},
 	handlePanEnd() {
 		this.setState({
 			panInProgress: false,
 			panStartDomain: null
+		});
+	},
+	handleFocus(focus) {
+		console.log(focus);
+		this.setState({
+			focus: focus,
 		});
 	}
 };

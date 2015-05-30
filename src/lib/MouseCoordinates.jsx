@@ -12,6 +12,7 @@ var MouseCoordinates = React.createClass({
 	shouldComponentUpdate(nextProps, nextState, nextContext) {
 		return nextContext._currentItems != this.context._currentItems
 				|| nextContext._mouseXY !== this.context._mouseXY
+				|| nextContext._show !== this.context._show
 	},
 	getDefaultProps() {
 		return {
@@ -28,27 +29,29 @@ var MouseCoordinates = React.createClass({
 		_height: React.PropTypes.number.isRequired,
 		_show: React.PropTypes.bool,
 		_mouseXY: React.PropTypes.array,
+		dataTransformOptions: React.PropTypes.object,
 	},
 	childContextTypes: {
 		_mouseXY: React.PropTypes.array.isRequired,
 		_xDisplayValue: React.PropTypes.string.isRequired,
-		_yDisplayValue: React.PropTypes.string.isRequired
+		_yDisplayValue: React.PropTypes.string.isRequired,
 	},
 	getChildContext() {
 		var chartData = this.getChartData();
 		var item = this.getCurrentItem();
 
 		var xValue = chartData.accessors.xAccessor(item);
-		var xDisplayValue = this.props._dateAccessor === undefined
+		var xDisplayValue = this.context.dataTransformOptions === undefined
 			? xValue
-			: this.props._dateAccessor(item);
+			: this.context.dataTransformOptions._dateAccessor(item);
 
 		var yValue = chartData.scales.yScale.invert(this.context._mouseXY[1]);
 
 		if (xValue === undefined || yValue === undefined) return null;
-		var x = this.props.snapX ? Math.round(chartData.scales.xScale(xValue)) : this.props._mouseXY[0];
-		var y = this.props._mouseXY[1];
+		var x = this.props.snapX ? Math.round(chartData.scales.xScale(xValue)) : this.context._mouseXY[0];
+		var y = this.context._mouseXY[1];
 
+		// console.log(xDisplayValue, yValue);
 		return {
 			_mouseXY: [x, y],
 			_xDisplayValue: this.props.xDisplayFormat(xDisplayValue),
@@ -58,9 +61,10 @@ var MouseCoordinates = React.createClass({
 	render() {
 		var children = null;
 		if (this.context._show) {
-			children = this.props.children;
+			//children = this.props.children;
+			children = React.Children.map(this.props.children, (child) => React.cloneElement(child));
 		};
-
+		console.log('MouseCoordinates.render', this.context._show);
 		return (
 			<g className={this.context._show ? 'show' : 'hide'}>
 				{children}

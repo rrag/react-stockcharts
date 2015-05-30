@@ -4,6 +4,7 @@ var EventCaptureMixin = require('./mixin/EventCaptureMixin');
 var ChartContainerMixin = require('./mixin/ChartContainerMixin');
 var DataTransformMixin = require('./mixin/DataTransformMixin');
 var ChartTransformer = require('./utils/ChartTransformer');
+var Dummy = require('./Dummy');
 
 var polyLinearTimeScale = require('./scale/polylineartimescale');
 
@@ -24,7 +25,8 @@ var DataTransform = React.createClass({
 	},
 	getInitialState() {
 		return {
-			panInProgress: false
+			panInProgress: false,
+			focus: false
 		};
 	},
 	getDefaultProps() {
@@ -51,13 +53,15 @@ var DataTransform = React.createClass({
 		if (this.containsChart(this.props)) {
 			var data = passThroughProps.data[this.context.interval];
 			var chartData = this.getChartData(this.props, this.context, data, passThroughProps.data, passThroughProps.other);
-			console.log(chartData);
+			var mainChart = this.getMainChart(this.props.children);
+			console.log(mainChart);
 			state._chartData = chartData;
 			state._data = data;
 			state._currentItems = [];
 			state._show = false;
 			state._mouseXY = [0, 0];
 			state.interval = this.context.interval;
+			state.mainChart = mainChart;
 		}
 
 		this.setState(state);
@@ -73,6 +77,7 @@ var DataTransform = React.createClass({
 		interval: React.PropTypes.string,
 	},
 	getChildContext() {
+		// console.log(this.state._show);
 		return {
 			data: this.state.data,
 			dataTransformOptions: this.state.dataTransformOptions,
@@ -85,14 +90,23 @@ var DataTransform = React.createClass({
 		}
 	},
 	render() {
-		console.log('DataTransform.render()');
+		// console.log('DataTransform.render()');
 		// console.error('foobar');
 		var children = React.Children.map(this.props.children, (child) => React.cloneElement(child));
 		// var children = this.props.children;
 		return (
 			<g>{children}</g>
 		);
-	}
+	}/*
+	render() {
+		// console.log('DataTransform.render()');
+		// console.error('foobar');
+		// var children = React.Children.map(this.props.children, (child) => React.cloneElement(child));
+		// var children = this.props.children;
+		return (
+			<Dummy render={() => <g>{this.props.children}</g>} />
+		);
+	}*/
 });
 
 module.exports = DataTransform;
