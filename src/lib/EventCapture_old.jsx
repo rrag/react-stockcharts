@@ -28,10 +28,7 @@ var EventCapture = React.createClass({
 		onMouseEnter: React.PropTypes.func,
 		onMouseLeave: React.PropTypes.func,
 		onZoom: React.PropTypes.func,
-		onPanStart: React.PropTypes.func,
 		onPan: React.PropTypes.func,
-		onPanEnd: React.PropTypes.func,
-		panInProgress: React.PropTypes.bool,
 	},
 	componentWillMount() {
 		this.setState({
@@ -50,9 +47,6 @@ var EventCapture = React.createClass({
 			, className: "crosshair"
 			, defaultFocus: false
 		}
-	},
-	componentWillReceiveProps(nextProps, nextContext) {
-		console.log('hererasdfdsfs');
 	},
 	toggleFocus() {
 		this.setFocus(!this.state.defaultFocus);
@@ -85,47 +79,75 @@ var EventCapture = React.createClass({
 	},
 	handleWheel(e) {
 		if (this.props.zoom
-				&& this.context.onZoom
-				&& this.state.inFocus) {
+				&& this.context._eventStore
+				//&& this.context._eventStore.get().inFocus.value
+				&& this.state.inFocus
+				&& this.context._zoomEventStore) {
 			e.stopPropagation();
 			e.preventDefault();
 			var zoomDir = e.deltaY > 0 ? this.props.zoomMultiplier : -this.props.zoomMultiplier;
-			this.context.onZoom(zoomDir);
+			//console.log(zoomDir);
+
+			this.context._zoomEventStore.get().set({ zoom : zoomDir });
 		}
 	},
 	handleMouseMove(e) {
-		if (this.context.onMouseMove && this.props.mouseMove) {
+		if (this.context._eventStore && this.props.mouseMove) {
+			var eventData = this.context._eventStore.get();
 			var newPos = Utils.mousePosition(e);
-			if (this.context.panInProgress) {
-				if (this.props.pan && this.context.onPan) this.context.onPan(newPos);
-			} else {
-				this.context.onMouseMove(newPos);
+			//var oldPos = eventData.mouseXY;
+			var startPos = this.state.dragOrigin;
+			if (! (startPos[0] === newPos[0] && startPos[1] === newPos[1])) {
+				if (this.state.dragging) {
+					eventData = eventData.set({
+						dx: (newPos[0] - startPos[0]) * this.props.panSpeedMultiplier,
+						dragOriginDomain: this.state.dragOriginDomain
+					});
+
+				}
+				eventData = eventData.set( { mouseXY: newPos } );
+				eventData = eventData.set({ pan: this.state.dragging });
+				// console.log('eventData....', eventData);
 			}
 		}
 	},
 	handleMouseDown(e) {
-		var inFocus = true
-		var chartData = this.context._chartData.filter((each) => each.id === this.props.mainChart) [0];
-		if (this.props.pan && this.context.onPanStart) {
-			this.context.onPanStart(chartData.scales.xScale.domain())
+		if (this.context._eventStore) {
+			// this.context._eventStore.get().inFocus.set({'value': true});
+			var inFocus = true
+			if (this.props.pan && this.context._zoomEventStore) {
+				var chartData = this.context._chartData.filter((each) => each.id === this.props.mainChart) [0];
+				this.setState({
+					dragging: true,
+					dragOrigin: Utils.mousePosition(e),
+					dragOriginDomain: chartData.scales.xScale.domain(),
+					className: "grabbing",
+					inFocus: inFocus
+				})
+			} else {
+				this.setState({
+					inFocus: inFocus
+				})
+			}
 		}
-		this.setState({
-			inFocus: inFocus
-		});
 		e.preventDefault();
 	},
 	handleMouseUp(e) {
-		if (this.props.pan && this.context.onPanEnd) {
-			this.context.onPanEnd();
+		if (this.props.pan && this.context._zoomEventStore) {
+
+			this.context._eventStore.get().set({ pan: false })
+			this.setState({
+				dragging: false,
+				dragOrigin: [0, 0],
+				className: this.props.className
+			})
 		}
 		e.preventDefault();
 	},
 	render() {
-		var className = this.context.panInProgress ? 'grabbing' : 'crosshair';
-		console.log(this.context.panInProgress, className);
 		return (
 			<rect 
-				className={className}
+				className={this.state.className}
 				width={this.context._width} height={this.context._height} style={{opacity: 0}}
 				onMouseEnter={this.handleEnter}
 				onMouseLeave={this.handleLeave}

@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react'),
-	PureRenderMixin = require('react/addons/PureRenderMixin');
+	PureRenderMixin = require('lib/utils/MyPureRenderMixin');
 
 var Chart = React.createClass({
 	statics: {
@@ -56,6 +56,8 @@ var Chart = React.createClass({
 		};
 	},
 	render() {
+		console.log('Chart.render()');
+
 		var origin = typeof this.props.origin === 'function'
 			? this.props.origin(this.context._width, this.context._height)
 			: this.props.origin;

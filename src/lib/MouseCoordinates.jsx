@@ -11,7 +11,7 @@ var MouseCoordinates = React.createClass({
 	},
 	shouldComponentUpdate(nextProps, nextState, nextContext) {
 		return nextContext._currentItems != this.context._currentItems
-				|| nextContext._mouseXY !== this.nextContext._mouseXY
+				|| nextContext._mouseXY !== this.context._mouseXY
 	},
 	getDefaultProps() {
 		return {

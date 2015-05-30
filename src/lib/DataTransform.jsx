@@ -21,10 +21,12 @@ var DataTransform = React.createClass({
 		data: React.PropTypes.object.isRequired,
 		dataTransformOptions: React.PropTypes.object,
 		interval: React.PropTypes.string.isRequired
-	},/*
+	},
 	getInitialState() {
-		return {};
-	},*/
+		return {
+			panInProgress: false
+		};
+	},
 	getDefaultProps() {
 		return {
 			namespace: "ReStock.DataTransform",
@@ -83,8 +85,12 @@ var DataTransform = React.createClass({
 		}
 	},
 	render() {
+		console.log('DataTransform.render()');
+		// console.error('foobar');
+		var children = React.Children.map(this.props.children, (child) => React.cloneElement(child));
+		// var children = this.props.children;
 		return (
-			<g>{this.props.children}</g>
+			<g>{children}</g>
 		);
 	}
 });
