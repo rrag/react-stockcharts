@@ -29,10 +29,10 @@ var CurrentCoordinate = React.createClass({
 		var fill = 'black';
 
 		if (! this.context._show || item === undefined) return null;
-		var yAccessor =  this.props.yAccessor || chartData.accessors.yAccessor;
+		var yAccessor =  this.props.yAccessor || chartData.config.accessors.yAccessor;
 
 		if (this.props.forOverlay !== undefined) {
-			var overlays = chartData.overlays
+			var overlays = chartData.config.overlays
 				.filter((each) => each.id === this.props.forOverlay);
 
 			if (overlays.length != 1) {
@@ -43,13 +43,13 @@ var CurrentCoordinate = React.createClass({
 			yAccessor = overlays[0].yAccessor;
 		}
 
-		var xValue = chartData.accessors.xAccessor(item);
+		var xValue = chartData.config.accessors.xAccessor(item);
 		var yValue = yAccessor(item);
 
 		if (yValue === undefined) return null;
 
-		var x = Math.round(chartData.scales.xScale(xValue)) + chartData.origin[0];
-		var y = Math.round(chartData.scales.yScale(yValue)) + chartData.origin[1];
+		var x = Math.round(chartData.plot.scales.xScale(xValue)) + chartData.config.origin[0];
+		var y = Math.round(chartData.plot.scales.yScale(yValue)) + chartData.config.origin[1];
 
 		return (
 			<circle className={this.props.className} cx={x} cy={y} r={this.props.r} fill={fill} />

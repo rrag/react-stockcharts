@@ -9,7 +9,9 @@ var EdgeContainer = React.createClass({
 		return nextContext._chartData !== this.context._chartData;
 	},
 	render() {
-		return <g>{this.props.children}</g>
+		var children = React.Children.map(this.props.children, (child) => React.cloneElement(child));
+
+		return <g>{children}</g>
 	}
 });
 

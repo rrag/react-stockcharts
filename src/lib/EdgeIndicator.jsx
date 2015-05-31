@@ -36,12 +36,12 @@ var EdgeIndicator = React.createClass({
 		var currentItem = this.getCurrentItem();
 		var edge = null, item, yAccessor;
 		if (this.props.forOverlay !== undefined
-				&& chartData.overlays.length > 0
-				&& chartData.overlayValues.length > 0) {
+				&& chartData.config.overlays.length > 0
+				&& chartData.plot.overlayValues.length > 0) {
 
-			var overlay = chartData.overlays
+			var overlay = chartData.config.overlays
 				.filter((eachOverlay) => eachOverlay.id === this.props.forOverlay);
-			var overlayValue = chartData.overlayValues
+			var overlayValue = chartData.plot.overlayValues
 				.filter((eachOverlayValue) => eachOverlayValue.id === this.props.forOverlay);
 
 			// console.log(overlay, overlayValue);
@@ -61,8 +61,8 @@ var EdgeIndicator = React.createClass({
 			yAccessor = overlay[0].yAccessor;
 
 			if (item !== undefined) {
-				var yValue = yAccessor(item), xValue = chartData.accessors.xAccessor(item);
-				var x1 = Math.round(chartData.scales.xScale(xValue)), y1 = Math.round(chartData.scales.yScale(yValue));
+				var yValue = yAccessor(item), xValue = chartData.config.accessors.xAccessor(item);
+				var x1 = Math.round(chartData.plot.scales.xScale(xValue)), y1 = Math.round(chartData.plot.scales.yScale(yValue));
 				var edgeX = this.props.edgeAt === 'left'
 					? 0 - this.props.yAxisPad
 					: this.context._width + this.props.yAxisPad
@@ -72,8 +72,8 @@ var EdgeIndicator = React.createClass({
 						className="edge-coordinate"
 						fill={overlay[0].stroke}
 						show={true}
-						x1={x1 + chartData.origin[0]} y1={y1 + chartData.origin[1]}
-						x2={edgeX + chartData.origin[0]} y2={y1 + chartData.origin[1]}
+						x1={x1 + chartData.config.origin[0]} y1={y1 + chartData.config.origin[1]}
+						x2={edgeX + chartData.config.origin[0]} y2={y1 + chartData.config.origin[1]}
 						coordinate={this.props.displayFormat(yValue)}
 						edgeAt={edgeX}
 						orient={this.props.orient}
@@ -85,13 +85,13 @@ var EdgeIndicator = React.createClass({
 				: this.props.itemType === 'last'
 					? chartData.lastItem
 					: currentItem;
-			yAccessor = chartData.accessors.yAccessor;
+			yAccessor = chartData.config.accessors.yAccessor;
 
 			if (item !== undefined && yAccessor !== null) {
 				var yValue = yAccessor(item);
 				var xValue = chartData.accessors.xAccessor(item);
 
-				var x1 = Math.round(chartData.scales.xScale(xValue)), y1 = Math.round(chartData.scales.yScale(yValue));
+				var x1 = Math.round(chartData.plot.scales.xScale(xValue)), y1 = Math.round(chartData.plot.scales.yScale(yValue));
 				var edgeX = this.props.edgeAt === 'left'
 					? 0 - this.props.yAxisPad
 					: this.context._width + this.props.yAxisPad
@@ -100,8 +100,8 @@ var EdgeIndicator = React.createClass({
 						type={this.props.type}
 						className="edge-coordinate"
 						show={true}
-						x1={x1 + chartData.origin[0]} y1={y1 + chartData.origin[1]}
-						x2={edgeX + chartData.origin[0]} y2={y1 + chartData.origin[1]}
+						x1={x1 + chartData.config.origin[0]} y1={y1 + chartData.config.origin[1]}
+						x2={edgeX + chartData.config.origin[0]} y2={y1 + chartData.config.origin[1]}
 						coordinate={this.props.displayFormat(yValue)}
 						edgeAt={edgeX}
 						orient={this.props.orient}

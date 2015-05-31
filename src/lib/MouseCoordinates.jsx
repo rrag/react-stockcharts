@@ -38,17 +38,16 @@ var MouseCoordinates = React.createClass({
 		var chartData = this.getChartData();
 		var item = this.getCurrentItem();
 
-		var xValue = chartData.accessors.xAccessor(item);
+		var xValue = chartData.config.accessors.xAccessor(item);
 		var xDisplayValue = this.context.dataTransformOptions === undefined
 			? xValue
 			: this.context.dataTransformOptions._dateAccessor(item);
 
-		var yValue = chartData.scales.yScale.invert(this.context._mouseXY[1]);
+		var yValue = chartData.plot.scales.yScale.invert(this.context._mouseXY[1]);
 
 		if (xValue === undefined || yValue === undefined) return null;
-		var x = this.props.snapX ? Math.round(chartData.scales.xScale(xValue)) : this.context._mouseXY[0];
+		var x = this.props.snapX ? Math.round(chartData.plot.scales.xScale(xValue)) : this.context._mouseXY[0];
 		var y = this.context._mouseXY[1];
-		console.log('here');
 		switch (this.props.type) {
 			case 'crosshair':
 				return <CrossHair height={this.context._height} width={this.context._width} mouseXY={[x, y]}
@@ -64,7 +63,6 @@ var MouseCoordinates = React.createClass({
 			//children = this.props.children;
 			children = ;
 		};*/
-		console.log(pointer);
 		return (
 			<g className={this.context._show ? 'show' : 'hide'}>
 				{pointer}

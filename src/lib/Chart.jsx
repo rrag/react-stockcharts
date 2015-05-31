@@ -40,11 +40,11 @@ var Chart = React.createClass({
 		var chartData = this.context._chartData.filter((each) => each.id === this.props.id)[0];
 		// console.log(chartData);
 		return {
-			xScale: chartData.scales.xScale,
-			yScale: chartData.scales.yScale,
-			xAccessor: chartData.accessors.xAccessor,
-			yAccessor: chartData.accessors.yAccessor,
-			overlays: chartData.overlays
+			xScale: chartData.plot.scales.xScale,
+			yScale: chartData.plot.scales.yScale,
+			xAccessor: chartData.config.accessors.xAccessor,
+			yAccessor: chartData.config.accessors.yAccessor,
+			overlays: chartData.config.overlays
 		}
 	},
 	getDefaultProps() {
@@ -56,13 +56,15 @@ var Chart = React.createClass({
 		};
 	},
 	render() {
-		console.log('Chart.render()');
+		// console.log('Chart.render()');
 
 		var origin = typeof this.props.origin === 'function'
 			? this.props.origin(this.context._width, this.context._height)
 			: this.props.origin;
 
-		return <g transform={`translate(${origin[0]}, ${origin[1]})`}>{this.props.children}</g>;
+		var children = React.Children.map(this.props.children, (child) => React.cloneElement(child));
+
+		return <g transform={`translate(${origin[0]}, ${origin[1]})`}>{children}</g>;
 	}
 });
 

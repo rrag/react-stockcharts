@@ -54,7 +54,7 @@ var DataTransform = React.createClass({
 			var data = passThroughProps.data[this.context.interval];
 			var chartData = this.getChartData(this.props, this.context, data, passThroughProps.data, passThroughProps.other);
 			var mainChart = this.getMainChart(this.props.children);
-			console.log(mainChart);
+
 			state._chartData = chartData;
 			state._data = data;
 			state._currentItems = [];
@@ -89,7 +89,7 @@ var DataTransform = React.createClass({
 		onFocus: React.PropTypes.func,
 	},
 	getChildContext() {
-		console.log(this.context._width);
+		// console.log(this.context._width);
 
 		return {
 			data: this.state.data,
@@ -115,7 +115,7 @@ var DataTransform = React.createClass({
 		}
 	},/* */
 	render() {
-		console.log('DataTransform.render()');
+		// console.log('DataTransform.render()');
 		// console.error('foobar');
 		var children = React.Children.map(this.props.children, (child) => React.cloneElement(child));
 		// var children = this.props.children;

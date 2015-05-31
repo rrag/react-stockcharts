@@ -59,7 +59,7 @@ var MovingAverageTooltip = React.createClass({
 
 		return (
 			<g transform={"translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")"} className="ma-container">
-				{chartData.overlays.map((eachOverlay, idx) => {
+				{chartData.config.overlays.map((eachOverlay, idx) => {
 					var yValue = eachOverlay.yAccessor(item);
 					// console.log(yValue);
 					var yDisplayValue = yValue ? this.props.displayFormat(yValue) : "n/a";

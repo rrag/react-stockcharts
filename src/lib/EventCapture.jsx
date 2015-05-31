@@ -83,7 +83,8 @@ var EventCapture = React.createClass({
 			e.stopPropagation();
 			e.preventDefault();
 			var zoomDir = e.deltaY > 0 ? this.props.zoomMultiplier : -this.props.zoomMultiplier;
-			this.context.onZoom(zoomDir);
+			var newPos = Utils.mousePosition(e);
+			this.context.onZoom(zoomDir, newPos);
 		}
 	},
 	handleMouseMove(e) {
@@ -100,7 +101,7 @@ var EventCapture = React.createClass({
 		var inFocus = true
 		var chartData = this.context._chartData.filter((each) => each.id === this.props.mainChart) [0];
 		if (this.props.pan && this.context.onPanStart) {
-			this.context.onPanStart(chartData.scales.xScale.domain())
+			this.context.onPanStart(chartData.plot.scales.xScale.domain())
 		} else {
 			if (!this.context.focus && this.context.onFocus) this.context.onFocus(true);
 		}

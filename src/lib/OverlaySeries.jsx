@@ -29,8 +29,10 @@ var OverlaySeries = React.createClass({
 		};
 	},
 	render() {
+		var children = React.Children.map(this.props.children, (child) => React.cloneElement(child));
+
 		return (
-			<g>{this.props.children}</g>
+			<g>{children}</g>
 		);
 	}
 });

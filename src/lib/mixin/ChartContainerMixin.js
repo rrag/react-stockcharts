@@ -38,15 +38,26 @@ var ChartContainerMixin = {
 
 		return charts.map((each) => {
 			var chartProps = each.props;
-			var _chartData = this.getChartDataFor(innerDimensions, chartProps, partialData, fullData, other);
-			_chartData.id = each.props.id;
-			return _chartData;
+			var config = this.getChartConfigFor(innerDimensions, chartProps, partialData, fullData, other)
+			var plot = this.getChartPlotFor(config, partialData);
+
+			return {
+				id : each.props.id,
+				config: config,
+				plot: plot
+			};
 		});
 	},
 	getMainChart(children) {
 		var eventCapture = this.getChildren(children, /EventCapture$/);
 		if (eventCapture.length > 1) throw new Error("only one EventCapture allowed");
 		if (eventCapture.length > 0) return eventCapture[0].props.mainChart;
+	},
+	getClosestItem(mouseXY, chartData) {
+		// console.log(chartData);
+		var xValue = chartData.plot.scales.xScale.invert(mouseXY[0]);
+		var item = Utils.getClosestItem(this.state._data, xValue, chartData.config.accessors.xAccessor);
+		return item;
 	},
 	getInnerDimensions(ctx) {
 		return {
@@ -69,11 +80,8 @@ var ChartContainerMixin = {
 			height: height
 		}
 	},
-	getChartDataFor(innerDimension, chartProps, partialData, fullData, passThroughProps) {
+	getChartConfigFor(innerDimension, chartProps, partialData, fullData, passThroughProps) {
 		var dimensions = this.getDimensions(innerDimension, chartProps);
-
-		var scales = this.defineScales(chartProps, partialData, passThroughProps);
-
 		var accessors = this.getXYAccessors(chartProps, passThroughProps);
 		// identify overlays
 		var overlaysToAdd = this.identifyOverlaysToAdd(chartProps);
@@ -81,43 +89,56 @@ var ChartContainerMixin = {
 		// calculate overlays
 		this.calculateOverlays(fullData, overlaysToAdd);
 
-		var overlayYAccessors = pluck(keysAsArray(overlaysToAdd), 'yAccessor');
-
-		console.log('herehhhhhhhhhh', overlayYAccessors);
-		var xyValues = ScaleUtils.flattenData(partialData, [accessors.xAccessor], [accessors.yAccessor].concat(overlayYAccessors));
-
-		var overlayValues = this.updateOverlayFirstLast(partialData, overlaysToAdd)
-
-		scales = this.updateScales(
-			xyValues
-			, scales
-			, partialData
-			, dimensions.width
-			, dimensions.height);
-
-		var last = Utils.cloneMe(partialData[partialData.length - 1]);
-		var first = Utils.cloneMe(partialData[0]);
 		var origin = typeof chartProps.origin === 'function'
 			? chartProps.origin(dimensions.availableWidth, dimensions.availableHeight)
 			: chartProps.origin;
 
-		var drawableWidth = scales.xScale(accessors.xAccessor(partialData[partialData.length - 1]))
-			- scales.xScale(accessors.xAccessor(partialData[0]));
+		var scales = this.defineScales(chartProps, partialData, passThroughProps);
 
-		var _chartData = {
-				width: dimensions.width,
-				height: dimensions.height,
-				drawableWidth: drawableWidth,
-				origin: origin,
-				overlayValues: overlayValues,
-				overlays: overlaysToAdd,
-				accessors: accessors,
-				scales: scales,
-				lastItem: last,
-				firstItem: first
-			};
+		var config = {
+			width: dimensions.width,
+			height: dimensions.height,
+			origin: origin,
+			accessors: accessors,
+			overlays: overlaysToAdd,
+			scaleType: scales
+		};
+		return config;
+	},
+	getChartPlotFor(config, partialData, domainL, domainR) {
+		var overlayYAccessors = pluck(keysAsArray(config.overlays), 'yAccessor');
 
-		return _chartData;
+		var xyValues = ScaleUtils.flattenData(partialData
+				, [config.accessors.xAccessor]
+				, [config.accessors.yAccessor].concat(overlayYAccessors));
+
+		var overlayValues = this.updateOverlayFirstLast(partialData, config.overlays)
+
+		var scales = this.updateScales(
+			xyValues
+			, config.scaleType
+			, partialData
+			, config.width
+			, config.height);
+
+		if (domainL && domainR) scales.xScale.domain([domainL, domainR])
+
+		//var last = Utils.cloneMe(partialData[partialData.length - 1]);
+		var last = partialData[partialData.length - 1];
+		//var first = Utils.cloneMe(partialData[0]);
+		var first = partialData[0];
+
+		var drawableWidth = scales.xScale(config.accessors.xAccessor(partialData[partialData.length - 1]))
+			- scales.xScale(config.accessors.xAccessor(partialData[0]));
+
+		var plot = {
+			drawableWidth: drawableWidth,
+			overlayValues: overlayValues,
+			scales: scales,
+			lastItem: last,
+			firstItem: first
+		}
+		return plot;
 	},
 	defineScales(props, data, passThroughProps) {
 		var xScale = props.xScale || props._xScale,

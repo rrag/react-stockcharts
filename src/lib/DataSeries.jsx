@@ -13,8 +13,9 @@ var DataSeries = React.createClass({
 		};
 	},
 	render() {
+		var children = React.Children.map(this.props.children, (child) => React.cloneElement(child));
 		return (
-			<g  style={{ "clipPath": "url(#chart-area-clip)" }}>{this.props.children}</g>
+			<g  style={{ "clipPath": "url(#chart-area-clip)" }}>{children}</g>
 		);
 	}
 });
