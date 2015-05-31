@@ -94,9 +94,7 @@ var CandleStickChart = React.createClass({
 						<EdgeIndicator className="horizontal" itemType="last" orient="right"
 							edgeAt="right" forChart={2} displayFormat={d3.format(".4s")} />
 					</EdgeContainer>
-					<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
-						<CrossHair />
-					</MouseCoordinates>
+					<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)} type="crosshair" />
 					<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 					<TooltipContainer>
 						<OHLCTooltip forChart={1} origin={[-50, 0]}/>

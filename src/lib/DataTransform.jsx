@@ -75,9 +75,22 @@ var DataTransform = React.createClass({
 		_show: React.PropTypes.bool,
 		_mouseXY: React.PropTypes.array,
 		interval: React.PropTypes.string,
+
+		// EventCaptureMixin
+		onMouseMove: React.PropTypes.func,
+		onMouseEnter: React.PropTypes.func,
+		onMouseLeave: React.PropTypes.func,
+		onZoom: React.PropTypes.func,
+		onPanStart: React.PropTypes.func,
+		onPan: React.PropTypes.func,
+		onPanEnd: React.PropTypes.func,
+		panInProgress: React.PropTypes.bool.isRequired,
+		focus: React.PropTypes.bool.isRequired,
+		onFocus: React.PropTypes.func,
 	},
 	getChildContext() {
-		// console.log(this.state._show);
+		console.log(this.context._width);
+
 		return {
 			data: this.state.data,
 			dataTransformOptions: this.state.dataTransformOptions,
@@ -86,11 +99,23 @@ var DataTransform = React.createClass({
 			_currentItems: this.state._currentItems,
 			_show: this.state._show,
 			_mouseXY: this.state._mouseXY,
-			interval: this.state.interval
+			interval: this.state.interval,
+
+			// EventCaptureMixin
+			onMouseMove: this.handleMouseMove,
+			onMouseEnter: this.handleMouseEnter,
+			onMouseLeave: this.handleMouseLeave,
+			onZoom: this.handleZoom,
+			onPanStart: this.handlePanStart,
+			onPan: this.handlePan,
+			onPanEnd: this.handlePanEnd,
+			onFocus: this.handleFocus,
+			panInProgress: this.state.panInProgress,
+			focus: this.state.focus
 		}
-	},
+	},/* */
 	render() {
-		// console.log('DataTransform.render()');
+		console.log('DataTransform.render()');
 		// console.error('foobar');
 		var children = React.Children.map(this.props.children, (child) => React.cloneElement(child));
 		// var children = this.props.children;
@@ -101,10 +126,10 @@ var DataTransform = React.createClass({
 	render() {
 		// console.log('DataTransform.render()');
 		// console.error('foobar');
-		// var children = React.Children.map(this.props.children, (child) => React.cloneElement(child));
+		var children = React.Children.map(this.props.children, (child) => React.cloneElement(child));
 		// var children = this.props.children;
 		return (
-			<Dummy render={() => <g>{this.props.children}</g>} />
+			<Dummy contextProps={this.getCh22ildContext()} render={() => <g>{children}</g>} />
 		);
 	}*/
 });

@@ -1,13 +1,16 @@
 'use strict';
 var React = require('react');
-var EdgeCoordinate = require('./EdgeCoordinate')
+var CrossHair = require('./CrossHair')
+var VerticalMousePointer = require('./VerticalMousePointer')
 var Utils = require('./utils/utils')
+
 
 var MouseCoordinates = React.createClass({
 	propTypes: {
 		forChart: React.PropTypes.number.isRequired, 
 		xDisplayFormat: React.PropTypes.func.isRequired,
-		yDisplayFormat: React.PropTypes.func.isRequired
+		yDisplayFormat: React.PropTypes.func.isRequired,
+		type: React.PropTypes.oneOf(['crosshair', 'vertical']).isRequired
 	},
 	shouldComponentUpdate(nextProps, nextState, nextContext) {
 		return nextContext._currentItems != this.context._currentItems
@@ -31,12 +34,7 @@ var MouseCoordinates = React.createClass({
 		_mouseXY: React.PropTypes.array,
 		dataTransformOptions: React.PropTypes.object,
 	},
-	childContextTypes: {
-		_mouseXY: React.PropTypes.array.isRequired,
-		_xDisplayValue: React.PropTypes.string.isRequired,
-		_yDisplayValue: React.PropTypes.string.isRequired,
-	},
-	getChildContext() {
+	getPointer() {
 		var chartData = this.getChartData();
 		var item = this.getCurrentItem();
 
@@ -50,24 +48,26 @@ var MouseCoordinates = React.createClass({
 		if (xValue === undefined || yValue === undefined) return null;
 		var x = this.props.snapX ? Math.round(chartData.scales.xScale(xValue)) : this.context._mouseXY[0];
 		var y = this.context._mouseXY[1];
-
-		// console.log(xDisplayValue, yValue);
-		return {
-			_mouseXY: [x, y],
-			_xDisplayValue: this.props.xDisplayFormat(xDisplayValue),
-			_yDisplayValue: this.props.yDisplayFormat(yValue)
+		console.log('here');
+		switch (this.props.type) {
+			case 'crosshair':
+				return <CrossHair height={this.context._height} width={this.context._width} mouseXY={[x, y]}
+					xDisplayValue={this.props.xDisplayFormat(xDisplayValue)} yDisplayValue={this.props.yDisplayFormat(yValue)}/>
+			case 'vertical':
+				return <VerticalMousePointer />
 		}
 	},
 	render() {
-		var children = null;
-		if (this.context._show) {
+
+		var pointer = this.getPointer()
+		/*if (this.context._show) {
 			//children = this.props.children;
-			children = React.Children.map(this.props.children, (child) => React.cloneElement(child));
-		};
-		console.log('MouseCoordinates.render', this.context._show);
+			children = ;
+		};*/
+		console.log(pointer);
 		return (
 			<g className={this.context._show ? 'show' : 'hide'}>
-				{children}
+				{pointer}
 			</g>
 		);
 	}

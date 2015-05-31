@@ -6,33 +6,6 @@ var Freezer = require('freezer-js');
 
 var EventCaptureMixin = {
 
-	childContextTypes: {
-		onMouseMove: React.PropTypes.func,
-		onMouseEnter: React.PropTypes.func,
-		onMouseLeave: React.PropTypes.func,
-		onZoom: React.PropTypes.func,
-		onPanStart: React.PropTypes.func,
-		onPan: React.PropTypes.func,
-		onPanEnd: React.PropTypes.func,
-		panInProgress: React.PropTypes.bool.isRequired,
-		focus: React.PropTypes.bool.isRequired,
-		onFocus: React.PropTypes.func,
-	},
-	getChildContext() {
-		// console.log('panInProgress - ', this.state.panInProgress);
-		return {
-			onMouseMove: this.handleMouseMove,
-			onMouseEnter: this.handleMouseEnter,
-			onMouseLeave: this.handleMouseLeave,
-			onZoom: this.handleZoom,
-			onPanStart: this.handlePanStart,
-			onPan: this.handlePan,
-			onPanEnd: this.handlePanEnd,
-			onFocus: this.handleFocus,
-			panInProgress: this.state.panInProgress,
-			focus: this.state.focus
-		};
-	},
 	handleMouseMove(mouseXY) {
 		console.log('mouse move - ', mouseXY);
 		var currentItems = this.state._chartData
@@ -42,10 +15,13 @@ var EventCaptureMixin = {
 				var item = Utils.getClosestItem(this.state._data, xValue, eachChartData.accessors.xAccessor);
 				return { id: eachChartData.id, data: item };
 			});
+		/*this.state._mouseXY = mouseXY
+		this.state._currentItems = currentItems;
+		this.forceUpdate();*/
 		this.setState({
 			_mouseXY: mouseXY,
 			_currentItems: currentItems
-		});
+		});/**/
 	},
 	handleMouseEnter() {
 		console.log('enter');
