@@ -22,6 +22,7 @@ var DataTransform = React.createClass({
 		_height: React.PropTypes.number.isRequired,
 		data: React.PropTypes.object.isRequired,
 		dataTransformOptions: React.PropTypes.object,
+		dataTransformProps: React.PropTypes.object,
 		interval: React.PropTypes.string.isRequired,
 		initialDisplay: React.PropTypes.number.isRequired,
 	},
@@ -39,7 +40,17 @@ var DataTransform = React.createClass({
 	},
 	transformData(props, context) {
 		var transformer = ChartTransformer.getTransformerFor(props.transformType);
-		var passThroughProps = transformer(context.data[context.interval], props.options, props)
+
+		if (context.dataTransformOptions || props.options) {
+			var options = {};
+			if (context.dataTransformOptions)
+				Object.keys(context.dataTransformOptions).forEach((key) => options[key] = context.dataTransformOptions[key]);
+			if (props.options)
+				Object.keys(props.options).forEach((key) => options[key] = props.options[key]);
+		}
+
+		console.log(options);
+		var passThroughProps = transformer(context.data, context.interval, options, context.dataTransformProps)
 		// console.log('passThroughProps-------', passThroughProps);
 
 		// this.setState({ passThroughProps: passThroughProps });
@@ -50,7 +61,9 @@ var DataTransform = React.createClass({
 		var passThroughProps = this.transformData(props, context);
 		var state = {
 			data: passThroughProps.data,
-			dataTransformOptions: passThroughProps.options
+			dataTransformOptions: passThroughProps.options,
+			dataTransformProps: passThroughProps.other,
+			interval: context.interval
 		}
 		if (this.containsChart(props)) {
 			var data = passThroughProps.data[context.interval];
@@ -64,7 +77,6 @@ var DataTransform = React.createClass({
 			state._currentItems = [];
 			state._show = false;
 			state._mouseXY = [0, 0];
-			state.interval = context.interval;
 			state.mainChart = mainChart;
 		}
 		this.setState(state);
@@ -73,7 +85,9 @@ var DataTransform = React.createClass({
 		var passThroughProps = this.transformData(props, context);
 		var state = {
 			data: passThroughProps.data,
-			dataTransformOptions: passThroughProps.options
+			dataTransformOptions: passThroughProps.options,
+			dataTransformProps: passThroughProps.other,
+			interval: context.interval
 		}
 		if (this.containsChart(props)) {
 			var { interval, _chartData, _data } = this.state
@@ -92,7 +106,6 @@ var DataTransform = React.createClass({
 			state._currentItems = [];
 			state._show = false;
 			state._mouseXY = [0, 0];
-			state.interval = context.interval;
 			state.mainChart = mainChart;
 		}
 		this.setState(state);
@@ -100,51 +113,27 @@ var DataTransform = React.createClass({
 	childContextTypes: {
 		data: React.PropTypes.object,
 		dataTransformOptions: React.PropTypes.object,
+		dataTransformProps: React.PropTypes.object,
 		_data: React.PropTypes.array,
 		_chartData: React.PropTypes.array,
 		_currentItems: React.PropTypes.array,
 		_show: React.PropTypes.bool,
 		_mouseXY: React.PropTypes.array,
 		interval: React.PropTypes.string,
-
-		// EventCaptureMixin
-		onMouseMove: React.PropTypes.func,
-		onMouseEnter: React.PropTypes.func,
-		onMouseLeave: React.PropTypes.func,
-		onZoom: React.PropTypes.func,
-		onPanStart: React.PropTypes.func,
-		onPan: React.PropTypes.func,
-		onPanEnd: React.PropTypes.func,
-		panInProgress: React.PropTypes.bool.isRequired,
-		focus: React.PropTypes.bool.isRequired,
-		onFocus: React.PropTypes.func,
 	},
 	getChildContext() {
-		// console.log(this.context._width);
-
 		return {
 			data: this.state.data,
 			dataTransformOptions: this.state.dataTransformOptions,
+			dataTransformProps: this.state.dataTransformProps,
 			_data: this.state._data,
 			_chartData: this.state._chartData,
 			_currentItems: this.state._currentItems,
 			_show: this.state._show,
 			_mouseXY: this.state._mouseXY,
 			interval: this.state.interval,
-
-			// EventCaptureMixin
-			onMouseMove: this.handleMouseMove,
-			onMouseEnter: this.handleMouseEnter,
-			onMouseLeave: this.handleMouseLeave,
-			onZoom: this.handleZoom,
-			onPanStart: this.handlePanStart,
-			onPan: this.handlePan,
-			onPanEnd: this.handlePanEnd,
-			onFocus: this.handleFocus,
-			panInProgress: this.state.panInProgress,
-			focus: this.state.focus
 		}
-	},/* */
+	},
 	render() {
 		// console.log('DataTransform.render()');
 		// console.error('foobar');

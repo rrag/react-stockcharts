@@ -27,7 +27,7 @@ var ChartContainerMixin = {
 	getChartData(props, context, partialData, fullData, other) {
 
 		var charts = this.getCharts(props);
-		var innerDimensions = this.getInnerDimensions(context);
+		var innerDimensions = this.getInnerDimensions(context, other);
 
 		return charts.map((each) => {
 			var chartProps = each.props;
@@ -52,10 +52,12 @@ var ChartContainerMixin = {
 		var item = Utils.getClosestItem(this.state._data, xValue, chartData.config.accessors.xAccessor);
 		return item;
 	},
-	getInnerDimensions(ctx) {
+	getInnerDimensions(ctx, other) {
+		// console.log(other);
+		if (other === undefined) other = {};
 		return {
-			width: ctx._width,
-			height: ctx._height
+			width: other.width || ctx._width,
+			height: other.height || ctx._height
 		}
 	},
 	getDimensions(innerDimension, chartProps) {

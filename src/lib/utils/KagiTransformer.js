@@ -6,7 +6,7 @@ var usePrice = function (d) { return d.close; };
 
 var calculateATR = require('./ATRCalculator');
 
-function KagiTransformer(data, options, props) {
+function KagiTransformer(data, interval, options, other) {
 	if (options === undefined) options = {};
 
 	var period = options.period || 14;
@@ -14,10 +14,7 @@ function KagiTransformer(data, options, props) {
 	calculateATR(data.D, period);
 	var reversalThreshold = function (d) { return d["atr" + period] }
 
-	var dateAccesor = options.dateAccesor || props._dateAccessor;
-	var dateMutator = options.dateMutator || props._dateMutator;
-	var indexAccessor = options.indexAccessor || props._indexAccessor;
-	var indexMutator = options.indexMutator || props._indexMutator;
+	var { _dateAccessor, _dateMutator, _indexAccessor, _indexMutator } = options;
 
 	var kagiData = new Array();
 
@@ -26,12 +23,12 @@ function KagiTransformer(data, options, props) {
 
 	data.D.forEach( function (d) {
 		if (line.from === undefined) {
-			indexMutator(line, index++);
-			dateMutator(line, dateAccesor(d));
+			_indexMutator(line, index++);
+			_dateMutator(line, _dateAccessor(d));
 			/*line.displayDate = d.displayDate;
 			line.fromDate = d.displayDate;
 			line.toDate = d.displayDate;*/
-			line.from = dateAccesor(d);
+			line.from = _dateAccessor(d);
 
 			if (!line.open) line.open = d.open;
 			line.high = d.high;
@@ -77,7 +74,7 @@ function KagiTransformer(data, options, props) {
 		line.volume = (line.volume || 0) + d.volume;
 		line.high = Math.max(line.high, d.high);
 		line.low = Math.min(line.low, d.low);
-		line.to = dateAccesor(d);
+		line.to = _dateAccessor(d);
 		//line.toDate = d.displayDate;
 		var priceMovement = (usePrice(d) - line.close);
 
@@ -150,16 +147,12 @@ function KagiTransformer(data, options, props) {
 
 		}
 	});
-	// console.table(kagiData);
-	// console.table(data);
-	var response = {};
-	Object.keys(props)
-		.filter((key) => excludeList.indexOf(key) < 0)
-		.forEach((key) => response[key] = props[key]);
 
-	response.data = {'D': kagiData};
-
-	return response;
+	return {
+		data: {'D': kagiData},
+		other: other,
+		options: options
+	};
 }
 
 

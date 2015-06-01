@@ -3,34 +3,23 @@
 var excludeList = ['transformType', 'options', 'children', 'namespace'];
 
 
-function HeikinAshiTransformer(data, options, props) {
-	if (options === undefined) options = {};
-	var dateAccesor = options.dateAccesor || props._dateAccessor;
-	var dateMutator = options.dateMutator || props._dateMutator;
-	var indexAccessor = options.indexAccessor || props._indexAccessor;
-	var indexMutator = options.indexMutator || props._indexMutator;
+function HeikinAshiTransformer(data, interval, options, other) {
 
-	if (props._multiInterval && props._stockScale) {
-		
-		var haData = {};
-		Object.keys(data)
-			.forEach((key) => haData[key] = buildHA(data[key], indexAccessor, indexMutator, dateAccesor, dateMutator));
-		var response = {};
+	var { _dateAccessor, _dateMutator, _indexAccessor, _indexMutator } = options;
+	// console.log(data, options);
 
-		Object.keys(props)
-			.filter((key) => excludeList.indexOf(key) < 0)
-			.forEach((key) => response[key] = props[key]);
+	var haData = {};
+	Object.keys(data)
+		.forEach((key) => haData[key] = buildHA(data[key], _indexAccessor, _indexMutator, _dateAccessor, _dateMutator));
 
-		response.data = haData;
-
-		return response;
-	}
 	return {
-		data: data
+		data: haData,
+		other: other,
+		options: options
 	};
 }
 
-function buildHA(data, indexAccessor, indexMutator, dateAccesor, dateMutator) {
+function buildHA(data, indexAccessor, indexMutator, dateAccessor, dateMutator) {
 	var prevEach;
 
 	var haData = data.map(function (d, i) {
@@ -38,7 +27,7 @@ function buildHA(data, indexAccessor, indexMutator, dateAccesor, dateMutator) {
 		indexMutator(each, indexAccessor(d));
 		each.close = (d.open + d.high + d.low + d.close) / 4;
 
-		dateMutator(each, dateAccesor(d));
+		dateMutator(each, dateAccessor(d));
 		//each.displayDate = d.displayDate;
 
 		if (!prevEach) {

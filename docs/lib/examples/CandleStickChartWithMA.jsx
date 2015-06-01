@@ -37,7 +37,7 @@ var CandleStickChart = React.createClass({
 
 		return (
 			<ChartCanvas width={this.state.width} height={400}
-				margin={{left: 40, right: 70, top:10, bottom: 30}} data={this.props.data}>
+				margin={{left: 40, right: 70, top:10, bottom: 30}} data={this.props.data} interval="D" initialDisplay={30} >
 				<DataTransform transformType="stockscale">
 					<Chart id={1} >
 						<XAxis axisAt="bottom" orient="bottom"/>
@@ -69,9 +69,7 @@ var CandleStickChart = React.createClass({
 					</Chart>
 					<CurrentCoordinate forChart={2} forOverlay={3} />
 					<CurrentCoordinate forChart={2}/>
-					<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
-						<CrossHair />
-					</MouseCoordinates>
+					<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)} type="crosshair" />
 					<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 					<TooltipContainer>
 						<OHLCTooltip forChart={1} origin={[-40, 0]}/>

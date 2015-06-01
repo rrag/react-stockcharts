@@ -4,24 +4,24 @@ var excludeList = ['transformType', 'options', 'children', 'namespace', '_multiI
 var pricingMethod = function (d) { return { high: d.high, low: d.low }; };
 // var pricingMethod = function (d) { return { high: d.close, low: d.close }; };
 // var usePrice = function (d) { return d.close; };
-var defaultBoxSize = 0.5;
-var defaultReversal = 3;
 var calculateATR = require('./ATRCalculator');
 
-function RenkoTransformer(rawData, options, props) {
-	if (options === undefined) options = {};
+var defaultOptions = {
+	boxSize: 0.5,
+	reversal: 3,
+	period: 14
+}
 
-	var period = options.period || 14;
+function RenkoTransformer(rawData, interval, options, other) {
+	var newOptions = {};
+	Object.keys(defaultOptions).forEach((key) => newOptions[key] = defaultOptions[key]);
+
+	if (options) Object.keys(options).forEach((key) => newOptions[key] = options[key]);
+
+	var { _dateAccessor, _dateMutator, _indexAccessor, _indexMutator, reversal, boxSize, period } = newOptions;
 
 	calculateATR(rawData.D, period);
 	var brickSize = function (d) { return d["atr" + period]}
-
-	var dateAccesor = options.dateAccesor || props._dateAccessor;
-	var dateMutator = options.dateMutator || props._dateMutator;
-	var indexAccessor = options.indexAccessor || props._indexAccessor;
-	var indexMutator = options.indexMutator || props._indexMutator;
-	var boxSize = options.boxSize || defaultBoxSize;
-	var reversal = options.reversal || defaultReversal;
 
 	var renkoData = new Array();
 
@@ -43,10 +43,10 @@ function RenkoTransformer(rawData, options, props) {
 			brick.startOfMonth = d.startOfMonth;
 			brick.startOfWeek = d.startOfWeek;
 			//brick.tempClose = d.close;
-			brick.from = indexAccessor(d);
-			brick.fromDate = dateAccesor(d);
-			indexMutator(brick, index++);
-			dateMutator(brick, dateAccesor(d));
+			brick.from = _indexAccessor(d);
+			brick.fromDate = _dateAccessor(d);
+			_indexMutator(brick, index++);
+			_dateMutator(brick, _dateAccessor(d));
 		}
 		brick.volume = (brick.volume || 0) + d.volume;
 
@@ -67,7 +67,7 @@ function RenkoTransformer(rawData, options, props) {
 		if (!brick.startOfYear) {
 			brick.startOfYear = d.startOfYear;
 			if (brick.startOfYear) {
-				dateMutator(brick, dateAccesor(d));
+				_dateMutator(brick, _dateAccessor(d));
 				// brick.displayDate = d.displayDate;
 			}
 		}
@@ -75,7 +75,7 @@ function RenkoTransformer(rawData, options, props) {
 		if (!brick.startOfQuarter) {
 			brick.startOfQuarter = d.startOfQuarter;
 			if (brick.startOfQuarter && !brick.startOfYear) {
-				dateMutator(brick, dateAccesor(d));
+				_dateMutator(brick, _dateAccessor(d));
 				// brick.displayDate = d.displayDate;
 			}
 		}
@@ -83,14 +83,14 @@ function RenkoTransformer(rawData, options, props) {
 		if (!brick.startOfMonth) {
 			brick.startOfMonth = d.startOfMonth;
 			if (brick.startOfMonth && !brick.startOfQuarter) {
-				dateMutator(brick, dateAccesor(d));
+				_dateMutator(brick, _dateAccessor(d));
 				// brick.displayDate = d.displayDate;
 			}
 		}
 		if (!brick.startOfWeek) {
 			brick.startOfWeek = d.startOfWeek;
 			if (brick.startOfWeek && !brick.startOfMonth) {
-				dateMutator(brick, dateAccesor(d));
+				_dateMutator(brick, _dateAccessor(d));
 				// brick.displayDate = d.displayDate;
 			}
 		}
@@ -112,8 +112,8 @@ function RenkoTransformer(rawData, options, props) {
 										: brick.open - brickSize(d);
 					direction = brick.close > brick.open ? 1 : -1;
 					brick.direction = direction;
-					brick.to = indexAccessor(d);
-					brick.toDate = dateAccesor(d);
+					brick.to = _indexAccessor(d);
+					brick.toDate = _dateAccessor(d);
 					// brick.diff = brick.open - brick.close;
 					// brick.atr = d.atr;
 					brick.fullyFormed = true;
@@ -137,20 +137,20 @@ function RenkoTransformer(rawData, options, props) {
 						, startOfWeek : false
 					};
 					brick = newBrick;
-					brick.from = indexAccessor(d);
-					brick.fromDate = dateAccesor(d);
-					indexMutator(brick, index + j);
-					dateMutator(brick, dateAccesor(d));
+					brick.from = _indexAccessor(d);
+					brick.fromDate = _dateAccessor(d);
+					_indexMutator(brick, index + j);
+					_dateMutator(brick, _dateAccessor(d));
 					brick.volume = (brick.volume || 0) + d.volume;
 				}
 				index = index + j - 1;
 				brick = {};
 			} else {
-				if (indexAccessor(d) === rawData.D.length - 1) {
+				if (_indexAccessor(d) === rawData.D.length - 1) {
 					brick.close = direction > 0 ? pricingMethod(d).high : pricingMethod(d).low;
-					brick.to = indexAccessor(d);
-					brick.toDate = dateAccesor(d);
-					dateMutator(brick, dateAccesor(d));
+					brick.to = _indexAccessor(d);
+					brick.toDate = _dateAccessor(d);
+					_dateMutator(brick, _dateAccessor(d));
 
 					brick.fullyFormed = false;
 					renkoData.push(brick);
@@ -159,17 +159,11 @@ function RenkoTransformer(rawData, options, props) {
 		}
 
 	});
-
-	// console.table(renkoData);
-	// console.table(data);
-	var response = {};
-	Object.keys(props)
-		.filter((key) => excludeList.indexOf(key) < 0)
-		.forEach((key) => response[key] = props[key]);
-
-	response.data = {'D': renkoData};
-
-	return response;
+	return {
+		data: {'D': renkoData},
+		other: other,
+		options: newOptions
+	};
 }
 
 module.exports = RenkoTransformer;

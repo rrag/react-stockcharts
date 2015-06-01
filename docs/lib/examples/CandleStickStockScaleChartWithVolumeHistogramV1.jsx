@@ -23,7 +23,7 @@ var CandleStickChart = React.createClass({
 
 		return (
 			<ChartCanvas width={this.state.width} height={400}
-				margin={{left: 50, right: 50, top:10, bottom: 30}} data={this.props.data}>
+				margin={{left: 50, right: 50, top:10, bottom: 30}} data={this.props.data} interval="D" >
 				<DataTransform transformType="stockscale">
 					<Chart id={1} >
 						<XAxis axisAt="bottom" orient="bottom"/>

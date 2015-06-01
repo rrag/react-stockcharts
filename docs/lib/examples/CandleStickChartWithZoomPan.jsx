@@ -46,9 +46,7 @@ var CandleStickChart = React.createClass({
 							<HistogramSeries className={(d) => d.close > d.open ? 'up' : 'down'} />
 						</DataSeries>
 					</Chart>
-					<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
-						<CrossHair />
-					</MouseCoordinates>
+					<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)} type="crosshair" />
 					<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 					<TooltipContainer>
 						<OHLCTooltip forChart={1} origin={[-40, 0]}/>

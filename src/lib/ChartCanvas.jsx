@@ -2,19 +2,19 @@
 var React = require('react');
 // var TestUtils = React.addons.TestUtils;
 
-var EventCaptureMixin = require('./mixin/EventCaptureMixin');
+// var EventCaptureMixin = require('./mixin/EventCaptureMixin');
 var ChartContainerMixin = require('./mixin/ChartContainerMixin');
 var Canvas = require('./Canvas');
 
 var ChartCanvas = React.createClass({
-	// mixins: [ChartContainerMixin, EventCaptureMixin],
+	mixins: [ChartContainerMixin],
 	propTypes: {
 		width: React.PropTypes.number.isRequired,
 		height: React.PropTypes.number.isRequired,
 		margin: React.PropTypes.object,
 		interval: React.PropTypes.oneOf(['D']).isRequired, //,'m1', 'm5', 'm15', 'W', 'M'
 		data: React.PropTypes.array.isRequired,
-		initialDisplay: React.PropTypes.number.isRequired,
+		initialDisplay: React.PropTypes.number,
 	},
 	getAvailableHeight(props) {
 		return props.height - props.margin.top - props.margin.bottom;
@@ -29,7 +29,7 @@ var ChartCanvas = React.createClass({
 		return {
 			margin: {top: 20, right: 30, bottom: 30, left: 80},
 			interval: "D",
-			initialDisplay: 30,
+			// initialDisplay: 30,
 		};
 	},
 	childContextTypes: {
@@ -38,21 +38,46 @@ var ChartCanvas = React.createClass({
 		data: React.PropTypes.object.isRequired,
 		interval: React.PropTypes.string.isRequired,
 		initialDisplay: React.PropTypes.number.isRequired,
+		_data: React.PropTypes.array,
 		// canvas: React.PropTypes.any,
+
+		_chartData: React.PropTypes.array,
 	},
 	getChildContext() {
-		var data = {};
-		data[this.props.interval] = this.props.data;
 		return {
 			_width: this.getAvailableWidth(this.props),
 			_height: this.getAvailableHeight(this.props),
-			data: data,
+			data: this.state.data,
 			interval: this.props.interval,
-			initialDisplay: this.props.initialDisplay,
+			initialDisplay: this.props.initialDisplay || this.state._data.length,
+			_data: this.state._data,
+			_chartData: this.state._chartData
 		}
 	},
-	componentDidMount() {
-		// console.log(this.getCanvas());
+	componentWillMount() {
+		var { props, context } = this;
+
+		var data = {};
+		data[this.props.interval] = this.props.data;
+
+		var state = {
+			data: data,
+			_data: this.props.data
+		}
+		if (this.containsChart(props)) {
+			var defaultOptions = {
+				width: this.getAvailableWidth(props),
+				height: this.getAvailableHeight(props),
+			}
+			var partialData = props.data;
+			var chartData = this.getChartData(props, context, partialData, data, defaultOptions);
+			console.log(chartData);
+			var mainChart = this.getMainChart(props.children);
+
+			state._chartData = chartData;
+			state._data = partialData;
+		}
+		this.setState(state);
 	},
 	getCanvas() {
 		return this.refs.canvas.getCanvas();

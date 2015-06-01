@@ -12,7 +12,32 @@ function getLongValue(value) {
 }
 
 var EventCaptureMixin = {
-
+	childContextTypes: {
+		onMouseMove: React.PropTypes.func,
+		onMouseEnter: React.PropTypes.func,
+		onMouseLeave: React.PropTypes.func,
+		onZoom: React.PropTypes.func,
+		onPanStart: React.PropTypes.func,
+		onPan: React.PropTypes.func,
+		onPanEnd: React.PropTypes.func,
+		panInProgress: React.PropTypes.bool.isRequired,
+		focus: React.PropTypes.bool.isRequired,
+		onFocus: React.PropTypes.func,
+	},
+	getChildContext() {
+		return {
+			onMouseMove: this.handleMouseMove,
+			onMouseEnter: this.handleMouseEnter,
+			onMouseLeave: this.handleMouseLeave,
+			onZoom: this.handleZoom,
+			onPanStart: this.handlePanStart,
+			onPan: this.handlePan,
+			onPanEnd: this.handlePanEnd,
+			onFocus: this.handleFocus,
+			panInProgress: this.state.panInProgress,
+			focus: this.state.focus
+		}
+	},
 	handleMouseMove(mouseXY) {
 		// console.log('mouse move - ', mouseXY);
 		var currentItems = this.getCurrentItems(this.state._chartData, mouseXY, this.state._data)

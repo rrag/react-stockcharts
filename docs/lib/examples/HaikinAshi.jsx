@@ -37,7 +37,7 @@ var HaikinAshi = React.createClass({
 
 		return (
 			<ChartCanvas width={this.state.width} height={400}
-				margin={{left: 90, right: 70, top:10, bottom: 30}} data={this.props.data} interval="1D" >
+				margin={{left: 90, right: 70, top:10, bottom: 30}} data={this.props.data} interval="D" initialDisplay={30} >
 				<DataTransform transformType="stockscale">
 				<DataTransform transformType="heikinashi">
 					<Chart id={1} >
@@ -72,39 +72,27 @@ var HaikinAshi = React.createClass({
 					<CurrentCoordinate forChart={2}/>
 					<EdgeContainer>
 						<EdgeIndicator className="horizontal" itemType="last" orient="right"
-							edgeAt="right" forChart={1} forOverlay={0}
-							/>
+							edgeAt="right" forChart={1} forOverlay={0} />
 						<EdgeIndicator className="horizontal" itemType="last" orient="right"
-							edgeAt="right" forChart={1} forOverlay={1}
-							/>
+							edgeAt="right" forChart={1} forOverlay={1} />
 						<EdgeIndicator className="horizontal" itemType="last" orient="right"
-							edgeAt="right" forChart={1} forOverlay={2}
-							/>
+							edgeAt="right" forChart={1} forOverlay={2} />
 						<EdgeIndicator className="horizontal" itemType="first" orient="left"
-							edgeAt="left" forChart={1} forOverlay={0}
-							/>
+							edgeAt="left" forChart={1} forOverlay={0} />
 						<EdgeIndicator className="horizontal" itemType="first" orient="left"
-							edgeAt="left" forChart={1} forOverlay={1}
-							/>
+							edgeAt="left" forChart={1} forOverlay={1} />
 						<EdgeIndicator className="horizontal" itemType="first" orient="left"
-							edgeAt="left" forChart={1} forOverlay={2}
-							/>
+							edgeAt="left" forChart={1} forOverlay={2} />
 						<EdgeIndicator className="horizontal" itemType="first" orient="left"
-							edgeAt="left" forChart={2} forOverlay={3} displayFormat={d3.format(".4s")}
-							/>
+							edgeAt="left" forChart={2} forOverlay={3} displayFormat={d3.format(".4s")} />
 						<EdgeIndicator className="horizontal" itemType="last" orient="right"
-							edgeAt="right" forChart={2} forOverlay={3} displayFormat={d3.format(".4s")}
-							/>
+							edgeAt="right" forChart={2} forOverlay={3} displayFormat={d3.format(".4s")} />
 						<EdgeIndicator className="horizontal" itemType="first" orient="left"
-							edgeAt="left" forChart={2} displayFormat={d3.format(".4s")}
-							/>
+							edgeAt="left" forChart={2} displayFormat={d3.format(".4s")} />
 						<EdgeIndicator className="horizontal" itemType="last" orient="right"
-							edgeAt="right" forChart={2} displayFormat={d3.format(".4s")}
-							/>
+							edgeAt="right" forChart={2} displayFormat={d3.format(".4s")} />
 					</EdgeContainer>
-					<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
-						<CrossHair />
-					</MouseCoordinates>
+					<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)} type="crosshair" />
 					<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 					<TooltipContainer>
 						<OHLCTooltip forChart={1} origin={[-50, 0]}/>

@@ -42,7 +42,7 @@ var KagiSeries = React.createClass({
 
 		var props = this.props;
 
-		var paths = kagiLine.map(function (each, i) {
+		var paths = kagiLine.map((each, i) => {
 
 			var dataSeries = d3.svg.line()
 				.x((d) => this.context.xScale(d[0]))

@@ -3,32 +3,36 @@
 var stockScale = require('../scale/polylineartimescale');
 
 var defaultOptions = {
-	dateAccesor: (d) => d.date,
-	indexAccessor: (d) => d._idx,
-	indexMutator: (d, i) => {d._idx = i;}
+	_dateAccessor: (d) => d.date,
+	_indexAccessor: (d) => d._idx,
+	_dateMutator: (d, date) => {d.date = date},
+	_indexMutator: (d, i) => {d._idx = i;}
 }
 
-function StockScaleTransformer(data, options) {
-	if (options === undefined) options = defaultOptions;
-	var dateAccesor = options.dateAccesor;
-	var dateMutator = options.dateMutator || function(d, date) {d.date = date};
-	var indexMutator = options.indexMutator;
+function StockScaleTransformer(data, interval, options) {
+	var newOptions = {};
+	Object.keys(defaultOptions).forEach((key) => newOptions[key] = defaultOptions[key]);
+
+	if (options) Object.keys(options).forEach((key) => newOptions[key] = options[key]);
+
+	var { _dateAccessor, _dateMutator, _indexAccessor, _indexMutator } = newOptions;
 
 	var prevDate;
 	var responseData = {}
-	responseData.D = data
+	var dd = data[interval];
+	responseData.D = dd
 		//.filter((each) => Math.random() > 0.9)
 		.map((each, i) => {
 			var row = each;
 			// console.log(each);
 			//console.log(row);
-			indexMutator(row,  i);
+			_indexMutator(row,  i);
 
 			row.startOfWeek = false;
 			row.startOfMonth = false;
 			row.startOfQuarter = false;
 			row.startOfYear = false;
-			var date = dateAccesor(row);
+			var date = _dateAccessor(row);
 			//row.displayDate = dateFormat(date);
 			if (prevDate !== undefined) {
 				// According to ISO calendar
@@ -46,25 +50,19 @@ function StockScaleTransformer(data, options) {
 			return row;
 		});
 	// console.table(responseData);
-	responseData.W = buildWeeklyData(responseData.D, indexMutator, dateAccesor, dateMutator);
-	responseData.M = buildMonthlyData(responseData.D, indexMutator, dateAccesor, dateMutator);
+	responseData.W = buildWeeklyData(responseData.D, _indexMutator, _dateAccessor, _dateMutator);
+	responseData.M = buildMonthlyData(responseData.D, _indexMutator, _dateAccessor, _dateMutator);
 
 	// console.table(responseData.W);
 
 	return {
 			data: responseData,
 			other: {
-				_xScale: stockScale(options.indexAccessor),
-				_xAccessor: options.indexAccessor,
+				_xScale: stockScale(newOptions._indexAccessor),
+				_xAccessor: newOptions._indexAccessor,
 				_stockScale: true,
 			},
-			// _multiInterval: true,
-			options: {
-				_dateAccessor: dateAccesor,
-				_dateMutator: dateMutator,
-				_indexAccessor: options.indexAccessor,
-				_indexMutator: indexMutator,
-			}
+			options: newOptions
 		};
 }
 

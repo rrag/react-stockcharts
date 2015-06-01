@@ -103,8 +103,8 @@ function renderPage(data, dataFull) {
 
 d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 	d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
-		// renderPage(MSFT, MSFTFull);
-		renderPartialPage(MSFT, MSFTFull);
+		renderPage(MSFT, MSFTFull);
+		// renderPartialPage(MSFT, MSFTFull);
 	});
 })
 
@@ -129,14 +129,29 @@ function renderPartialPage(data, dataFull) {
 		// console.log(d);
 	});
 	//var Renko = require('./lib/examples/Renko').init(dataFull);
-	var CandleStickChart = require('lib/examples/CandleStickChartWithEdge');
+	// AreaChart
+	// AreaChartWithYPercent
+	// CandleStickChart
+	// CandleStickStockScaleChart
+	// CandleStickChartWithEdge
+	// HaikinAshi
+	// Kagi
+	// CandleStickChartWithEdge  - Lots of data -> data={dataFull}/>
+	// CandleStickChartWithCHMousePointer
+	// CandleStickChartWithMA
+	// PointAndFigure
+	// Renko
+	// CandleStickStockScaleChartWithVolumeHistogramV1
+	// CandleStickStockScaleChartWithVolumeHistogramV2
+	// CandleStickChartWithZoomPan
+	var Chart = require('lib/examples/CandleStickChartWithZoomPan');
 
 	var ExamplesPage = React.createClass({
 		//mixins: [ScrollMixin],
 		render() {
 			return (
 				<div className="container react-stockchart">
-					<CandleStickChart data={data} />
+					<Chart data={data} />
 				</div>
 			)
 		}
