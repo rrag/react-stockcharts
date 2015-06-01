@@ -9,13 +9,6 @@ var pluck = Utils.pluck;
 var keysAsArray = Utils.keysAsArray;
 
 
-function getOverlayFromList(overlays, id) {
-	return overlays.map((each) => [each.id, each])
-		.filter((eachMap) => eachMap[0] === id)
-		.map((eachMap) => eachMap[1])[0];
-}
-
-
 var ChartContainerMixin = {
 	containsChart(props) {
 		return this.getCharts(props).length > 0;
@@ -189,7 +182,6 @@ var ChartContainerMixin = {
 			if (/DataSeries$/.test(child.props.namespace)) {
 				React.Children.forEach(child.props.children, (grandChild) => {
 					if (/OverlaySeries$/.test(grandChild.props.namespace)) {
-						// var overlay = getOverlayFromList(overlays, grandChild.props.id)
 						var key = OverlayUtils.getYAccessorKey(props.id, grandChild.props);
 						var overlay = {
 							id: grandChild.props.id,
@@ -272,38 +264,6 @@ var ChartContainerMixin = {
 			yScale: scales.yScale.copy()
 		};
 	},
-
-	updateChartDataFor(_chartData, data) {
-		console.log('updateChartDataFor');
-		var scales = _chartData.scales;
-
-		var accessors = _chartData.accessors;
-
-		var overlayValues = this.updateOverlayFirstLast(data, _chartData.overlays)
-
-		var overlayYAccessors = pluck(keysAsArray(_chartData.overlays), 'yAccessor');
-
-		var xyValues = ScaleUtils.flattenData(data, [accessors.xAccessor], [accessors.yAccessor].concat(overlayYAccessors));
-
-		scales = this.updateScales(
-			xyValues
-			, scales
-			, data
-			, _chartData.width
-			, _chartData.height);
-
-		var last = Utils.cloneMe(data[data.length - 1]);
-		var first = Utils.cloneMe(data[0]);
-
-		_chartData = _chartData.set({
-			overlayValues: overlayValues,
-			scales: scales,
-			lastItem: last,
-			firstItem: first
-		} ); // replace everything
-
-		return _chartData;
-	}
 };
 
 module.exports = ChartContainerMixin;

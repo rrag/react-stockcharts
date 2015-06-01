@@ -15,18 +15,22 @@ var EventCaptureMixin = {
 
 	handleMouseMove(mouseXY) {
 		// console.log('mouse move - ', mouseXY);
-		var currentItems = this.state._chartData
+		var currentItems = this.getCurrentItems(this.state._chartData, mouseXY, this.state._data)
 			// .filter((eachChartData) => eachChartData.id === this.state.mainChart)
-			.map((eachChartData) => {
-				var xValue = eachChartData.plot.scales.xScale.invert(mouseXY[0]);
-				var item = Utils.getClosestItem(this.state._data, xValue, eachChartData.config.accessors.xAccessor);
-				return { id: eachChartData.id, data: item };
-			});
+
 		this.setState({
 			_mouseXY: mouseXY,
 			_currentItems: currentItems,
 			_show: true
 		});
+	},
+	getCurrentItems(chartData, mouseXY, _data) {
+		return chartData
+			.map((eachChartData) => {
+				var xValue = eachChartData.plot.scales.xScale.invert(mouseXY[0]);
+				var item = Utils.getClosestItem(_data, xValue, eachChartData.config.accessors.xAccessor);
+				return { id: eachChartData.id, data: item };
+			});
 	},
 	handleMouseEnter() {
 		// console.log('enter');
@@ -62,7 +66,8 @@ var EventCaptureMixin = {
 		domainL = Math.max(getLongValue(chart.config.accessors.xAccessor(first)) - Math.floor(domainRange/3), domainL)
 		domainR = Math.min(getLongValue(chart.config.accessors.xAccessor(last)) + Math.floor(domainRange/3), domainR)
 		// xScale(domainR) - xScale(domainL)
-		var dataToPlot = this.getDataToPlotForDomain(domainL, domainR, data, chart.plot.drawableWidth, chart.config.accessors.xAccessor);
+		var dataToPlot = this.getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.accessors.xAccessor);
+		if (dataToPlot.data.length < 10) return;
 		var newChartData = _chartData.map((eachChart) => {
 			var plot = this.getChartPlotFor(eachChart.config, dataToPlot.data, domainL, domainR);
 			return {
@@ -90,7 +95,7 @@ var EventCaptureMixin = {
 			leftX = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor);
 			rightX = Utils.getClosestItemIndexes(dataForInterval, domainR, xAccessor);
 
-			filteredData = dataForInterval.slice(leftX.left, rightX.right);
+			filteredData = dataForInterval.slice(leftX.right, rightX.right);
 
 			// console.log(filteredData.length, width * threshold);
 			if (filteredData.length < width * threshold) break;
@@ -103,17 +108,64 @@ var EventCaptureMixin = {
 			data: filteredData
 		}
 	},
-	handlePanStart(panStartDomain) {
-		console.log('panStartDomain - ', panStartDomain);
+	handlePanStart(panStartDomain, panOrigin) {
+		// console.log('panStartDomain - ', panStartDomain, ', panOrigin - ', panOrigin);
 		this.setState({
 			panInProgress: true,
 			panStartDomain: panStartDomain,
+			panOrigin: panOrigin,
 			focus: true,
-			_show: false
 		});
 	},
 	handlePan(mousePosition) {
-		console.log('pan -- mouse move - ', mousePosition, ' pan start from ', this.state.panStartDomain);
+		// console.log('zoomDirection ', zoomDirection, ' mouseXY ', mouseXY);
+		var { mainChart, _chartData, data, _data, interval, panStartDomain, panOrigin } = this.state;
+
+		var chart = _chartData.filter((eachChart) => eachChart.id === mainChart)[0],
+			domainRange = panStartDomain[1] - panStartDomain[0],
+			fullData = data[interval],
+			last = fullData[fullData.length - 1],
+			first = fullData[0],
+			dx = mousePosition[0] - panOrigin[0],
+			xAccessor = chart.config.accessors.xAccessor;
+
+		// console.log('pan -- mouse move - ', mousePosition, ' dragged by ', dx, ' pixels');
+
+		var domainStart = getLongValue(panStartDomain[0]) - dx/chart.config.width * domainRange
+		if (domainStart < getLongValue(xAccessor(first)) - Math.floor(domainRange/3)) {
+			domainStart = getLongValue(xAccessor(first)) - Math.floor(domainRange/3)
+		} else {
+			domainStart = Math.min(getLongValue(xAccessor(last))
+				+ Math.ceil(domainRange/3), domainStart + domainRange) - domainRange;
+		}
+		var domainL = domainStart, domainR = domainStart + domainRange
+		if (panStartDomain[0] instanceof Date) {
+			domainL = new Date(domainL);
+			domainR = new Date(domainR);
+		}
+
+		var leftX = Utils.getClosestItemIndexes(fullData, domainL, xAccessor);
+		var rightX = Utils.getClosestItemIndexes(fullData, domainR, xAccessor);
+
+		var filteredData = fullData.slice(leftX.right, rightX.right);
+
+		var newChartData = _chartData.map((eachChart) => {
+			var plot = this.getChartPlotFor(eachChart.config, filteredData, domainL, domainR);
+			return {
+				id: eachChart.id,
+				config: eachChart.config,
+				plot: plot
+			}
+		});
+		var _currentItems = this.getCurrentItems(newChartData, mousePosition, filteredData);
+
+		this.setState({
+			_chartData: newChartData,
+			_data: filteredData,
+			_currentItems: _currentItems,
+			// _show: true,
+			_mouseXY: mousePosition
+		});
 	},
 	handlePanEnd() {
 		this.setState({

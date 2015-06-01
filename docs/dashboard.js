@@ -79,7 +79,7 @@ function renderPage(data, dataFull) {
 		render() {
 			var Page = this.state.selectedPage;
 			return (
-				<body>
+				<div>
 					<Nav />
 					<MainContainer>
 						<Sidebar>
@@ -89,12 +89,12 @@ function renderPage(data, dataFull) {
 						</Sidebar>
 						<Page someData={data} lotsOfData={dataFull} />
 					</MainContainer>
-				</body>
+				</div>
 			);
 		}
 	});
 
-	React.render(<ExamplesPage />, document.body);
+	React.render(<ExamplesPage />, document.getElementById("chart-goes-here"));
 }
 // React.render(<ExamplesPage />, document.getElementById("area"));
 
@@ -135,13 +135,11 @@ function renderPartialPage(data, dataFull) {
 		//mixins: [ScrollMixin],
 		render() {
 			return (
-				<body>
-					<div className="container react-stockchart">
-						<CandleStickChart data={data} />
-					</div>
-				</body>
+				<div className="container react-stockchart">
+					<CandleStickChart data={data} />
+				</div>
 			)
 		}
 	});
-	React.render(<ExamplesPage />, document.body);
+	React.render(<ExamplesPage />, document.getElementById("chart-goes-here"));
 }

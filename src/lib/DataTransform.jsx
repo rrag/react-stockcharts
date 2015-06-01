@@ -5,6 +5,7 @@ var ChartContainerMixin = require('./mixin/ChartContainerMixin');
 var DataTransformMixin = require('./mixin/DataTransformMixin');
 var ChartTransformer = require('./utils/ChartTransformer');
 var Dummy = require('./Dummy');
+var Utils = require('./utils/utils');
 
 var polyLinearTimeScale = require('./scale/polylineartimescale');
 
@@ -21,7 +22,8 @@ var DataTransform = React.createClass({
 		_height: React.PropTypes.number.isRequired,
 		data: React.PropTypes.object.isRequired,
 		dataTransformOptions: React.PropTypes.object,
-		interval: React.PropTypes.string.isRequired
+		interval: React.PropTypes.string.isRequired,
+		initialDisplay: React.PropTypes.number.isRequired,
 	},
 	getInitialState() {
 		return {
@@ -44,26 +46,55 @@ var DataTransform = React.createClass({
 		return passThroughProps;
 	},
 	componentWillMount() {
-		var passThroughProps = this.transformData(this.props, this.context);
-		// console.log(passThroughProps);
+		var { props, context } = this;
+		var passThroughProps = this.transformData(props, context);
 		var state = {
 			data: passThroughProps.data,
 			dataTransformOptions: passThroughProps.options
 		}
-		if (this.containsChart(this.props)) {
-			var data = passThroughProps.data[this.context.interval];
-			var chartData = this.getChartData(this.props, this.context, data, passThroughProps.data, passThroughProps.other);
-			var mainChart = this.getMainChart(this.props.children);
+		if (this.containsChart(props)) {
+			var data = passThroughProps.data[context.interval];
+			var beginIndex = Math.max(data.length - context.initialDisplay, 0);
+			var partialData = data.slice(beginIndex);
+			var chartData = this.getChartData(props, context, partialData, passThroughProps.data, passThroughProps.other);
+			var mainChart = this.getMainChart(props.children);
 
 			state._chartData = chartData;
-			state._data = data;
+			state._data = partialData;
 			state._currentItems = [];
 			state._show = false;
 			state._mouseXY = [0, 0];
-			state.interval = this.context.interval;
+			state.interval = context.interval;
 			state.mainChart = mainChart;
 		}
+		this.setState(state);
+	},
+	componentWillReceiveProps(props, context) {
+		var passThroughProps = this.transformData(props, context);
+		var state = {
+			data: passThroughProps.data,
+			dataTransformOptions: passThroughProps.options
+		}
+		if (this.containsChart(props)) {
+			var { interval, _chartData, _data } = this.state
 
+			var data = passThroughProps.data[interval];
+			var mainChart = this.getMainChart(props.children);
+			var mainChartData = _chartData.filter((each) => each.id === mainChart)[0];
+			var beginIndex = Utils.getClosestItemIndexes(data, mainChartData.config.accessors.xAccessor(_data[0]), mainChartData.config.accessors.xAccessor).left;
+			var endIndex = Utils.getClosestItemIndexes(data, mainChartData.config.accessors.xAccessor(_data[_data.length - 1]), mainChartData.config.accessors.xAccessor).right;
+
+			var partialData = data.slice(beginIndex, endIndex);
+			var chartData = this.getChartData(props, context, partialData, passThroughProps.data, passThroughProps.other);
+
+			state._chartData = chartData;
+			state._data = partialData;
+			state._currentItems = [];
+			state._show = false;
+			state._mouseXY = [0, 0];
+			state.interval = context.interval;
+			state.mainChart = mainChart;
+		}
 		this.setState(state);
 	},
 	childContextTypes: {

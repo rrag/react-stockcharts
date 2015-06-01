@@ -64,6 +64,23 @@ Utils.getClosestItem = function(array, value, accessor) {
 	//console.log(array[lo], array[hi], closest, lo, hi);
 	return Utils.cloneMe(closest);
 }
+Utils.getClosestItemIndex = function(array, value, accessor) {
+	var lo = 0, hi = array.length - 1;
+	while (hi - lo > 1) {
+		var mid = Math.round((lo + hi)/2);
+		if (accessor(array[mid]) <= value) {
+			lo = mid;
+		} else {
+			hi = mid;
+		}
+	}
+	if (accessor(array[lo]) === value) hi = lo;
+	var closestIndex = (Math.abs(accessor(array[lo]) - value) < Math.abs(accessor(array[hi]) - value))
+						? lo
+						: hi
+	//console.log(array[lo], array[hi], closestIndex, lo, hi);
+	return closestIndex;
+}
 Utils.getClosestItemIndexes = function(array, value, accessor) {
 	var lo = 0, hi = array.length - 1;
 	while (hi - lo > 1) {
