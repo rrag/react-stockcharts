@@ -71,7 +71,7 @@ var ChartCanvas = React.createClass({
 			}
 			var partialData = props.data;
 			var chartData = this.getChartData(props, context, partialData, data, defaultOptions);
-			console.log(chartData);
+			// console.log(chartData);
 			var mainChart = this.getMainChart(props.children);
 
 			state._chartData = chartData;

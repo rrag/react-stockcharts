@@ -23,7 +23,7 @@ var ChartCanvas = ReStock.ChartCanvas
 	, EdgeContainer = ReStock.EdgeContainer
 	, EdgeIndicator = ReStock.EdgeIndicator
 	, CurrentCoordinate = ReStock.CurrentCoordinate
-	, ChartWidthMixin = require('./mixin/chart-width-mixin')
+	, ChartWidthMixin = require('./mixin/ChartWidthMixin')
 	, InitialStateMixin = require('./mixin/initial-state-mixin')
 ;
 

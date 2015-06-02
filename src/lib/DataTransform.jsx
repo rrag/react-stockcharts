@@ -49,7 +49,7 @@ var DataTransform = React.createClass({
 				Object.keys(props.options).forEach((key) => options[key] = props.options[key]);
 		}
 
-		console.log(options);
+		// console.log(options);
 		var passThroughProps = transformer(context.data, context.interval, options, context.dataTransformProps)
 		// console.log('passThroughProps-------', passThroughProps);
 

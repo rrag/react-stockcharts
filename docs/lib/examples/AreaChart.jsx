@@ -11,14 +11,14 @@ var ChartCanvas = ReStock.ChartCanvas
 	, Translate = ReStock.Translate
 	, Chart = ReStock.Chart
 	, DataSeries = ReStock.DataSeries
-	, ChartWidthMixin = require('./mixin/chart-width-mixin')
+	, ChartWidthMixin = require('./mixin/ChartWidthMixin')
 	, InitialStateMixin = require('./mixin/initial-state-mixin')
 ;
 
 var AreaChart = React.createClass({/**/
-	mixins: [InitialStateMixin, ChartWidthMixin],
+	mixins: [ChartWidthMixin],
 	render() {
-		if (!this.state.width) return <div />;
+		if (this.state === null || !this.state.width) return <div />;
 		return (
 			<ChartCanvas width={this.state.width} height={400}
 				margin={{left: 50, right: 50, top:10, bottom: 30}} data={this.props.data}>

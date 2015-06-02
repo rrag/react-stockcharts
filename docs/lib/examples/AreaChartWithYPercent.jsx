@@ -11,7 +11,7 @@ var ChartCanvas = ReStock.ChartCanvas
 	, Translate = ReStock.Translate
 	, Chart = ReStock.Chart
 	, DataSeries = ReStock.DataSeries
-	, ChartWidthMixin = require('./mixin/chart-width-mixin')
+	, ChartWidthMixin = require('./mixin/ChartWidthMixin')
 	, InitialStateMixin = require('./mixin/initial-state-mixin')
 ;
 

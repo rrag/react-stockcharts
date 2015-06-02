@@ -64,17 +64,6 @@ var EventCapture = React.createClass({
 		if (this.context.onMouseLeave) {
 			this.context.onMouseLeave();
 		}
-		/*if (this.context._eventStore) {
-			// console.log('out');
-			var eventData = this.context._eventStore.get();
-			this.context._eventStore.get().mouseOver.set({'value': false});
-			this.context._eventStore.get().set({ pan: false });
-			this.setState({
-				dragging: false,
-				dragOrigin: [0, 0],
-				className: this.props.className
-			})
-		}*/
 	},
 	handleWheel(e) {
 		if (this.props.zoom
@@ -91,7 +80,10 @@ var EventCapture = React.createClass({
 		if (this.context.onMouseMove && this.props.mouseMove) {
 			var newPos = Utils.mousePosition(e);
 			if (this.context.panInProgress) {
-				if (this.props.pan && this.context.onPan) this.context.onPan(newPos);
+				if (this.props.pan && this.context.onPan) {
+					var chartData = this.context._chartData.filter((each) => each.id === this.props.mainChart) [0];
+					this.context.onPan(newPos, chartData.plot.scales.xScale.domain());
+				}
 			} else {
 				this.context.onMouseMove(newPos);
 			}

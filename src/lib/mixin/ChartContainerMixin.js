@@ -242,9 +242,7 @@ var ChartContainerMixin = {
 		return overlayValues;
 	},
 	updateScales(xyValues, scales, data, width, height) {
-		console.log('updateScales');
-
-
+		// console.log('updateScales');
 		scales.xScale.range([0, width]);
 		// if polylinear scale then set data
 		if (scales.xScale.isPolyLinear && scales.xScale.isPolyLinear()) {
