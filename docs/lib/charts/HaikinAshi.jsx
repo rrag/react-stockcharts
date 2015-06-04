@@ -12,8 +12,7 @@ var ChartCanvas = ReStock.ChartCanvas
 	, DataTransform = ReStock.DataTransform
 	, Chart = ReStock.Chart
 	, DataSeries = ReStock.DataSeries
-	, ChartWidthMixin = require('./mixin/ChartWidthMixin')
-	, InitialStateMixin = require('./mixin/initial-state-mixin')
+	, ChartWidthMixin = ReStock.helper.ChartWidthMixin
 	, HistogramSeries = ReStock.HistogramSeries
 	, EventCapture = ReStock.EventCapture
 	, MouseCoordinates = ReStock.MouseCoordinates
@@ -29,9 +28,9 @@ var ChartCanvas = ReStock.ChartCanvas
 	, EdgeIndicator = ReStock.EdgeIndicator
 ;
 var HaikinAshi = React.createClass({
-	mixins: [InitialStateMixin, ChartWidthMixin],
+	mixins: [ChartWidthMixin],
 	render() {
-		if (!this.state.width) return <div />;
+		if (this.state === null || !this.state.width) return <div />;
 
 		var dateFormat = d3.time.format("%Y-%m-%d");
 

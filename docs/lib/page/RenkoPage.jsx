@@ -5,7 +5,7 @@ var ContentSection = require('lib/content-section');
 var Row = require('lib/row');
 var Section = require('lib/section');
 
-var Renko = require('lib/examples/Renko');
+var Renko = require('lib/charts/Renko');
 
 var RenkoPage = React.createClass({
 	statics: {

@@ -12,14 +12,12 @@ var ChartCanvas = ReStock.ChartCanvas
 	, DataTransform = ReStock.DataTransform
 	, Chart = ReStock.Chart
 	, DataSeries = ReStock.DataSeries
-	, ChartWidthMixin = require('./mixin/ChartWidthMixin')
-	, InitialStateMixin = require('./mixin/initial-state-mixin')
-;
+	, ChartWidthMixin = ReStock.helper.ChartWidthMixin;
 
-var CandleStickChart = React.createClass({
-	mixins: [InitialStateMixin, ChartWidthMixin],
+var CandleStickStockScaleChart = React.createClass({
+	mixins: [ChartWidthMixin],
 	render() {
-		if (!this.state.width) return <div />;
+		if (this.state === null || !this.state.width) return <div />;
 
 		return (
 			<ChartCanvas width={this.state.width} height={400}
@@ -38,5 +36,5 @@ var CandleStickChart = React.createClass({
 	}
 });
 
-module.exports = CandleStickChart;
+module.exports = CandleStickStockScaleChart;
 

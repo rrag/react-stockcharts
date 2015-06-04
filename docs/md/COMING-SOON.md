@@ -24,7 +24,7 @@
 
 #### Chart features
 
-- Change interval on zoom out/zoom in - v0.1
+- ~~Change interval on zoom out/zoom in - v0.1~~
 - Add custom data transforms - v0.3
 
 #### More examples
@@ -33,7 +33,7 @@
 
 #### Open issues
 
-- Window Resize after zoom/pan messes up the chart
-- zoom out changes the interval, but zoom in does not change
-- Refactor pan and zoom
+- ~~Window Resize after zoom/pan messes up the chart~~
+- ~~zoom out changes the interval, but zoom in does not change~~
+- ~~Refactor pan and zoom
 - Add tests and coverage

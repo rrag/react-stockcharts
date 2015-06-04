@@ -5,8 +5,8 @@ var ContentSection = require('lib/content-section');
 var Row = require('lib/row');
 var Section = require('lib/section');
 
-var AreaChart = require('lib/examples/AreaChart');
-var AreaChartWithYPercent = require('lib/examples/AreaChartWithYPercent');
+var AreaChart = require('lib/charts/AreaChart');
+var AreaChartWithYPercent = require('lib/charts/AreaChartWithYPercent');
 
 var OverviewPage = React.createClass({
 	statics: {

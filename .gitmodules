@@ -1,0 +1,21 @@
+[submodule "docs/examples/AreaChart"]
+	path = docs/examples/AreaChart
+	url = https://gist.github.com/b9658ffa431f1ffb8d6b.git
+[submodule "docs/examples/CandleStickChart"]
+	path = docs/examples/CandleStickChart
+	url = git@gist.github.com:/b13b739458e65ff93f4a.git
+[submodule "docs/examples/CandleStickStockScaleChart"]
+	path = docs/examples/CandleStickStockScaleChart
+	url = git@gist.github.com:/1eac0cb78f27b31415ac.git
+[submodule "docs/examples/CandleStickStockScaleChartWithVolumeHistogramV1"]
+	path = docs/examples/CandleStickStockScaleChartWithVolumeHistogramV1
+	url = git@gist.github.com:/88cd65baa331d57caa83.git
+[submodule "docs/examples/CandleStickStockScaleChartWithVolumeHistogramV2"]
+	path = docs/examples/CandleStickStockScaleChartWithVolumeHistogramV2
+	url = git@gist.github.com:/0a54ca33b05001f17f8f.git
+[submodule "docs/examples/CandleStickChartWithCHMousePointer"]
+	path = docs/examples/CandleStickChartWithCHMousePointer
+	url = git@gist.github.com:/261fa4bc7b67536eb789.git
+[submodule "docs/examples/CandleStickChartWithZoomPan"]
+	path = docs/examples/CandleStickChartWithZoomPan
+	url = git@gist.github.com:/a8465abe0061df1b7976.git

@@ -1,4 +1,6 @@
 
+checkout the [source](https://gist.github.com/rrag/b9658ffa431f1ffb8d6b), [block](http://bl.ocks.org/rrag/b9658ffa431f1ffb8d6b), [plunker](http://plnkr.co/edit/gist:b9658ffa431f1ffb8d6b?p=preview) of this example
+
 `data.tsv`
 
 date       | close

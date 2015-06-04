@@ -5,7 +5,7 @@ var ContentSection = require('lib/content-section');
 var Row = require('lib/row');
 var Section = require('lib/section');
 
-var Kagi = require('lib/examples/Kagi');
+var Kagi = require('lib/charts/Kagi');
 
 var KagiPage = React.createClass({
 	statics: {

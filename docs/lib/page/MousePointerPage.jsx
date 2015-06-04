@@ -5,7 +5,7 @@ var ContentSection = require('lib/content-section');
 var Row = require('lib/row');
 var Section = require('lib/section');
 
-var CandleStickChartWithCHMousePointer = require('lib/examples/CandleStickChartWithCHMousePointer');
+var CandleStickChartWithCHMousePointer = require('lib/charts/CandleStickChartWithCHMousePointer');
 
 var MousePointerPage = React.createClass({
 	statics: {

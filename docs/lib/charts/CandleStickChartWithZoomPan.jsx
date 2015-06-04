@@ -12,27 +12,25 @@ var ChartCanvas = ReStock.ChartCanvas
 	, DataTransform = ReStock.DataTransform
 	, Chart = ReStock.Chart
 	, DataSeries = ReStock.DataSeries
-	, ChartWidthMixin = require('./mixin/ChartWidthMixin')
-	, InitialStateMixin = require('./mixin/initial-state-mixin')
+	, ChartWidthMixin = ReStock.helper.ChartWidthMixin
 	, HistogramSeries = ReStock.HistogramSeries
 	, EventCapture = ReStock.EventCapture
 	, MouseCoordinates = ReStock.MouseCoordinates
 	, CrossHair = ReStock.CrossHair
 	, TooltipContainer = ReStock.TooltipContainer
 	, OHLCTooltip = ReStock.OHLCTooltip
-
 ;
 
-var CandleStickChart = React.createClass({
-	mixins: [InitialStateMixin, ChartWidthMixin],
+var CandleStickChartWithZoomPan = React.createClass({
+	mixins: [ChartWidthMixin],
 	render() {
-		if (!this.state.width) return <div />;
+		if (this.state === null || !this.state.width) return <div />;
 
 		var dateFormat = d3.time.format("%Y-%m-%d");
 
 		return (
 			<ChartCanvas width={this.state.width} height={400}
-				margin={{left: 40, right: 70, top:10, bottom: 30}} data={this.props.data} interval="D" initialDisplay={30}>
+				margin={{left: 40, right: 70, top:10, bottom: 30}} data={this.props.data}>
 				<DataTransform transformType="stockscale">
 					<Chart id={1} >
 						<XAxis axisAt="bottom" orient="bottom"/>
@@ -48,7 +46,7 @@ var CandleStickChart = React.createClass({
 						</DataSeries>
 					</Chart>
 					<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)} type="crosshair" />
-					<EventCapture mouseMove={true} mainChart={1}/>
+					<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 					<TooltipContainer>
 						<OHLCTooltip forChart={1} origin={[-40, 0]}/>
 					</TooltipContainer>
@@ -58,17 +56,5 @@ var CandleStickChart = React.createClass({
 	}
 });
 
-module.exports = CandleStickChart;
 
-
-/*
- xScaleDependsOn={1}
-							<Chart id={1} >
-								<XAxis axisAt="bottom" orient="bottom" ticks={5}/>
-								<YAxis axisAt="right" orient="right" ticks={5} />
-								<DataSeries yAccessor={CandlestickSeries.yAccessor} >
-									<CandlestickSeries />
-								</DataSeries>
-							</Chart>
-
-*/
+module.exports = CandleStickChartWithZoomPan;

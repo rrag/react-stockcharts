@@ -1,5 +1,7 @@
 The only change is enabling `zoom` and `pan`
 
+checkout the [source](https://gist.github.com/rrag/a8465abe0061df1b7976), [block](http://bl.ocks.org/rrag/a8465abe0061df1b7976), [plunker](http://plnkr.co/edit/gist:a8465abe0061df1b7976?p=preview) of this example
+
 ```html
 <EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 ```

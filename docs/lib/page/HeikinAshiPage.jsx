@@ -5,7 +5,7 @@ var ContentSection = require('lib/content-section');
 var Row = require('lib/row');
 var Section = require('lib/section');
 
-var HeikinAshiChart = require('lib/examples/HaikinAshi');
+var HeikinAshiChart = require('lib/charts/HaikinAshi');
 
 var HeikinAshiPage = React.createClass({
 	statics: {

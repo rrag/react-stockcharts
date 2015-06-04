@@ -5,7 +5,7 @@ var ContentSection = require('lib/content-section');
 var Row = require('lib/row');
 var Section = require('lib/section');
 
-var PointAndFigure = require('lib/examples/PointAndFigure');
+var PointAndFigure = require('lib/charts/PointAndFigure');
 
 var PointAndFigurePage = React.createClass({
 	statics: {

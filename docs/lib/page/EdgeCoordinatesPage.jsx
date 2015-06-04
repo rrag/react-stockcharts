@@ -5,7 +5,7 @@ var ContentSection = require('lib/content-section');
 var Row = require('lib/row');
 var Section = require('lib/section');
 
-var CandleStickChartWithEdge = require('lib/examples/CandleStickChartWithEdge');
+var CandleStickChartWithEdge = require('lib/charts/CandleStickChartWithEdge');
 
 var EdgeCoordinatesPage = React.createClass({
 	statics: {

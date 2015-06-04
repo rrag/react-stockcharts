@@ -11,11 +11,9 @@ var ChartCanvas = ReStock.ChartCanvas
 	, Translate = ReStock.Translate
 	, Chart = ReStock.Chart
 	, DataSeries = ReStock.DataSeries
-	, ChartWidthMixin = require('./mixin/ChartWidthMixin')
-	, InitialStateMixin = require('./mixin/initial-state-mixin')
-;
+	, ChartWidthMixin = ReStock.helper.ChartWidthMixin;
 
-var AreaChart = React.createClass({/**/
+var AreaChartWithYPercent = React.createClass({/**/
 	mixins: [ChartWidthMixin],
 	render() {
 		if (this.state === null || !this.state.width) return <div />;
@@ -25,6 +23,7 @@ var AreaChart = React.createClass({/**/
 				<Chart id={0} >
 					<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 					<YAxis axisAt="left" orient="left" />
+					<YAxis axisAt="right" orient="right" percentScale={true} tickFormat={d3.format(".0%")}/>
 					<DataSeries yAccessor={(d) => d.close} xAccessor={(d) => d.date}>
 						<AreaSeries />
 					</DataSeries>
@@ -35,10 +34,9 @@ var AreaChart = React.createClass({/**/
 });
 
 
-module.exports = AreaChart;
+module.exports = AreaChartWithYPercent;
 
 /*
-							<YAxis axisAt="right" orient="right" percentScale={true} tickFormat={d3.format(".0%")}/>
 
 <ChartCanvas  width={500} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}}>
 	<Chart data={this.state.data}>

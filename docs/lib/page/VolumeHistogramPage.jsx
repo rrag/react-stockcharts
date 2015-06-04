@@ -5,8 +5,8 @@ var ContentSection = require('lib/content-section');
 var Row = require('lib/row');
 var Section = require('lib/section');
 
-var CandleStickStockScaleChartWithVolumeHistogramV1 = require('lib/examples/CandleStickStockScaleChartWithVolumeHistogramV1');
-var CandleStickStockScaleChartWithVolumeHistogramV2 = require('lib/examples/CandleStickStockScaleChartWithVolumeHistogramV2');
+var CandleStickStockScaleChartWithVolumeHistogramV1 = require('lib/charts/CandleStickStockScaleChartWithVolumeHistogramV1');
+var CandleStickStockScaleChartWithVolumeHistogramV2 = require('lib/charts/CandleStickStockScaleChartWithVolumeHistogramV2');
 
 var VolumeHistogramPage = React.createClass({
 	statics: {

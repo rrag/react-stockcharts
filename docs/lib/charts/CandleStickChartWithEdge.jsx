@@ -12,8 +12,7 @@ var ChartCanvas = ReStock.ChartCanvas
 	, DataTransform = ReStock.DataTransform
 	, Chart = ReStock.Chart
 	, DataSeries = ReStock.DataSeries
-	, ChartWidthMixin = require('./mixin/ChartWidthMixin')
-	, InitialStateMixin = require('./mixin/initial-state-mixin')
+	, ChartWidthMixin = ReStock.helper.ChartWidthMixin
 	, HistogramSeries = ReStock.HistogramSeries
 	, EventCapture = ReStock.EventCapture
 	, MouseCoordinates = ReStock.MouseCoordinates
@@ -30,9 +29,9 @@ var ChartCanvas = ReStock.ChartCanvas
 ;
 
 var CandleStickChart = React.createClass({
-	mixins: [InitialStateMixin, ChartWidthMixin],
+	mixins: [ChartWidthMixin],
 	render() {
-		if (!this.state.width) return <div />;
+		if (this.state === null || !this.state.width) return <div />;
 
 		var parseDate = d3.time.format("%Y-%m-%d").parse
 		var dateRange = { from: parseDate("2012-12-01"), to: parseDate("2012-12-31")}

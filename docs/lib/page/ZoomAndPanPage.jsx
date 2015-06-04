@@ -5,7 +5,7 @@ var ContentSection = require('lib/content-section');
 var Row = require('lib/row');
 var Section = require('lib/section');
 
-var CandleStickChartWithZoomPan = require('lib/examples/CandleStickChartWithZoomPan');
+var CandleStickChartWithZoomPan = require('lib/charts/CandleStickChartWithZoomPan');
 
 var ZoomAndPanPage = React.createClass({
 	statics: {

@@ -22,7 +22,7 @@ d3.tsv("data/MSFT.tsv", function(err, data) {
 		// console.log(d);
 	});
 
-	var CandleStickChartWithEdge = require('lib/examples/CandleStickChartWithEdge');
+	var CandleStickChartWithEdge = require('lib/charts/CandleStickChartWithEdge');
 
 	React.render(<CandleStickChartWithEdge data={data} />, document.getElementById("chart"));
 });

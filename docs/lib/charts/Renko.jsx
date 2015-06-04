@@ -8,12 +8,11 @@ var ReStock = require('src/');
 var ChartCanvas = ReStock.ChartCanvas
 	, XAxis = ReStock.XAxis
 	, YAxis = ReStock.YAxis
-	, KagiSeries = ReStock.KagiSeries
+	, RenkoSeries = ReStock.RenkoSeries
 	, DataTransform = ReStock.DataTransform
 	, Chart = ReStock.Chart
 	, DataSeries = ReStock.DataSeries
-	, ChartWidthMixin = require('./mixin/ChartWidthMixin')
-	, InitialStateMixin = require('./mixin/initial-state-mixin')
+	, ChartWidthMixin = ReStock.helper.ChartWidthMixin
 	, HistogramSeries = ReStock.HistogramSeries
 	, EventCapture = ReStock.EventCapture
 	, MouseCoordinates = ReStock.MouseCoordinates
@@ -29,23 +28,23 @@ var ChartCanvas = ReStock.ChartCanvas
 	, EdgeIndicator = ReStock.EdgeIndicator
 ;
 
-var Kagi = React.createClass({
-	mixins: [InitialStateMixin, ChartWidthMixin],
+var Renko = React.createClass({
+	mixins: [ChartWidthMixin],
 	render() {
-		if (!this.state.width) return <div />;
+		if (this.state === null || !this.state.width) return <div />;
 
 		var dateFormat = d3.time.format("%Y-%m-%d");
 
 		return (
 			<ChartCanvas width={this.state.width} height={400}
-				margin={{left: 90, right: 70, top:10, bottom: 30}} data={this.props.data} interval="D" initialDisplay={30}>
+				margin={{left: 90, right: 70, top:10, bottom: 30}} data={this.props.data} interval="D" initialDisplay={30} >
 				<DataTransform transformType="stockscale">
-				<DataTransform transformType="kagi">
+				<DataTransform transformType="renko">
 					<Chart id={1} >
 						<XAxis axisAt="bottom" orient="bottom"/>
 						<YAxis axisAt="right" orient="right" ticks={5} />
-						<DataSeries yAccessor={KagiSeries.yAccessor} >
-							<KagiSeries />
+						<DataSeries yAccessor={RenkoSeries.yAccessor} >
+							<RenkoSeries />
 						</DataSeries>
 					</Chart>
 					<Chart id={2} height={150} origin={(w, h) => [0, h - 150]}>
@@ -69,4 +68,4 @@ var Kagi = React.createClass({
 	}
 });
 
-module.exports = Kagi;
+module.exports = Renko;

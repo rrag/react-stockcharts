@@ -2,8 +2,6 @@
 var React = require('react');
 var Utils = require('../utils/utils');
 
-var Freezer = require('freezer-js');
-
 function getLongValue(value) {
 	if (value instanceof Date) {
 		return value.getTime();

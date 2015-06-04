@@ -5,7 +5,7 @@ var ContentSection = require('lib/content-section');
 var Row = require('lib/row');
 var Section = require('lib/section');
 
-var CandleStickChartWithMA = require('lib/examples/CandleStickChartWithMA');
+var CandleStickChartWithMA = require('lib/charts/CandleStickChartWithMA');
 
 var OverlayPage = React.createClass({
 	statics: {

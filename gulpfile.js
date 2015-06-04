@@ -81,7 +81,19 @@ gulp.task('build', ['styles', 'dev'], function(cb) {
 	build(myConfig, cb);
 });
 
-gulp.task('docs', ['html'], function(cb) {
+gulp.task('docs', ['build'], function(cb) {
+
+	var replace = require('gulp-replace');
+
+	gulp.src('./docs/*.html')
+		.pipe(replace(/<!-- *custom:jsinclude *([^ ]*) *-->/g,
+			'<script type="text/javascript" src="$1"></script>'))
+		.pipe(replace(/<!-- *custom:cssinclude *([^ ]*) *-->/g,
+			'<link href="$1" rel="stylesheet">'))
+		.pipe(replace(/<!-- *custom:remove(.|\n)*?endcustom -->/g,
+			''))
+		.pipe(gulp.dest('./build'));
+
 	// run webpack
 	var webpackConfig = require('./webpack.config.docs.js'),
 		myConfig = Object.create(webpackConfig);
@@ -93,19 +105,6 @@ gulp.task('docs', ['html'], function(cb) {
 		.pipe(gulp.dest('build/data'));
 
 	build(myConfig, cb);
-});
-
-gulp.task('html', ['clean'], function () {
-	var replace = require('gulp-replace');
-
-	gulp.src('./docs/**/*.html')
-		.pipe(replace(/<!-- *custom:jsinclude *([^ ]*) *-->/g,
-			'<script type="text/javascript" src="$1"></script>'))
-		.pipe(replace(/<!-- *custom:cssinclude *([^ ]*) *-->/g,
-			'<link href="$1" rel="stylesheet">'))
-		.pipe(replace(/<!-- *custom:remove(.|\n)*?endcustom -->/g,
-			''))
-		.pipe(gulp.dest('./build'));
 });
 
 gulp.task('dev', ['clean'], function(callback) {
@@ -163,14 +162,65 @@ gulp.task('serve', function() {
 	});
 });
 
-gulp.task('serve2', function() {
+gulp.task('serve2', function(cb) {
 	var express = require('express');
 	var app = express();
 	app.use(express.static('build')); // path.join(__dirname, 'build')
 	app.use(express.static('node_modules'));
 	app.use(express.static('docs'));
 	app.listen(4000);
+	cb();
 });
+
+gulp.task('publishexamples', function(cb) {
+	var examplesToPublish = ['AreaChart',
+		'CandleStickChart',
+		'CandleStickStockScaleChart',
+		'CandleStickStockScaleChartWithVolumeHistogramV1',
+		'CandleStickStockScaleChartWithVolumeHistogramV2',
+		'CandleStickChartWithCHMousePointer',
+		'CandleStickChartWithZoomPan'
+	];
+
+	var replace = require('gulp-replace');
+	var path = require('path');
+
+	examplesToPublish.forEach(function (eachEx) {
+		gulp.src(path.join(__dirname, 'docs/lib/charts', eachEx + '.jsx'))
+			.pipe(replace(/var React = .*/, ''))
+			.pipe(replace(/var d3 = .*/, ''))
+			.pipe(replace(/var ReStock = .*/, ''))
+			.pipe(replace(/module.exports = .*/, getFunctionFor(eachEx)))
+			.pipe(gulp.dest(path.join(__dirname, 'docs/examples', eachEx)));
+
+		gulp.src(path.join(__dirname, 'docs/examples/index.html'))
+			.pipe(replace(/CHART_NAME_HERE/g, eachEx))
+			.pipe(gulp.dest(path.join(__dirname, 'docs/examples', eachEx)));
+	});
+
+	cb();
+});
+
+
+var getFunctionFor = function(chartName) {
+
+	var r = 'var parseDate = d3.time.format("%Y-%m-%d").parse;' + '\n' +
+	'd3.tsv("//rrag.github.io/react-stockcharts/data/MSFT.tsv", (err, data) => {' + '\n' +
+	'	data.forEach((d, i) => {' + '\n' +
+	'		d.date = new Date(parseDate(d.date).getTime());'+ '\n' +
+	'		d.open = +d.open;'+ '\n' +
+	'		d.high = +d.high;'+ '\n' +
+	'		d.low = +d.low;'+ '\n' +
+	'		d.close = +d.close;'+ '\n' +
+	'		d.volume = +d.volume;'+ '\n' +
+	'		// console.log(d);'+ '\n' +
+	'	});'+ '\n' +
+	'	React.render(<' + chartName + ' data={data} />, document.getElementById("chart"));'+ '\n' +
+	'});'
+
+	return r;
+} 
+
 
 gulp.task('test', function(cb) {
 	var karma = require('karma').server;

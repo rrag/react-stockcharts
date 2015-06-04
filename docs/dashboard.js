@@ -52,9 +52,9 @@ function renderPage(data, dataFull) {
 		// console.log(d);
 	});
 
-	var SyncMouseMove = require('./lib/examples/synchronized-mouse-move').init(data);
-	var AreaChartWithZoom = require('./lib/examples/areachart-with-zoom').init(data);
-	var AreaChartWithZoomPan = require('./lib/examples/areachart-with-zoom-and-pan').init(data);
+	var SyncMouseMove = require('./lib/charts/synchronized-mouse-move').init(data);
+	var AreaChartWithZoom = require('./lib/charts/areachart-with-zoom').init(data);
+	var AreaChartWithZoomPan = require('./lib/charts/areachart-with-zoom-and-pan').init(data);
 
 
 	var selected = location.hash.replace('#/', '');
@@ -128,7 +128,7 @@ function renderPartialPage(data, dataFull) {
 		d.volume = +d.volume;
 		// console.log(d);
 	});
-	//var Renko = require('./lib/examples/Renko').init(dataFull);
+	//var Renko = require('./lib/charts/Renko').init(dataFull);
 	// AreaChart
 	// AreaChartWithYPercent
 	// CandleStickChart
@@ -144,7 +144,7 @@ function renderPartialPage(data, dataFull) {
 	// CandleStickStockScaleChartWithVolumeHistogramV1
 	// CandleStickStockScaleChartWithVolumeHistogramV2
 	// CandleStickChartWithZoomPan
-	var Chart = require('lib/examples/CandleStickChartWithZoomPan');
+	var Chart = require('lib/charts/CandleStickChartWithZoomPan');
 
 	var ExamplesPage = React.createClass({
 		//mixins: [ScrollMixin],

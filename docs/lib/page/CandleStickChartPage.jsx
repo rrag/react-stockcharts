@@ -5,8 +5,8 @@ var ContentSection = require('lib/content-section');
 var Row = require('lib/row');
 var Section = require('lib/section');
 
-var CandleStickChart = require('lib/examples/CandleStickChart');
-var CandleStickStockScaleChart = require('lib/examples/CandleStickStockScaleChart');
+var CandleStickChart = require('lib/charts/CandleStickChart');
+var CandleStickStockScaleChart = require('lib/charts/CandleStickStockScaleChart');
 
 var CandleStickChartPage = React.createClass({
 	statics: {

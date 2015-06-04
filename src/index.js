@@ -34,3 +34,6 @@ exports.MovingAverageTooltip = require('./lib/MovingAverageTooltip');
 // misc
 exports.EdgeContainer = require('./lib/EdgeContainer');
 exports.EdgeIndicator = require('./lib/EdgeIndicator');
+
+exports.helper = {};
+exports.helper.ChartWidthMixin = require('./lib/helper/ChartWidthMixin');

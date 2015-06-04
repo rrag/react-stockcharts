@@ -1,3 +1,4 @@
+checkout the [source](https://gist.github.com/rrag/261fa4bc7b67536eb789), [block](http://bl.ocks.org/rrag/261fa4bc7b67536eb789), [plunker](http://plnkr.co/edit/gist:261fa4bc7b67536eb789?p=preview) of this example
 
 ```html
 <ChartCanvas width={this.state.width} height={400} margin={{left: 40, right: 70, top:10, bottom: 30}} data={data}>
