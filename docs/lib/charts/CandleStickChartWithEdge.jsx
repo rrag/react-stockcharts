@@ -28,7 +28,7 @@ var ChartCanvas = ReStock.ChartCanvas
 	, EdgeIndicator = ReStock.EdgeIndicator
 ;
 
-var CandleStickChart = React.createClass({
+var CandleStickChartWithEdge = React.createClass({
 	mixins: [ChartWidthMixin],
 	render() {
 		if (this.state === null || !this.state.width) return <div />;
@@ -105,16 +105,4 @@ var CandleStickChart = React.createClass({
 	}
 });
 
-module.exports = CandleStickChart;
-
-/*
- xScaleDependsOn={1}
-							<Chart id={1} >
-								<XAxis axisAt="bottom" orient="bottom" ticks={5}/>
-								<YAxis axisAt="right" orient="right" ticks={5} />
-								<DataSeries yAccessor={CandlestickSeries.yAccessor} >
-									<CandlestickSeries />
-								</DataSeries>
-							</Chart>
-
-*/
+module.exports = CandleStickChartWithEdge;

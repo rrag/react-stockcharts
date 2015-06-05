@@ -3,22 +3,12 @@
 var React = require('react');
 var Utils = require('./utils/utils')
 
-var SingleMAToolTip = React.createClass({
-	propTypes: {
-		origin: React.PropTypes.array.isRequired,
-		color: React.PropTypes.string.isRequired,
-		displayName: React.PropTypes.string.isRequired,
-		value: React.PropTypes.string.isRequired,
-		onClick: React.PropTypes.func
-	},
-	getDefaultProps() {
-
-	},
+class SingleMAToolTip extends React.Component {
 	handleClick(overlay) {
 		if (this.props.onClick) {
 			this.props.onClick(overlay);
 		}
-	},
+	}
 	render() {
 		var translate = "translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")";
 		return (
@@ -32,8 +22,15 @@ var SingleMAToolTip = React.createClass({
 			</g>
 		);
 	}
-});
+};
 
+SingleMAToolTip.propTypes = {
+	origin: React.PropTypes.array.isRequired,
+	color: React.PropTypes.string.isRequired,
+	displayName: React.PropTypes.string.isRequired,
+	value: React.PropTypes.string.isRequired,
+	onClick: React.PropTypes.func
+};
 
 var MovingAverageTooltip = React.createClass({
 	propTypes: {

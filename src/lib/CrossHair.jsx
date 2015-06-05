@@ -3,24 +3,13 @@ var React = require('react');
 var EdgeCoordinate = require('./EdgeCoordinate')
 var Utils = require('./utils/utils')
 
-var CrossHair = React.createClass({
-	propTypes: {
-		yAxisPad: React.PropTypes.number.isRequired,
-		height: React.PropTypes.number.isRequired,
-		width: React.PropTypes.number.isRequired,
-		mouseXY: React.PropTypes.array.isRequired,
-		xDisplayValue: React.PropTypes.string.isRequired,
-		yDisplayValue: React.PropTypes.string.isRequired
-	},
+class CrossHair extends React.Component {
+	constructor(props) {
+		super(props);
+	}
 	shouldComponentUpdate(nextProps, nextState, nextContext) {
 		return nextProps.mouseXY !== this.props.mouseXY
-	},
-	getDefaultProps() {
-		return {
-			namespace: "ReStock.CrossHair",
-			yAxisPad: 5
-		}
-	},
+	}
 	render() {
 		return (
 			<g className={'crosshair '}>
@@ -47,6 +36,19 @@ var CrossHair = React.createClass({
 			</g>
 		);
 	}
-});
+};
+
+CrossHair.propTypes = {
+	yAxisPad: React.PropTypes.number.isRequired,
+	height: React.PropTypes.number.isRequired,
+	width: React.PropTypes.number.isRequired,
+	mouseXY: React.PropTypes.array.isRequired,
+	xDisplayValue: React.PropTypes.string.isRequired,
+	yDisplayValue: React.PropTypes.string.isRequired
+};
+CrossHair.defaultProps = {
+	namespace: "ReStock.CrossHair",
+	yAxisPad: 5
+};
 
 module.exports = CrossHair;

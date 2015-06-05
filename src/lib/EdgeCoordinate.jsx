@@ -1,22 +1,7 @@
 'use strict';
 var React = require('react');
 
-var EdgeCoordinate = React.createClass({
-	propTypes: {
-		type: React.PropTypes.oneOf(['vertical', 'horizontal']).isRequired,
-		coordinate: React.PropTypes.any.isRequired,
-		x1: React.PropTypes.number.isRequired,
-		y1: React.PropTypes.number.isRequired,
-		x2: React.PropTypes.number.isRequired,
-		y2: React.PropTypes.number.isRequired,
-		orient: React.PropTypes.oneOf(['bottom', 'top', 'left', 'right']),
-		rectWidth: React.PropTypes.number
-	},
-	getDefaultProps() {
-		return {
-			orient: 'left'
-		};
-	},
+class EdgeCoordinate extends React.Component {
 	render() {
 		if (!this.props.show) return null;
 
@@ -63,6 +48,20 @@ var EdgeCoordinate = React.createClass({
 			</g>
 		);
 	}
-});
+};
 
+EdgeCoordinate.propTypes = {
+	type: React.PropTypes.oneOf(['vertical', 'horizontal']).isRequired,
+	coordinate: React.PropTypes.any.isRequired,
+	x1: React.PropTypes.number.isRequired,
+	y1: React.PropTypes.number.isRequired,
+	x2: React.PropTypes.number.isRequired,
+	y2: React.PropTypes.number.isRequired,
+	orient: React.PropTypes.oneOf(['bottom', 'top', 'left', 'right']),
+	rectWidth: React.PropTypes.number
+};
+EdgeCoordinate.defaultProps = {
+	namespace: "ReStock.EdgeCoordinate",
+	orient: 'left'
+};
 module.exports = EdgeCoordinate;

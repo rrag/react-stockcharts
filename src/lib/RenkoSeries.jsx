@@ -2,32 +2,14 @@
 var React = require('react'),
 	d3 = require('d3');
 
-var RenkoSeries = React.createClass({
-	contextTypes: {
-		xScale: React.PropTypes.func.isRequired,
-		yScale: React.PropTypes.func.isRequired,
-		xAccessor: React.PropTypes.func.isRequired,
-		yAccessor: React.PropTypes.func.isRequired,
-		_data: React.PropTypes.array.isRequired,
-	},
-	statics: {
-		yAccessor: (d) => ({open: d.open, high: d.high, low: d.low, close: d.close})
-	},
-	getDefaultProps() {
-		return {
-			namespace: "ReStock.RenkoSeries"
-		}
-	},
-	handleClick(idx) {
-		console.log(this.context._data[idx]);
-	},
+class RenkoSeries extends React.Component {
 	render() {
-		var width = this.context.xScale(this.context.xAccessor(this.context._data[this.context._data.length - 1]))
-			- this.context.xScale(this.context.xAccessor(this.context._data[0]));
+		var width = this.context.xScale(this.context.xAccessor(this.context.plotData[this.context.plotData.length - 1]))
+			- this.context.xScale(this.context.xAccessor(this.context.plotData[0]));
 
-		var candleWidth = (width / (this.context._data.length - 1));
+		var candleWidth = (width / (this.context.plotData.length - 1));
 
-		var candles = this.context._data
+		var candles = this.context.plotData
 				.filter((d) => d.close !== undefined)
 				.map((d, idx) => {
 					var ohlc = this.context.yAccessor(d);
@@ -42,7 +24,7 @@ var RenkoSeries = React.createClass({
 								width={candleWidth}
 								height={height} />
 				});
-		var wicks = this.context._data
+		var wicks = this.context.plotData
 				.filter((d) => d.close !== undefined)
 				.map((d, idx) => {
 					var ohlc = this.context.yAccessor(d);
@@ -69,11 +51,18 @@ var RenkoSeries = React.createClass({
 			</g>
 		);
 	}
-});
+};
+
+RenkoSeries.contextTypes = {
+	xScale: React.PropTypes.func.isRequired,
+	yScale: React.PropTypes.func.isRequired,
+	xAccessor: React.PropTypes.func.isRequired,
+	yAccessor: React.PropTypes.func.isRequired,
+	plotData: React.PropTypes.array.isRequired,
+}
+
+RenkoSeries.defaultProps = { namespace: "ReStock.RenkoSeries" };
+
+RenkoSeries.yAccessor = (d) => ({open: d.open, high: d.high, low: d.low, close: d.close});
 
 module.exports = RenkoSeries;
-/*
-				<g className="wick">
-					{wicks}
-				</g>
-*/

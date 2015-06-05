@@ -2,43 +2,17 @@
 var React = require('react'),
 	d3 = require('d3');
 
-var XAxis = React.createClass({
-	propTypes: {
-		axisAt: React.PropTypes.oneOfType([
-					React.PropTypes.oneOf(['top', 'bottom', 'middle'])
-					, React.PropTypes.number
-				]).isRequired,
-		orient: React.PropTypes.oneOf(['top', 'bottom']).isRequired,
-		innerTickSize: React.PropTypes.number,
-		outerTickSize: React.PropTypes.number,
-		tickFormat: React.PropTypes.func,
-		tickPadding: React.PropTypes.number,
-		tickSize: React.PropTypes.number,
-		ticks: React.PropTypes.number,
-		tickValues: React.PropTypes.array
-	},
-	getDefaultProps() {
-		return {
-			namespace: "ReStock.XAxis",
-			showGrid: false
-		};
-	},
-	contextTypes: {
-		xScale: React.PropTypes.func.isRequired,
-		yScale: React.PropTypes.func.isRequired
-	},
-	getInitialState() {
-		return {};
-	},
-	componentWillMount() {
-		this.state.xAxis = d3.svg.axis();
-	},
+class XAxis extends React.Component {
+	constructor(props) {
+		super(props);
+		this.updateAxis = this.updateAxis.bind(this);
+	}
 	componentDidMount() {
 		this.updateAxis();
-	},
+	}
 	componentDidUpdate() {
 		this.updateAxis();
-	},
+	}
 	updateAxis() {
 		var axis = d3.svg.axis()
 			.scale(this.context.xScale)
@@ -58,7 +32,7 @@ var XAxis = React.createClass({
 		if (this.props.ticks) axis.ticks(this.props.ticks);
 		if (this.props.tickValues) axis.tickValues(this.props.tickValues);
 		d3.select(React.findDOMNode(this)).call(axis);
-	},
+	}
 	render() {
 		var axisAt = this.props.axisAt
 			, range = this.context.yScale.range();
@@ -70,6 +44,30 @@ var XAxis = React.createClass({
 			<g className='x axis' transform={'translate(0, ' + axisAt + ')'}></g>
 		);
 	}
-});
+};
+
+XAxis.propTypes = {
+	axisAt: React.PropTypes.oneOfType([
+				React.PropTypes.oneOf(['top', 'bottom', 'middle'])
+				, React.PropTypes.number
+			]).isRequired,
+	orient: React.PropTypes.oneOf(['top', 'bottom']).isRequired,
+	innerTickSize: React.PropTypes.number,
+	outerTickSize: React.PropTypes.number,
+	tickFormat: React.PropTypes.func,
+	tickPadding: React.PropTypes.number,
+	tickSize: React.PropTypes.number,
+	ticks: React.PropTypes.number,
+	tickValues: React.PropTypes.array
+};
+XAxis.defaultProps = {
+	namespace: "ReStock.XAxis",
+	showGrid: false
+};
+XAxis.contextTypes = {
+	xScale: React.PropTypes.func.isRequired,
+	yScale: React.PropTypes.func.isRequired
+};
+
 
 module.exports = XAxis;

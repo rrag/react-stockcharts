@@ -2,35 +2,20 @@
 var React = require('react'),
 	d3 = require('d3');
 
-var PointAndFigureSeries = React.createClass({
-	contextTypes: {
-		xScale: React.PropTypes.func.isRequired,
-		yScale: React.PropTypes.func.isRequired,
-		xAccessor: React.PropTypes.func.isRequired,
-		yAccessor: React.PropTypes.func.isRequired,
-		_data: React.PropTypes.array.isRequired,
-	},
-	statics: {
-		yAccessor: (d) => ({open: d.open, high: d.high, low: d.low, close: d.close})
-	},
-	getDefaultProps() {
-		return {
-			namespace: "ReStock.PointAndFigureSeries"
-		}
-	},
+class PointAndFigureSeries extends React.Component {
 	handleClick(idx) {
-		console.log(this.context._data[idx]);
-	},
+		console.log(this.context.plotData[idx]);
+	}
 	render() {
-		var width = this.context.xScale(this.context.xAccessor(this.context._data[this.context._data.length - 1]))
-			- this.context.xScale(this.context.xAccessor(this.context._data[0]));
+		var width = this.context.xScale(this.context.xAccessor(this.context.plotData[this.context.plotData.length - 1]))
+			- this.context.xScale(this.context.xAccessor(this.context.plotData[0]));
 
-		var columnWidth = (width / (this.context._data.length - 1));
+		var columnWidth = (width / (this.context.plotData.length - 1));
 
 		var anyBox, j = 0;
 		while (anyBox === undefined) {
-			if (this.context._data[j].close !== undefined) {
-				anyBox= this.context._data[j].boxes[0];
+			if (this.context.plotData[j].close !== undefined) {
+				anyBox= this.context.plotData[j].boxes[0];
 			}
 			j++;
 		}
@@ -38,8 +23,7 @@ var PointAndFigureSeries = React.createClass({
 		var props = this.props;
 		var boxHeight = Math.abs(this.context.yScale(anyBox.open) - this.context.yScale(anyBox.close));
 
-		// console.log(columnWidth, boxHeight);
-		var columns = this.context._data
+		var columns = this.context.plotData
 				.filter((d) => d.close !== undefined)
 				.map((d, idx) => {
 					var ohlc = d;
@@ -77,6 +61,18 @@ var PointAndFigureSeries = React.createClass({
 			</g>
 		);
 	}
-});
+};
+
+PointAndFigureSeries.contextTypes = {
+	xScale: React.PropTypes.func.isRequired,
+	yScale: React.PropTypes.func.isRequired,
+	xAccessor: React.PropTypes.func.isRequired,
+	yAccessor: React.PropTypes.func.isRequired,
+	plotData: React.PropTypes.array.isRequired,
+}
+
+PointAndFigureSeries.defaultProps = { namespace: "ReStock.PointAndFigureSeries" };
+
+PointAndFigureSeries.yAccessor = (d) => ({open: d.open, high: d.high, low: d.low, close: d.close});
 
 module.exports = PointAndFigureSeries;

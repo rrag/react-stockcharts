@@ -35,5 +35,5 @@
 
 - ~~Window Resize after zoom/pan messes up the chart~~
 - ~~zoom out changes the interval, but zoom in does not change~~
-- ~~Refactor pan and zoom
+- ~~Refactor pan and zoom~~
 - Add tests and coverage

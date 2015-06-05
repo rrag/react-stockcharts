@@ -28,7 +28,7 @@ var EdgeIndicator = React.createClass({
 		};
 	},
 	contextTypes: {
-		_width: React.PropTypes.number.isRequired
+		width: React.PropTypes.number.isRequired
 	},
 	mixins: [require('./mixin/ForChartMixin')],
 	renderEdge() {
@@ -65,7 +65,7 @@ var EdgeIndicator = React.createClass({
 				var x1 = Math.round(chartData.plot.scales.xScale(xValue)), y1 = Math.round(chartData.plot.scales.yScale(yValue));
 				var edgeX = this.props.edgeAt === 'left'
 					? 0 - this.props.yAxisPad
-					: this.context._width + this.props.yAxisPad
+					: this.context.width + this.props.yAxisPad
 
 				edge = <EdgeCoordinate
 						type={this.props.type}
@@ -94,7 +94,7 @@ var EdgeIndicator = React.createClass({
 				var x1 = Math.round(chartData.plot.scales.xScale(xValue)), y1 = Math.round(chartData.plot.scales.yScale(yValue));
 				var edgeX = this.props.edgeAt === 'left'
 					? 0 - this.props.yAxisPad
-					: this.context._width + this.props.yAxisPad
+					: this.context.width + this.props.yAxisPad
 
 				edge = <EdgeCoordinate
 						type={this.props.type}

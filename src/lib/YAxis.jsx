@@ -2,43 +2,17 @@
 var React = require('react')
 	, d3 = require('d3');
 
-var YAxis = React.createClass({
-	propTypes: {
-		axisAt: React.PropTypes.oneOfType([
-					React.PropTypes.oneOf(['left', 'right', 'middle'])
-					, React.PropTypes.number
-				]).isRequired,
-		orient: React.PropTypes.oneOf(['left', 'right']).isRequired,
-		innerTickSize: React.PropTypes.number,
-		outerTickSize: React.PropTypes.number,
-		tickFormat: React.PropTypes.func,
-		tickPadding: React.PropTypes.number,
-		tickSize: React.PropTypes.number,
-		ticks: React.PropTypes.number,
-		tickValues: React.PropTypes.array,
-		percentScale: React.PropTypes.bool,
-		axisPadding: React.PropTypes.number
-	},
-	getDefaultProps() {
-		return {
-			namespace: "ReStock.YAxis",
-			showGrid: false,
-			axisPadding: 0
-		};
-	},
-	getInitialState() {
-		return {};
-	},
-	contextTypes: {
-		xScale: React.PropTypes.func.isRequired,
-		yScale: React.PropTypes.func.isRequired
-	},
+class YAxis extends React.Component {
+	constructor(props) {
+		super(props);
+		this.updateAxis = this.updateAxis.bind(this);
+	}
 	componentDidMount() {
 		this.updateAxis();
-	},
+	}
 	componentDidUpdate() {
 		this.updateAxis();
-	},
+	}
 	updateAxis() {
 		var scale = this.context.yScale;
 		if (this.props.percentScale) scale = scale.copy().domain([0, 1]);
@@ -57,7 +31,7 @@ var YAxis = React.createClass({
 		if (this.props.tickValues) axis.tickValues(this.props.tickValues);
 		
 		d3.select(React.findDOMNode(this)).call(axis);
-	},
+	}
 	render() {
 		var axisAt = this.props.axisAt
 			, range = this.context.xScale.range();
@@ -69,6 +43,32 @@ var YAxis = React.createClass({
 			<g className='y axis' transform={'translate(' + axisAt + ', 0)'}></g>
 		);
 	}
-});
+};
+
+YAxis.propTypes = {
+	axisAt: React.PropTypes.oneOfType([
+				React.PropTypes.oneOf(['left', 'right', 'middle'])
+				, React.PropTypes.number
+			]).isRequired,
+	orient: React.PropTypes.oneOf(['left', 'right']).isRequired,
+	innerTickSize: React.PropTypes.number,
+	outerTickSize: React.PropTypes.number,
+	tickFormat: React.PropTypes.func,
+	tickPadding: React.PropTypes.number,
+	tickSize: React.PropTypes.number,
+	ticks: React.PropTypes.number,
+	tickValues: React.PropTypes.array,
+	percentScale: React.PropTypes.bool,
+	axisPadding: React.PropTypes.number
+};
+YAxis.defaultProps = {
+	namespace: "ReStock.YAxis",
+	showGrid: false,
+	axisPadding: 0
+};
+YAxis.contextTypes = {
+	xScale: React.PropTypes.func.isRequired,
+	yScale: React.PropTypes.func.isRequired
+};
 
 module.exports = YAxis;

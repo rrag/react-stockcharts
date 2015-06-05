@@ -2,26 +2,14 @@
 var React = require('react'),
 	d3 = require('d3');
 
-
-var CandlestickSeries = React.createClass({
-	contextTypes: {
-		xScale: React.PropTypes.func.isRequired,
-		yScale: React.PropTypes.func.isRequired,
-		xAccessor: React.PropTypes.func.isRequired,
-		yAccessor: React.PropTypes.func.isRequired,
-		_data: React.PropTypes.array.isRequired,
-	},
-	statics: {
-		yAccessor: (d) => ({open: d.open, high: d.high, low: d.low, close: d.close})
-	},
-	getDefaultProps() {
-		return {
-			namespace: "ReStock.CandlestickSeries"
-		}
-	},
+class CandlestickSeries extends React.Component {
+	constructor(props) {
+		super(props);
+		this.getWicks = this.getWicks.bind(this);
+		this.getCandles = this.getCandles.bind(this);
+	}
 	getWicks() {
-		// console.log(this.context._data);
-		var wicks = this.context._data
+		var wicks = this.context.plotData
 				.filter((d) => d.close !== undefined)
 				.map((d, idx) => {
 					var ohlc = this.context.yAccessor(d);
@@ -42,13 +30,13 @@ var CandlestickSeries = React.createClass({
 									y2={y2} />
 				}, this);
 		return wicks;
-	},
+	}
 	getCandles() {
-		var width = this.context.xScale(this.context.xAccessor(this.context._data[this.context._data.length - 1]))
-			- this.context.xScale(this.context.xAccessor(this.context._data[0]));
-		var cw = (width / (this.context._data.length)) * 0.5;
+		var width = this.context.xScale(this.context.xAccessor(this.context.plotData[this.context.plotData.length - 1]))
+			- this.context.xScale(this.context.xAccessor(this.context.plotData[0]));
+		var cw = (width / (this.context.plotData.length)) * 0.5;
 		var candleWidth = Math.floor(cw) % 2 === 0 ? Math.floor(cw) : Math.round(cw); // 
-		var candles = this.context._data
+		var candles = this.context.plotData
 				.filter(function (d) { return d.close !== undefined; })
 				.map(function(d, idx) {
 					var ohlc = this.context.yAccessor(d);
@@ -70,7 +58,7 @@ var CandlestickSeries = React.createClass({
 								height={height} />
 				}, this);
 		return candles;
-	},
+	}
 	render() {
 		return (
 			<g>
@@ -83,6 +71,18 @@ var CandlestickSeries = React.createClass({
 			</g>
 		);
 	}
-});
+};
+
+CandlestickSeries.contextTypes = {
+	xScale: React.PropTypes.func.isRequired,
+	yScale: React.PropTypes.func.isRequired,
+	xAccessor: React.PropTypes.func.isRequired,
+	yAccessor: React.PropTypes.func.isRequired,
+	plotData: React.PropTypes.array.isRequired,
+}
+
+CandlestickSeries.defaultProps = { namespace: "ReStock.CandlestickSeries" };
+
+CandlestickSeries.yAccessor = (d) => ({open: d.open, high: d.high, low: d.low, close: d.close});
 
 module.exports = CandlestickSeries;

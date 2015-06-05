@@ -33,25 +33,25 @@ var ChartCanvas = React.createClass({
 		};
 	},
 	childContextTypes: {
-		_width: React.PropTypes.number.isRequired,
-		_height: React.PropTypes.number.isRequired,
+		width: React.PropTypes.number.isRequired,
+		height: React.PropTypes.number.isRequired,
 		data: React.PropTypes.object.isRequired,
 		interval: React.PropTypes.string.isRequired,
 		initialDisplay: React.PropTypes.number.isRequired,
-		_data: React.PropTypes.array,
+		plotData: React.PropTypes.array,
 		// canvas: React.PropTypes.any,
 
-		_chartData: React.PropTypes.array,
+		chartData: React.PropTypes.array,
 	},
 	getChildContext() {
 		return {
-			_width: this.getAvailableWidth(this.props),
-			_height: this.getAvailableHeight(this.props),
+			width: this.getAvailableWidth(this.props),
+			height: this.getAvailableHeight(this.props),
 			data: this.state.data,
 			interval: this.props.interval,
-			initialDisplay: this.props.initialDisplay || this.state._data.length,
-			_data: this.state._data,
-			_chartData: this.state._chartData
+			initialDisplay: this.props.initialDisplay || this.state.plotData.length,
+			plotData: this.state.plotData,
+			chartData: this.state.chartData,
 		}
 	},
 	componentWillMount() {
@@ -62,20 +62,20 @@ var ChartCanvas = React.createClass({
 
 		var state = {
 			data: data,
-			_data: this.props.data
+			plotData: this.props.data
 		}
 		if (this.containsChart(props)) {
 			var defaultOptions = {
 				width: this.getAvailableWidth(props),
 				height: this.getAvailableHeight(props),
 			}
-			var partialData = props.data;
-			var chartData = this.getChartData(props, context, partialData, data, defaultOptions);
+			var plotData = props.data;
+			var chartData = this.getChartData(props, context, plotData, data, defaultOptions);
 			// console.log(chartData);
 			var mainChart = this.getMainChart(props.children);
 
-			state._chartData = chartData;
-			state._data = partialData;
+			state.chartData = chartData;
+			state.plotData = plotData;
 		}
 		this.setState(state);
 	},

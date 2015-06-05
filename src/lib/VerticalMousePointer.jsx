@@ -3,20 +3,11 @@ var React = require('react');
 var EdgeCoordinate = require('./EdgeCoordinate')
 var Utils = require('./utils/utils')
 
-var VerticalMousePointer = React.createClass({
-	contextTypes: {
-		_height: React.PropTypes.number.isRequired,
-		_mouseXY: React.PropTypes.array.isRequired,
-		_xDisplayValue: React.PropTypes.string.isRequired,
-	},
+
+class VerticalMousePointer extends React.Component {
 	shouldComponentUpdate(nextProps, nextState, nextContext) {
-		return nextContext._mouseXY !== this.nextContext._mouseXY
-	},
-	getDefaultProps() {
-		return {
-			namespace: "ReStock.VerticalMousePointer",
-		}
-	},
+		return nextProps.mouseXY !== this.props.mouseXY
+	}
 	render() {
 		return (
 			<g className={'crosshair '}>
@@ -24,16 +15,26 @@ var VerticalMousePointer = React.createClass({
 					type="vertical"
 					className="horizontal"
 					show={true}
-					x1={this.context._mouseXY[0]} y1={0}
-					x2={this.context._mouseXY[0]} y2={this.context._height}
-					coordinate={this.context._xDisplayValue}
-					edgeAt={this.context._height}
+					x1={this.props.mouseXY[0]} y1={0}
+					x2={this.props.mouseXY[0]} y2={this.props.height}
+					coordinate={this.props.xDisplayValue}
+					edgeAt={this.props.height}
 					orient="bottom"
 					/>
 				
 			</g>
 		);
 	}
-});
+};
+
+VerticalMousePointer.propTypes = {
+	height: React.PropTypes.number.isRequired,
+	mouseXY: React.PropTypes.array.isRequired,
+	xDisplayValue: React.PropTypes.string.isRequired,
+}
+
+VerticalMousePointer.defaultProps = { namespace: "ReStock.VerticalMousePointer" };
+
+VerticalMousePointer.yAccessor = (d) => ({open: d.open, high: d.high, low: d.low, close: d.close});
 
 module.exports = VerticalMousePointer;

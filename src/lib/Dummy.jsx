@@ -5,11 +5,11 @@ var Dummy = React.createClass({
 	childContextTypes: {
 		data: React.PropTypes.object,
 		dataTransformOptions: React.PropTypes.object,
-		_data: React.PropTypes.array,
-		_chartData: React.PropTypes.array,
-		_currentItems: React.PropTypes.array,
-		_show: React.PropTypes.bool,
-		_mouseXY: React.PropTypes.array,
+		plotData: React.PropTypes.array,
+		chartData: React.PropTypes.array,
+		currentItems: React.PropTypes.array,
+		show: React.PropTypes.bool,
+		mouseXY: React.PropTypes.array,
 		interval: React.PropTypes.string,
 
 		// EventCaptureMixin

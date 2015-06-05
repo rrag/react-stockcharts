@@ -18,8 +18,8 @@ var DataTransform = React.createClass({
 		options: React.PropTypes.object
 	},
 	contextTypes: {
-		_width: React.PropTypes.number.isRequired,
-		_height: React.PropTypes.number.isRequired,
+		width: React.PropTypes.number.isRequired,
+		height: React.PropTypes.number.isRequired,
 		data: React.PropTypes.object.isRequired,
 		dataTransformOptions: React.PropTypes.object,
 		dataTransformProps: React.PropTypes.object,
@@ -68,15 +68,15 @@ var DataTransform = React.createClass({
 		if (this.containsChart(props)) {
 			var data = passThroughProps.data[context.interval];
 			var beginIndex = Math.max(data.length - context.initialDisplay, 0);
-			var partialData = data.slice(beginIndex);
-			var chartData = this.getChartData(props, context, partialData, passThroughProps.data, passThroughProps.other);
+			var plotData = data.slice(beginIndex);
+			var chartData = this.getChartData(props, context, plotData, passThroughProps.data, passThroughProps.other);
 			var mainChart = this.getMainChart(props.children);
 
-			state._chartData = chartData;
-			state._data = partialData;
-			state._currentItems = [];
-			state._show = false;
-			state._mouseXY = [0, 0];
+			state.chartData = chartData;
+			state.plotData = plotData;
+			state.currentItems = [];
+			state.show = false;
+			state.mouseXY = [0, 0];
 			state.mainChart = mainChart;
 		}
 		this.setState(state);
@@ -90,22 +90,22 @@ var DataTransform = React.createClass({
 			interval: context.interval
 		}
 		if (this.containsChart(props)) {
-			var { interval, _chartData, _data } = this.state
+			var { interval, chartData, plotData } = this.state
 
 			var data = passThroughProps.data[interval];
 			var mainChart = this.getMainChart(props.children);
-			var mainChartData = _chartData.filter((each) => each.id === mainChart)[0];
-			var beginIndex = Utils.getClosestItemIndexes(data, mainChartData.config.accessors.xAccessor(_data[0]), mainChartData.config.accessors.xAccessor).left;
-			var endIndex = Utils.getClosestItemIndexes(data, mainChartData.config.accessors.xAccessor(_data[_data.length - 1]), mainChartData.config.accessors.xAccessor).right;
+			var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
+			var beginIndex = Utils.getClosestItemIndexes(data, mainChartData.config.accessors.xAccessor(plotData[0]), mainChartData.config.accessors.xAccessor).left;
+			var endIndex = Utils.getClosestItemIndexes(data, mainChartData.config.accessors.xAccessor(plotData[plotData.length - 1]), mainChartData.config.accessors.xAccessor).right;
 
-			var partialData = data.slice(beginIndex, endIndex);
-			var chartData = this.getChartData(props, context, partialData, passThroughProps.data, passThroughProps.other);
+			var plotData = data.slice(beginIndex, endIndex);
+			var chartData = this.getChartData(props, context, plotData, passThroughProps.data, passThroughProps.other);
 
-			state._chartData = chartData;
-			state._data = partialData;
-			state._currentItems = [];
-			state._show = false;
-			state._mouseXY = [0, 0];
+			state.chartData = chartData;
+			state.plotData = plotData;
+			state.currentItems = [];
+			state.show = false;
+			state.mouseXY = [0, 0];
 			state.mainChart = mainChart;
 		}
 		this.setState(state);
@@ -114,11 +114,16 @@ var DataTransform = React.createClass({
 		data: React.PropTypes.object,
 		dataTransformOptions: React.PropTypes.object,
 		dataTransformProps: React.PropTypes.object,
-		_data: React.PropTypes.array,
-		_chartData: React.PropTypes.array,
-		_currentItems: React.PropTypes.array,
-		_show: React.PropTypes.bool,
-		_mouseXY: React.PropTypes.array,
+		// plotData: React.PropTypes.array, // Deprecated
+		plotData: React.PropTypes.array,
+		// chartData: React.PropTypes.array, // Deprecated
+		chartData: React.PropTypes.array,
+		// currentItems: React.PropTypes.array, // Deprecated
+		currentItems: React.PropTypes.array,
+		// show: React.PropTypes.bool,  // Deprecated
+		show: React.PropTypes.bool,
+		// mouseXY: React.PropTypes.array, // Deprecated
+		mouseXY: React.PropTypes.array,
 		interval: React.PropTypes.string,
 	},
 	getChildContext() {
@@ -126,11 +131,16 @@ var DataTransform = React.createClass({
 			data: this.state.data,
 			dataTransformOptions: this.state.dataTransformOptions,
 			dataTransformProps: this.state.dataTransformProps,
-			_data: this.state._data,
-			_chartData: this.state._chartData,
-			_currentItems: this.state._currentItems,
-			_show: this.state._show,
-			_mouseXY: this.state._mouseXY,
+			// plotData: this.state.plotData, // Deprecated
+			plotData: this.state.plotData,
+			chartData: this.state.chartData, // Deprecated
+			// chartData: this.state.chartData,
+			// currentItems: this.state.currentItems, // Deprecated
+			currentItems: this.state.currentItems,
+			// show: this.state.show, // Deprecated
+			show: this.state.show,
+			// mouseXY: this.state.mouseXY, // Deprecated
+			mouseXY: this.state.mouseXY,
 			interval: this.state.interval,
 		}
 	},

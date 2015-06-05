@@ -56,8 +56,8 @@ var ChartContainerMixin = {
 		// console.log(other);
 		if (other === undefined) other = {};
 		return {
-			width: other.width || ctx._width,
-			height: other.height || ctx._height
+			width: other.width || ctx.width,
+			height: other.height || ctx.height
 		}
 	},
 	getDimensions(innerDimension, chartProps) {

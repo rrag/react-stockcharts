@@ -2,33 +2,17 @@
 var React = require('react'),
 	Utils = require('./utils/utils');
 
-var CurrentCoordinate = React.createClass({
-	propTypes: {
-		forChart: React.PropTypes.number.isRequired,
-		forOverlay: React.PropTypes.number,
-		yAccessor: React.PropTypes.func,
-		r: React.PropTypes.number.isRequired,
-		className: React.PropTypes.string,
-	},
-	contextTypes: {
-		_show: React.PropTypes.bool.isRequired,
-		_currentItems: React.PropTypes.array.isRequired,
-		_chartData: React.PropTypes.array.isRequired,
-	},
-	getDefaultProps() {
-		return {
-			namespace: "ReStock.CurrentCoordinate",
-			r: 3
-		};
-	},
+class CurrentCoordinate extends React.Component {
+	constructor(props) {
+		super(props);
+	}
 	render() {
-
-		var chartData = this.context._chartData.filter((each) => each.id === this.props.forChart)[0];
-		var currentItem = this.context._currentItems.filter((each) => each.id === this.props.forChart)[0];
+		var chartData = this.context.chartData.filter((each) => each.id === this.props.forChart)[0];
+		var currentItem = this.context.currentItems.filter((each) => each.id === this.props.forChart)[0];
 		var item = currentItem ? currentItem.data : undefined;
 		var fill = 'black';
 
-		if (! this.context._show || item === undefined) return null;
+		if (! this.context.show || item === undefined) return null;
 		var yAccessor =  this.props.yAccessor || chartData.config.accessors.yAccessor;
 
 		if (this.props.forOverlay !== undefined) {
@@ -55,6 +39,22 @@ var CurrentCoordinate = React.createClass({
 			<circle className={this.props.className} cx={x} cy={y} r={this.props.r} fill={fill} />
 		);
 	}
-});
+};
+
+CurrentCoordinate.propTypes = {
+	forChart: React.PropTypes.number.isRequired,
+	forOverlay: React.PropTypes.number,
+	yAccessor: React.PropTypes.func,
+	r: React.PropTypes.number.isRequired,
+	className: React.PropTypes.string,
+}
+
+CurrentCoordinate.defaultProps = { namespace: "ReStock.CurrentCoordinate", r: 3 };
+
+CurrentCoordinate.contextTypes = {
+	show: React.PropTypes.bool.isRequired,
+	currentItems: React.PropTypes.array.isRequired,
+	chartData: React.PropTypes.array.isRequired,
+};
 
 module.exports = CurrentCoordinate;

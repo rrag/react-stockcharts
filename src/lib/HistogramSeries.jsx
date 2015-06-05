@@ -2,32 +2,11 @@
 var React = require('react'),
 	d3 = require('d3');
 
-var HistogramSeries = React.createClass({
-	propTypes: {
-		baseAt: React.PropTypes.oneOfType([
-					React.PropTypes.oneOf(['top', 'bottom', 'middle'])
-					, React.PropTypes.number
-				]).isRequired,
-		direction: React.PropTypes.oneOf(['up', 'down']).isRequired,
-		className: React.PropTypes.oneOfType([
-					React.PropTypes.func, React.PropTypes.string
-				]).isRequired,
-	},
-	getDefaultProps() {
-		return {
-			namespace: "ReStock.HistogramSeries",
-			baseAt: 'bottom',
-			direction: 'up',
-			className: 'bar'
-		}
-	},
-	contextTypes: {
-		xScale: React.PropTypes.func.isRequired,
-		yScale: React.PropTypes.func.isRequired,
-		xAccessor: React.PropTypes.func.isRequired,
-		yAccessor: React.PropTypes.func.isRequired,
-		_data: React.PropTypes.array.isRequired,
-	},
+class HistogramSeries extends React.Component {
+	constructor(props) {
+		super(props);
+		this.getBars = this.getBars.bind(this);
+	}
 	getBars() {
 		var base = this.props.baseAt === 'top'
 					? 0
@@ -44,8 +23,8 @@ var HistogramSeries = React.createClass({
 			getClassName = this.props.className;
 		}
 		var width = Math.abs(this.context.xScale.range()[0] - this.context.xScale.range()[1]);
-		var barWidth = width / (this.context._data.length) * 0.5;
-		var bars = this.context._data
+		var barWidth = width / (this.context.plotData.length) * 0.5;
+		var bars = this.context.plotData
 				.filter((d) => (this.context.yAccessor(d) !== undefined) )
 				.map((d, idx) => {
 					var yValue = this.context.yAccessor(d);
@@ -72,7 +51,7 @@ var HistogramSeries = React.createClass({
 								height={Math.round(height)} />
 				}, this);
 		return bars;
-	},
+	}
 	render() {
 		return (
 			<g className="histogram">
@@ -80,6 +59,30 @@ var HistogramSeries = React.createClass({
 			</g>
 		);
 	}
-});
+};
+
+HistogramSeries.propTypes = {
+	baseAt: React.PropTypes.oneOfType([
+				React.PropTypes.oneOf(['top', 'bottom', 'middle'])
+				, React.PropTypes.number
+			]).isRequired,
+	direction: React.PropTypes.oneOf(['up', 'down']).isRequired,
+	className: React.PropTypes.oneOfType([
+				React.PropTypes.func, React.PropTypes.string
+			]).isRequired,
+};
+HistogramSeries.defaultProps = {
+	namespace: "ReStock.HistogramSeries",
+	baseAt: 'bottom',
+	direction: 'up',
+	className: 'bar'
+};
+HistogramSeries.contextTypes = {
+	xScale: React.PropTypes.func.isRequired,
+	yScale: React.PropTypes.func.isRequired,
+	xAccessor: React.PropTypes.func.isRequired,
+	yAccessor: React.PropTypes.func.isRequired,
+	plotData: React.PropTypes.array.isRequired,
+};
 
 module.exports = HistogramSeries;

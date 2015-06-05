@@ -2,27 +2,12 @@
 var React = require('react'),
 	d3 = require('d3');
 
-var KagiSeries = React.createClass({
-	contextTypes: {
-		xScale: React.PropTypes.func.isRequired,
-		yScale: React.PropTypes.func.isRequired,
-		xAccessor: React.PropTypes.func.isRequired,
-		yAccessor: React.PropTypes.func.isRequired,
-		_data: React.PropTypes.array.isRequired,
-	},
-	statics: {
-		yAccessor: (d) => ({open: d.open, high: d.high, low: d.low, close: d.close})
-	},
-	getDefaultProps() {
-		return {
-			namespace: "ReStock.KagiSeries"
-		}
-	},
+class KagiSeries extends React.Component {
 	render() {
 		var kagiLine = new Array();
 		var kagi = {};
-		for (var i = 0; i < this.context._data.length; i++) {
-			var d = this.context._data[i];
+		for (var i = 0; i < this.context.plotData.length; i++) {
+			var d = this.context.plotData[i];
 			if (d.close === undefined) continue;
 			if (kagi.type === undefined) kagi.type = d.startAs;
 			if (kagi.plot === undefined) kagi.plot = new Array();
@@ -56,6 +41,18 @@ var KagiSeries = React.createClass({
 			</g>
 		);
 	}
-});
+};
+
+KagiSeries.defaultProps = {
+	namespace: "ReStock.KagiSeries",
+};
+KagiSeries.contextTypes = {
+	xScale: React.PropTypes.func.isRequired,
+	yScale: React.PropTypes.func.isRequired,
+	xAccessor: React.PropTypes.func.isRequired,
+	yAccessor: React.PropTypes.func.isRequired,
+	plotData: React.PropTypes.array.isRequired,
+};
+KagiSeries.yAccessor = (d) => ({open: d.open, high: d.high, low: d.low, close: d.close});
 
 module.exports = KagiSeries;

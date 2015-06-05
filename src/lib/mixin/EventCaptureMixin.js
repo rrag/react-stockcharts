@@ -38,40 +38,40 @@ var EventCaptureMixin = {
 	},
 	handleMouseMove(mouseXY) {
 		// console.log('mouse move - ', mouseXY);
-		var currentItems = this.getCurrentItems(this.state._chartData, mouseXY, this.state._data)
+		var currentItems = this.getCurrentItems(this.state.chartData, mouseXY, this.state.plotData)
 			// .filter((eachChartData) => eachChartData.id === this.state.mainChart)
 
 		this.setState({
-			_mouseXY: mouseXY,
-			_currentItems: currentItems,
-			_show: true
+			mouseXY: mouseXY,
+			currentItems: currentItems,
+			show: true
 		});
 	},
-	getCurrentItems(chartData, mouseXY, _data) {
+	getCurrentItems(chartData, mouseXY, plotData) {
 		return chartData
 			.map((eachChartData) => {
 				var xValue = eachChartData.plot.scales.xScale.invert(mouseXY[0]);
-				var item = Utils.getClosestItem(_data, xValue, eachChartData.config.accessors.xAccessor);
+				var item = Utils.getClosestItem(plotData, xValue, eachChartData.config.accessors.xAccessor);
 				return { id: eachChartData.id, data: item };
 			});
 	},
 	handleMouseEnter() {
 		// console.log('enter');
 		this.setState({
-			_show: true
+			show: true
 		});
 	},
 	handleMouseLeave() {
 		// console.log('leave');
 		this.setState({
-			_show: false
+			show: false
 		});
 	},
 	handleZoom(zoomDirection, mouseXY) {
 		// console.log('zoomDirection ', zoomDirection, ' mouseXY ', mouseXY);
-		var { mainChart, _chartData, data, _data, interval } = this.state;
+		var { mainChart, chartData, data, plotData, interval } = this.state;
 
-		var chart = _chartData.filter((eachChart) => eachChart.id === mainChart)[0],
+		var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0],
 			item = this.getClosestItem(mouseXY, chart),
 			xScale = chart.plot.scales.xScale,
 			domain = xScale.domain(),
@@ -91,7 +91,7 @@ var EventCaptureMixin = {
 		// xScale(domainR) - xScale(domainL)
 		var dataToPlot = this.getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.accessors.xAccessor);
 		if (dataToPlot.data.length < 10) return;
-		var newChartData = _chartData.map((eachChart) => {
+		var newChartData = chartData.map((eachChart) => {
 			var plot = this.getChartPlotFor(eachChart.config, dataToPlot.data, domainL, domainR);
 			return {
 				id: eachChart.id,
@@ -100,8 +100,8 @@ var EventCaptureMixin = {
 			}
 		});
 		this.setState({
-			_chartData: newChartData,
-			_data: dataToPlot.data,
+			chartData: newChartData,
+			plotData: dataToPlot.data,
 			interval: dataToPlot.interval
 		});
 	},
@@ -142,14 +142,14 @@ var EventCaptureMixin = {
 	},
 	handlePan(mousePosition, startDomain) {
 		// console.log('mousePosition ', mousePosition);
-		var { mainChart, _chartData, data, _data, interval, panStartDomain, panOrigin } = this.state;
+		var { mainChart, chartData, data, plotData, interval, panStartDomain, panOrigin } = this.state;
 		if (panStartDomain === null) {
 			this.handlePanStart(startDomain, mousePosition);
 		} else {
 			requestAnimationFrame(() => {
 				
 
-				var chart = _chartData.filter((eachChart) => eachChart.id === mainChart)[0],
+				var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0],
 					domainRange = panStartDomain[1] - panStartDomain[0],
 					fullData = data[interval],
 					last = fullData[fullData.length - 1],
@@ -177,7 +177,7 @@ var EventCaptureMixin = {
 
 				var filteredData = fullData.slice(leftX.right, rightX.right);
 
-				var newChartData = _chartData.map((eachChart) => {
+				var newChartData = chartData.map((eachChart) => {
 					var plot = this.getChartPlotFor(eachChart.config, filteredData, domainL, domainR);
 					return {
 						id: eachChart.id,
@@ -185,14 +185,14 @@ var EventCaptureMixin = {
 						plot: plot
 					}
 				});
-				var _currentItems = this.getCurrentItems(newChartData, mousePosition, filteredData);
+				var currentItems = this.getCurrentItems(newChartData, mousePosition, filteredData);
 
 				this.setState({
-					_chartData: newChartData,
-					_data: filteredData,
-					_currentItems: _currentItems,
-					// _show: true,
-					_mouseXY: mousePosition
+					chartData: newChartData,
+					plotData: filteredData,
+					currentItems: currentItems,
+					// show: true,
+					mouseXY: mousePosition
 				});
 			});
 		}

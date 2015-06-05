@@ -1,19 +1,16 @@
 'use strict';
 var React = require('react');
 
-var Canvas = React.createClass({
-	propTypes: {
-		width: React.PropTypes.number.isRequired,
-		height: React.PropTypes.number.isRequired,
-		left: React.PropTypes.number.isRequired,
-		top: React.PropTypes.number.isRequired
-	},
+class Canvas extends React.Component {
+	constructor(props) {
+		super(props);
+	}/*,
 	componentDidMount() {
 		console.log(this.getCanvas());
 	},
 	getCanvas() {
 		return React.findDOMNode(this.refs.canvas);
-	},
+	},*/
 	render() {
 		return (
 			<canvas ref="canvas"
@@ -22,6 +19,13 @@ var Canvas = React.createClass({
 				style={{ position: 'absolute', left: this.props.left, top: this.props.top}}/>
 		);
 	}
-});
+};
+
+Canvas.contextTypes = {
+	width: React.PropTypes.number.isRequired,
+	height: React.PropTypes.number.isRequired,
+	left: React.PropTypes.number.isRequired,
+	top: React.PropTypes.number.isRequired
+}
 
 module.exports = Canvas;

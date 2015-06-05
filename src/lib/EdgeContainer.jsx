@@ -1,19 +1,19 @@
 'use strict';
 var React = require('react');
 
-var EdgeContainer = React.createClass({
-	contextTypes: {
-		_chartData: React.PropTypes.array.isRequired
-	},
+class EdgeContainer extends React.Component {
 	shouldComponentUpdate(nextProps, nextState, nextContext) {
-		return nextContext._chartData !== this.context._chartData;
-	},
+		return nextContext.chartData !== this.context.chartData;
+	}
 	render() {
 		var children = React.Children.map(this.props.children, (child) => React.cloneElement(child));
-
 		return <g>{children}</g>
 	}
-});
+};
+
+EdgeContainer.contextTypes = {
+	chartData: React.PropTypes.array.isRequired
+};
 
 module.exports = EdgeContainer;
 
