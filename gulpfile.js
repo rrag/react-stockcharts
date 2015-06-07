@@ -181,12 +181,12 @@ gulp.task('publishexamples', function(cb) {
 		'CandleStickChartWithCHMousePointer',
 		'CandleStickChartWithZoomPan',
 		// TODO
-		// CandleStickChartWithMA
-		// CandleStickChartWithEdge
-		// HaikinAshi
-		// Kagi
-		// PointAndFigure
-		// Renko
+		'CandleStickChartWithMA',
+		'CandleStickChartWithEdge',
+		'HaikinAshi',
+		'Kagi',
+		'PointAndFigure',
+		'Renko'
 	];
 
 	var replace = require('gulp-replace');

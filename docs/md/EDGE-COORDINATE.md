@@ -1,3 +1,5 @@
+checkout the [source](https://gist.github.com/rrag/70ea3fe28ad35bf3ed4c), [block](http://bl.ocks.org/rrag/70ea3fe28ad35bf3ed4c), [plunker](http://plnkr.co/edit/gist:70ea3fe28ad35bf3ed4c?p=preview) of this example
+
 `EdgeIndicator`s are inside the `EdgeContainer` and can be of type `first` or `last`, can be located `left` or `right` and orient `left` or `right`. Below you see edges `first` and `last` for all the overlays and also for the `volume` histogram.
 
 The edge values are updated on zoom and pan too

@@ -19,3 +19,21 @@
 [submodule "docs/examples/CandleStickChartWithZoomPan"]
 	path = docs/examples/CandleStickChartWithZoomPan
 	url = git@gist.github.com:/a8465abe0061df1b7976.git
+[submodule "docs/examples/CandleStickChartWithMA"]
+	path = docs/examples/CandleStickChartWithMA
+	url = git@gist.github.com:/a27298bb7ae613d48ba2.git
+[submodule "docs/examples/CandleStickChartWithEdge"]
+	path = docs/examples/CandleStickChartWithEdge
+	url = git@gist.github.com:/70ea3fe28ad35bf3ed4c.git
+[submodule "docs/examples/HaikinAshi"]
+	path = docs/examples/HaikinAshi
+	url = git@gist.github.com:/51379c24e9751d46dcea.git
+[submodule "docs/examples/Kagi"]
+	path = docs/examples/Kagi
+	url = git@gist.github.com:/d1e5b75ac12f754bb21d.git
+[submodule "docs/examples/PointAndFigure"]
+	path = docs/examples/PointAndFigure
+	url = git@gist.github.com:/d43ef867bead0f1de663.git
+[submodule "docs/examples/Renko"]
+	path = docs/examples/Renko
+	url = git@gist.github.com:/df51fa445c26e123beb9.git

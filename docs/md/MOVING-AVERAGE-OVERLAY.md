@@ -1,3 +1,5 @@
+checkout the [source](https://gist.github.com/rrag/a27298bb7ae613d48ba2), [block](http://bl.ocks.org/rrag/a27298bb7ae613d48ba2), [plunker](http://plnkr.co/edit/gist:a27298bb7ae613d48ba2?p=preview) of this example
+
 `Overlay`s share the scales of a `Chart` and contribute to the `domain` of the `Chart` they belong to.
 
 In this chart we are introducing 

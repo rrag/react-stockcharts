@@ -5,3 +5,7 @@ Learn more about it [here](http://stockcharts.com/school/doku.php?id=chart_schoo
 Kagi consists of *Yin* and *Yang*, which is represented as red and green respectively. An overly simple rule is buy on Yang and sell on Yin.
 
 ATR(14) is used as the default reversal amount.
+
+checkout the [source](https://gist.github.com/rrag/d1e5b75ac12f754bb21d), [block](http://bl.ocks.org/rrag/d1e5b75ac12f754bb21d), [plunker](http://plnkr.co/edit/gist:d1e5b75ac12f754bb21d?p=preview) of this example
+
+
