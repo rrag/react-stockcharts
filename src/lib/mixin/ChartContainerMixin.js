@@ -49,7 +49,7 @@ var ChartContainerMixin = {
 	getClosestItem(mouseXY, chartData) {
 		// console.log(chartData);
 		var xValue = chartData.plot.scales.xScale.invert(mouseXY[0]);
-		var item = Utils.getClosestItem(this.state._data, xValue, chartData.config.accessors.xAccessor);
+		var item = Utils.getClosestItem(this.state.plotData, xValue, chartData.config.accessors.xAccessor);
 		return item;
 	},
 	getInnerDimensions(ctx, other) {
