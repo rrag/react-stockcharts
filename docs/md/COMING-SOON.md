@@ -29,7 +29,7 @@
 
 #### More examples
 
-- gists, fiddle and [blocks](http://bl.ocks.org/) for each chart type - v0.1
+- ~~gists, fiddle and [blocks](http://bl.ocks.org/) for each chart type - v0.1~~
 
 #### Open issues
 
@@ -37,3 +37,7 @@
 - ~~zoom out changes the interval, but zoom in does not change~~
 - ~~Refactor pan and zoom~~
 - Add tests and coverage
+
+#### Dependencies
+- Experiment with React 0.13 instead of React 0.14 - v0.1
+- Remove Freezer-js dependency - v0.1

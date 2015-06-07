@@ -180,7 +180,6 @@ gulp.task('publishexamples', function(cb) {
 		'CandleStickStockScaleChartWithVolumeHistogramV2',
 		'CandleStickChartWithCHMousePointer',
 		'CandleStickChartWithZoomPan',
-		// TODO
 		'CandleStickChartWithMA',
 		'CandleStickChartWithEdge',
 		'HaikinAshi',
@@ -213,6 +212,7 @@ var getFunctionFor = function(chartName) {
 
 	var r = 'var parseDate = d3.time.format("%Y-%m-%d").parse;' + '\n' +
 	'd3.tsv("//rrag.github.io/react-stockcharts/data/MSFT.tsv", (err, data) => {' + '\n' +
+	'	/* change MSFT.tsv to MSFT_full.tsv above to see how this works with lots of data points */' + '\n' +
 	'	data.forEach((d, i) => {' + '\n' +
 	'		d.date = new Date(parseDate(d.date).getTime());'+ '\n' +
 	'		d.open = +d.open;'+ '\n' +
