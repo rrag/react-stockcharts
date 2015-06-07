@@ -1,6 +1,7 @@
 'use strict';
 
 var d3 = require('d3');
+var React = require('react');
 
 var overlayColors = d3.scale.category10();
 
@@ -8,6 +9,14 @@ function Utils() {
 }
 
 Utils.overlayColors = overlayColors;
+
+Utils.isReactVersion13 = function() {
+	var version = React.version.split('.')[1];
+	return version === '13';
+}
+Utils.isReactVersion14 = function() {
+	return React.version.split('.')[1] === '14';
+}
 Utils.cloneMe = function(obj) {
 	if(obj == null || typeof(obj) !== 'object')
 		return obj;
@@ -33,6 +42,16 @@ Utils.numberWithCommas = function(x) {
 Utils.isNumeric = function(n) {
 	return !isNaN(parseFloat(n)) && isFinite(n);
 };
+Utils.mergeObject = function(a, b) {
+	var newObject = {};
+	Object.keys(a).forEach((key) => {
+		newObject[key] = a[key];
+	});
+	Object.keys(b).forEach((key) => {
+		newObject[key] = b[key];
+	});
+	return newObject;
+}
 Utils.mousePosition = function(e) {
 	var container = e.currentTarget,
 		rect = container.getBoundingClientRect(),

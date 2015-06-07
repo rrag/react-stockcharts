@@ -96,10 +96,6 @@ function renderPage(data, dataFull) {
 
 	React.render(<ExamplesPage />, document.getElementById("chart-goes-here"));
 }
-// React.render(<ExamplesPage />, document.getElementById("area"));
-
-//module.exports = ExamplesPage;
-
 
 d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 	d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
@@ -144,7 +140,7 @@ function renderPartialPage(data, dataFull) {
 	// CandleStickStockScaleChartWithVolumeHistogramV1
 	// CandleStickStockScaleChartWithVolumeHistogramV2
 	// CandleStickChartWithZoomPan
-	var Chart = require('lib/charts/CandleStickChartWithZoomPan');
+	var Chart = require('lib/charts/CandleStickChartWithEdge');
 
 	var ExamplesPage = React.createClass({
 		//mixins: [ScrollMixin],

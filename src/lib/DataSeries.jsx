@@ -1,10 +1,18 @@
 'use strict';
 
 var React = require('react');
+var Utils = require('./utils/utils');
 
 class DataSeries extends React.Component {
 	render() {
-		var children = React.Children.map(this.props.children, (child) => React.cloneElement(child));
+		var children = React.Children.map(this.props.children, (child) => {
+			var newChild = Utils.isReactVersion13()
+				? React.withContext(this.context, () => {
+					return React.createElement(child.type, Utils.mergeObject({ key: child.key, ref: child.ref}, child.props));
+				})
+				: React.cloneElement(child);
+			return newChild;
+		});
 		return (
 			<g  style={{ "clipPath": "url(#chart-area-clip)" }}>{children}</g>
 		);

@@ -5,6 +5,7 @@ var React = require('react');
 // var EventCaptureMixin = require('./mixin/EventCaptureMixin');
 var ChartContainerMixin = require('./mixin/ChartContainerMixin');
 var Canvas = require('./Canvas');
+var Utils = require('./utils/utils');
 
 var ChartCanvas = React.createClass({
 	mixins: [ChartContainerMixin],
@@ -84,9 +85,14 @@ var ChartCanvas = React.createClass({
 	},
 	render() {
 		var w = this.getAvailableWidth(this.props), h = this.getAvailableHeight(this.props);
-		var children = this.props.children;
-		// var children = this.renderChildren();
-
+		var children = React.Children.map(this.props.children, (child) => {
+			var newChild = Utils.isReactVersion13()
+				? React.withContext(this.getChildContext(), () => {
+					return React.createElement(child.type, Utils.mergeObject({ key: child.key, ref: child.ref}, child.props));
+				})
+				: React.cloneElement(child);
+			return newChild;
+		});
 		return (
 			<div style={{position: 'relative'}}>
 				<svg width={this.props.width} height={this.props.height}>
@@ -96,7 +102,7 @@ var ChartCanvas = React.createClass({
 						</clipPath>
 					</defs>
 					<g transform={`translate(${this.props.margin.left}, ${this.props.margin.top})`}>
-						{this.props.children}
+						{children}
 					</g>
 				</svg>
 			</div>

@@ -114,15 +114,10 @@ var DataTransform = React.createClass({
 		data: React.PropTypes.object,
 		dataTransformOptions: React.PropTypes.object,
 		dataTransformProps: React.PropTypes.object,
-		// plotData: React.PropTypes.array, // Deprecated
 		plotData: React.PropTypes.array,
-		// chartData: React.PropTypes.array, // Deprecated
 		chartData: React.PropTypes.array,
-		// currentItems: React.PropTypes.array, // Deprecated
 		currentItems: React.PropTypes.array,
-		// show: React.PropTypes.bool,  // Deprecated
 		show: React.PropTypes.bool,
-		// mouseXY: React.PropTypes.array, // Deprecated
 		mouseXY: React.PropTypes.array,
 		interval: React.PropTypes.string,
 	},
@@ -131,24 +126,23 @@ var DataTransform = React.createClass({
 			data: this.state.data,
 			dataTransformOptions: this.state.dataTransformOptions,
 			dataTransformProps: this.state.dataTransformProps,
-			// plotData: this.state.plotData, // Deprecated
 			plotData: this.state.plotData,
-			chartData: this.state.chartData, // Deprecated
-			// chartData: this.state.chartData,
-			// currentItems: this.state.currentItems, // Deprecated
+			chartData: this.state.chartData,
 			currentItems: this.state.currentItems,
-			// show: this.state.show, // Deprecated
 			show: this.state.show,
-			// mouseXY: this.state.mouseXY, // Deprecated
 			mouseXY: this.state.mouseXY,
 			interval: this.state.interval,
 		}
 	},
 	render() {
-		// console.log('DataTransform.render()');
-		// console.error('foobar');
-		var children = React.Children.map(this.props.children, (child) => React.cloneElement(child));
-		// var children = this.props.children;
+		var children = React.Children.map(this.props.children, (child) => {
+			var newChild = Utils.isReactVersion13()
+				? React.withContext(this.getChildContext(), () => {
+					return React.createElement(child.type, Utils.mergeObject({ key: child.key, ref: child.ref}, child.props));
+				})
+				: React.cloneElement(child);
+			return newChild;
+		});
 		return (
 			<g>{children}</g>
 		);

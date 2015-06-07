@@ -1,12 +1,18 @@
 'use strict';
 var React = require('react');
+var Utils = require('./utils/utils');
+var PureComponent = require('lib/utils/PureComponent');
 
-class TooltipContainer extends React.Component {
-	shouldComponentUpdate(nextProps, nextState, nextContext) {
-		return nextContext.chartData !== this.context.chartData || nextContext.currentItems !== this.context.currentItems;
-	}
+class TooltipContainer extends PureComponent {
 	render() {
-		var children = React.Children.map(this.props.children, (child) => React.cloneElement(child));
+		var children = React.Children.map(this.props.children, (child) => {
+			var newChild = Utils.isReactVersion13()
+				? React.withContext(this.context, () => {
+					return React.createElement(child.type, Utils.mergeObject({ key: child.key, ref: child.ref}, child.props));
+				})
+				: React.cloneElement(child);
+			return newChild;
+		});
 		return (
 			<g className="toottip-hover">
 				{children}

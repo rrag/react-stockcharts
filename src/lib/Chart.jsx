@@ -3,6 +3,8 @@
 var React = require('react'),
 	PureComponent = require('lib/utils/PureComponent');
 
+var Utils = require('./utils/utils');
+
 class Chart extends PureComponent {
 	getChildContext() {
 		var chartData = this.context.chartData.filter((each) => each.id === this.props.id)[0];
@@ -18,9 +20,14 @@ class Chart extends PureComponent {
 		var origin = typeof this.props.origin === 'function'
 			? this.props.origin(this.context.width, this.context.height)
 			: this.props.origin;
-
-		var children = React.Children.map(this.props.children, (child) => React.cloneElement(child));
-
+		var children = React.Children.map(this.props.children, (child) => {
+			var newChild = Utils.isReactVersion13()
+				? React.withContext(this.getChildContext(), () => {
+					return React.createElement(child.type, Utils.mergeObject({ key: child.key, ref: child.ref}, child.props));
+				})
+				: React.cloneElement(child);
+			return newChild;
+		});
 		return <g transform={`translate(${origin[0]}, ${origin[1]})`}>{children}</g>;
 	}
 };
@@ -48,7 +55,6 @@ Chart.contextTypes = {
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
 	chartData: React.PropTypes.array,
-	_updateMode: React.PropTypes.object
 };
 Chart.childContextTypes = {
 	xScale: React.PropTypes.func.isRequired,

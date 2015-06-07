@@ -10,8 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "d3": "^3.5.5",
-    "freezer-js": "^0.5.2",
-    "react": "^0.14.0-alpha2"
+    "react": "^0.13.3"
   },
   "devDependencies": {
     "autoprefixer-loader": "^1.2.0",
