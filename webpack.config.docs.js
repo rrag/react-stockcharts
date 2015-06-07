@@ -15,10 +15,10 @@ myConfig.entry = {
 	'react-stockcharts-dashboard': './docs/dashboard.js'
 };
 
-myConfig.externals = {
+/*myConfig.externals = {
 	"d3": 'd3'
 } // removing React external since 0.14 is not published yet, still in alpha 2
-
+*/
 myConfig.remarkable = {
 	preset: 'full',
 	html: true,
