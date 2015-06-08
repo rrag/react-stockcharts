@@ -16,14 +16,6 @@ var ChartContainerMixin = {
 	getCharts(props) {
 		return this.getChildren(props.children, /Chart$/)
 	},
-	getChildren(children, regex) {
-		var newChildren = Array.isArray(children)
-			? children
-			: [children];
-
-		return newChildren
-			.filter((child) => regex.test(child.props.namespace))
-	},
 	getChartData(props, context, partialData, fullData, other) {
 
 		var charts = this.getCharts(props);
@@ -41,15 +33,22 @@ var ChartContainerMixin = {
 			};
 		});
 	},
+	getChildren(children, regex) {
+		var matchingChildren = [];
+		React.Children.forEach(children, (child) => {
+			if (regex.test(child.props.namespace)) matchingChildren.push(child);
+		});
+		return matchingChildren;
+	},
 	getMainChart(children) {
 		var eventCapture = this.getChildren(children, /EventCapture$/);
 		if (eventCapture.length > 1) throw new Error("only one EventCapture allowed");
 		if (eventCapture.length > 0) return eventCapture[0].props.mainChart;
 	},
-	getClosestItem(mouseXY, chartData) {
+	getClosestItem(plotData, mouseXY, chartData) {
 		// console.log(chartData);
 		var xValue = chartData.plot.scales.xScale.invert(mouseXY[0]);
-		var item = Utils.getClosestItem(this.state.plotData, xValue, chartData.config.accessors.xAccessor);
+		var item = Utils.getClosestItem(plotData, xValue, chartData.config.accessors.xAccessor);
 		return item;
 	},
 	getInnerDimensions(ctx, other) {

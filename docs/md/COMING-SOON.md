@@ -36,8 +36,15 @@
 - ~~Window Resize after zoom/pan messes up the chart~~
 - ~~zoom out changes the interval, but zoom in does not change~~
 - ~~Refactor pan and zoom~~
+
+#### Tasks
+- Use ES6 Classes
+    - Do not use EventCaptureMixin, ChartContainerMixin
+    - Update examples to not use ChartWidthMixin
 - Add tests and coverage
+- Publish to npm - v0.1-alpha
+- configure options for advanced chart types
 
 #### Dependencies
-- Experiment with React 0.13 instead of React 0.14 - v0.1
-- Remove Freezer-js dependency - v0.1
+- ~~Experiment with React 0.13 instead of React 0.14 - v0.1~~
+- ~~Remove Freezer-js dependency - v0.1~~

@@ -5,14 +5,11 @@ var ChartContainerMixin = require('./mixin/ChartContainerMixin');
 var DataTransformMixin = require('./mixin/DataTransformMixin');
 var ChartTransformer = require('./utils/ChartTransformer');
 var Dummy = require('./Dummy');
+var EventHandler = require('./EventHandler');
 var Utils = require('./utils/utils');
 
-var polyLinearTimeScale = require('./scale/polylineartimescale');
-
-var doNotPassThrough = ['transformType', 'options', 'children', 'namespace'];
-
 var DataTransform = React.createClass({
-	mixins: [/* DataTransformMixin, */ChartContainerMixin, EventCaptureMixin],
+	// mixins: [/* DataTransformMixin, */ChartContainerMixin/*, EventCaptureMixin*/],
 	propTypes: {
 		transformType: React.PropTypes.string.isRequired, // stockscale, none
 		options: React.PropTypes.object
@@ -25,12 +22,6 @@ var DataTransform = React.createClass({
 		dataTransformProps: React.PropTypes.object,
 		interval: React.PropTypes.string.isRequired,
 		initialDisplay: React.PropTypes.number.isRequired,
-	},
-	getInitialState() {
-		return {
-			panInProgress: false,
-			focus: false
-		};
 	},
 	getDefaultProps() {
 		return {
@@ -49,11 +40,7 @@ var DataTransform = React.createClass({
 				Object.keys(props.options).forEach((key) => options[key] = props.options[key]);
 		}
 
-		// console.log(options);
 		var passThroughProps = transformer(context.data, context.interval, options, context.dataTransformProps)
-		// console.log('passThroughProps-------', passThroughProps);
-
-		// this.setState({ passThroughProps: passThroughProps });
 		return passThroughProps;
 	},
 	componentWillMount() {
@@ -65,19 +52,19 @@ var DataTransform = React.createClass({
 			dataTransformProps: passThroughProps.other,
 			interval: context.interval
 		}
-		if (this.containsChart(props)) {
+		if (ChartContainerMixin.containsChart(props)) {
 			var data = passThroughProps.data[context.interval];
 			var beginIndex = Math.max(data.length - context.initialDisplay, 0);
 			var plotData = data.slice(beginIndex);
-			var chartData = this.getChartData(props, context, plotData, passThroughProps.data, passThroughProps.other);
-			var mainChart = this.getMainChart(props.children);
+			var chartData = ChartContainerMixin.getChartData(props, context, plotData, passThroughProps.data, passThroughProps.other);
+			// var mainChart = this.getMainChart(props.children);
 
 			state.chartData = chartData;
 			state.plotData = plotData;
-			state.currentItems = [];
-			state.show = false;
-			state.mouseXY = [0, 0];
-			state.mainChart = mainChart;
+			// state.currentItems = [];
+			// state.show = false;
+			// state.mouseXY = [0, 0];
+			// state.mainChart = mainChart;
 		}
 		this.setState(state);
 	},
@@ -89,24 +76,24 @@ var DataTransform = React.createClass({
 			dataTransformProps: passThroughProps.other,
 			interval: context.interval
 		}
-		if (this.containsChart(props)) {
+		if (ChartContainerMixin.containsChart(props)) {
 			var { interval, chartData, plotData } = this.state
 
 			var data = passThroughProps.data[interval];
-			var mainChart = this.getMainChart(props.children);
-			var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
-			var beginIndex = Utils.getClosestItemIndexes(data, mainChartData.config.accessors.xAccessor(plotData[0]), mainChartData.config.accessors.xAccessor).left;
-			var endIndex = Utils.getClosestItemIndexes(data, mainChartData.config.accessors.xAccessor(plotData[plotData.length - 1]), mainChartData.config.accessors.xAccessor).right;
+			// var mainChart = this.getMainChart(props.children);
+			// var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
+			// var beginIndex = Utils.getClosestItemIndexes(data, mainChartData.config.accessors.xAccessor(plotData[0]), mainChartData.config.accessors.xAccessor).left;
+			// var endIndex = Utils.getClosestItemIndexes(data, mainChartData.config.accessors.xAccessor(plotData[plotData.length - 1]), mainChartData.config.accessors.xAccessor).right;
 
-			var plotData = data.slice(beginIndex, endIndex);
-			var chartData = this.getChartData(props, context, plotData, passThroughProps.data, passThroughProps.other);
+			// var plotData = data.slice(beginIndex, endIndex);
+			// var chartData = this.getChartData(props, context, plotData, passThroughProps.data, passThroughProps.other);
 
-			state.chartData = chartData;
-			state.plotData = plotData;
-			state.currentItems = [];
-			state.show = false;
-			state.mouseXY = [0, 0];
-			state.mainChart = mainChart;
+			// state.chartData = chartData;
+			// state.plotData = plotData;
+			// state.currentItems = [];
+			// state.show = false;
+			// state.mouseXY = [0, 0];
+			// state.mainChart = mainChart;
 		}
 		this.setState(state);
 	},
@@ -116,9 +103,9 @@ var DataTransform = React.createClass({
 		dataTransformProps: React.PropTypes.object,
 		plotData: React.PropTypes.array,
 		chartData: React.PropTypes.array,
-		currentItems: React.PropTypes.array,
-		show: React.PropTypes.bool,
-		mouseXY: React.PropTypes.array,
+		// currentItems: React.PropTypes.array,
+		// show: React.PropTypes.bool,
+		// mouseXY: React.PropTypes.array,
 		interval: React.PropTypes.string,
 	},
 	getChildContext() {
@@ -128,13 +115,15 @@ var DataTransform = React.createClass({
 			dataTransformProps: this.state.dataTransformProps,
 			plotData: this.state.plotData,
 			chartData: this.state.chartData,
-			currentItems: this.state.currentItems,
-			show: this.state.show,
-			mouseXY: this.state.mouseXY,
+			// currentItems: this.state.currentItems,
+			// show: this.state.show,
+			// mouseXY: this.state.mouseXY,
 			interval: this.state.interval,
 		}
 	},
 	render() {
+		var children1 = Array.isArray(this.props.children) ? this.props.children : [this.props.children];
+
 		var children = React.Children.map(this.props.children, (child) => {
 			var newChild = Utils.isReactVersion13()
 				? React.withContext(this.getChildContext(), () => {
@@ -143,9 +132,9 @@ var DataTransform = React.createClass({
 				: React.cloneElement(child);
 			return newChild;
 		});
-		return (
-			<g>{children}</g>
-		);
+		return (ChartContainerMixin.containsChart(this.props))
+			? <EventHandler>{children}</EventHandler>
+			: <g>{children}</g>;
 	}/*
 	render() {
 		// console.log('DataTransform.render()');

@@ -99,8 +99,8 @@ function renderPage(data, dataFull) {
 
 d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 	d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
-		renderPage(MSFT, MSFTFull);
-		// renderPartialPage(MSFT, MSFTFull);
+		// renderPage(MSFT, MSFTFull);
+		renderPartialPage(MSFT, MSFTFull);
 	});
 })
 

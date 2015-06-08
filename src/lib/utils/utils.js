@@ -32,6 +32,7 @@ Utils.cloneMe = function(obj) {
 	}
 	return temp;
 }
+
 Utils.displayDateFormat = d3.time.format("%Y-%m-%d");
 Utils.displayNumberFormat = function(x) {
 	return Utils.numberWithCommas(x.toFixed(2));
@@ -45,10 +46,12 @@ Utils.isNumeric = function(n) {
 Utils.mergeObject = function(a, b) {
 	var newObject = {};
 	Object.keys(a).forEach((key) => {
-		newObject[key] = a[key];
+		if (a[key] != null)
+			newObject[key] = a[key];
 	});
 	Object.keys(b).forEach((key) => {
-		newObject[key] = b[key];
+		if (b[key] != null)
+			newObject[key] = b[key];
 	});
 	return newObject;
 }

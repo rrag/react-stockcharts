@@ -72,7 +72,7 @@ var EventCaptureMixin = {
 		var { mainChart, chartData, data, plotData, interval } = this.state;
 
 		var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0],
-			item = this.getClosestItem(mouseXY, chart),
+			item = this.getClosestItem(plotData, mouseXY, chart),
 			xScale = chart.plot.scales.xScale,
 			domain = xScale.domain(),
 			centerX = chart.config.accessors.xAccessor(item),
