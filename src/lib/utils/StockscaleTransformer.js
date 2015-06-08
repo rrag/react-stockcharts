@@ -3,10 +3,10 @@
 var stockScale = require('../scale/polylineartimescale');
 
 var defaultOptions = {
-	_dateAccessor: (d) => d.date,
-	_indexAccessor: (d) => d._idx,
-	_dateMutator: (d, date) => {d.date = date},
-	_indexMutator: (d, i) => {d._idx = i;}
+	dateAccessor: (d) => d.date,
+	indexAccessor: (d) => d._idx,
+	dateMutator: (d, date) => {d.date = date},
+	indexMutator: (d, i) => {d._idx = i;}
 }
 
 function StockScaleTransformer(data, interval, options) {
@@ -15,7 +15,7 @@ function StockScaleTransformer(data, interval, options) {
 
 	if (options) Object.keys(options).forEach((key) => newOptions[key] = options[key]);
 
-	var { _dateAccessor, _dateMutator, _indexAccessor, _indexMutator } = newOptions;
+	var { dateAccessor, dateMutator, indexAccessor, indexMutator } = newOptions;
 
 	var prevDate;
 	var responseData = {}
@@ -26,13 +26,13 @@ function StockScaleTransformer(data, interval, options) {
 			var row = each;
 			// console.log(each);
 			//console.log(row);
-			_indexMutator(row,  i);
+			indexMutator(row,  i);
 
 			row.startOfWeek = false;
 			row.startOfMonth = false;
 			row.startOfQuarter = false;
 			row.startOfYear = false;
-			var date = _dateAccessor(row);
+			var date = dateAccessor(row);
 			//row.displayDate = dateFormat(date);
 			if (prevDate !== undefined) {
 				// According to ISO calendar
@@ -50,17 +50,17 @@ function StockScaleTransformer(data, interval, options) {
 			return row;
 		});
 	// console.table(responseData);
-	responseData.W = buildWeeklyData(responseData.D, _indexMutator, _dateAccessor, _dateMutator);
-	responseData.M = buildMonthlyData(responseData.D, _indexMutator, _dateAccessor, _dateMutator);
+	responseData.W = buildWeeklyData(responseData.D, indexMutator, dateAccessor, dateMutator);
+	responseData.M = buildMonthlyData(responseData.D, indexMutator, dateAccessor, dateMutator);
 
 	// console.table(responseData.W);
 
 	return {
 			data: responseData,
 			other: {
-				_xScale: stockScale(newOptions._indexAccessor),
-				_xAccessor: newOptions._indexAccessor,
-				_stockScale: true,
+				xScale: stockScale(newOptions.indexAccessor),
+				xAccessor: newOptions.indexAccessor,
+				stockScale: true,
 			},
 			options: newOptions
 		};

@@ -1,6 +1,5 @@
 'use strict';
 
-var excludeList = ['transformType', 'options', 'children', 'namespace', '_multiInterval'];
 var pricingMethod = function (d) { return { high: d.high, low: d.low }; };
 // var pricingMethod = function (d) { return { high: d.close, low: d.close }; };
 // var usePrice = function (d) { return d.close; };
@@ -18,7 +17,7 @@ function RenkoTransformer(rawData, interval, options, other) {
 
 	if (options) Object.keys(options).forEach((key) => newOptions[key] = options[key]);
 
-	var { _dateAccessor, _dateMutator, _indexAccessor, _indexMutator, reversal, boxSize, period } = newOptions;
+	var { dateAccessor, dateMutator, indexAccessor, indexMutator, reversal, boxSize, period } = newOptions;
 
 	calculateATR(rawData.D, period);
 	var brickSize = function (d) { return d["atr" + period]}
@@ -43,10 +42,10 @@ function RenkoTransformer(rawData, interval, options, other) {
 			brick.startOfMonth = d.startOfMonth;
 			brick.startOfWeek = d.startOfWeek;
 			//brick.tempClose = d.close;
-			brick.from = _indexAccessor(d);
-			brick.fromDate = _dateAccessor(d);
-			_indexMutator(brick, index++);
-			_dateMutator(brick, _dateAccessor(d));
+			brick.from = indexAccessor(d);
+			brick.fromDate = dateAccessor(d);
+			indexMutator(brick, index++);
+			dateMutator(brick, dateAccessor(d));
 		}
 		brick.volume = (brick.volume || 0) + d.volume;
 
@@ -67,7 +66,7 @@ function RenkoTransformer(rawData, interval, options, other) {
 		if (!brick.startOfYear) {
 			brick.startOfYear = d.startOfYear;
 			if (brick.startOfYear) {
-				_dateMutator(brick, _dateAccessor(d));
+				dateMutator(brick, dateAccessor(d));
 				// brick.displayDate = d.displayDate;
 			}
 		}
@@ -75,7 +74,7 @@ function RenkoTransformer(rawData, interval, options, other) {
 		if (!brick.startOfQuarter) {
 			brick.startOfQuarter = d.startOfQuarter;
 			if (brick.startOfQuarter && !brick.startOfYear) {
-				_dateMutator(brick, _dateAccessor(d));
+				dateMutator(brick, dateAccessor(d));
 				// brick.displayDate = d.displayDate;
 			}
 		}
@@ -83,14 +82,14 @@ function RenkoTransformer(rawData, interval, options, other) {
 		if (!brick.startOfMonth) {
 			brick.startOfMonth = d.startOfMonth;
 			if (brick.startOfMonth && !brick.startOfQuarter) {
-				_dateMutator(brick, _dateAccessor(d));
+				dateMutator(brick, dateAccessor(d));
 				// brick.displayDate = d.displayDate;
 			}
 		}
 		if (!brick.startOfWeek) {
 			brick.startOfWeek = d.startOfWeek;
 			if (brick.startOfWeek && !brick.startOfMonth) {
-				_dateMutator(brick, _dateAccessor(d));
+				dateMutator(brick, dateAccessor(d));
 				// brick.displayDate = d.displayDate;
 			}
 		}
@@ -112,8 +111,8 @@ function RenkoTransformer(rawData, interval, options, other) {
 										: brick.open - brickSize(d);
 					direction = brick.close > brick.open ? 1 : -1;
 					brick.direction = direction;
-					brick.to = _indexAccessor(d);
-					brick.toDate = _dateAccessor(d);
+					brick.to = indexAccessor(d);
+					brick.toDate = dateAccessor(d);
 					// brick.diff = brick.open - brick.close;
 					// brick.atr = d.atr;
 					brick.fullyFormed = true;
@@ -137,20 +136,20 @@ function RenkoTransformer(rawData, interval, options, other) {
 						, startOfWeek : false
 					};
 					brick = newBrick;
-					brick.from = _indexAccessor(d);
-					brick.fromDate = _dateAccessor(d);
-					_indexMutator(brick, index + j);
-					_dateMutator(brick, _dateAccessor(d));
+					brick.from = indexAccessor(d);
+					brick.fromDate = dateAccessor(d);
+					indexMutator(brick, index + j);
+					dateMutator(brick, dateAccessor(d));
 					brick.volume = (brick.volume || 0) + d.volume;
 				}
 				index = index + j - 1;
 				brick = {};
 			} else {
-				if (_indexAccessor(d) === rawData.D.length - 1) {
+				if (indexAccessor(d) === rawData.D.length - 1) {
 					brick.close = direction > 0 ? pricingMethod(d).high : pricingMethod(d).low;
-					brick.to = _indexAccessor(d);
-					brick.toDate = _dateAccessor(d);
-					_dateMutator(brick, _dateAccessor(d));
+					brick.to = indexAccessor(d);
+					brick.toDate = dateAccessor(d);
+					dateMutator(brick, dateAccessor(d));
 
 					brick.fullyFormed = false;
 					renkoData.push(brick);

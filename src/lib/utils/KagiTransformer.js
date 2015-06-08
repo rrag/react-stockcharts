@@ -1,6 +1,5 @@
 'use strict';
 
-var excludeList = ['transformType', 'options', 'children', 'namespace', '_multiInterval'];
 var pricingMethod = function (d) { return { high: d.high, low: d.low }; };
 var usePrice = function (d) { return d.close; };
 
@@ -14,7 +13,7 @@ function KagiTransformer(data, interval, options, other) {
 	calculateATR(data.D, period);
 	var reversalThreshold = function (d) { return d["atr" + period] }
 
-	var { _dateAccessor, _dateMutator, _indexAccessor, _indexMutator } = options;
+	var { dateAccessor, dateMutator, indexAccessor, indexMutator } = options;
 
 	var kagiData = new Array();
 
@@ -23,12 +22,12 @@ function KagiTransformer(data, interval, options, other) {
 
 	data.D.forEach( function (d) {
 		if (line.from === undefined) {
-			_indexMutator(line, index++);
-			_dateMutator(line, _dateAccessor(d));
+			indexMutator(line, index++);
+			dateMutator(line, dateAccessor(d));
 			/*line.displayDate = d.displayDate;
 			line.fromDate = d.displayDate;
 			line.toDate = d.displayDate;*/
-			line.from = _dateAccessor(d);
+			line.from = dateAccessor(d);
 
 			if (!line.open) line.open = d.open;
 			line.high = d.high;
@@ -74,7 +73,7 @@ function KagiTransformer(data, interval, options, other) {
 		line.volume = (line.volume || 0) + d.volume;
 		line.high = Math.max(line.high, d.high);
 		line.low = Math.min(line.low, d.low);
-		line.to = _dateAccessor(d);
+		line.to = dateAccessor(d);
 		//line.toDate = d.displayDate;
 		var priceMovement = (usePrice(d) - line.close);
 

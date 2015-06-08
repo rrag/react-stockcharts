@@ -63,6 +63,4 @@ Chart.childContextTypes = {
 	yAccessor: React.PropTypes.func.isRequired,
 	overlays: React.PropTypes.array.isRequired,
 };
-
-
 module.exports = Chart;

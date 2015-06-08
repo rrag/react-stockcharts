@@ -1,8 +1,7 @@
 "use strict";
 var React = require('react');
 var Utils = require('./utils/utils');
-var ChartContainerMixin = require('./mixin/ChartContainerMixin');
-
+var ChartContainerMixin = require('./utils/ChartDataUtil');
 
 function getLongValue(value) {
 	if (value instanceof Date) {
@@ -32,35 +31,43 @@ class EventHandler extends React.Component {
 		};
 	}
 	componentWillMount() {
-		var mainChart = ChartContainerMixin.getMainChart(this.props.children);
+		var { props, context } = this;
+		var { data, initialDisplay, dataTransformProps, interval } = context;
+
+		var dataForInterval = data[interval];
+		var mainChart = ChartContainerMixin.getMainChart(props.children);
+		var beginIndex = Math.max(dataForInterval.length - initialDisplay, 0);
+		var plotData = dataForInterval.slice(beginIndex);
+		var chartData = ChartContainerMixin.getChartData(props, context, plotData, data, dataTransformProps);
 
 		this.setState({
-			plotData: this.context.plotData,
-			chartData: this.context.chartData,
+			plotData: plotData,
+			chartData: chartData,
 			interval: this.context.interval,
 			mainChart: mainChart
 		});
 	}
 	componentWillReceiveProps(props, context) {
-		var { interval, chartData } = this.state;
+		var { interval, chartData, plotData } = this.state;
+		var { data, dataTransformProps } = context;
 
-		var data = passThroughProps.data[interval];
-		// var mainChart = this.getMainChart(props.children);
-		// var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
-		// var beginIndex = Utils.getClosestItemIndexes(data, mainChartData.config.accessors.xAccessor(plotData[0]), mainChartData.config.accessors.xAccessor).left;
-		// var endIndex = Utils.getClosestItemIndexes(data, mainChartData.config.accessors.xAccessor(plotData[plotData.length - 1]), mainChartData.config.accessors.xAccessor).right;
+		var dataForInterval = data[interval];
+		var mainChart = ChartContainerMixin.getMainChart(props.children);
+		var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
+		var beginIndex = Utils.getClosestItemIndexes(dataForInterval, mainChartData.config.accessors.xAccessor(plotData[0]), mainChartData.config.accessors.xAccessor).left;
+		var endIndex = Utils.getClosestItemIndexes(dataForInterval, mainChartData.config.accessors.xAccessor(plotData[plotData.length - 1]), mainChartData.config.accessors.xAccessor).right;
 
-		// var plotData = data.slice(beginIndex, endIndex);
-		// var chartData = this.getChartData(props, context, plotData, passThroughProps.data, passThroughProps.other);
+		var plotData = dataForInterval.slice(beginIndex, endIndex);
+		var chartData = ChartContainerMixin.getChartData(props, context, plotData, data, dataTransformProps);
 
-		// state.chartData = chartData;
-		// state.plotData = plotData;
-		// state.currentItems = [];
-		// state.show = false;
-		// state.mouseXY = [0, 0];
-		// state.mainChart = mainChart;
-		}
-		this.setState(state);
+		this.setState({
+			chartData: chartData,
+			plotData: plotData,
+			currentItems: [],
+			show: false,
+			mouseXY: [0, 0],
+			mainChart: mainChart
+		});
 	}
 	getChildContext() {
 		return {
@@ -85,7 +92,7 @@ class EventHandler extends React.Component {
 	}
 	handleMouseMove(mouseXY) {
 		// console.log('mouse move - ', mouseXY);
-		var currentItems = this.getCurrentItems(this.state.chartData, mouseXY, this.state.plotData)
+		var currentItems = ChartContainerMixin.getCurrentItems(this.state.chartData, mouseXY, this.state.plotData)
 			// .filter((eachChartData) => eachChartData.id === this.state.mainChart)
 
 		this.setState({
@@ -93,14 +100,6 @@ class EventHandler extends React.Component {
 			currentItems: currentItems,
 			show: true
 		});
-	}
-	getCurrentItems(chartData, mouseXY, plotData) {
-		return chartData
-			.map((eachChartData) => {
-				var xValue = eachChartData.plot.scales.xScale.invert(mouseXY[0]);
-				var item = Utils.getClosestItem(plotData, xValue, eachChartData.config.accessors.xAccessor);
-				return { id: eachChartData.id, data: item };
-			});
 	}
 	handleMouseEnter() {
 		// console.log('enter');
@@ -137,7 +136,7 @@ class EventHandler extends React.Component {
 		domainL = Math.max(getLongValue(chart.config.accessors.xAccessor(first)) - Math.floor(domainRange/3), domainL)
 		domainR = Math.min(getLongValue(chart.config.accessors.xAccessor(last)) + Math.floor(domainRange/3), domainR)
 		// xScale(domainR) - xScale(domainL)
-		var dataToPlot = this.getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.accessors.xAccessor);
+		var dataToPlot = ChartContainerMixin.getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.accessors.xAccessor);
 		if (dataToPlot.data.length < 10) return;
 		var newChartData = chartData.map((eachChart) => {
 			var plot = ChartContainerMixin.getChartPlotFor(eachChart.config, dataToPlot.data, domainL, domainR);
@@ -153,32 +152,7 @@ class EventHandler extends React.Component {
 			interval: dataToPlot.interval
 		});
 	}
-	getDataToPlotForDomain(domainL, domainR, data, width, xAccessor) {
-		var threshold = 0.5 // number of datapoints per 1 px
-		var allowedIntervals = ['D', 'W', 'M'];
-		// console.log(domainL, domainR, data, width);
 
-		var dataForInterval, filteredData, interval, leftX, rightX;
-		for (var i=0; i<allowedIntervals.length; i++) {
-			interval = allowedIntervals[i]; 
-			dataForInterval = data[interval];
-
-			leftX = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor);
-			rightX = Utils.getClosestItemIndexes(dataForInterval, domainR, xAccessor);
-
-			filteredData = dataForInterval.slice(leftX.right, rightX.right);
-
-			// console.log(filteredData.length, width * threshold);
-			if (filteredData.length < width * threshold) break;
-		}
-
-		// console.log(leftX, rightX,  (dd[leftX.left]), xAccessor(dd[rightX.right])); 
-
-		return {
-			interval: interval,
-			data: filteredData
-		}
-	}
 	handlePanStart(panStartDomain, panOrigin) {
 		// console.log('panStartDomain - ', panStartDomain, ', panOrigin - ', panOrigin);
 		this.setState({
@@ -196,8 +170,6 @@ class EventHandler extends React.Component {
 			this.handlePanStart(startDomain, mousePosition);
 		} else {
 			requestAnimationFrame(() => {
-				
-
 				var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0],
 					domainRange = panStartDomain[1] - panStartDomain[0],
 					fullData = data[interval],
@@ -234,7 +206,7 @@ class EventHandler extends React.Component {
 						plot: plot
 					}
 				});
-				var currentItems = this.getCurrentItems(newChartData, mousePosition, filteredData);
+				var currentItems = ChartContainerMixin.getCurrentItems(newChartData, mousePosition, filteredData);
 
 				this.setState({
 					chartData: newChartData,
@@ -274,20 +246,17 @@ class EventHandler extends React.Component {
 };
 
 EventHandler.contextTypes = {
+	width: React.PropTypes.number.isRequired,
+	height: React.PropTypes.number.isRequired,
 	data: React.PropTypes.object,
 	dataTransformOptions: React.PropTypes.object,
 	dataTransformProps: React.PropTypes.object,
 	plotData: React.PropTypes.array,
 	chartData: React.PropTypes.array,
-	currentItems: React.PropTypes.array,
-	show: React.PropTypes.bool,
-	mouseXY: React.PropTypes.array,
+	initialDisplay: React.PropTypes.number.isRequired,
 	interval: React.PropTypes.string,
 }
 EventHandler.childContextTypes = {
-	// data: React.PropTypes.object,
-	// dataTransformOptions: React.PropTypes.object,
-	// dataTransformProps: React.PropTypes.object,
 	plotData: React.PropTypes.array,
 	chartData: React.PropTypes.array,
 	currentItems: React.PropTypes.array,

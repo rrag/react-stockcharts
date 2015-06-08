@@ -1,16 +1,13 @@
 'use strict';
 
-var excludeList = ['transformType', 'options', 'children', 'namespace'];
-
-
 function HeikinAshiTransformer(data, interval, options, other) {
 
-	var { _dateAccessor, _dateMutator, _indexAccessor, _indexMutator } = options;
+	var { dateAccessor, dateMutator, indexAccessor, indexMutator } = options;
 	// console.log(data, options);
 
 	var haData = {};
 	Object.keys(data)
-		.forEach((key) => haData[key] = buildHA(data[key], _indexAccessor, _indexMutator, _dateAccessor, _dateMutator));
+		.forEach((key) => haData[key] = buildHA(data[key], indexAccessor, indexMutator, dateAccessor, dateMutator));
 
 	return {
 		data: haData,

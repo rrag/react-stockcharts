@@ -2,6 +2,7 @@
 
 var React = require('react');
 var Utils = require('./utils/utils')
+var ChartDataUtil = require('./utils/ChartDataUtil');
 
 class SingleMAToolTip extends React.Component {
 	handleClick(overlay) {
@@ -32,27 +33,10 @@ SingleMAToolTip.propTypes = {
 	onClick: React.PropTypes.func
 };
 
-var MovingAverageTooltip = React.createClass({
-	propTypes: {
-		// _currentItem: React.PropTypes.object.isRequired,
-		// _overlays: React.PropTypes.array.isRequired,
-		forChart: React.PropTypes.number.isRequired,
-		displayFormat: React.PropTypes.func.isRequired,
-		origin: React.PropTypes.array.isRequired,
-		onClick: React.PropTypes.func
-	},
-	getDefaultProps() {
-		return {
-			namespace: "ReStock.MovingAverageTooltip",
-			displayFormat: Utils.displayNumberFormat,
-			origin: [0, 10],
-			width: 65
-		}
-	},
-	mixins: [require('./mixin/ForChartMixin')],
+class MovingAverageTooltip extends React.Component {
 	render() {
-		var chartData = this.getChartData();
-		var item = this.getCurrentItem();
+		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
+		var item = ChartDataUtil.getCurrentItemForChart(this.props, this.context);
 
 		return (
 			<g transform={"translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")"} className="ma-container">
@@ -72,6 +56,24 @@ var MovingAverageTooltip = React.createClass({
 			</g>
 		);
 	}
-});
+};
+
+MovingAverageTooltip.contextTypes = {
+	chartData: React.PropTypes.array.isRequired,
+	currentItems: React.PropTypes.array.isRequired,
+};
+MovingAverageTooltip.propTypes = {
+	forChart: React.PropTypes.number.isRequired,
+	displayFormat: React.PropTypes.func.isRequired,
+	origin: React.PropTypes.array.isRequired,
+	onClick: React.PropTypes.func
+};
+MovingAverageTooltip.defaultProps = { 
+	namespace: "ReStock.MovingAverageTooltip",
+	displayFormat: Utils.displayNumberFormat,
+	origin: [0, 10],
+	width: 65
+};
+
 
 module.exports = MovingAverageTooltip;

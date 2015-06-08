@@ -2,33 +2,19 @@
 
 var React = require('react');
 var Utils = require('./utils/utils')
+var ChartDataUtil = require('./utils/ChartDataUtil');
 
 var billion = 1 * 1000 * 1000 * 1000;
 var million = 1 * 1000 * 1000;
 var thousand = 1 * 1000;
 
-var OHLCTooltip = React.createClass({
-	propTypes: {
-		forChart: React.PropTypes.number.isRequired,
-		accessor: React.PropTypes.func.isRequired,
-		xDisplayFormat: React.PropTypes.func.isRequired,
-		origin: React.PropTypes.array.isRequired,
-	},
-	mixins: [require('./mixin/ForChartMixin')],
-	getDefaultProps() {
-		return {
-			namespace: "ReStock.OHLCTooltip",
-			accessor: (d) => {return {date: d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume}},
-			xDisplayFormat: Utils.displayDateFormat,
-			origin: [0, 0]
-		}
-	},
+class OHLCTooltip extends React.Component {
 	render() {
 		var displayDate, fromDate, toDate, open, high, low, close, volume;
 
 		displayDate = fromDate = toDate = open = high = low = close = volume = "n/a";
 
-		var item = this.getCurrentItem();
+		var item = ChartDataUtil.getCurrentItemForChart(this.props, this.context);
 
 		if (item !== undefined && item.close !== undefined) {
 			volume = (item.volume / billion > 1)
@@ -59,6 +45,24 @@ var OHLCTooltip = React.createClass({
 			</g>
 		);
 	}
-});
+};
+
+OHLCTooltip.contextTypes = {
+	chartData: React.PropTypes.array.isRequired,
+	currentItems: React.PropTypes.array.isRequired,
+}
+OHLCTooltip.propTypes = {
+	forChart: React.PropTypes.number.isRequired,
+	accessor: React.PropTypes.func.isRequired,
+	xDisplayFormat: React.PropTypes.func.isRequired,
+	origin: React.PropTypes.array.isRequired,
+}
+
+OHLCTooltip.defaultProps = { 
+	namespace: "ReStock.OHLCTooltip",
+	accessor: (d) => {return {date: d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume}},
+	xDisplayFormat: Utils.displayDateFormat,
+	origin: [0, 0]
+};
 
 module.exports = OHLCTooltip;

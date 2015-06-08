@@ -1,6 +1,5 @@
 'use strict';
 
-var excludeList = ['transformType', 'options', 'children', 'namespace', '_multiInterval'];
 var pricingMethod = function (d) { return { high: d.high, low: d.low }; };
 var usePrice = function (d) { return { high: d.high, low: d.low }; };
 
@@ -9,22 +8,22 @@ var defaultOptions = {
 	reversal: 3,
 }
 
-function createBox(d, _dateAccessor, dateMutator) {
+function createBox(d, dateAccessor, dateMutator) {
 	var box = {
 		open: d.open
-		, fromDate: _dateAccessor(d)
-		, toDate: _dateAccessor(d)
+		, fromDate: dateAccessor(d)
+		, toDate: dateAccessor(d)
 		//, displayDate: d.displayDate
 		, startOfYear: d.startOfYear
 		, startOfQuarter: d.startOfQuarter
 		, startOfMonth: d.startOfMonth
 		, startOfWeek: d.startOfWeek
 	};
-	dateMutator(box, _dateAccessor(d));
+	dateMutator(box, dateAccessor(d));
 	return box;
 }
 
-function updateColumns(columnData, _dateAccessor, dateMutator) {
+function updateColumns(columnData, dateAccessor, dateMutator) {
 
 	columnData.forEach(function (d, i) {
 		var lastBox = d.boxes[d.boxes.length - 1];
@@ -51,25 +50,25 @@ function updateColumns(columnData, _dateAccessor, dateMutator) {
 				d.startOfMonth = eachBox.startOfMonth;
 				d.startOfWeek = eachBox.startOfWeek;
 				//d.displayDate = eachBox.displayDate;
-				dateMutator(d, _dateAccessor(eachBox));
+				dateMutator(d, dateAccessor(eachBox));
 			}
 			if (d.startOfQuarter !== true && eachBox.startOfQuarter) {
 				d.startOfQuarter = eachBox.startOfQuarter;
 				d.startOfMonth = eachBox.startOfMonth;
 				d.startOfWeek = eachBox.startOfWeek;
 				// d.displayDate = eachBox.displayDate;
-				dateMutator(d, _dateAccessor(eachBox));
+				dateMutator(d, dateAccessor(eachBox));
 			}
 			if (d.startOfMonth !== true && eachBox.startOfMonth) {
 				d.startOfMonth = eachBox.startOfMonth;
 				d.startOfWeek = eachBox.startOfWeek;
 				// d.displayDate = eachBox.displayDate;
-				dateMutator(d, _dateAccessor(eachBox));
+				dateMutator(d, dateAccessor(eachBox));
 			}
 			if (d.startOfWeek !== true && eachBox.startOfWeek) {
 				d.startOfWeek = eachBox.startOfWeek;
 				// d.displayDate = eachBox.displayDate;
-				dateMutator(d, _dateAccessor(eachBox));
+				dateMutator(d, dateAccessor(eachBox));
 			}
 		});
 
@@ -87,7 +86,7 @@ function PointAndFigureTransformer(rawData, interval, options, other) {
 
 	if (options) Object.keys(options).forEach((key) => newOptions[key] = options[key]);
 
-	var { _dateAccessor, _dateMutator, _indexAccessor, _indexMutator, reversal, boxSize } = newOptions;
+	var { dateAccessor, dateMutator, indexAccessor, indexMutator, reversal, boxSize } = newOptions;
 
 	var columnData = new Array();
 
@@ -95,9 +94,9 @@ function PointAndFigureTransformer(rawData, interval, options, other) {
 	var column = {
 		boxes: [],
 		open: rawData.D[0].open
-	}, box = createBox(rawData.D[0], _dateAccessor, _dateMutator);
+	}, box = createBox(rawData.D[0], dateAccessor, dateMutator);
 
-	_indexMutator(column, 0);
+	indexMutator(column, 0);
 	columnData.push(column);
 
 	rawData.D.forEach( function (d) {
@@ -107,7 +106,7 @@ function PointAndFigureTransformer(rawData, interval, options, other) {
 		if (!box.startOfYear) {
 			box.startOfYear = d.startOfYear;
 			if (box.startOfYear) {
-				_dateMutator(box, _dateAccessor(d));
+				dateMutator(box, dateAccessor(d));
 				// box.displayDate = d.displayDate;
 			}
 		}
@@ -115,7 +114,7 @@ function PointAndFigureTransformer(rawData, interval, options, other) {
 		if (!box.startOfYear && !box.startOfQuarter) {
 			box.startOfQuarter = d.startOfQuarter;
 			if (box.startOfQuarter && !box.startOfYear) {
-				_dateMutator(box, _dateAccessor(d));
+				dateMutator(box, dateAccessor(d));
 				// box.displayDate = d.displayDate;
 			}
 		}
@@ -123,14 +122,14 @@ function PointAndFigureTransformer(rawData, interval, options, other) {
 		if (!box.startOfQuarter && !box.startOfMonth) {
 			box.startOfMonth = d.startOfMonth;
 			if (box.startOfMonth && !box.startOfQuarter) {
-				_dateMutator(box, _dateAccessor(d));
+				dateMutator(box, dateAccessor(d));
 				// box.displayDate = d.displayDate;
 			}
 		}
 		if (!box.startOfMonth && !box.startOfWeek) {
 			box.startOfWeek = d.startOfWeek;
 			if (box.startOfWeek && !box.startOfMonth) {
-				_dateMutator(box, _dateAccessor(d));
+				dateMutator(box, dateAccessor(d));
 				// box.displayDate = d.displayDate;
 			}
 		}
@@ -142,7 +141,7 @@ function PointAndFigureTransformer(rawData, interval, options, other) {
 			if (boxSize * reversal < upwardMovement
 				|| boxSize * reversal < downwardMovement) {
 				// enough movement to trigger a reversal
-				box.toDate = _dateAccessor(d);
+				box.toDate = dateAccessor(d);
 				box.open = column.open;
 				var noOfBoxes = column.direction > 0
 									? Math.floor(upwardMovement / boxSize)
@@ -151,12 +150,12 @@ function PointAndFigureTransformer(rawData, interval, options, other) {
 					box.close = box.open + column.direction * boxSize;
 					var prevBoxClose = box.close;
 					column.boxes.push(box);
-					box = createBox(box, _dateAccessor, _dateMutator);
+					box = createBox(box, dateAccessor, dateMutator);
 					// box = cloneMe(box);
 					box.open = prevBoxClose;
 				}
-				box.fromDate = _dateAccessor(d);
-				box.date = _dateAccessor(d);
+				box.fromDate = dateAccessor(d);
+				box.date = dateAccessor(d);
 			}
 		} else {
 			// one or more boxes already formed in the current column
@@ -167,33 +166,33 @@ function PointAndFigureTransformer(rawData, interval, options, other) {
 					|| (column.direction < 0 && downwardMovement > boxSize) /* falling column AND box can be formed */ ) {
 				// form another box
 				box.close = box.open + column.direction * boxSize;
-				box.toDate = _dateAccessor(d);
+				box.toDate = dateAccessor(d);
 				var prevBoxClose = box.close;
 				column.boxes.push(box);
-				box = createBox(d, _dateAccessor, _dateMutator);
+				box = createBox(d, dateAccessor, dateMutator);
 				box.open = prevBoxClose;
-				box.fromDate = _dateAccessor(d);
-				_dateMutator(box, _dateAccessor(d));
+				box.fromDate = dateAccessor(d);
+				dateMutator(box, dateAccessor(d));
 			} else if ((column.direction > 0 && downwardMovement > boxSize * reversal) /* rising column and there is downward movement to trigger a reversal */
 					|| (column.direction < 0 && upwardMovement > boxSize * reversal)/* falling column and there is downward movement to trigger a reversal */) {
 				// reversal
 
 				box.open = box.open + -1 * column.direction * boxSize;
-				box.toDate = _dateAccessor(d);
+				box.toDate = dateAccessor(d);
 				// box.displayDate = d.displayDate;
-				_dateMutator(box, _dateAccessor(d));
+				dateMutator(box, dateAccessor(d));
 				// box.startOfYear = d.startOfYear;
 				// box.startOfQuarter = d.startOfQuarter;
 				// box.startOfMonth = d.startOfMonth;
 				// box.startOfWeek = d.startOfWeek;
 				// console.table(column.boxes);
-				var idx = _indexAccessor(column) + 1;
+				var idx = indexAccessor(column) + 1;
 				column = {
 					boxes: [],
 					//, index: column.index + 1
 					direction: -1 * column.direction
 				};
-				_indexMutator(column, idx);
+				indexMutator(column, idx);
 				var noOfBoxes = column.direction > 0
 									? Math.floor(upwardMovement / boxSize)
 									: Math.floor(downwardMovement / boxSize);
@@ -201,7 +200,7 @@ function PointAndFigureTransformer(rawData, interval, options, other) {
 					box.close = box.open + column.direction * boxSize;
 					var prevBoxClose = box.close;
 					column.boxes.push(box);
-					box = createBox(d, _dateAccessor, _dateMutator);
+					box = createBox(d, dateAccessor, dateMutator);
 					box.open = prevBoxClose;
 				}
 
@@ -209,7 +208,7 @@ function PointAndFigureTransformer(rawData, interval, options, other) {
 			}
 		}
 	});
-	updateColumns(columnData, _dateAccessor, _dateMutator);
+	updateColumns(columnData, dateAccessor, dateMutator);
 
 	return {
 		data: {'D': columnData},

@@ -16,6 +16,15 @@ var ChartContainerMixin = {
 	getCharts(props) {
 		return this.getChildren(props.children, /Chart$/)
 	},
+	getChartDataForChart(props, context) {
+		var chartData = context.chartData.filter((each) => each.id === props.forChart)[0];
+		return chartData;
+	},
+	getCurrentItemForChart(props, context) {
+		var currentItem = context.currentItems.filter((each) => each.id === props.forChart)[0];
+		var item = currentItem ? currentItem.data : {}
+		return item;
+	},
 	getChartData(props, context, partialData, fullData, other) {
 
 		var charts = this.getCharts(props);
@@ -135,10 +144,10 @@ var ChartContainerMixin = {
 		return plot;
 	},
 	defineScales(props, data, passThroughProps) {
-		var xScale = props.xScale || props._xScale,
+		var xScale = props.xScale,
 			yScale = props.yScale;
 
-		if (xScale === undefined && passThroughProps) xScale = passThroughProps._xScale;
+		if (xScale === undefined && passThroughProps) xScale = passThroughProps.xScale;
 
 		if (xScale === undefined) {
 			var each = data[0];
@@ -165,8 +174,8 @@ var ChartContainerMixin = {
 					.indexOf(child.props.namespace) > -1) {
 				if (child.props) {
 
-					var xAccessor = passThroughProps !== undefined && passThroughProps._stockScale
-						? passThroughProps._xAccessor
+					var xAccessor = passThroughProps !== undefined && passThroughProps.stockScale
+						? passThroughProps.xAccessor
 						: child.props.xAccessor
 					accessor.xAccessor = xAccessor;
 					accessor.yAccessor = child.props.yAccessor;
@@ -237,7 +246,6 @@ var ChartContainerMixin = {
 					last: OverlayUtils.lastDefined(data, eachOverlay.yAccessor)
 				})/**/
 			})
-		// console.log(_overlayValues);
 		return overlayValues;
 	},
 	updateScales(xyValues, scales, data, width, height) {
@@ -263,6 +271,40 @@ var ChartContainerMixin = {
 			yScale: scales.yScale.copy()
 		};
 	},
+	getCurrentItems(chartData, mouseXY, plotData) {
+		return chartData
+			.map((eachChartData) => {
+				var xValue = eachChartData.plot.scales.xScale.invert(mouseXY[0]);
+				var item = Utils.getClosestItem(plotData, xValue, eachChartData.config.accessors.xAccessor);
+				return { id: eachChartData.id, data: item };
+			});
+	},
+	getDataToPlotForDomain(domainL, domainR, data, width, xAccessor) {
+		var threshold = 0.5 // number of datapoints per 1 px
+		var allowedIntervals = ['D', 'W', 'M'];
+		// console.log(domainL, domainR, data, width);
+
+		var dataForInterval, filteredData, interval, leftX, rightX;
+		for (var i=0; i<allowedIntervals.length; i++) {
+			interval = allowedIntervals[i]; 
+			dataForInterval = data[interval];
+
+			leftX = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor);
+			rightX = Utils.getClosestItemIndexes(dataForInterval, domainR, xAccessor);
+
+			filteredData = dataForInterval.slice(leftX.right, rightX.right);
+
+			// console.log(filteredData.length, width * threshold);
+			if (filteredData.length < width * threshold) break;
+		}
+
+		// console.log(leftX, rightX,  (dd[leftX.left]), xAccessor(dd[rightX.right])); 
+
+		return {
+			interval: interval,
+			data: filteredData
+		}
+	}
 };
 
 module.exports = ChartContainerMixin;

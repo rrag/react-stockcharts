@@ -64,18 +64,19 @@ function renderPage(data, dataFull) {
 
 	// console.log(selected, selectedPage, firstPage);
 
-	var ExamplesPage = React.createClass({
-		//mixins: [ScrollMixin],
-		getInitialState() {
-			return {
+	class ExamplesPage extends React.Component {
+		constructor(props) {
+			super(props);
+			this.handleRouteChange = this.handleRouteChange.bind(this);
+			this.state = {
 				selectedPage: firstPage
-			};
-		},
+			}
+		}
 		handleRouteChange(newPage) {
 			this.setState({
 				selectedPage: newPage
 			});
-		},
+		}
 		render() {
 			var Page = this.state.selectedPage;
 			return (
@@ -92,15 +93,15 @@ function renderPage(data, dataFull) {
 				</div>
 			);
 		}
-	});
+	};
 
 	React.render(<ExamplesPage />, document.getElementById("chart-goes-here"));
 }
 
 d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 	d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
-		// renderPage(MSFT, MSFTFull);
-		renderPartialPage(MSFT, MSFTFull);
+		renderPage(MSFT, MSFTFull);
+		// renderPartialPage(MSFT, MSFTFull);
 	});
 })
 
@@ -140,10 +141,9 @@ function renderPartialPage(data, dataFull) {
 	// CandleStickStockScaleChartWithVolumeHistogramV1
 	// CandleStickStockScaleChartWithVolumeHistogramV2
 	// CandleStickChartWithZoomPan
-	var Chart = require('lib/charts/CandleStickChartWithEdge');
+	var Chart = require('lib/charts/PointAndFigure');
 
-	var ExamplesPage = React.createClass({
-		//mixins: [ScrollMixin],
+	class ExamplesPage extends React.Component {
 		render() {
 			return (
 				<div className="container react-stockchart">
@@ -151,6 +151,6 @@ function renderPartialPage(data, dataFull) {
 				</div>
 			)
 		}
-	});
+	};
 	React.render(<ExamplesPage />, document.getElementById("chart-goes-here"));
 }

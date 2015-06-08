@@ -2,38 +2,12 @@
 var React = require('react');
 var Utils = require('./utils/utils')
 var EdgeCoordinate = require('./EdgeCoordinate')
+var ChartDataUtil = require('./utils/ChartDataUtil');
 
-
-var EdgeIndicator = React.createClass({
-	propTypes: {
-		type: React.PropTypes.oneOf(['horizontal']).isRequired,
-		className: React.PropTypes.string,
-		itemType: React.PropTypes.oneOf(['first', 'last', 'current']).isRequired,
-		orient: React.PropTypes.oneOf(['left', 'right']),
-		edgeAt: React.PropTypes.oneOf(['left', 'right']),
-
-		forChart: React.PropTypes.number.isRequired,
-		forOverlay: React.PropTypes.number, // undefined means main Data series of that chart
-
-		displayFormat: React.PropTypes.func.isRequired,
-	},
-	getDefaultProps() {
-		return {
-			type: 'horizontal',
-			orient: 'left',
-			edgeAt: 'left',
-			displayFormat: Utils.displayNumberFormat,
-			yAxisPad: 5,
-			namespace: "ReStock.EdgeIndicator"
-		};
-	},
-	contextTypes: {
-		width: React.PropTypes.number.isRequired
-	},
-	mixins: [require('./mixin/ForChartMixin')],
-	renderEdge() {
-		var chartData = this.getChartData();
-		var currentItem = this.getCurrentItem();
+class EdgeIndicator extends React.Component {
+	render() {
+		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
+		var currentItem = ChartDataUtil.getCurrentItemForChart(this.props, this.context);
 		var edge = null, item, yAccessor;
 		if (this.props.forOverlay !== undefined
 				&& chartData.config.overlays.length > 0
@@ -109,10 +83,34 @@ var EdgeIndicator = React.createClass({
 			}
 		}
 		return edge;
-	},
-	render() {
-		return this.renderEdge();
 	}
-});
+};
+
+EdgeIndicator.contextTypes = {
+	width: React.PropTypes.number.isRequired,
+	chartData: React.PropTypes.array.isRequired,
+	currentItems: React.PropTypes.array.isRequired,
+}
+EdgeIndicator.propTypes = {
+	type: React.PropTypes.oneOf(['horizontal']).isRequired,
+	className: React.PropTypes.string,
+	itemType: React.PropTypes.oneOf(['first', 'last', 'current']).isRequired,
+	orient: React.PropTypes.oneOf(['left', 'right']),
+	edgeAt: React.PropTypes.oneOf(['left', 'right']),
+
+	forChart: React.PropTypes.number.isRequired,
+	forOverlay: React.PropTypes.number, // undefined means main Data series of that chart
+
+	displayFormat: React.PropTypes.func.isRequired,
+}
+
+EdgeIndicator.defaultProps = { 
+	type: 'horizontal',
+	orient: 'left',
+	edgeAt: 'left',
+	displayFormat: Utils.displayNumberFormat,
+	yAxisPad: 5,
+	namespace: "ReStock.EdgeIndicator"
+};
 
 module.exports = EdgeIndicator;
