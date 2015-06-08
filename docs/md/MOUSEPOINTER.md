@@ -16,9 +16,7 @@ checkout the [source](https://gist.github.com/rrag/261fa4bc7b67536eb789), [block
 				<HistogramSeries className={(d) => d.close > d.open ? 'up' : 'down'} />
 			</DataSeries>
 		</Chart>
-		<MouseCoordinates forChart={1} xDisplayFormat={d3.time.format("%Y-%m-%d")} yDisplayFormat={(y) => y.toFixed(2)}>
-			<CrossHair />
-		</MouseCoordinates>
+		<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)} type="crosshair" />
 		<EventCapture mouseMove={true} mainChart={1}/>
 		<TooltipContainer>
 			<OHLCTooltip forChart={1} origin={[-40, 0]}/>
@@ -35,11 +33,9 @@ checkout the [source](https://gist.github.com/rrag/261fa4bc7b67536eb789), [block
 By default none of the events are captured, and each has to be enabled individually `mouseMove` is enabled above. `mainChart` as the name describes is used to refer to the `Chart` from which the `xScale` and `yScale` are used to determine the nearest value to the mouse position.
 
 ```html
-<MouseCoordinates forChart={1} xDisplayFormat={d3.time.format("%Y-%m-%d")} yDisplayFormat={(y) => y.toFixed(2)}>
-	<CrossHair />
-</MouseCoordinates>
+<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)} type="crosshair" />
 ```
-Displays the crosshair at the mouse position, the attributes of `MouseCoordinates` are self explanatory. You can swap out with `CrossHair` with `VerticalMousePointer` if crosshair is not your thing.
+Displays the crosshair at the mouse position, the attributes of `MouseCoordinates` are self explanatory. You can swap out with `crosshair` with `vertical` if crosshair is not your thing.
 
 ```html
 <TooltipContainer>

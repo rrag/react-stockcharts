@@ -39,7 +39,7 @@
 
 #### Tasks
 - Use ES6 Classes
-    - Do not use EventCaptureMixin, ChartContainerMixin
+    - ~~Do not use EventCaptureMixin, ChartContainerMixin~~
     - Update examples to not use ChartWidthMixin
 - Add tests and coverage
 - Publish to npm - v0.1-alpha
