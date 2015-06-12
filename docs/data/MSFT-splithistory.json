@@ -1,0 +1,38 @@
+[
+	{
+		"date": "1987-09-21",
+		"multiplier": 2
+	},
+	{
+		"date": "1990-04-16",
+		"multiplier": 2
+	},
+	{
+		"date": "1991-06-27",
+		"multiplier": 1.5
+	},
+	{
+		"date": "1992-06-15",
+		"multiplier": 1.5
+	},
+	{
+		"date": "1994-05-23",
+		"multiplier": 2
+	},
+	{
+		"date": "1996-12-09",
+		"multiplier": 2
+	},
+	{
+		"date": "1998-02-23",
+		"multiplier": 2
+	},
+	{
+		"date": "1999-03-29",
+		"multiplier": 2
+	},
+	{
+		"date": "2003-02-18",
+		"multiplier": 2
+	}
+]

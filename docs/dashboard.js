@@ -100,8 +100,8 @@ function renderPage(data, dataFull) {
 
 d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 	d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
-		renderPage(MSFT, MSFTFull);
-		// renderPartialPage(MSFT, MSFTFull);
+		// renderPage(MSFT, MSFTFull);
+		renderPartialPage(MSFT, MSFTFull);
 	});
 })
 
@@ -141,7 +141,8 @@ function renderPartialPage(data, dataFull) {
 	// CandleStickStockScaleChartWithVolumeHistogramV1
 	// CandleStickStockScaleChartWithVolumeHistogramV2
 	// CandleStickChartWithZoomPan
-	var Chart = require('lib/charts/PointAndFigure');
+	// CandleStickChartWithCompare
+	var Chart = require('lib/charts/CandleStickChartWithCompare');
 
 	class ExamplesPage extends React.Component {
 		render() {

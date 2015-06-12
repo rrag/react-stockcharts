@@ -103,9 +103,7 @@ adding it all together
 		</Chart>
 		<CurrentCoordinate forChart={2} forOverlay={3} />
 		<CurrentCoordinate forChart={2}/>
-		<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)}>
-			<CrossHair />
-		</MouseCoordinates>
+		<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)} type="crosshair" />
 		<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 		<TooltipContainer>
 			<OHLCTooltip forChart={1} origin={[-40, 0]}/>
