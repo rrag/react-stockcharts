@@ -100,12 +100,14 @@ function renderPage(data, dataFull) {
 
 d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 	d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
-		// renderPage(MSFT, MSFTFull);
-		renderPartialPage(MSFT, MSFTFull);
+		d3.tsv("data/comparison.tsv", (err3, comparison) => {
+			// renderPage(MSFT, MSFTFull, comparison);
+			renderPartialPage(MSFT, MSFTFull, comparison);
+		});
 	});
 })
 
-function renderPartialPage(data, dataFull) {
+function renderPartialPage(data, dataFull, comparison) {
 	data.forEach((d, i) => {
 		d.date = new Date(parseDate(d.date).getTime());
 		d.open = +d.open;
@@ -125,6 +127,20 @@ function renderPartialPage(data, dataFull) {
 		d.volume = +d.volume;
 		// console.log(d);
 	});
+
+	comparison.forEach((d, i) => {
+		d.date = new Date(parseDate(d.date).getTime());
+		d.open = +d.open;
+		d.high = +d.high;
+		d.low = +d.low;
+		d.close = +d.close;
+		d.volume = +d.volume;
+		d.SP500Close = +d.SP500Close;
+		d.AAPLClose = +d.AAPLClose;
+		d.GEClose = +d.GEClose;
+		// console.log(d);
+	});
+
 	//var Renko = require('./lib/charts/Renko').init(dataFull);
 	// AreaChart
 	// AreaChartWithYPercent
@@ -148,7 +164,7 @@ function renderPartialPage(data, dataFull) {
 		render() {
 			return (
 				<div className="container react-stockchart">
-					<Chart data={data} />
+					<Chart data={comparison} />
 				</div>
 			)
 		}

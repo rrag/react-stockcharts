@@ -9,6 +9,9 @@ class EdgeIndicator extends React.Component {
 		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
 		var currentItem = ChartDataUtil.getCurrentItemForChart(this.props, this.context);
 		var edge = null, item, yAccessor;
+		console.log(chartData.config.compareSeries.length);
+		var displayFormat = chartData.config.compareSeries.length > 0 ? d3.format(".0%") : this.props.displayFormat;
+
 		if (this.props.forOverlay !== undefined
 				&& chartData.config.overlays.length > 0
 				&& chartData.plot.overlayValues.length > 0) {
@@ -48,7 +51,7 @@ class EdgeIndicator extends React.Component {
 						show={true}
 						x1={x1 + chartData.config.origin[0]} y1={y1 + chartData.config.origin[1]}
 						x2={edgeX + chartData.config.origin[0]} y2={y1 + chartData.config.origin[1]}
-						coordinate={this.props.displayFormat(yValue)}
+						coordinate={displayFormat(yValue)}
 						edgeAt={edgeX}
 						orient={this.props.orient}
 						/>
@@ -76,7 +79,7 @@ class EdgeIndicator extends React.Component {
 						show={true}
 						x1={x1 + chartData.config.origin[0]} y1={y1 + chartData.config.origin[1]}
 						x2={edgeX + chartData.config.origin[0]} y2={y1 + chartData.config.origin[1]}
-						coordinate={this.props.displayFormat(yValue)}
+						coordinate={displayFormat(yValue)}
 						edgeAt={edgeX}
 						orient={this.props.orient}
 						/>

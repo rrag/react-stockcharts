@@ -24,7 +24,10 @@ class YAxis extends React.Component {
 		if (this.props.orient) axis.orient(this.props.orient);
 		if (this.props.innerTickSize) axis.innerTickSize(this.props.innerTickSize);
 		if (this.props.outerTickSize) axis.outerTickSize(this.props.outerTickSize);
-		if (this.props.tickFormat) axis.tickFormat(this.props.tickFormat);
+
+		if (this.context.compareSeries) axis.tickFormat(d3.format(".0%"));
+		else if (this.props.tickFormat) axis.tickFormat(this.props.tickFormat);
+
 		if (this.props.tickPadding) axis.tickPadding(this.props.tickPadding);
 		if (this.props.tickSize) axis.tickSize(this.props.tickSize);
 		if (this.props.ticks) axis.ticks(this.props.ticks);
@@ -68,7 +71,8 @@ YAxis.defaultProps = {
 };
 YAxis.contextTypes = {
 	xScale: React.PropTypes.func.isRequired,
-	yScale: React.PropTypes.func.isRequired
+	yScale: React.PropTypes.func.isRequired,
+	compareSeries: React.PropTypes.bool.isRequired,
 };
 
 module.exports = YAxis;

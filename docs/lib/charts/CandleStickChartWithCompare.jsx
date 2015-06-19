@@ -26,6 +26,7 @@ var ChartCanvas = ReStock.ChartCanvas
 	, AreaSeries = ReStock.AreaSeries
 	, EdgeContainer = ReStock.EdgeContainer
 	, EdgeIndicator = ReStock.EdgeIndicator
+	, CompareSeries = ReStock.CompareSeries
 ;
 
 var CandleStickChartWithCompare = React.createClass({
@@ -44,10 +45,10 @@ var CandleStickChartWithCompare = React.createClass({
 					<Chart id={1} >
 						<XAxis axisAt="bottom" orient="bottom"/>
 						<YAxis axisAt="right" orient="right" ticks={5} />
-						<DataSeries yAccessor={CandlestickSeries.yAccessor} >
+						<DataSeries yAccessor={CandlestickSeries.yAccessor} compareBase={(d) => d.close}>
 							<CandlestickSeries />
-							<CompareSeries yAccessor={(d) => d.AAPLClose} />
-							<CompareSeries yAccessor={(d) => d.SP500Close} />
+							<CompareSeries id={1} yAccessor={(d) => d.AAPLClose} />
+							<CompareSeries id={2} yAccessor={(d) => d.SP500Close} />
 						</DataSeries>
 					</Chart>
 					<Chart id={2} height={150} origin={(w, h) => [0, h - 150]}>

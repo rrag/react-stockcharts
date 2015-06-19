@@ -23,9 +23,11 @@ function StockScaleTransformer(data, interval, options) {
 	responseData.D = dd
 		//.filter((each) => Math.random() > 0.9)
 		.map((each, i) => {
-			var row = each;
-			// console.log(each);
-			//console.log(row);
+			var row = {};
+			Object.keys(each)
+				.forEach((key) => {
+					row[key] = each[key];
+				});
 			indexMutator(row,  i);
 
 			row.startOfWeek = false;
@@ -104,6 +106,13 @@ function buildWeeklyData(daily, indexMutator, dateAccesor, dateMutator) {
 			weekly.push(eachWeek);
 			eachWeek = {};
 		}
+		Object.keys(d)
+			//.filter((key) => ['open', 'high', 'low', 'close', 'volume', date])
+			.filter((key) => !eachWeek.hasOwnProperty(key))
+			.forEach((key) => {
+				eachWeek[key] = d[key];
+			});
+
 	}
 	return weekly;
 }
@@ -146,6 +155,12 @@ function buildMonthlyData(daily, indexMutator, dateAccesor) {
 			monthly.push(eachMonth);
 			eachMonth = {};
 		}
+		Object.keys(d)
+			//.filter((key) => ['open', 'high', 'low', 'close', 'volume', date])
+			.filter((key) => !eachMonth.hasOwnProperty(key))
+			.forEach((key) => {
+				eachMonth[key] = d[key];
+			});
 	}
 	return monthly;
 }

@@ -24,6 +24,9 @@ DataSeries.propTypes = {
 	yAccessor: React.PropTypes.func.isRequired,
 }
 
-DataSeries.defaultProps = { namespace: "ReStock.DataSeries" };
+DataSeries.defaultProps = {
+	namespace: "ReStock.DataSeries",
+	compareBase: (d) => d.close,
+};
 
 module.exports = DataSeries;

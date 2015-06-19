@@ -1,7 +1,7 @@
 "use strict";
 var React = require('react');
 var Utils = require('./utils/utils');
-var ChartContainerMixin = require('./utils/ChartDataUtil');
+var ChartDataUtil = require('./utils/ChartDataUtil');
 
 function getLongValue(value) {
 	if (value instanceof Date) {
@@ -35,10 +35,10 @@ class EventHandler extends React.Component {
 		var { data, initialDisplay, dataTransformProps, interval } = context;
 
 		var dataForInterval = data[interval];
-		var mainChart = ChartContainerMixin.getMainChart(props.children);
+		var mainChart = ChartDataUtil.getMainChart(props.children);
 		var beginIndex = Math.max(dataForInterval.length - initialDisplay, 0);
 		var plotData = dataForInterval.slice(beginIndex);
-		var chartData = ChartContainerMixin.getChartData(props, context, plotData, data, dataTransformProps);
+		var chartData = ChartDataUtil.getChartData(props, context, plotData, data, dataTransformProps);
 
 		this.setState({
 			plotData: plotData,
@@ -52,13 +52,13 @@ class EventHandler extends React.Component {
 		var { data, dataTransformProps } = context;
 
 		var dataForInterval = data[interval];
-		var mainChart = ChartContainerMixin.getMainChart(props.children);
+		var mainChart = ChartDataUtil.getMainChart(props.children);
 		var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
 		var beginIndex = Utils.getClosestItemIndexes(dataForInterval, mainChartData.config.accessors.xAccessor(plotData[0]), mainChartData.config.accessors.xAccessor).left;
 		var endIndex = Utils.getClosestItemIndexes(dataForInterval, mainChartData.config.accessors.xAccessor(plotData[plotData.length - 1]), mainChartData.config.accessors.xAccessor).right;
 
 		var plotData = dataForInterval.slice(beginIndex, endIndex);
-		var chartData = ChartContainerMixin.getChartData(props, context, plotData, data, dataTransformProps);
+		var chartData = ChartDataUtil.getChartData(props, context, plotData, data, dataTransformProps);
 
 		this.setState({
 			chartData: chartData,
@@ -92,7 +92,7 @@ class EventHandler extends React.Component {
 	}
 	handleMouseMove(mouseXY) {
 		// console.log('mouse move - ', mouseXY);
-		var currentItems = ChartContainerMixin.getCurrentItems(this.state.chartData, mouseXY, this.state.plotData)
+		var currentItems = ChartDataUtil.getCurrentItems(this.state.chartData, mouseXY, this.state.plotData)
 			// .filter((eachChartData) => eachChartData.id === this.state.mainChart)
 
 		this.setState({
@@ -119,7 +119,7 @@ class EventHandler extends React.Component {
 		var { data } = this.context;
 
 		var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0],
-			item = ChartContainerMixin.getClosestItem(plotData, mouseXY, chart),
+			item = ChartDataUtil.getClosestItem(plotData, mouseXY, chart),
 			xScale = chart.plot.scales.xScale,
 			domain = xScale.domain(),
 			centerX = chart.config.accessors.xAccessor(item),
@@ -136,10 +136,10 @@ class EventHandler extends React.Component {
 		domainL = Math.max(getLongValue(chart.config.accessors.xAccessor(first)) - Math.floor(domainRange/3), domainL)
 		domainR = Math.min(getLongValue(chart.config.accessors.xAccessor(last)) + Math.floor(domainRange/3), domainR)
 		// xScale(domainR) - xScale(domainL)
-		var dataToPlot = ChartContainerMixin.getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.accessors.xAccessor);
+		var dataToPlot = ChartDataUtil.getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.accessors.xAccessor);
 		if (dataToPlot.data.length < 10) return;
 		var newChartData = chartData.map((eachChart) => {
-			var plot = ChartContainerMixin.getChartPlotFor(eachChart.config, dataToPlot.data, domainL, domainR);
+			var plot = ChartDataUtil.getChartPlotFor(eachChart.config, dataToPlot.data, domainL, domainR);
 			return {
 				id: eachChart.id,
 				config: eachChart.config,
@@ -199,14 +199,14 @@ class EventHandler extends React.Component {
 				var filteredData = fullData.slice(leftX.right, rightX.right);
 
 				var newChartData = chartData.map((eachChart) => {
-					var plot = ChartContainerMixin.getChartPlotFor(eachChart.config, filteredData, domainL, domainR);
+					var plot = ChartDataUtil.getChartPlotFor(eachChart.config, filteredData, domainL, domainR);
 					return {
 						id: eachChart.id,
 						config: eachChart.config,
 						plot: plot
 					}
 				});
-				var currentItems = ChartContainerMixin.getCurrentItems(newChartData, mousePosition, filteredData);
+				var currentItems = ChartDataUtil.getCurrentItems(newChartData, mousePosition, filteredData);
 
 				this.setState({
 					chartData: newChartData,

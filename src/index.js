@@ -12,6 +12,7 @@ exports.DataSeries = require('./lib/DataSeries');
 // chart types & Series
 exports.AreaSeries = require('./lib/AreaSeries');
 exports.LineSeries = require('./lib/LineSeries');
+exports.CompareSeries = require('./lib/CompareSeries');
 exports.CandlestickSeries = require('./lib/CandleStickSeries');
 exports.OverlaySeries = require('./lib/OverlaySeries');
 exports.HistogramSeries = require('./lib/HistogramSeries');

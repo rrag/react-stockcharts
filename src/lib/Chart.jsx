@@ -13,7 +13,8 @@ class Chart extends PureComponent {
 			yScale: chartData.plot.scales.yScale,
 			xAccessor: chartData.config.accessors.xAccessor,
 			yAccessor: chartData.config.accessors.yAccessor,
-			overlays: chartData.config.overlays
+			overlays: chartData.config.overlays,
+			compareSeries: chartData.config.compareSeries.length > 0
 		}
 	}
 	render() {
@@ -62,5 +63,6 @@ Chart.childContextTypes = {
 	xAccessor: React.PropTypes.func.isRequired,
 	yAccessor: React.PropTypes.func.isRequired,
 	overlays: React.PropTypes.array.isRequired,
+	compareSeries: React.PropTypes.bool.isRequired,
 };
 module.exports = Chart;

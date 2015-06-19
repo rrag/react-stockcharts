@@ -13,6 +13,8 @@ class MouseCoordinates extends PureComponent {
 	}
 	getPointer(context) {
 		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
+		var yDisplayFormat = chartData.config.compareSeries.length > 0 ? (d) => (Math.round(d * 10000) / 100).toFixed(2) + '%' : this.props.yDisplayFormat;
+
 		var item = ChartDataUtil.getCurrentItemForChart(this.props, this.context);
 
 		var xValue = chartData.config.accessors.xAccessor(item);
@@ -29,7 +31,7 @@ class MouseCoordinates extends PureComponent {
 		switch (this.props.type) {
 			case 'crosshair':
 				return <CrossHair height={context.height} width={context.width} mouseXY={[x, y]}
-					xDisplayValue={this.props.xDisplayFormat(xDisplayValue)} yDisplayValue={this.props.yDisplayFormat(yValue)}/>
+					xDisplayValue={this.props.xDisplayFormat(xDisplayValue)} yDisplayValue={yDisplayFormat(yValue)}/>
 			case 'vertical':
 				return <VerticalMousePointer />
 		}

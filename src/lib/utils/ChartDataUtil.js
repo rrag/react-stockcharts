@@ -88,22 +88,27 @@ var ChartContainerMixin = {
 		var accessors = this.getXYAccessors(chartProps, passThroughProps);
 		// identify overlays
 		var overlaysToAdd = this.identifyOverlaysToAdd(chartProps);
-		// console.log(overlaysToAdd);
+		var compareBase = this.identifyCompareBase(chartProps);
+		var compareSeries = this.identifyCompareSeries(chartProps);
+		// console.log(compareBase, compareSeries);
 		// calculate overlays
 		this.calculateOverlays(fullData, overlaysToAdd);
+		this.calculateRateOfReturn(fullData, compareSeries, compareBase, accessors.yAccessor);
 
 		var origin = typeof chartProps.origin === 'function'
 			? chartProps.origin(dimensions.availableWidth, dimensions.availableHeight)
 			: chartProps.origin;
 
 		var scales = this.defineScales(chartProps, partialData, passThroughProps);
-
+		// ror_1, ror_2, ror_base
 		var config = {
 			width: dimensions.width,
 			height: dimensions.height,
 			origin: origin,
 			accessors: accessors,
 			overlays: overlaysToAdd,
+			compareBase: compareBase,
+			compareSeries: compareSeries,
 			scaleType: scales
 		};
 		return config;
@@ -111,9 +116,18 @@ var ChartContainerMixin = {
 	getChartPlotFor(config, partialData, domainL, domainR) {
 		var overlayYAccessors = pluck(keysAsArray(config.overlays), 'yAccessor');
 
+		var yaccessors;
+
+		if (config.compareSeries.length > 0) {
+			this.updateComparisonData(partialData, config.compareBase);
+			yaccessors = [(d) => d.compare]; //this.getCompareYAccessors(config.compareSeries);
+			// yaccessors = [config.accessors.yAccessor].concat(overlayYAccessors)
+		} else {
+			yaccessors = [config.accessors.yAccessor].concat(overlayYAccessors)
+		}
 		var xyValues = ScaleUtils.flattenData(partialData
 				, [config.accessors.xAccessor]
-				, [config.accessors.yAccessor].concat(overlayYAccessors));
+				, yaccessors);
 
 		var overlayValues = this.updateOverlayFirstLast(partialData, config.overlays)
 
@@ -142,6 +156,40 @@ var ChartContainerMixin = {
 			firstItem: first
 		}
 		return plot;
+	},
+	getCompareYAccessors(compareWith) {
+		var yAccessors = compareWith.map((eachCompare) => (d) => d['compare_' + eachCompare.id + '_percent']);
+		yAccessors.push((d) => d.compare_base_percent);
+		return yAccessors;
+	},
+	updateComparisonData(partialData, compareBase) {
+
+		var print = [];
+		partialData.forEach((d, i) => {
+			d.compare = {};
+			d.temp = {};
+			var c = {
+				open: d.open,
+				high: d.high,
+				low: d.low,
+				close: d.close,
+			}
+			Object.keys(d.ror).forEach((key) => {
+				if (i === 0) {
+					d.temp[key] = 1;
+				} else {
+					var prev = partialData[i-1].temp[key];
+					d.temp[key] = Math.exp(d.ror[key]) * prev;
+				}
+				d.compare[key] = (d.temp[key] - 1);
+				c['compare_' + key] = d.compare[key];
+			})
+			print.push(c);
+		});
+
+		// console.table(partialData);
+		console.table(print);
+		// console.log(partialData[7].temp, partialData[7].compare);
 	},
 	defineScales(props, data, passThroughProps) {
 		var xScale = props.xScale,
@@ -210,6 +258,31 @@ var ChartContainerMixin = {
 		})
 		return overlaysToAdd;
 	},
+	identifyCompareBase(props) {
+		var compareBase;
+		React.Children.forEach(props.children, (child) => {
+			if (/DataSeries$/.test(child.props.namespace)) {
+				compareBase = child.props.compareBase;
+			}
+		})
+		return compareBase;
+	},
+	identifyCompareSeries(props) {
+		var overlaysToAdd = [];
+		React.Children.forEach(props.children, (child) => {
+			if (/DataSeries$/.test(child.props.namespace)) {
+				React.Children.forEach(child.props.children, (grandChild) => {
+					if (/CompareSeries$/.test(grandChild.props.namespace)) {
+						overlaysToAdd.push({
+							yAccessor: grandChild.props.yAccessor,
+							id: grandChild.props.id
+						});
+					}
+				});
+			}
+		})
+		return overlaysToAdd;
+	},
 	calculateOverlays(fullData, overlays) {
 		if (Array.isArray(fullData)) {
 			overlays
@@ -229,6 +302,37 @@ var ChartContainerMixin = {
 				})
 		}
 		// console.log(overlays);
+	},
+	calculateRateOfReturn(fullData, compareSeries, compareBase, yAccessor) {
+		if (compareSeries.length === 0) return;
+		Object.keys(fullData)
+			.filter((key) => ['D', 'W', 'M'].indexOf(key) > -1)
+			.forEach((key) => {
+				var data = fullData[key];
+				data.forEach((each, i) => {
+					var y = yAccessor(each), yObj;
+					var index = Math.max(i - 1, 0);
+					var yPrev = yAccessor(data[index]), yPrevObj;
+					if (typeof y === 'object') {
+						yObj = y;
+						yPrevObj = yPrev;
+					} else {
+						yObj = { base: y };
+						yPrevObj = { base: yPrev };
+					}
+					each.ror = {};
+					Object.keys(yObj).forEach((yKey) => {
+						each.ror[yKey] = Math.log(yObj[yKey] / yPrevObj[yKey]);
+					});
+
+					compareSeries.forEach((eachCompare) => {
+						each.ror['compare_' + eachCompare.id] = Math.log(eachCompare.yAccessor(each) / eachCompare.yAccessor(data[index]));
+					});
+				});
+			});
+		//console.table(fullData.M);
+		// console.log(fullData.M[5].ror);
+		// console.log('asfjdashfadsjkflsfhdjslfhldj')
 	},
 	updateOverlayFirstLast(data,
 		overlays) {
