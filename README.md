@@ -4,7 +4,7 @@ Work in progress
 
 Documentation [here](http://rrag.github.io/react-stockcharts/) and [here](http://rrag.github.io/react-stockcharts/dashboard.html)
 
-Quick start examples
+### Quick start examples
 
 AreaChart - [source](https://gist.github.com/rrag/b9658ffa431f1ffb8d6b), [block](http://bl.ocks.org/rrag/b9658ffa431f1ffb8d6b), [plunker](http://plnkr.co/edit/gist:b9658ffa431f1ffb8d6b?p=preview)
 
@@ -24,7 +24,7 @@ w/ Moving Average Overlay - [source](https://gist.github.com/rrag/a27298bb7ae613
 
 w/ Edge coordinates [source](https://gist.github.com/rrag/70ea3fe28ad35bf3ed4c), [block](http://bl.ocks.org/rrag/70ea3fe28ad35bf3ed4c), [plunker](http://plnkr.co/edit/gist:70ea3fe28ad35bf3ed4c?p=preview)
 
-### Advanced Chart Types
+#### Advanced Chart Types
 Haikin Ashi - [source](https://gist.github.com/rrag/51379c24e9751d46dcea), [block](http://bl.ocks.org/rrag/51379c24e9751d46dcea), [plunker](http://plnkr.co/edit/gist:51379c24e9751d46dcea?p=preview)
 
 Kagi - [source](https://gist.github.com/rrag/d1e5b75ac12f754bb21d), [block](http://bl.ocks.org/rrag/d1e5b75ac12f754bb21d), [plunker](http://plnkr.co/edit/gist:d1e5b75ac12f754bb21d?p=preview)
