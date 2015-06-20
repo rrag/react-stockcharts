@@ -299,6 +299,7 @@ var ChartContainerMixin = {
 						});
 				})
 		}
+		// console.table(fullData.M);
 		// console.log(overlays);
 	},/*
 	calculateRateOfReturn(fullData, compareSeries, compareBase) {

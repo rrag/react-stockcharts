@@ -28,9 +28,9 @@ var OverlayUtils = {
 	calculateOverlay(data, overlay) {
 		// console.log(overlay);
 		if (overlay.type === 'sma') {
-			data = MACalculator.calculateSMA(data, overlay.options.period, overlay.key, overlay.options.pluck);
+			data = MACalculator.calculateSMA(data, overlay.options.period, overlay.key, overlay.options.pluck || 'close');
 		} else if (overlay.type === 'ema') {
-			data = MACalculator.calculateEMA(data, overlay.options.period, overlay.key, overlay.options.pluck);
+			data = MACalculator.calculateEMA(data, overlay.options.period, overlay.key, overlay.options.pluck || 'close');
 		}
 		return data;
 	},

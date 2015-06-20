@@ -25,15 +25,33 @@ MACalculator.calculateSMA = function(data, period, key, pluckKey) {
 			data[l - i][key] = avg;
 			// console.log(data[l - i][key]);
 		})
-	if (key === 'sma53_chart_2') {
-		console.table(data);
-	}
+
 	return data;
 }
 
-MACalculator.calculateEMA = function (data, period) {
-	console.log('calculating EMA');
-	return false;
+MACalculator.calculateEMA = function (data, period, key, pluckKey) {
+	// console.log('calculating EMA', period, key, pluckKey);
+	/*
+	EMA = Price(t) * k + EMA(y) * (1 – k)
+	t = today, y = yesterday, N = number of days in EMA (or period), k = 2/(N+1)
+	*/
+
+	if (data.length > period) {
+		var firstSMA = data.slice(0, period)
+			.map((each) => each[pluckKey])
+			.reduce((a, b) => a + b) / period;
+
+		data[period][key] = firstSMA;
+
+		var k = 2 / (period + 1), prevEMA = firstSMA;
+
+		for (var i = period; i < data.length; i++) {
+			data[i][key] = data[i][pluckKey] * k + prevEMA * (1 - k)
+			prevEMA = data[i][key];
+		}
+	}
+
+	return data;
 }
 
 module.exports = MACalculator;

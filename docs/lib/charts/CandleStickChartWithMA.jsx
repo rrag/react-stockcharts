@@ -46,10 +46,10 @@ var CandleStickChartWithMA = React.createClass({
 							<OverlaySeries id={0} type="sma" options={{ period: 20, pluck: 'close' }}>
 								<LineSeries/>
 							</OverlaySeries>
-							<OverlaySeries id={1} type="sma" options={{ period: 30 }} >
+							<OverlaySeries id={1} type="ema" options={{ period: 20 }} >
 								<LineSeries/>
 							</OverlaySeries>
-							<OverlaySeries id={2} type="sma" options={{ period: 50 }} >
+							<OverlaySeries id={2} type="ema" options={{ period: 50 }} >
 								<LineSeries/>
 							</OverlaySeries>
 						</DataSeries>

@@ -2,7 +2,7 @@
 
 #### Overlays
 
-- Exponential Moving Average (EMA) - v0.2
+- ~~Exponential Moving Average (EMA) - v0.1~~
 - Bolinger Bands - v0.2
 - ~~Compare with another stock - v0.1~~
 
