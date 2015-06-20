@@ -12,7 +12,7 @@ class CandlestickSeries extends React.Component {
 		var wicks = this.context.plotData
 				.filter((d) => d.close !== undefined)
 				.map((d, idx) => {
-					var ohlc = this.context.compareSeries ? this.context.yAccessor(d.compare) : this.context.yAccessor(d);
+					var ohlc = this.context.isCompareSeries ? this.context.yAccessor(d.compare) : this.context.yAccessor(d);
 
 					var x1 = Math.round(this.context.xScale(this.context.xAccessor(d))),
 						y1 = this.context.yScale(ohlc.high),
@@ -32,7 +32,6 @@ class CandlestickSeries extends React.Component {
 		return wicks;
 	}
 	getCandles() {
-		console.log(this.context.compareSeries, this.context.yAccessor);
 		var width = this.context.xScale(this.context.xAccessor(this.context.plotData[this.context.plotData.length - 1]))
 			- this.context.xScale(this.context.xAccessor(this.context.plotData[0]));
 		var cw = (width / (this.context.plotData.length)) * 0.5;
@@ -40,7 +39,7 @@ class CandlestickSeries extends React.Component {
 		var candles = this.context.plotData
 				.filter((d) => d.close !== undefined)
 				.map((d, idx) => {
-					var ohlc = this.context.compareSeries ? this.context.yAccessor(d.compare) : this.context.yAccessor(d);
+					var ohlc = this.context.isCompareSeries ? this.context.yAccessor(d.compare) : this.context.yAccessor(d);
 					var x = Math.round(this.context.xScale(this.context.xAccessor(d)))
 							- (candleWidth === 1 ? 0 : 0.5 * candleWidth),
 						y = this.context.yScale(Math.max(ohlc.open, ohlc.close)),
@@ -63,13 +62,12 @@ class CandlestickSeries extends React.Component {
 	render() {
 		return (
 			<g>
-				<g className="candle" key="candles">
-					{this.getCandles()}
-				</g>
 				<g className="wick" key="wicks">
 					{this.getWicks()}
 				</g>
-
+				<g className="candle" key="candles">
+					{this.getCandles()}
+				</g>
 			</g>
 		);
 	}
@@ -81,7 +79,7 @@ CandlestickSeries.contextTypes = {
 	xAccessor: React.PropTypes.func.isRequired,
 	yAccessor: React.PropTypes.func.isRequired,
 	plotData: React.PropTypes.array.isRequired,
-	compareSeries: React.PropTypes.bool.isRequired,
+	isCompareSeries: React.PropTypes.bool.isRequired,
 }
 
 CandlestickSeries.defaultProps = { namespace: "ReStock.CandlestickSeries" };

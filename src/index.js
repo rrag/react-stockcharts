@@ -30,6 +30,7 @@ exports.CurrentCoordinate = require('./lib/CurrentCoordinate');
 // Tooltips
 exports.TooltipContainer = require('./lib/TooltipContainer');
 exports.OHLCTooltip = require('./lib/OHLCTooltip');
+exports.CompareTooltip = require('./lib/CompareTooltip');
 exports.MovingAverageTooltip = require('./lib/MovingAverageTooltip');
 
 // misc

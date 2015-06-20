@@ -25,6 +25,16 @@ class CurrentCoordinate extends React.Component {
 			}
 			fill = overlays[0].stroke;
 			yAccessor = overlays[0].yAccessor;
+		} else if (this.props.forCompareSeries !== undefined) {
+			var compSeries = chartData.config.compareSeries
+				.filter((each) => each.id === this.props.forCompareSeries);
+
+			if (compSeries.length != 1) {
+				console.warn('Unique compareSeries with id={%s} not found', this.props.forCompareSeries);
+				throw new Error('Unique compareSeries not found');
+			}
+			fill = compSeries[0].stroke;
+			yAccessor = compSeries[0].percentYAccessor;
 		}
 
 		var xValue = chartData.config.accessors.xAccessor(item);
@@ -44,6 +54,7 @@ class CurrentCoordinate extends React.Component {
 CurrentCoordinate.propTypes = {
 	forChart: React.PropTypes.number.isRequired,
 	forOverlay: React.PropTypes.number,
+	forCompareSeries: React.PropTypes.number,
 	yAccessor: React.PropTypes.func,
 	r: React.PropTypes.number.isRequired,
 	className: React.PropTypes.string,

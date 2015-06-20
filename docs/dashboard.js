@@ -23,6 +23,7 @@ var pages = [
 	require('lib/page/ZoomAndPanPage'),
 	require('lib/page/OverlayPage'),
 	require('lib/page/EdgeCoordinatesPage'),
+	require('lib/page/CompareWithPage'),
 	require('lib/page/LotsOfDataPage'),
 	require('lib/page/HeikinAshiPage'),
 	require('lib/page/KagiPage'),
@@ -31,7 +32,7 @@ var pages = [
 	require('lib/page/ComingSoonPage')
 ];
 
-function renderPage(data, dataFull) {
+function renderPage(data, dataFull, compareData) {
 	data.forEach((d, i) => {
 		d.date = new Date(parseDate(d.date).getTime());
 		d.open = +d.open;
@@ -51,7 +52,18 @@ function renderPage(data, dataFull) {
 		d.volume = +d.volume;
 		// console.log(d);
 	});
-
+	compareData.forEach((d, i) => {
+		d.date = new Date(parseDate(d.date).getTime());
+		d.open = +d.open;
+		d.high = +d.high;
+		d.low = +d.low;
+		d.close = +d.close;
+		d.volume = +d.volume;
+		d.SP500Close = +d.SP500Close;
+		d.AAPLClose = +d.AAPLClose;
+		d.GEClose = +d.GEClose;
+		// console.log(d);
+	});
 	var SyncMouseMove = require('./lib/charts/synchronized-mouse-move').init(data);
 	var AreaChartWithZoom = require('./lib/charts/areachart-with-zoom').init(data);
 	var AreaChartWithZoomPan = require('./lib/charts/areachart-with-zoom-and-pan').init(data);
@@ -88,7 +100,7 @@ function renderPage(data, dataFull) {
 								{pages.map((eachPage, idx) => <MenuItem key={idx} page={eachPage} selectedPage={this.state.selectedPage} handleRouteChange={this.handleRouteChange} />)}
 							</MenuGroup>
 						</Sidebar>
-						<Page someData={data} lotsOfData={dataFull} />
+						<Page someData={data} lotsOfData={dataFull} compareData={compareData} />
 					</MainContainer>
 				</div>
 			);
@@ -100,14 +112,14 @@ function renderPage(data, dataFull) {
 
 d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 	d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
-		d3.tsv("data/comparison.tsv", (err3, comparison) => {
-			// renderPage(MSFT, MSFTFull, comparison);
-			renderPartialPage(MSFT, MSFTFull, comparison);
+		d3.tsv("data/comparison.tsv", (err3, compareData) => {
+			renderPage(MSFT, MSFTFull, compareData);
+			// renderPartialPage(MSFT, MSFTFull, compareData);
 		});
 	});
 })
 
-function renderPartialPage(data, dataFull, comparison) {
+function renderPartialPage(data, dataFull, compareData) {
 	data.forEach((d, i) => {
 		d.date = new Date(parseDate(d.date).getTime());
 		d.open = +d.open;
@@ -128,7 +140,7 @@ function renderPartialPage(data, dataFull, comparison) {
 		// console.log(d);
 	});
 
-	comparison.forEach((d, i) => {
+	compareData.forEach((d, i) => {
 		d.date = new Date(parseDate(d.date).getTime());
 		d.open = +d.open;
 		d.high = +d.high;
@@ -164,7 +176,7 @@ function renderPartialPage(data, dataFull, comparison) {
 		render() {
 			return (
 				<div className="container react-stockchart">
-					<Chart data={comparison} />
+					<Chart data={compareData} />
 				</div>
 			)
 		}

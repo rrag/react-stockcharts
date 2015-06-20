@@ -93,7 +93,7 @@ var ChartContainerMixin = {
 		// console.log(compareBase, compareSeries);
 		// calculate overlays
 		this.calculateOverlays(fullData, overlaysToAdd);
-		this.calculateRateOfReturn(fullData, compareSeries, compareBase, accessors.yAccessor);
+		// this.calculateRateOfReturn(fullData, compareSeries, compareBase, accessors.yAccessor);
 
 		var origin = typeof chartProps.origin === 'function'
 			? chartProps.origin(dimensions.availableWidth, dimensions.availableHeight)
@@ -119,7 +119,7 @@ var ChartContainerMixin = {
 		var yaccessors;
 
 		if (config.compareSeries.length > 0) {
-			this.updateComparisonData(partialData, config.compareBase);
+			this.updateComparisonData(partialData, config.compareBase, config.compareSeries);
 			yaccessors = [(d) => d.compare]; //this.getCompareYAccessors(config.compareSeries);
 			// yaccessors = [config.accessors.yAccessor].concat(overlayYAccessors)
 		} else {
@@ -162,35 +162,30 @@ var ChartContainerMixin = {
 		yAccessors.push((d) => d.compare_base_percent);
 		return yAccessors;
 	},
-	updateComparisonData(partialData, compareBase) {
+	updateComparisonData(partialData, compareBase, compareSeries) {
 
-		var print = [];
+		var first = partialData[0];
+		var base = compareBase(first);
+
 		partialData.forEach((d, i) => {
 			d.compare = {};
-			d.temp = {};
-			var c = {
-				open: d.open,
-				high: d.high,
-				low: d.low,
-				close: d.close,
-			}
-			Object.keys(d.ror).forEach((key) => {
-				if (i === 0) {
-					d.temp[key] = 1;
-				} else {
-					var prev = partialData[i-1].temp[key];
-					d.temp[key] = Math.exp(d.ror[key]) * prev;
-				}
-				d.compare[key] = (d.temp[key] - 1);
-				c['compare_' + key] = d.compare[key];
-			})
-			print.push(c);
+
+			d.compare.open = (d.open - base) / base;
+			d.compare.high = (d.high - base) / base;
+			d.compare.low = (d.low - base) / base;
+			d.compare.close = (d.close - base) / base;
+
+			compareSeries.forEach(eachSeries => {
+				var key = 'compare_' + eachSeries.id;
+				d.compare[key] = (eachSeries.yAccessor(d) - eachSeries.yAccessor(first)) / eachSeries.yAccessor(first);
+			});
+
 		});
 
 		// console.table(partialData);
-		console.table(print);
 		// console.log(partialData[7].temp, partialData[7].compare);
 	},
+
 	defineScales(props, data, passThroughProps) {
 		var xScale = props.xScale,
 			yScale = props.yScale;
@@ -249,7 +244,7 @@ var ChartContainerMixin = {
 							options: grandChild.props.options,
 							type: grandChild.props.type,
 							tooltipLabel: OverlayUtils.getToolTipLabel(grandChild.props),
-							stroke: grandChild.stroke || overlayColors(grandChild.props.id)
+							stroke: grandChild.props.stroke || overlayColors(grandChild.props.id)
 						};
 						overlaysToAdd.push(overlay);
 					}
@@ -275,7 +270,10 @@ var ChartContainerMixin = {
 					if (/CompareSeries$/.test(grandChild.props.namespace)) {
 						overlaysToAdd.push({
 							yAccessor: grandChild.props.yAccessor,
-							id: grandChild.props.id
+							id: grandChild.props.id,
+							stroke: grandChild.props.stroke || overlayColors(grandChild.props.id),
+							displayLabel: grandChild.props.displayLabel,
+							percentYAccessor: (d) => d.compare['compare_' + grandChild.props.id],
 						});
 					}
 				});
@@ -302,38 +300,29 @@ var ChartContainerMixin = {
 				})
 		}
 		// console.log(overlays);
-	},
-	calculateRateOfReturn(fullData, compareSeries, compareBase, yAccessor) {
+	},/*
+	calculateRateOfReturn(fullData, compareSeries, compareBase) {
 		if (compareSeries.length === 0) return;
 		Object.keys(fullData)
 			.filter((key) => ['D', 'W', 'M'].indexOf(key) > -1)
 			.forEach((key) => {
 				var data = fullData[key];
 				data.forEach((each, i) => {
-					var y = yAccessor(each), yObj;
 					var index = Math.max(i - 1, 0);
-					var yPrev = yAccessor(data[index]), yPrevObj;
-					if (typeof y === 'object') {
-						yObj = y;
-						yPrevObj = yPrev;
-					} else {
-						yObj = { base: y };
-						yPrevObj = { base: yPrev };
-					}
-					each.ror = {};
-					Object.keys(yObj).forEach((yKey) => {
-						each.ror[yKey] = Math.log(yObj[yKey] / yPrevObj[yKey]);
-					});
+					var y = compareBase(each);
+					var yPrev = compareBase(data[index]);
 
+					each.ror = {};
+					each.ror.compare_base = Math.log(y / yPrev);
 					compareSeries.forEach((eachCompare) => {
 						each.ror['compare_' + eachCompare.id] = Math.log(eachCompare.yAccessor(each) / eachCompare.yAccessor(data[index]));
 					});
 				});
 			});
 		//console.table(fullData.M);
-		// console.log(fullData.M[5].ror);
+		console.log(fullData.M[5].ror);
 		// console.log('asfjdashfadsjkflsfhdjslfhldj')
-	},
+	},*/
 	updateOverlayFirstLast(data,
 		overlays) {
 

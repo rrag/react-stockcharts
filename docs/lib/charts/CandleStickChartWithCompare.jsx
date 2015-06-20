@@ -27,6 +27,7 @@ var ChartCanvas = ReStock.ChartCanvas
 	, EdgeContainer = ReStock.EdgeContainer
 	, EdgeIndicator = ReStock.EdgeIndicator
 	, CompareSeries = ReStock.CompareSeries
+	, CompareTooltip = ReStock.CompareTooltip
 ;
 
 var CandleStickChartWithCompare = React.createClass({
@@ -47,8 +48,8 @@ var CandleStickChartWithCompare = React.createClass({
 						<YAxis axisAt="right" orient="right" ticks={5} />
 						<DataSeries yAccessor={CandlestickSeries.yAccessor} compareBase={(d) => d.close}>
 							<CandlestickSeries />
-							<CompareSeries id={1} yAccessor={(d) => d.AAPLClose} />
-							<CompareSeries id={2} yAccessor={(d) => d.SP500Close} />
+							<CompareSeries id={1} yAccessor={(d) => d.AAPLClose} displayLabel="AAPL" />
+							<CompareSeries id={2} yAccessor={(d) => d.SP500Close} displayLabel="S&P 500" />
 						</DataSeries>
 					</Chart>
 					<Chart id={2} height={150} origin={(w, h) => [0, h - 150]}>
@@ -60,10 +61,14 @@ var CandleStickChartWithCompare = React.createClass({
 							</OverlaySeries>
 						</DataSeries>
 					</Chart>
+					<CurrentCoordinate forChart={1} forCompareSeries={1} />
+					<CurrentCoordinate forChart={1} forCompareSeries={2} />
 					<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)} type="crosshair" />
 					<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 					<TooltipContainer>
-						<OHLCTooltip forChart={1} origin={[-50, 0]}/>
+						<OHLCTooltip forChart={1} origin={[-50, 0]} />
+						<CompareTooltip forChart={1} forCompareSeries={1} origin={[-50, 20]}/>
+						<CompareTooltip forChart={1} forCompareSeries={2} origin={[-50, 40]}/>
 					</TooltipContainer>
 				</DataTransform>
 			</ChartCanvas>
