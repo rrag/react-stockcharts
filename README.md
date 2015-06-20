@@ -4,17 +4,7 @@ Work in progress
 
 Documentation [here](http://rrag.github.io/react-stockcharts/) and [here](http://rrag.github.io/react-stockcharts/dashboard.html)
 
-Tested with React 0.13 and React 0.14
-
-When used with 0.13.x you get a warning 
-
-```
-Warning: withContext is deprecated and will be removed in a future version. Use a wrapper component with getChildContext instead.
-```
-
-It is ok, This is the only way to make the project work with both 0.13 & 0.14 with minimal code differences. React 0.14 includes [this](https://github.com/facebook/react/issues/2112) which eliminates the need for using `withContext`, since that is not present in 0.13.x `withContext` had to be used.
-
-Checkout some live examples on plunkr, change to use 0.14 alpha and see that warning disappear
+Quick start examples
 
 AreaChart - [source](https://gist.github.com/rrag/b9658ffa431f1ffb8d6b), [block](http://bl.ocks.org/rrag/b9658ffa431f1ffb8d6b), [plunker](http://plnkr.co/edit/gist:b9658ffa431f1ffb8d6b?p=preview)
 
@@ -42,3 +32,17 @@ Kagi - [source](https://gist.github.com/rrag/d1e5b75ac12f754bb21d), [block](http
 P & F - [source](https://gist.github.com/rrag/d43ef867bead0f1de663), [block](http://bl.ocks.org/rrag/d43ef867bead0f1de663), [plunker](http://plnkr.co/edit/gist:d43ef867bead0f1de663?p=preview)
 
 Renko - [source](https://gist.github.com/rrag/df51fa445c26e123beb9), [block](http://bl.ocks.org/rrag/df51fa445c26e123beb9), [plunker](http://plnkr.co/edit/gist:df51fa445c26e123beb9?p=preview)
+
+
+
+The library is tested with React 0.13 and React 0.14
+
+When used with 0.13.x you get a warning 
+
+```
+Warning: withContext is deprecated and will be removed in a future version. Use a wrapper component with getChildContext instead.
+```
+
+It is ok, This is the only way to make the project work with both 0.13 & 0.14 with minimal code differences. React 0.14 includes [this](https://github.com/facebook/react/issues/2112) which eliminates the need for using `withContext`
+
+Checkout some live examples on plunkr, change to use 0.14 alpha and see that warning disappear

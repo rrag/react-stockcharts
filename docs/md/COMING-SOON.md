@@ -4,13 +4,14 @@
 
 - Exponential Moving Average (EMA) - v0.2
 - Bolinger Bands - v0.2
-- Compare with another stock - v0.1
+- ~~Compare with another stock - v0.1~~
 
 #### Indicators
 
 - Moving Average Convergence Divergence (MACD) - v0.1
 - Relative Strength Index (RSI) - v0.2
 - Stochastics - v0.2
+- More indicators - suggestions welcome - v0.2
 
 #### Chart types
 
@@ -26,6 +27,7 @@
 
 - ~~Change interval on zoom out/zoom in - v0.1~~
 - Add custom data transforms - v0.3
+- Provide option to use canvas instead of svg - v0.3
 
 #### More examples
 
@@ -41,9 +43,9 @@
 - Use ES6 Classes
     - ~~Do not use EventCaptureMixin, ChartContainerMixin~~
     - Update examples to not use ChartWidthMixin
-- Add tests and coverage
+- Add tests and coverage - v0.2
 - Publish to npm - v0.1-alpha
-- configure options for advanced chart types
+- configure options for advanced chart types - v0.2
 
 #### Dependencies
 - ~~Experiment with React 0.13 instead of React 0.14 - v0.1~~
