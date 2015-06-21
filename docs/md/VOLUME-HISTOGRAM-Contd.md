@@ -45,3 +45,6 @@ which is used as the css class
 ```
 
 a class of 'up' is applied if `close > open` for that day and 'down' otherwise
+
+#### Another Version
+In this you can see how the volume histogram and the candlestick chart do not overlap.

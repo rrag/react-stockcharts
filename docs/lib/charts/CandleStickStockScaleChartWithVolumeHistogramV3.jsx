@@ -36,7 +36,7 @@ var CandleStickStockScaleChartWithVolumeHistogramV3 = React.createClass({
 
 		return (
 			<ChartCanvas width={this.state.width} height={600}
-				margin={{left: 70, right: 70, top:20, bottom: 30}} data={this.props.data} interval="D" initialDisplay={30} >
+				margin={{left: 70, right: 70, top:20, bottom: 30}} data={this.props.data} interval="D" initialDisplay={100} >
 				<DataTransform transformType="stockscale">
 					<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}
 							height={400} >
@@ -54,8 +54,6 @@ var CandleStickStockScaleChartWithVolumeHistogramV3 = React.createClass({
 							<HistogramSeries className={(d) => d.close > d.open ? 'up' : 'down'} />
 						</DataSeries>
 					</Chart>
-					<MouseCoordinates xDisplayFormat={dateFormat} type="crosshair" />
-					<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 					<TooltipContainer>
 						<OHLCTooltip forChart={1} origin={[-40, -10]}/>
 						<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 5]}/>

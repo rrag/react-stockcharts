@@ -178,6 +178,7 @@ gulp.task('publishexamples', function(cb) {
 		'CandleStickStockScaleChart',
 		'CandleStickStockScaleChartWithVolumeHistogramV1',
 		'CandleStickStockScaleChartWithVolumeHistogramV2',
+		'CandleStickStockScaleChartWithVolumeHistogramV3',
 		'CandleStickChartWithCHMousePointer',
 		'CandleStickChartWithZoomPan',
 		'CandleStickChartWithMA',

@@ -22,7 +22,7 @@ var CandleStickStockScaleChartWithVolumeHistogramV1 = React.createClass({
 
 		return (
 			<ChartCanvas width={this.state.width} height={400}
-				margin={{left: 50, right: 50, top:10, bottom: 30}} data={this.props.data} interval="D" >
+				margin={{left: 50, right: 50, top:10, bottom: 30}} data={this.props.data} interval="D" initialDisplay={100}>
 				<DataTransform transformType="stockscale">
 					<Chart id={1} >
 						<XAxis axisAt="bottom" orient="bottom"/>
@@ -43,16 +43,3 @@ var CandleStickStockScaleChartWithVolumeHistogramV1 = React.createClass({
 	}
 });
 module.exports = CandleStickStockScaleChartWithVolumeHistogramV1;
-
-
-/*
- xScaleDependsOn={1}
-							<Chart id={1} >
-								<XAxis axisAt="bottom" orient="bottom" ticks={5}/>
-								<YAxis axisAt="right" orient="right" ticks={5} />
-								<DataSeries yAccessor={CandlestickSeries.yAccessor} >
-									<CandlestickSeries />
-								</DataSeries>
-							</Chart>
-
-*/

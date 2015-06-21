@@ -7,6 +7,7 @@ var Section = require('lib/section');
 
 var CandleStickStockScaleChartWithVolumeHistogramV1 = require('lib/charts/CandleStickStockScaleChartWithVolumeHistogramV1');
 var CandleStickStockScaleChartWithVolumeHistogramV2 = require('lib/charts/CandleStickStockScaleChartWithVolumeHistogramV2');
+var CandleStickStockScaleChartWithVolumeHistogramV3 = require('lib/charts/CandleStickStockScaleChartWithVolumeHistogramV3');
 
 var VolumeHistogramPage = React.createClass({
 	statics: {
@@ -38,6 +39,16 @@ var VolumeHistogramPage = React.createClass({
 				<Row>
 					<Section colSpan={2}>
 						<aside dangerouslySetInnerHTML={{__html: require('md/VOLUME-HISTOGRAM-Contd')}}></aside>
+					</Section>
+				</Row>
+				<Row>
+					<Section colSpan={2} className="react-stockchart">
+						<CandleStickStockScaleChartWithVolumeHistogramV3 data={this.props.someData} />
+					</Section>
+				</Row>
+				<Row>
+					<Section colSpan={2}>
+						<aside dangerouslySetInnerHTML={{__html: require('md/VOLUME-HISTOGRAM-Contd2')}}></aside>
 					</Section>
 				</Row>
 			</ContentSection>
