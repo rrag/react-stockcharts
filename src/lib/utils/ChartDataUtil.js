@@ -104,6 +104,10 @@ var ChartContainerMixin = {
 		var config = {
 			width: dimensions.width,
 			height: dimensions.height,
+			mouseCoordinates: {
+				at: chartProps.yMousePointerDisplayLocation,
+				format: chartProps.yMousePointerDisplayFormat
+			},
 			origin: origin,
 			accessors: accessors,
 			overlays: overlaysToAdd,

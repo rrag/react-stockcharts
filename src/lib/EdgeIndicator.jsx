@@ -9,7 +9,7 @@ class EdgeIndicator extends React.Component {
 		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
 		var currentItem = ChartDataUtil.getCurrentItemForChart(this.props, this.context);
 		var edge = null, item, yAccessor;
-		console.log(chartData.config.compareSeries.length);
+		// console.log(chartData.config.compareSeries.length);
 		var displayFormat = chartData.config.compareSeries.length > 0 ? d3.format(".0%") : this.props.displayFormat;
 
 		if (this.props.forOverlay !== undefined

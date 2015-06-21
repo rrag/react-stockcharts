@@ -36,9 +36,9 @@ var CandleStickChartWithMA = React.createClass({
 
 		return (
 			<ChartCanvas width={this.state.width} height={400}
-				margin={{left: 40, right: 70, top:10, bottom: 30}} data={this.props.data} interval="D" initialDisplay={30} >
+				margin={{left: 70, right: 70, top:10, bottom: 30}} data={this.props.data} interval="D" initialDisplay={30} >
 				<DataTransform transformType="stockscale">
-					<Chart id={1} >
+					<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}>
 						<XAxis axisAt="bottom" orient="bottom"/>
 						<YAxis axisAt="right" orient="right" ticks={5} />
 						<DataSeries yAccessor={CandlestickSeries.yAccessor} >
@@ -57,7 +57,8 @@ var CandleStickChartWithMA = React.createClass({
 					<CurrentCoordinate forChart={1} forOverlay={0} />
 					<CurrentCoordinate forChart={1} forOverlay={1} />
 					<CurrentCoordinate forChart={1} forOverlay={2} />
-					<Chart id={2} height={150} origin={(w, h) => [0, h - 150]}>
+					<Chart id={2} yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
+							height={150} origin={(w, h) => [0, h - 150]}>
 						<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 						<DataSeries yAccessor={(d) => d.volume} >
 							<HistogramSeries className={(d) => d.close > d.open ? 'up' : 'down'} />
@@ -68,7 +69,7 @@ var CandleStickChartWithMA = React.createClass({
 					</Chart>
 					<CurrentCoordinate forChart={2} forOverlay={3} />
 					<CurrentCoordinate forChart={2}/>
-					<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)} type="crosshair" />
+					<MouseCoordinates xDisplayFormat={dateFormat} type="crosshair" />
 					<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 					<TooltipContainer>
 						<OHLCTooltip forChart={1} origin={[-40, 0]}/>

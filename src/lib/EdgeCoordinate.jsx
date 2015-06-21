@@ -38,13 +38,14 @@ class EdgeCoordinate extends React.Component {
 									style={{"textAnchor": "middle"}}
 									dy=".32em">{displayCoordinate}</text>);
 		}
+		var line = this.props.hideLine ? null : <line className="cross-hair"
+					x1={this.props.x1} y1={this.props.y1}
+					x2={this.props.x2} y2={this.props.y2} />
 		return (
 			<g className={(this.props.show ? 'show ' : 'hide ') + this.props.className}>
-					<line className="cross-hair"
-						x1={this.props.x1} y1={this.props.y1}
-						x2={this.props.x2} y2={this.props.y2} />
-					{coordinateBase}
-					{coordinate}
+				{line}
+				{coordinateBase}
+				{coordinate}
 			</g>
 		);
 	}
@@ -58,10 +59,12 @@ EdgeCoordinate.propTypes = {
 	x2: React.PropTypes.number.isRequired,
 	y2: React.PropTypes.number.isRequired,
 	orient: React.PropTypes.oneOf(['bottom', 'top', 'left', 'right']),
-	rectWidth: React.PropTypes.number
+	rectWidth: React.PropTypes.number,
+	hideLine: React.PropTypes.bool,
 };
 EdgeCoordinate.defaultProps = {
 	namespace: "ReStock.EdgeCoordinate",
-	orient: 'left'
+	orient: 'left',
+	hideLine: false,
 };
 module.exports = EdgeCoordinate;

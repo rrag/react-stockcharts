@@ -41,7 +41,7 @@ var CandleStickChartWithEdge = React.createClass({
 			<ChartCanvas width={this.state.width} height={400}
 				margin={{left: 90, right: 70, top:10, bottom: 30}} data={this.props.data} interval="D" initialDisplay={30} >
 				<DataTransform transformType="stockscale">
-					<Chart id={1} >
+					<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}>
 						<XAxis axisAt="bottom" orient="bottom"/>
 						<YAxis axisAt="right" orient="right" ticks={5} />
 						<DataSeries yAccessor={CandlestickSeries.yAccessor} >
@@ -93,7 +93,7 @@ var CandleStickChartWithEdge = React.createClass({
 						<EdgeIndicator className="horizontal" itemType="last" orient="right"
 							edgeAt="right" forChart={2} displayFormat={d3.format(".4s")} />
 					</EdgeContainer>
-					<MouseCoordinates forChart={1} xDisplayFormat={dateFormat} yDisplayFormat={(y) => y.toFixed(2)} type="crosshair" />
+					<MouseCoordinates xDisplayFormat={dateFormat} type="crosshair" />
 					<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 					<TooltipContainer>
 						<OHLCTooltip forChart={1} origin={[-50, 0]}/>

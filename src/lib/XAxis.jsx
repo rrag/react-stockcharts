@@ -31,6 +31,10 @@ class XAxis extends React.Component {
 		if (this.props.tickSize) axis.tickSize(this.props.tickSize);
 		if (this.props.ticks) axis.ticks(this.props.ticks);
 		if (this.props.tickValues) axis.tickValues(this.props.tickValues);
+		if (this.props.noTicks) {
+			axis.tickSize(0);
+			axis.tickValues([]);
+		}
 		d3.select(React.findDOMNode(this)).call(axis);
 	}
 	render() {

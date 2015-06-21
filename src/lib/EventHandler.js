@@ -27,7 +27,7 @@ class EventHandler extends React.Component {
 			currentItems: [],
 			show: false,
 			mouseXY: [0, 0],
-			panInProgress: false
+			panInProgress: false,
 		};
 	}
 	componentWillMount() {
@@ -44,7 +44,8 @@ class EventHandler extends React.Component {
 			plotData: plotData,
 			chartData: chartData,
 			interval: this.context.interval,
-			mainChart: mainChart
+			mainChart: mainChart,
+			currentCharts: [mainChart]
 		});
 	}
 	componentWillReceiveProps(props, context) {
@@ -74,9 +75,11 @@ class EventHandler extends React.Component {
 			plotData: this.state.plotData,
 			chartData: this.state.chartData,
 			currentItems: this.state.currentItems,
+			mainChart: this.state.mainChart,
 			show: this.state.show,
 			mouseXY: this.state.mouseXY,
 			interval: this.state.interval,
+			currentCharts: this.state.currentCharts,
 
 			onMouseMove: this.handleMouseMove,
 			onMouseEnter: this.handleMouseEnter,
@@ -94,11 +97,19 @@ class EventHandler extends React.Component {
 		// console.log('mouse move - ', mouseXY);
 		var currentItems = ChartDataUtil.getCurrentItems(this.state.chartData, mouseXY, this.state.plotData)
 			// .filter((eachChartData) => eachChartData.id === this.state.mainChart)
+		var currentCharts = this.state.chartData.filter((chartData) => {
+			var top = chartData.config.origin[1];
+			var bottom = top + chartData.config.height;
+			return (mouseXY[1] > top && mouseXY[1] < bottom)
+		}).map((chartData) => chartData.id);
+
+		// console.log(currentCharts);
 
 		this.setState({
 			mouseXY: mouseXY,
 			currentItems: currentItems,
-			show: true
+			show: true,
+			currentCharts: currentCharts
 		});
 	}
 	handleMouseEnter() {
@@ -208,12 +219,19 @@ class EventHandler extends React.Component {
 				});
 				var currentItems = ChartDataUtil.getCurrentItems(newChartData, mousePosition, filteredData);
 
+				var currentCharts = newChartData.filter((chartData) => {
+					var top = chartData.config.origin[1];
+					var bottom = top + chartData.config.height;
+					return (mousePosition[1] > top && mousePosition[1] < bottom)
+				}).map((chartData) => chartData.id);
+
 				this.setState({
 					chartData: newChartData,
 					plotData: filteredData,
 					currentItems: currentItems,
 					// show: true,
-					mouseXY: mousePosition
+					mouseXY: mousePosition,
+					currentCharts: currentCharts,
 				});
 			});
 		}
@@ -263,6 +281,8 @@ EventHandler.childContextTypes = {
 	show: React.PropTypes.bool,
 	mouseXY: React.PropTypes.array,
 	interval: React.PropTypes.string,
+	currentCharts: React.PropTypes.array,
+	mainChart: React.PropTypes.number,
 
 
 	onMouseMove: React.PropTypes.func,

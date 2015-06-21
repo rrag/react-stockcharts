@@ -46,6 +46,8 @@ Chart.propTypes = {
 	yScale: React.PropTypes.func,
 	xDomainUpdate: React.PropTypes.bool,
 	yDomainUpdate: React.PropTypes.bool,
+	yMousePointerDisplayLocation: React.PropTypes.oneOf(['left', 'right']),
+	yMousePointerDisplayFormat: React.PropTypes.func,
 };
 Chart.defaultProps = {
 	namespace: "ReStock.Chart",
