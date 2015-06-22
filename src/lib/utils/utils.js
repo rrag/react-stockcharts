@@ -118,7 +118,7 @@ Utils.getClosestItemIndexes = function(array, value, accessor) {
 	return { left: lo, right: hi };
 }
 Utils.pluck = function(array, key) {
-	return array.map((each) => each[key])
+	return array.map((each) => getter(each, key))
 }
 Utils.keysAsArray = function(obj) {
 	return Object.keys(obj)
@@ -127,6 +127,17 @@ Utils.keysAsArray = function(obj) {
 }
 Utils.sum = function(array) {
 	return array.reduce((d1, d2) => d1 + d2);
+}
+
+
+function getter(obj, pluckKey) {
+	var keys = pluckKey.split('.');
+	var value;
+	keys.forEach(key => {
+		if (!value) value = obj[key];
+		else value = value[key];
+	})
+	return value;
 }
 
 module.exports = Utils;

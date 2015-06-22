@@ -85,7 +85,11 @@ var ChartContainerMixin = {
 	},
 	getChartConfigFor(innerDimension, chartProps, partialData, fullData, passThroughProps) {
 		var dimensions = this.getDimensions(innerDimension, chartProps);
-		var accessors = this.getXYAccessors(chartProps, passThroughProps);
+		var indicator = this.getIndicator(chartProps, passThroughProps);
+
+		this.calculateIndicator(fullData, indicator, chartProps);
+
+		var accessors = this.getXYAccessors(chartProps, passThroughProps, indicator);
 		// identify overlays
 		var overlaysToAdd = this.identifyOverlaysToAdd(chartProps);
 		var compareBase = this.identifyCompareBase(chartProps);
@@ -213,7 +217,21 @@ var ChartContainerMixin = {
 		}
 		return { xScale: xScale, yScale: yScale };
 	},
-	getXYAccessors(props, passThroughProps) {
+	getIndicator(props, passThroughProps) {
+		var indicator;
+
+		React.Children.forEach(props.children, (child) => {
+			if (['ReStock.DataSeries']
+					.indexOf(child.props.namespace) > -1) {
+				if (child.props && child.props.indicator) {
+					var indicatorProp = child.props.indicator;
+					indicator = indicatorProp(child.props.options, props);
+				}
+			}
+		});
+		return indicator;
+	},
+	getXYAccessors(props, passThroughProps, indicator) {
 		var accessor = { xAccessor: null, yAccessor: null };
 
 		React.Children.forEach(props.children, (child) => {
@@ -229,7 +247,10 @@ var ChartContainerMixin = {
 				}
 			}
 		});
-		// yAccessors.push(overlayY);
+		if (!accessor.yAccessor && indicator) {
+			accessor.yAccessor = indicator.yAccessor();
+		}
+		if (indicator) console.log(indicator.yAccessor());
 
 		return accessor;
 	},
@@ -305,34 +326,16 @@ var ChartContainerMixin = {
 		}
 		// console.table(fullData.M);
 		// console.log(overlays);
-	},/*
-	calculateRateOfReturn(fullData, compareSeries, compareBase) {
-		if (compareSeries.length === 0) return;
+	},
+	calculateIndicator(fullData, indicator, chartProps) {
 		Object.keys(fullData)
 			.filter((key) => ['D', 'W', 'M'].indexOf(key) > -1)
 			.forEach((key) => {
-				var data = fullData[key];
-				data.forEach((each, i) => {
-					var index = Math.max(i - 1, 0);
-					var y = compareBase(each);
-					var yPrev = compareBase(data[index]);
-
-					each.ror = {};
-					each.ror.compare_base = Math.log(y / yPrev);
-					compareSeries.forEach((eachCompare) => {
-						each.ror['compare_' + eachCompare.id] = Math.log(eachCompare.yAccessor(each) / eachCompare.yAccessor(data[index]));
-					});
-				});
-			});
-		//console.table(fullData.M);
-		console.log(fullData.M[5].ror);
-		// console.log('asfjdashfadsjkflsfhdjslfhldj')
-	},*/
-	updateOverlayFirstLast(data,
-		overlays) {
-
+				if (indicator) indicator.calculate(fullData[key]);
+			})
+	},
+	updateOverlayFirstLast(data, overlays) {
 		// console.log('updateOverlayFirstLast');
-
 		var overlayValues = [];
 
 		overlays

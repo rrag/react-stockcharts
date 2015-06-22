@@ -8,50 +8,68 @@ var sum = Utils.sum;
 function MACalculator() {
 
 };
-MACalculator.calculateSMA = function(data, period, key, pluckKey) {
+MACalculator.calculateSMA = function(data, period, key, pluckKey, subObjectKey) {
 	// console.log('calculateSMA');
 
 	var l = data.length - 1;//, key = 'sma' + period;
-	var maKey = pluckKey || 'close';
 
 	data.map((each, i) => data.slice(i - period, i))
 		.filter((array) => array.length === period && array.length > 0)
-		.map((array) => pluck(array, maKey))
+		.map((array) => pluck(array, pluckKey))
 		.map((array) => sum(array))
 		.map((sum) => sum / period)
 		.reverse()
 		.forEach((avg, i) => {
-			// Object.defineProperty(data[l - i], key, { value: avg });
-			data[l - i][key] = avg;
-			// console.log(data[l - i][key]);
+			// data[l - i][key] = avg;
+			setter(data[l - i], subObjectKey, key, avg);
 		})
 
 	return data;
 }
 
-MACalculator.calculateEMA = function (data, period, key, pluckKey) {
+MACalculator.calculateEMA = function (data, period, key, pluckKey, subObjectKey) {
 	// console.log('calculating EMA', period, key, pluckKey);
 	/*
 	EMA = Price(t) * k + EMA(y) * (1 – k)
 	t = today, y = yesterday, N = number of days in EMA (or period), k = 2/(N+1)
 	*/
-
 	if (data.length > period) {
 		var firstSMA = data.slice(0, period)
-			.map((each) => each[pluckKey])
+			.map((each) => getter(each, pluckKey))
+			//.map((each) => each[pluckKey])
 			.reduce((a, b) => a + b) / period;
 
-		data[period][key] = firstSMA;
+		setter(data[period], subObjectKey, key, firstSMA)
 
-		var k = 2 / (period + 1), prevEMA = firstSMA;
+		// console.log(period, key, pluckKey, subObjectKey, firstSMA);
+		var k = 2 / (period + 1), prevEMA = firstSMA, ema;
 
 		for (var i = period; i < data.length; i++) {
-			data[i][key] = data[i][pluckKey] * k + prevEMA * (1 - k)
-			prevEMA = data[i][key];
+			ema = getter(data[i], pluckKey) * k + prevEMA * (1 - k);
+			setter(data[i], subObjectKey, key, ema);
+
+			prevEMA = ema;
 		}
 	}
-
 	return data;
+}
+
+function setter(obj, subObjectKey, key, value) {
+	if (subObjectKey) {
+		if (obj[subObjectKey] === undefined) obj[subObjectKey] = {};
+		obj[subObjectKey][key] = value;
+	} else
+		obj[key] = value;
+}
+
+function getter(obj, pluckKey) {
+	var keys = pluckKey.split('.');
+	var value;
+	keys.forEach(key => {
+		if (!value) value = obj[key];
+		else value = value[key];
+	})
+	return value;
 }
 
 module.exports = MACalculator;

@@ -19,6 +19,7 @@ exports.HistogramSeries = require('./lib/HistogramSeries');
 exports.KagiSeries = require('./lib/KagiSeries');
 exports.PointAndFigureSeries = require('./lib/PointAndFigureSeries');
 exports.RenkoSeries = require('./lib/RenkoSeries');
+exports.MACDSeries = require('./lib/MACDSeries');
 
 // interaction components
 exports.EventCapture = require('./lib/EventCapture');
@@ -39,3 +40,6 @@ exports.EdgeIndicator = require('./lib/EdgeIndicator');
 
 exports.helper = {};
 exports.helper.ChartWidthMixin = require('./lib/helper/ChartWidthMixin');
+
+exports.indicator = {};
+exports.indicator.MACD = require('./lib/indicators/MACDIndicator');

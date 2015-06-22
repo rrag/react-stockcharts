@@ -24,6 +24,8 @@ var ChartCanvas = ReStock.ChartCanvas
 	, MovingAverageTooltip = ReStock.MovingAverageTooltip
 	, CurrentCoordinate = ReStock.CurrentCoordinate
 	, AreaSeries = ReStock.AreaSeries
+	, MACDSeries = ReStock.MACDSeries
+	, MACDIndicator = ReStock.indicator.MACD
 ;
 
 
@@ -58,10 +60,8 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 					<CurrentCoordinate forChart={1} forOverlay={0} />
 					<CurrentCoordinate forChart={1} forOverlay={1} />
 					<CurrentCoordinate forChart={1} forOverlay={2} />
-
 					<Chart id={2} yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
-							height={150} origin={(w, h) => [0, h - 150]} >
-						<XAxis axisAt="bottom" orient="bottom"/>
+							height={150} origin={(w, h) => [0, h - 300]} >
 						<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 						<DataSeries yAccessor={(d) => d.volume} >
 							<HistogramSeries className={(d) => d.close > d.open ? 'up' : 'down'} />
@@ -72,6 +72,15 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 					</Chart>
 					<CurrentCoordinate forChart={2} forOverlay={3} />
 					<CurrentCoordinate forChart={2}/>
+
+					<Chart id={3} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}
+							height={150} origin={(w, h) => [0, h - 150]} >
+						<XAxis axisAt="bottom" orient="bottom"/>
+						<YAxis axisAt="right" orient="right" ticks={2}/>
+						<DataSeries indicator={MACDIndicator} options={{ fast: 12, slow: 26, signal: 9 }} >
+							<MACDSeries />
+						</DataSeries>
+					</Chart>
 					<MouseCoordinates xDisplayFormat={dateFormat} type="crosshair" />
 					<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 					<TooltipContainer>
