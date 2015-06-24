@@ -1,6 +1,8 @@
 'use strict';
 var React = require('react');
-var Utils = require('./utils/utils.js')
+var d3 = require('d3');
+var Utils = require('./utils/utils.js');
+var mousemove = 'mousemove.pan', mouseup = 'mouseup.pan';
 
 class EventCapture extends React.Component {
 	constructor(props) {
@@ -12,7 +14,8 @@ class EventCapture extends React.Component {
 		this.handleWheel = this.handleWheel.bind(this);
 		this.handleMouseMove = this.handleMouseMove.bind(this);
 		this.handleMouseDown = this.handleMouseDown.bind(this);
-		this.handleMouseUp = this.handleMouseUp.bind(this);
+		this.handlePanEnd = this.handlePanEnd.bind(this);
+		this.handlePan = this.handlePan.bind(this);
 	}
 	componentWillMount() {
 		if (this.context.onFocus) this.context.onFocus(this.props.defaultFocus);
@@ -48,50 +51,66 @@ class EventCapture extends React.Component {
 	}
 	handleMouseMove(e) {
 		if (this.context.onMouseMove && this.props.mouseMove) {
-			var newPos = Utils.mousePosition(e);
-			if (this.context.panInProgress) {
-				if (this.props.pan && this.context.onPan) {
-					var chartData = this.context.chartData.filter((each) => each.id === this.props.mainChart) [0];
-					this.context.onPan(newPos, chartData.plot.scales.xScale.domain());
-				}
-			} else {
+			if (!this.context.panInProgress) {
+				var newPos = Utils.mousePosition(e);
 				this.context.onMouseMove(newPos);
 			}
 		}
 	}
 	handleMouseDown(e) {
+		var mouseEvent = e || d3.event;
 		var inFocus = true
 		var chartData = this.context.chartData.filter((each) => each.id === this.props.mainChart) [0];
 		if (this.props.pan && this.context.onPanStart) {
-			var mouseXY = Utils.mousePosition(e);
+			var mouseXY = Utils.mousePosition(mouseEvent);
 			this.context.onPanStart(chartData.plot.scales.xScale.domain(), mouseXY)
+
+			var dx = mouseEvent.pageX - mouseXY[0],
+				dy = mouseEvent.pageY - mouseXY[1];
+
+			this.setState({
+				deltaXY: [dx, dy]
+			});
+			d3.select(window)
+				.on(mousemove, this.handlePan)
+				.on(mouseup, this.handlePanEnd);
 		} else {
 			if (!this.context.focus && this.context.onFocus) this.context.onFocus(true);
 		}
-		e.preventDefault();
+		mouseEvent.preventDefault();
 	}
-	handleMouseUp(e) {
+	handlePan() {
+		var deltaXY = this.state.deltaXY;
+		var newPos = [d3.event.pageX - deltaXY[0], d3.event.pageY - deltaXY[1]];
+		// console.log('moved from- ', startXY, ' to ', newPos);
+		if (this.props.pan && this.context.onPan) {
+			var chartData = this.context.chartData.filter((each) => each.id === this.props.mainChart) [0];
+			this.context.onPan(newPos, chartData.plot.scales.xScale.domain());
+		}
+	}
+	handlePanEnd() {
+		d3.select(window).on(mousemove, null).on(mouseup, null);
 		if (this.props.pan && this.context.onPanEnd) {
 			this.context.onPanEnd();
 		}
-		e.preventDefault();
+		// e.preventDefault();
 	}
 	render() {
 		var className = this.context.panInProgress ? 'grabbing' : 'crosshair';
 		return (
-			<rect 
+			<rect ref="capture"
 				className={className}
 				width={this.context.width} height={this.context.height} style={{opacity: 0}}
 				onMouseEnter={this.handleEnter}
 				onMouseLeave={this.handleLeave}
 				onMouseMove={this.handleMouseMove}
-				onMouseDown={this.handleMouseDown}
-				onMouseUp={this.handleMouseUp}
 				onWheel={this.handleWheel}
+				onMouseDown={this.handleMouseDown}
 				/>
 		);
 	}
 };
+
 
 EventCapture.propTypes = {
 	mainChart: React.PropTypes.number.isRequired,
