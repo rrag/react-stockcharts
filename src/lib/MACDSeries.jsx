@@ -9,11 +9,11 @@ class MACDSeries extends React.Component {
 		super(props);
 		this.getMACDLine = this.getMACDLine.bind(this);
 		this.getSignalLine = this.getSignalLine.bind(this);
-		this.getHistogram = this.getHistogram.bind(this);
+		this.getHorizontalLine = this.getHorizontalLine.bind(this);
 	}
 	getMACDLine() {
 		var dataSeries = d3.svg.line()
-			.defined((d, i) => this.context.yAccessor(d) !== undefined)
+			.defined((d, i) => (this.context.yAccessor(d) && this.context.yAccessor(d).MACDLine) !== undefined)
 			.x((d) => this.context.xScale(this.context.xAccessor(d)))
 			.y((d) => this.context.yScale(this.context.yAccessor(d).MACDLine));
 
@@ -21,24 +21,16 @@ class MACDSeries extends React.Component {
 	}
 	getSignalLine() {
 		var dataSeries = d3.svg.line()
-			.defined((d, i) => this.context.yAccessor(d) !== undefined)
+			.defined((d, i) => (this.context.yAccessor(d) && this.context.yAccessor(d).signalLine) !== undefined)
 			.x((d) => this.context.xScale(this.context.xAccessor(d)))
 			.y((d) => this.context.yScale(this.context.yAccessor(d).signalLine));
-
-		return dataSeries(this.context.plotData);
-	}
-	getHistogram() {
-		var dataSeries = d3.svg.line()
-			.defined((d, i) => this.context.yAccessor(d) !== undefined)
-			.x((d) => this.context.xScale(this.context.xAccessor(d)))
-			.y((d) => this.context.yScale(this.context.yAccessor(d).histogram));
 
 		return dataSeries(this.context.plotData);
 	}
 	getChildContext() {
 		var yAccess = this.context.yAccessor
 		return {
-			yAccessor: (d) => yAccess(d).histogram,
+			yAccessor: (d) => yAccess(d) && yAccess(d).histogram,
 		}
 	}
 	getHorizontalLine() {
@@ -61,7 +53,7 @@ class MACDSeries extends React.Component {
 		);
 	}
 };
-// baseAt={this.context.yScale(this.context.yScale(0))} 
+
 MACDSeries.contextTypes = {
 		xScale: React.PropTypes.func.isRequired,
 		yScale: React.PropTypes.func.isRequired,
