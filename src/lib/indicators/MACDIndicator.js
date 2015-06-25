@@ -38,7 +38,7 @@ function MACDIndicator(options, chartProps) {
 		});
 
 		// console.table(newData);
-		console.log(newData[newData.length - 3]);
+		// console.log(newData[newData.length - 3]);
 		return newData;
 	};
 	MACD.yAccessor = function() {

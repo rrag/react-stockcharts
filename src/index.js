@@ -43,3 +43,6 @@ exports.helper.ChartWidthMixin = require('./lib/helper/ChartWidthMixin');
 
 exports.indicator = {};
 exports.indicator.MACD = require('./lib/indicators/MACDIndicator');
+
+exports.tooltip = {}
+exports.tooltip.MACDTooltip = require('./lib/MACDTooltip');

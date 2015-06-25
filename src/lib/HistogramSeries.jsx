@@ -24,19 +24,27 @@ class HistogramSeries extends React.Component {
 		}
 		var width = Math.abs(this.context.xScale.range()[0] - this.context.xScale.range()[1]);
 		var barWidth = width / (this.context.plotData.length) * 0.5;
+
+
 		var bars = this.context.plotData
 				.filter((d) => (this.context.yAccessor(d) !== undefined) )
 				.map((d, idx) => {
 					var yValue = this.context.yAccessor(d);
 					var x = Math.round(this.context.xScale(this.context.xAccessor(d))) - 0.5 * barWidth,
 						className = getClassName(d) ,
-						y, height;
+						y, height, temp;
+					// console.log(base);
 					if (dir > 0) {
 						y = base;
 						height = this.context.yScale.range()[0] - this.context.yScale(yValue);
 					} else {
 						y = this.context.yScale(yValue);
 						height = base - y;
+					}
+
+					if (height < 0) {
+						y = base;
+						height = -height;
 					}
 
 					if (Math.round(barWidth) <= 1) {
@@ -49,10 +57,11 @@ class HistogramSeries extends React.Component {
 								y={Math.round(y)}
 								width={Math.round(barWidth)}
 								height={Math.round(height)} />
-				}, this);
+				});
 		return bars;
 	}
 	render() {
+		// console.log('HistogramSeries.render()');
 		return (
 			<g className="histogram">
 				{this.getBars()}

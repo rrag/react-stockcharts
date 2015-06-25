@@ -4,6 +4,10 @@ var d3 = require('d3');
 var Utils = require('./utils/utils.js');
 var mousemove = 'mousemove.pan', mouseup = 'mouseup.pan';
 
+function d3_window(node) {
+	return node && (node.ownerDocument && node.ownerDocument.defaultView || node.document && node || node.defaultView);
+}
+
 class EventCapture extends React.Component {
 	constructor(props) {
 		super(props);
@@ -71,7 +75,8 @@ class EventCapture extends React.Component {
 			this.setState({
 				deltaXY: [dx, dy]
 			});
-			d3.select(window)
+			var win = d3_window(React.findDOMNode(this.refs.capture));
+			d3.select(win)
 				.on(mousemove, this.handlePan)
 				.on(mouseup, this.handlePanEnd);
 		} else {
@@ -89,7 +94,11 @@ class EventCapture extends React.Component {
 		}
 	}
 	handlePanEnd() {
-		d3.select(window).on(mousemove, null).on(mouseup, null);
+		var win = d3_window(React.findDOMNode(this.refs.capture));
+
+		d3.select(win)
+			.on(mousemove, null)
+			.on(mouseup, null);
 		if (this.props.pan && this.context.onPanEnd) {
 			this.context.onPanEnd();
 		}

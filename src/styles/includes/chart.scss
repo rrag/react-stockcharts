@@ -154,10 +154,14 @@
 		cursor: pointer;
 	}
 	.histogram {
-		.bar {
+		rect.bar {
 			fill: steelblue;
-			opacity: 0.3;
+			opacity: 0.5;
 			stroke: none;
+		}
+		line.bar {
+			opacity: 0.5;
+			stroke: steelblue;
 		}
 		.up {
 			fill: #6BA583;
@@ -174,6 +178,21 @@
 		}
 		line.down {
 			stroke: $red1;
+		}
+	}
+	.macd-series {
+		.macdline {
+			stroke: red;
+			fill: none;
+		}
+		.signalline {
+			stroke: green;
+			fill: none;
+		}
+		.horizontal {
+			stroke: black;
+			opacity: 0.2;
+			fill: none;
 		}
 	}
 	.ma-container {

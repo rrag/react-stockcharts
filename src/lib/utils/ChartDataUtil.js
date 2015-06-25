@@ -250,7 +250,7 @@ var ChartContainerMixin = {
 		if (!accessor.yAccessor && indicator) {
 			accessor.yAccessor = indicator.yAccessor();
 		}
-		if (indicator) console.log(indicator.yAccessor());
+		// if (indicator) console.log(indicator.yAccessor());
 
 		return accessor;
 	},

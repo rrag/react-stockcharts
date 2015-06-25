@@ -21,7 +21,7 @@ class DataSeries extends React.Component {
 
 DataSeries.propTypes = {
 	xAccessor: React.PropTypes.func,
-	yAccessor: React.PropTypes.func.isRequired,
+	yAccessor: React.PropTypes.func,
 }
 
 DataSeries.defaultProps = {

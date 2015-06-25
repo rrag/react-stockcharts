@@ -25,6 +25,7 @@ var pages = [
 	require('lib/page/EdgeCoordinatesPage'),
 	require('lib/page/CompareWithPage'),
 	require('lib/page/LotsOfDataPage'),
+	require('lib/page/MACDIndicatorPage'),
 	require('lib/page/HeikinAshiPage'),
 	require('lib/page/KagiPage'),
 	require('lib/page/PointAndFigurePage'),
