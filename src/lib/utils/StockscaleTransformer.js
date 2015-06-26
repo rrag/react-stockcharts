@@ -94,6 +94,14 @@ function buildWeeklyData(daily, indexMutator, dateAccesor, dateMutator) {
 		if (!eachWeek.volume) eachWeek.volume = 0;
 		eachWeek.volume += d.volume;
 
+		Object.keys(d)
+			//.filter((key) => ['open', 'high', 'low', 'close', 'volume', date])
+			//.filter((key) => Object.keys(eachWeek).indexOf(key) <= -1)
+			.filter((key) => !eachWeek.hasOwnProperty(key))
+			.forEach((key) => {
+				eachWeek[key] = d[key];
+			});
+
 		if (d.startOfWeek) {
 			if (prevWeek) {
 				eachWeek.trueRange = Math.max(
@@ -106,13 +114,6 @@ function buildWeeklyData(daily, indexMutator, dateAccesor, dateMutator) {
 			weekly.push(eachWeek);
 			eachWeek = {};
 		}
-		Object.keys(d)
-			//.filter((key) => ['open', 'high', 'low', 'close', 'volume', date])
-			.filter((key) => !eachWeek.hasOwnProperty(key))
-			.forEach((key) => {
-				eachWeek[key] = d[key];
-			});
-
 	}
 	return weekly;
 }
@@ -142,6 +143,13 @@ function buildMonthlyData(daily, indexMutator, dateAccesor) {
 		if (!eachMonth.volume) eachMonth.volume = 0;
 		eachMonth.volume += d.volume;
 
+		Object.keys(d)
+			//.filter((key) => ['open', 'high', 'low', 'close', 'volume', date])
+			.filter((key) => !eachMonth.hasOwnProperty(key))
+			.forEach((key) => {
+				eachMonth[key] = d[key];
+			});
+
 		if (d.startOfMonth) {
 			eachMonth.startOfWeek = d.startOfWeek;
 			if (prevMonth) {
@@ -155,12 +163,7 @@ function buildMonthlyData(daily, indexMutator, dateAccesor) {
 			monthly.push(eachMonth);
 			eachMonth = {};
 		}
-		Object.keys(d)
-			//.filter((key) => ['open', 'high', 'low', 'close', 'volume', date])
-			.filter((key) => !eachMonth.hasOwnProperty(key))
-			.forEach((key) => {
-				eachMonth[key] = d[key];
-			});
+
 	}
 	return monthly;
 }

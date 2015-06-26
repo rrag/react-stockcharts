@@ -12,7 +12,7 @@ myConfig.module.loaders = myConfig.module.loaders.concat([
 
 myConfig.entry = {
 	'react-stockcharts-home': './docs/index.js',
-	'react-stockcharts-dashboard': './docs/dashboard.js'
+	'react-stockcharts-documentation': './docs/documentation.js'
 };
 
 /*myConfig.externals = {

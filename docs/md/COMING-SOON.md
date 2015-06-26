@@ -39,12 +39,17 @@
 - ~~zoom out changes the interval, but zoom in does not change~~
 - ~~Refactor pan and zoom~~
 
-#### Tasks
+#### Tech Tasks
 - Use ES6 Classes
     - ~~Do not use EventCaptureMixin, ChartContainerMixin~~
     - Update examples to not use ChartWidthMixin
-- Add tests and coverage - v0.2
+- use babel
+- change require to import
+- not use JSXTransformer
 - Publish to npm - v0.1-alpha
+- Getting Started page with steps to get started via npm
+
+- Add tests and coverage - v0.2
 - configure options for advanced chart types - v0.2
 
 #### Dependencies

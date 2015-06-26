@@ -28,12 +28,6 @@ exports.CrossHair = require('./lib/CrossHair');
 exports.VerticalMousePointer = require('./lib/VerticalMousePointer');
 exports.CurrentCoordinate = require('./lib/CurrentCoordinate');
 
-// Tooltips
-exports.TooltipContainer = require('./lib/TooltipContainer');
-exports.OHLCTooltip = require('./lib/OHLCTooltip');
-exports.CompareTooltip = require('./lib/CompareTooltip');
-exports.MovingAverageTooltip = require('./lib/MovingAverageTooltip');
-
 // misc
 exports.EdgeContainer = require('./lib/EdgeContainer');
 exports.EdgeIndicator = require('./lib/EdgeIndicator');
@@ -41,8 +35,20 @@ exports.EdgeIndicator = require('./lib/EdgeIndicator');
 exports.helper = {};
 exports.helper.ChartWidthMixin = require('./lib/helper/ChartWidthMixin');
 
-exports.indicator = {};
-exports.indicator.MACD = require('./lib/indicators/MACDIndicator');
+exports.indicator = {
+	MACD: require('./lib/indicators/MACDIndicator'),
+};
 
-exports.tooltip = {}
-exports.tooltip.MACDTooltip = require('./lib/MACDTooltip');
+// Tooltips
+exports.tooltip = {
+	MACDTooltip: require('./lib/MACDTooltip'),
+	TooltipContainer: require('./lib/TooltipContainer'),
+	OHLCTooltip: require('./lib/OHLCTooltip'),
+	CompareTooltip: require('./lib/CompareTooltip'),
+	MovingAverageTooltip: require('./lib/MovingAverageTooltip'),
+}
+
+exports.TooltipContainer = require('./lib/TooltipContainer');
+exports.OHLCTooltip = require('./lib/OHLCTooltip');
+exports.CompareTooltip = require('./lib/CompareTooltip');
+exports.MovingAverageTooltip = require('./lib/MovingAverageTooltip');
