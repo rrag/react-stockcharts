@@ -1,7 +1,7 @@
 
-var config = require('./webpack.config.js');
+var config = require("./webpack.config.js");
 
-config.devtool = 'sourcemap';
+config.devtool = "sourcemap";
 config.debug = true;
 
 module.exports = config;

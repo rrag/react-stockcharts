@@ -1,6 +1,7 @@
-'use strict';
-var React = require('react'),
-	d3 = require('d3');
+"use strict";
+
+import React from "react";
+import d3 from "d3";
 
 class XAxis extends React.Component {
 	constructor(props) {
@@ -22,11 +23,12 @@ class XAxis extends React.Component {
 		if (this.props.innerTickSize) axis.innerTickSize(this.props.innerTickSize);
 		if (this.props.outerTickSize) axis.outerTickSize(this.props.outerTickSize);
 		if (this.props.tickFormat) {
-			if (this.context.xScale.isPolyLinear && this.context.xScale.isPolyLinear())
-				console.warn('Cannot set tickFormat on a poly linear scale, ignoring tickFormat on XAxis');
-			else
-				axis.tickFormat(this.props.tickFormat)
-		};
+			if (this.context.xScale.isPolyLinear && this.context.xScale.isPolyLinear()) {
+				console.warn("Cannot set tickFormat on a poly linear scale, ignoring tickFormat on XAxis");
+			} else {
+				axis.tickFormat(this.props.tickFormat);
+			}
+		}
 		if (this.props.tickPadding) axis.tickPadding(this.props.tickPadding);
 		if (this.props.tickSize) axis.tickSize(this.props.tickSize);
 		if (this.props.ticks) axis.ticks(this.props.ticks);
@@ -40,22 +42,22 @@ class XAxis extends React.Component {
 	render() {
 		var axisAt = this.props.axisAt
 			, range = this.context.yScale.range();
-		if (this.props.axisAt === 'top') axisAt = Math.min(range[0], range[1]);
-		if (this.props.axisAt === 'bottom') axisAt = Math.max(range[0], range[1]);
-		if (this.props.axisAt === 'middle') axisAt = (range[0] + range[1]) / 2;
+		if (this.props.axisAt === "top") axisAt = Math.min(range[0], range[1]);
+		if (this.props.axisAt === "bottom") axisAt = Math.max(range[0], range[1]);
+		if (this.props.axisAt === "middle") axisAt = (range[0] + range[1]) / 2;
 
 		return (
-			<g className='x axis' transform={'translate(0, ' + axisAt + ')'}></g>
+			<g className="x axis" transform={"translate(0, " + axisAt + ")"}></g>
 		);
 	}
-};
+}
 
 XAxis.propTypes = {
 	axisAt: React.PropTypes.oneOfType([
-				React.PropTypes.oneOf(['top', 'bottom', 'middle'])
+				React.PropTypes.oneOf(["top", "bottom", "middle"])
 				, React.PropTypes.number
 			]).isRequired,
-	orient: React.PropTypes.oneOf(['top', 'bottom']).isRequired,
+	orient: React.PropTypes.oneOf(["top", "bottom"]).isRequired,
 	innerTickSize: React.PropTypes.number,
 	outerTickSize: React.PropTypes.number,
 	tickFormat: React.PropTypes.func,

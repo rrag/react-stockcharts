@@ -1,69 +1,67 @@
-'use strict';
+"use strict";
 
-var Utils = require('./utils');
+import Utils from "./utils";
 
 var pluck = Utils.pluck;
 var sum = Utils.sum;
 
-function MACalculator() {
+var MACalculator = {
+	calculateSMA(data, period, key, pluckKey, subObjectKey) {
+		// console.log("calculateSMA");
 
-};
-MACalculator.calculateSMA = function(data, period, key, pluckKey, subObjectKey) {
-	// console.log('calculateSMA');
+		var l = data.length - 1;
 
-	var l = data.length - 1;//, key = 'sma' + period;
+		data.map((each, i) => data.slice(i - period, i))
+			.filter((array) => array.length === period && array.length > 0)
+			.map((array) => pluck(array, pluckKey))
+			.map((array) => sum(array))
+			.map((total) => total / period)
+			.reverse()
+			.forEach((avg, i) => {
+				// data[l - i][key] = avg;
+				Utils.setter(data[l - i], subObjectKey, key, avg);
+			});
 
-	data.map((each, i) => data.slice(i - period, i))
-		.filter((array) => array.length === period && array.length > 0)
-		.map((array) => pluck(array, pluckKey))
-		.map((array) => sum(array))
-		.map((sum) => sum / period)
-		.reverse()
-		.forEach((avg, i) => {
-			// data[l - i][key] = avg;
-			setter(data[l - i], subObjectKey, key, avg);
-		})
+		return data;
+	},
+	calculateEMA(data, period, key, pluckKey, subObjectKey) {
+		// console.log("calculating EMA", period, key, pluckKey);
+		/*
+		EMA = Price(t) * k + EMA(y) * (1 – k)
+		t = today, y = yesterday, N = number of days in EMA (or period), k = 2/(N+1)
+		*/
+		if (data.length > period) {
+			var firstSMA = data.slice(0, period)
+				.map((each) => Utils.getter(each, pluckKey))
+				.reduce((a, b) => a + b) / period;
 
-	return data;
-}
+			Utils.setter(data[period], subObjectKey, key, firstSMA);
 
-MACalculator.calculateEMA = function (data, period, key, pluckKey, subObjectKey) {
-	// console.log('calculating EMA', period, key, pluckKey);
-	/*
-	EMA = Price(t) * k + EMA(y) * (1 – k)
-	t = today, y = yesterday, N = number of days in EMA (or period), k = 2/(N+1)
-	*/
-	if (data.length > period) {
-		var firstSMA = data.slice(0, period)
-			.map((each) => getter(each, pluckKey))
-			//.map((each) => each[pluckKey])
-			.reduce((a, b) => a + b) / period;
+			// console.log(period, key, pluckKey, subObjectKey, firstSMA);
+			var k = 2 / (period + 1), prevEMA = firstSMA, ema;
 
-		setter(data[period], subObjectKey, key, firstSMA)
+			for (var i = period; i < data.length; i++) {
+				ema = Utils.getter(data[i], pluckKey) * k + prevEMA * (1 - k);
+				Utils.setter(data[i], subObjectKey, key, ema);
 
-		// console.log(period, key, pluckKey, subObjectKey, firstSMA);
-		var k = 2 / (period + 1), prevEMA = firstSMA, ema;
-
-		for (var i = period; i < data.length; i++) {
-			ema = getter(data[i], pluckKey) * k + prevEMA * (1 - k);
-			setter(data[i], subObjectKey, key, ema);
-
-			prevEMA = ema;
+				prevEMA = ema;
+			}
 		}
+		return data;
 	}
-	return data;
-}
-
+};
+/*
 function setter(obj, subObjectKey, key, value) {
 	if (subObjectKey) {
 		if (obj[subObjectKey] === undefined) obj[subObjectKey] = {};
 		obj[subObjectKey][key] = value;
-	} else
+	} else {
 		obj[key] = value;
+	}
 }
 
 function getter(obj, pluckKey) {
-	var keys = pluckKey.split('.');
+	var keys = pluckKey.split(".");
 	var value;
 	keys.forEach(key => {
 		if (!value) value = obj[key];
@@ -71,5 +69,5 @@ function getter(obj, pluckKey) {
 	})
 	return value;
 }
-
+*/
 module.exports = MACalculator;

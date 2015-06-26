@@ -1,7 +1,8 @@
-'use strict';
-var React = require('react');
-var Utils = require('./utils/utils');
-var PureComponent = require('lib/utils/PureComponent');
+"use strict";
+
+import React from "react";
+import Utils from "./utils/utils";
+import PureComponent from "lib/utils/PureComponent";
 
 class TooltipContainer extends PureComponent {
 	render() {
@@ -19,12 +20,12 @@ class TooltipContainer extends PureComponent {
 			</g>
 		);
 	}
-};
+}
 
 TooltipContainer.contextTypes = {
 	chartData: React.PropTypes.array.isRequired,
 	currentItems: React.PropTypes.array.isRequired,
-}
+};
 
 TooltipContainer.defaultProps = { namespace: "ReStock.TooltipContainer" };
 

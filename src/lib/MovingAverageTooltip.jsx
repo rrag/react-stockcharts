@@ -1,8 +1,10 @@
-'use strict';
+"use strict";
 
-var React = require('react');
-var Utils = require('./utils/utils')
-var ChartDataUtil = require('./utils/ChartDataUtil');
+import React from "react";
+
+import Utils from "./utils/utils";
+import ChartDataUtil from "./utils/ChartDataUtil";
+
 
 class SingleMAToolTip extends React.Component {
 	handleClick(overlay) {
@@ -23,7 +25,7 @@ class SingleMAToolTip extends React.Component {
 			</g>
 		);
 	}
-};
+}
 
 SingleMAToolTip.propTypes = {
 	origin: React.PropTypes.array.isRequired,
@@ -44,36 +46,37 @@ class MovingAverageTooltip extends React.Component {
 					var yValue = eachOverlay.yAccessor(item);
 					// console.log(yValue);
 					var yDisplayValue = yValue ? this.props.displayFormat(yValue) : "n/a";
-					return <SingleMAToolTip 
+					return <SingleMAToolTip
 						key={idx}
 						origin={[this.props.width * idx, 0]}
 						color={eachOverlay.stroke}
 						displayName={eachOverlay.tooltipLabel}
 						value={yDisplayValue}
 						overlay={eachOverlay}
-						onClick={this.props.onClick} />
+						onClick={this.props.onClick} />;
 				})}
 			</g>
 		);
 	}
-};
+}
 
 MovingAverageTooltip.contextTypes = {
 	chartData: React.PropTypes.array.isRequired,
 	currentItems: React.PropTypes.array.isRequired,
 };
+
 MovingAverageTooltip.propTypes = {
 	forChart: React.PropTypes.number.isRequired,
 	displayFormat: React.PropTypes.func.isRequired,
 	origin: React.PropTypes.array.isRequired,
 	onClick: React.PropTypes.func
 };
-MovingAverageTooltip.defaultProps = { 
+
+MovingAverageTooltip.defaultProps = {
 	namespace: "ReStock.MovingAverageTooltip",
 	displayFormat: Utils.displayNumberFormat,
 	origin: [0, 10],
 	width: 65
 };
-
 
 module.exports = MovingAverageTooltip;

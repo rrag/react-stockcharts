@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
 function pushToValues(values, eachValue) {
-	if (typeof eachValue === 'object' && Object.keys(eachValue).length > 0) {
+	if (typeof eachValue === "object" && Object.keys(eachValue).length > 0) {
 		Object.keys(eachValue).forEach(function (key) {
 			if (!isNaN(eachValue[key])) {
 				values.push(eachValue[key]);
@@ -32,11 +32,12 @@ var ScaleUtils = {
 					pushToValues(yValues, y);
 				}
 			});
-		})
+		});
 		return {
 			xValues: xValues,
 			yValues: yValues
 		};
 	}
-}
+};
+
 module.exports = ScaleUtils;

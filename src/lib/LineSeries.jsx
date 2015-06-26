@@ -1,6 +1,7 @@
-'use strict';
-var React = require('react'),
-	d3 = require('d3');
+"use strict";
+
+import React from "react";
+import d3 from "d3";
 
 class LineSeries extends React.Component {
 	constructor(props) {
@@ -9,19 +10,18 @@ class LineSeries extends React.Component {
 	}
 	getPath() {
 		var dataSeries = d3.svg.line()
-			.defined((d, i) =>(this.context.yAccessor(d) !== undefined))
+			.defined((d) =>(this.context.yAccessor(d) !== undefined))
 			.x((d) => this.context.xScale(this.context.xAccessor(d)))
 			.y((d) => this.context.yScale(this.context.yAccessor(d)));
 		return dataSeries(this.context.plotData);
 	}
 	render() {
-		var className = this.props.className.concat((this.context.stroke !== undefined) ? '' : ' line-stroke');
-		// console.log('%s, %s, %s', className, this.props.className, this.props.stroke);
+		var className = this.props.className.concat((this.context.stroke !== undefined) ? "" : " line-stroke");
 		return (
 			<path d={this.getPath()} stroke={this.context.stroke} fill="none" className={className}/>
 		);
 	}
-};
+}
 
 LineSeries.propTypes = {
 	className: React.PropTypes.string,

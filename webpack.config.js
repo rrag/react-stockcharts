@@ -1,23 +1,24 @@
-var webpack = require('webpack');
+var webpack = require("webpack");
+var path = require("path");
 
 module.exports = {
 	context: __dirname,
 	entry: {
-		app: './src/index.js',
+		app: "./src/index.js",
 		// vendor: ["react"],
 	},
 	output: {
-		path: __dirname + '/build/dist/',
-		filename: 'react-stockcharts.js',
-		publicPath: 'js/',
-		library: 'ReStock',
-		libraryTarget: 'umd'
+		path: path.join(__dirname, "build/dist/"),
+		filename: "react-stockcharts.js",
+		publicPath: "js/",
+		library: "ReStock",
+		libraryTarget: "umd",
 	},
 	module: {
 		loaders: [
-			{ test: /\.json$/, loader: 'json' },
-			{ test: /\.(js|jsx)$/, loaders: ['jsx?harmony'], exclude: /node_modules/ },
-			{ test: /\.scss$/, loaders: ['style', 'css', 'autoprefixer', 'sass?outputStyle=expanded'] },
+			{ test: /\.json$/, loader: "json" },
+			{ test: /\.(js|jsx)$/, loaders: ["babel"], exclude: /node_modules/ },
+			{ test: /\.scss$/, loaders: ["style", "css", "autoprefixer", "sass?outputStyle=expanded"] },
 		]
 	},
 	plugins: [
@@ -28,14 +29,13 @@ module.exports = {
 		new webpack.IgnorePlugin(/(dtrace-provider)|(source-map-support)$/)*/
 	],
 	externals: {
-		"react": 'React',
-		//"react/addons": 'React',
-		"d3": 'd3'
+		"react": "React",
+		"d3": "d3",
 	},
 	resolve: {
 		// ReStock: "src/",
-		root: [__dirname, __dirname + '/src', __dirname + '/docs'],
-		extensions: ['', '.js', '.jsx', '.scss', '.md']
+		root: [__dirname, path.join(__dirname, "src"), path.join(__dirname, "docs")],
+		extensions: ["", ".js", ".jsx", ".scss", ".md"]
 	}/*,
 	node: {
 		fs: "empty",

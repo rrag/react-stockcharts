@@ -1,15 +1,15 @@
-'use strict';
+"use strict";
 
 var pricingMethod = function (d) { return { high: d.high, low: d.low }; };
 // var pricingMethod = function (d) { return { high: d.close, low: d.close }; };
 // var usePrice = function (d) { return d.close; };
-var calculateATR = require('./ATRCalculator');
+import calculateATR from "./ATRCalculator";
 
 var defaultOptions = {
 	boxSize: 0.5,
 	reversal: 3,
 	period: 14
-}
+};
 
 function RenkoTransformer(rawData, interval, options, other) {
 	var newOptions = {};
@@ -17,12 +17,12 @@ function RenkoTransformer(rawData, interval, options, other) {
 
 	if (options) Object.keys(options).forEach((key) => newOptions[key] = options[key]);
 
-	var { dateAccessor, dateMutator, indexAccessor, indexMutator, reversal, boxSize, period } = newOptions;
+	var { dateAccessor, dateMutator, indexAccessor, indexMutator, period } = newOptions;
 
 	calculateATR(rawData.D, period);
-	var brickSize = function (d) { return d["atr" + period]}
+	var brickSize = function (d) { return d["atr" + period]; };
 
-	var renkoData = new Array();
+	var renkoData = [];
 
 	var index = 0, prevBrickClose = rawData.D[index].open, prevBrickOpen = rawData.D[index].open;
 	var brick = {}, direction = 0;
@@ -41,7 +41,7 @@ function RenkoTransformer(rawData, interval, options, other) {
 			brick.startOfQuarter = d.startOfQuarter;
 			brick.startOfMonth = d.startOfMonth;
 			brick.startOfWeek = d.startOfWeek;
-			//brick.tempClose = d.close;
+
 			brick.from = indexAccessor(d);
 			brick.fromDate = dateAccessor(d);
 			indexMutator(brick, index++);
@@ -94,12 +94,12 @@ function RenkoTransformer(rawData, interval, options, other) {
 			}
 		}
 
-		//d.brick = JSON.stringify(brick);
+		// d.brick = JSON.stringify(brick);
 		if (brickSize(d)) {
-			var noOfBricks = Math.floor(priceMovement / brickSize(d))
+			var noOfBricks = Math.floor(priceMovement / brickSize(d));
 
 			brick.open = (Math.abs(prevCloseToHigh) < Math.abs(prevOpenToHigh)
-			 || Math.abs(prevCloseToLow) < Math.abs(prevOpenToLow))
+				|| Math.abs(prevCloseToLow) < Math.abs(prevOpenToLow))
 							? prevBrickClose
 							: prevBrickOpen;
 
@@ -122,18 +122,13 @@ function RenkoTransformer(rawData, interval, options, other) {
 					prevBrickOpen = brick.open;
 
 					var newBrick = {
-						// index : index + j
-						// , date : d.date
-						// , displayDate : d.displayDate
-						//, from : d.index
-						high : brick.high
-						, low : brick.low
-						, open : brick.close
-						// , fromDate : d.displayDate
-						, startOfYear : false
-						, startOfMonth : false
-						, startOfQuarter : false
-						, startOfWeek : false
+						high: brick.high,
+						low: brick.low,
+						open: brick.close,
+						startOfYear: false,
+						startOfMonth: false,
+						startOfQuarter: false,
+						startOfWeek: false
 					};
 					brick = newBrick;
 					brick.from = indexAccessor(d);
@@ -159,7 +154,7 @@ function RenkoTransformer(rawData, interval, options, other) {
 
 	});
 	return {
-		data: {'D': renkoData},
+		data: {"D": renkoData},
 		other: other,
 		options: newOptions
 	};

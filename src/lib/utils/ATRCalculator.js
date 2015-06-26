@@ -1,10 +1,10 @@
-'use strict';
+"use strict";
 
 function sumOf(array, offset, length) {
 	var sum = 0;
 	for (var i = offset; i < offset + length; i++) {
 		sum += array[i].trueRange;
-	};
+	}
 	return sum;
 }
 
@@ -15,7 +15,7 @@ function calculateTR(rawData) {
 		.forEach(function(d, idx) {
 			d.trueRange = Math.max(d.high - d.low,
 				d.high - prev.close,
-				d.low - prev.close)
+				d.low - prev.close);
 			prev = rawData[idx];
 		});
 }
@@ -25,7 +25,7 @@ function calculateATR(rawData, period) {
 
 	rawData.forEach(function(d, index) {
 		if (index > period) { // trueRange starts from index 1 so ATR starts from period (not period -1)
-			var num = (sumOf(rawData, index - period, period) / period)
+			var num = (sumOf(rawData, index - period, period) / period);
 			d["atr" + period] = (Math.round(num * 100) / 100);
 		}
 	});

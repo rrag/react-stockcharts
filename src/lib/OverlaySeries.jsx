@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
-var React = require('react');
-var Utils = require('./utils/utils');
+import React from "react";
+import Utils from "./utils/utils";
 
 class OverlaySeries extends React.Component {
 
@@ -25,10 +25,10 @@ class OverlaySeries extends React.Component {
 			<g>{children}</g>
 		);
 	}
-};
+}
 
 OverlaySeries.propTypes = {
-	type: React.PropTypes.oneOf(['sma', 'ema']),
+	type: React.PropTypes.oneOf(["sma", "ema"]),
 	options: React.PropTypes.object.isRequired,
 	id: React.PropTypes.number.isRequired,
 	stroke: React.PropTypes.string

@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
-require('./styles/react-stockcharts');
-require('./index');
+require("./styles/react-stockcharts");
+require("./index");

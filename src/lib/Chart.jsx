@@ -1,9 +1,8 @@
-'use strict';
+"use strict";
 
-var React = require('react'),
-	PureComponent = require('lib/utils/PureComponent');
-
-var Utils = require('./utils/utils');
+import React from "react";
+import PureComponent from "lib/utils/PureComponent";
+import Utils from "./utils/utils";
 
 class Chart extends PureComponent {
 	getChildContext() {
@@ -16,10 +15,10 @@ class Chart extends PureComponent {
 			overlays: chartData.config.overlays,
 			compareSeries: chartData.config.compareSeries,
 			isCompareSeries: chartData.config.compareSeries.length > 0
-		}
+		};
 	}
 	render() {
-		var origin = typeof this.props.origin === 'function'
+		var origin = typeof this.props.origin === "function"
 			? this.props.origin(this.context.width, this.context.height)
 			: this.props.origin;
 		var children = React.Children.map(this.props.children, (child) => {
@@ -32,7 +31,7 @@ class Chart extends PureComponent {
 		});
 		return <g transform={`translate(${origin[0]}, ${origin[1]})`}>{children}</g>;
 	}
-};
+}
 
 Chart.propTypes = {
 	height: React.PropTypes.number,
@@ -46,20 +45,23 @@ Chart.propTypes = {
 	yScale: React.PropTypes.func,
 	xDomainUpdate: React.PropTypes.bool,
 	yDomainUpdate: React.PropTypes.bool,
-	yMousePointerDisplayLocation: React.PropTypes.oneOf(['left', 'right']),
+	yMousePointerDisplayLocation: React.PropTypes.oneOf(["left", "right"]),
 	yMousePointerDisplayFormat: React.PropTypes.func,
 };
+
 Chart.defaultProps = {
 	namespace: "ReStock.Chart",
 	transformDataAs: "none",
 	yDomainUpdate: true,
 	origin: [0, 0]
 };
+
 Chart.contextTypes = {
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
 	chartData: React.PropTypes.array,
 };
+
 Chart.childContextTypes = {
 	xScale: React.PropTypes.func.isRequired,
 	yScale: React.PropTypes.func.isRequired,
@@ -69,4 +71,5 @@ Chart.childContextTypes = {
 	isCompareSeries: React.PropTypes.bool.isRequired,
 	compareSeries: React.PropTypes.array.isRequired,
 };
+
 module.exports = Chart;

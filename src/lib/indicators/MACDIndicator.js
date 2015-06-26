@@ -1,19 +1,18 @@
-'use strict';
+"use strict";
 
-var MACalculator = require('../utils/MovingAverageCalculator');
+import MACalculator from "../utils/MovingAverageCalculator";
 
-
-var defaultOptions = { fast: 12, slow: 26, signal: 9, pluck: 'close',  }
+var defaultOptions = { fast: 12, slow: 26, signal: 9, pluck: "close" };
 
 function MACDIndicator(options, chartProps) {
-	var name = "MACD";
-	var prefix = 'chart_' + chartProps.id;
+
+	var prefix = "chart_" + chartProps.id;
 	function MACD() {
 	}
 	MACD.calculate = function(data) {
 		// console.log(prefix, options);
-		var fastKey = 'ema' + options.fast;
-		var slowKey = 'ema' + options.slow;
+		var fastKey = "ema" + options.fast;
+		var slowKey = "ema" + options.slow;
 		var source = options.pluck || defaultOptions.pluck;
 
 		var newData = MACalculator.calculateEMA(data, options.fast, fastKey, source, prefix);
@@ -27,7 +26,7 @@ function MACDIndicator(options, chartProps) {
 			}
 		});
 
-		MACalculator.calculateEMA(newData.slice(options.slow), options.signal, 'signalLine', prefix + '.MACDLine', prefix);
+		MACalculator.calculateEMA(newData.slice(options.slow), options.signal, "signalLine", prefix + ".MACDLine", prefix);
 
 		newData.forEach(each => {
 			if (each[prefix]) {
@@ -43,11 +42,10 @@ function MACDIndicator(options, chartProps) {
 	};
 	MACD.yAccessor = function() {
 		return function (d) {
-			if (d && d[prefix]) return { MACDLine: d[prefix].MACDLine, signalLine: d[prefix].signalLine, histogram: d[prefix].histogram }
-			else return;
+			if (d && d[prefix]) return { MACDLine: d[prefix].MACDLine, signalLine: d[prefix].signalLine, histogram: d[prefix].histogram };
 		};
-	}
+	};
 	return MACD;
 }
 
-module.exports = MACDIndicator
+module.exports = MACDIndicator;

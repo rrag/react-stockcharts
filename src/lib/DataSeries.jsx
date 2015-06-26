@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
-var React = require('react');
-var Utils = require('./utils/utils');
+import React from "react";
+import Utils from "./utils/utils";
 
 class DataSeries extends React.Component {
 	render() {
@@ -14,15 +14,15 @@ class DataSeries extends React.Component {
 			return newChild;
 		});
 		return (
-			<g  style={{ "clipPath": "url(#chart-area-clip)" }}>{children}</g>
+			<g style={{ "clipPath": "url(#chart-area-clip)" }}>{children}</g>
 		);
 	}
-};
+}
 
 DataSeries.propTypes = {
 	xAccessor: React.PropTypes.func,
 	yAccessor: React.PropTypes.func,
-}
+};
 
 DataSeries.defaultProps = {
 	namespace: "ReStock.DataSeries",

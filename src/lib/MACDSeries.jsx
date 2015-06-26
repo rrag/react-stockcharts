@@ -1,8 +1,9 @@
-'use strict';
-var React = require('react'),
-	d3 = require('d3');
+"use strict";
 
-var HistogramSeries = require('./HistogramSeries');
+import React from "react";
+import d3 from "d3";
+
+import HistogramSeries from "./HistogramSeries";
 
 class MACDSeries extends React.Component {
 	constructor(props) {
@@ -13,7 +14,7 @@ class MACDSeries extends React.Component {
 	}
 	getMACDLine() {
 		var dataSeries = d3.svg.line()
-			.defined((d, i) => (this.context.yAccessor(d) && this.context.yAccessor(d).MACDLine) !== undefined)
+			.defined((d) => (this.context.yAccessor(d) && this.context.yAccessor(d).MACDLine) !== undefined)
 			.x((d) => this.context.xScale(this.context.xAccessor(d)))
 			.y((d) => this.context.yScale(this.context.yAccessor(d).MACDLine));
 
@@ -21,17 +22,17 @@ class MACDSeries extends React.Component {
 	}
 	getSignalLine() {
 		var dataSeries = d3.svg.line()
-			.defined((d, i) => (this.context.yAccessor(d) && this.context.yAccessor(d).signalLine) !== undefined)
+			.defined((d) => (this.context.yAccessor(d) && this.context.yAccessor(d).signalLine) !== undefined)
 			.x((d) => this.context.xScale(this.context.xAccessor(d)))
 			.y((d) => this.context.yScale(this.context.yAccessor(d).signalLine));
 
 		return dataSeries(this.context.plotData);
 	}
 	getChildContext() {
-		var yAccess = this.context.yAccessor
+		var yAccess = this.context.yAccessor;
 		return {
 			yAccessor: (d) => yAccess(d) && yAccess(d).histogram,
-		}
+		};
 	}
 	getHorizontalLine() {
 		var first = this.context.xAccessor(this.context.plotData[0]);
@@ -52,18 +53,19 @@ class MACDSeries extends React.Component {
 			</g>
 		);
 	}
-};
+}
 
 MACDSeries.contextTypes = {
-		xScale: React.PropTypes.func.isRequired,
-		yScale: React.PropTypes.func.isRequired,
-		xAccessor: React.PropTypes.func.isRequired,
-		yAccessor: React.PropTypes.func.isRequired,
-		plotData: React.PropTypes.array.isRequired,
-	};
+	xScale: React.PropTypes.func.isRequired,
+	yScale: React.PropTypes.func.isRequired,
+	xAccessor: React.PropTypes.func.isRequired,
+	yAccessor: React.PropTypes.func.isRequired,
+	plotData: React.PropTypes.array.isRequired,
+};
+
 MACDSeries.childContextTypes = {
-		yAccessor: React.PropTypes.func.isRequired,
-	};
+	yAccessor: React.PropTypes.func.isRequired,
+};
 
 MACDSeries.defaultProps = { namespace: "ReStock.MACDSeries" };
 

@@ -1,7 +1,9 @@
-'use strict';
-var React = require('react');
-var Utils = require('./utils/utils');
-var PureComponent = require('lib/utils/PureComponent');
+"use strict";
+
+import React from "react";
+import Utils from "./utils/utils";
+
+import PureComponent from "lib/utils/PureComponent";
 
 class EdgeContainer extends PureComponent {
 	render() {
@@ -13,9 +15,9 @@ class EdgeContainer extends PureComponent {
 				: React.cloneElement(child);
 			return newChild;
 		});
-		return <g>{children}</g>
+		return <g>{children}</g>;
 	}
-};
+}
 
 EdgeContainer.contextTypes = {
 	chartData: React.PropTypes.array.isRequired,

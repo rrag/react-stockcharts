@@ -1,22 +1,22 @@
-'use strict';
-var React = require('react');
-var EdgeCoordinate = require('./EdgeCoordinate')
-var Utils = require('./utils/utils')
+"use strict";
+
+import React from "react";
+import EdgeCoordinate from "./EdgeCoordinate";
 
 class CrossHair extends React.Component {
 	constructor(props) {
 		super(props);
 	}
-	shouldComponentUpdate(nextProps, nextState, nextContext) {
-		return nextProps.mouseXY !== this.props.mouseXY
+	shouldComponentUpdate(nextProps) {
+		return nextProps.mouseXY !== this.props.mouseXY;
 	}
 	render() {
 		var x1 = 0, x2 = this.props.width;
 		var edges = this.props.edges.map((edge, idx) => {
-			if (edge.at === 'left') {
+			if (edge.at === "left") {
 				x1 = -this.props.yAxisPad;
 			}
-			if (edge.at === 'right') {
+			if (edge.at === "right") {
 				x2 = this.props.width + this.props.yAxisPad;
 			}
 			return <EdgeCoordinate
@@ -27,19 +27,19 @@ class CrossHair extends React.Component {
 				x1={0} y1={this.props.mouseXY[1]}
 				x2={0} y2={this.props.mouseXY[1]}
 				coordinate={edge.yDisplayValue}
-				edgeAt={edge.at === 'left' ? x1 : x2}
+				edgeAt={edge.at === "left" ? x1 : x2}
 				orient={edge.at}
 				hideLine={true}
 				/>;
-		})
+		});
 		var line = null;
 		if (this.props.edges.length > 0) {
 			line = <line className="cross-hair"
 					x1={x1} y1={this.props.mouseXY[1]}
-					x2={x2} y2={this.props.mouseXY[1]} />
+					x2={x2} y2={this.props.mouseXY[1]} />;
 		}
 		return (
-			<g className={'crosshair '}>
+			<g className={"crosshair "}>
 				{line}
 				{edges}
 				<EdgeCoordinate
@@ -55,7 +55,7 @@ class CrossHair extends React.Component {
 			</g>
 		);
 	}
-};
+}
 
 CrossHair.propTypes = {
 	yAxisPad: React.PropTypes.number.isRequired,
@@ -65,6 +65,7 @@ CrossHair.propTypes = {
 	xDisplayValue: React.PropTypes.string.isRequired,
 	edges: React.PropTypes.array.isRequired
 };
+
 CrossHair.defaultProps = {
 	namespace: "ReStock.CrossHair",
 	yAxisPad: 5

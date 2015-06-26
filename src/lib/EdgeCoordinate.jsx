@@ -1,5 +1,6 @@
-'use strict';
-var React = require('react');
+"use strict";
+
+import React from "react";
 
 class EdgeCoordinate extends React.Component {
 	render() {
@@ -8,24 +9,24 @@ class EdgeCoordinate extends React.Component {
 		var displayCoordinate = this.props.coordinate;
 		var rectWidth = this.props.rectWidth
 			? this.props.rectWidth
-			: (this.props.type === 'horizontal')
+			: (this.props.type === "horizontal")
 				? 60
 				: 100,
 			rectHeight = 20;
 
 		var edgeXRect, edgeYRect, edgeXText, edgeYText;
 
-		if (this.props.type === 'horizontal') {
+		if (this.props.type === "horizontal") {
 
-			edgeXRect = (this.props.orient === 'right') ? this.props.edgeAt + 1 : this.props.edgeAt - rectWidth - 1;
+			edgeXRect = (this.props.orient === "right") ? this.props.edgeAt + 1 : this.props.edgeAt - rectWidth - 1;
 			edgeYRect = this.props.y1 - (rectHeight / 2);
-			edgeXText = (this.props.orient === 'right') ? this.props.edgeAt + (rectWidth / 2) : this.props.edgeAt - (rectWidth / 2);
+			edgeXText = (this.props.orient === "right") ? this.props.edgeAt + (rectWidth / 2) : this.props.edgeAt - (rectWidth / 2);
 			edgeYText = this.props.y1;
 		} else {
 			edgeXRect = this.props.x1 - (rectWidth / 2);
-			edgeYRect = (this.props.orient === 'bottom') ? this.props.edgeAt : this.props.edgeAt - rectHeight;
+			edgeYRect = (this.props.orient === "bottom") ? this.props.edgeAt : this.props.edgeAt - rectHeight;
 			edgeXText = this.props.x1;
-			edgeYText = (this.props.orient === 'bottom') ? this.props.edgeAt + (rectHeight / 2) : this.props.edgeAt - (rectHeight / 2);
+			edgeYText = (this.props.orient === "bottom") ? this.props.edgeAt + (rectHeight / 2) : this.props.edgeAt - (rectHeight / 2);
 		}
 		var coordinateBase = null, coordinate = null;
 		if (displayCoordinate !== undefined) {
@@ -40,31 +41,31 @@ class EdgeCoordinate extends React.Component {
 		}
 		var line = this.props.hideLine ? null : <line className="cross-hair"
 					x1={this.props.x1} y1={this.props.y1}
-					x2={this.props.x2} y2={this.props.y2} />
+					x2={this.props.x2} y2={this.props.y2} />;
 		return (
-			<g className={(this.props.show ? 'show ' : 'hide ') + this.props.className}>
+			<g className={(this.props.show ? "show " : "hide ") + this.props.className}>
 				{line}
 				{coordinateBase}
 				{coordinate}
 			</g>
 		);
 	}
-};
+}
 
 EdgeCoordinate.propTypes = {
-	type: React.PropTypes.oneOf(['vertical', 'horizontal']).isRequired,
+	type: React.PropTypes.oneOf(["vertical", "horizontal"]).isRequired,
 	coordinate: React.PropTypes.any.isRequired,
 	x1: React.PropTypes.number.isRequired,
 	y1: React.PropTypes.number.isRequired,
 	x2: React.PropTypes.number.isRequired,
 	y2: React.PropTypes.number.isRequired,
-	orient: React.PropTypes.oneOf(['bottom', 'top', 'left', 'right']),
+	orient: React.PropTypes.oneOf(["bottom", "top", "left", "right"]),
 	rectWidth: React.PropTypes.number,
 	hideLine: React.PropTypes.bool,
 };
 EdgeCoordinate.defaultProps = {
 	namespace: "ReStock.EdgeCoordinate",
-	orient: 'left',
+	orient: "left",
 	hideLine: false,
 };
 module.exports = EdgeCoordinate;

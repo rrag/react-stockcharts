@@ -1,16 +1,14 @@
-'use strict';
-var React = require('react');
-var EdgeCoordinate = require('./EdgeCoordinate')
-var Utils = require('./utils/utils')
+"use strict";
 
+import React from "react";
 
 class VerticalMousePointer extends React.Component {
-	shouldComponentUpdate(nextProps, nextState, nextContext) {
-		return nextProps.mouseXY !== this.props.mouseXY
+	shouldComponentUpdate(nextProps) {
+		return nextProps.mouseXY !== this.props.mouseXY;
 	}
 	render() {
 		return (
-			<g className={'crosshair '}>
+			<g className={"crosshair "}>
 				<EdgeCoordinate
 					type="vertical"
 					className="horizontal"
@@ -19,19 +17,17 @@ class VerticalMousePointer extends React.Component {
 					x2={this.props.mouseXY[0]} y2={this.props.height}
 					coordinate={this.props.xDisplayValue}
 					edgeAt={this.props.height}
-					orient="bottom"
-					/>
-				
+					orient="bottom" />
 			</g>
 		);
 	}
-};
+}
 
 VerticalMousePointer.propTypes = {
 	height: React.PropTypes.number.isRequired,
 	mouseXY: React.PropTypes.array.isRequired,
 	xDisplayValue: React.PropTypes.string.isRequired,
-}
+};
 
 VerticalMousePointer.defaultProps = { namespace: "ReStock.VerticalMousePointer" };
 

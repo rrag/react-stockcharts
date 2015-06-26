@@ -1,12 +1,15 @@
-'use strict';
+"use strict";
 
-var React = require('react');
+import React from "react";
 
 var ChartWidthMixin = {
+	getJQuery() {
+		return window.$;
+	},
 	handleWindowResize() {
+		var $ = this.getJQuery();
 		var w = $(React.findDOMNode(this)).parent().width();
-		//var w = $(this.getDOMNode()).parent().width();
-		console.log('width = ', w);
+		console.log("width = ", w);
 
 		this.setState({
 			width: w
@@ -17,8 +20,8 @@ var ChartWidthMixin = {
 	},
 	componentDidMount() {
 		window.addEventListener("resize", this.handleWindowResize);
+		var $ = this.getJQuery();
 		var w = $(React.findDOMNode(this)).parent().width();
-		//var w = $(this.getDOMNode()).parent().width();
 		this.setState({
 			width: w
 		});

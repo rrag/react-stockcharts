@@ -1,31 +1,14 @@
-'use strict';
-
-function HeikinAshiTransformer(data, interval, options, other) {
-
-	var { dateAccessor, dateMutator, indexAccessor, indexMutator } = options;
-	// console.log(data, options);
-
-	var haData = {};
-	Object.keys(data)
-		.forEach((key) => haData[key] = buildHA(data[key], indexAccessor, indexMutator, dateAccessor, dateMutator));
-
-	return {
-		data: haData,
-		other: other,
-		options: options
-	};
-}
+"use strict";
 
 function buildHA(data, indexAccessor, indexMutator, dateAccessor, dateMutator) {
 	var prevEach;
 
-	var haData = data.map(function (d, i) {
+	var haData = data.map((d) => {
 		var each = {};
 		indexMutator(each, indexAccessor(d));
 		each.close = (d.open + d.high + d.low + d.close) / 4;
 
 		dateMutator(each, dateAccessor(d));
-		//each.displayDate = d.displayDate;
 
 		if (!prevEach) {
 			each.open = d.open;
@@ -53,6 +36,22 @@ function buildHA(data, indexAccessor, indexMutator, dateAccessor, dateMutator) {
 	});
 	// console.table(haData);
 	return haData;
-};
+}
+
+function HeikinAshiTransformer(data, interval, options, other) {
+
+	var { dateAccessor, dateMutator, indexAccessor, indexMutator } = options;
+	// console.log(data, options);
+
+	var haData = {};
+	Object.keys(data)
+		.forEach((key) => haData[key] = buildHA(data[key], indexAccessor, indexMutator, dateAccessor, dateMutator));
+
+	return {
+		data: haData,
+		other: other,
+		options: options
+	};
+}
 
 module.exports = HeikinAshiTransformer;

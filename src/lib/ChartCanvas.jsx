@@ -1,9 +1,9 @@
-'use strict';
-var React = require('react');
-var ChartDataUtil = require('./utils/ChartDataUtil');
+"use strict";
 
-var Canvas = require('./Canvas');
-var Utils = require('./utils/utils');
+import React from "react";
+import ChartDataUtil from "./utils/ChartDataUtil";
+import Canvas from "./Canvas";
+import Utils from "./utils/utils";
 
 class ChartCanvas extends React.Component {
 	getAvailableHeight(props) {
@@ -21,7 +21,7 @@ class ChartCanvas extends React.Component {
 			initialDisplay: this.props.initialDisplay || this.state.plotData.length,
 			plotData: this.state.plotData,
 			chartData: this.state.chartData,
-		}
+		};
 	}
 	componentWillMount() {
 		var { props, context } = this;
@@ -32,16 +32,16 @@ class ChartCanvas extends React.Component {
 		var state = {
 			data: data,
 			plotData: this.props.data
-		}
+		};
 		if (ChartDataUtil.containsChart(props)) {
 			var defaultOptions = {
 				width: this.getAvailableWidth(props),
 				height: this.getAvailableHeight(props),
-			}
+			};
 			var plotData = props.data;
 			var chartData = ChartDataUtil.getChartData(props, context, plotData, data, defaultOptions);
 			// console.log(chartData);
-			var mainChart = ChartDataUtil.getMainChart(props.children);
+			// var mainChart = ChartDataUtil.getMainChart(props.children);
 
 			state.chartData = chartData;
 			state.plotData = plotData;
@@ -62,7 +62,7 @@ class ChartCanvas extends React.Component {
 			return newChild;
 		});
 		return (
-			<div style={{position: 'relative'}}>
+			<div style={{position: "relative"}}>
 				<svg width={this.props.width} height={this.props.height}>
 					<defs>
 						<clipPath id="chart-area-clip">
@@ -76,16 +76,17 @@ class ChartCanvas extends React.Component {
 			</div>
 		);
 	}
-};
+}
 
 ChartCanvas.propTypes = {
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
 	margin: React.PropTypes.object,
-	interval: React.PropTypes.oneOf(['D']).isRequired, //,'m1', 'm5', 'm15', 'W', 'M'
+	interval: React.PropTypes.oneOf(["D"]).isRequired, // ,"m1", "m5", "m15", "W", "M"
 	data: React.PropTypes.array.isRequired,
 	initialDisplay: React.PropTypes.number,
-}
+};
+
 ChartCanvas.childContextTypes = {
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
@@ -96,15 +97,11 @@ ChartCanvas.childContextTypes = {
 	// canvas: React.PropTypes.any,
 
 	chartData: React.PropTypes.array,
-}
+};
+
 ChartCanvas.defaultProps = {
 	margin: {top: 20, right: 30, bottom: 30, left: 80},
 	interval: "D",
-}
-
+};
 
 module.exports = ChartCanvas;
-
-/*
-				<Canvas ref="canvas" width={w} height={h} left={this.props.margin.left} top={this.props.margin.top} />
-*/

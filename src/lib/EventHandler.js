@@ -1,7 +1,8 @@
 "use strict";
-var React = require('react');
-var Utils = require('./utils/utils');
-var ChartDataUtil = require('./utils/ChartDataUtil');
+
+import React from "react";
+import Utils from "./utils/utils";
+import ChartDataUtil from "./utils/ChartDataUtil";
 
 function getLongValue(value) {
 	if (value instanceof Date) {
@@ -58,12 +59,12 @@ class EventHandler extends React.Component {
 		var beginIndex = Utils.getClosestItemIndexes(dataForInterval, mainChartData.config.accessors.xAccessor(plotData[0]), mainChartData.config.accessors.xAccessor).left;
 		var endIndex = Utils.getClosestItemIndexes(dataForInterval, mainChartData.config.accessors.xAccessor(plotData[plotData.length - 1]), mainChartData.config.accessors.xAccessor).right;
 
-		var plotData = dataForInterval.slice(beginIndex, endIndex);
-		var chartData = ChartDataUtil.getChartData(props, context, plotData, data, dataTransformProps);
+		var newPlotData = dataForInterval.slice(beginIndex, endIndex);
+		var newChartData = ChartDataUtil.getChartData(props, context, plotData, data, dataTransformProps);
 
 		this.setState({
-			chartData: chartData,
-			plotData: plotData,
+			chartData: newChartData,
+			plotData: newPlotData,
 			currentItems: [],
 			show: false,
 			mouseXY: [0, 0],
@@ -91,16 +92,16 @@ class EventHandler extends React.Component {
 			onFocus: this.handleFocus,
 			panInProgress: this.state.panInProgress,
 			focus: this.state.focus
-		}
+		};
 	}
 	handleMouseMove(mouseXY) {
-		// console.log('mouse move - ', mouseXY);
-		var currentItems = ChartDataUtil.getCurrentItems(this.state.chartData, mouseXY, this.state.plotData)
+		// console.log("mouse move - ", mouseXY);
+		var currentItems = ChartDataUtil.getCurrentItems(this.state.chartData, mouseXY, this.state.plotData);
 			// .filter((eachChartData) => eachChartData.id === this.state.mainChart)
 		var currentCharts = this.state.chartData.filter((chartData) => {
 			var top = chartData.config.origin[1];
 			var bottom = top + chartData.config.height;
-			return (mouseXY[1] > top && mouseXY[1] < bottom)
+			return (mouseXY[1] > top && mouseXY[1] < bottom);
 		}).map((chartData) => chartData.id);
 
 		// console.log(currentCharts);
@@ -113,19 +114,19 @@ class EventHandler extends React.Component {
 		});
 	}
 	handleMouseEnter() {
-		// console.log('enter');
+		// console.log("enter");
 		this.setState({
 			show: true
 		});
 	}
 	handleMouseLeave() {
-		// console.log('leave');
+		// console.log("leave");
 		this.setState({
 			show: false
 		});
 	}
 	handleZoom(zoomDirection, mouseXY) {
-		// console.log('zoomDirection ', zoomDirection, ' mouseXY ', mouseXY);
+		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
 		var { mainChart, chartData, plotData, interval } = this.state;
 		var { data } = this.context;
 
@@ -136,7 +137,7 @@ class EventHandler extends React.Component {
 			centerX = chart.config.accessors.xAccessor(item),
 			leftX = centerX - domain[0],
 			rightX = domain[1] - centerX,
-			zoom = Math.pow(1 + Math.abs(zoomDirection)/2 , zoomDirection),
+			zoom = Math.pow(1 + Math.abs(zoomDirection) / 2, zoomDirection),
 			domainL = (getLongValue(centerX) - ( leftX * zoom)),
 			domainR = (getLongValue(centerX) + (rightX * zoom)),
 			domainRange = Math.abs(domain[1] - domain[0]),
@@ -144,8 +145,8 @@ class EventHandler extends React.Component {
 			last = fullData[fullData.length - 1],
 			first = fullData[0];
 
-		domainL = Math.max(getLongValue(chart.config.accessors.xAccessor(first)) - Math.floor(domainRange/3), domainL)
-		domainR = Math.min(getLongValue(chart.config.accessors.xAccessor(last)) + Math.floor(domainRange/3), domainR)
+		domainL = Math.max(getLongValue(chart.config.accessors.xAccessor(first)) - Math.floor(domainRange / 3), domainL);
+		domainR = Math.min(getLongValue(chart.config.accessors.xAccessor(last)) + Math.floor(domainRange / 3), domainR);
 		// xScale(domainR) - xScale(domainL)
 		var dataToPlot = ChartDataUtil.getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.accessors.xAccessor);
 		if (dataToPlot.data.length < 10) return;
@@ -155,7 +156,7 @@ class EventHandler extends React.Component {
 				id: eachChart.id,
 				config: eachChart.config,
 				plot: plot
-			}
+			};
 		});
 		this.setState({
 			chartData: newChartData,
@@ -165,7 +166,7 @@ class EventHandler extends React.Component {
 	}
 
 	handlePanStart(panStartDomain, panOrigin) {
-		// console.log('panStartDomain - ', panStartDomain, ', panOrigin - ', panOrigin);
+		// console.log("panStartDomain - ", panStartDomain, ", panOrigin - ", panOrigin);
 		this.setState({
 			panInProgress: true,
 			panStartDomain: panStartDomain,
@@ -174,8 +175,9 @@ class EventHandler extends React.Component {
 		});
 	}
 	handlePan(mousePosition, startDomain) {
-		// console.log('mousePosition ', mousePosition);
-		var { mainChart, chartData, plotData, interval, panStartDomain, panOrigin } = this.state;
+		// console.log("mousePosition ", mousePosition);
+		/* can also use plotData, use this if you want to pan and show only within that data set*/
+		var { mainChart, chartData, interval, panStartDomain, panOrigin } = this.state;
 		var { data } = this.context;
 		if (panStartDomain === null) {
 			this.handlePanStart(startDomain, mousePosition);
@@ -189,16 +191,16 @@ class EventHandler extends React.Component {
 					dx = mousePosition[0] - panOrigin[0],
 					xAccessor = chart.config.accessors.xAccessor;
 
-				// console.log('pan -- mouse move - ', mousePosition, ' dragged by ', dx, ' pixels');
+				// console.log("pan -- mouse move - ", mousePosition, " dragged by ", dx, " pixels");
 
-				var domainStart = getLongValue(panStartDomain[0]) - dx/chart.config.width * domainRange
-				if (domainStart < getLongValue(xAccessor(first)) - Math.floor(domainRange/3)) {
-					domainStart = getLongValue(xAccessor(first)) - Math.floor(domainRange/3)
+				var domainStart = getLongValue(panStartDomain[0]) - dx / chart.config.width * domainRange;
+				if (domainStart < getLongValue(xAccessor(first)) - Math.floor(domainRange / 3)) {
+					domainStart = getLongValue(xAccessor(first)) - Math.floor(domainRange / 3);
 				} else {
 					domainStart = Math.min(getLongValue(xAccessor(last))
-						+ Math.ceil(domainRange/3), domainStart + domainRange) - domainRange;
+						+ Math.ceil(domainRange / 3), domainStart + domainRange) - domainRange;
 				}
-				var domainL = domainStart, domainR = domainStart + domainRange
+				var domainL = domainStart, domainR = domainStart + domainRange;
 				if (panStartDomain[0] instanceof Date) {
 					domainL = new Date(domainL);
 					domainR = new Date(domainR);
@@ -215,15 +217,15 @@ class EventHandler extends React.Component {
 						id: eachChart.id,
 						config: eachChart.config,
 						plot: plot
-					}
+					};
 				});
 				var currentItems = ChartDataUtil.getCurrentItems(newChartData, mousePosition, filteredData);
 
-				var currentCharts = newChartData.filter((chartData) => {
-					var top = chartData.config.origin[1];
-					var bottom = top + chartData.config.height;
-					return (mousePosition[1] > top && mousePosition[1] < bottom)
-				}).map((chartData) => chartData.id);
+				var currentCharts = newChartData.filter((eachChartData) => {
+					var top = eachChartData.config.origin[1];
+					var bottom = top + eachChartData.config.height;
+					return (mousePosition[1] > top && mousePosition[1] < bottom);
+				}).map((eachChartData) => eachChartData.id);
 
 				this.setState({
 					chartData: newChartData,
@@ -261,7 +263,7 @@ class EventHandler extends React.Component {
 			<g>{children}</g>
 		);
 	}
-};
+}
 
 EventHandler.contextTypes = {
 	width: React.PropTypes.number.isRequired,
@@ -273,7 +275,8 @@ EventHandler.contextTypes = {
 	chartData: React.PropTypes.array,
 	initialDisplay: React.PropTypes.number.isRequired,
 	interval: React.PropTypes.string,
-}
+};
+
 EventHandler.childContextTypes = {
 	plotData: React.PropTypes.array,
 	chartData: React.PropTypes.array,
@@ -291,10 +294,10 @@ EventHandler.childContextTypes = {
 	onZoom: React.PropTypes.func,
 	onPanStart: React.PropTypes.func,
 	onPan: React.PropTypes.func,
-	onPanEnd: React.PropTypes.func, 
+	onPanEnd: React.PropTypes.func,
 	panInProgress: React.PropTypes.bool.isRequired,
 	focus: React.PropTypes.bool.isRequired,
 	onFocus: React.PropTypes.func,
-}
+};
 
 module.exports = EventHandler;

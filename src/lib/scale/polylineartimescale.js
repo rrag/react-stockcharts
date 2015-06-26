@@ -1,17 +1,12 @@
-'use strict';
+"use strict";
 
-var d3 = require('d3');
+import d3 from "d3";
 
-var polylineartimescale = function(indexAccessor) {
-	return guided_scale([0, 1], indexAccessor, d3.scale.linear());
-};
+function financeTimeScale(drawableData, indexAccessor, backingLinearScale) {
 
-function guided_scale(drawableData, indexAccessor, backingLinearScale) {
-	//var  = 'week'; //valid values 'day', 'week', 'month'
-
-	var d3_time_scaleSteps = [
-		{ step: 864e5, f: function (d, i) {return d.date !== undefined && true ;}},  // 1-day
-		{ step: 1728e5, f: function (d, i) {return d.date !== undefined && (i % 2 == 0) ;}},  // 2-day
+	var timeScaleSteps = [
+		{ step: 864e5, f: function (d) { return d.date !== undefined && true; }},  // 1-day
+		{ step: 1728e5, f: function (d, i) { return d.date !== undefined && (i % 2 === 0); }}, // 2-day
 		{ step: 8380e5, f: function (d, i, arr) {
 				if (d.startOfMonth) return true;
 				var list = [];
@@ -21,7 +16,7 @@ function guided_scale(drawableData, indexAccessor, backingLinearScale) {
 				if ((i + 1) <= arr.length - 1) list.push(arr[i + 1]);
 				if ((i + 2) <= arr.length - 1) list.push(arr[i + 2]);
 				var sm = list
-							.map(function (d) { return d.startOfMonth; })
+							.map(function (each) { return each.startOfMonth; })
 							.reduce(function(prev, curr) {
 									return prev || curr;
 								});
@@ -30,10 +25,10 @@ function guided_scale(drawableData, indexAccessor, backingLinearScale) {
 		{ step: 3525e6, f: function (d) {return d.startOfMonth; }},  // 1-month
 		{ step: 7776e6, f: function (d) {return d.startOfQuarter; }},  // 3-month
 		{ step: 31536e6, f: function (d) {return d.startOfYear; }},  // 1-year
-		{ step: 91536e15, f: function (d) {return d.date !== undefined && (d.startOfYear && d.date.getFullYear() % 2 == 0); }}  // 2-year
+		{ step: 91536e15, f: function (d) {return d.date !== undefined && (d.startOfYear && d.date.getFullYear() % 2 === 0); }}  // 2-year
 	];
 	var timeScaleStepsBisector = d3.bisector(function(d) { return d.step; }).left;
-	var __BISECT = d3.bisector(function(d) { return indexAccessor(d); }).left;
+	var bisectByIndex = d3.bisector(function(d) { return indexAccessor(d); }).left;
 	var tickFormat = [
 		[d3.time.format("%Y"), function(d) { return d.startOfYear; }],
 		[d3.time.format("%b %Y"), function(d) { return d.startOfQuarter; }],
@@ -47,16 +42,14 @@ function guided_scale(drawableData, indexAccessor, backingLinearScale) {
 		var tickDisplay = format[0](d.date);
 		// console.log(tickDisplay);
 		return tickDisplay;
-	};
-
-	var ticks;
+	}
 
 	function scale(x) {
 		return backingLinearScale(x);
-	};
+	}
 	scale.isPolyLinear = function() {
 		return true;
-	}
+	};
 	scale.invert = function(x) {
 		return backingLinearScale.invert(x);
 	};
@@ -65,17 +58,17 @@ function guided_scale(drawableData, indexAccessor, backingLinearScale) {
 			return drawableData;
 		} else {
 			drawableData = x;
-			//this.domain([drawableData.first().index, drawableData.last().index]);
+			// this.domain([drawableData.first().index, drawableData.last().index]);
 			this.domain([indexAccessor(drawableData[0]), indexAccessor(drawableData[drawableData.length - 1])]);
 			return scale;
 		}
 	};
 	scale.domain = function(x) {
 		if (!arguments.length) return backingLinearScale.domain();
-		//console.log("before = %s, after = %s", JSON.stringify(backingLinearScale.domain()), JSON.stringify(x))
-		//var d = [Math.floor(x[0]), Math.ceil(x[1])]
-		var d = [x[0], x[1]]
-		//console.log(d);
+		// console.log("before = %s, after = %s", JSON.stringify(backingLinearScale.domain()), JSON.stringify(x))
+
+		var d = [x[0], x[1]];
+		// console.log(d);
 		backingLinearScale.domain(d);
 		return scale;
 	};
@@ -97,20 +90,18 @@ function guided_scale(drawableData, indexAccessor, backingLinearScale) {
 		backingLinearScale.interpolate(x);
 		return scale;
 	};
-
 	scale.ticks = function(m) {
-
 		var start, end, count = 0;
-		drawableData.forEach(function (d, i) {
+		drawableData.forEach(function (d) {
 			if (d.date !== undefined) {
 				if (start === undefined) start = d;
 				end = d;
 				count++;
 			}
 		});
-		m = (count/drawableData.length) * m;
+		m = (count / drawableData.length) * m;
 		var span = (end.date.getTime() - start.date.getTime());
-		var target = span/m;
+		var target = span / m;
 		/*
 		console.log(drawableData[drawableData.length - 1].date
 			, drawableData[0].date
@@ -121,31 +112,32 @@ function guided_scale(drawableData, indexAccessor, backingLinearScale) {
 			);
 		*/
 		var ticks = drawableData
-						.filter(d3_time_scaleSteps[timeScaleStepsBisector(d3_time_scaleSteps, target)].f)
-						.map(function(d, i) {return indexAccessor(d);})
+						.filter(timeScaleSteps[timeScaleStepsBisector(timeScaleSteps, target)].f)
+						.map(function(d) { return indexAccessor(d); })
 						;
 		// return the index of all the ticks to be displayed,
-		//console.log(target, span, m, ticks);
+		// console.log(target, span, m, ticks);
 		return ticks;
 	};
 	scale.tickFormat = function(ticks) {
 		return function(d) {
 			// for each index received from ticks() function derive the formatted output
-			var tickIndex = __BISECT(drawableData, d);
-			return formater(drawableData[tickIndex]) ;
-			//return formater(d) ;
+			var tickIndex = bisectByIndex(drawableData, d);
+			return formater(drawableData[tickIndex]);
 		};
-	}
-
+	};
 	scale.nice = function(m) {
 		backingLinearScale.nice(m);
 		return scale;
 	};
 	scale.copy = function() {
-		return guided_scale(drawableData, indexAccessor, backingLinearScale.copy());
+		return financeTimeScale(drawableData, indexAccessor, backingLinearScale.copy());
 	};
 	return scale;
 }
 
+var defaultFinanceDateTimeScale = function(indexAccessor) {
+	return financeTimeScale([0, 1], indexAccessor, d3.scale.linear());
+};
 
-module.exports = polylineartimescale
+module.exports = defaultFinanceDateTimeScale;

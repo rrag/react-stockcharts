@@ -1,12 +1,14 @@
-'use strict';
-var React = require('react');
-var d3 = require('d3');
-var Utils = require('./utils/utils.js');
-var mousemove = 'mousemove.pan', mouseup = 'mouseup.pan';
+"use strict";
 
-function d3_window(node) {
+import React from "react";
+import d3 from "d3";
+
+import Utils from "./utils/utils";
+
+var mousemove = "mousemove.pan", mouseup = "mouseup.pan";
+
+function d3Window(node) {
 	var d3win = node && (node.ownerDocument && node.ownerDocument.defaultView || node.document && node || node.defaultView);
-	// console.log(node, d3win, window, window.top);
 	return d3win;
 }
 
@@ -65,11 +67,11 @@ class EventCapture extends React.Component {
 	}
 	handleMouseDown(e) {
 		var mouseEvent = e || d3.event;
-		var inFocus = true
+
 		var chartData = this.context.chartData.filter((each) => each.id === this.props.mainChart) [0];
 		if (this.props.pan && this.context.onPanStart) {
 			var mouseXY = Utils.mousePosition(mouseEvent);
-			this.context.onPanStart(chartData.plot.scales.xScale.domain(), mouseXY)
+			this.context.onPanStart(chartData.plot.scales.xScale.domain(), mouseXY);
 
 			var dx = mouseEvent.pageX - mouseXY[0],
 				dy = mouseEvent.pageY - mouseXY[1];
@@ -77,7 +79,7 @@ class EventCapture extends React.Component {
 			this.setState({
 				deltaXY: [dx, dy]
 			});
-			var win = d3_window(React.findDOMNode(this.refs.capture));
+			var win = d3Window(React.findDOMNode(this.refs.capture));
 			d3.select(win)
 				.on(mousemove, this.handlePan)
 				.on(mouseup, this.handlePanEnd);
@@ -89,14 +91,14 @@ class EventCapture extends React.Component {
 	handlePan() {
 		var deltaXY = this.state.deltaXY;
 		var newPos = [d3.event.pageX - deltaXY[0], d3.event.pageY - deltaXY[1]];
-		// console.log('moved from- ', startXY, ' to ', newPos);
+		// console.log("moved from- ", startXY, " to ", newPos);
 		if (this.props.pan && this.context.onPan) {
 			var chartData = this.context.chartData.filter((each) => each.id === this.props.mainChart) [0];
 			this.context.onPan(newPos, chartData.plot.scales.xScale.domain());
 		}
 	}
 	handlePanEnd() {
-		var win = d3_window(React.findDOMNode(this.refs.capture));
+		var win = d3Window(React.findDOMNode(this.refs.capture));
 
 		d3.select(win)
 			.on(mousemove, null)
@@ -107,7 +109,7 @@ class EventCapture extends React.Component {
 		// e.preventDefault();
 	}
 	render() {
-		var className = this.context.panInProgress ? 'grabbing' : 'crosshair';
+		var className = this.context.panInProgress ? "grabbing" : "crosshair";
 		return (
 			<rect ref="capture"
 				className={className}
@@ -120,8 +122,7 @@ class EventCapture extends React.Component {
 				/>
 		);
 	}
-};
-
+}
 
 EventCapture.propTypes = {
 	mainChart: React.PropTypes.number.isRequired,
@@ -132,6 +133,7 @@ EventCapture.propTypes = {
 	panSpeedMultiplier: React.PropTypes.number.isRequired,
 	defaultFocus: React.PropTypes.bool.isRequired,
 };
+
 EventCapture.defaultProps = {
 	namespace: "ReStock.EventCapture"
 	, mouseMove: false
@@ -142,6 +144,7 @@ EventCapture.defaultProps = {
 	, className: "crosshair"
 	, defaultFocus: false
 };
+
 EventCapture.contextTypes = {
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,

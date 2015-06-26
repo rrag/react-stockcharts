@@ -1,8 +1,10 @@
-'use strict';
+"use strict";
 
-var React = require('react');
-var Utils = require('./utils/utils')
-var ChartDataUtil = require('./utils/ChartDataUtil');
+import React from "react";
+
+import Utils from "./utils/utils";
+import ChartDataUtil from "./utils/ChartDataUtil";
+
 
 var billion = 1 * 1000 * 1000 * 1000;
 var million = 1 * 1000 * 1000;
@@ -31,7 +33,7 @@ class OHLCTooltip extends React.Component {
 			low = Utils.displayNumberFormat(item.low);
 			close = Utils.displayNumberFormat(item.close);
 		}
-		var origin = typeof this.props.origin === 'function'
+		var origin = typeof this.props.origin === "function"
 			? this.props.origin(this.context.width, this.context.height)
 			: this.props.origin;
 		return (
@@ -48,14 +50,15 @@ class OHLCTooltip extends React.Component {
 			</g>
 		);
 	}
-};
+}
 
 OHLCTooltip.contextTypes = {
 	chartData: React.PropTypes.array.isRequired,
 	currentItems: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
-}
+};
+
 OHLCTooltip.propTypes = {
 	forChart: React.PropTypes.number.isRequired,
 	accessor: React.PropTypes.func.isRequired,
@@ -64,11 +67,11 @@ OHLCTooltip.propTypes = {
 				React.PropTypes.array
 				, React.PropTypes.func
 			]).isRequired,
-}
+};
 
-OHLCTooltip.defaultProps = { 
+OHLCTooltip.defaultProps = {
 	namespace: "ReStock.OHLCTooltip",
-	accessor: (d) => {return {date: d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume}},
+	accessor: (d) => { return {date: d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume}; },
 	xDisplayFormat: Utils.displayDateFormat,
 	origin: [0, 0]
 };

@@ -1,23 +1,22 @@
-'use strict';
+"use strict";
 
-var pricingMethod = function (d) { return { high: d.high, low: d.low }; };
-var usePrice = function (d) { return { high: d.high, low: d.low }; };
+// var pricingMethod = (d) => ({ high: d.high, low: d.low });
+var usePrice = (d) => ({ high: d.high, low: d.low });
 
 var defaultOptions = {
 	boxSize: 0.5,
 	reversal: 3,
-}
+};
 
 function createBox(d, dateAccessor, dateMutator) {
 	var box = {
-		open: d.open
-		, fromDate: dateAccessor(d)
-		, toDate: dateAccessor(d)
-		//, displayDate: d.displayDate
-		, startOfYear: d.startOfYear
-		, startOfQuarter: d.startOfQuarter
-		, startOfMonth: d.startOfMonth
-		, startOfWeek: d.startOfWeek
+		open: d.open,
+		fromDate: dateAccessor(d),
+		toDate: dateAccessor(d),
+		startOfYear: d.startOfYear,
+		startOfQuarter: d.startOfQuarter,
+		startOfMonth: d.startOfMonth,
+		startOfWeek: d.startOfWeek
 	};
 	dateMutator(box, dateAccessor(d));
 	return box;
@@ -25,8 +24,9 @@ function createBox(d, dateAccessor, dateMutator) {
 
 function updateColumns(columnData, dateAccessor, dateMutator) {
 
-	columnData.forEach(function (d, i) {
-		var lastBox = d.boxes[d.boxes.length - 1];
+
+	columnData.forEach(function (d) {
+		// var lastBox = d.boxes[d.boxes.length - 1];
 
 		d.startOfYear = false;
 		d.startOfQuarter = false;
@@ -49,7 +49,7 @@ function updateColumns(columnData, dateAccessor, dateMutator) {
 				d.startOfQuarter = eachBox.startOfQuarter;
 				d.startOfMonth = eachBox.startOfMonth;
 				d.startOfWeek = eachBox.startOfWeek;
-				//d.displayDate = eachBox.displayDate;
+
 				dateMutator(d, dateAccessor(eachBox));
 			}
 			if (d.startOfQuarter !== true && eachBox.startOfQuarter) {
@@ -77,7 +77,7 @@ function updateColumns(columnData, dateAccessor, dateMutator) {
 	// console.table(columnData);
 	// console.table(rawData);
 	return columnData;
-};
+}
 
 function PointAndFigureTransformer(rawData, interval, options, other) {
 
@@ -88,9 +88,8 @@ function PointAndFigureTransformer(rawData, interval, options, other) {
 
 	var { dateAccessor, dateMutator, indexAccessor, indexMutator, reversal, boxSize } = newOptions;
 
-	var columnData = new Array();
+	var columnData = [];
 
-	var index = 0, direction;
 	var column = {
 		boxes: [],
 		open: rawData.D[0].open
@@ -99,7 +98,7 @@ function PointAndFigureTransformer(rawData, interval, options, other) {
 	indexMutator(column, 0);
 	columnData.push(column);
 
-	rawData.D.forEach( function (d) {
+	rawData.D.forEach(function (d) {
 		column.volume = column.volume || 0;
 		column.volume += d.volume;
 
@@ -135,20 +134,20 @@ function PointAndFigureTransformer(rawData, interval, options, other) {
 		}
 
 		if (columnData.length === 1 && column.boxes.length === 0) {
-			var upwardMovement = (Math.max((usePrice(d).high - column.open), 0)) //upward movement
-			var downwardMovement = Math.abs(Math.min((column.open - usePrice(d).low), 0)) // downward movement
+			let upwardMovement = (Math.max((usePrice(d).high - column.open), 0)); // upward movement
+			let downwardMovement = Math.abs(Math.min((column.open - usePrice(d).low), 0)); // downward movement
 			column.direction = upwardMovement > downwardMovement ? 1 : -1;
 			if (boxSize * reversal < upwardMovement
 				|| boxSize * reversal < downwardMovement) {
 				// enough movement to trigger a reversal
 				box.toDate = dateAccessor(d);
 				box.open = column.open;
-				var noOfBoxes = column.direction > 0
+				let noOfBoxes = column.direction > 0
 									? Math.floor(upwardMovement / boxSize)
 									: Math.floor(downwardMovement / boxSize);
-				for (var i = 0; i < noOfBoxes; i++) {
+				for (let i = 0; i < noOfBoxes; i++) {
 					box.close = box.open + column.direction * boxSize;
-					var prevBoxClose = box.close;
+					let prevBoxClose = box.close;
 					column.boxes.push(box);
 					box = createBox(box, dateAccessor, dateMutator);
 					// box = cloneMe(box);
@@ -159,15 +158,15 @@ function PointAndFigureTransformer(rawData, interval, options, other) {
 			}
 		} else {
 			// one or more boxes already formed in the current column
-			var upwardMovement = (Math.max((usePrice(d).high - box.open), 0)) //upward movement
-			var downwardMovement = Math.abs(Math.min((usePrice(d).low - box.open), 0)) // downward movement
+			let upwardMovement = (Math.max((usePrice(d).high - box.open), 0)); // upward movement
+			let downwardMovement = Math.abs(Math.min((usePrice(d).low - box.open), 0)); // downward movement
 
 			if ((column.direction > 0 && upwardMovement > boxSize) /* rising column AND box can be formed */
 					|| (column.direction < 0 && downwardMovement > boxSize) /* falling column AND box can be formed */ ) {
 				// form another box
 				box.close = box.open + column.direction * boxSize;
 				box.toDate = dateAccessor(d);
-				var prevBoxClose = box.close;
+				let prevBoxClose = box.close;
 				column.boxes.push(box);
 				box = createBox(d, dateAccessor, dateMutator);
 				box.open = prevBoxClose;
@@ -189,14 +188,14 @@ function PointAndFigureTransformer(rawData, interval, options, other) {
 				var idx = indexAccessor(column) + 1;
 				column = {
 					boxes: [],
-					//, index: column.index + 1
+
 					direction: -1 * column.direction
 				};
 				indexMutator(column, idx);
-				var noOfBoxes = column.direction > 0
+				let noOfBoxes = column.direction > 0
 									? Math.floor(upwardMovement / boxSize)
 									: Math.floor(downwardMovement / boxSize);
-				for (var i = 0; i < noOfBoxes; i++) {
+				for (let i = 0; i < noOfBoxes; i++) {
 					box.close = box.open + column.direction * boxSize;
 					var prevBoxClose = box.close;
 					column.boxes.push(box);
@@ -211,7 +210,7 @@ function PointAndFigureTransformer(rawData, interval, options, other) {
 	updateColumns(columnData, dateAccessor, dateMutator);
 
 	return {
-		data: {'D': columnData},
+		data: {"D": columnData},
 		other: other,
 		options: newOptions
 	};

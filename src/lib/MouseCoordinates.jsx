@@ -1,10 +1,9 @@
-'use strict';
-var React = require('react');
-var CrossHair = require('./CrossHair')
-var VerticalMousePointer = require('./VerticalMousePointer')
-var Utils = require('./utils/utils')
-var ChartDataUtil = require('./utils/ChartDataUtil');
-var PureComponent = require('lib/utils/PureComponent');
+"use strict";
+
+import React from "react";
+import Utils from "./utils/utils";
+import PureComponent from "lib/utils/PureComponent";
+import CrossHair from "./CrossHair";
 
 class MouseCoordinates extends PureComponent {
 	constructor(props, context) {
@@ -18,7 +17,7 @@ class MouseCoordinates extends PureComponent {
 			.filter((eachChartData) => currentCharts.indexOf(eachChartData.id) > -1)
 			.map((each) => {
 				var yDisplayFormat = each.config.compareSeries.length > 0
-					? (d) => (Math.round(d * 10000) / 100).toFixed(2) + '%'
+					? (d) => (Math.round(d * 10000) / 100).toFixed(2) + "%"
 					: each.config.mouseCoordinates.format;
 				var mouseY = this.context.mouseXY[1] - each.config.origin[1];
 				var yValue = each.plot.scales.yScale.invert(mouseY);
@@ -34,12 +33,12 @@ class MouseCoordinates extends PureComponent {
 			.map(each => {
 				each.yDisplayValue = each.yDisplayFormat(each.yValue);
 				return each;
-			})
+			});
 
 		// console.log(edges);
 		var singleChartData = chartData.filter((eachChartData) => eachChartData.id === this.context.mainChart)[0];
 
-		// var yDisplayFormat = singleChartData.config.compareSeries.length > 0 ? (d) => (Math.round(d * 10000) / 100).toFixed(2) + '%' : this.props.yDisplayFormat;
+		// var yDisplayFormat = singleChartData.config.compareSeries.length > 0 ? (d) => (Math.round(d * 10000) / 100).toFixed(2) + "%" : this.props.yDisplayFormat;
 
 		var item = currentItems.filter((eachItem) => eachItem.id === this.context.mainChart)[0];// ChartDataUtil.getCurrentItemForChart(this.props, this.context);
 		if (item === undefined) return null;
@@ -57,23 +56,23 @@ class MouseCoordinates extends PureComponent {
 		var x = this.props.snapX ? Math.round(singleChartData.plot.scales.xScale(xValue)) : this.context.mouseXY[0];
 		var y = this.context.mouseXY[1];
 		switch (this.props.type) {
-			case 'crosshair':
+			case "crosshair":
 				return <CrossHair height={this.context.height} width={this.context.width} mouseXY={[x, y]}
-					xDisplayValue={this.props.xDisplayFormat(xDisplayValue)} edges={edges}/>
-			case 'vertical':
-				return <VerticalMousePointer />
+					xDisplayValue={this.props.xDisplayFormat(xDisplayValue)} edges={edges}/>;
+			case "vertical":
+				return <VerticalMousePointer />;
 		}
 	}
 	render() {
-		var pointer = this.getPointer()
+		var pointer = this.getPointer();
 
 		return (
-			<g className={this.context.show ? 'show' : 'hide'}>
+			<g className={this.context.show ? "show" : "hide"}>
 				{pointer}
 			</g>
 		);
 	}
-};
+}
 
 MouseCoordinates.contextTypes = {
 	width: React.PropTypes.number.isRequired,
@@ -85,20 +84,20 @@ MouseCoordinates.contextTypes = {
 	chartData: React.PropTypes.array.isRequired,
 	currentItems: React.PropTypes.array.isRequired,
 	currentCharts: React.PropTypes.array.isRequired,
-}
+};
+
 MouseCoordinates.propTypes = {
 	xDisplayFormat: React.PropTypes.func.isRequired,
 	yDisplayFormat: React.PropTypes.func.isRequired,
-	type: React.PropTypes.oneOf(['crosshair', 'vertical']).isRequired
-}
+	type: React.PropTypes.oneOf(["crosshair", "vertical"]).isRequired
+};
 
-MouseCoordinates.defaultProps = { 
+MouseCoordinates.defaultProps = {
 	namespace: "ReStock.MouseCoordinates",
 	show: false,
 	snapX: true,
 	xDisplayFormat: Utils.displayDateFormat,
 	yDisplayFormat: Utils.displayNumberFormat,
 };
-
 
 module.exports = MouseCoordinates;

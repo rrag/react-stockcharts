@@ -1,4 +1,4 @@
-var webpack = require('webpack');
+var webpack = require("webpack");
 var configSettings = {
 	normal: {},
 	uglified: {
@@ -16,40 +16,40 @@ module.exports = function(config) {
 
 		// frameworks to use
 		// available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-		frameworks: ['mocha'],
+		frameworks: ["mocha"],
 
 		// list of files / patterns to load in the browser
-		// 'utils/phantomjs-shims.js',
+		// "utils/phantomjs-shims.js",
 		files: [
-			// all files ending in '_test'
-			'test/*_test.js',
-			'test/**/*_test.js'
+			// all files ending in "_test"
+			"test/*_test.js",
+			"test/**/*_test.js"
 			// each file acts as entry point for the webpack configuration
 		],
 
 		// preprocess matching files before serving them to the browser
 		// available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
 		preprocessors: {
-			'tests/**/*.js': ['webpack', 'sourcemap']
+			"tests/**/*.js": ["webpack", "sourcemap"]
 		},
 
 		webpack: Object.keys(configSettings).map(function(name) {
-			var config = {
+			var webpackConfig = {
 				name: name,
-				devtool: 'inline-source-map',
+				devtool: "inline-source-map",
 				resolve: {
-					extensions: ['', '.js', '.jsx']
+					extensions: ["", ".js", ".jsx"]
 				},
 				module: {
 					loaders: [
-						{ test: /\.(js|jsx)$/, loaders: ['jsx?harmony'], exclude: /node_modules/ }
+						{ test: /\.(js|jsx)$/, loaders: ["jsx?harmony"], exclude: /node_modules/ }
 					]
 				}
 			};
 			Object.keys(configSettings[name]).forEach(function(key) {
-				config[key] = configSettings[name][key];
+				webpackConfig[key] = configSettings[name][key];
 			});
-			return config;
+			return webpackConfig;
 		}),
 		webpackMiddleware: {
 			stats: {
@@ -57,9 +57,9 @@ module.exports = function(config) {
 			}
 		},
 		// test results reporter to use
-		// possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
+		// possible values: "dots", "progress", "junit", "growl", "coverage"
 		// available reporters: https://npmjs.org/browse/keyword/karma-reporter
-		reporters: ['spec'],
+		reporters: ["spec"],
 
 		// web server port
 		port: 9876,
@@ -75,16 +75,16 @@ module.exports = function(config) {
 		autoWatch: true,
 
 		plugins: [
-			require('karma-webpack')
-			, require('karma-chrome-launcher')
-			//, require('karma-phantomjs-launcher')
-			, require('karma-mocha')
+			require("karma-webpack"),
+			require("karma-chrome-launcher"),
+			// require("karma-phantomjs-launcher")
+			require("karma-mocha"),
 		],
 
 		// start these browsers
 		// available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-		//browsers: ['Chrome', 'Firefox', 'PhantomJS'],
-		browsers: ['Chrome'],
+		// browsers: ["Chrome", "Firefox", "PhantomJS"],
+		browsers: ["Chrome"],
 
 		// If browser does not capture in given timeout [ms], kill it
 		captureTimeout: 60000,

@@ -1,6 +1,8 @@
-'use strict';
-var React = require('react'),
-	d3 = require('d3');
+"use strict";
+
+import React from "react";
+
+const debugFlag = false;
 
 class PointAndFigureSeries extends React.Component {
 	handleClick(idx) {
@@ -15,18 +17,16 @@ class PointAndFigureSeries extends React.Component {
 		var anyBox, j = 0;
 		while (anyBox === undefined) {
 			if (this.context.plotData[j].close !== undefined) {
-				anyBox= this.context.plotData[j].boxes[0];
+				anyBox = this.context.plotData[j].boxes[0];
 			}
 			j++;
 		}
 
-		var props = this.props;
 		var boxHeight = Math.abs(this.context.yScale(anyBox.open) - this.context.yScale(anyBox.close));
 
 		var columns = this.context.plotData
 				.filter((d) => d.close !== undefined)
 				.map((d, idx) => {
-					var ohlc = d;
 					var boxes = d.boxes.map((box, i) => {
 						var boxshape;
 						if (d.direction > 0) {
@@ -38,13 +38,13 @@ class PointAndFigureSeries extends React.Component {
 								);
 						} else {
 							boxshape = (
-								<ellipse  key={idx + "-" + i} className="point_figure_down" cx={columnWidth/2} cy={this.context.yScale((box.open + box.close) / 2)}
-									rx={columnWidth/2} ry={boxHeight / 2} />
+								<ellipse key={idx + "-" + i} className="point_figure_down" cx={columnWidth / 2} cy={this.context.yScale((box.open + box.close) / 2)}
+									rx={columnWidth / 2} ry={boxHeight / 2} />
 								);
 						}
 						return boxshape;
 					});
-					var debug = false
+					var debug = debugFlag
 						? <rect x={0} y={0} height={980} width={columnWidth} style={{ opacity: 0.1 }} onClick={this.handleClick.bind(this, idx)}/>
 						: null;
 					var col = (<g key={idx}
@@ -61,7 +61,7 @@ class PointAndFigureSeries extends React.Component {
 			</g>
 		);
 	}
-};
+}
 
 PointAndFigureSeries.contextTypes = {
 	xScale: React.PropTypes.func.isRequired,
@@ -69,7 +69,7 @@ PointAndFigureSeries.contextTypes = {
 	xAccessor: React.PropTypes.func.isRequired,
 	yAccessor: React.PropTypes.func.isRequired,
 	plotData: React.PropTypes.array.isRequired,
-}
+};
 
 PointAndFigureSeries.defaultProps = { namespace: "ReStock.PointAndFigureSeries" };
 

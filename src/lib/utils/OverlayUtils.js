@@ -1,36 +1,36 @@
-'use strict';
+"use strict";
 
-var Utils = require('./utils');
-var MACalculator = require('./MovingAverageCalculator');
+import Utils from "./utils";
+import MACalculator from "./MovingAverageCalculator";
 
 var OverlayUtils = {
 	getToolTipLabel(props) {
 		if (props.type === "sma" || props.type === "ema") {
-			var tooltip = props.type.toUpperCase() + '(' + props.options.period + ')';
+			var tooltip = props.type.toUpperCase() + "(" + props.options.period + ")";
 			return tooltip;
 		}
-		return 'N/A';
+		return "N/A";
 	},/*
 	getYAccessor(chartId, props) {
 		if (props.type === "sma" || props.type === "ema") {
-			var key = props.type + props.options.period + '_chart_' + chartId;
+			var key = props.type + props.options.period + "_chart_" + chartId;
 			return (d) => d[key];
 		}
 		return false;
 	},*/
 	getYAccessorKey(chartId, props) {
 		if (props.type === "sma" || props.type === "ema") {
-			var key = props.type + props.options.period + '_chart_' + chartId;
+			var key = props.type + props.options.period + "_chart_" + chartId;
 			return key;
 		}
 		return false;
 	},
 	calculateOverlay(data, overlay) {
 		// console.log(overlay);
-		if (overlay.type === 'sma') {
-			data = MACalculator.calculateSMA(data, overlay.options.period, overlay.key, overlay.options.pluck || 'close');
-		} else if (overlay.type === 'ema') {
-			data = MACalculator.calculateEMA(data, overlay.options.period, overlay.key, overlay.options.pluck || 'close');
+		if (overlay.type === "sma") {
+			data = MACalculator.calculateSMA(data, overlay.options.period, overlay.key, overlay.options.pluck || "close");
+		} else if (overlay.type === "ema") {
+			data = MACalculator.calculateEMA(data, overlay.options.period, overlay.key, overlay.options.pluck || "close");
 		}
 		return data;
 	},
@@ -41,7 +41,7 @@ var OverlayUtils = {
 			each = data[i];
 			// console.log(i, each, accessor(each));
 			break;
-		};
+		}
 		return Utils.cloneMe(each);
 	},
 	lastDefined(data, accessor) {
@@ -51,9 +51,9 @@ var OverlayUtils = {
 			each = data[i];
 			// console.log(i, each, accessor(each));
 			break;
-		};
+		}
 		return Utils.cloneMe(each);
 	}
-}
+};
 
 module.exports = OverlayUtils;

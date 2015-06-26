@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
-var React = require('react');
-var shallowEqual = require("react/lib/shallowEqual");
+import React from "react";
+import shallowEqual from "react/lib/shallowEqual";
 
 class PureComponent extends React.Component {
 	shouldComponentUpdate(nextProps, nextState, nextContext) {

@@ -1,6 +1,6 @@
-'use strict';
-var React = require('react')
-	, d3 = require('d3');
+"use strict";
+var React = require("react")
+	, d3 = require("d3");
 
 class YAxis extends React.Component {
 	constructor(props) {
@@ -32,28 +32,28 @@ class YAxis extends React.Component {
 		if (this.props.tickSize) axis.tickSize(this.props.tickSize);
 		if (this.props.ticks) axis.ticks(this.props.ticks);
 		if (this.props.tickValues) axis.tickValues(this.props.tickValues);
-		
+
 		d3.select(React.findDOMNode(this)).call(axis);
 	}
 	render() {
 		var axisAt = this.props.axisAt
 			, range = this.context.xScale.range();
-		if (this.props.axisAt === 'left') axisAt = Math.min(range[0], range[1]) + this.props.axisPadding;
-		if (this.props.axisAt === 'right') axisAt = Math.max(range[0], range[1]) + this.props.axisPadding;
-		if (this.props.axisAt === 'middle') axisAt = (range[0] + range[1]) / 2 + this.props.axisPadding;
+		if (this.props.axisAt === "left") axisAt = Math.min(range[0], range[1]) + this.props.axisPadding;
+		if (this.props.axisAt === "right") axisAt = Math.max(range[0], range[1]) + this.props.axisPadding;
+		if (this.props.axisAt === "middle") axisAt = (range[0] + range[1]) / 2 + this.props.axisPadding;
 
 		return (
-			<g className='y axis' transform={'translate(' + axisAt + ', 0)'}></g>
+			<g className="y axis" transform={"translate(" + axisAt + ", 0)"}></g>
 		);
 	}
-};
+}
 
 YAxis.propTypes = {
 	axisAt: React.PropTypes.oneOfType([
-				React.PropTypes.oneOf(['left', 'right', 'middle'])
+				React.PropTypes.oneOf(["left", "right", "middle"])
 				, React.PropTypes.number
 			]).isRequired,
-	orient: React.PropTypes.oneOf(['left', 'right']).isRequired,
+	orient: React.PropTypes.oneOf(["left", "right"]).isRequired,
 	innerTickSize: React.PropTypes.number,
 	outerTickSize: React.PropTypes.number,
 	tickFormat: React.PropTypes.func,

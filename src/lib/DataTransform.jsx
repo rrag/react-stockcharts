@@ -1,9 +1,11 @@
-'use strict';
-var React = require('react');
-var ChartDataUtil = require('./utils/ChartDataUtil');
-var ChartTransformer = require('./utils/ChartTransformer');
-var EventHandler = require('./EventHandler');
-var Utils = require('./utils/utils');
+"use strict";
+
+import React from "react";
+
+import ChartDataUtil from "./utils/ChartDataUtil";
+import ChartTransformer from "./utils/ChartTransformer";
+import EventHandler from "./EventHandler";
+import Utils from "./utils/utils";
 
 class DataTransform extends React.Component {
 	transformData(props, context) {
@@ -11,13 +13,15 @@ class DataTransform extends React.Component {
 
 		if (context.dataTransformOptions || props.options) {
 			var options = {};
-			if (context.dataTransformOptions)
+			if (context.dataTransformOptions) {
 				Object.keys(context.dataTransformOptions).forEach((key) => options[key] = context.dataTransformOptions[key]);
-			if (props.options)
+			}
+			if (props.options) {
 				Object.keys(props.options).forEach((key) => options[key] = props.options[key]);
+			}
 		}
 
-		var passThroughProps = transformer(context.data, context.interval, options, context.dataTransformProps)
+		var passThroughProps = transformer(context.data, context.interval, options, context.dataTransformProps);
 		return passThroughProps;
 	}
 	componentWillMount() {
@@ -45,7 +49,7 @@ class DataTransform extends React.Component {
 			dataTransformOptions: this.state.dataTransformOptions,
 			dataTransformProps: this.state.dataTransformProps,
 			interval: this.state.interval,
-		}
+		};
 	}
 	render() {
 		var children = React.Children.map(this.props.children, (child) => {
@@ -60,12 +64,13 @@ class DataTransform extends React.Component {
 			? <EventHandler>{children}</EventHandler>
 			: <g>{children}</g>;
 	}
-};
+}
 
 DataTransform.propTypes = {
 	transformType: React.PropTypes.string.isRequired, // stockscale, none
 	options: React.PropTypes.object
-}
+};
+
 DataTransform.contextTypes = {
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
@@ -74,16 +79,18 @@ DataTransform.contextTypes = {
 	dataTransformProps: React.PropTypes.object,
 	interval: React.PropTypes.string.isRequired,
 	initialDisplay: React.PropTypes.number.isRequired,
-}
+};
+
 DataTransform.childContextTypes = {
 	data: React.PropTypes.object,
 	dataTransformOptions: React.PropTypes.object,
 	dataTransformProps: React.PropTypes.object,
 	interval: React.PropTypes.string,
-}
+};
+
 DataTransform.defaultProps = {
 	namespace: "ReStock.DataTransform",
 	transformType: "none"
-}
+};
 
 module.exports = DataTransform;
