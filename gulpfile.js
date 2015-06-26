@@ -247,23 +247,27 @@ gulp.task('style', function() {
 });
 
 gulp.task('lint', function() {
-	var jshint = require('gulp-jshint');
-	var react = require('gulp-react');
-	var stylish = require('jshint-stylish');
-	var notify = require('gulp-notify');
+	var eslint = require('gulp-eslint');
+	var babel = require('gulp-babel');
 
 	return gulp.src(['src/**/*.js', 'src/**/*.jsx', '*.js'])
-		.pipe(react({harmony: true}))
-		.pipe(jshint())
-		.pipe(jshint.reporter(stylish));
+		.pipe(eslint())
+		// eslint.format() outputs the lint results to the console.
+		// Alternatively use eslint.formatEach() (see Docs).
+		.pipe(eslint.format())
+		// To have the process exit with an error code (1) on
+		// lint error, return the stream and pipe to failOnError last.
+		// .pipe(eslint.failOnError());
 });
 
 gulp.task('release', ['build'], function(cb) {
 
 	// replacement for jsx --harmony -x jsx src build/cjs && jsx --harmony src build/cjs
-	var react = require('gulp-react');
+	// var react = require('gulp-react');
+	var babel = require('gulp-babel');
 	gulp.src(['src/**/*.js', 'src/**/*.jsx'])
-				.pipe(react({harmony: true}))
+				// .pipe(react({harmony: true}))
+				.pipe(babel())
 				.pipe(gulp.dest('build'));
 
 	// replacement for cp *.md build/cjs && cp .npmignore build/cjs

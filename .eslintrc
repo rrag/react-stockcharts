@@ -1,0 +1,21 @@
+{
+	"ecmaFeatures": {
+		"arrowFunctions": true,
+		"blockBindings": true,
+		"classes": true,
+		"destructuring": true,
+		"forOf": true,
+		"jsx": true,
+		"modules": true,
+		"templateStrings": true,
+	},
+	"env": {
+		"browser": true,
+		"node": true
+	},
+	"rules": {
+		"semi": [2, "always"],
+		"comma-dangle": [1, "always-multiline"],
+		"strict": [0, "global"]
+	}
+}
