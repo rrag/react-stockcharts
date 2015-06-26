@@ -6,8 +6,8 @@ var mousemove = 'mousemove.pan', mouseup = 'mouseup.pan';
 
 function d3_window(node) {
 	var d3win = node && (node.ownerDocument && node.ownerDocument.defaultView || node.document && node || node.defaultView);
-	console.log(node, d3win, window, window.top);
-	return d3win.top || d3win;
+	// console.log(node, d3win, window, window.top);
+	return d3win;
 }
 
 class EventCapture extends React.Component {
