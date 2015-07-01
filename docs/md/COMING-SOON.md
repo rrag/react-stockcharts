@@ -8,7 +8,7 @@
 
 #### Indicators
 
-- Moving Average Convergence Divergence (MACD) - v0.1
+- ~~Moving Average Convergence Divergence (MACD) - v0.1~~
 - Relative Strength Index (RSI) - v0.2
 - Stochastics - v0.2
 - More indicators - suggestions welcome - v0.2

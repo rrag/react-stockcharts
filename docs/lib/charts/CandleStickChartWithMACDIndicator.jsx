@@ -24,6 +24,8 @@ var ChartCanvas = ReStock.ChartCanvas
 	, MovingAverageTooltip = ReStock.MovingAverageTooltip
 	, CurrentCoordinate = ReStock.CurrentCoordinate
 	, AreaSeries = ReStock.AreaSeries
+	, EdgeContainer = ReStock.EdgeContainer
+	, EdgeIndicator = ReStock.EdgeIndicator
 	, MACDSeries = ReStock.MACDSeries
 	, MACDIndicator = ReStock.indicator.MACD
 	, MACDTooltip = ReStock.tooltip.MACDTooltip
@@ -39,7 +41,7 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 
 		return (
 			<ChartCanvas width={this.state.width} height={600}
-				margin={{left: 70, right: 70, top:20, bottom: 30}} data={this.props.data} interval="D" initialDisplay={30} >
+				margin={{left: 70, right: 70, top:20, bottom: 30}} data={this.props.data} interval="D" initialDisplay={150} >
 				<DataTransform transformType="stockscale">
 					<Chart id={1} yMousePointerDisplayLocation="right" height={390}
 							yMousePointerDisplayFormat={(y) => y.toFixed(2)} padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
@@ -73,7 +75,20 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 					</Chart>
 					<CurrentCoordinate forChart={2} forOverlay={3} />
 					<CurrentCoordinate forChart={2}/>
-
+					<EdgeContainer>
+						<EdgeIndicator className="horizontal" itemType="last" orient="right"
+							edgeAt="right" forChart={1} forOverlay={0} />
+						<EdgeIndicator className="horizontal" itemType="last" orient="right"
+							edgeAt="right" forChart={1} forOverlay={1} />
+						<EdgeIndicator className="horizontal" itemType="last" orient="right"
+							edgeAt="right" forChart={1} forOverlay={2} />
+						<EdgeIndicator className="horizontal" itemType="first" orient="left"
+							edgeAt="left" forChart={1} forOverlay={0} />
+						<EdgeIndicator className="horizontal" itemType="first" orient="left"
+							edgeAt="left" forChart={1} forOverlay={1} />
+						<EdgeIndicator className="horizontal" itemType="first" orient="left"
+							edgeAt="left" forChart={1} forOverlay={2} />
+					</EdgeContainer>
 					<Chart id={3} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}
 							height={140} origin={(w, h) => [0, h - 150]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }}>
 						<XAxis axisAt={150} orient="bottom"/>

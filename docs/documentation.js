@@ -15,6 +15,8 @@ var MenuItem = require('lib/MenuItem');
 
 
 var pages = [
+	require('lib/page/GettingStartedPage'),
+	require('lib/page/QuickStartExamplesPage'),
 	require('lib/page/OverviewPage'),
 	require('lib/page/AreaChartPage'),
 	require('lib/page/CandleStickChartPage'),
@@ -30,9 +32,16 @@ var pages = [
 	require('lib/page/KagiPage'),
 	require('lib/page/PointAndFigurePage'),
 	require('lib/page/RenkoPage'),
-	require('lib/page/ComingSoonPage')
+	require('lib/page/ComingSoonPage'),
 ];
 
+function compressString(string) {
+	string = string.replace(/\s+/g, '');
+	string = string.replace(/_+/g, '');
+	string = string.toLowerCase();
+	// console.log(string);
+	return string
+}
 function renderPage(data, dataFull, compareData) {
 	data.forEach((d, i) => {
 		d.date = new Date(parseDate(d.date).getTime());
@@ -71,12 +80,11 @@ function renderPage(data, dataFull, compareData) {
 
 
 	var selected = location.hash.replace('#/', '');
-	var selectedPage = pages.filter((page) => (page.title == selected));
+	var selectedPage = pages.filter((page) => (compressString(page.title) === compressString(selected)));
 
 	var firstPage = (selectedPage.length === 0) ? pages[0] : selectedPage[0];
 
 	// console.log(selected, selectedPage, firstPage);
-
 	class ExamplesPage extends React.Component {
 		constructor(props) {
 			super(props);
@@ -85,10 +93,17 @@ function renderPage(data, dataFull, compareData) {
 				selectedPage: firstPage
 			}
 		}
-		handleRouteChange(newPage) {
-			this.setState({
-				selectedPage: newPage
-			});
+		handleRouteChange() {
+			let selected = location.hash.replace('#/', '');
+			let selectedPage = pages.filter((page) => (compressString(page.title) === compressString(selected)));
+			if (selectedPage.length > 0) {
+				this.setState({
+					selectedPage: selectedPage[0]
+				});
+			}
+		}
+		componentDidMount() {
+			window.addEventListener("hashchange", this.handleRouteChange, false);
 		}
 		render() {
 			var Page = this.state.selectedPage;
@@ -98,7 +113,7 @@ function renderPage(data, dataFull, compareData) {
 					<MainContainer>
 						<Sidebar>
 							<MenuGroup>
-								{pages.map((eachPage, idx) => <MenuItem key={idx} page={eachPage} selectedPage={this.state.selectedPage} handleRouteChange={this.handleRouteChange} />)}
+								{pages.map((eachPage, idx) => <MenuItem key={idx} current={eachPage === this.state.selectedPage} title={eachPage.title} />)}
 							</MenuGroup>
 						</Sidebar>
 						<Page someData={data} lotsOfData={dataFull} compareData={compareData} />
