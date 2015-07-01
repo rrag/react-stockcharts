@@ -41,7 +41,7 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 
 		return (
 			<ChartCanvas width={this.state.width} height={600}
-				margin={{left: 70, right: 70, top:20, bottom: 30}} data={this.props.data} interval="D" initialDisplay={150} >
+				margin={{left: 70, right: 70, top:20, bottom: 30}} data={this.props.data} interval="D" initialDisplay={200} >
 				<DataTransform transformType="stockscale">
 					<Chart id={1} yMousePointerDisplayLocation="right" height={390}
 							yMousePointerDisplayFormat={(y) => y.toFixed(2)} padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
@@ -49,20 +49,16 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 						<XAxis axisAt="bottom" orient="bottom" noTicks={true}/>
 						<DataSeries yAccessor={CandlestickSeries.yAccessor} >
 							<CandlestickSeries />
-							<OverlaySeries id={0} type="sma" options={{ period: 20, pluck: 'close' }}>
+							<OverlaySeries id={0} type="ema" options={{ period: 26 }} >
 								<LineSeries/>
 							</OverlaySeries>
-							<OverlaySeries id={1} type="ema" options={{ period: 20 }} >
-								<LineSeries/>
-							</OverlaySeries>
-							<OverlaySeries id={2} type="ema" options={{ period: 50 }} >
+							<OverlaySeries id={1} type="ema" options={{ period: 12 }} >
 								<LineSeries/>
 							</OverlaySeries>
 						</DataSeries>
 					</Chart>
 					<CurrentCoordinate forChart={1} forOverlay={0} />
 					<CurrentCoordinate forChart={1} forOverlay={1} />
-					<CurrentCoordinate forChart={1} forOverlay={2} />
 					<Chart id={2} yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 							height={150} origin={(w, h) => [0, h - 310]} >
 						<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
@@ -80,14 +76,10 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 							edgeAt="right" forChart={1} forOverlay={0} />
 						<EdgeIndicator className="horizontal" itemType="last" orient="right"
 							edgeAt="right" forChart={1} forOverlay={1} />
-						<EdgeIndicator className="horizontal" itemType="last" orient="right"
-							edgeAt="right" forChart={1} forOverlay={2} />
 						<EdgeIndicator className="horizontal" itemType="first" orient="left"
 							edgeAt="left" forChart={1} forOverlay={0} />
 						<EdgeIndicator className="horizontal" itemType="first" orient="left"
 							edgeAt="left" forChart={1} forOverlay={1} />
-						<EdgeIndicator className="horizontal" itemType="first" orient="left"
-							edgeAt="left" forChart={1} forOverlay={2} />
 					</EdgeContainer>
 					<Chart id={3} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}
 							height={140} origin={(w, h) => [0, h - 150]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }}>
