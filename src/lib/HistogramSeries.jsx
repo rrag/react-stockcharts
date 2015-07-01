@@ -47,10 +47,14 @@ class HistogramSeries extends React.Component {
 
 					if (Math.round(barWidth) <= 1) {
 						return <line key={idx} className={className}
+									stroke={this.props.stroke}
+									fill={this.props.fill}
 									x1={Math.round(x)} y1={Math.round(y)}
 									x2={Math.round(x)} y2={Math.round(y + height)} />;
 					}
 					return <rect key={idx} className={className}
+								stroke={this.props.stroke}
+								fill={this.props.fill}
 								x={Math.round(x)}
 								y={Math.round(y)}
 								width={Math.round(barWidth)}
@@ -74,6 +78,8 @@ HistogramSeries.propTypes = {
 				, React.PropTypes.number
 			]).isRequired,
 	direction: React.PropTypes.oneOf(["up", "down"]).isRequired,
+	stroke: React.PropTypes.string,
+	fill: React.PropTypes.string,
 	className: React.PropTypes.oneOfType([
 				React.PropTypes.func, React.PropTypes.string
 			]).isRequired,

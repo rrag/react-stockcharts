@@ -42,7 +42,7 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 				margin={{left: 70, right: 70, top:20, bottom: 30}} data={this.props.data} interval="D" initialDisplay={30} >
 				<DataTransform transformType="stockscale">
 					<Chart id={1} yMousePointerDisplayLocation="right" height={390}
-							yMousePointerDisplayFormat={(y) => y.toFixed(2)} >
+							yMousePointerDisplayFormat={(y) => y.toFixed(2)} padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
 						<YAxis axisAt="right" orient="right" ticks={5} />
 						<XAxis axisAt="bottom" orient="bottom" noTicks={true}/>
 						<DataSeries yAccessor={CandlestickSeries.yAccessor} >
@@ -75,7 +75,7 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 					<CurrentCoordinate forChart={2}/>
 
 					<Chart id={3} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}
-							height={140} origin={(w, h) => [0, h - 150]} >
+							height={140} origin={(w, h) => [0, h - 150]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }}>
 						<XAxis axisAt={150} orient="bottom"/>
 						<YAxis axisAt="right" orient="right" ticks={2}/>
 						<DataSeries indicator={MACDIndicator} options={{ fast: 12, slow: 26, signal: 9 }} >
@@ -87,6 +87,7 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 					<TooltipContainer>
 						<OHLCTooltip forChart={1} origin={[-40, -10]}/>
 						<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 5]}/>
+						<MACDTooltip forChart={3} origin={(w, h) => [-38, h - 140]}/>
 					</TooltipContainer>
 				</DataTransform>
 			</ChartCanvas>

@@ -42,9 +42,9 @@ class XAxis extends React.Component {
 	render() {
 		var axisAt = this.props.axisAt
 			, range = this.context.yScale.range();
-		if (this.props.axisAt === "top") axisAt = Math.min(range[0], range[1]);
-		if (this.props.axisAt === "bottom") axisAt = Math.max(range[0], range[1]);
-		if (this.props.axisAt === "middle") axisAt = (range[0] + range[1]) / 2;
+		if (this.props.axisAt === "top") axisAt = 0;
+		if (this.props.axisAt === "bottom") axisAt = this.context.height;
+		if (this.props.axisAt === "middle") axisAt = (this.context.height) / 2;
 
 		return (
 			<g className="x axis" transform={"translate(0, " + axisAt + ")"}></g>
@@ -72,7 +72,9 @@ XAxis.defaultProps = {
 };
 XAxis.contextTypes = {
 	xScale: React.PropTypes.func.isRequired,
-	yScale: React.PropTypes.func.isRequired
+	yScale: React.PropTypes.func.isRequired,
+	height: React.PropTypes.number.isRequired,
+	width: React.PropTypes.number.isRequired,
 };
 
 

@@ -194,6 +194,9 @@
 			opacity: 0.2;
 			fill: none;
 		}
+		.macd-histogram {
+			opacity: 0.5;
+		}
 	}
 	.ma-container {
 		rect {
@@ -218,6 +221,9 @@
 		.tooltip-label {
 			fill: steelblue;
 			font-weight: bold;
+		}
+		tspan {
+			font-weight: normal;
 		}
 	}
 }

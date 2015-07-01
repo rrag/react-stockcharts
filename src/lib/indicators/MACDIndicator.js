@@ -1,22 +1,42 @@
 "use strict";
 
 import MACalculator from "../utils/MovingAverageCalculator";
+import Utils from "../utils/utils.js";
 
-var defaultOptions = { fast: 12, slow: 26, signal: 9, pluck: "close" };
+var defaultOptions = {
+	fast: 12,
+	slow: 26,
+	signal: 9,
+	pluck: "close",
+	fill: {
+		MACDLine: 'none',
+		signalLine: 'none',
+		histogram: 'steelblue'
+	},
+	stroke: {
+		MACDLine: 'red',
+		signalLine: 'green',
+		histogram: 'steelblue'
+	}
+};
 
 function MACDIndicator(options, chartProps) {
 
 	var prefix = "chart_" + chartProps.id;
+	var MACDOption = Utils.mergeRecursive(options, defaultOptions);
 	function MACD() {
+	}
+	MACD.options = function() {
+		return MACDOption;
 	}
 	MACD.calculate = function(data) {
 		// console.log(prefix, options);
-		var fastKey = "ema" + options.fast;
-		var slowKey = "ema" + options.slow;
-		var source = options.pluck || defaultOptions.pluck;
+		var fastKey = "ema" + MACDOption.fast;
+		var slowKey = "ema" + MACDOption.slow;
+		var source = MACDOption.pluck || defaultOptions.pluck;
 
-		var newData = MACalculator.calculateEMA(data, options.fast, fastKey, source, prefix);
-		newData = MACalculator.calculateEMA(newData, options.slow, slowKey, source, prefix);
+		var newData = MACalculator.calculateEMA(data, MACDOption.fast, fastKey, source, prefix);
+		newData = MACalculator.calculateEMA(newData, MACDOption.slow, slowKey, source, prefix);
 
 		newData.forEach(each => {
 			if (each[prefix]) {
@@ -26,7 +46,7 @@ function MACDIndicator(options, chartProps) {
 			}
 		});
 
-		MACalculator.calculateEMA(newData.slice(options.slow), options.signal, "signalLine", prefix + ".MACDLine", prefix);
+		MACalculator.calculateEMA(newData.slice(MACDOption.slow), MACDOption.signal, "signalLine", prefix + ".MACDLine", prefix);
 
 		newData.forEach(each => {
 			if (each[prefix]) {

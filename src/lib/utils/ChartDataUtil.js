@@ -67,25 +67,31 @@ var ChartDataUtil = {
 			height: other.height || ctx.height
 		};
 	},
-	getDimensions(innerDimension, chartProps) {
+	getDimensions(innerDimension, chartProps, margin) {
 
+		// console.log(margin);
 		var availableWidth = innerDimension.width;
 		var availableHeight = innerDimension.height;
 
-		var width = chartProps.width || availableWidth;
-		var height = chartProps.height || availableHeight;
+		var fullWidth = (chartProps.width || availableWidth);
+		var fullHeight = (chartProps.height || availableHeight);
+
+		/*let width = fullWidth - margin.left - margin.right;
+		let height = fullHeight - margin.top - margin.bottom;
+
+		console.log(margin, fullWidth, fullHeight, width, height);*/
 
 		return {
 			availableWidth: availableWidth,
 			availableHeight: availableHeight,
-			width: width,
-			height: height
+			width: fullWidth,
+			height: fullHeight
 		};
 	},
 	getChartConfigFor(innerDimension, chartProps, partialData, fullData, passThroughProps) {
+		var padding = this.getPaddingForChart(chartProps);
 		var dimensions = this.getDimensions(innerDimension, chartProps);
 		var indicator = this.getIndicator(chartProps, passThroughProps);
-
 		this.calculateIndicator(fullData, indicator, chartProps);
 
 		var accessors = this.getXYAccessors(chartProps, passThroughProps, indicator);
@@ -111,7 +117,9 @@ var ChartDataUtil = {
 				at: chartProps.yMousePointerDisplayLocation,
 				format: chartProps.yMousePointerDisplayFormat
 			},
+			indicatorOptions: indicator && indicator.options(),
 			origin: origin,
+			padding: padding,
 			accessors: accessors,
 			overlays: overlaysToAdd,
 			compareBase: compareBase,
@@ -142,8 +150,9 @@ var ChartDataUtil = {
 			xyValues
 			, config.scaleType
 			, partialData
-			, config.width
-			, config.height);
+			, config.width/* - config.margin.left - config.margin.right*/
+			, config.height/* - config.margin.top - config.margin.bottom*/
+			, config.padding);
 
 		if (domainL && domainR) scales.xScale.domain([domainL, domainR]);
 
@@ -215,6 +224,16 @@ var ChartDataUtil = {
 			yScale = d3.scale.linear();
 		}
 		return { xScale: xScale, yScale: yScale };
+	},
+	getPaddingForChart(props) {
+		// var margin;
+		/*React.Children.forEach(props.children, (child) => {
+			if (["ReStock.DataSeries"]
+					.indexOf(child.props.namespace) > -1) {
+				margin = props.innerMargin;
+			}
+		});*/
+		return props.padding;
 	},
 	getIndicator(props) {
 		var indicator;
@@ -348,9 +367,12 @@ var ChartDataUtil = {
 			});
 		return overlayValues;
 	},
-	updateScales(xyValues, scales, data, width, height) {
+	updateScales(xyValues, scales, data, width, height, padding) {
 		// console.log("updateScales");
-		scales.xScale.range([0, width]);
+		// width = width - margin.left - margin.right/**/
+		// height = height - margin.top - margin.bottom/**/
+
+		scales.xScale.range([padding.left, width - padding.right]);
 		// if polylinear scale then set data
 		if (scales.xScale.isPolyLinear && scales.xScale.isPolyLinear()) {
 			scales.xScale.data(data);
@@ -359,7 +381,7 @@ var ChartDataUtil = {
 			scales.xScale.domain(d3.extent(xyValues.xValues));
 		}
 
-		scales.yScale.range([height, 0]);
+		scales.yScale.range([height - padding.top, padding.bottom]);
 
 		var domain = d3.extent(xyValues.yValues);
 

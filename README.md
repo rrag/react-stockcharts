@@ -2,7 +2,7 @@
 
 Work in progress
 
-Documentation [here](http://rrag.github.io/react-stockcharts/) and [here](http://rrag.github.io/react-stockcharts/dashboard.html)
+Documentation [here](http://rrag.github.io/react-stockcharts/) and [here](http://rrag.github.io/react-stockcharts/documentation.html)
 
 ### Quick start examples
 

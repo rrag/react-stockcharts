@@ -44,23 +44,27 @@ class MACDSeries extends React.Component {
 			y2={this.context.yScale(0)} className="horizontal" />;
 	}
 	render() {
+		let { indicatorOptions } = this.context;
 		return (
 			<g className="macd-series">
-				<path d={this.getMACDLine()} className="macdline" />
-				<path d={this.getSignalLine()} className="signalline" />
-				<HistogramSeries baseAt={this.context.yScale(0)} />
+				<path d={this.getMACDLine()} stroke={indicatorOptions.stroke.MACDLine} fill="none"/>
+				<path d={this.getSignalLine()} stroke={indicatorOptions.stroke.signalLine} fill="none"/>
+				<HistogramSeries baseAt={this.context.yScale(0)} className="macd-histogram"
+					stroke={indicatorOptions.stroke.histogram} fill={indicatorOptions.fill.histogram} />
 				{this.getHorizontalLine()}
 			</g>
 		);
 	}
 }
-
+//  className="macdline" 
+//  className="signalline" 
 MACDSeries.contextTypes = {
 	xScale: React.PropTypes.func.isRequired,
 	yScale: React.PropTypes.func.isRequired,
 	xAccessor: React.PropTypes.func.isRequired,
 	yAccessor: React.PropTypes.func.isRequired,
 	plotData: React.PropTypes.array.isRequired,
+	indicatorOptions: React.PropTypes.object.isRequired,
 };
 
 MACDSeries.childContextTypes = {

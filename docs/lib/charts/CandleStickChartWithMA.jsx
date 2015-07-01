@@ -38,7 +38,8 @@ var CandleStickChartWithMA = React.createClass({
 			<ChartCanvas width={this.state.width} height={400}
 				margin={{left: 70, right: 70, top:10, bottom: 30}} data={this.props.data} interval="D" initialDisplay={30} >
 				<DataTransform transformType="stockscale">
-					<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}>
+					<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)} 
+						padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
 						<XAxis axisAt="bottom" orient="bottom"/>
 						<YAxis axisAt="right" orient="right" ticks={5} />
 						<DataSeries yAccessor={CandlestickSeries.yAccessor} >
@@ -60,7 +61,7 @@ var CandleStickChartWithMA = React.createClass({
 					<Chart id={2} yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 							height={150} origin={(w, h) => [0, h - 150]}>
 						<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-						<DataSeries yAccessor={(d) => d.volume} >
+						<DataSeries yAccessor={(d) => d.volume}>
 							<HistogramSeries className={(d) => d.close > d.open ? 'up' : 'down'} />
 							<OverlaySeries id={3} type="sma" options={{ period: 10, pluck:'volume' }} >
 								<AreaSeries/>

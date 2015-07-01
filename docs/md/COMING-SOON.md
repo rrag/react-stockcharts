@@ -44,8 +44,8 @@
     - ~~Do not use EventCaptureMixin, ChartContainerMixin~~
     - Update examples to not use ChartWidthMixin
 - ~~use babel~~
-- change require to import
-- execute lint & code style
+- ~~change require to import~~
+- ~~execute lint & code style~~
 - not use JSXTransformer
 - Publish to npm - v0.1-alpha
 - Getting Started page with steps to get started via npm
