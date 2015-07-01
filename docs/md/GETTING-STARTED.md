@@ -6,15 +6,22 @@ npm install react-stockcharts --save
 ### Bootstrap
 ```sh
 mkdir stockchart
+git clone https://gist.github.com/a27298bb7ae613d48ba2.git stockchart
 cd stockchart
-git clone https://gist.github.com/b13b739458e65ff93f4a.git
 npm install react-stockcharts
 ```
-edit the `index.html` to use the below instead of the existing one there
+edit the `index.html` to use the below 
 
 ```html
-<script src="node_modules/dist/react-stockcharts.min.js"></script>
+<script type="text/javascript" src="node_modules/react-stockcharts/dist/react-stockcharts.js"></script>
 ```
+
+instead of
+
+```html
+<script type="text/javascript" src="//rrag.github.io/react-stockcharts/dist/react-stockcharts.js"></script>
+```
+
 You should be good to go
 
 ---

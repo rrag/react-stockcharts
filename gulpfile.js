@@ -36,8 +36,8 @@ function build(myConfig, cb) {
 				NODE_ENV: JSON.stringify("production")
 			}
 		})
-		// , new webpack.optimize.DedupePlugin()
-		// , new webpack.optimize.UglifyJsPlugin()
+		, new webpack.optimize.DedupePlugin()
+		, new webpack.optimize.UglifyJsPlugin()
 	);
 
 	var compiler = webpack(myConfig);
@@ -266,6 +266,7 @@ gulp.task("lint-watch", function() {
 
 gulp.task("release", ["build"], function(cb) {
 
+	// del(["build/styles/unmodified"], cb);
 	// replacement for jsx --harmony -x jsx src build/cjs && jsx --harmony src build/cjs
 	// var react = require("gulp-react");
 	var babel = require("gulp-babel");
