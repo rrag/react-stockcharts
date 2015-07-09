@@ -2,7 +2,7 @@
   "name": "react-stockcharts",
   "version": "0.1.2",
   "description": "Stock charts using ReactJS and d3",
-  "main": "src/scripts/index.js",
+  "main": "src/index.js",
   "author": {
     "name": "Ragunath Ramaswamy"
   },
@@ -62,6 +62,16 @@
   "scripts": {
     "test": "echo 'test'",
     "publish": "echo 'publish'"
+  },
+  "browserify": {
+    "transform": [
+      [
+        "babelify",
+        {
+          "extensions": [".js", ".jsx"]
+        }
+      ]
+    ]
   },
   "keywords": [
     "react",

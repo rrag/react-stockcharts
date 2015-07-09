@@ -34,7 +34,7 @@ module.exports = {
 	},
 	resolve: {
 		// ReStock: "src/",
-		root: [__dirname, path.join(__dirname, "src"), path.join(__dirname, "docs")],
+		// root: [__dirname, path.join(__dirname, "src"), path.join(__dirname, "docs")],
 		extensions: ["", ".js", ".jsx", ".scss", ".md"]
 	}/*,
 	node: {

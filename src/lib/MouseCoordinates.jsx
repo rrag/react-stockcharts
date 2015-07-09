@@ -2,7 +2,7 @@
 
 import React from "react";
 import Utils from "./utils/utils";
-import PureComponent from "lib/utils/PureComponent";
+import PureComponent from "./utils/PureComponent";
 import CrossHair from "./CrossHair";
 
 class MouseCoordinates extends PureComponent {

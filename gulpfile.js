@@ -35,9 +35,9 @@ function build(myConfig, cb) {
 				// This has effect on the react lib size
 				NODE_ENV: JSON.stringify("production")
 			}
-		})
-		, new webpack.optimize.DedupePlugin()
-		, new webpack.optimize.UglifyJsPlugin()
+		}),
+		new webpack.optimize.DedupePlugin(),
+		new webpack.optimize.UglifyJsPlugin()
 	);
 
 	var compiler = webpack(myConfig);
@@ -289,6 +289,7 @@ gulp.task("release", ["build"], function(cb) {
 		var jsonFormat = require("json-format");
 		delete pkg.devDependencies;
 		delete pkg.scripts;
+		delete pkg.browserify;
 		pkg.main = "index.js";
 		buildPackage = jsonFormat(pkg).replace(/\t/g, "  ");
 	} catch (er) {

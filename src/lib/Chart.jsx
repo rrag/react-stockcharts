@@ -1,7 +1,7 @@
 "use strict";
 
 import React from "react";
-import PureComponent from "lib/utils/PureComponent";
+import PureComponent from "./utils/PureComponent";
 import Utils from "./utils/utils";
 
 class Chart extends PureComponent {
