@@ -65,14 +65,18 @@
     "docs": "gulp docs",
     "release": "gulp release",
     "lint": "gulp lint",
-    "publish": "echo 'publish'"
+    "test": "echo 'hello world'; echo 'again'",
+    "npmpublish": "npm version patch; gulp publish; cd build; npm publish; cd ..; git push --tags"
   },
   "browserify": {
     "transform": [
       [
         "babelify",
         {
-          "extensions": [".js", ".jsx"]
+          "extensions": [
+            ".js",
+            ".jsx"
+          ]
         }
       ]
     ]
