@@ -60,19 +60,22 @@
     "webpack-dev-server": "^1.10.1"
   },
   "scripts": {
-    "test": "echo 'test'",
+    "test": "echo 'hello world'; echo 'again'",
     "watch": "gulp watch",
     "docs": "gulp docs",
     "release": "gulp release",
     "lint": "gulp lint",
-    "publish": "echo 'publish'"
+    "npmpublish": "npm version patch; gulp release; cd build; npm publish; cd ..; git push --tags"
   },
   "browserify": {
     "transform": [
       [
         "babelify",
         {
-          "extensions": [".js", ".jsx"]
+          "extensions": [
+            ".js",
+            ".jsx"
+          ]
         }
       ]
     ]

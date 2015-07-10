@@ -4,3 +4,4 @@ build
 .sass-cache
 /tmp
 .fuse*
+npm-debug.log
