@@ -1,6 +1,6 @@
 {
   "name": "react-stockcharts",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Stock charts using ReactJS and d3",
   "main": "src/index.js",
   "author": {
@@ -60,12 +60,11 @@
     "webpack-dev-server": "^1.10.1"
   },
   "scripts": {
-    "test": "echo 'test'",
+    "test": "echo 'hello world'; echo 'again'",
     "watch": "gulp watch",
     "docs": "gulp docs",
     "release": "gulp release",
     "lint": "gulp lint",
-    "test": "echo 'hello world'; echo 'again'",
     "npmpublish": "npm version patch; gulp publish; cd build; npm publish; cd ..; git push --tags"
   },
   "browserify": {
