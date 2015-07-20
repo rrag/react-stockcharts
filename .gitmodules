@@ -40,3 +40,6 @@
 [submodule "docs/examples/CandleStickStockScaleChartWithVolumeHistogramV3"]
 	path = docs/examples/CandleStickStockScaleChartWithVolumeHistogramV3
 	url = git@gist.github.com:/2dc9dd83567cd41c830a.git
+[submodule "docs/examples/CandleStickChartWithMACDIndicator"]
+	path = docs/examples/CandleStickChartWithMACDIndicator
+	url = git@gist.github.com:/109a2b8021689e1ffc79.git
