@@ -14,9 +14,9 @@ class MACDTooltip extends React.Component {
 		var macd = item[`chart_${this.props.forChart}`];
 		var format = chartData.config.mouseCoordinates.format;
 
-		var MACDLine = (macd && format(macd.MACDLine)) || "n/a";
-		var signalLine = (macd && format(macd.signalLine)) || "n/a";
-		var histogram = (macd && format(macd.histogram)) || "n/a";
+		var MACDLine = (macd && macd.MACDLine && format(macd.MACDLine)) || "n/a";
+		var signalLine = (macd && macd.signalLine && format(macd.signalLine)) || "n/a";
+		var histogram = (macd && macd.histogram && format(macd.histogram)) || "n/a";
 
 		var origin = typeof this.props.origin === "function"
 			? this.props.origin(this.context.width, this.context.height)

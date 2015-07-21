@@ -2,7 +2,10 @@
 
 import React from "react";
 import Utils from "./utils/utils";
+import PureComponent from "./utils/PureComponent";
 import ChartDataUtil from "./utils/ChartDataUtil";
+
+import objectAssign from "object-assign";
 
 function getLongValue(value) {
 	if (value instanceof Date) {
@@ -33,7 +36,7 @@ class EventHandler extends React.Component {
 	}
 	componentWillMount() {
 		var { props, context } = this;
-		var { data, initialDisplay, dataTransformProps, interval } = context;
+		var { data, initialDisplay, initialStartIndex, dataTransformProps, interval } = context;
 
 		var dataForInterval = data[interval];
 		var mainChart = ChartDataUtil.getMainChart(props.children);
@@ -61,7 +64,7 @@ class EventHandler extends React.Component {
 
 		var newPlotData = dataForInterval.slice(beginIndex, endIndex);
 		var newChartData = ChartDataUtil.getChartData(props, context, plotData, data, dataTransformProps);
-
+		console.log("componentWillReceiveProps");
 		this.setState({
 			chartData: newChartData,
 			plotData: newPlotData,
@@ -128,7 +131,7 @@ class EventHandler extends React.Component {
 	handleZoom(zoomDirection, mouseXY) {
 		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
 		var { mainChart, chartData, plotData, interval } = this.state;
-		var { data } = this.context;
+		var { data, recordInitialState } = this.context;
 
 		var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0],
 			item = ChartDataUtil.getClosestItem(plotData, mouseXY, chart),
@@ -162,6 +165,12 @@ class EventHandler extends React.Component {
 			chartData: newChartData,
 			plotData: dataToPlot.data,
 			interval: dataToPlot.interval
+		}, () => {
+			recordInitialState({
+				beginIndex: dataToPlot.leftIndex,
+				interval: dataToPlot.interval,
+				displayCount: dataToPlot.rightIndex - dataToPlot.leftIndex,
+			});
 		});
 	}
 
@@ -178,7 +187,7 @@ class EventHandler extends React.Component {
 		// console.log("mousePosition ", mousePosition);
 		/* can also use plotData, use this if you want to pan and show only within that data set*/
 		var { mainChart, chartData, interval, panStartDomain, panOrigin } = this.state;
-		var { data } = this.context;
+		var { data, recordInitialState } = this.context;
 		if (panStartDomain === null) {
 			this.handlePanStart(startDomain, mousePosition);
 		} else {
@@ -209,7 +218,9 @@ class EventHandler extends React.Component {
 				var leftX = Utils.getClosestItemIndexes(fullData, domainL, xAccessor);
 				var rightX = Utils.getClosestItemIndexes(fullData, domainR, xAccessor);
 
-				var filteredData = fullData.slice(leftX.right, rightX.right);
+				let beginIndex = leftX.right;
+				let endIndex = rightX.right;
+				var filteredData = fullData.slice(beginIndex, endIndex);
 
 				var newChartData = chartData.map((eachChart) => {
 					var plot = ChartDataUtil.getChartPlotFor(eachChart.config, filteredData, domainL, domainR);
@@ -234,6 +245,12 @@ class EventHandler extends React.Component {
 					// show: true,
 					mouseXY: mousePosition,
 					currentCharts: currentCharts,
+				}, () => {
+					recordInitialState({
+						beginIndex: beginIndex,
+						interval: interval,
+						displayCount: endIndex - beginIndex,
+					});
 				});
 			});
 		}
@@ -254,7 +271,7 @@ class EventHandler extends React.Component {
 		var children = React.Children.map(this.props.children, (child) => {
 			var newChild = Utils.isReactVersion13()
 				? React.withContext(this.getChildContext(), () => {
-					return React.createElement(child.type, Utils.mergeObject({ key: child.key, ref: child.ref}, child.props));
+					return React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 				})
 				: React.cloneElement(child);
 			return newChild;
@@ -273,8 +290,11 @@ EventHandler.contextTypes = {
 	dataTransformProps: React.PropTypes.object,
 	plotData: React.PropTypes.array,
 	chartData: React.PropTypes.array,
+	initialStartIndex: React.PropTypes.number.isRequired,
 	initialDisplay: React.PropTypes.number.isRequired,
 	interval: React.PropTypes.string,
+
+	recordInitialState: React.PropTypes.func.isRequired,
 };
 
 EventHandler.childContextTypes = {
@@ -286,7 +306,6 @@ EventHandler.childContextTypes = {
 	interval: React.PropTypes.string,
 	currentCharts: React.PropTypes.array,
 	mainChart: React.PropTypes.number,
-
 
 	onMouseMove: React.PropTypes.func,
 	onMouseEnter: React.PropTypes.func,

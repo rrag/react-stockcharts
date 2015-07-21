@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "d3": "^3.5.6",
+    "object-assign": "^3.0.0",
     "react": "^0.13.3"
   },
   "devDependencies": {
@@ -65,7 +66,10 @@
     "docs": "gulp docs",
     "release": "gulp release",
     "lint": "gulp lint",
-    "npmpublish": "npm version patch; gulp release; cd build; npm publish; cd ..; git push --tags"
+    "npm-publish-patch": "npm version patch",
+    "preversion": "npm lint",
+    "version": "gulp release",
+    "postversion": "cd build; npm publish; cd..; git push origin master && git push --tags"
   },
   "browserify": {
     "transform": [

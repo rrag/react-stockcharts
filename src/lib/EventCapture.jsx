@@ -76,13 +76,14 @@ class EventCapture extends React.Component {
 			var dx = mouseEvent.pageX - mouseXY[0],
 				dy = mouseEvent.pageY - mouseXY[1];
 
-			this.setState({
-				deltaXY: [dx, dy]
-			});
 			var win = d3Window(React.findDOMNode(this.refs.capture));
 			d3.select(win)
 				.on(mousemove, this.handlePan)
 				.on(mouseup, this.handlePanEnd);
+
+			this.setState({
+				deltaXY: [dx, dy]
+			});
 		} else {
 			if (!this.context.focus && this.context.onFocus) this.context.onFocus(true);
 		}

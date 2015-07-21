@@ -4,8 +4,13 @@ import React from "react";
 import ChartDataUtil from "./utils/ChartDataUtil";
 import Canvas from "./Canvas";
 import Utils from "./utils/utils";
+import objectAssign from "object-assign";
 
 class ChartCanvas extends React.Component {
+	constructor() {
+		super();
+		this.recordInitialState = this.recordInitialState.bind(this);
+	}
 	getAvailableHeight(props) {
 		return props.height - props.margin.top - props.margin.bottom;
 	}
@@ -19,8 +24,10 @@ class ChartCanvas extends React.Component {
 			data: this.state.data,
 			interval: this.props.interval,
 			initialDisplay: this.props.initialDisplay || this.state.plotData.length,
+			initialStartIndex: this.props.initialStartIndex || 0,
 			plotData: this.state.plotData,
 			chartData: this.state.chartData,
+			recordInitialState: this.recordInitialState,
 		};
 	}
 	componentWillMount() {
@@ -51,12 +58,18 @@ class ChartCanvas extends React.Component {
 	getCanvas() {
 		return this.refs.canvas.getCanvas();
 	}
+	recordInitialState(initial) {
+		this.setState({
+			initial: initial
+		})
+		// console.log("recordInitialState ...", initial);
+	}
 	render() {
 		var w = this.getAvailableWidth(this.props), h = this.getAvailableHeight(this.props);
 		var children = React.Children.map(this.props.children, (child) => {
 			var newChild = Utils.isReactVersion13()
 				? React.withContext(this.getChildContext(), () => {
-					return React.createElement(child.type, Utils.mergeObject({ key: child.key, ref: child.ref}, child.props));
+					return React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 				})
 				: React.cloneElement(child);
 			return newChild;
@@ -93,10 +106,12 @@ ChartCanvas.childContextTypes = {
 	data: React.PropTypes.object.isRequired,
 	interval: React.PropTypes.string.isRequired,
 	initialDisplay: React.PropTypes.number.isRequired,
+	initialStartIndex: React.PropTypes.number.isRequired,
 	plotData: React.PropTypes.array,
 	// canvas: React.PropTypes.any,
-
 	chartData: React.PropTypes.array,
+
+	recordInitialState: React.PropTypes.func.isRequired,
 };
 
 ChartCanvas.defaultProps = {

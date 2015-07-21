@@ -405,7 +405,7 @@ var ChartDataUtil = {
 		var allowedIntervals = ["D", "W", "M"];
 		// console.log(domainL, domainR, data, width);
 
-		var dataForInterval, filteredData, interval, leftX, rightX;
+		var dataForInterval, filteredData, interval, leftX, rightX, leftIndex, rightIndex;
 		for (var i = 0; i < allowedIntervals.length; i++) {
 			interval = allowedIntervals[i];
 			dataForInterval = data[interval];
@@ -413,7 +413,10 @@ var ChartDataUtil = {
 			leftX = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor);
 			rightX = Utils.getClosestItemIndexes(dataForInterval, domainR, xAccessor);
 
-			filteredData = dataForInterval.slice(leftX.right, rightX.right);
+			leftIndex = leftX.right;
+			rightIndex = rightX.right;
+
+			filteredData = dataForInterval.slice(leftIndex, rightIndex);
 
 			// console.log(filteredData.length, width * threshold);
 			if (filteredData.length < width * threshold) break;
@@ -423,7 +426,9 @@ var ChartDataUtil = {
 
 		return {
 			interval: interval,
-			data: filteredData
+			data: filteredData,
+			leftIndex: leftIndex,
+			rightIndex: rightIndex
 		};
 	}
 };
