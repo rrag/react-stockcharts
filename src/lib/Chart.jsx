@@ -28,7 +28,16 @@ class Chart extends PureComponent {
 			: this.props.origin;
 		return origin;
 	}
+	componentDidMount() {
+		console.log("Chart.componentDidMount()");
+		let ctx = this.getChildContext();
+		let canvas = this.context.createCanvas(this.getOrigin(), ctx.width, ctx.height);
+		this.setState({
+			canvasContext: canvas.getContext('2d')
+		});
+	}
 	render() {
+		console.log("Chart.render()");
 		var origin = this.getOrigin();
 		var children = React.Children.map(this.props.children, (child) => {
 			var newChild = Utils.isReactVersion13()
@@ -65,12 +74,14 @@ Chart.defaultProps = {
 	yDomainUpdate: true,
 	origin: [0, 0],
 	padding: { top: 0, right: 0, bottom: 0, left: 0 },
+	// ref: (...args) => {console.log(args[1].getPublicInstance())},
 };
 
 Chart.contextTypes = {
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
 	chartData: React.PropTypes.array,
+	createCanvas: React.PropTypes.func,
 };
 
 Chart.childContextTypes = {

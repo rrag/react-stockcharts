@@ -82,7 +82,8 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 							edgeAt="left" forChart={1} forOverlay={1} />
 					</EdgeContainer>
 					<Chart id={3} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}
-							height={140} origin={(w, h) => [0, h - 150]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }}>
+							height={140} origin={(w, h) => [0, h - 150]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }}
+							>
 						<XAxis axisAt={150} orient="bottom"/>
 						<YAxis axisAt="right" orient="right" ticks={2}/>
 						<DataSeries indicator={MACDIndicator} options={{ fast: 12, slow: 26, signal: 9 }} >

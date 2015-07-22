@@ -19,6 +19,11 @@ myConfig.entry = {
 	"d3": "d3"
 } // removing React external since 0.14 is not published yet, still in alpha 2
 */
+
+myConfig.externals = {
+	"d3": "d3",
+};
+
 myConfig.remarkable = {
 	preset: "full",
 	html: true,

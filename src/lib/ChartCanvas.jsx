@@ -10,6 +10,7 @@ class ChartCanvas extends React.Component {
 	constructor() {
 		super();
 		this.recordInitialState = this.recordInitialState.bind(this);
+		this.createCanvas = this.createCanvas.bind(this);
 	}
 	getAvailableHeight(props) {
 		return props.height - props.margin.top - props.margin.bottom;
@@ -28,6 +29,8 @@ class ChartCanvas extends React.Component {
 			plotData: this.state.plotData,
 			chartData: this.state.chartData,
 			recordInitialState: this.recordInitialState,
+			createCanvas: this.createCanvas,
+			type: this.props.type,
 		};
 	}
 	updateState(props, context) {
@@ -57,14 +60,25 @@ class ChartCanvas extends React.Component {
 	componentWillReceiveProps(nextProps) {
 		this.updateState(nextProps)
 	}
-	getCanvas() {
-		return this.refs.canvas.getCanvas();
+	createCanvas(origin, width, height) {
+		let canvas = document.createElement("canvas"); //<Canvas width={width} height={height} top={origin[1]} left={origin[0]} />
+		canvas.setAttribute("width", width);
+		canvas.setAttribute("height", height);
+		canvas.setAttribute("height", height);
+		canvas.setAttribute("style", `position: absolute; left: ${ origin[0] }px; top: ${ origin[1] }px; z-index: -2`);
+		/*
+			<canvas
+				width={this.props.width}
+				height={this.props.height}
+				style={{ position: "absolute", left: this.props.left, top: this.props.top, zIndex: -1 }}/>
+		*/
+		React.findDOMNode(this.refs.canvasContainer).appendChild(canvas);
+		return canvas;
 	}
 	recordInitialState(initial) {
 		this.setState({
 			initial: initial
 		})
-		// console.log("recordInitialState ...", initial);
 	}
 	render() {
 		var w = this.getAvailableWidth(this.props), h = this.getAvailableHeight(this.props);
@@ -78,7 +92,8 @@ class ChartCanvas extends React.Component {
 		});
 		return (
 			<div style={{position: "relative"}}>
-				<svg width={this.props.width} height={this.props.height}>
+				<div ref="canvasContainer" style={{ position: "relative", top: this.props.margin.top, left: this.props.margin.left}}></div>
+				<svg width={this.props.width} height={this.props.height} style={{ position: "absolute" }}>
 					<defs>
 						<clipPath id="chart-area-clip">
 							<rect x="0" y="0" width={w} height={h} />
@@ -97,7 +112,8 @@ ChartCanvas.propTypes = {
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
 	margin: React.PropTypes.object,
-	interval: React.PropTypes.oneOf(["D"]).isRequired, // ,"m1", "m5", "m15", "W", "M"
+	interval: React.PropTypes.oneOf(["D", "W", "M"]).isRequired, // ,"m1", "m5", "m15", "W", "M"
+	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 	data: React.PropTypes.array.isRequired,
 	initialDisplay: React.PropTypes.number,
 };
@@ -110,15 +126,17 @@ ChartCanvas.childContextTypes = {
 	initialDisplay: React.PropTypes.number.isRequired,
 	initialStartIndex: React.PropTypes.number.isRequired,
 	plotData: React.PropTypes.array,
-	// canvas: React.PropTypes.any,
 	chartData: React.PropTypes.array,
 
+	createCanvas: React.PropTypes.func,
+	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 	recordInitialState: React.PropTypes.func.isRequired,
 };
 
 ChartCanvas.defaultProps = {
 	margin: {top: 20, right: 30, bottom: 30, left: 80},
 	interval: "D",
+	type: "hybrid"
 };
 
 module.exports = ChartCanvas;
