@@ -5,6 +5,10 @@ import PureComponent from "./utils/PureComponent";
 import Utils from "./utils/utils";
 
 class Chart extends PureComponent {
+	constructor() {
+		super();
+		this.state = {};
+	}
 	getChildContext() {
 		var chartData = this.context.chartData.filter((each) => each.id === this.props.id)[0];
 		var origin = this.getOrigin();
@@ -20,6 +24,7 @@ class Chart extends PureComponent {
 			isCompareSeries: chartData.config.compareSeries.length > 0,
 			width: this.props.width || this.context.width,
 			height: this.props.height || this.context.height,
+			canvasContext: this.state.canvasContext,
 		};
 	}
 	getOrigin() {
@@ -27,6 +32,13 @@ class Chart extends PureComponent {
 			? this.props.origin(this.context.width, this.context.height)
 			: this.props.origin;
 		return origin;
+	}
+	componentWillUpdate() {
+		if (this.state.canvasContext) {
+			var width = this.props.width || this.context.width;
+			var height = this.props.height || this.context.height;
+			this.state.canvasContext.clearRect(0, 0, width, height);
+		}
 	}
 	componentDidMount() {
 		console.log("Chart.componentDidMount()");
@@ -37,7 +49,7 @@ class Chart extends PureComponent {
 		});
 	}
 	render() {
-		console.log("Chart.render()");
+		// console.log("Chart.render()");
 		var origin = this.getOrigin();
 		var children = React.Children.map(this.props.children, (child) => {
 			var newChild = Utils.isReactVersion13()
@@ -95,6 +107,7 @@ Chart.childContextTypes = {
 	compareSeries: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
+	canvasContext: React.PropTypes.object,
 };
 
 module.exports = Chart;

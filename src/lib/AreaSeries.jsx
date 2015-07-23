@@ -28,6 +28,7 @@ class AreaSeries extends React.Component {
 		return areaSeries(this.context.plotData);
 	}
 	render() {
+		if (this.context.type !== "svg") return null;
 		return (
 			<g>
 				<path d={this.getPath()} className="line line-stroke" />
@@ -43,6 +44,8 @@ AreaSeries.contextTypes = {
 	xAccessor: React.PropTypes.func.isRequired,
 	yAccessor: React.PropTypes.func.isRequired,
 	plotData: React.PropTypes.array.isRequired,
+	canvasContext: React.PropTypes.object,
+	type: React.PropTypes.string,
 };
 
 AreaSeries.defaultProps = { namespace: "ReStock.AreaSeries" };

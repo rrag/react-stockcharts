@@ -6,6 +6,10 @@ import Canvas from "./Canvas";
 import Utils from "./utils/utils";
 import objectAssign from "object-assign";
 
+import d3 from "d3";
+
+var c = d3.scale.category10();
+
 class ChartCanvas extends React.Component {
 	constructor() {
 		super();
@@ -65,13 +69,11 @@ class ChartCanvas extends React.Component {
 		canvas.setAttribute("width", width);
 		canvas.setAttribute("height", height);
 		canvas.setAttribute("height", height);
-		canvas.setAttribute("style", `position: absolute; left: ${ origin[0] }px; top: ${ origin[1] }px; z-index: -2`);
-		/*
-			<canvas
-				width={this.props.width}
-				height={this.props.height}
-				style={{ position: "absolute", left: this.props.left, top: this.props.top, zIndex: -1 }}/>
-		*/
+		canvas.setAttribute("style", `position: absolute; left: ${ origin[0] }px; top: ${ origin[1] }px; z-index: -1`);
+		var ctx = canvas.getContext("2d");
+		/*var l = React.findDOMNode(this.refs.canvasContainer).childNodes.length;
+		ctx.fillStyle = c(l);
+		ctx.fillRect(0, 0, 20 * (10 - l), height);*/
 		React.findDOMNode(this.refs.canvasContainer).appendChild(canvas);
 		return canvas;
 	}

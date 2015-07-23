@@ -64,6 +64,7 @@ class HistogramSeries extends React.Component {
 	}
 	render() {
 		// console.log("HistogramSeries.render()");
+		if (this.context.type !== "svg") return null;
 		return (
 			<g className="histogram">
 				{this.getBars()}
@@ -98,6 +99,8 @@ HistogramSeries.contextTypes = {
 	xAccessor: React.PropTypes.func.isRequired,
 	yAccessor: React.PropTypes.func.isRequired,
 	plotData: React.PropTypes.array.isRequired,
+	canvasContext: React.PropTypes.object,
+	type: React.PropTypes.string,
 };
 
 module.exports = HistogramSeries;

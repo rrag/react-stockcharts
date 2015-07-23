@@ -16,6 +16,7 @@ class LineSeries extends React.Component {
 		return dataSeries(this.context.plotData);
 	}
 	render() {
+		// if (this.context.type !== "svg") return null;
 		var className = this.props.className.concat((this.context.stroke !== undefined) ? "" : " line-stroke");
 		return (
 			<path d={this.getPath()} stroke={this.context.stroke} fill="none" className={className}/>
@@ -36,7 +37,9 @@ LineSeries.contextTypes = {
 	xAccessor: React.PropTypes.func.isRequired,
 	yAccessor: React.PropTypes.func.isRequired,
 	plotData: React.PropTypes.array.isRequired,
-	stroke: React.PropTypes.string
+	stroke: React.PropTypes.string/*,
+	canvasContext: React.PropTypes.object,
+	type: React.PropTypes.string,*/
 };
 
 module.exports = LineSeries;
