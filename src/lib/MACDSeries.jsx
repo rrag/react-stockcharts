@@ -44,7 +44,7 @@ class MACDSeries extends React.Component {
 			y2={this.context.yScale(0)} className="horizontal" />;
 	}
 	render() {
-		// if (this.context.type !== "svg") return null;
+		if (this.context.type !== "svg") return null;
 		let { indicatorOptions } = this.context;
 		return (
 			<g className="macd-series">
@@ -65,9 +65,9 @@ MACDSeries.contextTypes = {
 	xAccessor: React.PropTypes.func.isRequired,
 	yAccessor: React.PropTypes.func.isRequired,
 	plotData: React.PropTypes.array.isRequired,
-	indicatorOptions: React.PropTypes.object.isRequired/*,
+	indicatorOptions: React.PropTypes.object.isRequired,
 	canvasContext: React.PropTypes.object,
-	type: React.PropTypes.string,*/
+	type: React.PropTypes.string,
 };
 
 MACDSeries.childContextTypes = {

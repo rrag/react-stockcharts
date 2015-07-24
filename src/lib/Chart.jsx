@@ -37,15 +37,17 @@ class Chart extends PureComponent {
 		if (this.state.canvasContext) {
 			var width = this.props.width || this.context.width;
 			var height = this.props.height || this.context.height;
-			this.state.canvasContext.clearRect(0, 0, width, height);
+			this.state.canvasContext.clearRect(-0.5, -0.5, width, height);
 		}
 	}
 	componentDidMount() {
 		console.log("Chart.componentDidMount()");
 		let ctx = this.getChildContext();
 		let canvas = this.context.createCanvas(this.getOrigin(), ctx.width, ctx.height);
+		let context = canvas.getContext('2d');
+		// context.translate(0.5, 0);
 		this.setState({
-			canvasContext: canvas.getContext('2d')
+			canvasContext: context
 		});
 	}
 	render() {

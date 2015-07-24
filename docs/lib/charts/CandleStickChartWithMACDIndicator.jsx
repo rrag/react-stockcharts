@@ -41,7 +41,8 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 
 		return (
 			<ChartCanvas width={this.state.width} height={600}
-				margin={{left: 70, right: 70, top:20, bottom: 30}} data={this.props.data} interval="D" initialDisplay={200} >
+				margin={{left: 70, right: 70, top:20, bottom: 30}} data={this.props.data} interval="D"
+				initialDisplay={200} type="hybrid" >
 				<DataTransform transformType="stockscale">
 					<Chart id={1} yMousePointerDisplayLocation="right" height={390}
 							yMousePointerDisplayFormat={(y) => y.toFixed(2)} padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>

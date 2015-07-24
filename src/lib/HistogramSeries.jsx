@@ -63,7 +63,6 @@ class HistogramSeries extends React.Component {
 		return bars;
 	}
 	render() {
-		// console.log("HistogramSeries.render()");
 		if (this.context.type !== "svg") return null;
 		return (
 			<g className="histogram">
