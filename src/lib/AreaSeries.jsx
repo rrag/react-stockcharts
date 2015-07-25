@@ -9,6 +9,54 @@ class AreaSeries extends React.Component {
 		this.getPath = this.getPath.bind(this);
 		this.getArea = this.getArea.bind(this);
 	}
+	componentDidUpdate(prevProps, prevState, prevContext) {
+		if (this.context.type !== "svg") this.drawOnCanvas();
+	}
+	drawOnCanvas() {
+		var { canvasContext: ctx, plotData, xScale, yScale, xAccessor, yAccessor } = this.context;
+		var height = yScale.range()[0];
+		var path = this.getPath();
+		var begin = true;
+
+		plotData.forEach((d) => {
+			if (yAccessor(d) === undefined) {
+				ctx.stroke();
+				ctx.beginPath();
+				begin = true;
+			} else {
+				if (begin) {
+					ctx.beginPath();
+					begin = false;
+					let [x, y] = [xScale(xAccessor(d)), yScale(yAccessor(d))];
+					ctx.moveTo(x, y);
+				}
+				ctx.lineTo(xScale(xAccessor(d)), yScale(yAccessor(d)));
+			}
+		});
+		ctx.stroke();
+
+		begin = true;
+		plotData.forEach((d) => {
+			if (yAccessor(d) === undefined) {
+				ctx.stroke();
+				ctx.beginPath();
+				begin = true;
+			} else {
+				if (begin) {
+					ctx.beginPath();
+					begin = false;
+					let [x, y] = [xScale(xAccessor(d)), yScale(yAccessor(d))];
+					ctx.moveTo(x, height);
+					ctx.lineTo(x, y);
+				}
+				ctx.lineTo(xScale(xAccessor(d)), yScale(yAccessor(d)));
+			}
+		});
+
+		var last = plotData[plotData.length - 1];
+		ctx.lineTo(xScale(xAccessor(last)), height);
+		ctx.fill();
+	}
 	getPath() {
 		var dataSeries = d3.svg.line()
 			.defined((d) => this.context.yAccessor(d) !== undefined)

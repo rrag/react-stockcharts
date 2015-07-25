@@ -6,6 +6,40 @@ class HistogramSeries extends React.Component {
 	constructor(props) {
 		super(props);
 		this.getBars = this.getBars.bind(this);
+		this.getBarsSVG = this.getBarsSVG.bind(this);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+	}
+	componentDidUpdate(prevProps, prevState, prevContext) {
+		if (this.context.type !== "svg") this.drawOnCanvas();
+	}
+	drawOnCanvas() {
+		var ctx = this.context.canvasContext;
+		var bars = this.getBars();
+		bars.forEach(d => {
+			if (d.barWidth < 1) {
+				/* <line key={idx} className={d.className}
+							stroke={this.props.stroke}
+							fill={this.props.fill}
+							x1={d.x} y1={d.y}
+							x2={d.x} y2={d.y + d.height} />*/
+				ctx.beginPath();
+				ctx.moveTo(d.x, d.y);
+				ctx.lineTo(d.x, d.y + d.height);
+				ctx.stroke();
+			} else {
+				/* <rect key={idx} className={d.className}
+						stroke={this.props.stroke}
+						fill={this.props.fill}
+						x={d.x}
+						y={d.y}
+						width={d.barWidth}
+						height={d.height} /> */
+				ctx.beginPath();
+				ctx.rect(d.x, d.y, d.barWidth, d.height);
+				ctx.closePath();
+				ctx.fill();
+			}
+		});
 	}
 	getBars() {
 		var base = this.props.baseAt === "top"
@@ -44,8 +78,14 @@ class HistogramSeries extends React.Component {
 						y = base;
 						height = -height;
 					}
-
-					if (Math.round(barWidth) <= 1) {
+					return {
+						barWidth: Math.round(barWidth),
+						height: Math.round(height),
+						x: Math.round(x),
+						y: Math.round(y),
+						className: className
+					}
+					/*if (Math.round(barWidth) <= 1) {
 						return <line key={idx} className={className}
 									stroke={this.props.stroke}
 									fill={this.props.fill}
@@ -58,15 +98,34 @@ class HistogramSeries extends React.Component {
 								x={Math.round(x)}
 								y={Math.round(y)}
 								width={Math.round(barWidth)}
-								height={Math.round(height)} />;
+								height={Math.round(height)} />;*/
 				});
 		return bars;
+	}
+	getBarsSVG() {
+		var bars = this.getBars();
+		return bars.map((d, idx) => {
+			if (d.barWidth <= 1) {
+				return <line key={idx} className={d.className}
+							stroke={this.props.stroke}
+							fill={this.props.fill}
+							x1={d.x} y1={d.y}
+							x2={d.x} y2={d.y + d.height} />;
+			}
+			return <rect key={idx} className={d.className}
+						stroke={this.props.stroke}
+						fill={this.props.fill}
+						x={d.x}
+						y={d.y}
+						width={d.barWidth}
+						height={d.height} />;
+		})
 	}
 	render() {
 		if (this.context.type !== "svg") return null;
 		return (
 			<g className="histogram">
-				{this.getBars()}
+				{this.getBarsSVG()}
 			</g>
 		);
 	}
