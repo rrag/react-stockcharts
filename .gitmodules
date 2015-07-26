@@ -43,3 +43,6 @@
 [submodule "docs/examples/CandleStickChartWithMACDIndicator"]
 	path = docs/examples/CandleStickChartWithMACDIndicator
 	url = git@gist.github.com:/109a2b8021689e1ffc79.git
+[submodule "docs/examples/CandleStickChartWithMACDIndicatorCanvas"]
+	path = docs/examples/CandleStickChartWithMACDIndicatorCanvas
+	url = git@gist.github.com:f7d18bd9a88b97aa069f.git

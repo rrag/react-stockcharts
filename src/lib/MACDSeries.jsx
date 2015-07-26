@@ -4,6 +4,7 @@ import React from "react";
 import d3 from "d3";
 
 import HistogramSeries from "./HistogramSeries";
+import Line from "./Line";
 
 class MACDSeries extends React.Component {
 	constructor(props) {
@@ -44,12 +45,22 @@ class MACDSeries extends React.Component {
 			y2={this.context.yScale(0)} className="horizontal" />;
 	}
 	render() {
-		if (this.context.type !== "svg") return null;
-		let { indicatorOptions } = this.context;
+		// if (this.context.type !== "svg") return null;
+		let { indicatorOptions, xScale, yScale, xAccessor, yAccessor, plotData, type } = this.context;
 		return (
 			<g className="macd-series">
-				<path d={this.getMACDLine()} stroke={indicatorOptions.stroke.MACDLine} fill="none"/>
-				<path d={this.getSignalLine()} stroke={indicatorOptions.stroke.signalLine} fill="none"/>
+				<Line
+					xScale={xScale} yScale={yScale}
+					xAccessor={xAccessor} yAccessor={(d) => yAccessor(d) && yAccessor(d).MACDLine}
+					data={plotData}
+					stroke={indicatorOptions.stroke.MACDLine} fill="none" 
+					type={type} />
+				<Line
+					xScale={xScale} yScale={yScale}
+					xAccessor={xAccessor} yAccessor={(d) => yAccessor(d) && yAccessor(d).signalLine}
+					data={plotData}
+					stroke={indicatorOptions.stroke.signalLine} fill="none"
+					type={type} />
 				<HistogramSeries baseAt={this.context.yScale(0)} className="macd-histogram"
 					stroke={indicatorOptions.stroke.histogram} fill={indicatorOptions.fill.histogram} />
 				{this.getHorizontalLine()}
@@ -57,6 +68,12 @@ class MACDSeries extends React.Component {
 		);
 	}
 }
+
+/*
+				<path d={this.getMACDLine()} stroke={indicatorOptions.stroke.MACDLine} fill="none"/>
+				<path d={this.getSignalLine()} stroke={indicatorOptions.stroke.signalLine} fill="none"/>
+
+*/
 //  className="macdline" 
 //  className="signalline" 
 MACDSeries.contextTypes = {

@@ -41,14 +41,16 @@ class Chart extends PureComponent {
 		}
 	}
 	componentDidMount() {
-		console.log("Chart.componentDidMount()");
-		let ctx = this.getChildContext();
-		let canvas = this.context.createCanvas(this.getOrigin(), ctx.width, ctx.height);
-		let context = canvas.getContext('2d');
-		// context.translate(0.5, 0);
-		this.setState({
-			canvasContext: context
-		});
+		if (this.context.type != "svg") {
+			console.log("Chart.componentDidMount()");
+			let ctx = this.getChildContext();
+			let canvas = this.context.createCanvas(this.getOrigin(), ctx.width, ctx.height);
+			let context = canvas.getContext('2d');
+			// context.translate(0.5, 0);
+			this.setState({
+				canvasContext: context
+			});
+		}
 	}
 	render() {
 		// console.log("Chart.render()");
@@ -96,6 +98,7 @@ Chart.contextTypes = {
 	height: React.PropTypes.number.isRequired,
 	chartData: React.PropTypes.array,
 	createCanvas: React.PropTypes.func,
+	type: React.PropTypes.string.isRequired,
 };
 
 Chart.childContextTypes = {

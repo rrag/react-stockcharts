@@ -205,6 +205,7 @@ gulp.task("publishexamples", function(cb) {
 		"CandleStickChartWithMA",
 		"CandleStickChartWithEdge",
 		"CandleStickChartWithMACDIndicator",
+		"CandleStickChartWithMACDIndicatorCanvas", // comment this later
 		"HaikinAshi",
 		"Kagi",
 		"PointAndFigure",
