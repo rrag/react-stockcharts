@@ -3,25 +3,22 @@
 import React from "react";
 
 var ChartWidthMixin = {
-	getJQuery() {
-		return window.$;
-	},
 	handleWindowResize() {
-		var $ = this.getJQuery();
-		var w = $(React.findDOMNode(this)).parent().width();
-		console.log("width = ", w);
-
+		var el = React.findDOMNode(this);
+		var w = el.parentNode.clientWidth;
+		// console.log("width = ", w);
 		this.setState({
 			width: w
 		});
 	},
-	componentWillUnMount() {
+	componentWillUnmount() {
+		// console.log("unmounting...")
 		window.removeEventListener("resize", this.handleWindowResize);
 	},
 	componentDidMount() {
 		window.addEventListener("resize", this.handleWindowResize);
-		var $ = this.getJQuery();
-		var w = $(React.findDOMNode(this)).parent().width();
+		var el = React.findDOMNode(this);
+		var w = el.parentNode.clientWidth;
 		this.setState({
 			width: w
 		});

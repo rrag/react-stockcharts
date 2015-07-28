@@ -64,7 +64,7 @@ class EventHandler extends React.Component {
 
 		var newPlotData = dataForInterval.slice(beginIndex, endIndex);
 		var newChartData = ChartDataUtil.getChartData(props, context, plotData, data, dataTransformProps);
-		console.log("componentWillReceiveProps");
+		// console.log("componentWillReceiveProps");
 		this.setState({
 			chartData: newChartData,
 			plotData: newPlotData,

@@ -31,7 +31,7 @@ class DataTransform extends PureComponent {
 	}
 	componentWillReceiveProps(props, context) {
 		if (!shallowEqual(this.props, props) || !shallowEqual(this.context, context)) {
-			console.log("DataTransform.componentWillReceiveProps");
+			// console.log("DataTransform.componentWillReceiveProps");
 
 			var passThroughProps = this.transformData(props, context);
 			this.setState({
