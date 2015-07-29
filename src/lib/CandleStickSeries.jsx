@@ -52,6 +52,7 @@ class CandlestickSeries extends React.Component {
 		var wickData = this.context.plotData
 				.filter((d) => d.close !== undefined)
 				.map((d, idx) => {
+					// console.log(this.context.yAccessor);
 					var ohlc = this.context.isCompareSeries ? this.context.yAccessor(d.compare) : this.context.yAccessor(d);
 
 					var x1 = Math.round(this.context.xScale(this.context.xAccessor(d))),
@@ -94,25 +95,6 @@ class CandlestickSeries extends React.Component {
 						y = this.context.yScale(Math.max(ohlc.open, ohlc.close)),
 						height = Math.abs(this.context.yScale(ohlc.open) - this.context.yScale(ohlc.close)),
 						className = (ohlc.open <= ohlc.close) ? "up" : "down";
-					/*if (ohlc.open === ohlc.close || candleWidth <= 1) {
-						return {
-							// type: "line"
-							x: x,
-							y: y,
-							height: height,
-							width: candleWidth,
-							className: className
-						};
-					}
-					if (candleWidth <= 1) {
-						return {
-							x: x,
-							y: y,
-							height: height,
-							width: candleWidth,
-							className: className
-						};<line className={className} key={idx} x1={x} y1={y} x2={x} y2={y + height} />;
-					}*/
 					return {
 						// type: "line"
 						x: x,

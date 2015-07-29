@@ -59,11 +59,14 @@ class EventHandler extends React.Component {
 		var dataForInterval = data[interval];
 		var mainChart = ChartDataUtil.getMainChart(props.children);
 		var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
+
 		var beginIndex = Utils.getClosestItemIndexes(dataForInterval, mainChartData.config.accessors.xAccessor(plotData[0]), mainChartData.config.accessors.xAccessor).left;
 		var endIndex = Utils.getClosestItemIndexes(dataForInterval, mainChartData.config.accessors.xAccessor(plotData[plotData.length - 1]), mainChartData.config.accessors.xAccessor).right;
 
-		var newPlotData = dataForInterval.slice(beginIndex, endIndex);
-		var newChartData = ChartDataUtil.getChartData(props, context, plotData, data, dataTransformProps);
+		// console.log(plotData[0], plotData[plotData.length - 1]);
+		var newPlotData = dataForInterval.slice(beginIndex, endIndex + 1);
+		// console.log(newPlotData[0], newPlotData[newPlotData.length - 1]);
+		var newChartData = ChartDataUtil.getChartData(props, context, newPlotData, data, dataTransformProps);
 		// console.log("componentWillReceiveProps");
 		this.setState({
 			chartData: newChartData,

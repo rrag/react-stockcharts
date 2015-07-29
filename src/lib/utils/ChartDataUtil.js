@@ -34,6 +34,8 @@ var ChartDataUtil = {
 			var config = this.getChartConfigFor(innerDimensions, chartProps, partialData, fullData, other);
 			var plot = this.getChartPlotFor(config, partialData);
 
+			// console.log(config.compareSeries);
+
 			return {
 				id: each.props.id,
 				config: config,
@@ -200,7 +202,7 @@ var ChartDataUtil = {
 		});
 
 		// console.table(partialData);
-		// console.log(partialData[7].temp, partialData[7].compare);
+		// console.log(partialData[7].compare);
 	},
 
 	defineScales(props, data, passThroughProps) {
