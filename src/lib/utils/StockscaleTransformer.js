@@ -1,6 +1,7 @@
 "use strict";
 
 import stockScale from "../scale/polylineartimescale";
+import objectAssign from "object-assign";
 
 var defaultOptions = {
 	dateAccessor: (d) => d.date,
@@ -37,11 +38,13 @@ function buildWeeklyData(daily, indexMutator, dateAccesor, dateMutator) {
 		if (!eachWeek.volume) eachWeek.volume = 0;
 		eachWeek.volume += d.volume;
 
-		for (let key in d) {
+
+		eachWeek = objectAssign({}, d, eachWeek);
+		/*for (let key in d) {
 			if (!eachWeek.hasOwnProperty(key)) {
 				eachWeek[key] = d[key];
 			}
-		}
+		}*/
 
 		if (d.startOfWeek) {
 			if (prevWeek) {
@@ -84,11 +87,13 @@ function buildMonthlyData(daily, indexMutator, dateAccesor) {
 		if (!eachMonth.volume) eachMonth.volume = 0;
 		eachMonth.volume += d.volume;
 
-		for (let key in d) {
+		eachMonth = objectAssign({}, d, eachMonth);
+
+		/*for (let key in d) {
 			if (!eachMonth.hasOwnProperty(key)) {
 				eachMonth[key] = d[key];
 			}
-		}
+		}*/
 
 		if (d.startOfMonth) {
 			eachMonth.startOfWeek = d.startOfWeek;

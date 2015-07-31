@@ -64,6 +64,7 @@
     "test": "echo 'hello world'; echo 'again'",
     "watch": "gulp watch",
     "docs": "gulp docs",
+    "gulp": "gulp",
     "release": "gulp release",
     "lint": "gulp lint",
     "npm-publish-patch": "npm version patch",

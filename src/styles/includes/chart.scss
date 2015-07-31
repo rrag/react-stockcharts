@@ -26,7 +26,7 @@
 				display: none;
 			}
 		}
-	}
+	}/* 
 	.candle {
 		.up {
 			fill: #6BA583;
@@ -53,17 +53,13 @@
 			shape-rendering: crispEdges;
 		}
 	}
-	.line {
-		fill: none;
-		stroke-width: 1px;
-	}
 	.line-stroke {
 		shape-rendering: crispEdges;
 		stroke: steelblue;
 	}
 	.overlay-stroke {
 		stroke: steelblue;
-	}
+	} */
 	.yin {
 		fill: none;
 		stroke: $red1;
@@ -84,10 +80,14 @@
 		stroke: $red1;
 		stroke-width: 1px;
 	}
-	.area {
+	/* .area {
 		fill: lightsteelblue;
 		opacity: 0.5;
 	}
+	.line {
+		fill: none;
+		stroke-width: 1px;
+	} */
 	.backgroundText {
 		// font-size: 53px;
 		text-anchor: middle;
@@ -152,7 +152,7 @@
 	.toottip-hover {
 		pointer-events: all;
 		cursor: pointer;
-	}
+	}/* 
 	.histogram {
 		rect.bar {
 			fill: steelblue;
@@ -179,7 +179,7 @@
 		line.down {
 			stroke: $red1;
 		}
-	}
+	} 
 	.macd-series {
 		.macdline {
 			stroke: red;
@@ -197,7 +197,7 @@
 		.macd-histogram {
 			opacity: 0.5;
 		}
-	}
+	}*/
 	.ma-container {
 		rect {
 			fill: none;

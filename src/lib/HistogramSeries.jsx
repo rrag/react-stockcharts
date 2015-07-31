@@ -15,6 +15,10 @@ class HistogramSeries extends React.Component {
 	drawOnCanvas() {
 		var ctx = this.context.canvasContext;
 		var bars = this.getBars();
+
+		var { fillStyle, strokeStyle, globalAlpha } = ctx;
+		ctx.globalAlpha = this.props.opacity;
+
 		bars.forEach(d => {
 			if (d.barWidth < 1) {
 				/* <line key={idx} className={d.className}
@@ -22,6 +26,8 @@ class HistogramSeries extends React.Component {
 							fill={this.props.fill}
 							x1={d.x} y1={d.y}
 							x2={d.x} y2={d.y + d.height} />*/
+				// ctx.fillStyle = d.fill;
+				ctx.strokeStyle = d.fill;
 				ctx.beginPath();
 				ctx.moveTo(d.x, d.y);
 				ctx.lineTo(d.x, d.y + d.height);
@@ -34,12 +40,19 @@ class HistogramSeries extends React.Component {
 						y={d.y}
 						width={d.barWidth}
 						height={d.height} /> */
+				ctx.fillStyle = d.fill;
+				ctx.strokeStyle = d.stroke;
 				ctx.beginPath();
 				ctx.rect(d.x, d.y, d.barWidth, d.height);
 				ctx.closePath();
 				ctx.fill();
 			}
 		});
+
+		ctx.fillStyle = fillStyle;
+		ctx.strokeStyle = strokeStyle;
+		ctx.globalAlpha = globalAlpha;
+
 	}
 	getBars() {
 		var base = this.props.baseAt === "top"
@@ -56,6 +69,12 @@ class HistogramSeries extends React.Component {
 		if (typeof this.props.className === "function") {
 			getClassName = this.props.className;
 		}
+
+		var getFill = () => this.props.fill;
+		if (typeof this.props.fill === "function") {
+			getFill = this.props.fill;
+		}
+
 		var width = Math.abs(this.context.xScale.range()[0] - this.context.xScale.range()[1]);
 		var barWidth = width / (this.context.plotData.length) * 0.5;
 
@@ -83,7 +102,9 @@ class HistogramSeries extends React.Component {
 						height: Math.round(height),
 						x: Math.round(x),
 						y: Math.round(y),
-						className: className
+						className: className,
+						stroke: this.props.stroke,
+						fill: getFill(d),
 					}
 					/*if (Math.round(barWidth) <= 1) {
 						return <line key={idx} className={className}
@@ -107,17 +128,18 @@ class HistogramSeries extends React.Component {
 		return bars.map((d, idx) => {
 			if (d.barWidth <= 1) {
 				return <line key={idx} className={d.className}
-							stroke={this.props.stroke}
-							fill={this.props.fill}
+							stroke={d.stroke}
+							fill={d.fill}
 							x1={d.x} y1={d.y}
 							x2={d.x} y2={d.y + d.height} />;
 			}
 			return <rect key={idx} className={d.className}
-						stroke={this.props.stroke}
-						fill={this.props.fill}
+						stroke={d.stroke}
+						fill={d.fill}
 						x={d.x}
 						y={d.y}
 						width={d.barWidth}
+						opacity={this.props.opacity}
 						height={d.height} />;
 		})
 	}
@@ -138,17 +160,23 @@ HistogramSeries.propTypes = {
 			]).isRequired,
 	direction: React.PropTypes.oneOf(["up", "down"]).isRequired,
 	stroke: React.PropTypes.string,
-	fill: React.PropTypes.string,
+	opacity: React.PropTypes.number.isRequired,
+	fill: React.PropTypes.oneOfType([
+			React.PropTypes.func, React.PropTypes.string
+		]).isRequired,
 	className: React.PropTypes.oneOfType([
-				React.PropTypes.func, React.PropTypes.string
-			]).isRequired,
+			React.PropTypes.func, React.PropTypes.string
+		]).isRequired,
 };
 
 HistogramSeries.defaultProps = {
 	namespace: "ReStock.HistogramSeries",
 	baseAt: "bottom",
 	direction: "up",
-	className: "bar"
+	className: "bar",
+	stroke: "none",
+	fill: "steelblue",
+	opacity: 0.5,
 };
 
 HistogramSeries.contextTypes = {

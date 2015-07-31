@@ -188,7 +188,8 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithZoomPan
 	// CandleStickChartWithCompare
 	// CandleStickChartWithMACDIndicator
-	var Chart = require('lib/charts/CandleStickChartWithMACDIndicator');
+	// CandleStickChartWithMACDIndicatorCanvas
+	var Chart = require('lib/charts/CandleStickChartWithMACDIndicatorCanvas');
 
 	class ExamplesPage extends React.Component {
 		render() {

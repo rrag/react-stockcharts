@@ -93,7 +93,7 @@ class ChartCanvas extends React.Component {
 			return newChild;
 		});
 		return (
-			<div style={{position: "relative", height: this.props.height, width: this.props.width}}>
+			<div style={{position: "relative", height: this.props.height, width: this.props.width}} className="react-stockchart" >
 				<div ref="canvasContainer" style={{ position: "relative", top: this.props.margin.top, left: this.props.margin.left}}></div>
 				<svg width={this.props.width} height={this.props.height} style={{ position: "absolute" }}>
 					<defs>

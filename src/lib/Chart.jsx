@@ -46,7 +46,7 @@ class Chart extends PureComponent {
 			let ctx = this.getChildContext();
 			let canvas = this.context.createCanvas(this.getOrigin(), ctx.width, ctx.height);
 			let context = canvas.getContext('2d');
-			// context.translate(0.5, 0);
+			context.translate(0.5, 0);
 			this.setState({
 				canvasContext: context
 			});

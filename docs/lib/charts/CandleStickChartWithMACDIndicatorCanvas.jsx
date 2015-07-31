@@ -64,9 +64,9 @@ var CandleStickChartWithMACDIndicatorCanvas = React.createClass({
 							height={150} origin={(w, h) => [0, h - 310]} >
 						<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 						<DataSeries yAccessor={(d) => d.volume} >
-							<HistogramSeries className={(d) => d.close > d.open ? 'up' : 'down'} />
+							<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
 							<OverlaySeries id={3} type="sma" options={{ period: 10, pluck:'volume' }} >
-								<AreaSeries/>
+								<AreaSeries opacity={0.5} stroke="steelblue" fill="steelblue" />
 							</OverlaySeries>
 						</DataSeries>
 					</Chart>

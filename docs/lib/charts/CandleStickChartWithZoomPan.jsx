@@ -30,7 +30,7 @@ var CandleStickChartWithZoomPan = React.createClass({
 
 		return (
 			<ChartCanvas width={this.state.width} height={400}
-				margin={{left: 70, right: 70, top:10, bottom: 30}} data={this.props.data}>
+				margin={{left: 70, right: 70, top:10, bottom: 30}} data={this.props.data} initialDisplay={200}>
 				<DataTransform transformType="stockscale">
 					<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}>
 						<XAxis axisAt="bottom" orient="bottom"/>
@@ -43,7 +43,7 @@ var CandleStickChartWithZoomPan = React.createClass({
 							height={150} origin={(w, h) => [0, h - 150]}>
 						<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 						<DataSeries yAccessor={(d) => d.volume} >
-							<HistogramSeries className={(d) => d.close > d.open ? 'up' : 'down'} />
+							<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
 						</DataSeries>
 					</Chart>
 					<MouseCoordinates xDisplayFormat={dateFormat} type="crosshair" />
