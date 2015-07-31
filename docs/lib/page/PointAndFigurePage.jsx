@@ -20,7 +20,7 @@ var PointAndFigurePage = React.createClass({
 					</Section>
 				</Row>
 				<Row>
-					<Section colSpan={2} className="react-stockchart">
+					<Section colSpan={2}>
 						<PointAndFigure data={this.props.someData} />
 					</Section>
 				</Row>

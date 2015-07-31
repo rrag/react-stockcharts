@@ -22,7 +22,7 @@ var VolumeHistogramPage = React.createClass({
 					</Section>
 				</Row>
 				<Row>
-					<Section colSpan={2} className="react-stockchart">
+					<Section colSpan={2}>
 						<CandleStickStockScaleChartWithVolumeHistogramV1 data={this.props.someData} />
 					</Section>
 				</Row>
@@ -32,7 +32,7 @@ var VolumeHistogramPage = React.createClass({
 					</Section>
 				</Row>
 				<Row>
-					<Section colSpan={2} className="react-stockchart">
+					<Section colSpan={2}>
 						<CandleStickStockScaleChartWithVolumeHistogramV2 data={this.props.someData} />
 					</Section>
 				</Row>
@@ -42,7 +42,7 @@ var VolumeHistogramPage = React.createClass({
 					</Section>
 				</Row>
 				<Row>
-					<Section colSpan={2} className="react-stockchart">
+					<Section colSpan={2}>
 						<CandleStickStockScaleChartWithVolumeHistogramV3 data={this.props.someData} />
 					</Section>
 				</Row>

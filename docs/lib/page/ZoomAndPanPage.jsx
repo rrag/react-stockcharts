@@ -15,7 +15,7 @@ var ZoomAndPanPage = React.createClass({
 		return (
 			<ContentSection title={ZoomAndPanPage.title}>
 				<Row>
-					<Section colSpan={2} className="react-stockchart">
+					<Section colSpan={2}>
 						<CandleStickChartWithZoomPan data={this.props.someData} />
 					</Section>
 				</Row>

@@ -15,7 +15,7 @@ var CompareWithPage = React.createClass({
 		return (
 			<ContentSection title={CompareWithPage.title}>
 				<Row>
-					<Section colSpan={2} className="react-stockchart">
+					<Section colSpan={2}>
 						<CandleStickChartWithCompare data={this.props.compareData}/>
 					</Section>
 				</Row>

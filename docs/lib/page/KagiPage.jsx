@@ -20,7 +20,7 @@ var KagiPage = React.createClass({
 					</Section>
 				</Row>
 				<Row>
-					<Section colSpan={2} className="react-stockchart">
+					<Section colSpan={2}>
 						<Kagi data={this.props.lotsOfData} />
 					</Section>
 				</Row>

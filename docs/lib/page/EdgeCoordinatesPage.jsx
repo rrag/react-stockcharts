@@ -15,7 +15,7 @@ var EdgeCoordinatesPage = React.createClass({
 		return (
 			<ContentSection title={EdgeCoordinatesPage.title}>
 				<Row>
-					<Section colSpan={2} className="react-stockchart">
+					<Section colSpan={2}>
 						<CandleStickChartWithEdge  data={this.props.someData}/>
 					</Section>
 				</Row>

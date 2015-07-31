@@ -20,7 +20,7 @@ var RenkoPage = React.createClass({
 					</Section>
 				</Row>
 				<Row>
-					<Section colSpan={2} className="react-stockchart">
+					<Section colSpan={2}>
 						<Renko data={this.props.lotsOfData} />
 					</Section>
 				</Row>

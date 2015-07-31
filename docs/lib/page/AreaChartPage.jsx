@@ -16,7 +16,7 @@ var OverviewPage = React.createClass({
 		return (
 			<ContentSection title={OverviewPage.title}>
 				<Row>
-					<Section colSpan={2} className="react-stockchart">
+					<Section colSpan={2}>
 						<AreaChart data={this.props.someData} />
 					</Section>
 				</Row>
@@ -26,7 +26,7 @@ var OverviewPage = React.createClass({
 					</Section>
 				</Row>
 				<Row>
-					<Section colSpan={2} className="react-stockchart">
+					<Section colSpan={2}>
 						<AreaChartWithYPercent data={this.props.someData} />
 					</Section>
 				</Row>

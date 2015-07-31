@@ -20,7 +20,7 @@ var HeikinAshiPage = React.createClass({
 					</Section>
 				</Row>
 				<Row>
-					<Section colSpan={2} className="react-stockchart">
+					<Section colSpan={2}>
 						<HeikinAshiChart  data={this.props.someData} />
 					</Section>
 				</Row>

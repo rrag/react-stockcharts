@@ -15,7 +15,7 @@ var MousePointerPage = React.createClass({
 		return (
 			<ContentSection title={MousePointerPage.title}>
 				<Row>
-					<Section colSpan={2} className="react-stockchart">
+					<Section colSpan={2}>
 						<CandleStickChartWithCHMousePointer data={this.props.someData} />
 					</Section>
 				</Row>

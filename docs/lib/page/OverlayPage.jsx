@@ -15,7 +15,7 @@ var OverlayPage = React.createClass({
 		return (
 			<ContentSection title={OverlayPage.title}>
 				<Row>
-					<Section colSpan={2} className="react-stockchart">
+					<Section colSpan={2}>
 						<CandleStickChartWithMA data={this.props.someData}/>
 					</Section>
 				</Row>

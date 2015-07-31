@@ -20,7 +20,7 @@ var MousePointerPage = React.createClass({
 					</Section>
 				</Row>
 				<Row>
-					<Section colSpan={2} className="react-stockchart">
+					<Section colSpan={2}>
 						<CandleStickChartWithMACDIndicator data={this.props.someData} />
 					</Section>
 				</Row>
