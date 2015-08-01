@@ -34,7 +34,7 @@ class CrossHair extends React.Component {
 		});
 		var line = null;
 		if (this.props.edges.length > 0) {
-			line = <line className="cross-hair"
+			line = <line className="react-stockcharts-cross-hair" opacity={0.3} stroke="black"
 					x1={x1} y1={this.props.mouseXY[1]}
 					x2={x2} y2={this.props.mouseXY[1]} />;
 		}

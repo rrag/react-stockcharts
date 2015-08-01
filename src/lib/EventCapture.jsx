@@ -110,11 +110,12 @@ class EventCapture extends React.Component {
 		// e.preventDefault();
 	}
 	render() {
-		var className = this.context.panInProgress ? "grabbing" : "crosshair";
+		var className = this.context.panInProgress ? "react-stockcharts-grabbing-cursor" : "react-stockcharts-crosshair-cursor";
+
 		return (
 			<rect ref="capture"
 				className={className}
-				width={this.context.width} height={this.context.height} style={{opacity: 0}}
+				width={this.context.width} height={this.context.height} style={{ opacity: 0 }}
 				onMouseEnter={this.handleEnter}
 				onMouseLeave={this.handleLeave}
 				onMouseMove={this.handleMouseMove}
@@ -136,14 +137,13 @@ EventCapture.propTypes = {
 };
 
 EventCapture.defaultProps = {
-	namespace: "ReStock.EventCapture"
-	, mouseMove: false
-	, zoom: false
-	, zoomMultiplier: 1
-	, pan: false
-	, panSpeedMultiplier: 1
-	, className: "crosshair"
-	, defaultFocus: false
+	namespace: "ReStock.EventCapture",
+	mouseMove: false,
+	zoom: false,
+	zoomMultiplier: 1,
+	pan: false,
+	panSpeedMultiplier: 1,
+	defaultFocus: false
 };
 
 EventCapture.contextTypes = {

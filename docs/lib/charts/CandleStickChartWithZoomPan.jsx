@@ -17,8 +17,8 @@ var ChartCanvas = ReStock.ChartCanvas
 	, EventCapture = ReStock.EventCapture
 	, MouseCoordinates = ReStock.MouseCoordinates
 	, CrossHair = ReStock.CrossHair
-	, TooltipContainer = ReStock.TooltipContainer
-	, OHLCTooltip = ReStock.OHLCTooltip
+	, TooltipContainer = ReStock.tooltip.TooltipContainer
+	, OHLCTooltip = ReStock.tooltip.OHLCTooltip
 ;
 
 var CandleStickChartWithZoomPan = React.createClass({

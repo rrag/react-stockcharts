@@ -15,12 +15,12 @@ var ChartCanvas = ReStock.ChartCanvas
 	, EventCapture = ReStock.EventCapture
 	, MouseCoordinates = ReStock.MouseCoordinates
 	, CrossHair = ReStock.CrossHair
-	, TooltipContainer = ReStock.TooltipContainer
-	, OHLCTooltip = ReStock.OHLCTooltip
+	, TooltipContainer = ReStock.tooltip.TooltipContainer
+	, OHLCTooltip = ReStock.tooltip.OHLCTooltip
 	, OverlaySeries = ReStock.OverlaySeries
 	, LineSeries = ReStock.LineSeries
 	, CurrentCoordinate = ReStock.CurrentCoordinate
-	, MovingAverageTooltip = ReStock.MovingAverageTooltip
+	, MovingAverageTooltip = ReStock.tooltip.MovingAverageTooltip
 ;
 
 module.exports = {

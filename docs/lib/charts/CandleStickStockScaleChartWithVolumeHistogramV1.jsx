@@ -15,6 +15,9 @@ var ChartCanvas = ReStock.ChartCanvas
 	, ChartWidthMixin = ReStock.helper.ChartWidthMixin
 	, HistogramSeries = ReStock.HistogramSeries
 ;
+
+
+
 var CandleStickStockScaleChartWithVolumeHistogramV1 = React.createClass({
 	mixins: [ChartWidthMixin],
 	render() {

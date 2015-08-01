@@ -4,6 +4,8 @@ import React from "react";
 
 import Utils from "./utils/utils";
 import ChartDataUtil from "./utils/ChartDataUtil";
+import ToolTipText from "./ToolTipText";
+import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
 class MACDTooltip extends React.Component {
 	render() {
@@ -23,17 +25,17 @@ class MACDTooltip extends React.Component {
 			: this.props.origin;
 		return (
 			<g transform={"translate(" + origin[0] + ", " + origin[1] + ")"}>
-				<text x={0} y={0} className="legend">
-					<tspan className="tooltip-label">MACD (</tspan>
-						<tspan stroke={options.stroke.MACDLine} strokeWidth={0.5}>{options.slow}</tspan>
-						<tspan className="tooltip-label">, </tspan>
-						<tspan stroke={options.stroke.MACDLine} strokeWidth={0.5}>{options.fast}</tspan>
-					<tspan className="tooltip-label">): </tspan><tspan>{MACDLine}</tspan>
-					<tspan className="tooltip-label"> Signal (</tspan>
-						<tspan stroke={options.stroke.signalLine} strokeWidth={0.5}>{options.signal}</tspan>
-						<tspan className="tooltip-label">): </tspan><tspan>{signalLine}</tspan>
-					<tspan className="tooltip-label"> Histogram: </tspan><tspan>{histogram}</tspan>
-				</text>
+				<ToolTipText x={0} y={0}>
+					<ToolTipTSpanLabel>MACD (</ToolTipTSpanLabel>
+						<tspan fill={options.stroke.MACDLine}>{options.slow}</tspan>
+						<ToolTipTSpanLabel>, </ToolTipTSpanLabel>
+						<tspan fill={options.stroke.MACDLine}>{options.fast}</tspan>
+					<ToolTipTSpanLabel>): </ToolTipTSpanLabel><tspan>{MACDLine}</tspan>
+					<ToolTipTSpanLabel> Signal (</ToolTipTSpanLabel>
+						<tspan fill={options.stroke.signalLine}>{options.signal}</tspan>
+						<ToolTipTSpanLabel>): </ToolTipTSpanLabel><tspan>{signalLine}</tspan>
+					<ToolTipTSpanLabel> Histogram: </ToolTipTSpanLabel><tspan>{histogram}</tspan>
+				</ToolTipText>
 			</g>
 		);
 	}

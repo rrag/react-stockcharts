@@ -41,7 +41,7 @@ class EdgeIndicator extends React.Component {
 
 				edge = <EdgeCoordinate
 						type={this.props.type}
-						className="edge-coordinate"
+						className="react-stockcharts-edge-coordinate"
 						fill={overlay[0].stroke}
 						show={true}
 						x1={x1 + chartData.config.origin[0]} y1={y1 + chartData.config.origin[1]}
@@ -69,7 +69,7 @@ class EdgeIndicator extends React.Component {
 
 				edge = <EdgeCoordinate
 						type={this.props.type}
-						className="edge-coordinate"
+						className="react-stockcharts-edge-coordinate"
 						show={true}
 						x1={x1 + chartData.config.origin[0]} y1={y1 + chartData.config.origin[1]}
 						x2={edgeX + chartData.config.origin[0]} y2={y1 + chartData.config.origin[1]}

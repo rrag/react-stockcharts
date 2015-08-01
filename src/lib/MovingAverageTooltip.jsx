@@ -4,6 +4,8 @@ import React from "react";
 
 import Utils from "./utils/utils";
 import ChartDataUtil from "./utils/ChartDataUtil";
+import ToolTipText from "./ToolTipText";
+import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
 
 class SingleMAToolTip extends React.Component {
@@ -16,12 +18,13 @@ class SingleMAToolTip extends React.Component {
 		var translate = "translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")";
 		return (
 			<g transform={translate}>
-				<line x1={0} y1={2} x2={0} y2={28} stroke={this.props.color} />
-				<text x={5} y={11} className="legend">
-					<tspan className="tooltip-label">{this.props.displayName}</tspan>
+				<line x1={0} y1={2} x2={0} y2={28} stroke={this.props.color} strokeWidth="4px"/>
+				<ToolTipText x={5} y={11}>
+					<ToolTipTSpanLabel>{this.props.displayName}</ToolTipTSpanLabel>
 					<tspan x="5" dy="15">{this.props.value}</tspan>
-				</text>
-				<rect x={0} y={0} width={55} height={30} onClick={this.handleClick.bind(this, this.props.overlay)}/>
+				</ToolTipText>
+				<rect x={0} y={0} width={55} height={30} onClick={this.handleClick.bind(this, this.props.overlay)}
+					fill="none" stroke="none" />
 			</g>
 		);
 	}
@@ -41,7 +44,7 @@ class MovingAverageTooltip extends React.Component {
 		var item = ChartDataUtil.getCurrentItemForChart(this.props, this.context);
 
 		return (
-			<g transform={"translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")"} className="ma-container">
+			<g transform={"translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")"} className={this.props.className}>
 				{chartData.config.overlays.map((eachOverlay, idx) => {
 					var yValue = eachOverlay.yAccessor(item);
 					// console.log(yValue);
@@ -74,6 +77,7 @@ MovingAverageTooltip.propTypes = {
 
 MovingAverageTooltip.defaultProps = {
 	namespace: "ReStock.MovingAverageTooltip",
+	className: "react-stockcharts-moving-average-tooltip",
 	displayFormat: Utils.displayNumberFormat,
 	origin: [0, 10],
 	width: 65

@@ -32,8 +32,9 @@ exports.CurrentCoordinate = require("./lib/CurrentCoordinate");
 exports.EdgeContainer = require("./lib/EdgeContainer");
 exports.EdgeIndicator = require("./lib/EdgeIndicator");
 
-exports.helper = {};
-exports.helper.ChartWidthMixin = require("./lib/helper/ChartWidthMixin");
+exports.helper = {
+	ChartWidthMixin: require("./lib/helper/ChartWidthMixin")
+};
 
 exports.indicator = {
 	MACD: require("./lib/indicators/MACDIndicator")
@@ -48,7 +49,9 @@ exports.tooltip = {
 	MovingAverageTooltip: require("./lib/MovingAverageTooltip"),
 };
 
-exports.TooltipContainer = require("./lib/TooltipContainer");
+/*exports.TooltipContainer = require("./lib/TooltipContainer");
 exports.OHLCTooltip = require("./lib/OHLCTooltip");
 exports.CompareTooltip = require("./lib/CompareTooltip");
 exports.MovingAverageTooltip = require("./lib/MovingAverageTooltip");
+*/
+exports.version = "0.2.0-alpha-1"

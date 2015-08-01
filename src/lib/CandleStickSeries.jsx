@@ -138,11 +138,11 @@ class CandlestickSeries extends React.Component {
 	render() {
 		if (this.context.type !== "svg") return null;
 		return (
-			<g>
-				<g className="wick" key="wicks">
+			<g className="react-stockcharts-candlestick">
+				<g className="react-stockcharts-candlestick-wick" key="wicks">
 					{this.getWicksSVG()}
 				</g>
-				<g className="candle" key="candles">
+				<g className="react-stockcharts-candlestick-candle" key="candles">
 					{this.getCandlesSVG()}
 				</g>
 			</g>

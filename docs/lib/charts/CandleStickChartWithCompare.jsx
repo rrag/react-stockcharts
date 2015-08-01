@@ -17,17 +17,17 @@ var ChartCanvas = ReStock.ChartCanvas
 	, EventCapture = ReStock.EventCapture
 	, MouseCoordinates = ReStock.MouseCoordinates
 	, CrossHair = ReStock.CrossHair
-	, TooltipContainer = ReStock.TooltipContainer
-	, OHLCTooltip = ReStock.OHLCTooltip
+	, TooltipContainer = ReStock.tooltip.TooltipContainer
+	, OHLCTooltip = ReStock.tooltip.OHLCTooltip
 	, OverlaySeries = ReStock.OverlaySeries
 	, LineSeries = ReStock.LineSeries
-	, MovingAverageTooltip = ReStock.MovingAverageTooltip
+	, MovingAverageTooltip = ReStock.tooltip.MovingAverageTooltip
 	, CurrentCoordinate = ReStock.CurrentCoordinate
 	, AreaSeries = ReStock.AreaSeries
 	, EdgeContainer = ReStock.EdgeContainer
 	, EdgeIndicator = ReStock.EdgeIndicator
 	, CompareSeries = ReStock.CompareSeries
-	, CompareTooltip = ReStock.CompareTooltip
+	, CompareTooltip = ReStock.tooltip.CompareTooltip
 ;
 
 var CandleStickChartWithCompare = React.createClass({

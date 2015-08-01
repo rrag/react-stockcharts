@@ -6,12 +6,12 @@
 			//shape-rendering: crispEdges;
 			//opacity: 0.2;
 		}
-	}
+	}/* 
 	.current-coordinate {
 		fill: none;
 		stroke: steelblue;
 		stroke-width: 3px;
-	}
+	} */
 	.grid.axis {
 		path, line {
 			fill: none;
@@ -27,7 +27,7 @@
 			}
 		}
 	}/* 
-	.candle {
+	.react-stockcharts-candlestick-candle {
 		.up {
 			fill: #6BA583;
 			// stroke: $black;
@@ -46,7 +46,7 @@
 			stroke: $black;
 		}
 	}
-	.wick {
+	.react-stockcharts-candlestick-wick {
 		.up, .down {
 			stroke: $black;
 			stroke-width: 1px;
@@ -93,34 +93,15 @@
 		text-anchor: middle;
 		fill: $gray54;
 		opacity: 0.15;
-	}
-	.cross-hair {
+	}/* 
+	.react-stockcharts-cross-hair {
 		stroke: $black;
 		stroke-width: 1px;
 		shape-rendering: crispEdges;
 		opacity: 0.2;
 	}
-
-	.horizontal2 {
-		.textbg {
-			opacity: 0.95;
-			fill: $khaki;
-		}
-		text {
-			fill: $gray46;
-		}
-	}
-	.horizontal3 {
-		.textbg {
-			opacity: 0.95;
-			fill: $black;
-		}
-		text {
-			fill: $gray46;
-		}
-	}
-	.edge-coordinate {
-		.textbg {
+	.react-stockcharts-edge-coordinate {
+		.react-stockchart-text-background {
 			opacity: 0.95;
 		}
 		text {
@@ -140,16 +121,16 @@
 		cursor: grab;
 		cursor: -moz-grab;
 		cursor: -webkit-grab;
-	}
-	.grabbing {
+	}*/
+	.react-stockcharts-grabbing-cursor {
 		cursor: grabbing;
 		cursor: -moz-grabbing;
 		cursor: -webkit-grabbing;
 	}
-	.crosshair {
+	.react-stockcharts-crosshair-cursor {
 		cursor: crosshair;
 	}
-	.toottip-hover {
+	.react-stockcharts-toottip-hover {
 		pointer-events: all;
 		cursor: pointer;
 	}/* 
@@ -197,8 +178,8 @@
 		.macd-histogram {
 			opacity: 0.5;
 		}
-	}*/
-	.ma-container {
+	}
+	.react-stockcharts-moving-average-tooltip {
 		rect {
 			fill: none;
 			stroke: none;
@@ -215,21 +196,20 @@
 			//text-anchor: middle;
 		}
 	}
-	.legend {
-		font-size: 11px;
-
-		.tooltip-label {
-			fill: steelblue;
-			font-weight: bold;
-		}
-		tspan {
-			font-weight: normal;
-		}
-	}
 	.hide {
 		display: none!important;
 	}
 	.show {
 		display: block!important;
 	}
+	.react-stockcharts-tooltip {
+		font-size: 11px;
+		.react-stockcharts-tooltip-label {
+			fill: steelblue;
+			font-weight: bold;
+		}
+		tspan {
+			font-weight: normal;
+		}
+	}*/
 }

@@ -30,20 +30,22 @@ class EdgeCoordinate extends React.Component {
 		}
 		var coordinateBase = null, coordinate = null;
 		if (displayCoordinate !== undefined) {
-				coordinateBase = (<rect key={1} className="textbg"
-									x={edgeXRect}
-									y={edgeYRect}
-									height={rectHeight} width={rectWidth} fill={this.props.fill} />);
-				coordinate = (<text key={2} x={edgeXText}
-									y={edgeYText}
-									style={{"textAnchor": "middle"}}
-									dy=".32em">{displayCoordinate}</text>);
+			coordinateBase = (<rect key={1} className="react-stockchart-text-background"
+								x={edgeXRect}
+								y={edgeYRect}
+								height={rectHeight} width={rectWidth}
+								fill={this.props.fill}  opacity={this.props.opacity} />);
+			coordinate = (<text key={2} x={edgeXText}
+								y={edgeYText}
+								style={{"textAnchor": "middle"}}
+								dy=".32em" fill={this.props.textFill} >{displayCoordinate}</text>);
 		}
-		var line = this.props.hideLine ? null : <line className="cross-hair"
+		var line = this.props.hideLine ? null : <line
+					className="react-stockcharts-cross-hair" opacity={0.3} stroke="black"
 					x1={this.props.x1} y1={this.props.y1}
 					x2={this.props.x2} y2={this.props.y2} />;
 		return (
-			<g className={(this.props.show ? "show " : "hide ") + this.props.className}>
+			<g className={this.props.className}>
 				{line}
 				{coordinateBase}
 				{coordinate}
@@ -62,10 +64,15 @@ EdgeCoordinate.propTypes = {
 	orient: React.PropTypes.oneOf(["bottom", "top", "left", "right"]),
 	rectWidth: React.PropTypes.number,
 	hideLine: React.PropTypes.bool,
+	fill: React.PropTypes.string,
+	opacity: React.PropTypes.number,
 };
 EdgeCoordinate.defaultProps = {
 	namespace: "ReStock.EdgeCoordinate",
 	orient: "left",
 	hideLine: false,
+	fill: "#8a8a8a",
+	opacity: 1,
+	textFill: "white"
 };
 module.exports = EdgeCoordinate;

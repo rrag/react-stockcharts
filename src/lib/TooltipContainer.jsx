@@ -15,7 +15,7 @@ class TooltipContainer extends PureComponent {
 			return newChild;
 		});
 		return (
-			<g className="toottip-hover">
+			<g className="react-stockcharts-toottip-hover">
 				{children}
 			</g>
 		);

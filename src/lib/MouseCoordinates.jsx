@@ -64,13 +64,10 @@ class MouseCoordinates extends PureComponent {
 		}
 	}
 	render() {
+		if (!this.context.show) return null;
 		var pointer = this.getPointer();
 
-		return (
-			<g className={this.context.show ? "show" : "hide"}>
-				{pointer}
-			</g>
-		);
+		return this.getPointer();
 	}
 }
 
