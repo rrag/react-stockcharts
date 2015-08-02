@@ -4,10 +4,15 @@
 exports.ChartCanvas = require("./lib/ChartCanvas");
 exports.DataTransform = require("./lib/DataTransform");
 
-exports.XAxis = require("./lib/XAxis");
-exports.YAxis = require("./lib/YAxis");
+// exports.XAxis = require("./lib/XAxis");
+// exports.YAxis = require("./lib/YAxis");
 exports.Chart = require("./lib/Chart");
 exports.DataSeries = require("./lib/DataSeries");
+
+exports.axes = {
+	XAxis: require("./lib/axes").XAxis,
+	YAxis: require("./lib/axes").YAxis
+}
 
 // chart types & Series
 exports.AreaSeries = require("./lib/AreaSeries");

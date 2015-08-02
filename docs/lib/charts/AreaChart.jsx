@@ -4,8 +4,8 @@ var React = require('react');
 var ReStock = require('src/');
 
 var ChartCanvas = ReStock.ChartCanvas
-	, XAxis = ReStock.XAxis
-	, YAxis = ReStock.YAxis
+	, XAxis = ReStock.axes.XAxis
+	, YAxis = ReStock.axes.YAxis
 	, AreaSeries = ReStock.AreaSeries
 	, Chart = ReStock.Chart
 	, DataSeries = ReStock.DataSeries

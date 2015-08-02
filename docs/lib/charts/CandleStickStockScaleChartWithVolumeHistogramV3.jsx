@@ -6,8 +6,8 @@ var d3 = require('d3');
 var ReStock = require('src/');
 
 var ChartCanvas = ReStock.ChartCanvas
-	, XAxis = ReStock.XAxis
-	, YAxis = ReStock.YAxis
+	, XAxis = ReStock.axes.XAxis
+	, YAxis = ReStock.axes.YAxis
 	, CandlestickSeries = ReStock.CandlestickSeries
 	, DataTransform = ReStock.DataTransform
 	, Chart = ReStock.Chart
@@ -41,7 +41,7 @@ var CandleStickStockScaleChartWithVolumeHistogramV3 = React.createClass({
 					<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}
 							height={400} >
 						<YAxis axisAt="right" orient="right" ticks={5} />
-						<XAxis axisAt="bottom" orient="bottom" noTicks={true}/>
+						<XAxis axisAt="bottom" orient="bottom" showTicks={false}/>
 						<DataSeries yAccessor={CandlestickSeries.yAccessor} >
 							<CandlestickSeries />
 						</DataSeries>

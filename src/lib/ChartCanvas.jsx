@@ -92,10 +92,26 @@ class ChartCanvas extends React.Component {
 				: React.cloneElement(child);
 			return newChild;
 		});
+		var style = `<![CDATA[
+						.react-stockcharts-grabbing-cursor {
+							cursor: grabbing;
+							cursor: -moz-grabbing;
+							cursor: -webkit-grabbing;
+						}
+						.react-stockcharts-crosshair-cursor {
+							cursor: crosshair;
+						}
+						.react-stockcharts-toottip-hover {
+							pointer-events: all;
+							cursor: pointer;
+						}
+					]]>`
 		return (
 			<div style={{position: "relative", height: this.props.height, width: this.props.width}} className="react-stockchart" >
 				<div ref="canvasContainer" style={{ position: "relative", top: this.props.margin.top, left: this.props.margin.left}}></div>
 				<svg width={this.props.width} height={this.props.height} style={{ position: "absolute" }}>
+					<style type="text/css" dangerouslySetInnerHTML={{ __html: style }}>
+					</style>
 					<defs>
 						<clipPath id="chart-area-clip">
 							<rect x="0" y="0" width={w} height={h} />

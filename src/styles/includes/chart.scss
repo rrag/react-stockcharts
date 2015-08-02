@@ -1,17 +1,12 @@
 .react-stockchart {
-	.axis {
+	/*.axis {
 		path, line {
 			fill: none;
 			stroke: $black;
 			//shape-rendering: crispEdges;
 			//opacity: 0.2;
 		}
-	}/* 
-	.current-coordinate {
-		fill: none;
-		stroke: steelblue;
-		stroke-width: 3px;
-	} */
+	}
 	.grid.axis {
 		path, line {
 			fill: none;
@@ -26,7 +21,12 @@
 				display: none;
 			}
 		}
-	}/* 
+	}
+	.current-coordinate {
+		fill: none;
+		stroke: steelblue;
+		stroke-width: 3px;
+	}
 	.react-stockcharts-candlestick-candle {
 		.up {
 			fill: #6BA583;
@@ -87,13 +87,13 @@
 	.line {
 		fill: none;
 		stroke-width: 1px;
-	} */
+	} 
 	.backgroundText {
 		// font-size: 53px;
 		text-anchor: middle;
 		fill: $gray54;
 		opacity: 0.15;
-	}/* 
+	}
 	.react-stockcharts-cross-hair {
 		stroke: $black;
 		stroke-width: 1px;
@@ -121,7 +121,7 @@
 		cursor: grab;
 		cursor: -moz-grab;
 		cursor: -webkit-grab;
-	}*/
+	}
 	.react-stockcharts-grabbing-cursor {
 		cursor: grabbing;
 		cursor: -moz-grabbing;
@@ -133,7 +133,7 @@
 	.react-stockcharts-toottip-hover {
 		pointer-events: all;
 		cursor: pointer;
-	}/* 
+	}*//* 
 	.histogram {
 		rect.bar {
 			fill: steelblue;

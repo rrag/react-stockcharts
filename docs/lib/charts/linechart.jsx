@@ -6,8 +6,8 @@ var d3 = require('d3');
 var ReStock = require('src/');
 
 var ChartCanvas = ReStock.ChartCanvas
-	, XAxis = ReStock.XAxis
-	, YAxis = ReStock.YAxis
+	, XAxis = ReStock.axes.XAxis
+	, YAxis = ReStock.axes.YAxis
 	, LineSeries = ReStock.LineSeries
 	, Translate = ReStock.Translate
 	, Chart = ReStock.Chart

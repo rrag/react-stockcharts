@@ -6,8 +6,8 @@ var d3 = require('d3');
 var ReStock = require('src/');
 
 var ChartCanvas = ReStock.ChartCanvas
-	, XAxis = ReStock.XAxis
-	, YAxis = ReStock.YAxis
+	, XAxis = ReStock.axes.XAxis // ReStock.axes.XAxis, ReStock.axes.XAxis
+	, YAxis = ReStock.axes.YAxis // ReStock.axes.YAxis, ReStock.axes.YAxis
 	, CandlestickSeries = ReStock.CandlestickSeries
 	, DataTransform = ReStock.DataTransform
 	, Chart = ReStock.Chart
@@ -46,7 +46,7 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 					<Chart id={1} yMousePointerDisplayLocation="right" height={390}
 							yMousePointerDisplayFormat={(y) => y.toFixed(2)} padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
 						<YAxis axisAt="right" orient="right" ticks={5} />
-						<XAxis axisAt="bottom" orient="bottom" noTicks={true}/>
+						<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 						<DataSeries yAccessor={CandlestickSeries.yAccessor} >
 							<CandlestickSeries />
 							<OverlaySeries id={0} type="ema" options={{ period: 26 }} >
