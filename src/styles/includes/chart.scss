@@ -59,28 +59,32 @@
 	}
 	.overlay-stroke {
 		stroke: steelblue;
-	} */
-	.yin {
-		fill: none;
-		stroke: $red1;
-		stroke-width: 2px;
+	} *//*
+	.react-stockcharts-kagi {
+		.yin {
+			fill: none;
+			stroke: $red1;
+			stroke-width: 2px;
+		}
+		.yang {
+			fill: none;
+			stroke: #6BA583;
+			stroke-width: 2px;
+		}
 	}
-	.yang {
-		fill: none;
-		stroke: #6BA583;
-		stroke-width: 2px;
+	.react-stockcharts-point-and-figure {
+		.up {
+			fill: none;
+			stroke: green;
+			stroke-width: 1px;
+		}
+		.down {
+			fill: none;
+			stroke: $red1;
+			stroke-width: 1px;
+		}
 	}
-	.point_figure_up {
-		fill: none;
-		stroke: green;
-		stroke-width: 1px;
-	}
-	.point_figure_down {
-		fill: none;
-		stroke: $red1;
-		stroke-width: 1px;
-	}
-	/* .area {
+	.area {
 		fill: lightsteelblue;
 		opacity: 0.5;
 	}

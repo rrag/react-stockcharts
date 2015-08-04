@@ -1,5 +1,15 @@
 console.time("Loading plugins");
 
+/* 
+TODO 
+find a way to eliminate gulp file and use npm scripts completely
+
+This provides platform independent commands
+http://documentup.com/arturadib/shelljs#
+
+Reason #1 Gulp file start up is slow, it takes 1 min to start up the watch on boot
+*/
+
 var gulp = require("gulp")
 	, del = require("del")
 	, gutil = require("gulp-util")

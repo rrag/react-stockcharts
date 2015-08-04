@@ -25,16 +25,17 @@ class KagiSeries extends React.Component {
 				kagi.plot.push([idx, d.changePoint]);
 			}
 		}
-
+		var { stroke, fill, strokeWidth } = this.props;
 		var paths = kagiLine.map((each, i) => {
 			var dataSeries = d3.svg.line()
 				.x((item) => this.context.xScale(item[0]))
 				.y((item) => this.context.yScale(item[1]))
 				.interpolate("step-before");
-			return (<path key={i} d={dataSeries(each.plot)} className={each.type} />);
+			return (<path key={i} d={dataSeries(each.plot)} className={each.type}
+				stroke={stroke[each.type]} fill={fill[each.type]} strokeWidth={strokeWidth} />);
 		});
 		return (
-			<g>
+			<g className={this.props.className}>
 				{paths}
 			</g>
 		);
@@ -43,6 +44,16 @@ class KagiSeries extends React.Component {
 
 KagiSeries.defaultProps = {
 	namespace: "ReStock.KagiSeries",
+	className: "react-stockcharts-kagi",
+	strokeWidth: 2,
+	stroke: {
+		yang: "#6BA583",
+		yin: "red"
+	},
+	fill: {
+		yang: "none",
+		yin: "none"
+	},
 };
 
 KagiSeries.contextTypes = {
