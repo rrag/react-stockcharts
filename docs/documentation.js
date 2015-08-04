@@ -4,7 +4,7 @@ var React = require('react');
 var d3 = require('d3');
 var parseDate = d3.time.format("%Y-%m-%d").parse
 
-require('../src/styles/react-stockcharts');
+// require('../src/styles/react-stockcharts');
 require('stylesheets/re-stock');
 
 var Nav = require('lib/navbar');

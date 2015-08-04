@@ -10,10 +10,7 @@ class CandlestickSeries extends React.Component {
 		this.getCandleData = this.getCandleData.bind(this);
 		this.getCandlesSVG = this.getCandlesSVG.bind(this);
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
-	}/*
-	componentDidMount() {
-		if (this.context.type !== "svg") this.drawOnCanvas();
-	}*/
+	}
 	componentDidUpdate(prevProps, prevState, prevContext) {
 		if (this.context.type !== "svg") this.drawOnCanvas();
 	}
@@ -28,7 +25,7 @@ class CandlestickSeries extends React.Component {
 			ctx.stroke();
 		})
 		var candleData = this.getCandleData();
-		var prevfillStyle = ctx.fillStyle;
+		var { fillStyle } = ctx;
 
 		candleData.forEach(d => {
 			if (d.width < 0) {
@@ -60,7 +57,7 @@ class CandlestickSeries extends React.Component {
 			}
 		});
 
-		ctx.fillStyle = prevfillStyle;
+		ctx.fillStyle = fillStyle;
 	}
 	getWickData() {
 		var wickData = this.context.plotData

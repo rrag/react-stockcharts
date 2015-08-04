@@ -4,7 +4,19 @@ import React from "react";
 import d3 from "d3";
 
 class KagiSeries extends React.Component {
+	constructor(props) {
+		super(props);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+	}
+	componentDidUpdate(prevProps, prevState, prevContext) {
+		if (this.context.type !== "svg") this.drawOnCanvas();
+	}
+	drawOnCanvas() {
+		var ctx = this.context.canvasContext;
+		var { stroke, fill } = this.props;
+	}
 	render() {
+		if (this.context.type !== "svg") return null;
 		var kagiLine = [];
 		var kagi = {};
 		for (let i = 0; i < this.context.plotData.length; i++) {
@@ -62,6 +74,8 @@ KagiSeries.contextTypes = {
 	xAccessor: React.PropTypes.func.isRequired,
 	yAccessor: React.PropTypes.func.isRequired,
 	plotData: React.PropTypes.array.isRequired,
+	canvasContext: React.PropTypes.object,
+	type: React.PropTypes.string,
 };
 
 KagiSeries.yAccessor = (d) => ({open: d.open, high: d.high, low: d.low, close: d.close});

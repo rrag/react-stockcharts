@@ -3,7 +3,7 @@
 var React = require('react');
 var d3 = require('d3');
 
-require('../src/styles/react-stockcharts');
+// require('../src/styles/react-stockcharts');
 require('stylesheets/re-stock');
 
 var ReadME = require('md/MAIN.md');

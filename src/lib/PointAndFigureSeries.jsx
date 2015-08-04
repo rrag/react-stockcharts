@@ -5,10 +5,35 @@ import React from "react";
 const debugFlag = false;
 
 class PointAndFigureSeries extends React.Component {
+	constructor(props) {
+		super(props);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+	}
+	componentDidUpdate(prevProps, prevState, prevContext) {
+		// if (this.context.type !== "svg") this.drawOnCanvas();
+	}
+	drawOnCanvas() {
+		var ctx = this.context.canvasContext;
+		var { fillStyle, strokeStyle } = ctx;
+
+		[].forEach(d => {
+			ctx.beginPath();
+			ctx.fillStyle = d.fill;
+			ctx.strokeStyle = d.stroke;
+			ctx.rect(d.x, d.y, d.width, d.height);
+			ctx.closePath();
+			ctx.fill();
+		});
+
+		ctx.fillStyle = fillStyle;
+		ctx.strokeStyle = strokeStyle;
+	}
 	handleClick(idx) {
 		console.log(this.context.plotData[idx]);
 	}
 	render() {
+		// if (this.context.type !== "svg") return null;
+
 		var width = this.context.xScale(this.context.xAccessor(this.context.plotData[this.context.plotData.length - 1]))
 			- this.context.xScale(this.context.xAccessor(this.context.plotData[0]));
 
@@ -74,6 +99,8 @@ PointAndFigureSeries.contextTypes = {
 	xAccessor: React.PropTypes.func.isRequired,
 	yAccessor: React.PropTypes.func.isRequired,
 	plotData: React.PropTypes.array.isRequired,
+	canvasContext: React.PropTypes.object,
+	type: React.PropTypes.string,
 };
 
 PointAndFigureSeries.defaultProps = {
