@@ -8,8 +8,8 @@ var watchCompiler = webpack(watchConfig);
 var server = new WebpackDevServer(watchCompiler, {
 	publicPath: watchConfig.output.publicPath,
 	// hot: true,
-	quiet: true,
-	noInfo: true,
+	quiet: false,
+	noInfo: false,
 	stats: {
 		colors: true
 	}

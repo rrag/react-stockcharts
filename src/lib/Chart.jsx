@@ -42,7 +42,7 @@ class Chart extends PureComponent {
 	}
 	componentDidMount() {
 		if (this.context.type != "svg") {
-			console.log("Chart.componentDidMount()");
+			// console.log("Chart.componentDidMount()");
 			let ctx = this.getChildContext();
 			let canvas = this.context.createCanvas(this.getOrigin(), ctx.width, ctx.height);
 			let context = canvas.getContext('2d');

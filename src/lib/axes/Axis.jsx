@@ -35,12 +35,14 @@ Axis.propTypes = {
 	scale: React.PropTypes.func.isRequired,
 	showDomain: React.PropTypes.bool.isRequired,
 	showTicks: React.PropTypes.bool.isRequired,
+	fontSize: React.PropTypes.number.isRequired,
 };
 
 Axis.defaultProps = {
 	className: "react-stockcharts-axis",
 	showDomain: true,
 	showTicks: true,
+	fontSize: 13,
 };
 
 module.exports = Axis;

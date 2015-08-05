@@ -84,22 +84,12 @@ class CandlestickSeries extends React.Component {
 				});
 		return wickData;
 	}
-	getWicksSVG() {
-		var wickData = this.getWickData();
-		var wicks = wickData
-			.map((d, idx) => <line key={idx} className={d.className} stroke={d.stroke}
-									x1={d.x1}
-									y1={d.y1}
-									x2={d.x2}
-									y2={d.y2} />);
-		return wicks;
-	}
 	getCandleData() {
 		var { classNames, fill, stroke } = this.props;
 		var width = this.context.xScale(this.context.xAccessor(this.context.plotData[this.context.plotData.length - 1]))
 			- this.context.xScale(this.context.xAccessor(this.context.plotData[0]));
 		var cw = (width / (this.context.plotData.length)) * 0.5;
-		var candleWidth = Math.floor(cw) % 2 === 0 ? Math.floor(cw) : Math.round(cw);
+		var candleWidth = Math.round(cw); //Math.floor(cw) % 2 === 0 ? Math.floor(cw) : Math.round(cw);
 		var candles = this.context.plotData
 				.filter((d) => d.close !== undefined)
 				.map((d, idx) => {
@@ -122,6 +112,16 @@ class CandlestickSeries extends React.Component {
 					};
 				});
 		return candles;
+	}
+	getWicksSVG() {
+		var wickData = this.getWickData();
+		var wicks = wickData
+			.map((d, idx) => <line key={idx}
+				className={d.className} stroke={d.stroke} style={{ shapeRendering: "crispEdges" }}
+				x1={d.x1} y1={d.y1}
+				x2={d.x2} y2={d.y2} />
+			);
+		return wicks;
 	}
 	getCandlesSVG() {
 		var candleData = this.getCandleData();

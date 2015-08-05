@@ -9,14 +9,15 @@ class KagiSeries extends React.Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	componentDidUpdate(prevProps, prevState, prevContext) {
-		if (this.context.type !== "svg") this.drawOnCanvas();
+		// if (this.context.type !== "svg") this.drawOnCanvas();
 	}
 	drawOnCanvas() {
 		var ctx = this.context.canvasContext;
 		var { stroke, fill } = this.props;
+		// TODO implement canvas draw
 	}
 	render() {
-		if (this.context.type !== "svg") return null;
+		// if (this.context.type !== "svg") return null;
 		var kagiLine = [];
 		var kagi = {};
 		for (let i = 0; i < this.context.plotData.length; i++) {
