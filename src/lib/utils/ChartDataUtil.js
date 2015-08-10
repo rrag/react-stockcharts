@@ -27,7 +27,7 @@ var ChartDataUtil = {
 	getChartData(props, context, partialData, fullData, other) {
 
 		var charts = this.getCharts(props);
-		var innerDimensions = this.getInnerDimensions(context, other);
+		var innerDimensions = this.getInnerDimensions(other, context);
 
 		return charts.map((each) => {
 			var chartProps = each.props;
@@ -59,7 +59,7 @@ var ChartDataUtil = {
 		var item = Utils.getClosestItem(plotData, xValue, chartData.config.accessors.xAccessor);
 		return item;
 	},
-	getInnerDimensions(ctx, other) {
+	getInnerDimensions(other, ctx) {
 		// console.log(other);
 		if (other === undefined) other = {};
 		return {

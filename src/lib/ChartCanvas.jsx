@@ -30,15 +30,13 @@ class ChartCanvas extends React.Component {
 			recordInitialState: this.recordInitialState,
 		};
 	}
-	componentWillMount() {
-		var { props, context } = this;
-
+	updateState(props, context) {
 		var data = {};
-		data[this.props.interval] = this.props.data;
+		data[this.props.interval] = props.data;
 
 		var state = {
 			data: data,
-			plotData: this.props.data
+			plotData: props.data
 		};
 		if (ChartDataUtil.containsChart(props)) {
 			var defaultOptions = {
@@ -47,13 +45,17 @@ class ChartCanvas extends React.Component {
 			};
 			var plotData = props.data;
 			var chartData = ChartDataUtil.getChartData(props, context, plotData, data, defaultOptions);
-			// console.log(chartData);
-			// var mainChart = ChartDataUtil.getMainChart(props.children);
 
 			state.chartData = chartData;
 			state.plotData = plotData;
 		}
 		this.setState(state);
+	}
+	componentWillMount() {
+		this.updateState(this.props)
+	}
+	componentWillReceiveProps(nextProps) {
+		this.updateState(nextProps)
 	}
 	getCanvas() {
 		return this.refs.canvas.getCanvas();
