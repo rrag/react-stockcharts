@@ -154,7 +154,7 @@ ChartCanvas.childContextTypes = {
 ChartCanvas.defaultProps = {
 	margin: {top: 20, right: 30, bottom: 30, left: 80},
 	interval: "D",
-	type: "svg"
+	type: "hybrid"
 };
 
 module.exports = ChartCanvas;
