@@ -17,11 +17,8 @@ var ChartCanvas = ReStock.ChartCanvas
 	, EventCapture = ReStock.EventCapture
 	, MouseCoordinates = ReStock.MouseCoordinates
 	, CrossHair = ReStock.CrossHair
-	, TooltipContainer = ReStock.tooltip.TooltipContainer
-	, OHLCTooltip = ReStock.tooltip.OHLCTooltip
 	, OverlaySeries = ReStock.OverlaySeries
 	, LineSeries = ReStock.LineSeries
-	, MovingAverageTooltip = ReStock.tooltip.MovingAverageTooltip
 	, CurrentCoordinate = ReStock.CurrentCoordinate
 	, AreaSeries = ReStock.AreaSeries
 ;
@@ -54,10 +51,6 @@ var CandleStickStockScaleChartWithVolumeHistogramV3 = React.createClass({
 							<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
 						</DataSeries>
 					</Chart>
-					<TooltipContainer>
-						<OHLCTooltip forChart={1} origin={[-40, -10]}/>
-						<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 5]}/>
-					</TooltipContainer>
 				</DataTransform>
 			</ChartCanvas>
 		);

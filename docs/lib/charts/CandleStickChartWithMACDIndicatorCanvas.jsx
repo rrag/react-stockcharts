@@ -5,32 +5,16 @@ var d3 = require('d3');
 
 var ReStock = require('src/');
 
-var ChartCanvas = ReStock.ChartCanvas
-	, XAxis = ReStock.axes.XAxis
-	, YAxis = ReStock.axes.YAxis
-	, CandlestickSeries = ReStock.CandlestickSeries
-	, DataTransform = ReStock.DataTransform
-	, Chart = ReStock.Chart
-	, DataSeries = ReStock.DataSeries
-	, ChartWidthMixin = ReStock.helper.ChartWidthMixin
-	, HistogramSeries = ReStock.HistogramSeries
-	, EventCapture = ReStock.EventCapture
-	, MouseCoordinates = ReStock.MouseCoordinates
-	, CrossHair = ReStock.CrossHair
-	, TooltipContainer = ReStock.tooltip.TooltipContainer
-	, OHLCTooltip = ReStock.tooltip.OHLCTooltip
-	, OverlaySeries = ReStock.OverlaySeries
-	, LineSeries = ReStock.LineSeries
-	, MovingAverageTooltip = ReStock.tooltip.MovingAverageTooltip
-	, CurrentCoordinate = ReStock.CurrentCoordinate
-	, AreaSeries = ReStock.AreaSeries
-	, EdgeContainer = ReStock.EdgeContainer
-	, EdgeIndicator = ReStock.EdgeIndicator
-	, MACDSeries = ReStock.MACDSeries
-	, MACDIndicator = ReStock.indicator.MACD
-	, MACDTooltip = ReStock.tooltip.MACDTooltip
-;
+var { ChartCanvas, DataTransform, Chart, DataSeries, OverlaySeries } = ReStock;
+var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, MACDSeries } = ReStock;
+var { EventCapture, MouseCoordinates, CurrentCoordinate } = ReStock;
+var { EdgeContainer, EdgeIndicator } = ReStock;
 
+var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, MACDTooltip } = ReStock.tooltip;
+var { XAxis, YAxis } = ReStock.axes;
+var { ChartWidthMixin } = ReStock.helper;
+var { ChartWidthMixin } = ReStock.helper;
+var { MACD } = ReStock.indicator;
 
 var CandleStickChartWithMACDIndicatorCanvas = React.createClass({
 	mixins: [ChartWidthMixin],
@@ -87,7 +71,7 @@ var CandleStickChartWithMACDIndicatorCanvas = React.createClass({
 							>
 						<XAxis axisAt={150} orient="bottom"/>
 						<YAxis axisAt="right" orient="right" ticks={2}/>
-						<DataSeries indicator={MACDIndicator} options={{ fast: 12, slow: 26, signal: 9 }} >
+						<DataSeries indicator={MACD} options={{ fast: 12, slow: 26, signal: 9 }} >
 							<MACDSeries />
 						</DataSeries>
 					</Chart>
@@ -103,8 +87,5 @@ var CandleStickChartWithMACDIndicatorCanvas = React.createClass({
 		);
 	}
 });
-
-//						<MACDTooltip forChart={3} origin={(w, h) => [-38, h - 140]}/>
-
 
 module.exports = CandleStickChartWithMACDIndicatorCanvas;
