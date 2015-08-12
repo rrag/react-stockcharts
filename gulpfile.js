@@ -61,7 +61,7 @@ function build(myConfig, cb) {
 	});
 }
 
-gulp.task("styles", ["clean"], function() {
+/*gulp.task("styles", ["clean"], function() {
 	var compass = require("gulp-compass"),
 		autoprefixer = require("gulp-autoprefixer"),
 		concatCss = require("gulp-concat-css");
@@ -79,9 +79,9 @@ gulp.task("styles", ["clean"], function() {
 		}))
 		.pipe(concatCss("react-stockcharts.css"))
 		.pipe(gulp.dest("build/styles"));
-});
+});*/
 
-gulp.task("build", ["styles", "dev"], function(cb) {
+gulp.task("build", ["dev"], function(cb) {
 	// run webpack
 	var webpackConfig = require("./webpack.config.js");
 	var myConfig = Object.create(webpackConfig);
@@ -183,64 +183,6 @@ gulp.task("serve2", function(cb) {
 	cb();
 });
 
-var getFunctionFor = function(chartName) {
-	/*eslint-disable */
-	var r = 'var parseDate = d3.time.format("%Y-%m-%d").parse;' + "\n" +
-	'd3.tsv("//rrag.github.io/react-stockcharts/data/MSFT.tsv", (err, data) => {' + "\n" +
-	"	/* change MSFT.tsv to MSFT_full.tsv above to see how this works with lots of data points */" + "\n" +
-	"	data.forEach((d, i) => {" + "\n" +
-	"		d.date = new Date(parseDate(d.date).getTime());"+ "\n" +
-	"		d.open = +d.open;"+ "\n" +
-	"		d.high = +d.high;"+ "\n" +
-	"		d.low = +d.low;"+ "\n" +
-	"		d.close = +d.close;"+ "\n" +
-	"		d.volume = +d.volume;"+ "\n" +
-	"		// console.log(d);"+ "\n" +
-	"	});"+ "\n" +
-	'	React.render(<' + chartName + ' data={data} />, document.getElementById("chart"));'+ "\n" +
-	"});"
-	/*eslint-enable */
-	return r;
-};
-
-gulp.task("publishexamples", function(cb) {
-	var examplesToPublish = ["AreaChart",
-		"CandleStickChart",
-		"CandleStickStockScaleChart",
-		"CandleStickStockScaleChartWithVolumeHistogramV1",
-		"CandleStickStockScaleChartWithVolumeHistogramV2",
-		"CandleStickStockScaleChartWithVolumeHistogramV3",
-		"CandleStickChartWithCHMousePointer",
-		"CandleStickChartWithZoomPan",
-		"CandleStickChartWithMA",
-		"CandleStickChartWithEdge",
-		"CandleStickChartWithMACDIndicator",
-		"CandleStickChartWithMACDIndicatorCanvas", // comment this later
-		"HaikinAshi",
-		"Kagi",
-		"PointAndFigure",
-		"Renko"
-	];
-
-	var replace = require("gulp-replace");
-	var path = require("path");
-
-	examplesToPublish.forEach(function (eachEx) {
-		gulp.src(path.join(__dirname, "docs/lib/charts", eachEx + ".jsx"))
-			.pipe(replace(/var React = .*/, ""))
-			.pipe(replace(/var d3 = .*/, ""))
-			.pipe(replace(/var ReStock = .*/, ""))
-			.pipe(replace(/module.exports = .*/, getFunctionFor(eachEx)))
-			.pipe(gulp.dest(path.join(__dirname, "docs/examples", eachEx)));
-
-		gulp.src(path.join(__dirname, "docs/examples/index.html"))
-			.pipe(replace(/CHART_NAME_HERE/g, eachEx))
-			.pipe(gulp.dest(path.join(__dirname, "docs/examples", eachEx)));
-	});
-
-	cb();
-});
-
 gulp.task("test", function(cb) {
 	var karma = require("karma").server;
 	var path = require("path");
@@ -278,9 +220,6 @@ gulp.task("lint-watch", function() {
 
 gulp.task("release", ["build"], function(cb) {
 
-	// del(["build/styles/unmodified"], cb);
-	// replacement for jsx --harmony -x jsx src build/cjs && jsx --harmony src build/cjs
-	// var react = require("gulp-react");
 	var babel = require("gulp-babel");
 	gulp.src(["src/**/*.js", "src/**/*.jsx"])
 				// .pipe(react({harmony: true}))

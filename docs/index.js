@@ -1,9 +1,8 @@
 'use strict';
-/**/
+
 var React = require('react');
 var d3 = require('d3');
 
-// require('../src/styles/react-stockcharts');
 require('stylesheets/re-stock');
 
 var ReadME = require('md/MAIN.md');
@@ -26,5 +25,3 @@ d3.tsv("data/MSFT.tsv", function(err, data) {
 
 	React.render(<Chart data={data} />, document.getElementById("chart"));
 });
-
-//require('./examples/freezer-example');
