@@ -40,7 +40,8 @@ class OHLCTooltip extends React.Component {
 			: this.props.origin;
 		return (
 			<g transform={"translate(" + origin[0] + ", " + origin[1] + ")"}>
-				<ToolTipText x={0} y={0}>
+				<ToolTipText x={0} y={0}
+					fontFamily={this.props.fontFamily} fontSize={this.props.fontSize}>
 					<ToolTipTSpanLabel key="label" x={0} dy="5">Date: </ToolTipTSpanLabel>
 					<tspan key="value">{displayDate}</tspan>
 					<ToolTipTSpanLabel key="label_O"> O: </ToolTipTSpanLabel><tspan key="value_O">{open}</tspan>
@@ -69,13 +70,15 @@ OHLCTooltip.propTypes = {
 				React.PropTypes.array
 				, React.PropTypes.func
 			]).isRequired,
+	fontFamily: React.PropTypes.string,
+	fontSize: React.PropTypes.number,
 };
 
 OHLCTooltip.defaultProps = {
 	namespace: "ReStock.OHLCTooltip",
 	accessor: (d) => { return {date: d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume}; },
 	xDisplayFormat: Utils.displayDateFormat,
-	origin: [0, 0]
+	origin: [0, 0],
 };
 
 module.exports = OHLCTooltip;

@@ -17,7 +17,7 @@ function tickTransform_svg_axisY(scale, tick) {
 
 class Tick extends React.Component {
 	render() {
-		var { transform, tickStroke, textAnchor, fontSize } = this.props;
+		var { transform, tickStroke, textAnchor, fontSize, fontFamily } = this.props;
 		var { x, y, x2, y2, dy } = this.props;
 		return (
 			<g className="tick" transform={transform} >
@@ -25,6 +25,7 @@ class Tick extends React.Component {
 				<text 
 					dy={dy} x={x} y={y}
 					fontSize={fontSize}
+					fontFamily={fontFamily}
 					textAnchor={textAnchor}>
 					{this.props.children}
 				</text>
@@ -35,7 +36,7 @@ class Tick extends React.Component {
 
 class AxisTicks extends React.Component {
 	render() {
-		var { orient, innerTickSize, tickFormat, tickPadding, fontSize } = this.props;
+		var { orient, innerTickSize, tickFormat, tickPadding, fontSize, fontFamily } = this.props;
 		var { tickSize, ticks : tickArguments, tickValues, scale } = this.props;
 
 		var ticks = tickValues === undefined
@@ -79,7 +80,8 @@ class AxisTicks extends React.Component {
 					return (
 						<Tick key={idx} transform={tickTransform(scale, tick)} tickStroke={this.props.tickStroke}
 							dy={dy} x={x} y={y}
-							x2={x2} y2={y2} textAnchor={textAnchor} fontSize={fontSize}>{format(tick)}</Tick>
+							x2={x2} y2={y2} textAnchor={textAnchor}
+							fontSize={fontSize} fontFamily={fontFamily}>{format(tick)}</Tick>
 					);
 				})}
 			</g>

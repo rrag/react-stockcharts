@@ -19,9 +19,10 @@ class YAxis extends React.Component {
 		}
 
 		return (
-			<g className="x axis" transform={`translate(${ axisLocation }, 0)`}>
-				<Axis {...this.props} tickFormat={tickFormat} scale={this.context.yScale} ticks={[ticks]} showDomain={false}/>
-			</g>
+			<Axis {...this.props}
+				transform={`translate(${ axisLocation }, 0)`}
+				tickFormat={tickFormat} ticks={[ticks]}
+				scale={this.context.yScale} />
 		);
 	}
 }
@@ -40,12 +41,15 @@ YAxis.propTypes = {
 	ticks: React.PropTypes.number,
 	tickValues: React.PropTypes.array,
 	percentScale: React.PropTypes.bool,
-	axisPadding: React.PropTypes.number
+	showTicks: React.PropTypes.bool,
+	showDomain: React.PropTypes.bool,
+	className: React.PropTypes.string,
 };
 YAxis.defaultProps = {
 	namespace: "ReStock.YAxis",
 	showGrid: false,
-	axisPadding: 0,
+	showDomain: false,
+	className: "react-stockcharts-y-axis",
 };
 YAxis.contextTypes = {
 	xScale: React.PropTypes.func.isRequired,

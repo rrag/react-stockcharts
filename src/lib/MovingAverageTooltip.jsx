@@ -19,7 +19,8 @@ class SingleMAToolTip extends React.Component {
 		return (
 			<g transform={translate}>
 				<line x1={0} y1={2} x2={0} y2={28} stroke={this.props.color} strokeWidth="4px"/>
-				<ToolTipText x={5} y={11}>
+				<ToolTipText x={5} y={11}
+					fontFamily={this.props.fontFamily} fontSize={this.props.fontSize}>
 					<ToolTipTSpanLabel>{this.props.displayName}</ToolTipTSpanLabel>
 					<tspan x="5" dy="15">{this.props.value}</tspan>
 				</ToolTipText>
@@ -35,7 +36,9 @@ SingleMAToolTip.propTypes = {
 	color: React.PropTypes.string.isRequired,
 	displayName: React.PropTypes.string.isRequired,
 	value: React.PropTypes.string.isRequired,
-	onClick: React.PropTypes.func
+	onClick: React.PropTypes.func,
+	fontFamily: React.PropTypes.string,
+	fontSize: React.PropTypes.number,
 };
 
 class MovingAverageTooltip extends React.Component {
@@ -56,7 +59,8 @@ class MovingAverageTooltip extends React.Component {
 						displayName={eachOverlay.tooltipLabel}
 						value={yDisplayValue}
 						overlay={eachOverlay}
-						onClick={this.props.onClick} />;
+						onClick={this.props.onClick}
+						fontFamily={this.props.fontFamily} fontSize={this.props.fontSize} />;
 				})}
 			</g>
 		);
@@ -72,7 +76,9 @@ MovingAverageTooltip.propTypes = {
 	forChart: React.PropTypes.number.isRequired,
 	displayFormat: React.PropTypes.func.isRequired,
 	origin: React.PropTypes.array.isRequired,
-	onClick: React.PropTypes.func
+	onClick: React.PropTypes.func,
+	fontFamily: React.PropTypes.string,
+	fontSize: React.PropTypes.number,
 };
 
 MovingAverageTooltip.defaultProps = {

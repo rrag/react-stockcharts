@@ -25,7 +25,8 @@ class MACDTooltip extends React.Component {
 			: this.props.origin;
 		return (
 			<g transform={"translate(" + origin[0] + ", " + origin[1] + ")"}>
-				<ToolTipText x={0} y={0}>
+				<ToolTipText x={0} y={0}
+					fontFamily={this.props.fontFamily} fontSize={this.props.fontSize}>
 					<ToolTipTSpanLabel>MACD (</ToolTipTSpanLabel>
 						<tspan fill={options.stroke.MACDLine}>{options.slow}</tspan>
 						<ToolTipTSpanLabel>, </ToolTipTSpanLabel>
@@ -56,6 +57,8 @@ MACDTooltip.propTypes = {
 				React.PropTypes.array
 				, React.PropTypes.func
 			]).isRequired,
+	fontFamily: React.PropTypes.string,
+	fontSize: React.PropTypes.number,
 };
 
 MACDTooltip.defaultProps = {

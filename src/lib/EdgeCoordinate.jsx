@@ -38,6 +38,7 @@ class EdgeCoordinate extends React.Component {
 			coordinate = (<text key={2} x={edgeXText}
 								y={edgeYText}
 								style={{"textAnchor": "middle"}}
+								fontFamily={this.props.fontFamily}
 								fontSize={this.props.fontSize}
 								dy=".32em" fill={this.props.textFill} >{displayCoordinate}</text>);
 		}
@@ -67,6 +68,7 @@ EdgeCoordinate.propTypes = {
 	hideLine: React.PropTypes.bool,
 	fill: React.PropTypes.string,
 	opacity: React.PropTypes.number,
+	fontFamily: React.PropTypes.string.isRequired,
 	fontSize: React.PropTypes.number.isRequired,
 };
 EdgeCoordinate.defaultProps = {
@@ -76,6 +78,7 @@ EdgeCoordinate.defaultProps = {
 	fill: "#8a8a8a",
 	opacity: 1,
 	textFill: "white",
+	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 13,
 };
 module.exports = EdgeCoordinate;

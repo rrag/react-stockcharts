@@ -13,8 +13,11 @@ class Axis extends React.Component {
 		var ticks = this.props.showTicks
 			? <AxisTicks {...this.props} />
 			: null;
+		var className = "";
+		if (this.props.className) className = this.props.defaultClassName.concat(this.props.className);
 		return (
-			<g className={this.props.className} >
+			<g className={className}
+				transform={this.props.transform}>
 				{ticks}
 				{domain}
 			</g>
@@ -35,14 +38,17 @@ Axis.propTypes = {
 	scale: React.PropTypes.func.isRequired,
 	showDomain: React.PropTypes.bool.isRequired,
 	showTicks: React.PropTypes.bool.isRequired,
+	fontFamily: React.PropTypes.string,
 	fontSize: React.PropTypes.number.isRequired,
 };
 
+
 Axis.defaultProps = {
-	className: "react-stockcharts-axis",
+	defaultClassName: "react-stockcharts-axis ",
 	showDomain: true,
 	showTicks: true,
-	fontSize: 13,
+	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
+	fontSize: 12,
 };
 
 module.exports = Axis;

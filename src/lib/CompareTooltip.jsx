@@ -20,7 +20,8 @@ class CompareTooltip extends React.Component {
 		}
 		return (
 			<g transform={"translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")"}>
-				<ToolTipText x={0} y={0}>
+				<ToolTipText x={0} y={0}
+					fontFamily={this.props.fontFamily} fontSize={this.props.fontSize}>
 					<ToolTipTSpanLabel key="label" x={0} dy="5" fill={thisSeries.stroke}>{thisSeries.displayLabel + ": "}</ToolTipTSpanLabel>
 					<tspan key="value" fill={thisSeries.stroke} >{displayValue}</tspan>
 				</ToolTipText>
@@ -39,7 +40,10 @@ CompareTooltip.propTypes = {
 	forCompareSeries: React.PropTypes.number.isRequired,
 	xDisplayFormat: React.PropTypes.func.isRequired,
 	origin: React.PropTypes.array.isRequired,
+	fontFamily: React.PropTypes.string,
+	fontSize: React.PropTypes.number,
 };
+
 
 CompareTooltip.defaultProps = {
 	namespace: "ReStock.CompareTooltip",
