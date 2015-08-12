@@ -5,9 +5,11 @@ import Axis from "./Axis";
 
 class YAxis extends React.Component {
 	render() {
-		var { axisAt, tickFormat, ticks } = this.props;
+		var { axisAt, tickFormat, ticks, percentScale } = this.props;
+		var { yScale } = this.context;
+		if (percentScale) yScale = yScale.copy().domain([0, 1]);
 
-		var range = this.context.yScale.range(), axisLocation;
+		var axisLocation;
 
 		if (axisAt === "left") axisLocation = 0;
 		else if (axisAt === "right") axisLocation = this.context.width;
@@ -22,7 +24,7 @@ class YAxis extends React.Component {
 			<Axis {...this.props}
 				transform={`translate(${ axisLocation }, 0)`}
 				tickFormat={tickFormat} ticks={[ticks]}
-				scale={this.context.yScale} />
+				scale={yScale} />
 		);
 	}
 }
