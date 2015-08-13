@@ -52,6 +52,7 @@ var ChartDataUtil = {
 		var eventCapture = this.getChildren(children, /EventCapture$/);
 		if (eventCapture.length > 1) throw new Error("only one EventCapture allowed");
 		if (eventCapture.length > 0) return eventCapture[0].props.mainChart;
+		if (eventCapture.length === 0) return this.getChildren(children, /Chart$/)[0].props.id;
 	},
 	getClosestItem(plotData, mouseXY, chartData) {
 		// console.log(chartData);
