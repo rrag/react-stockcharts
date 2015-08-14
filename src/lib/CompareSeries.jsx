@@ -2,24 +2,20 @@
 
 import React from "react";
 import d3 from "d3";
+import Line from "./Line";
 
 class CompareSeries extends React.Component {
-	constructor(props) {
-		super(props);
-		this.getPath = this.getPath.bind(this);
-	}
-	getPath() {
-		var dataSeries = d3.svg.line()
-			.defined((d) =>(d.compare["compare_" + this.props.id] !== undefined))
-			.x((d) => this.context.xScale(this.context.xAccessor(d)))
-			.y((d) => this.context.yScale(d.compare["compare_" + this.props.id]));
-		return dataSeries(this.context.plotData);
-	}
 	render() {
 		var thisSeries = this.context.compareSeries.filter(each => each.id === this.props.id)[0];
-
+		let { xScale, yScale, xAccessor, yAccessor, plotData, type } = this.context;
 		return (
-			<path d={this.getPath()} stroke={thisSeries.stroke} fill="none" className={this.props.className}/>
+			<Line
+				className={this.props.className}
+				xScale={xScale} yScale={yScale}
+				xAccessor={xAccessor} yAccessor={thisSeries.percentYAccessor}
+				data={plotData}
+				stroke={thisSeries.stroke} fill="none"
+				type={type} />
 		);
 	}
 }
@@ -42,6 +38,7 @@ CompareSeries.contextTypes = {
 	xAccessor: React.PropTypes.func.isRequired,
 	plotData: React.PropTypes.array.isRequired,
 	compareSeries: React.PropTypes.array.isRequired,
+	type: React.PropTypes.string,
 };
 
 module.exports = CompareSeries;

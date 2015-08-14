@@ -73,8 +73,8 @@
     "preversion": "npm lint",
     "version": "gulp release",
     "postversion": "git push origin master && git push --tags",
-    "publishnext": "cd build && npm publish --tag next",
-    "publish": "cd build && npm publish --tag latest"
+    "publishnext": "cd build && npm publish ./ --tag next",
+    "publish": "cd build && npm publish"
   },
   "browserify": {
     "transform": [

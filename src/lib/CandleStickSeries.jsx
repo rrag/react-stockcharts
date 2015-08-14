@@ -70,7 +70,7 @@ class CandlestickSeries extends React.Component {
 						y1 = this.context.yScale(ohlc.high),
 						x2 = x1,
 						y2 = this.context.yScale(ohlc.low),
-						className = (ohlc.open >= ohlc.close) ? "up" : "down";
+						className = (ohlc.open <= ohlc.close) ? "up" : "down";
 
 					return {
 						x1: x1,
@@ -78,7 +78,7 @@ class CandlestickSeries extends React.Component {
 						x2: x2,
 						y2: y2,
 						className: className,
-						direction: (ohlc.open - ohlc.close),
+						direction: (ohlc.close - ohlc.open),
 						stroke: "black",
 					};
 				});
@@ -108,7 +108,7 @@ class CandlestickSeries extends React.Component {
 						className: className,
 						fill: (ohlc.open <= ohlc.close) ? fill.up : fill.down,
 						stroke: (ohlc.open <= ohlc.close) ? stroke.up : stroke.down,
-						direction: (ohlc.open - ohlc.close)
+						direction: (ohlc.close - ohlc.open),
 					};
 				});
 		return candles;

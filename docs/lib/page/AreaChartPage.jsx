@@ -17,7 +17,7 @@ var OverviewPage = React.createClass({
 			<ContentSection title={OverviewPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<AreaChart data={this.props.someData} />
+						<AreaChart data={this.props.someData} type="svg" />
 					</Section>
 				</Row>
 				<Row>
@@ -27,7 +27,7 @@ var OverviewPage = React.createClass({
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<AreaChartWithYPercent data={this.props.someData} />
+						<AreaChartWithYPercent data={this.props.someData} type="svg" />
 					</Section>
 				</Row>
 			</ContentSection>

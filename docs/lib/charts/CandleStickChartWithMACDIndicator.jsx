@@ -1,47 +1,40 @@
-'use strict';
+"use strict";
 
-var React = require('react');
-var d3 = require('d3');
+var React = require("react");
+var d3 = require("d3");
 
-var ReStock = require('src/');
+var ReStock = require("src/");
 
-var ChartCanvas = ReStock.ChartCanvas
-	, XAxis = ReStock.axes.XAxis // ReStock.axes.XAxis, ReStock.axes.XAxis
-	, YAxis = ReStock.axes.YAxis // ReStock.axes.YAxis, ReStock.axes.YAxis
-	, CandlestickSeries = ReStock.CandlestickSeries
-	, DataTransform = ReStock.DataTransform
-	, Chart = ReStock.Chart
-	, DataSeries = ReStock.DataSeries
-	, ChartWidthMixin = ReStock.helper.ChartWidthMixin
-	, HistogramSeries = ReStock.HistogramSeries
-	, EventCapture = ReStock.EventCapture
-	, MouseCoordinates = ReStock.MouseCoordinates
-	, CrossHair = ReStock.CrossHair
-	, TooltipContainer = ReStock.tooltip.TooltipContainer
-	, OHLCTooltip = ReStock.tooltip.OHLCTooltip
-	, OverlaySeries = ReStock.OverlaySeries
-	, LineSeries = ReStock.LineSeries
-	, MovingAverageTooltip = ReStock.tooltip.MovingAverageTooltip
-	, CurrentCoordinate = ReStock.CurrentCoordinate
-	, AreaSeries = ReStock.AreaSeries
-	, EdgeContainer = ReStock.EdgeContainer
-	, EdgeIndicator = ReStock.EdgeIndicator
-	, MACDSeries = ReStock.MACDSeries
-	, MACDIndicator = ReStock.indicator.MACD
-	, MACDTooltip = ReStock.tooltip.MACDTooltip
-;
+var { ChartCanvas, DataTransform, Chart, DataSeries, OverlaySeries } = ReStock;
+var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, MACDSeries } = ReStock;
+var { EventCapture, MouseCoordinates, CurrentCoordinate } = ReStock;
+var { EdgeContainer, EdgeIndicator } = ReStock;
 
-var CandleStickChartWithMACDIndicator = React.createClass({
+var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, MACDTooltip } = ReStock.tooltip;
+var { XAxis, YAxis } = ReStock.axes;
+var { ChartWidthMixin } = ReStock.helper;
+var { MACD } = ReStock.indicator;
+
+var CandleStickChartWithMACDIndicatorCanvas = React.createClass({
 	mixins: [ChartWidthMixin],
+	propTypes: {
+		data: React.PropTypes.array.isRequired,
+		type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	},
+	getDefaultProps() {
+		return {
+			type: "svg"
+		}
+	},
 	render() {
 		if (this.state === null || !this.state.width) return <div />;
-
+		var { data, type } = this.props;
 		var dateFormat = d3.time.format("%Y-%m-%d");
 
 		return (
 			<ChartCanvas width={this.state.width} height={600}
-				margin={{left: 70, right: 70, top:20, bottom: 30}} data={this.props.data} interval="D"
-				initialDisplay={200} type="svg">
+				margin={{left: 70, right: 70, top:20, bottom: 30}} interval="D" initialDisplay={200} 
+				data={data} type={type}>
 				<DataTransform transformType="stockscale">
 					<Chart id={1} yMousePointerDisplayLocation="right" height={390}
 							yMousePointerDisplayFormat={(y) => y.toFixed(2)} padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
@@ -64,8 +57,8 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 						<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 						<DataSeries yAccessor={(d) => d.volume} >
 							<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
-							<OverlaySeries id={3} type="sma" options={{ period: 10, pluck:'volume' }} >
-								<AreaSeries/>
+							<OverlaySeries id={3} type="sma" options={{ period: 10, pluck:"volume" }} >
+								<AreaSeries opacity={0.5} stroke="steelblue" fill="steelblue" />
 							</OverlaySeries>
 						</DataSeries>
 					</Chart>
@@ -86,7 +79,7 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 							>
 						<XAxis axisAt={150} orient="bottom"/>
 						<YAxis axisAt="right" orient="right" ticks={2}/>
-						<DataSeries indicator={MACDIndicator} options={{ fast: 12, slow: 26, signal: 9 }} >
+						<DataSeries indicator={MACD} options={{ fast: 12, slow: 26, signal: 9 }} >
 							<MACDSeries />
 						</DataSeries>
 					</Chart>
@@ -103,7 +96,4 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 	}
 });
 
-//						<MACDTooltip forChart={3} origin={(w, h) => [-38, h - 140]}/>
-
-
-module.exports = CandleStickChartWithMACDIndicator;
+module.exports = CandleStickChartWithMACDIndicatorCanvas;

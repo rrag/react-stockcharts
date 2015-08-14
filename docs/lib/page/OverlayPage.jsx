@@ -16,7 +16,7 @@ var OverlayPage = React.createClass({
 			<ContentSection title={OverlayPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<CandleStickChartWithMA data={this.props.someData}/>
+						<CandleStickChartWithMA data={this.props.someData} type="svg" />
 					</Section>
 				</Row>
 				<Row>

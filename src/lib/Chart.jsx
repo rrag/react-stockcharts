@@ -8,6 +8,7 @@ class Chart extends PureComponent {
 	constructor() {
 		super();
 		this.state = {};
+		this.updateCanvasContext = this.updateCanvasContext.bind(this);
 	}
 	getChildContext() {
 		var chartData = this.context.chartData.filter((each) => each.id === this.props.id)[0];
@@ -40,16 +41,25 @@ class Chart extends PureComponent {
 			this.state.canvasContext.clearRect(-0.5, -0.5, width, height);
 		}
 	}
+	updateCanvasContext(context) {
+		let ctx = this.getChildContext();
+		let canvas = context.createCanvas(this.getOrigin(), ctx.width, ctx.height);
+		let canvasContext = canvas.getContext('2d');
+		canvasContext.translate(0.5, 0);
+		this.setState({
+			canvasContext: canvasContext
+		});
+	}
 	componentDidMount() {
-		if (this.context.type != "svg") {
+		if (this.context.type !== "svg") {
 			// console.log("Chart.componentDidMount()");
-			let ctx = this.getChildContext();
-			let canvas = this.context.createCanvas(this.getOrigin(), ctx.width, ctx.height);
-			let context = canvas.getContext('2d');
-			context.translate(0.5, 0);
-			this.setState({
-				canvasContext: context
-			});
+			this.updateCanvasContext(this.context);
+		}
+	}
+	componentWillReceiveProps(nextProps, nextContext) {
+		if (nextContext.type !== "svg" && this.context.type === "svg") {
+			// changing from svg to hybrid
+			this.updateCanvasContext(nextContext);
 		}
 	}
 	render() {

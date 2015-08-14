@@ -16,7 +16,7 @@ var EdgeCoordinatesPage = React.createClass({
 			<ContentSection title={EdgeCoordinatesPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<CandleStickChartWithEdge  data={this.props.someData}/>
+						<CandleStickChartWithEdge  data={this.props.someData} type="svg"/>
 					</Section>
 				</Row>
 				<Row>

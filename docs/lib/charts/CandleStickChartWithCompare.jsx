@@ -1,39 +1,28 @@
-'use strict';
+"use strict";
 
-var React = require('react');
-var d3 = require('d3');
+var React = require("react");
+var d3 = require("d3");
 
-var ReStock = require('src/');
+var ReStock = require("src/");
 
-var ChartCanvas = ReStock.ChartCanvas
-	, XAxis = ReStock.axes.XAxis
-	, YAxis = ReStock.axes.YAxis
-	, CandlestickSeries = ReStock.CandlestickSeries
-	, DataTransform = ReStock.DataTransform
-	, Chart = ReStock.Chart
-	, DataSeries = ReStock.DataSeries
-	, ChartWidthMixin = ReStock.helper.ChartWidthMixin
-	, HistogramSeries = ReStock.HistogramSeries
-	, EventCapture = ReStock.EventCapture
-	, MouseCoordinates = ReStock.MouseCoordinates
-	, CrossHair = ReStock.CrossHair
-	, TooltipContainer = ReStock.tooltip.TooltipContainer
-	, OHLCTooltip = ReStock.tooltip.OHLCTooltip
-	, OverlaySeries = ReStock.OverlaySeries
-	, LineSeries = ReStock.LineSeries
-	, MovingAverageTooltip = ReStock.tooltip.MovingAverageTooltip
-	, CurrentCoordinate = ReStock.CurrentCoordinate
-	, AreaSeries = ReStock.AreaSeries
-	, EdgeContainer = ReStock.EdgeContainer
-	, EdgeIndicator = ReStock.EdgeIndicator
-	, CompareSeries = ReStock.CompareSeries
-	, CompareTooltip = ReStock.tooltip.CompareTooltip
-;
+var { ChartCanvas, DataTransform, Chart, DataSeries, OverlaySeries } = ReStock;
+var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, CompareSeries } = ReStock;
+var { EventCapture, MouseCoordinates, CurrentCoordinate } = ReStock;
+var { EdgeContainer, EdgeIndicator } = ReStock;
+
+var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, CompareTooltip } = ReStock.tooltip;
+var { XAxis, YAxis } = ReStock.axes;
+var { ChartWidthMixin } = ReStock.helper;
 
 var CandleStickChartWithCompare = React.createClass({
 	mixins: [ChartWidthMixin],
+	propTypes: {
+		data: React.PropTypes.array.isRequired,
+		type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	},
 	render() {
 		if (this.state === null || !this.state.width) return <div />;
+		var { data, type } = this.props;
 
 		var parseDate = d3.time.format("%Y-%m-%d").parse
 		var dateRange = { from: parseDate("2012-12-01"), to: parseDate("2012-12-31")}
@@ -41,7 +30,8 @@ var CandleStickChartWithCompare = React.createClass({
 
 		return (
 			<ChartCanvas width={this.state.width} height={400}
-				margin={{left: 90, right: 70, top:10, bottom: 30}} data={this.props.data} interval="D" initialDisplay={30} >
+				margin={{left: 90, right: 70, top:10, bottom: 30}} interval="D" initialDisplay={30}
+				data={data} type={type}>
 				<DataTransform transformType="stockscale">
 					<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}>
 						<XAxis axisAt="bottom" orient="bottom"/>
@@ -57,7 +47,7 @@ var CandleStickChartWithCompare = React.createClass({
 						<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 						<DataSeries yAccessor={(d) => d.volume} >
 							<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
-							<OverlaySeries id={3} type="sma" options={{ period: 10, pluck:'volume' }} >
+							<OverlaySeries id={3} type="sma" options={{ period: 10, pluck:"volume" }} >
 								<AreaSeries/>
 							</OverlaySeries>
 						</DataSeries>

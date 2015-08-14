@@ -38,7 +38,8 @@ exports.EdgeContainer = require("./lib/EdgeContainer");
 exports.EdgeIndicator = require("./lib/EdgeIndicator");
 
 exports.helper = {
-	ChartWidthMixin: require("./lib/helper/ChartWidthMixin")
+	ChartWidthMixin: require("./lib/helper/ChartWidthMixin"),
+	TypeChooser: require("./lib/helper/TypeChooser")
 };
 
 exports.indicator = {
@@ -59,4 +60,4 @@ exports.OHLCTooltip = require("./lib/OHLCTooltip");
 exports.CompareTooltip = require("./lib/CompareTooltip");
 exports.MovingAverageTooltip = require("./lib/MovingAverageTooltip");
 */
-exports.version = "0.2.0-alpha-1"
+exports.version = "0.2.0-alpha";

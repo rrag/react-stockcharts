@@ -21,7 +21,7 @@ var PointAndFigurePage = React.createClass({
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<PointAndFigure data={this.props.someData} />
+						<PointAndFigure data={this.props.someData} type="svg" />
 					</Section>
 				</Row>
 			</ContentSection>

@@ -6,24 +6,24 @@ var Row = require('lib/row');
 var Section = require('lib/section');
 var TypeChooser = require("src/").helper.TypeChooser;
 
-var HeikinAshiChart = require('lib/charts/HaikinAshi');
+var CandleStickChartWithZoomPan = require('lib/charts/CandleStickChartWithZoomPan');
 
-var HeikinAshiPage = React.createClass({
+var ZoomAndPanPage = React.createClass({
 	statics: {
-		title: 'Heikin Ashi'
+		title: 'Svg vs Canvas'
 	},
 	render() {
 		return (
-			<ContentSection title={HeikinAshiPage.title}>
+			<ContentSection title={ZoomAndPanPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/HEIKIN-ASHI')}}></aside>
+						<aside dangerouslySetInnerHTML={{__html: require('md/SVG-VS-CANVAS')}}></aside>
 					</Section>
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<TypeChooser>
-							{(type) => <HeikinAshiChart data={this.props.someData} type={type} />}
+						<TypeChooser type="svg">
+							{(type) => <CandleStickChartWithZoomPan data={this.props.someData} type={type} />}
 						</TypeChooser>
 					</Section>
 				</Row>
@@ -32,4 +32,4 @@ var HeikinAshiPage = React.createClass({
 	}
 });
 
-module.exports = HeikinAshiPage;
+module.exports = ZoomAndPanPage;

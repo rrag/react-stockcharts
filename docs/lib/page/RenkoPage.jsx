@@ -4,6 +4,7 @@ var React = require('react');
 var ContentSection = require('lib/content-section');
 var Row = require('lib/row');
 var Section = require('lib/section');
+var TypeChooser = require("src/").helper.TypeChooser;
 
 var Renko = require('lib/charts/Renko');
 
@@ -21,7 +22,9 @@ var RenkoPage = React.createClass({
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<Renko data={this.props.lotsOfData} />
+						<TypeChooser>
+							{(type) => <Renko data={this.props.lotsOfData} type={type} />}
+						</TypeChooser>
 					</Section>
 				</Row>
 			</ContentSection>

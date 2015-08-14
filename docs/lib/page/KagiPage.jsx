@@ -21,7 +21,7 @@ var KagiPage = React.createClass({
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<Kagi data={this.props.lotsOfData} />
+						<Kagi data={this.props.lotsOfData} type="svg" />
 					</Section>
 				</Row>
 			</ContentSection>

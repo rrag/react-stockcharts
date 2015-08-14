@@ -1,42 +1,43 @@
-'use strict';
+"use strict";
 
-var React = require('react');
-var d3 = require('d3');
+var React = require("react");
+var d3 = require("d3");
 var parseDate = d3.time.format("%Y-%m-%d").parse
 
-require('stylesheets/re-stock');
+require("stylesheets/re-stock");
 
-var Nav = require('lib/navbar');
-var Sidebar = require('lib/sidebar');
-var MainContainer = require('lib/main-container');
-var MenuGroup = require('lib/menu-group');
-var MenuItem = require('lib/MenuItem');
-
+var Nav = require("lib/navbar");
+var Sidebar = require("lib/sidebar");
+var MainContainer = require("lib/main-container");
+var MenuGroup = require("lib/menu-group");
+var MenuItem = require("lib/MenuItem");
+var ReStock = require("src/");
 
 var pages = [
-	require('lib/page/GettingStartedPage'),
-	require('lib/page/QuickStartExamplesPage'),
-	require('lib/page/OverviewPage'),
-	require('lib/page/AreaChartPage'),
-	require('lib/page/CandleStickChartPage'),
-	require('lib/page/VolumeHistogramPage'),
-	require('lib/page/MousePointerPage'),
-	require('lib/page/ZoomAndPanPage'),
-	require('lib/page/OverlayPage'),
-	require('lib/page/EdgeCoordinatesPage'),
-	require('lib/page/CompareWithPage'),
-	require('lib/page/LotsOfDataPage'),
-	require('lib/page/MACDIndicatorPage'),
-	require('lib/page/HeikinAshiPage'),
-	require('lib/page/KagiPage'),
-	require('lib/page/PointAndFigurePage'),
-	require('lib/page/RenkoPage'),
-	require('lib/page/ComingSoonPage'),
+	require("lib/page/GettingStartedPage"),
+	require("lib/page/QuickStartExamplesPage"),
+	require("lib/page/OverviewPage"),
+	require("lib/page/AreaChartPage"),
+	require("lib/page/CandleStickChartPage"),
+	require("lib/page/VolumeHistogramPage"),
+	require("lib/page/MousePointerPage"),
+	require("lib/page/ZoomAndPanPage"),
+	require("lib/page/SvgVsCanvas"),
+	require("lib/page/OverlayPage"),
+	require("lib/page/EdgeCoordinatesPage"),
+	require("lib/page/CompareWithPage"),
+	require("lib/page/LotsOfDataPage"),
+	require("lib/page/MACDIndicatorPage"),
+	require("lib/page/HeikinAshiPage"),
+	require("lib/page/KagiPage"),
+	require("lib/page/PointAndFigurePage"),
+	require("lib/page/RenkoPage"),
+	require("lib/page/ComingSoonPage"),
 ];
 
 function compressString(string) {
-	string = string.replace(/\s+/g, '');
-	string = string.replace(/_+/g, '');
+	string = string.replace(/\s+/g, "");
+	string = string.replace(/_+/g, "");
 	string = string.toLowerCase();
 	// console.log(string);
 	return string
@@ -73,12 +74,12 @@ function renderPage(data, dataFull, compareData) {
 		d.GEClose = +d.GEClose;
 		// console.log(d);
 	});
-	var SyncMouseMove = require('./lib/charts/synchronized-mouse-move').init(data);
-	var AreaChartWithZoom = require('./lib/charts/areachart-with-zoom').init(data);
-	var AreaChartWithZoomPan = require('./lib/charts/areachart-with-zoom-and-pan').init(data);
+	var SyncMouseMove = require("./lib/charts/synchronized-mouse-move").init(data);
+	var AreaChartWithZoom = require("./lib/charts/areachart-with-zoom").init(data);
+	var AreaChartWithZoomPan = require("./lib/charts/areachart-with-zoom-and-pan").init(data);
 
 
-	var selected = location.hash.replace('#/', '');
+	var selected = location.hash.replace("#/", "");
 	var selectedPage = pages.filter((page) => (compressString(page.title) === compressString(selected)));
 
 	var firstPage = (selectedPage.length === 0) ? pages[0] : selectedPage[0];
@@ -93,7 +94,7 @@ function renderPage(data, dataFull, compareData) {
 			}
 		}
 		handleRouteChange() {
-			let selected = location.hash.replace('#/', '');
+			let selected = location.hash.replace("#/", "");
 			let selectedPage = pages.filter((page) => (compressString(page.title) === compressString(selected)));
 			if (selectedPage.length > 0) {
 				this.setState({
@@ -168,7 +169,7 @@ function renderPartialPage(data, dataFull, compareData) {
 		// console.log(d);
 	});
 
-	//var Renko = require('./lib/charts/Renko').init(dataFull);
+	//var Renko = require("./lib/charts/Renko").init(dataFull);
 	// AreaChart
 	// AreaChartWithYPercent
 	// CandleStickChart
@@ -188,13 +189,16 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithCompare
 	// CandleStickChartWithMACDIndicator
 	// CandleStickChartWithMACDIndicatorCanvas
-	var Chart = require('lib/charts/CandleStickChartWithMACDIndicatorCanvas');
+	var Chart = require("lib/charts/CandleStickChartWithMACDIndicatorCanvas");
+	var TypeChooser = ReStock.helper.TypeChooser;
 
 	class ExamplesPage extends React.Component {
 		render() {
 			return (
 				<div className="container react-stockchart">
-					<Chart data={data} />
+					<TypeChooser>
+						{(type) => <Chart data={data} type={type} />}
+					</TypeChooser>
 				</div>
 			)
 		}

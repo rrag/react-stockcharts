@@ -1,42 +1,35 @@
-'use strict';
+"use strict";
 
-var React = require('react');
-var d3 = require('d3');
+var React = require("react");
+var d3 = require("d3");
 
-var ReStock = require('src/');
+var ReStock = require("src/");
 
-var ChartCanvas = ReStock.ChartCanvas
-	, XAxis = ReStock.axes.XAxis
-	, YAxis = ReStock.axes.YAxis
-	, CandlestickSeries = ReStock.CandlestickSeries
-	, DataTransform = ReStock.DataTransform
-	, Chart = ReStock.Chart
-	, DataSeries = ReStock.DataSeries
-	, ChartWidthMixin = ReStock.helper.ChartWidthMixin
-	, HistogramSeries = ReStock.HistogramSeries
-	, EventCapture = ReStock.EventCapture
-	, MouseCoordinates = ReStock.MouseCoordinates
-	, CrossHair = ReStock.CrossHair
-	, TooltipContainer = ReStock.tooltip.TooltipContainer
-	, OHLCTooltip = ReStock.tooltip.OHLCTooltip
-	, OverlaySeries = ReStock.OverlaySeries
-	, LineSeries = ReStock.LineSeries
-	, MovingAverageTooltip = ReStock.tooltip.MovingAverageTooltip
-	, CurrentCoordinate = ReStock.CurrentCoordinate
-	, AreaSeries = ReStock.AreaSeries
-	, EdgeContainer = ReStock.EdgeContainer
-	, EdgeIndicator = ReStock.EdgeIndicator
-;
+var { ChartCanvas, DataTransform, Chart, DataSeries, OverlaySeries } = ReStock;
+var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, MACDSeries } = ReStock;
+var { EventCapture, MouseCoordinates, CurrentCoordinate } = ReStock;
+var { EdgeContainer, EdgeIndicator } = ReStock;
+
+var { TooltipContainer, OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
+var { XAxis, YAxis } = ReStock.axes;
+var { ChartWidthMixin } = ReStock.helper;
+
+
 var HaikinAshi = React.createClass({
 	mixins: [ChartWidthMixin],
+	propTypes: {
+		data: React.PropTypes.array.isRequired,
+		type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	},
 	render() {
 		if (this.state === null || !this.state.width) return <div />;
-
+		var { data, type } = this.props;
 		var dateFormat = d3.time.format("%Y-%m-%d");
 
 		return (
 			<ChartCanvas width={this.state.width} height={400}
-				margin={{left: 90, right: 70, top:10, bottom: 30}} data={this.props.data} interval="D" initialDisplay={30} >
+				margin={{left: 90, right: 70, top:10, bottom: 30}} interval="D" initialDisplay={30}
+				data={data} type={type}>
 				<DataTransform transformType="stockscale">
 				<DataTransform transformType="heikinashi">
 					<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}>
@@ -44,7 +37,7 @@ var HaikinAshi = React.createClass({
 						<YAxis axisAt="right" orient="right" ticks={5} />
 						<DataSeries yAccessor={CandlestickSeries.yAccessor} >
 							<CandlestickSeries />
-							<OverlaySeries id={0} type="sma" options={{ period: 20, pluck: 'close' }}>
+							<OverlaySeries id={0} type="sma" options={{ period: 20, pluck: "close" }}>
 								<LineSeries/>
 							</OverlaySeries>
 							<OverlaySeries id={1} type="sma" options={{ period: 30 }} >
@@ -62,7 +55,7 @@ var HaikinAshi = React.createClass({
 						<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 						<DataSeries yAccessor={(d) => d.volume} >
 							<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
-							<OverlaySeries id={3} type="sma" options={{ period: 10, pluck:'volume' }} >
+							<OverlaySeries id={3} type="sma" options={{ period: 10, pluck:"volume" }} >
 								<AreaSeries/>
 							</OverlaySeries>
 						</DataSeries>

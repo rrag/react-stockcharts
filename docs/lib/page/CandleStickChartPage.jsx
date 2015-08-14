@@ -17,7 +17,7 @@ var CandleStickChartPage = React.createClass({
 			<ContentSection title={CandleStickChartPage.title}>
 				<Row title="">
 					<Section colSpan={2}>
-						<CandleStickChart data={this.props.someData} />
+						<CandleStickChart data={this.props.someData} type="svg" />
 					</Section>
 				</Row>
 				<Row>
@@ -27,7 +27,7 @@ var CandleStickChartPage = React.createClass({
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<CandleStickStockScaleChart data={this.props.someData} />
+						<CandleStickStockScaleChart data={this.props.someData} type="svg" />
 					</Section>
 				</Row>
 				<Row>

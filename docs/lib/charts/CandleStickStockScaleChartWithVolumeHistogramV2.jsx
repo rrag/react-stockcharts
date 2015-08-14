@@ -1,29 +1,30 @@
-'use strict';
+"use strict";
 
-var React = require('react');
-var d3 = require('d3');
+var React = require("react");
+var d3 = require("d3");
 
-var ReStock = require('src/');
+var ReStock = require("src/");
 
-var ChartCanvas = ReStock.ChartCanvas
-	, XAxis = ReStock.axes.XAxis
-	, YAxis = ReStock.axes.YAxis
-	, CandlestickSeries = ReStock.CandlestickSeries
-	, DataTransform = ReStock.DataTransform
-	, Chart = ReStock.Chart
-	, DataSeries = ReStock.DataSeries
-	, ChartWidthMixin = ReStock.helper.ChartWidthMixin
-	, HistogramSeries = ReStock.HistogramSeries
-;
+var { ChartCanvas, DataTransform, Chart, DataSeries } = ReStock;
+var { CandlestickSeries, HistogramSeries } = ReStock;
+
+var { XAxis, YAxis } = ReStock.axes;
+var { ChartWidthMixin } = ReStock.helper;
 
 var CandleStickStockScaleChartWithVolumeHistogramV2 = React.createClass({
 	mixins: [ChartWidthMixin],
+	propTypes: {
+		data: React.PropTypes.array.isRequired,
+		type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	},
 	render() {
 		if (this.state === null || !this.state.width) return <div />;
-
+		var { data, type } = this.props;
 		return (
 			<ChartCanvas width={this.state.width} height={400}
-				margin={{left: 50, right: 50, top:10, bottom: 30}} data={this.props.data} interval="D" initialDisplay={100}>
+				margin={{left: 50, right: 50, top:10, bottom: 30}} interval="D" initialDisplay={100}
+				data={data} type={type}>
+
 				<DataTransform transformType="stockscale">
 					<Chart id={1} >
 						<XAxis axisAt="bottom" orient="bottom"/>
