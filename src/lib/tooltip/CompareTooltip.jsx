@@ -1,8 +1,8 @@
 "use strict";
 
 import React from "react";
-import Utils from "./utils/utils";
-import ChartDataUtil from "./utils/ChartDataUtil";
+import Utils from "../utils/utils";
+import ChartDataUtil from "../utils/ChartDataUtil";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 

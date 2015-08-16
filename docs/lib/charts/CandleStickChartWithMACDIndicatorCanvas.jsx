@@ -1,9 +1,9 @@
 "use strict";
 
-var React = require("react");
-var d3 = require("d3");
+import React from "react";
+import d3 from "d3";
 
-var ReStock = require("src/");
+import ReStock from "ReStock";
 
 var { ChartCanvas, DataTransform, Chart, DataSeries, OverlaySeries } = ReStock;
 var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, MACDSeries } = ReStock;
@@ -96,4 +96,4 @@ var CandleStickChartWithMACDIndicatorCanvas = React.createClass({
 	}
 });
 
-module.exports = CandleStickChartWithMACDIndicatorCanvas;
+export default CandleStickChartWithMACDIndicatorCanvas;

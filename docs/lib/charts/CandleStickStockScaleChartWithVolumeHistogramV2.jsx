@@ -1,9 +1,9 @@
 "use strict";
 
-var React = require("react");
-var d3 = require("d3");
+import React from "react";
+import d3 from "d3";
 
-var ReStock = require("src/");
+import ReStock from "ReStock";
 
 var { ChartCanvas, DataTransform, Chart, DataSeries } = ReStock;
 var { CandlestickSeries, HistogramSeries } = ReStock;
@@ -45,4 +45,4 @@ var CandleStickStockScaleChartWithVolumeHistogramV2 = React.createClass({
 	}
 });
 
-module.exports = CandleStickStockScaleChartWithVolumeHistogramV2;
+export default CandleStickStockScaleChartWithVolumeHistogramV2;

@@ -58,5 +58,4 @@ XAxis.contextTypes = {
 	width: React.PropTypes.number.isRequired,
 };
 
-
-module.exports = XAxis;
+export default XAxis;

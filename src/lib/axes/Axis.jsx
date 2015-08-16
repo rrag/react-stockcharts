@@ -51,5 +51,4 @@ Axis.defaultProps = {
 	fontSize: 12,
 };
 
-module.exports = Axis;
-
+export default Axis;

@@ -1,3 +1,10 @@
+"use strict";
 
-exports.XAxis = require('./XAxis');
-exports.YAxis = require('./YAxis');
+
+import XAxis from "./XAxis";
+import YAxis from "./YAxis";
+
+export default {
+	XAxis,
+	YAxis,
+}

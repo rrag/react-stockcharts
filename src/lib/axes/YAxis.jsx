@@ -60,4 +60,4 @@ YAxis.contextTypes = {
 	isCompareSeries: React.PropTypes.bool.isRequired,
 };
 
-module.exports = YAxis;
+export default YAxis;

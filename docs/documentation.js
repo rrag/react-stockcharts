@@ -32,6 +32,7 @@ var pages = [
 	require("lib/page/KagiPage"),
 	require("lib/page/PointAndFigurePage"),
 	require("lib/page/RenkoPage"),
+	require("lib/page/ChangeLogPage"),
 	require("lib/page/ComingSoonPage"),
 ];
 
@@ -74,10 +75,6 @@ function renderPage(data, dataFull, compareData) {
 		d.GEClose = +d.GEClose;
 		// console.log(d);
 	});
-	var SyncMouseMove = require("./lib/charts/synchronized-mouse-move").init(data);
-	var AreaChartWithZoom = require("./lib/charts/areachart-with-zoom").init(data);
-	var AreaChartWithZoomPan = require("./lib/charts/areachart-with-zoom-and-pan").init(data);
-
 
 	var selected = location.hash.replace("#/", "");
 	var selectedPage = pages.filter((page) => (compressString(page.title) === compressString(selected)));

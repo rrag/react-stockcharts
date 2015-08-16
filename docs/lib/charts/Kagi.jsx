@@ -1,9 +1,9 @@
 "use strict";
 
-var React = require("react");
-var d3 = require("d3");
+import React from "react";
+import d3 from "d3";
 
-var ReStock = require("src/");
+import ReStock from "ReStock";
 
 var { ChartCanvas, DataTransform, Chart, DataSeries, OverlaySeries } = ReStock;
 var { HistogramSeries, LineSeries, AreaSeries, KagiSeries } = ReStock;
@@ -60,4 +60,4 @@ var Kagi = React.createClass({
 	}
 });
 
-module.exports = Kagi;
+export default Kagi;

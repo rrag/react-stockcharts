@@ -1,9 +1,9 @@
 "use strict";
 
-var React = require("react");
-var d3 = require("d3");
+import React from "react";
+import d3 from "d3";
 
-var ReStock = require("src/");
+import ReStock from "ReStock";
 
 var { ChartCanvas, DataTransform, Chart, DataSeries } = ReStock;
 var { CandlestickSeries, HistogramSeries } = ReStock;
@@ -55,4 +55,4 @@ var CandleStickChartWithZoomPan = React.createClass({
 });
 
 
-module.exports = CandleStickChartWithZoomPan;
+export default CandleStickChartWithZoomPan;

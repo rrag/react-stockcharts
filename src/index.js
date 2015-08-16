@@ -1,63 +1,64 @@
 "use strict";
 
 // common components
-exports.ChartCanvas = require("./lib/ChartCanvas");
-exports.DataTransform = require("./lib/DataTransform");
-
-// exports.XAxis = require("./lib/XAxis");
-// exports.YAxis = require("./lib/YAxis");
-exports.Chart = require("./lib/Chart");
-exports.DataSeries = require("./lib/DataSeries");
-
-exports.axes = {
-	XAxis: require("./lib/axes").XAxis,
-	YAxis: require("./lib/axes").YAxis
-}
+import ChartCanvas from "./lib/ChartCanvas";
+import DataTransform from "./lib/DataTransform";
+import Chart from "./lib/Chart";
+import DataSeries from "./lib/DataSeries";
+import OverlaySeries from "./lib/OverlaySeries";
 
 // chart types & Series
-exports.AreaSeries = require("./lib/AreaSeries");
-exports.LineSeries = require("./lib/LineSeries");
-exports.CompareSeries = require("./lib/CompareSeries");
-exports.CandlestickSeries = require("./lib/CandleStickSeries");
-exports.OverlaySeries = require("./lib/OverlaySeries");
-exports.HistogramSeries = require("./lib/HistogramSeries");
-exports.KagiSeries = require("./lib/KagiSeries");
-exports.PointAndFigureSeries = require("./lib/PointAndFigureSeries");
-exports.RenkoSeries = require("./lib/RenkoSeries");
-exports.MACDSeries = require("./lib/MACDSeries");
+import AreaSeries from "./lib/AreaSeries";
+import LineSeries from "./lib/LineSeries";
+import CompareSeries from "./lib/CompareSeries";
+import CandlestickSeries from "./lib/CandlestickSeries";
+import HistogramSeries from "./lib/HistogramSeries";
+import KagiSeries from "./lib/KagiSeries";
+import PointAndFigureSeries from "./lib/PointAndFigureSeries";
+import RenkoSeries from "./lib/RenkoSeries";
+import MACDSeries from "./lib/MACDSeries";
 
 // interaction components
-exports.EventCapture = require("./lib/EventCapture");
-exports.MouseCoordinates = require("./lib/MouseCoordinates");
-exports.CrossHair = require("./lib/CrossHair");
-exports.VerticalMousePointer = require("./lib/VerticalMousePointer");
-exports.CurrentCoordinate = require("./lib/CurrentCoordinate");
+import EventCapture from "./lib/EventCapture";
+import MouseCoordinates from "./lib/MouseCoordinates";
+import CurrentCoordinate from "./lib/CurrentCoordinate";
 
 // misc
-exports.EdgeContainer = require("./lib/EdgeContainer");
-exports.EdgeIndicator = require("./lib/EdgeIndicator");
+import EdgeContainer from "./lib/EdgeContainer";
+import EdgeIndicator from "./lib/EdgeIndicator";
 
-exports.helper = {
-	ChartWidthMixin: require("./lib/helper/ChartWidthMixin"),
-	TypeChooser: require("./lib/helper/TypeChooser")
-};
+import indicator from "./lib/indicator";
 
-exports.indicator = {
-	MACD: require("./lib/indicators/MACDIndicator")
-};
+import axes from "./lib/axes";
+import tooltip from "./lib/tooltip";
+import helper from "./lib/helper";
 
-// Tooltips
-exports.tooltip = {
-	MACDTooltip: require("./lib/MACDTooltip"),
-	TooltipContainer: require("./lib/TooltipContainer"),
-	OHLCTooltip: require("./lib/OHLCTooltip"),
-	CompareTooltip: require("./lib/CompareTooltip"),
-	MovingAverageTooltip: require("./lib/MovingAverageTooltip"),
-};
+const version = "0.2.0-alpha";
 
-/*exports.TooltipContainer = require("./lib/TooltipContainer");
-exports.OHLCTooltip = require("./lib/OHLCTooltip");
-exports.CompareTooltip = require("./lib/CompareTooltip");
-exports.MovingAverageTooltip = require("./lib/MovingAverageTooltip");
-*/
-exports.version = "0.2.0-alpha";
+export default {
+	ChartCanvas,
+	DataTransform,
+	Chart,
+	DataSeries,
+	OverlaySeries,
+	AreaSeries,
+	LineSeries,
+	CompareSeries,
+	CandlestickSeries,
+	HistogramSeries,
+	KagiSeries,
+	PointAndFigureSeries,
+	RenkoSeries,
+	MACDSeries,
+	EventCapture,
+	MouseCoordinates,
+	CurrentCoordinate,
+	EdgeContainer,
+	EdgeIndicator,
+	indicator,
+	axes,
+	tooltip,
+	helper,
+	version
+}
+

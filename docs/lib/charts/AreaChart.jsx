@@ -1,7 +1,7 @@
 "use strict";
 
-var React = require("react");
-var ReStock = require("src/");
+import React from "react";
+import ReStock from "ReStock";
 
 var { ChartCanvas, AreaSeries, Chart, DataSeries } = ReStock;
 
@@ -33,4 +33,4 @@ var AreaChart = React.createClass({
 	}
 });
 
-module.exports = AreaChart;
+export default AreaChart;
