@@ -27,7 +27,7 @@ var PointAndFigure = React.createClass({
 
 		return (
 			<ChartCanvas width={this.state.width} height={400}
-				margin={{left: 90, right: 70, top:10, bottom: 30}} interval="D" initialDisplay={30}
+				margin={{left: 90, right: 70, top:10, bottom: 30}} initialDisplay={30}
 				data={data} type={type}>
 
 				<DataTransform transformType="stockscale">

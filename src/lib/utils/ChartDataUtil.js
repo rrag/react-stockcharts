@@ -24,10 +24,10 @@ var ChartDataUtil = {
 		var item = currentItem ? currentItem.data : {};
 		return item;
 	},
-	getChartData(props, context, partialData, fullData, other) {
+	getChartData(props, innerDimensions, partialData, fullData, other) {
 
 		var charts = this.getCharts(props);
-		var innerDimensions = this.getInnerDimensions(other, context);
+		// var innerDimensions = this.getInnerDimensions(dimensions);
 
 		return charts.map((each) => {
 			var chartProps = each.props;
@@ -62,12 +62,12 @@ var ChartDataUtil = {
 		var item = Utils.getClosestItem(plotData, xValue, chartData.config.accessors.xAccessor);
 		return item;
 	},
-	getInnerDimensions(other, ctx) {
+	getInnerDimensions(ctx) {
 		// console.log(other);
-		if (other === undefined) other = {};
+		// if (other === undefined) other = {};
 		return {
-			width: other.width || ctx.width,
-			height: other.height || ctx.height
+			width: ctx.width,
+			height: ctx.height
 		};
 	},
 	getDimensions(innerDimension, chartProps, margin) {
@@ -94,7 +94,7 @@ var ChartDataUtil = {
 	getChartConfigFor(innerDimension, chartProps, partialData, fullData, passThroughProps) {
 		var padding = this.getPaddingForChart(chartProps);
 		var dimensions = this.getDimensions(innerDimension, chartProps);
-		var indicator = this.getIndicator(chartProps, passThroughProps);
+		var indicator = this.getIndicator(chartProps);
 		this.calculateIndicator(fullData, indicator, chartProps);
 
 		var accessors = this.getXYAccessors(chartProps, passThroughProps, indicator);
@@ -260,7 +260,7 @@ var ChartDataUtil = {
 					.indexOf(child.props.namespace) > -1) {
 				if (child.props) {
 
-					var xAccessor = passThroughProps !== undefined && passThroughProps.stockScale
+					var xAccessor = passThroughProps !== undefined && passThroughProps.xAccessor
 						? passThroughProps.xAccessor
 						: child.props.xAccessor;
 					accessor.xAccessor = xAccessor;

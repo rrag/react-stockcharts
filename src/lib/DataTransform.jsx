@@ -4,7 +4,7 @@ import React from "react";
 
 import ChartDataUtil from "./utils/ChartDataUtil";
 import PureComponent from "./utils/PureComponent";
-import ChartTransformer from "./utils/ChartTransformer";
+import ChartTransformer from "./transforms/ChartTransformer";
 import EventHandler from "./EventHandler";
 import Utils from "./utils/utils";
 import objectAssign from "object-assign";

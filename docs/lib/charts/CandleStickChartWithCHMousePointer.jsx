@@ -27,7 +27,8 @@ var CandleStickChartWithCHMousePointer = React.createClass({
 
 		return (
 			<ChartCanvas width={this.state.width} height={400}
-				margin={{left: 70, right: 70, top:10, bottom: 30}} interval="D" initialDisplay={30}
+				margin={{left: 70, right: 70, top:10, bottom: 30}} initialDisplay={30}
+				dataTransform={[]}
 				data={data} type={type}>
 				<DataTransform transformType="stockscale">
 					<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}>

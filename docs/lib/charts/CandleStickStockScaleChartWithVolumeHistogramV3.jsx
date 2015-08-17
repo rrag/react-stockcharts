@@ -24,7 +24,7 @@ var CandleStickStockScaleChartWithVolumeHistogramV3 = React.createClass({
 
 		return (
 			<ChartCanvas width={this.state.width} height={600}
-				margin={{left: 70, right: 70, top:20, bottom: 30}} interval="D" initialDisplay={100}
+				margin={{left: 70, right: 70, top:20, bottom: 30}} initialDisplay={100}
 				data={data} type={type}>
 
 				<DataTransform transformType="stockscale">

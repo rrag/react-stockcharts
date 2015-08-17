@@ -126,8 +126,8 @@ function renderPage(data, dataFull, compareData) {
 d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 	d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
 		d3.tsv("data/comparison.tsv", (err3, compareData) => {
-			renderPage(MSFT, MSFTFull, compareData);
-			// renderPartialPage(MSFT, MSFTFull, compareData);
+			// renderPage(MSFT, MSFTFull, compareData);
+			renderPartialPage(MSFT, MSFTFull, compareData);
 		});
 	});
 })
@@ -186,14 +186,14 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithCompare
 	// CandleStickChartWithMACDIndicator
 	// CandleStickChartWithMACDIndicatorCanvas
-	var Chart = require("lib/charts/CandleStickChartWithMACDIndicatorCanvas");
+	var Chart = require("lib/charts/CandleStickStockScaleChart");
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	class ExamplesPage extends React.Component {
 		render() {
 			return (
 				<div className="container react-stockchart">
-					<TypeChooser>
+					<TypeChooser type="hybrid">
 						{(type) => <Chart data={data} type={type} />}
 					</TypeChooser>
 				</div>

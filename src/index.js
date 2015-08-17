@@ -29,6 +29,7 @@ import EdgeIndicator from "./lib/EdgeIndicator";
 
 import indicator from "./lib/indicator";
 
+import transforms from "./lib/transforms";
 import axes from "./lib/axes";
 import tooltip from "./lib/tooltip";
 import helper from "./lib/helper";
@@ -56,6 +57,7 @@ export default {
 	EdgeContainer,
 	EdgeIndicator,
 	indicator,
+	transforms,
 	axes,
 	tooltip,
 	helper,

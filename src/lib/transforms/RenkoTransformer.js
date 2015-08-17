@@ -1,23 +1,24 @@
 "use strict";
 
-var pricingMethod = function (d) { return { high: d.high, low: d.low }; };
+// var pricingMethod = function (d) { return { high: d.high, low: d.low }; };
 // var pricingMethod = function (d) { return { high: d.close, low: d.close }; };
 // var usePrice = function (d) { return d.close; };
-import calculateATR from "./ATRCalculator";
+import calculateATR from "../utils/ATRCalculator";
+import objectAssign from "object-assign";
 
 var defaultOptions = {
-	boxSize: 0.5,
-	reversal: 3,
-	period: 14
+	period: 14,
+	pricingMethod: (d) => ({ high: d.high, low: d.low })
 };
 
 function RenkoTransformer(rawData, interval, options, other) {
-	var newOptions = {};
-	Object.keys(defaultOptions).forEach((key) => newOptions[key] = defaultOptions[key]);
+	var newOptions = objectAssign({}, defaultOptions, options);
 
-	if (options) Object.keys(options).forEach((key) => newOptions[key] = options[key]);
+	/*Object.keys(defaultOptions).forEach((key) => newOptions[key] = defaultOptions[key]);
 
-	var { dateAccessor, dateMutator, indexAccessor, indexMutator, period } = newOptions;
+	if (options) Object.keys(options).forEach((key) => newOptions[key] = options[key]);*/
+
+	var { dateAccessor, dateMutator, indexAccessor, indexMutator, period, pricingMethod } = newOptions;
 
 	calculateATR(rawData.D, period);
 	var brickSize = function (d) { return d["atr" + period]; };

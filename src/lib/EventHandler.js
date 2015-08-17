@@ -35,26 +35,28 @@ class EventHandler extends React.Component {
 		};
 	}
 	componentWillMount() {
+		console.log("EventHandler.componentWillMount");
 		var { props, context } = this;
-		var { data, initialDisplay, initialStartIndex, dataTransformProps, interval } = context;
+		var { data, initialDisplay/*, initialStartIndex*/, options, interval, dimensions } = props;
 
 		var dataForInterval = data[interval];
 		var mainChart = ChartDataUtil.getMainChart(props.children);
 		var beginIndex = Math.max(dataForInterval.length - initialDisplay, 0);
 		var plotData = dataForInterval.slice(beginIndex);
-		var chartData = ChartDataUtil.getChartData(props, context, plotData, data, dataTransformProps);
+
+		var chartData = ChartDataUtil.getChartData(props, dimensions, plotData, data, options);
 
 		this.setState({
 			plotData: plotData,
 			chartData: chartData,
-			interval: this.context.interval,
+			interval: this.props.interval,
 			mainChart: mainChart,
 			currentCharts: [mainChart]
 		});
 	}
 	componentWillReceiveProps(props, context) {
 		var { interval, chartData, plotData } = this.state;
-		var { data, dataTransformProps } = context;
+		var { data, options, dimensions } = props;
 
 		var dataForInterval = data[interval];
 		var mainChart = ChartDataUtil.getMainChart(props.children);
@@ -66,7 +68,7 @@ class EventHandler extends React.Component {
 		// console.log(plotData[0], plotData[plotData.length - 1]);
 		var newPlotData = dataForInterval.slice(beginIndex, endIndex + 1);
 		// console.log(newPlotData[0], newPlotData[newPlotData.length - 1]);
-		var newChartData = ChartDataUtil.getChartData(props, context, newPlotData, data, dataTransformProps);
+		var newChartData = ChartDataUtil.getChartData(props, dimensions, newPlotData, data, options);
 		// console.log("componentWillReceiveProps");
 		this.setState({
 			chartData: newChartData,
@@ -87,6 +89,9 @@ class EventHandler extends React.Component {
 			mouseXY: this.state.mouseXY,
 			interval: this.state.interval,
 			currentCharts: this.state.currentCharts,
+			width: this.props.dimensions.width,
+			height: this.props.dimensions.height,
+			type: this.props.type,
 
 			onMouseMove: this.handleMouseMove,
 			onMouseEnter: this.handleMouseEnter,
@@ -134,7 +139,7 @@ class EventHandler extends React.Component {
 	handleZoom(zoomDirection, mouseXY) {
 		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
 		var { mainChart, chartData, plotData, interval } = this.state;
-		var { data, recordInitialState } = this.context;
+		var { data } = this.context;
 
 		var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0],
 			item = ChartDataUtil.getClosestItem(plotData, mouseXY, chart),
@@ -168,12 +173,6 @@ class EventHandler extends React.Component {
 			chartData: newChartData,
 			plotData: dataToPlot.data,
 			interval: dataToPlot.interval
-		}, () => {
-			recordInitialState({
-				beginIndex: dataToPlot.leftIndex,
-				interval: dataToPlot.interval,
-				displayCount: dataToPlot.rightIndex - dataToPlot.leftIndex,
-			});
 		});
 	}
 
@@ -190,7 +189,7 @@ class EventHandler extends React.Component {
 		// console.log("mousePosition ", mousePosition);
 		/* can also use plotData, use this if you want to pan and show only within that data set*/
 		var { mainChart, chartData, interval, panStartDomain, panOrigin } = this.state;
-		var { data, recordInitialState } = this.context;
+		var { data } = this.context;
 		if (panStartDomain === null) {
 			this.handlePanStart(startDomain, mousePosition);
 		} else {
@@ -248,12 +247,6 @@ class EventHandler extends React.Component {
 					// show: true,
 					mouseXY: mousePosition,
 					currentCharts: currentCharts,
-				}, () => {
-					recordInitialState({
-						beginIndex: beginIndex,
-						interval: interval,
-						displayCount: endIndex - beginIndex,
-					});
 				});
 			});
 		}
@@ -285,21 +278,6 @@ class EventHandler extends React.Component {
 	}
 }
 
-EventHandler.contextTypes = {
-	width: React.PropTypes.number.isRequired,
-	height: React.PropTypes.number.isRequired,
-	data: React.PropTypes.object,
-	dataTransformOptions: React.PropTypes.object,
-	dataTransformProps: React.PropTypes.object,
-	plotData: React.PropTypes.array,
-	chartData: React.PropTypes.array,
-	initialStartIndex: React.PropTypes.number.isRequired,
-	initialDisplay: React.PropTypes.number.isRequired,
-	interval: React.PropTypes.string,
-
-	recordInitialState: React.PropTypes.func.isRequired,
-};
-
 EventHandler.childContextTypes = {
 	plotData: React.PropTypes.array,
 	chartData: React.PropTypes.array,
@@ -309,6 +287,9 @@ EventHandler.childContextTypes = {
 	interval: React.PropTypes.string,
 	currentCharts: React.PropTypes.array,
 	mainChart: React.PropTypes.number,
+	width: React.PropTypes.number.isRequired,
+	height: React.PropTypes.number.isRequired,
+	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 
 	onMouseMove: React.PropTypes.func,
 	onMouseEnter: React.PropTypes.func,

@@ -38,13 +38,7 @@ function buildWeeklyData(daily, indexMutator, dateAccesor, dateMutator) {
 		if (!eachWeek.volume) eachWeek.volume = 0;
 		eachWeek.volume += d.volume;
 
-
 		eachWeek = objectAssign({}, d, eachWeek);
-		/*for (let key in d) {
-			if (!eachWeek.hasOwnProperty(key)) {
-				eachWeek[key] = d[key];
-			}
-		}*/
 
 		if (d.startOfWeek) {
 			if (prevWeek) {
@@ -89,12 +83,6 @@ function buildMonthlyData(daily, indexMutator, dateAccesor) {
 
 		eachMonth = objectAssign({}, d, eachMonth);
 
-		/*for (let key in d) {
-			if (!eachMonth.hasOwnProperty(key)) {
-				eachMonth[key] = d[key];
-			}
-		}*/
-
 		if (d.startOfMonth) {
 			eachMonth.startOfWeek = d.startOfWeek;
 			if (prevMonth) {
@@ -113,11 +101,61 @@ function buildMonthlyData(daily, indexMutator, dateAccesor) {
 	return monthly;
 }
 
-function StockScaleTransformer(data, interval, options) {
-	var newOptions = {};
-	Object.keys(defaultOptions).forEach((key) => newOptions[key] = defaultOptions[key]);
+function stock_scale_transformer() {
+	var newOptions;
+	function transform(data, interval) {
+		var { dateAccessor, dateMutator, indexMutator } = newOptions;
 
-	if (options) Object.keys(options).forEach((key) => newOptions[key] = options[key]);
+		var prevDate;
+		var responseData = {};
+		var dd = data[interval];
+		responseData.D = dd
+			.map((each, i) => {
+				var row = {};
+				Object.keys(each)
+					.forEach((key) => {
+						row[key] = each[key];
+					});
+				indexMutator(row, i);
+
+				row.startOfWeek = false;
+				row.startOfMonth = false;
+				row.startOfQuarter = false;
+				row.startOfYear = false;
+				var date = dateAccessor(row);
+
+				if (prevDate !== undefined) {
+					// According to ISO calendar
+					// Sunday = 0, Monday = 1, ... Saturday = 6
+					// day of week of today < day of week of yesterday then today is start of week
+					row.startOfWeek = date.getDay() < prevDate.getDay();
+					// month of today != month of yesterday then today is start of month
+					row.startOfMonth = date.getMonth() !== prevDate.getMonth();
+					// if start of month and month % 3 === 0 then it is start of quarter
+					row.startOfQuarter = row.startOfMonth && date.getMonth() % 3 === 0;
+					// year of today != year of yesterday then today is start of year
+					row.startOfYear = date.getYear() !== prevDate.getYear();
+				}
+				prevDate = date;
+				return row;
+			});
+		// console.table(responseData);
+		responseData.W = buildWeeklyData(responseData.D, indexMutator, dateAccessor, dateMutator);
+		responseData.M = buildMonthlyData(responseData.D, indexMutator, dateAccessor, dateMutator);
+		return responseData;
+	};
+
+	transform.options = function(opt) {
+		newOptions = objectAssign({}, defaultOptions, opt);
+		newOptions.xAccessor = newOptions.indexAccessor;
+		newOptions.xScale = stockScale(newOptions.xAccessor);
+		return newOptions;
+	};
+	return transform;
+}
+/*
+function StockScaleTransformer(data, interval, options) {
+	var newOptions = objectAssign({}, defaultOptions, options);
 
 	var { dateAccessor, dateMutator, indexMutator } = newOptions;
 
@@ -170,5 +208,5 @@ function StockScaleTransformer(data, interval, options) {
 			options: newOptions
 		};
 }
-
-module.exports = StockScaleTransformer;
+*/
+module.exports = stock_scale_transformer;
