@@ -92,6 +92,7 @@ class EventHandler extends React.Component {
 			width: this.props.dimensions.width,
 			height: this.props.dimensions.height,
 			type: this.props.type,
+			dateAccessor: this.props.options.dateAccessor,
 
 			onMouseMove: this.handleMouseMove,
 			onMouseEnter: this.handleMouseEnter,
@@ -139,7 +140,7 @@ class EventHandler extends React.Component {
 	handleZoom(zoomDirection, mouseXY) {
 		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
 		var { mainChart, chartData, plotData, interval } = this.state;
-		var { data } = this.context;
+		var { data } = this.props;
 
 		var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0],
 			item = ChartDataUtil.getClosestItem(plotData, mouseXY, chart),
@@ -189,7 +190,7 @@ class EventHandler extends React.Component {
 		// console.log("mousePosition ", mousePosition);
 		/* can also use plotData, use this if you want to pan and show only within that data set*/
 		var { mainChart, chartData, interval, panStartDomain, panOrigin } = this.state;
-		var { data } = this.context;
+		var { data } = this.props;
 		if (panStartDomain === null) {
 			this.handlePanStart(startDomain, mousePosition);
 		} else {
@@ -290,6 +291,7 @@ EventHandler.childContextTypes = {
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	dateAccessor: React.PropTypes.func.isRequired,
 
 	onMouseMove: React.PropTypes.func,
 	onMouseEnter: React.PropTypes.func,

@@ -46,12 +46,11 @@ class MouseCoordinates extends PureComponent {
 		// console.log(singleChartData, item);
 		var xValue = singleChartData.config.accessors.xAccessor(item);
 
-		var xDisplayValue = this.context.dataTransformOptions === undefined
+		var xDisplayValue = this.context.dateAccessor === undefined
 			? xValue
-			: this.context.dataTransformOptions.dateAccessor(item);
+			: this.context.dateAccessor(item);
 
 		// var yValue = singleChartData.plot.scales.yScale.invert(this.context.mouseXY[1]);
-
 		if (xValue === undefined) return null;
 		var x = this.props.snapX ? Math.round(singleChartData.plot.scales.xScale(xValue)) : this.context.mouseXY[0];
 		var y = this.context.mouseXY[1];
@@ -77,7 +76,7 @@ MouseCoordinates.contextTypes = {
 	mainChart: React.PropTypes.number.isRequired,
 	show: React.PropTypes.bool,
 	mouseXY: React.PropTypes.array,
-	dataTransformOptions: React.PropTypes.object,
+	dateAccessor: React.PropTypes.func,
 	chartData: React.PropTypes.array.isRequired,
 	currentItems: React.PropTypes.array.isRequired,
 	currentCharts: React.PropTypes.array.isRequired,

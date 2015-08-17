@@ -8,6 +8,7 @@ import ReStock from "ReStock";
 var { ChartCanvas, DataTransform, Chart, DataSeries } = ReStock;
 var { CandlestickSeries, HistogramSeries } = ReStock;
 
+var { StockscaleTransformer } = ReStock.transforms;
 var { XAxis, YAxis } = ReStock.axes;
 var { ChartWidthMixin } = ReStock.helper;
 
@@ -23,23 +24,21 @@ var CandleStickStockScaleChartWithVolumeHistogramV2 = React.createClass({
 		return (
 			<ChartCanvas width={this.state.width} height={400}
 				margin={{left: 50, right: 50, top:10, bottom: 30}} initialDisplay={100}
+				dataTransform={[ { transform: StockscaleTransformer } ]}
 				data={data} type={type}>
-
-				<DataTransform transformType="stockscale">
-					<Chart id={1} >
-						<XAxis axisAt="bottom" orient="bottom"/>
-						<YAxis axisAt="right" orient="right" ticks={5} />
-						<DataSeries yAccessor={CandlestickSeries.yAccessor} >
-							<CandlestickSeries />
-						</DataSeries>
-					</Chart>
-					<Chart id={2} height={150} origin={(w, h) => [0, h - 150]}>
-						<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-						<DataSeries yAccessor={(d) => d.volume} >
-							<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
-						</DataSeries>
-					</Chart>
-				</DataTransform>
+				<Chart id={1} >
+					<XAxis axisAt="bottom" orient="bottom"/>
+					<YAxis axisAt="right" orient="right" ticks={5} />
+					<DataSeries yAccessor={CandlestickSeries.yAccessor} >
+						<CandlestickSeries />
+					</DataSeries>
+				</Chart>
+				<Chart id={2} height={150} origin={(w, h) => [0, h - 150]}>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+					<DataSeries yAccessor={(d) => d.volume} >
+						<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
+					</DataSeries>
+				</Chart>
 			</ChartCanvas>
 		);
 	}

@@ -186,7 +186,7 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithCompare
 	// CandleStickChartWithMACDIndicator
 	// CandleStickChartWithMACDIndicatorCanvas
-	var Chart = require("lib/charts/CandleStickStockScaleChart");
+	var Chart = require("lib/charts/CandleStickChartWithCompare");
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	class ExamplesPage extends React.Component {
