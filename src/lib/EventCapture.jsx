@@ -15,8 +15,6 @@ function d3Window(node) {
 class EventCapture extends React.Component {
 	constructor(props) {
 		super(props);
-		this.toggleFocus = this.toggleFocus.bind(this);
-		this.setFocus = this.setFocus.bind(this);
 		this.handleEnter = this.handleEnter.bind(this);
 		this.handleLeave = this.handleLeave.bind(this);
 		this.handleWheel = this.handleWheel.bind(this);
@@ -27,14 +25,6 @@ class EventCapture extends React.Component {
 	}
 	componentWillMount() {
 		if (this.context.onFocus) this.context.onFocus(this.props.defaultFocus);
-	}
-	toggleFocus() {
-		this.setFocus(!this.state.inFocus);
-	}
-	setFocus(focus) {
-		this.setState({
-			inFocus: focus
-		});
 	}
 	handleEnter() {
 		if (this.context.onMouseEnter) {
@@ -81,16 +71,14 @@ class EventCapture extends React.Component {
 				.on(mousemove, this.handlePan)
 				.on(mouseup, this.handlePanEnd);
 
-			this.setState({
-				deltaXY: [dx, dy]
-			});
+			this.context.deltaXY([dx, dy]);
 		} else {
 			if (!this.context.focus && this.context.onFocus) this.context.onFocus(true);
 		}
 		mouseEvent.preventDefault();
 	}
 	handlePan() {
-		var deltaXY = this.state.deltaXY;
+		var deltaXY = this.context.deltaXY();
 		var newPos = [d3.event.pageX - deltaXY[0], d3.event.pageY - deltaXY[1]];
 		// console.log("moved from- ", startXY, " to ", newPos);
 		if (this.props.pan && this.context.onPan) {
@@ -160,6 +148,7 @@ EventCapture.contextTypes = {
 	panInProgress: React.PropTypes.bool,
 	focus: React.PropTypes.bool.isRequired,
 	onFocus: React.PropTypes.func,
+	deltaXY: React.PropTypes.func,
 };
 
 module.exports = EventCapture;

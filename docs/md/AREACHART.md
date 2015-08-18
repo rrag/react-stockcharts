@@ -26,8 +26,9 @@ d3.tsv("path/to/data.tsv", function(err, data) {
 
 
 ```html
-<ChartCanvas width={...} height={...} margin={{left: 50, right: 50, top:10, bottom: 30}} data={data}>
-	<Chart id={0}>
+<ChartCanvas width={this.state.width} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}}
+	data={data} type="svg" >
+	<Chart id={0} >
 		<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 		<YAxis axisAt="left" orient="left" />
 		<DataSeries yAccessor={(d) => d.close} xAccessor={(d) => d.date}>

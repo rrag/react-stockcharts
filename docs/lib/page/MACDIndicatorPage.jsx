@@ -23,7 +23,7 @@ var MousePointerPage = React.createClass({
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser>
-							{(type) => <CandleStickChartWithMACDIndicator data={this.props.someData} type={type} />}
+							{(type) => (<CandleStickChartWithMACDIndicator data={this.props.someData} type={type} />)}
 						</TypeChooser>
 					</Section>
 				</Row>

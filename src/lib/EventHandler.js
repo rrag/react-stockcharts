@@ -25,6 +25,7 @@ class EventHandler extends React.Component {
 		this.handlePan = this.handlePan.bind(this);
 		this.handlePanEnd = this.handlePanEnd.bind(this);
 		this.handleFocus = this.handleFocus.bind(this);
+		this.deltaXY = this.deltaXY.bind(this);
 
 		this.state = {
 			focus: false,
@@ -33,6 +34,15 @@ class EventHandler extends React.Component {
 			mouseXY: [0, 0],
 			panInProgress: false,
 		};
+	}
+	deltaXY(dxy) {
+		if (dxy) {
+			this.setState({
+				deltaXY: dxy
+			});
+		} else {
+			return this.state.deltaXY;
+		}
 	}
 	componentWillMount() {
 		// console.log("EventHandler.componentWillMount");
@@ -102,6 +112,7 @@ class EventHandler extends React.Component {
 			onPan: this.handlePan,
 			onPanEnd: this.handlePanEnd,
 			onFocus: this.handleFocus,
+			deltaXY: this.deltaXY,
 			panInProgress: this.state.panInProgress,
 			focus: this.state.focus
 		};
@@ -303,6 +314,7 @@ EventHandler.childContextTypes = {
 	panInProgress: React.PropTypes.bool.isRequired,
 	focus: React.PropTypes.bool.isRequired,
 	onFocus: React.PropTypes.func,
+	deltaXY: React.PropTypes.func,
 };
 
 module.exports = EventHandler;

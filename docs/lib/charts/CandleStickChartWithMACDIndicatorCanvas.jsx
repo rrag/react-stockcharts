@@ -66,13 +66,13 @@ var CandleStickChartWithMACDIndicatorCanvas = React.createClass({
 				<CurrentCoordinate forChart={2} forOverlay={3} />
 				<CurrentCoordinate forChart={2}/>
 				<EdgeContainer>
-					<EdgeIndicator className="horizontal" itemType="last" orient="right"
+					<EdgeIndicator itemType="last" orient="right"
 						edgeAt="right" forChart={1} forOverlay={0} />
-					<EdgeIndicator className="horizontal" itemType="last" orient="right"
+					<EdgeIndicator itemType="last" orient="right"
 						edgeAt="right" forChart={1} forOverlay={1} />
-					<EdgeIndicator className="horizontal" itemType="first" orient="left"
+					<EdgeIndicator itemType="first" orient="left"
 						edgeAt="left" forChart={1} forOverlay={0} />
-					<EdgeIndicator className="horizontal" itemType="first" orient="left"
+					<EdgeIndicator itemType="first" orient="left"
 						edgeAt="left" forChart={1} forOverlay={1} />
 				</EdgeContainer>
 				<Chart id={3} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}

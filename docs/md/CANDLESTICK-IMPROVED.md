@@ -28,35 +28,28 @@ d3.tsv("path/to/data.tsv", function(err, data) {
 ```
 
 ```html
-<ChartCanvas width={...} height={...} margin={{left: 50, right: 50, top:10, bottom: 30}} data={data}>
-	<DataTransform transformType="stockscale">
-		<Chart id={1} >
-			<XAxis axisAt="bottom" orient="bottom" ticks={5}/>
-			<YAxis axisAt="right" orient="right" ticks={5} />
-			<DataSeries yAccessor={CandlestickSeries.yAccessor} >
-				<CandlestickSeries />
-			</DataSeries>
-		</Chart>
-	</DataTransform>
+<ChartCanvas width={this.state.width} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}}
+	dataTransform={[ { transform: StockscaleTransformer } ]} data={data} type="svg">
+	<Chart id={1} >
+		<XAxis axisAt="bottom" orient="bottom" />
+		<YAxis axisAt="right" orient="right" ticks={5} />
+		<DataSeries yAccessor={CandlestickSeries.yAccessor} >
+			<CandlestickSeries />
+		</DataSeries>
+	</Chart>
 </ChartCanvas>
 ```
 
 Compare this with the simpler `AreaChart` example from before
 
 ```html
-<ChartCanvas width={...} height={...} margin={{left: 50, right: 50, top:10, bottom: 30}} data={data}>
+dataTransform={[ { transform: StockscaleTransformer } ]} 
 ```
+is the only difference in `<ChartCanvas>`
 
-It is the same as for `AreaChart`
+`dataTransform` transforms the `data` provided as input which when taken as a linear scale includes weekend time breaks, into a linear scale over the input domain.
 
-
-```html
-<DataTransform transformType="stockscale">
-```
-
-Converting the data provided as input which when taken as a linear scale includes weekend time breaks, into a linear scale over the input domain. More usecases of `DataTransform` are listed below.
-
-**Coming Soon** Create your own transforms and register them for use
+Notice that it accepts an array. You can chain multiple transfoms together by adding them to the array. Some examples of that can be seen in the advanced chart types later on. Using this technique user can create custom transforms, and create their own components which uses the modified data.
 
 ```html
 <Chart id={1} >
@@ -71,14 +64,10 @@ Same as for `AreaChart` example above
 	<CandlestickSeries />
 </DataSeries>
 ```
-You will notice that the `DataSeries` component does not include the `xAccessor`, that is because it is defined inside the stockscale `DataTransform` which provides the `xAccessor` behind the scenes
+You will notice that the `DataSeries` component does not include the `xAccessor`, that is because it is defined inside the stockscale which provides the `xAccessor` behind the scenes
 
 `yAccessor={CandlestickSeries.yAccessor}` is just a convenience `yAccessor` available, it can also be represented as
 
 ```js
 yAccessor={(d) => ({open: d.open, high: d.high, low: d.low, close: d.close})}
-```
-or if arrow functions is not your thing, use
-```js
-yAccessor={function (d) { return {open: d.open, high: d.high, low: d.low, close: d.close}; }}
 ```

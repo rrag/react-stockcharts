@@ -9,7 +9,7 @@
 
 #### Other changes
 
-1. Create Pure React based `svg` axes. Now both `XAxis` and `YAxis` do not use the `d3` to render inside `componentDidMount` / `componentDidUpdate`
+1. Pure React based `svg` axes. Both `XAxis` and `YAxis` do not use `d3` to render inside `componentDidMount` / `componentDidUpdate`
 1. A new property `type` is added to `ChartCanvas` and it takes one of 2 values
 	- `svg` which creates the chart using pure svg
 	- `hybrid` which creates the chart using a combination of `svg` and `canvas`. `canvas` is used to draw the different series, like Line, Area, Candlestick, Histogram etc. and `svg` is used for the `XXXTooltip`, `MousePointer`, `XAxis` `YAxis` and the `EdgeIndicator`

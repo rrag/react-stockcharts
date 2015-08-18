@@ -1,22 +1,21 @@
 checkout the [source](https://gist.github.com/rrag/88cd65baa331d57caa83), [block](http://bl.ocks.org/rrag/88cd65baa331d57caa83), [plunker](http://plnkr.co/edit/gist:88cd65baa331d57caa83?p=preview) of this example
 
 ```html
-<ChartCanvas width={this.state.width} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}} data={data}>
-	<DataTransform transformType="stockscale">
-		<Chart id={1} >
-			<XAxis axisAt="bottom" orient="bottom"/>
-			<YAxis axisAt="right" orient="right" ticks={5} />
-			<DataSeries yAccessor={CandlestickSeries.yAccessor} >
-				<CandlestickSeries />
-			</DataSeries>
-		</Chart>
-		<Chart id={2}>
-			<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-			<DataSeries yAccessor={(d) => d.volume} >
-				<HistogramSeries />
-			</DataSeries>
-		</Chart>
-	</DataTransform>
+<ChartCanvas width={this.state.width} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}} initialDisplay={100}
+	dataTransform={[ { transform: StockscaleTransformer } ]} data={data} type="svg">
+	<Chart id={1} >
+		<XAxis axisAt="bottom" orient="bottom"/>
+		<YAxis axisAt="right" orient="right" ticks={5} />
+		<DataSeries yAccessor={CandlestickSeries.yAccessor} >
+			<CandlestickSeries />
+		</DataSeries>
+	</Chart>
+	<Chart id={2}>
+		<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+		<DataSeries yAccessor={(d) => d.volume} >
+			<HistogramSeries />
+		</DataSeries>
+	</Chart>
 </ChartCanvas>
 ```
 

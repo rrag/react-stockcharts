@@ -1,22 +1,21 @@
 checkout the [source](https://gist.github.com/rrag/0a54ca33b05001f17f8f), [block](http://bl.ocks.org/rrag/0a54ca33b05001f17f8f), [plunker](http://plnkr.co/edit/gist:0a54ca33b05001f17f8f?p=preview) of this example
 
 ```html
-<ChartCanvas width={this.state.width} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}} data={data}>
-	<DataTransform transformType="stockscale">
-		<Chart id={1} >
-			<XAxis axisAt="bottom" orient="bottom"/>
-			<YAxis axisAt="right" orient="right" ticks={5} />
-			<DataSeries yAccessor={CandlestickSeries.yAccessor} >
-				<CandlestickSeries />
-			</DataSeries>
-		</Chart>
-		<Chart id={2} height={150} origin={(w, h) => [0, h - 150]}>
-			<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-			<DataSeries yAccessor={(d) => d.volume} >
-				<HistogramSeries className={(d) => d.close > d.open ? 'up' : 'down'} />
-			</DataSeries>
-		</Chart>
-	</DataTransform>
+<ChartCanvas width={this.state.width} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}} initialDisplay={100}
+	dataTransform={[ { transform: StockscaleTransformer } ]} data={data} type="svg" >
+	<Chart id={1} >
+		<XAxis axisAt="bottom" orient="bottom"/>
+		<YAxis axisAt="right" orient="right" ticks={5} />
+		<DataSeries yAccessor={CandlestickSeries.yAccessor} >
+			<CandlestickSeries />
+		</DataSeries>
+	</Chart>
+	<Chart id={2} height={150} origin={(w, h) => [0, h - 150]}>
+		<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+		<DataSeries yAccessor={(d) => d.volume} >
+			<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
+		</DataSeries>
+	</Chart>
 </ChartCanvas>
 ```
 
@@ -41,7 +40,7 @@ Similarly the `className` of `HistogramSeries` accepts either
 which is used as the css class
 
 ```html
-<HistogramSeries className={(d) => d.close > d.open ? 'up' : 'down'} />
+<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
 ```
 
 a class of 'up' is applied if `close > open` for that day and 'down' otherwise
