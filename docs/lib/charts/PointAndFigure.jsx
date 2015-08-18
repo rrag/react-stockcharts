@@ -5,11 +5,12 @@ import d3 from "d3";
 
 import ReStock from "ReStock";
 
-var { ChartCanvas, DataTransform, Chart, DataSeries, OverlaySeries } = ReStock;
+var { ChartCanvas, Chart, DataSeries, OverlaySeries } = ReStock;
 var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, PointAndFigureSeries } = ReStock;
 var { EventCapture, MouseCoordinates, CurrentCoordinate } = ReStock;
 var { EdgeContainer, EdgeIndicator } = ReStock;
 
+var { StockscaleTransformer, PointAndFigureTransformer } = ReStock.transforms;
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, MACDTooltip } = ReStock.tooltip;
 var { XAxis, YAxis } = ReStock.axes;
 var { ChartWidthMixin } = ReStock.helper;
@@ -28,33 +29,29 @@ var PointAndFigure = React.createClass({
 		return (
 			<ChartCanvas width={this.state.width} height={400}
 				margin={{left: 90, right: 70, top:10, bottom: 30}} initialDisplay={30}
+				dataTransform={[ { transform: StockscaleTransformer }, { transform: PointAndFigureTransformer, options: { boxSize: 0.5 } } ]}
 				data={data} type={type}>
-
-				<DataTransform transformType="stockscale">
-				<DataTransform transformType="pointandfigure" options={{ boxSize: 0.5 }}>
-					<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}>
-						<XAxis axisAt="bottom" orient="bottom"/>
-						<YAxis axisAt="right" orient="right" ticks={5} />
-						<DataSeries yAccessor={PointAndFigureSeries.yAccessor} >
-							<PointAndFigureSeries />
-						</DataSeries>
-					</Chart>
-					<Chart id={2} height={150} origin={(w, h) => [0, h - 150]}>
-						<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-						<DataSeries yAccessor={(d) => d.volume} >
-							<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
-							<OverlaySeries id={3} type="sma" options={{ period: 10, pluck:"volume" }} >
-								<AreaSeries/>
-							</OverlaySeries>
-						</DataSeries>
-					</Chart>
-					<MouseCoordinates xDisplayFormat={dateFormat} type="crosshair" />
-					<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
-					<TooltipContainer>
-						<OHLCTooltip forChart={1} origin={[-50, 0]}/>
-					</TooltipContainer>
-				</DataTransform>
-				</DataTransform>
+				<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}>
+					<XAxis axisAt="bottom" orient="bottom"/>
+					<YAxis axisAt="right" orient="right" ticks={5} />
+					<DataSeries yAccessor={PointAndFigureSeries.yAccessor} >
+						<PointAndFigureSeries />
+					</DataSeries>
+				</Chart>
+				<Chart id={2} height={150} origin={(w, h) => [0, h - 150]}>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+					<DataSeries yAccessor={(d) => d.volume} >
+						<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
+						<OverlaySeries id={3} type="sma" options={{ period: 10, pluck:"volume" }} >
+							<AreaSeries/>
+						</OverlaySeries>
+					</DataSeries>
+				</Chart>
+				<MouseCoordinates xDisplayFormat={dateFormat} type="crosshair" />
+				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
+				<TooltipContainer>
+					<OHLCTooltip forChart={1} origin={[-50, 0]}/>
+				</TooltipContainer>
 			</ChartCanvas>
 		);
 	}

@@ -126,8 +126,8 @@ function renderPage(data, dataFull, compareData) {
 d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 	d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
 		d3.tsv("data/comparison.tsv", (err3, compareData) => {
-			// renderPage(MSFT, MSFTFull, compareData);
-			renderPartialPage(MSFT, MSFTFull, compareData);
+			renderPage(MSFT, MSFTFull, compareData);
+			// renderPartialPage(MSFT, MSFTFull, compareData);
 		});
 	});
 })
@@ -174,11 +174,11 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithEdge
 	// HaikinAshi
 	// Kagi
+	// PointAndFigure
+	// Renko
 	// CandleStickChartWithEdge  - Lots of data -> data={dataFull}/>
 	// CandleStickChartWithCHMousePointer
 	// CandleStickChartWithMA
-	// PointAndFigure
-	// Renko
 	// CandleStickStockScaleChartWithVolumeHistogramV1
 	// CandleStickStockScaleChartWithVolumeHistogramV2
 	// CandleStickStockScaleChartWithVolumeHistogramV3
@@ -186,14 +186,14 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithCompare
 	// CandleStickChartWithMACDIndicator
 	// CandleStickChartWithMACDIndicatorCanvas
-	var Chart = require("lib/charts/CandleStickChartWithCompare");
+	var Chart = require("lib/charts/CandleStickChart");
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	class ExamplesPage extends React.Component {
 		render() {
 			return (
 				<div className="container react-stockchart">
-					<TypeChooser type="hybrid">
+					<TypeChooser type="svg">
 						{(type) => <Chart data={data} type={type} />}
 					</TypeChooser>
 				</div>

@@ -1,11 +1,11 @@
 "use strict";
 
-// var pricingMethod = (d) => ({ high: d.high, low: d.low });
-var usePrice = (d) => ({ high: d.high, low: d.low });
+import objectAssign from "object-assign";
 
 var defaultOptions = {
 	boxSize: 0.5,
 	reversal: 3,
+	pricingMethod: (d) => ({ high: d.high, low: d.low }),
 };
 
 function createBox(d, dateAccessor, dateMutator) {
@@ -23,8 +23,6 @@ function createBox(d, dateAccessor, dateMutator) {
 }
 
 function updateColumns(columnData, dateAccessor, dateMutator) {
-
-
 	columnData.forEach(function (d) {
 		// var lastBox = d.boxes[d.boxes.length - 1];
 
@@ -79,141 +77,141 @@ function updateColumns(columnData, dateAccessor, dateMutator) {
 	return columnData;
 }
 
-function PointAndFigureTransformer(rawData, interval, options, other) {
+function PointAndFigureTransformer() {
+	var newOptions;
+	function transform(rawData, interval) {
+		var { dateAccessor, dateMutator, indexAccessor, indexMutator, reversal, boxSize, pricingMethod } = newOptions;
 
-	var newOptions = {};
-	Object.keys(defaultOptions).forEach((key) => newOptions[key] = defaultOptions[key]);
+		var columnData = [];
 
-	if (options) Object.keys(options).forEach((key) => newOptions[key] = options[key]);
+		var column = {
+			boxes: [],
+			open: rawData.D[0].open
+		}, box = createBox(rawData.D[0], dateAccessor, dateMutator);
 
-	var { dateAccessor, dateMutator, indexAccessor, indexMutator, reversal, boxSize } = newOptions;
+		indexMutator(column, 0);
+		columnData.push(column);
 
-	var columnData = [];
+		rawData.D.forEach(function (d) {
+			column.volume = column.volume || 0;
+			column.volume += d.volume;
 
-	var column = {
-		boxes: [],
-		open: rawData.D[0].open
-	}, box = createBox(rawData.D[0], dateAccessor, dateMutator);
-
-	indexMutator(column, 0);
-	columnData.push(column);
-
-	rawData.D.forEach(function (d) {
-		column.volume = column.volume || 0;
-		column.volume += d.volume;
-
-		if (!box.startOfYear) {
-			box.startOfYear = d.startOfYear;
-			if (box.startOfYear) {
-				dateMutator(box, dateAccessor(d));
-				// box.displayDate = d.displayDate;
-			}
-		}
-
-		if (!box.startOfYear && !box.startOfQuarter) {
-			box.startOfQuarter = d.startOfQuarter;
-			if (box.startOfQuarter && !box.startOfYear) {
-				dateMutator(box, dateAccessor(d));
-				// box.displayDate = d.displayDate;
-			}
-		}
-
-		if (!box.startOfQuarter && !box.startOfMonth) {
-			box.startOfMonth = d.startOfMonth;
-			if (box.startOfMonth && !box.startOfQuarter) {
-				dateMutator(box, dateAccessor(d));
-				// box.displayDate = d.displayDate;
-			}
-		}
-		if (!box.startOfMonth && !box.startOfWeek) {
-			box.startOfWeek = d.startOfWeek;
-			if (box.startOfWeek && !box.startOfMonth) {
-				dateMutator(box, dateAccessor(d));
-				// box.displayDate = d.displayDate;
-			}
-		}
-
-		if (columnData.length === 1 && column.boxes.length === 0) {
-			let upwardMovement = (Math.max((usePrice(d).high - column.open), 0)); // upward movement
-			let downwardMovement = Math.abs(Math.min((column.open - usePrice(d).low), 0)); // downward movement
-			column.direction = upwardMovement > downwardMovement ? 1 : -1;
-			if (boxSize * reversal < upwardMovement
-				|| boxSize * reversal < downwardMovement) {
-				// enough movement to trigger a reversal
-				box.toDate = dateAccessor(d);
-				box.open = column.open;
-				let noOfBoxes = column.direction > 0
-									? Math.floor(upwardMovement / boxSize)
-									: Math.floor(downwardMovement / boxSize);
-				for (let i = 0; i < noOfBoxes; i++) {
-					box.close = box.open + column.direction * boxSize;
-					let prevBoxClose = box.close;
-					column.boxes.push(box);
-					box = createBox(box, dateAccessor, dateMutator);
-					// box = cloneMe(box);
-					box.open = prevBoxClose;
+			if (!box.startOfYear) {
+				box.startOfYear = d.startOfYear;
+				if (box.startOfYear) {
+					dateMutator(box, dateAccessor(d));
+					// box.displayDate = d.displayDate;
 				}
-				box.fromDate = dateAccessor(d);
-				box.date = dateAccessor(d);
 			}
-		} else {
-			// one or more boxes already formed in the current column
-			let upwardMovement = (Math.max((usePrice(d).high - box.open), 0)); // upward movement
-			let downwardMovement = Math.abs(Math.min((usePrice(d).low - box.open), 0)); // downward movement
 
-			if ((column.direction > 0 && upwardMovement > boxSize) /* rising column AND box can be formed */
-					|| (column.direction < 0 && downwardMovement > boxSize) /* falling column AND box can be formed */ ) {
-				// form another box
-				box.close = box.open + column.direction * boxSize;
-				box.toDate = dateAccessor(d);
-				let prevBoxClose = box.close;
-				column.boxes.push(box);
-				box = createBox(d, dateAccessor, dateMutator);
-				box.open = prevBoxClose;
-				box.fromDate = dateAccessor(d);
-				dateMutator(box, dateAccessor(d));
-			} else if ((column.direction > 0 && downwardMovement > boxSize * reversal) /* rising column and there is downward movement to trigger a reversal */
-					|| (column.direction < 0 && upwardMovement > boxSize * reversal)/* falling column and there is downward movement to trigger a reversal */) {
-				// reversal
+			if (!box.startOfYear && !box.startOfQuarter) {
+				box.startOfQuarter = d.startOfQuarter;
+				if (box.startOfQuarter && !box.startOfYear) {
+					dateMutator(box, dateAccessor(d));
+					// box.displayDate = d.displayDate;
+				}
+			}
 
-				box.open = box.open + -1 * column.direction * boxSize;
-				box.toDate = dateAccessor(d);
-				// box.displayDate = d.displayDate;
-				dateMutator(box, dateAccessor(d));
-				// box.startOfYear = d.startOfYear;
-				// box.startOfQuarter = d.startOfQuarter;
-				// box.startOfMonth = d.startOfMonth;
-				// box.startOfWeek = d.startOfWeek;
-				// console.table(column.boxes);
-				var idx = indexAccessor(column) + 1;
-				column = {
-					boxes: [],
+			if (!box.startOfQuarter && !box.startOfMonth) {
+				box.startOfMonth = d.startOfMonth;
+				if (box.startOfMonth && !box.startOfQuarter) {
+					dateMutator(box, dateAccessor(d));
+					// box.displayDate = d.displayDate;
+				}
+			}
+			if (!box.startOfMonth && !box.startOfWeek) {
+				box.startOfWeek = d.startOfWeek;
+				if (box.startOfWeek && !box.startOfMonth) {
+					dateMutator(box, dateAccessor(d));
+					// box.displayDate = d.displayDate;
+				}
+			}
 
-					direction: -1 * column.direction
-				};
-				indexMutator(column, idx);
-				let noOfBoxes = column.direction > 0
-									? Math.floor(upwardMovement / boxSize)
-									: Math.floor(downwardMovement / boxSize);
-				for (let i = 0; i < noOfBoxes; i++) {
+			if (columnData.length === 1 && column.boxes.length === 0) {
+				let upwardMovement = (Math.max((pricingMethod(d).high - column.open), 0)); // upward movement
+				let downwardMovement = Math.abs(Math.min((column.open - pricingMethod(d).low), 0)); // downward movement
+				column.direction = upwardMovement > downwardMovement ? 1 : -1;
+				if (boxSize * reversal < upwardMovement
+					|| boxSize * reversal < downwardMovement) {
+					// enough movement to trigger a reversal
+					box.toDate = dateAccessor(d);
+					box.open = column.open;
+					let noOfBoxes = column.direction > 0
+										? Math.floor(upwardMovement / boxSize)
+										: Math.floor(downwardMovement / boxSize);
+					for (let i = 0; i < noOfBoxes; i++) {
+						box.close = box.open + column.direction * boxSize;
+						let prevBoxClose = box.close;
+						column.boxes.push(box);
+						box = createBox(box, dateAccessor, dateMutator);
+						// box = cloneMe(box);
+						box.open = prevBoxClose;
+					}
+					box.fromDate = dateAccessor(d);
+					box.date = dateAccessor(d);
+				}
+			} else {
+				// one or more boxes already formed in the current column
+				let upwardMovement = (Math.max((pricingMethod(d).high - box.open), 0)); // upward movement
+				let downwardMovement = Math.abs(Math.min((pricingMethod(d).low - box.open), 0)); // downward movement
+
+				if ((column.direction > 0 && upwardMovement > boxSize) /* rising column AND box can be formed */
+						|| (column.direction < 0 && downwardMovement > boxSize) /* falling column AND box can be formed */ ) {
+					// form another box
 					box.close = box.open + column.direction * boxSize;
-					var prevBoxClose = box.close;
+					box.toDate = dateAccessor(d);
+					let prevBoxClose = box.close;
 					column.boxes.push(box);
 					box = createBox(d, dateAccessor, dateMutator);
 					box.open = prevBoxClose;
+					box.fromDate = dateAccessor(d);
+					dateMutator(box, dateAccessor(d));
+				} else if ((column.direction > 0 && downwardMovement > boxSize * reversal) /* rising column and there is downward movement to trigger a reversal */
+						|| (column.direction < 0 && upwardMovement > boxSize * reversal)/* falling column and there is downward movement to trigger a reversal */) {
+					// reversal
+
+					box.open = box.open + -1 * column.direction * boxSize;
+					box.toDate = dateAccessor(d);
+					// box.displayDate = d.displayDate;
+					dateMutator(box, dateAccessor(d));
+					// box.startOfYear = d.startOfYear;
+					// box.startOfQuarter = d.startOfQuarter;
+					// box.startOfMonth = d.startOfMonth;
+					// box.startOfWeek = d.startOfWeek;
+					// console.table(column.boxes);
+					var idx = indexAccessor(column) + 1;
+					column = {
+						boxes: [],
+
+						direction: -1 * column.direction
+					};
+					indexMutator(column, idx);
+					let noOfBoxes = column.direction > 0
+										? Math.floor(upwardMovement / boxSize)
+										: Math.floor(downwardMovement / boxSize);
+					for (let i = 0; i < noOfBoxes; i++) {
+						box.close = box.open + column.direction * boxSize;
+						var prevBoxClose = box.close;
+						column.boxes.push(box);
+						box = createBox(d, dateAccessor, dateMutator);
+						box.open = prevBoxClose;
+					}
+
+					columnData.push(column);
 				}
-
-				columnData.push(column);
 			}
-		}
-	});
-	updateColumns(columnData, dateAccessor, dateMutator);
+		});
+		updateColumns(columnData, dateAccessor, dateMutator);
 
-	return {
-		data: {"D": columnData},
-		other: other,
-		options: newOptions
+		return {"D": columnData};
 	};
+
+	transform.options = function(opt) {
+		newOptions = objectAssign({}, defaultOptions, opt);
+		return newOptions;
+	};
+	return transform;
 }
+
 
 module.exports = PointAndFigureTransformer;

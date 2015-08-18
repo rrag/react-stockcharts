@@ -5,7 +5,7 @@ import d3 from "d3";
 
 import ReStock from "ReStock";
 
-var { ChartCanvas, DataTransform, Chart, DataSeries, OverlaySeries } = ReStock;
+var { ChartCanvas, Chart, DataSeries, OverlaySeries } = ReStock;
 var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, CompareSeries } = ReStock;
 var { EventCapture, MouseCoordinates, CurrentCoordinate } = ReStock;
 var { EdgeContainer, EdgeIndicator } = ReStock;

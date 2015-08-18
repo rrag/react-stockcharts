@@ -2,7 +2,6 @@
 
 // common components
 import ChartCanvas from "./lib/ChartCanvas";
-import DataTransform from "./lib/DataTransform";
 import Chart from "./lib/Chart";
 import DataSeries from "./lib/DataSeries";
 import OverlaySeries from "./lib/OverlaySeries";
@@ -38,7 +37,6 @@ const version = "0.2.0-alpha";
 
 export default {
 	ChartCanvas,
-	DataTransform,
 	Chart,
 	DataSeries,
 	OverlaySeries,

@@ -101,7 +101,7 @@ function buildMonthlyData(daily, indexMutator, dateAccesor) {
 	return monthly;
 }
 
-function stock_scale_transformer() {
+function StockscaleTransformer() {
 	var newOptions;
 	function transform(data, interval) {
 		var { dateAccessor, dateMutator, indexMutator } = newOptions;
@@ -153,60 +153,5 @@ function stock_scale_transformer() {
 	};
 	return transform;
 }
-/*
-function StockScaleTransformer(data, interval, options) {
-	var newOptions = objectAssign({}, defaultOptions, options);
 
-	var { dateAccessor, dateMutator, indexMutator } = newOptions;
-
-	var prevDate;
-	var responseData = {};
-	var dd = data[interval];
-	responseData.D = dd
-		.map((each, i) => {
-			var row = {};
-			Object.keys(each)
-				.forEach((key) => {
-					row[key] = each[key];
-				});
-			indexMutator(row, i);
-
-			row.startOfWeek = false;
-			row.startOfMonth = false;
-			row.startOfQuarter = false;
-			row.startOfYear = false;
-			var date = dateAccessor(row);
-
-			if (prevDate !== undefined) {
-				// According to ISO calendar
-				// Sunday = 0, Monday = 1, ... Saturday = 6
-				// day of week of today < day of week of yesterday then today is start of week
-				row.startOfWeek = date.getDay() < prevDate.getDay();
-				// month of today != month of yesterday then today is start of month
-				row.startOfMonth = date.getMonth() !== prevDate.getMonth();
-				// if start of month and month % 3 === 0 then it is start of quarter
-				row.startOfQuarter = row.startOfMonth && date.getMonth() % 3 === 0;
-				// year of today != year of yesterday then today is start of year
-				row.startOfYear = date.getYear() !== prevDate.getYear();
-			}
-			prevDate = date;
-			return row;
-		});
-	// console.table(responseData);
-	responseData.W = buildWeeklyData(responseData.D, indexMutator, dateAccessor, dateMutator);
-	responseData.M = buildMonthlyData(responseData.D, indexMutator, dateAccessor, dateMutator);
-
-	// console.table(responseData.W);
-
-	return {
-			data: responseData,
-			other: {
-				xScale: stockScale(newOptions.indexAccessor),
-				xAccessor: newOptions.indexAccessor,
-				stockScale: true,
-			},
-			options: newOptions
-		};
-}
-*/
-module.exports = stock_scale_transformer;
+module.exports = StockscaleTransformer;

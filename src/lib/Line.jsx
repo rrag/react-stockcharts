@@ -54,7 +54,7 @@ class Line extends React.Component {
 		var { type, stroke, fill, className } = this.props;
 		if (type !== "svg") return null;
 
-		className = className.concat((stroke !== undefined) ? "" : " line-stroke");
+		className = className.concat((stroke) ? "" : " line-stroke");
 		return (
 			<path d={this.getPath()} stroke={stroke} fill={fill} className={className}/>
 		);

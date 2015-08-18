@@ -7,7 +7,7 @@ import Line from "./Line";
 class CompareSeries extends React.Component {
 	render() {
 		var thisSeries = this.context.compareSeries.filter(each => each.id === this.props.id)[0];
-		let { xScale, yScale, xAccessor, yAccessor, plotData, type } = this.context;
+		let { xScale, yScale, xAccessor, plotData, type } = this.context;
 		return (
 			<Line
 				className={this.props.className}

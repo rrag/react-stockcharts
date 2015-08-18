@@ -51,7 +51,7 @@ class Chart extends PureComponent {
 		});
 	}
 	componentDidMount() {
-		console.log("Chart.componentDidMount()");
+		// console.log("Chart.componentDidMount()");
 		if (this.context.type !== "svg") {
 			// console.log("Chart.componentDidMount()");
 			this.updateCanvasContext(this.context);

@@ -38,20 +38,24 @@ function buildHA(data, indexAccessor, indexMutator, dateAccessor, dateMutator) {
 	return haData;
 }
 
-function HeikinAshiTransformer(data, interval, options, other) {
+function HeikinAshiTransformer() {
+	var newOptions;
+	function transform(data) {
+		var { dateAccessor, dateMutator, indexAccessor, indexMutator } = newOptions;
+		// console.log(data, options);
 
-	var { dateAccessor, dateMutator, indexAccessor, indexMutator } = options;
-	// console.log(data, options);
+		var haData = {};
+		Object.keys(data)
+			.forEach((key) => haData[key] = buildHA(data[key], indexAccessor, indexMutator, dateAccessor, dateMutator));
 
-	var haData = {};
-	Object.keys(data)
-		.forEach((key) => haData[key] = buildHA(data[key], indexAccessor, indexMutator, dateAccessor, dateMutator));
-
-	return {
-		data: haData,
-		other: other,
-		options: options
+		return haData;
 	};
+
+	transform.options = function(opt) {
+		newOptions = opt;
+		return opt;
+	};
+	return transform;
 }
 
 module.exports = HeikinAshiTransformer;

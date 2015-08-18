@@ -35,7 +35,7 @@ class EventHandler extends React.Component {
 		};
 	}
 	componentWillMount() {
-		console.log("EventHandler.componentWillMount");
+		// console.log("EventHandler.componentWillMount");
 		var { props, context } = this;
 		var { data, initialDisplay/*, initialStartIndex*/, options, interval, dimensions } = props;
 
@@ -291,7 +291,7 @@ EventHandler.childContextTypes = {
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
-	dateAccessor: React.PropTypes.func.isRequired,
+	dateAccessor: React.PropTypes.func,
 
 	onMouseMove: React.PropTypes.func,
 	onMouseEnter: React.PropTypes.func,

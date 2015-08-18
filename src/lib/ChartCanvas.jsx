@@ -4,7 +4,7 @@ import React from "react";
 import ChartDataUtil from "./utils/ChartDataUtil";
 import Utils from "./utils/utils";
 import objectAssign from "object-assign";
-import DummyTransformer from "./transforms/DummyTransformer";
+import { DummyTransformer } from "./transforms";
 import EventHandler from "./EventHandler";
 
 class ChartCanvas extends React.Component {
@@ -24,7 +24,7 @@ class ChartCanvas extends React.Component {
 		};
 	}
 	updateState(props, context) {
-		var { defaultDataTransform, dataTransform } = props;
+		var { defaultDataTransform, dataTransform, interval } = props;
 		var i = 0, eachTransform, options = {}, data = props.data;
 		var transforms = defaultDataTransform.concat(dataTransform);
 		for (i = 0; i < transforms.length; i++) {
@@ -32,7 +32,7 @@ class ChartCanvas extends React.Component {
 			eachTransform = transforms[i].transform();
 			options = objectAssign({}, options, transforms[i].options)
 			options = eachTransform.options(options);
-			data = eachTransform(data);
+			data = eachTransform(data, interval);
 		}
 
 		var state = {
@@ -56,9 +56,6 @@ class ChartCanvas extends React.Component {
 
 		React.findDOMNode(this.refs.canvasContainer).appendChild(canvas);
 		return canvas;
-	}
-	componentDidMount() {
-		console.log("ChartCanvas.componentDidMount()");
 	}
 	render() {
 		var dimensions = this.getDimensions(this.props);
