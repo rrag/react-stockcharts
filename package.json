@@ -75,8 +75,8 @@
     "lint": "eslint --ext .js,.jsx src",
     "upgrade:patch": "npm version patch",
     "preversion": "npm run lint",
-    "version": "node scripts/updateVersion.js && gulp release",
-    "postversion": "git push origin master && git push --tags",
+    "version": "node scripts/updateVersion.js && git add \"src/index.js\" && gulp release",
+    "postversion": "git push && git push --tags",
     "publishnext": "cd build && npm publish ./ --tag next",
     "publish": "cd build && npm publish"
   },
