@@ -6,7 +6,7 @@ import d3 from "d3";
 class Line extends React.Component {
 	constructor(props) {
 		super(props);
-		this.getArea = this.getArea.bind(this);
+		this.getPath = this.getPath.bind(this);
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	componentDidUpdate(prevProps, prevState, prevContext) {
@@ -14,13 +14,13 @@ class Line extends React.Component {
 	}
 	drawOnCanvas() {
 		var { canvasContext: ctx } = this.context;
-		var { data, xScale, yScale, xAccessor, yAccessor, fill, stroke, opacity } = this.props
-		var begin = true;
-		var height = yScale.range()[0];
+		var { data, xScale, yScale, xAccessor, yAccessor, stroke } = this.props;
 
-		/*var path = this.getPath();
+		var path = this.getPath();
 		ctx.beginPath();
-		var prevStrokeStyle = ctx.strokeStyle;
+
+		var { strokeStyle } = ctx;
+		// console.log(stroke);
 		ctx.strokeStyle = stroke;
 		var begin = true;
 		data.forEach((d) => {
@@ -38,56 +38,25 @@ class Line extends React.Component {
 			}
 		});
 		ctx.stroke();
-		ctx.strokeStyle = prevStrokeStyle;*/
-		var { strokeStyle, fillStyle } = ctx;
-
-		ctx.fillStyle = fill;
-		ctx.strokeStyle = stroke;
-		ctx.globalAlpha = opacity;
-
-		data.forEach((d) => {
-			if (yAccessor(d) === undefined) {
-				ctx.stroke();
-				ctx.beginPath();
-				begin = true;
-			} else {
-				if (begin) {
-					ctx.beginPath();
-					begin = false;
-					let [x, y] = [xScale(xAccessor(d)), yScale(yAccessor(d))];
-					ctx.moveTo(x, height);
-					ctx.lineTo(x, y);
-				}
-				ctx.lineTo(xScale(xAccessor(d)), yScale(yAccessor(d)));
-			}
-		});
-
-		var last = data[data.length - 1];
-		ctx.lineTo(xScale(xAccessor(last)), height);
-		ctx.fill();
-		ctx.fillStyle = fillStyle;
 		ctx.strokeStyle = strokeStyle;
 	}
 
-	getArea() {
+	getPath() {
 		var { data, xScale, yScale, xAccessor, yAccessor } = this.props;
-		var height = yScale.range()[0];
 
-		var areaSeries = d3.svg.area()
-			.defined((d) => yAccessor(d) !== undefined)
+		var dataSeries = d3.svg.line()
+			.defined((d) =>(yAccessor(d) !== undefined))
 			.x((d) => xScale(xAccessor(d)))
-			.y0(height - 1)
-			.y1((d) => yScale(yAccessor(d)));
-
-		return areaSeries(data);
+			.y((d) => yScale(yAccessor(d)));
+		return dataSeries(data);
 	}
 	render() {
-		var { type, stroke, fill, className, opacity } = this.props;
+		var { type, stroke, fill, className } = this.props;
 		if (type !== "svg") return null;
 
-		className = className.concat((stroke !== undefined) ? "" : " line-stroke");
+		className = className.concat((stroke) ? "" : " line-stroke");
 		return (
-			<path d={this.getArea()} stroke={stroke} fill={fill} className={className} opacity={opacity} />
+			<path d={this.getPath()} stroke={stroke} fill={fill} className={className}/>
 		);
 	}
 }
@@ -101,13 +70,11 @@ Line.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	stroke: React.PropTypes.string,
 	fill: React.PropTypes.string,
-	opacity: React.PropTypes.number,
 	type: React.PropTypes.string.isRequired,
 };
 Line.defaultProps = {
 	className: "line ",
-	fill: "none",
-	opacity: 1,
+	fill: "none"
 };
 Line.contextTypes = {
 	canvasContext: React.PropTypes.object,

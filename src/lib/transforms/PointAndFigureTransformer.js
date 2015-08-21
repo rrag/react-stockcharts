@@ -23,7 +23,7 @@ function createBox(d, dateAccessor, dateMutator) {
 }
 
 function updateColumns(columnData, dateAccessor, dateMutator) {
-	columnData.forEach(function (d) {
+	columnData.forEach(function(d) {
 		// var lastBox = d.boxes[d.boxes.length - 1];
 
 		d.startOfYear = false;
@@ -92,7 +92,7 @@ function PointAndFigureTransformer() {
 		indexMutator(column, 0);
 		columnData.push(column);
 
-		rawData.D.forEach(function (d) {
+		rawData.D.forEach(function(d) {
 			column.volume = column.volume || 0;
 			column.volume += d.volume;
 

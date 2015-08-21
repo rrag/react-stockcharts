@@ -21,9 +21,9 @@
 		"semi": [2, "always"],
 		"comma-dangle": [0, "always-multiline"],
 		"strict": [0, "global"],
-		"space-after-function-name": [2, "never"],
+		"space-before-function-paren": [2, "never"],
 		"space-after-keywords": [2, "always"],
 		"space-before-blocks": 2,
-		"spaced-line-comment": [2, "always", { exceptions: ["-"]}],
+		"spaced-comment": [2, "always", { exceptions: ["-"]}],
 	}
 }

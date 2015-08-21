@@ -52,7 +52,7 @@ class RenkoSeries extends React.Component {
 						y: y,
 						height: height,
 						width: candleWidth,
-					}
+					};
 				});
 		return candles;
 	}

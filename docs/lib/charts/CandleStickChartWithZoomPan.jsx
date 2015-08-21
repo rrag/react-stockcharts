@@ -5,9 +5,9 @@ import d3 from "d3";
 
 import ReStock from "ReStock";
 
-var { ChartCanvas, Chart, DataSeries } = ReStock;
-var { CandlestickSeries, HistogramSeries } = ReStock;
-var { EventCapture, MouseCoordinates } = ReStock;
+var { ChartCanvas, Chart, DataSeries, EventCapture } = ReStock;
+var { CandlestickSeries, HistogramSeries } = ReStock.series;
+var { MouseCoordinates } = ReStock.coordinates;
 
 var { TooltipContainer, OHLCTooltip } = ReStock.tooltip;
 var { StockscaleTransformer } = ReStock.transforms;

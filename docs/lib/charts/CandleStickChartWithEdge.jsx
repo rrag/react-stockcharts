@@ -5,10 +5,11 @@ import d3 from "d3";
 
 import ReStock from "ReStock";
 
-var { ChartCanvas, Chart, DataSeries, OverlaySeries } = ReStock;
-var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries } = ReStock;
-var { EventCapture, MouseCoordinates, CurrentCoordinate } = ReStock;
-var { EdgeContainer, EdgeIndicator } = ReStock;
+var { ChartCanvas, Chart, DataSeries, OverlaySeries,EventCapture } = ReStock;
+
+var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries } = ReStock.series;
+var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
+var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
 var { StockscaleTransformer } = ReStock.transforms;

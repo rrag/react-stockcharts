@@ -5,9 +5,9 @@ import d3 from "d3";
 function financeTimeScale(drawableData, indexAccessor, backingLinearScale) {
 
 	var timeScaleSteps = [
-		{ step: 864e5, f: function (d) { return d.date !== undefined && true; }},  // 1-day
-		{ step: 1728e5, f: function (d, i) { return d.date !== undefined && (i % 2 === 0); }}, // 2-day
-		{ step: 8380e5, f: function (d, i, arr) {
+		{ step: 864e5, f: function(d) { return d.date !== undefined && true; }},  // 1-day
+		{ step: 1728e5, f: function(d, i) { return d.date !== undefined && (i % 2 === 0); }}, // 2-day
+		{ step: 8380e5, f: function(d, i, arr) {
 				if (d.startOfMonth) return true;
 				var list = [];
 				if ((i - 2) >= 0) list.push(arr[i - 2]);
@@ -16,16 +16,16 @@ function financeTimeScale(drawableData, indexAccessor, backingLinearScale) {
 				if ((i + 1) <= arr.length - 1) list.push(arr[i + 1]);
 				if ((i + 2) <= arr.length - 1) list.push(arr[i + 2]);
 				var sm = list
-							.map(function (each) { return each.startOfMonth; })
+							.map(function(each) { return each.startOfMonth; })
 							.reduce(function(prev, curr) {
 									return prev || curr;
 								});
 				return sm ? false : d.startOfWeek;
 			}},  // 1-week
-		{ step: 3525e6, f: function (d) {return d.startOfMonth; }},  // 1-month
-		{ step: 7776e6, f: function (d) {return d.startOfQuarter; }},  // 3-month
-		{ step: 31536e6, f: function (d) {return d.startOfYear; }},  // 1-year
-		{ step: 91536e15, f: function (d) {return d.date !== undefined && (d.startOfYear && d.date.getFullYear() % 2 === 0); }}  // 2-year
+		{ step: 3525e6, f: function(d) {return d.startOfMonth; }},  // 1-month
+		{ step: 7776e6, f: function(d) {return d.startOfQuarter; }},  // 3-month
+		{ step: 31536e6, f: function(d) {return d.startOfYear; }},  // 1-year
+		{ step: 91536e15, f: function(d) {return d.date !== undefined && (d.startOfYear && d.date.getFullYear() % 2 === 0); }}  // 2-year
 	];
 	var timeScaleStepsBisector = d3.bisector(function(d) { return d.step; }).left;
 	var bisectByIndex = d3.bisector(function(d) { return indexAccessor(d); }).left;
@@ -92,7 +92,7 @@ function financeTimeScale(drawableData, indexAccessor, backingLinearScale) {
 	};
 	scale.ticks = function(m) {
 		var start, end, count = 0;
-		drawableData.forEach(function (d) {
+		drawableData.forEach(function(d) {
 			if (d.date !== undefined) {
 				if (start === undefined) start = d;
 				end = d;

@@ -107,7 +107,7 @@ var Utils = {
 		// console.log(array[lo], array[hi], closest, lo, hi);
 		return Utils.cloneMe(closest);
 	},
-	getClosestItemIndex (array, value, accessor) {
+	getClosestItemIndex(array, value, accessor) {
 		var lo = 0, hi = array.length - 1;
 		while (hi - lo > 1) {
 			var mid = Math.round((lo + hi) / 2);

@@ -6,7 +6,7 @@ import d3 from "d3";
 import ReStock from "ReStock";
 
 var { ChartCanvas, Chart, DataSeries } = ReStock;
-var { CandlestickSeries, HistogramSeries } = ReStock;
+var { CandlestickSeries, HistogramSeries } = ReStock.series;
 
 var { StockscaleTransformer } = ReStock.transforms;
 var { XAxis, YAxis } = ReStock.axes;

@@ -25,9 +25,7 @@ var ChartDataUtil = {
 		return item;
 	},
 	getChartData(props, innerDimensions, partialData, fullData, other) {
-
 		var charts = this.getCharts(props);
-		// var innerDimensions = this.getInnerDimensions(dimensions);
 
 		return charts.map((each) => {
 			var chartProps = each.props;
@@ -62,14 +60,6 @@ var ChartDataUtil = {
 		var item = Utils.getClosestItem(plotData, xValue, chartData.config.accessors.xAccessor);
 		return item;
 	},
-	getInnerDimensions(ctx) {
-		// console.log(other);
-		// if (other === undefined) other = {};
-		return {
-			width: ctx.width,
-			height: ctx.height
-		};
-	},
 	getDimensions(innerDimension, chartProps, margin) {
 
 		// console.log(margin);
@@ -79,11 +69,6 @@ var ChartDataUtil = {
 		var fullWidth = (chartProps.width || availableWidth);
 		var fullHeight = (chartProps.height || availableHeight);
 
-		/*let width = fullWidth - margin.left - margin.right;
-		let height = fullHeight - margin.top - margin.bottom;
-
-		console.log(margin, fullWidth, fullHeight, width, height);*/
-
 		return {
 			availableWidth: availableWidth,
 			availableHeight: availableHeight,
@@ -92,7 +77,7 @@ var ChartDataUtil = {
 		};
 	},
 	getChartConfigFor(innerDimension, chartProps, partialData, fullData, passThroughProps) {
-		var padding = this.getPaddingForChart(chartProps);
+		var { padding } = chartProps;
 		var dimensions = this.getDimensions(innerDimension, chartProps);
 		var indicator = this.getIndicator(chartProps);
 		this.calculateIndicator(fullData, indicator, chartProps);
@@ -227,16 +212,6 @@ var ChartDataUtil = {
 			yScale = d3.scale.linear();
 		}
 		return { xScale: xScale, yScale: yScale };
-	},
-	getPaddingForChart(props) {
-		// var margin;
-		/*React.Children.forEach(props.children, (child) => {
-			if (["ReStock.DataSeries"]
-					.indexOf(child.props.namespace) > -1) {
-				margin = props.innerMargin;
-			}
-		});*/
-		return props.padding;
 	},
 	getIndicator(props) {
 		var indicator;

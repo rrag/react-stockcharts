@@ -3,8 +3,9 @@
 import React from "react";
 import ReStock from "ReStock";
 
-var { ChartCanvas, AreaSeries, Chart, DataSeries } = ReStock;
+var { ChartCanvas, Chart, DataSeries } = ReStock;
 
+var { AreaSeries } = ReStock.series;
 var { XAxis, YAxis } = ReStock.axes;
 var { ChartWidthMixin } = ReStock.helper;
 

@@ -3,9 +3,9 @@
 import React from "react";
 import d3 from "d3";
 
-import Utils from "./utils/utils";
+import Utils from "../utils/utils";
 import EdgeCoordinate from "./EdgeCoordinate";
-import ChartDataUtil from "./utils/ChartDataUtil";
+import ChartDataUtil from "../utils/ChartDataUtil";
 
 class EdgeIndicator extends React.Component {
 	render() {

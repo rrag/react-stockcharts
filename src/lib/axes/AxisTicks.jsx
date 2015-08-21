@@ -43,7 +43,7 @@ class AxisTicks extends React.Component {
 			? (scale.ticks
 				? scale.ticks.apply(scale, tickArguments)
 				: scale.domain())
-			: tickValues
+			: tickValues;
 
 		var format = tickFormat === undefined
 			? (scale.tickFormat

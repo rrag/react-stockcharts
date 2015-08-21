@@ -7,4 +7,4 @@ import YAxis from "./YAxis";
 export default {
 	XAxis,
 	YAxis,
-}
+};

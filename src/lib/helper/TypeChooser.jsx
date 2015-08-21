@@ -7,14 +7,14 @@ class TypeChooser extends React.Component {
 		super(props);
 		this.state = {
 			type: this.props.type
-		}
+		};
 		this.handleTypeChange = this.handleTypeChange.bind(this);
 	}
 	handleTypeChange(e) {
 		// console.log(e.target.value);
 		this.setState({
 			type: e.target.value
-		})
+		});
 	}
 	render() {
 		return (

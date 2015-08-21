@@ -2,7 +2,7 @@
 
 function pushToValues(values, eachValue) {
 	if (typeof eachValue === "object" && Object.keys(eachValue).length > 0) {
-		Object.keys(eachValue).forEach(function (key) {
+		Object.keys(eachValue).forEach(function(key) {
 			if (!isNaN(eachValue[key])) {
 				values.push(eachValue[key]);
 			}

@@ -15,7 +15,7 @@ function KagiTransformer() {
 		var { period, pricingMethod } = newOptions;
 
 		calculateATR(data.D, period);
-		var reversalThreshold = function (d) { return d["atr" + period]; };
+		var reversalThreshold = function(d) { return d["atr" + period]; };
 
 		var { dateAccessor, dateMutator, indexMutator } = newOptions;
 
@@ -24,13 +24,10 @@ function KagiTransformer() {
 		var index = 0, prevPeak, prevTrough, direction;
 		var line = {};
 
-		data.D.forEach( function (d) {
+		data.D.forEach( function(d) {
 			if (line.from === undefined) {
 				indexMutator(line, index++);
 				dateMutator(line, dateAccessor(d));
-				/*line.displayDate = d.displayDate;
-				line.fromDate = d.displayDate;
-				line.toDate = d.displayDate;*/
 				line.from = dateAccessor(d);
 
 				if (!line.open) line.open = d.open;
@@ -111,8 +108,7 @@ function KagiTransformer() {
 				var nextLineOpen = line.close;
 
 				direction = (line.close - line.open) / Math.abs(line.close - line.open);
-				/*line.prevPeak = prevPeak;
-				line.prevTrough = prevTrough;*/
+
 				var nextChangePoint, nextChangeTo;
 				if (direction < 0 /* if direction so far has been -ve*/) {
 					// compare with line.close becomes prevTrough

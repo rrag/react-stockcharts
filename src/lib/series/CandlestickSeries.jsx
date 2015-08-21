@@ -23,7 +23,7 @@ class CandlestickSeries extends React.Component {
 			ctx.moveTo(d.x1, d.y1);
 			ctx.lineTo(d.x2, d.y2);
 			ctx.stroke();
-		})
+		});
 		var candleData = this.getCandleData();
 		var { fillStyle } = ctx;
 
@@ -89,7 +89,7 @@ class CandlestickSeries extends React.Component {
 		var width = this.context.xScale(this.context.xAccessor(this.context.plotData[this.context.plotData.length - 1]))
 			- this.context.xScale(this.context.xAccessor(this.context.plotData[0]));
 		var cw = (width / (this.context.plotData.length)) * 0.5;
-		var candleWidth = Math.round(cw); //Math.floor(cw) % 2 === 0 ? Math.floor(cw) : Math.round(cw);
+		var candleWidth = Math.round(cw); // Math.floor(cw) % 2 === 0 ? Math.floor(cw) : Math.round(cw);
 		var candles = this.context.plotData
 				.filter((d) => d.close !== undefined)
 				.map((d, idx) => {
@@ -126,10 +126,10 @@ class CandlestickSeries extends React.Component {
 	getCandlesSVG() {
 		var candleData = this.getCandleData();
 		var candles = candleData.map((d, idx) => {
-			if (d.width < 0) return <line className={d.className} key={idx} x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height} stroke={d.fill} />
-			else if (d.height === 0) return <line key={idx} x1={d.x} y1={d.y} x2={d.x + d.width} y2={d.y + d.height} stroke={d.fill} />
-			return <rect  className={d.className} key={idx} x={d.x} y={d.y} width={d.width} height={d.height} fill={d.fill} stroke={d.stroke} />
-		})
+			if (d.width < 0) return <line className={d.className} key={idx} x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height} stroke={d.fill} />;
+			else if (d.height === 0) return <line key={idx} x1={d.x} y1={d.y} x2={d.x + d.width} y2={d.y + d.height} stroke={d.fill} />;
+			return <rect  className={d.className} key={idx} x={d.x} y={d.y} width={d.width} height={d.height} fill={d.fill} stroke={d.stroke} />;
+		});
 		return candles;
 	}
 	render() {

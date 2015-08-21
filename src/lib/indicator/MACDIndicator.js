@@ -28,7 +28,7 @@ function MACDIndicator(options, chartProps) {
 	}
 	MACD.options = function() {
 		return MACDOption;
-	}
+	};
 	MACD.calculate = function(data) {
 		// console.log(prefix, options);
 		var fastKey = "ema" + MACDOption.fast;
@@ -61,7 +61,7 @@ function MACDIndicator(options, chartProps) {
 		return newData;
 	};
 	MACD.yAccessor = function() {
-		return function (d) {
+		return function(d) {
 			if (d && d[prefix]) return { MACDLine: d[prefix].MACDLine, signalLine: d[prefix].signalLine, histogram: d[prefix].histogram };
 		};
 	};

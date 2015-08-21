@@ -13,4 +13,4 @@ export default {
 	KagiTransformer,
 	RenkoTransformer,
 	PointAndFigureTransformer,
-}
+};

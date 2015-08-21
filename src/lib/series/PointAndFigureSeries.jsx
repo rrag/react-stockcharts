@@ -44,7 +44,7 @@ class PointAndFigureSeries extends React.Component {
 					ctx.ellipse(x, y, rx, ry, 0, 0, 2 * Math.PI);
 					ctx.stroke();
 				}
-			})
+			});
 		});
 
 		// ctx.fill();
@@ -89,7 +89,7 @@ class PointAndFigureSeries extends React.Component {
 						boxes: boxes,
 						direction: d.direction,
 						offset: [xOffset, 0],
-					}
+					};
 				});
 		return columns;
 	}
@@ -103,7 +103,7 @@ class PointAndFigureSeries extends React.Component {
 				{columns.map((col, idx) => (
 					<g key={idx} className={col.className} transform={`translate(${ col.offset[0] }, ${ col.offset[1] })`}>
 						{col.boxes.map((box, i) => {
-							if (col.direction > 0)
+							if (col.direction > 0) {
 								return (
 									<g key={`${ idx }-${ i }`}>
 										<line className="up" strokeWidth={strokeWidth} stroke={stroke.up} fill={fill.up}
@@ -111,7 +111,8 @@ class PointAndFigureSeries extends React.Component {
 										<line className="up" strokeWidth={strokeWidth} stroke={stroke.up} fill={fill.up}
 											x1={0} y1={box.close} x2={box.columnWidth} y2={box.open} />
 									</g>
-								)
+								);
+							}
 							return (
 								<ellipse key={`${ idx }-${ i }`}
 									className="down" strokeWidth={strokeWidth} stroke={stroke.down} fill={fill.down}

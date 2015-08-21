@@ -47,7 +47,7 @@ class EventHandler extends React.Component {
 	componentWillMount() {
 		// console.log("EventHandler.componentWillMount");
 		var { props, context } = this;
-		var { data, initialDisplay/*, initialStartIndex*/, options, interval, dimensions } = props;
+		var { data, initialDisplay, options, interval, dimensions } = props;
 
 		var dataForInterval = data[interval];
 		var mainChart = ChartDataUtil.getMainChart(props.children);

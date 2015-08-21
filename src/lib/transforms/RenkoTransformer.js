@@ -1,8 +1,5 @@
 "use strict";
 
-// var pricingMethod = function (d) { return { high: d.high, low: d.low }; };
-// var pricingMethod = function (d) { return { high: d.close, low: d.close }; };
-// var usePrice = function (d) { return d.close; };
 import calculateATR from "../utils/ATRCalculator";
 import objectAssign from "object-assign";
 
@@ -16,14 +13,14 @@ function RenkoTransformer() {
 		var { dateAccessor, dateMutator, indexAccessor, indexMutator, period, pricingMethod } = newOptions;
 
 		calculateATR(rawData.D, period);
-		var brickSize = function (d) { return d["atr" + period]; };
+		var brickSize = function(d) { return d["atr" + period]; };
 
 		var renkoData = [];
 
 		var index = 0, prevBrickClose = rawData.D[index].open, prevBrickOpen = rawData.D[index].open;
 		var brick = {}, direction = 0;
 
-		rawData.D.forEach( function (d) {
+		rawData.D.forEach( function(d) {
 			if (brick.from === undefined) {
 				// brick.index = index++;
 				// brick.date = d.date;

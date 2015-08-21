@@ -5,4 +5,4 @@ import ChartWidthMixin from "./ChartWidthMixin";
 export default {
 	TypeChooser,
 	ChartWidthMixin,
-}
+};

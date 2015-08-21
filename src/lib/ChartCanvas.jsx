@@ -15,8 +15,8 @@ class ChartCanvas extends React.Component {
 	getDimensions(props) {
 		return {
 			height: props.height - props.margin.top - props.margin.bottom,
-			width: props.width - props.margin.left - props.margin.right
-		}
+			width: props.width - props.margin.left - props.margin.right,
+		};
 	}
 	getChildContext() {
 		return {
@@ -28,9 +28,9 @@ class ChartCanvas extends React.Component {
 		var i = 0, eachTransform, options = {}, data = props.data;
 		var transforms = defaultDataTransform.concat(dataTransform);
 		for (i = 0; i < transforms.length; i++) {
-			//console.log(transforms[i]);
+			// console.log(transforms[i]);
 			eachTransform = transforms[i].transform();
-			options = objectAssign({}, options, transforms[i].options)
+			options = objectAssign({}, options, transforms[i].options);
 			options = eachTransform.options(options);
 			data = eachTransform(data, interval);
 		}
@@ -42,11 +42,12 @@ class ChartCanvas extends React.Component {
 		this.setState(state);
 	}
 	componentWillMount() {
-		this.updateState(this.props)
+		this.updateState(this.props);
 	}
 	componentWillReceiveProps(nextProps) {
-		if (this.props.data !== nextProps.data) 
+		if (this.props.data !== nextProps.data) {
 			this.updateState(nextProps);
+		}
 	}
 	createCanvas(origin, width, height) {
 		let canvas = document.createElement("canvas");

@@ -7,8 +7,8 @@ import ReStock from "ReStock";
 
 
 var { ChartCanvas, Chart, DataSeries } = ReStock;
-var { CandlestickSeries } = ReStock;
 
+var { CandlestickSeries } = ReStock.series;
 var { XAxis, YAxis } = ReStock.axes;
 var { ChartWidthMixin } = ReStock.helper;
 var { StockscaleTransformer } = ReStock.transforms;

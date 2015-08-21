@@ -8,7 +8,7 @@ class ToolTipText extends React.Component {
 			fontFamily={this.props.fontFamily}
 			fontSize={this.props.fontSize}
 			{...this.props} 
-			className="react-stockcharts-tooltip">{this.props.children}</text>
+			className="react-stockcharts-tooltip">{this.props.children}</text>;
 	}
 }
 
