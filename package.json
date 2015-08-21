@@ -76,7 +76,7 @@
     "upgrade:patch": "npm version patch",
     "preversion": "npm run lint",
     "version": "node scripts/updateVersion.js && git add \"src/index.js\" && gulp release",
-    "postversion": "git push && git push --tags",
+    "postversion": "git push origin `git rev-parse --abbrev-ref HEAD` && git push origin `git describe`",
     "publishnext": "cd build && npm publish ./ --tag next",
     "publish": "cd build && npm publish"
   },
