@@ -19,3 +19,13 @@ server.listen(8090, "localhost", function(err) {
 	if (err) throw new Error("webpack-dev-server", err);
 	console.log("[webpack-dev-server]", "http://localhost:8090/webpack-dev-server/index.html");
 });
+
+
+var express = require("express");
+var app = express();
+app.use(express.static("build")); // path.join(__dirname, "build")
+app.use(express.static("node_modules"));
+app.use(express.static("docs"));
+app.listen(4000);
+
+console.log("open http://localhost:4000/");
