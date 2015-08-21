@@ -73,7 +73,7 @@
     "release": "gulp release",
     "lint": "gulp lint",
     "upgrade:patch": "npm version patch",
-    "preversion": "npm lint",
+    "preversion": "npm run lint",
     "version": "node scripts/updateVersion.js && gulp release",
     "postversion": "git push origin master && git push --tags",
     "publishnext": "cd build && npm publish ./ --tag next",
