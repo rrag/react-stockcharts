@@ -7,10 +7,10 @@ $ npm install
 $ npm run watch
 ```
 
-open http://localhost:4000 in a browser
+open [http://localhost:4000](http://localhost:4000) in a browser
 
 #### Updating documentation
-To update the documentation or add an example update the files under `docs`.
+To update the documentation or add an example, update the files under `docs`.
 
 Most of documentation is written as markdown under the `docs/md` folder
 
@@ -24,10 +24,11 @@ To update the source update files under `src`
 
 #### Help needed
 
-[ ] Server side rendering example with svg
-[ ] Create an extensible api for indicators, refactor sma, ema into that extensible api
-[ ] Create new indicators as overlays for 
-    [ ] Bollinger bands
-[ ] Create new indicators as charts for (like MACD)
-    [ ] Stocastics
-    [ ] Relatove Strength Index
+- [ ] Server side rendering example with svg, integrate with a raster and create a `.png` for a chart which is rendered on the server
+- [ ] Create an extensible api for indicators, refactor sma, ema into that extensible api
+- [ ] Create new indicators as overlays for 
+    - [ ] Bollinger bands
+- [ ] Create new indicators as charts for (like MACD)
+    - [ ] Stocastics
+    - [ ] Relatove Strength Index
+
