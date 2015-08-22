@@ -7,12 +7,14 @@ var origPackage = fs.readFileSync(path.join(root, "package.json")).toString(), b
 
 try {
 	var pkg = JSON.parse(origPackage);
-	var jsonFormat = require("json-format");
 	delete pkg.devDependencies;
 	delete pkg.scripts;
 	delete pkg.browserify;
 	pkg.main = "index.js";
-	buildPackage = jsonFormat(pkg).replace(/\t/g, "  ");
+	pkg["jsnext:main"] = "index.js";
+
+	buildPackage = JSON.stringify(pkg, null, 2);
+
 } catch (er) {
 	console.error("package.json parse error: ", er);
 	// process.exit(1);

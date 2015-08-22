@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "jsnext:main": "src/index.js",
   "author": {
-    "name": "Ragunath Ramaswamy"
+    "name": "Ragu Ramaswamy"
   },
   "homepage": "http://rrag.github.io/react-stockcharts/",
   "license": "MIT",
@@ -26,7 +26,6 @@
     "express": "^4.13.3",
     "file-loader": "^0.8.4",
     "html-loader": "^0.3.0",
-    "json-format": "0.0.1",
     "json-loader": "^0.5.2",
     "karma": "^0.13.9",
     "karma-chai": "^0.1.0",
@@ -54,14 +53,16 @@
     "build:dev": "echo 'DEV - BUILD' && webpack --config webpack.config.js",
     "build:prod": "echo 'PROD - BUILD' && webpack --config webpack.config.prod.js",
     "build:docs": "npm run build && echo 'DOCS - BUILD' && webpack --config webpack.config.docs.js",
-    "release": "npm run build && babel src --out-dir build && ncp *.md build && ncp .npmignore build && node scripts/release.js",
+    "release": "npm run build && babel src --out-dir build && ncp README.md build && node scripts/release.js",
     "lint": "eslint --ext .js,.jsx src",
     "upgrade:patch": "npm version patch",
     "preversion": "npm run lint",
-    "version": "node scripts/updateVersion.js && git add \"src/index.js\" && npm run release",
+    "version": "node scripts/updateVersion.js && git add \"src/index.js\"",
     "postversion": "git push origin `git rev-parse --abbrev-ref HEAD` && git push origin `git describe`",
-    "publishnext": "cd build && npm publish ./ --tag next",
-    "publish": "cd build && npm publish"
+    "publish:docs": "npm run build:docs && ncp build/* ../react-stockcharts-gh-pages/react-stockcharts && cd ../react-stockcharts-gh-pages/react-stockcharts && git commit -am \"update docs\" && git push origin gh-pages",
+    "publish:next": "npm run publish --tag next",
+    "prepublish": "npm run release && cd build",
+    "publish": "npm publish ./"
   },
   "browserify": {
     "transform": [
@@ -79,6 +80,8 @@
   "keywords": [
     "react",
     "stockcharts",
+    "finance",
+    "financechart",
     "charts",
     "ReactJS",
     "d3",
