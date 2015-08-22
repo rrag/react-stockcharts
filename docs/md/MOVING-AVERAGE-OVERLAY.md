@@ -16,17 +16,23 @@ Let us review each of these in a little more detail
 ```html
 <DataSeries yAccessor={CandlestickSeries.yAccessor} >
 	<CandlestickSeries />
-	<OverlaySeries id={0} type="sma" options={{ period: 20, pluck: 'close' }}>
+	<OverlaySeries id={0} indicator={EMA} options={{ period: 20, pluck: "close" }}>
 		<LineSeries/>
 	</OverlaySeries>
-	<OverlaySeries id={1} type="sma" options={{ period: 30 }} >
+	<OverlaySeries id={1} indicator={EMA} options={{ period: 30 }} >
 		<LineSeries/>
 	</OverlaySeries>
-	<OverlaySeries id={2} type="sma" options={{ period: 50 }} >
+	<OverlaySeries id={2} indicator={SMA} options={{ period: 50 }} >
 		<LineSeries/>
 	</OverlaySeries>
 </DataSeries>
 ```
+
+the `{EMA}` and `{SMA}` are from
+
+`var { EMA, SMA } = ReStock.indicator;`
+
+these indicators are just functions which follow a set of rules (yet to be documented). This makes for some very extensible behavior and user can create custom indicators for their use.
 
 `type` indicates it is a simple moving average, `options` used to specify the moving average `period`, and `pluck` to specify attribute against which moving average is to be calculated. If not specified, `pluck` defaults to `close`
 
@@ -35,7 +41,7 @@ Let us review each of these in a little more detail
 ```html
 <DataSeries yAccessor={(d) => d.volume} >
 	<HistogramSeries className={(d) => d.close > d.open ? 'up' : 'down'} />
-	<OverlaySeries id={3} type="sma" options={{ period: 10, pluck:'volume' }} >
+	<OverlaySeries id={3} indicator={SMA} options={{ period: 10, pluck:'volume' }} >
 		<AreaSeries/>
 	</OverlaySeries>
 </DataSeries>

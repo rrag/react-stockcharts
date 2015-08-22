@@ -13,6 +13,7 @@ var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 var { StockscaleTransformer, RenkoTransformer } = ReStock.transforms;
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, MACDTooltip } = ReStock.tooltip;
 var { XAxis, YAxis } = ReStock.axes;
+var { SMA } = ReStock.indicator;
 var { ChartWidthMixin } = ReStock.helper;
 
 var Renko = React.createClass({
@@ -42,7 +43,7 @@ var Renko = React.createClass({
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 					<DataSeries yAccessor={(d) => d.volume} >
 						<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
-						<OverlaySeries id={3} type="sma" options={{ period: 10, pluck:"volume" }} >
+						<OverlaySeries id={3} indicator={SMA} options={{ period: 10, pluck:"volume" }} >
 							<AreaSeries/>
 						</OverlaySeries>
 					</DataSeries>

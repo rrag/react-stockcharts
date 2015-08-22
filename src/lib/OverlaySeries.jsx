@@ -7,6 +7,7 @@ class OverlaySeries extends React.Component {
 
 	getChildContext() {
 		var overlay = this.context.overlays.filter((each) => each.id === this.props.id)[0];
+		// console.log(overlay);
 		return {
 			yAccessor: overlay.yAccessor,
 			stroke: overlay.stroke
@@ -28,10 +29,13 @@ class OverlaySeries extends React.Component {
 }
 
 OverlaySeries.propTypes = {
-	type: React.PropTypes.oneOf(["sma", "ema"]),
-	options: React.PropTypes.object.isRequired,
+	// type: React.PropTypes.oneOf(["sma", "ema"]),
 	id: React.PropTypes.number.isRequired,
-	stroke: React.PropTypes.string
+	// stroke: React.PropTypes.string
+	xAccessor: React.PropTypes.func,
+	yAccessor: React.PropTypes.func,
+	indicator: React.PropTypes.func,
+	options: React.PropTypes.object.isRequired,
 };
 OverlaySeries.defaultProps = {
 	namespace: "ReStock.OverlaySeries"

@@ -13,8 +13,8 @@ var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 var { StockscaleTransformer, HeikinAshiTransformer } = ReStock.transforms;
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
 var { XAxis, YAxis } = ReStock.axes;
+var { SMA } = ReStock.indicator;
 var { ChartWidthMixin } = ReStock.helper;
-
 
 var HaikinAshi = React.createClass({
 	mixins: [ChartWidthMixin],
@@ -37,13 +37,13 @@ var HaikinAshi = React.createClass({
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<DataSeries yAccessor={CandlestickSeries.yAccessor} >
 						<CandlestickSeries />
-						<OverlaySeries id={0} type="sma" options={{ period: 20, pluck: "close" }}>
+						<OverlaySeries id={0} indicator={SMA} options={{ period: 20, pluck: "close" }}>
 							<LineSeries/>
 						</OverlaySeries>
-						<OverlaySeries id={1} type="sma" options={{ period: 30 }} >
+						<OverlaySeries id={1} indicator={SMA} options={{ period: 30 }} >
 							<LineSeries/>
 						</OverlaySeries>
-						<OverlaySeries id={2} type="sma" options={{ period: 50 }} >
+						<OverlaySeries id={2} indicator={SMA} options={{ period: 50 }} >
 							<LineSeries/>
 						</OverlaySeries>
 					</DataSeries>
@@ -55,7 +55,7 @@ var HaikinAshi = React.createClass({
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 					<DataSeries yAccessor={(d) => d.volume} >
 						<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
-						<OverlaySeries id={3} type="sma" options={{ period: 10, pluck:"volume" }} >
+						<OverlaySeries id={3} indicator={SMA} options={{ period: 10, pluck:"volume" }} >
 							<AreaSeries/>
 						</OverlaySeries>
 					</DataSeries>

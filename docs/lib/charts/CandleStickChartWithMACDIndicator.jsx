@@ -15,8 +15,8 @@ var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, MACDTooltip } = ReSto
 var { StockscaleTransformer } = ReStock.transforms;
 
 var { XAxis, YAxis } = ReStock.axes;
+var { MACD, EMA, SMA } = ReStock.indicator;
 var { ChartWidthMixin } = ReStock.helper;
-var { MACD } = ReStock.indicator;
 
 var CandleStickChartWithMACDIndicatorCanvas = React.createClass({
 	mixins: [ChartWidthMixin],
@@ -45,10 +45,10 @@ var CandleStickChartWithMACDIndicatorCanvas = React.createClass({
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<DataSeries yAccessor={CandlestickSeries.yAccessor} >
 						<CandlestickSeries />
-						<OverlaySeries id={0} type="ema" options={{ period: 26 }} >
+						<OverlaySeries id={0} indicator={EMA} options={{ period: 26 }} >
 							<LineSeries/>
 						</OverlaySeries>
-						<OverlaySeries id={1} type="ema" options={{ period: 12 }} >
+						<OverlaySeries id={1} indicator={EMA} options={{ period: 12 }} >
 							<LineSeries/>
 						</OverlaySeries>
 					</DataSeries>
@@ -60,7 +60,7 @@ var CandleStickChartWithMACDIndicatorCanvas = React.createClass({
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 					<DataSeries yAccessor={(d) => d.volume} >
 						<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
-						<OverlaySeries id={3} type="sma" options={{ period: 10, pluck:"volume" }} >
+						<OverlaySeries id={3} indicator={SMA} options={{ period: 10, pluck:"volume" }} >
 							<AreaSeries opacity={0.5} stroke="steelblue" fill="steelblue" />
 						</OverlaySeries>
 					</DataSeries>

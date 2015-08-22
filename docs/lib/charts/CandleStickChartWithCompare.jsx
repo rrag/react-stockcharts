@@ -14,6 +14,7 @@ var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, CompareTooltip } = ReStock.tooltip;
 var { StockscaleTransformer } = ReStock.transforms;
 var { XAxis, YAxis } = ReStock.axes;
+var { SMA } = ReStock.indicator;
 var { ChartWidthMixin } = ReStock.helper;
 
 var CandleStickChartWithCompare = React.createClass({
@@ -49,7 +50,7 @@ var CandleStickChartWithCompare = React.createClass({
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 					<DataSeries yAccessor={(d) => d.volume} >
 						<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
-						<OverlaySeries id={3} type="sma" options={{ period: 10, pluck:"volume" }} >
+						<OverlaySeries id={3} indicator={SMA} options={{ period: 10, pluck:"volume" }} >
 							<AreaSeries/>
 						</OverlaySeries>
 					</DataSeries>

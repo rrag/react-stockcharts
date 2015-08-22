@@ -118,7 +118,7 @@ var ChartDataUtil = {
 	},
 	getChartPlotFor(config, partialData, domainL, domainR) {
 		var overlayYAccessors = pluck(keysAsArray(config.overlays), "yAccessor");
-
+		// console.log(overlayYAccessors);
 		var yaccessors;
 
 		if (config.compareSeries.length > 0) {
@@ -214,11 +214,11 @@ var ChartDataUtil = {
 		return { xScale: xScale, yScale: yScale };
 	},
 	getIndicator(props) {
-		var indicator;
-
+		var indicator;// = new Array();
 		React.Children.forEach(props.children, (child) => {
 			if (["ReStock.DataSeries"]
 					.indexOf(child.props.namespace) > -1) {
+
 				if (child.props && child.props.indicator) {
 					var indicatorProp = child.props.indicator;
 					indicator = indicatorProp(child.props.options, props);
@@ -256,16 +256,17 @@ var ChartDataUtil = {
 			if (/DataSeries$/.test(child.props.namespace)) {
 				React.Children.forEach(child.props.children, (grandChild) => {
 					if (/OverlaySeries$/.test(grandChild.props.namespace)) {
-						var key = OverlayUtils.getYAccessorKey(props.id, grandChild.props);
+
+						var indicatorProp = grandChild.props.indicator;
+						var indicator = indicatorProp(grandChild.props.options, props);
 						var overlay = {
 							id: grandChild.props.id,
 							chartId: props.id,
-							key: key,
-							yAccessor: (d) => d[key],
-							options: grandChild.props.options,
-							type: grandChild.props.type,
-							tooltipLabel: OverlayUtils.getToolTipLabel(grandChild.props),
-							stroke: grandChild.props.stroke || overlayColors(grandChild.props.id)
+							yAccessor: indicator.yAccessor(),
+							// options: grandChild.props.options, 
+							indicator: indicator,
+							tooltipLabel: indicator.tooltipLabel(),
+							stroke: indicator.options().stroke || overlayColors(grandChild.props.id)
 						};
 						overlaysToAdd.push(overlay);
 					}
@@ -307,7 +308,8 @@ var ChartDataUtil = {
 			overlays
 				.filter((eachOverlay) => eachOverlay.id !== undefined)
 				.forEach((overlay) => {
-					OverlayUtils.calculateOverlay(fullData, overlay);
+					// OverlayUtils.calculateOverlay(fullData, overlay);
+					overlay.indicator.calculate(fullData[key]);
 				});
 		} else {
 			Object.keys(fullData)
@@ -316,7 +318,8 @@ var ChartDataUtil = {
 					overlays
 						.filter((eachOverlay) => eachOverlay.id !== undefined)
 						.forEach((overlay) => {
-							OverlayUtils.calculateOverlay(fullData[key], overlay);
+							overlay.indicator.calculate(fullData[key]);
+							// OverlayUtils.calculateOverlay(fullData[key], overlay);
 						});
 				});
 		}
@@ -340,7 +343,7 @@ var ChartDataUtil = {
 				overlayValues.push({
 					id: eachOverlay.id,
 					first: OverlayUtils.firstDefined(data, eachOverlay.yAccessor),
-					last: OverlayUtils.lastDefined(data, eachOverlay.yAccessor)
+					last: OverlayUtils.lastDefined(data, eachOverlay.yAccessor),
 				});
 			});
 		return overlayValues;
