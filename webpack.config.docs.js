@@ -36,7 +36,7 @@ myConfig.plugins.push(new CommonsChunkPlugin({
 
 myConfig.resolve.alias = { "ReStock": path.join(__dirname, "src") }
 myConfig.resolve.root = [__dirname, path.join(__dirname, "docs")];
-myConfig.devtool = "sourcemap";// "sourcemap", "sourcemap-inline", "eval";
-myConfig.debug = true;
+// myConfig.devtool = "sourcemap";// "sourcemap", "sourcemap-inline", "eval";
+// myConfig.debug = true;
 
 module.exports = myConfig;

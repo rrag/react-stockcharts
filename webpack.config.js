@@ -13,6 +13,8 @@ module.exports = {
 		library: "ReStock",
 		libraryTarget: "umd",
 	},
+	debug: true,
+	devtool: "sourcemap",
 	module: {
 		loaders: [
 			{ test: /\.json$/, loader: "json" },

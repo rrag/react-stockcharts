@@ -4,6 +4,9 @@ var webpackConfig = require("../webpack.config.watch.js");
 var watchConfig = Object.create(webpackConfig);
 
 var watchCompiler = webpack(watchConfig);
+
+var express = require("express");
+
 // Start a webpack-dev-server
 var server = new WebpackDevServer(watchCompiler, {
 	publicPath: watchConfig.output.publicPath,
@@ -21,9 +24,9 @@ server.listen(8090, "localhost", function(err) {
 });
 
 
-var express = require("express");
 var app = express();
-app.use(express.static("build")); // path.join(__dirname, "build")
+
+app.use(express.static("build"));
 app.use(express.static("node_modules"));
 app.use(express.static("docs"));
 app.listen(4000);
