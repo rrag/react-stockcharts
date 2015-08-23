@@ -4,21 +4,29 @@ import MACalculator from "../utils/MovingAverageCalculator";
 import objectAssign from "object-assign";
 
 var defaultOptions = {
-	pluck: "close",
+	pluck: (d) => d.close,
 };
 
 function SMAIndicator(options, chartProps) {
 
 	var prefix = "chart_" + chartProps.id;
 	var settings = objectAssign({}, defaultOptions, options);
+	if (typeof settings.pluck === "string") {
+		var { pluck } = settings;
+		settings.pluck = (d) => d[pluck];
+	}
 	var key = "sma" + settings.period;
+
 	function MA() {
 	}
+
 	MA.options = function() {
 		return settings;
 	};
 	MA.calculate = function(data) {
-		var newData = MACalculator.calculateSMA(data, settings.period, key, settings.pluck, prefix);
+		var setter = MACalculator.setter.bind(null, [prefix], key);
+
+		var newData = MACalculator.calculateSMANew(data, settings.period, settings.pluck, setter);
 		return newData;
 	};
 	MA.yAccessor = function() {

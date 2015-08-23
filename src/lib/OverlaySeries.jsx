@@ -7,7 +7,6 @@ class OverlaySeries extends React.Component {
 
 	getChildContext() {
 		var overlay = this.context.overlays.filter((each) => each.id === this.props.id)[0];
-		// console.log(overlay);
 		return {
 			yAccessor: overlay.yAccessor,
 			stroke: overlay.stroke
@@ -45,6 +44,6 @@ OverlaySeries.contextTypes = {
 };
 OverlaySeries.childContextTypes = {
 	yAccessor: React.PropTypes.func.isRequired,
-	stroke: React.PropTypes.string.isRequired,
+	stroke: React.PropTypes.any.isRequired,
 };
 module.exports = OverlaySeries;

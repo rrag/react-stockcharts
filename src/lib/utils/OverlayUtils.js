@@ -25,15 +25,6 @@ var OverlayUtils = {
 		}
 		return false;
 	},
-	calculateOverlay(data, overlay) {
-		// console.log(overlay);
-		if (overlay.type === "sma") {
-			data = MACalculator.calculateSMA(data, overlay.options.period, overlay.key, overlay.options.pluck || "close");
-		} else if (overlay.type === "ema") {
-			data = MACalculator.calculateEMA(data, overlay.options.period, overlay.key, overlay.options.pluck || "close");
-		}
-		return data;
-	},
 	firstDefined(data, accessor) {
 		var each;
 		for (var i = 0; i < data.length; i++) {

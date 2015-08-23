@@ -9,11 +9,11 @@ import Line from "./Line";
 class MACDSeries extends React.Component {
 	constructor(props) {
 		super(props);
-		this.getMACDLine = this.getMACDLine.bind(this);
-		this.getSignalLine = this.getSignalLine.bind(this);
+		// this.getMACDLine = this.getMACDLine.bind(this);
+		// this.getSignalLine = this.getSignalLine.bind(this);
 		this.getHorizontalLine = this.getHorizontalLine.bind(this);
 	}
-	getMACDLine() {
+	/*getMACDLine() {
 		var dataSeries = d3.svg.line()
 			.defined((d) => (this.context.yAccessor(d) && this.context.yAccessor(d).MACDLine) !== undefined)
 			.x((d) => this.context.xScale(this.context.xAccessor(d)))
@@ -28,7 +28,7 @@ class MACDSeries extends React.Component {
 			.y((d) => this.context.yScale(this.context.yAccessor(d).signalLine));
 
 		return dataSeries(this.context.plotData);
-	}
+	}*/
 	getChildContext() {
 		var yAccess = this.context.yAccessor;
 		return {
@@ -36,13 +36,15 @@ class MACDSeries extends React.Component {
 		};
 	}
 	getHorizontalLine() {
-		var first = this.context.xAccessor(this.context.plotData[0]);
-		var last = this.context.xAccessor(this.context.plotData[this.context.plotData.length - 1]);
+		let { xScale, yScale, xAccessor, yAccessor, plotData } = this.context;
 
-		return <line x1={this.context.xScale(first)}
-			y1={this.context.yScale(0)}
-			x2={this.context.xScale(last)}
-			y2={this.context.yScale(0)} className="horizontal" />;
+		var first = xAccessor(plotData[0]);
+		var last = xAccessor(plotData[plotData.length - 1]);
+
+		return <line x1={xScale(first)}
+			y1={yScale(0)}
+			x2={xScale(last)}
+			y2={yScale(0)} className="horizontal" />;
 	}
 	render() {
 		// if (this.context.type !== "svg") return null;

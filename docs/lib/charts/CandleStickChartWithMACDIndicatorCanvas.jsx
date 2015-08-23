@@ -90,7 +90,7 @@ var CandleStickChartWithMACDIndicatorCanvas = React.createClass({
 				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
-					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 5]}/>
+					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 5]} forOverlays={[0, 1]} />
 					<MACDTooltip forChart={3} origin={(w, h) => [-38, h - 140]}/>
 				</TooltipContainer>
 			</ChartCanvas>

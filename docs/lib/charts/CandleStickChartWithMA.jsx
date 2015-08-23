@@ -68,7 +68,7 @@ var CandleStickChartWithMA = React.createClass({
 				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
-					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 15]}/>
+					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 15]} forOverlays={[0, 1, 2]} />
 				</TooltipContainer>
 			</ChartCanvas>
 		);

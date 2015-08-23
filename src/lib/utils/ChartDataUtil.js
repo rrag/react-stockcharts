@@ -221,7 +221,7 @@ var ChartDataUtil = {
 
 				if (child.props && child.props.indicator) {
 					var indicatorProp = child.props.indicator;
-					indicator = indicatorProp(child.props.options, props);
+					indicator = indicatorProp(child.props.options, props, child.props);
 				}
 			}
 		});
@@ -258,14 +258,12 @@ var ChartDataUtil = {
 					if (/OverlaySeries$/.test(grandChild.props.namespace)) {
 
 						var indicatorProp = grandChild.props.indicator;
-						var indicator = indicatorProp(grandChild.props.options, props);
+						var indicator = indicatorProp(grandChild.props.options, props, grandChild.props);
 						var overlay = {
 							id: grandChild.props.id,
 							chartId: props.id,
 							yAccessor: indicator.yAccessor(),
-							// options: grandChild.props.options, 
 							indicator: indicator,
-							tooltipLabel: indicator.tooltipLabel(),
 							stroke: indicator.options().stroke || overlayColors(grandChild.props.id)
 						};
 						overlaysToAdd.push(overlay);
@@ -391,11 +389,11 @@ var ChartDataUtil = {
 			interval = allowedIntervals[i];
 			dataForInterval = data[interval];
 
-			leftX = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor);
-			rightX = Utils.getClosestItemIndexes(dataForInterval, domainR, xAccessor);
+			leftIndex = Utils.getClosestItemIndexForPanLeft(dataForInterval, domainL, xAccessor);
+			rightIndex = Utils.getClosestItemIndexForPanRight(dataForInterval, domainR, xAccessor);
 
-			leftIndex = leftX.right;
-			rightIndex = rightX.right;
+			// leftIndex = leftX.left;
+			// rightIndex = rightX.right;
 
 			filteredData = dataForInterval.slice(leftIndex, rightIndex);
 

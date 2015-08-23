@@ -74,7 +74,8 @@ Line.propTypes = {
 };
 Line.defaultProps = {
 	className: "line ",
-	fill: "none"
+	fill: "none",
+	stroke: "black"
 };
 Line.contextTypes = {
 	canvasContext: React.PropTypes.object,

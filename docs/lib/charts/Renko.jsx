@@ -11,7 +11,7 @@ var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 
 var { StockscaleTransformer, RenkoTransformer } = ReStock.transforms;
-var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, MACDTooltip } = ReStock.tooltip;
+var { TooltipContainer, OHLCTooltip, MACDTooltip } = ReStock.tooltip;
 var { XAxis, YAxis } = ReStock.axes;
 var { SMA } = ReStock.indicator;
 var { ChartWidthMixin } = ReStock.helper;

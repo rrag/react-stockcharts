@@ -71,12 +71,15 @@ class EventHandler extends React.Component {
 		var dataForInterval = data[interval];
 		var mainChart = ChartDataUtil.getMainChart(props.children);
 		var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
+		var domainL = mainChartData.config.accessors.xAccessor(plotData[0]);
+		var domainR = mainChartData.config.accessors.xAccessor(plotData[plotData.length - 1]);
+		var xAccessor = mainChartData.config.accessors.xAccessor;
 
-		var beginIndex = Utils.getClosestItemIndexes(dataForInterval, mainChartData.config.accessors.xAccessor(plotData[0]), mainChartData.config.accessors.xAccessor).left;
-		var endIndex = Utils.getClosestItemIndexes(dataForInterval, mainChartData.config.accessors.xAccessor(plotData[plotData.length - 1]), mainChartData.config.accessors.xAccessor).right;
+		var beginIndex = Utils.getClosestItemIndexForPanLeft(dataForInterval, domainL, xAccessor);
+		var endIndex = Utils.getClosestItemIndexForPanRight(dataForInterval, domainR, xAccessor);
 
 		// console.log(plotData[0], plotData[plotData.length - 1]);
-		var newPlotData = dataForInterval.slice(beginIndex, endIndex + 1);
+		var newPlotData = dataForInterval.slice(beginIndex, endIndex);
 		// console.log(newPlotData[0], newPlotData[newPlotData.length - 1]);
 		var newChartData = ChartDataUtil.getChartData(props, dimensions, newPlotData, data, options);
 		// console.log("componentWillReceiveProps");
@@ -170,7 +173,7 @@ class EventHandler extends React.Component {
 
 		domainL = Math.max(getLongValue(chart.config.accessors.xAccessor(first)) - Math.floor(domainRange / 3), domainL);
 		domainR = Math.min(getLongValue(chart.config.accessors.xAccessor(last)) + Math.floor(domainRange / 3), domainR);
-		// xScale(domainR) - xScale(domainL)
+
 		var dataToPlot = ChartDataUtil.getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.accessors.xAccessor);
 		if (dataToPlot.data.length < 10) return;
 		var newChartData = chartData.map((eachChart) => {
@@ -229,11 +232,9 @@ class EventHandler extends React.Component {
 					domainR = new Date(domainR);
 				}
 
-				var leftX = Utils.getClosestItemIndexes(fullData, domainL, xAccessor);
-				var rightX = Utils.getClosestItemIndexes(fullData, domainR, xAccessor);
+				var beginIndex = Utils.getClosestItemIndexForPanLeft(fullData, domainL, xAccessor);
+				var endIndex = Utils.getClosestItemIndexForPanRight(fullData, domainR, xAccessor);
 
-				let beginIndex = leftX.right;
-				let endIndex = rightX.right;
 				var filteredData = fullData.slice(beginIndex, endIndex);
 
 				var newChartData = chartData.map((eachChart) => {

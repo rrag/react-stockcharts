@@ -30,7 +30,9 @@ Let us review each of these in a little more detail
 
 the `{EMA}` and `{SMA}` are from
 
-`var { EMA, SMA } = ReStock.indicator;`
+```js
+var { EMA, SMA } = ReStock.indicator;
+```
 
 these indicators are just functions which follow a set of rules (yet to be documented). This makes for some very extensible behavior and user can create custom indicators for their use.
 

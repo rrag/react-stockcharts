@@ -7,7 +7,6 @@ import Line from "./Line";
 class LineSeries extends React.Component {
 	render() {
 		let { xScale, yScale, xAccessor, yAccessor, plotData, stroke, type } = this.context;
-
 		return (
 			<Line
 				className={this.props.className}

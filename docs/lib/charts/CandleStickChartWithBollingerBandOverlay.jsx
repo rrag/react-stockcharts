@@ -14,10 +14,10 @@ var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
 var { StockscaleTransformer } = ReStock.transforms;
 var { XAxis, YAxis } = ReStock.axes;
-var { EMA, SMA } = ReStock.indicator;
+var { EMA, SMA, BollingerBand } = ReStock.indicator;
 var { ChartWidthMixin } = ReStock.helper;
 
-var CandleStickChartWithEdge = React.createClass({
+var CandleStickChartWithBollingerBandOverlay = React.createClass({
 	mixins: [ChartWidthMixin],
 	propTypes: {
 		data: React.PropTypes.array.isRequired,
@@ -49,6 +49,8 @@ var CandleStickChartWithEdge = React.createClass({
 						</OverlaySeries>
 						<OverlaySeries id={2} indicator={SMA} options={{ period: 50 }} >
 							<LineSeries/>
+						</OverlaySeries>
+						<OverlaySeries id={3} indicator={BollingerBand} options={{ period: 20, multiplier: 2, }}>
 						</OverlaySeries>
 					</DataSeries>
 				</Chart>
@@ -89,4 +91,4 @@ var CandleStickChartWithEdge = React.createClass({
 	}
 });
 
-export default CandleStickChartWithEdge;
+export default CandleStickChartWithBollingerBandOverlay;

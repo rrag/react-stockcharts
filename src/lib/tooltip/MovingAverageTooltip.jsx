@@ -45,23 +45,24 @@ class MovingAverageTooltip extends React.Component {
 	render() {
 		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
 		var item = ChartDataUtil.getCurrentItemForChart(this.props, this.context);
-
+		var { forOverlays } = this.props;
 		return (
 			<g transform={"translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")"} className={this.props.className}>
-				{chartData.config.overlays.map((eachOverlay, idx) => {
-					var yValue = eachOverlay.yAccessor(item);
-					// console.log(yValue);
-					var yDisplayValue = yValue ? this.props.displayFormat(yValue) : "n/a";
-					return <SingleMAToolTip
-						key={idx}
-						origin={[this.props.width * idx, 0]}
-						color={eachOverlay.stroke}
-						displayName={eachOverlay.tooltipLabel}
-						value={yDisplayValue}
-						overlay={eachOverlay}
-						onClick={this.props.onClick}
-						fontFamily={this.props.fontFamily} fontSize={this.props.fontSize} />;
-				})}
+				{chartData.config.overlays
+					.filter(eachOverlay => forOverlays.indexOf(eachOverlay.id) > -1)
+					.map((eachOverlay, idx) => {
+						var yValue = eachOverlay.yAccessor(item);
+						var yDisplayValue = yValue ? this.props.displayFormat(yValue) : "n/a";
+						return <SingleMAToolTip
+							key={idx}
+							origin={[this.props.width * idx, 0]}
+							color={eachOverlay.stroke}
+							displayName={eachOverlay.indicator.tooltipLabel()}
+							value={yDisplayValue}
+							overlay={eachOverlay}
+							onClick={this.props.onClick}
+							fontFamily={this.props.fontFamily} fontSize={this.props.fontSize} />;
+					})}
 			</g>
 		);
 	}
@@ -79,6 +80,7 @@ MovingAverageTooltip.propTypes = {
 	onClick: React.PropTypes.func,
 	fontFamily: React.PropTypes.string,
 	fontSize: React.PropTypes.number,
+	forOverlays: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
 };
 
 MovingAverageTooltip.defaultProps = {
@@ -86,7 +88,8 @@ MovingAverageTooltip.defaultProps = {
 	className: "react-stockcharts-moving-average-tooltip",
 	displayFormat: Utils.displayNumberFormat,
 	origin: [0, 10],
-	width: 65
+	width: 65,
+	forOverlays: []
 };
 
 module.exports = MovingAverageTooltip;

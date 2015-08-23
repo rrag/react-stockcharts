@@ -179,6 +179,7 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithEdge  - Lots of data -> data={dataFull}/>
 	// CandleStickChartWithCHMousePointer
 	// CandleStickChartWithMA
+	// CandleStickChartWithBollingerBandOverlay
 	// CandleStickStockScaleChartWithVolumeHistogramV1
 	// CandleStickStockScaleChartWithVolumeHistogramV2
 	// CandleStickStockScaleChartWithVolumeHistogramV3
@@ -186,7 +187,7 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithCompare
 	// CandleStickChartWithMACDIndicator
 	// CandleStickChartWithMACDIndicatorCanvas
-	var Chart = require("lib/charts/CandleStickChart");
+	var Chart = require("lib/charts/CandleStickChartWithEdge");
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	class ExamplesPage extends React.Component {

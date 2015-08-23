@@ -2,6 +2,7 @@
 
 import MACalculator from "../utils/MovingAverageCalculator";
 import Utils from "../utils/utils.js";
+import objectAssign from "object-assign";
 
 var defaultOptions = {
 	fast: 12,
@@ -20,36 +21,45 @@ var defaultOptions = {
 	}
 };
 
-function MACDIndicator(options, chartProps) {
+function MACDIndicator(options, chartProps, elementProps) {
 
 	var prefix = "chart_" + chartProps.id;
-	var MACDOption = Utils.mergeRecursive(options, defaultOptions);
+	var settings = objectAssign({}, defaultOptions, options);
+	// var key = "MACD_" + elementProps.id;
 	function MACD() {
 	}
 	MACD.options = function() {
-		return MACDOption;
+		return settings;
 	};
 	MACD.calculate = function(data) {
 		// console.log(prefix, options);
-		var fastKey = "ema" + MACDOption.fast;
-		var slowKey = "ema" + MACDOption.slow;
-		var source = MACDOption.pluck || defaultOptions.pluck;
+		var fastKey = "ema" + settings.fast;
+		var slowKey = "ema" + settings.slow;
+		var source = settings.pluck;
 
-		var newData = MACalculator.calculateEMA(data, MACDOption.fast, fastKey, source, prefix);
-		newData = MACalculator.calculateEMA(newData, MACDOption.slow, slowKey, source, prefix);
+		var setter = (setKey, d, value) => { 
+			if (d[prefix] === undefined) d[prefix] = {};
+			d[prefix][setKey] = value;
+			return d;
+		};
+		var getter = (d) => d[settings.pluck];
+
+		var newData = MACalculator.calculateEMANew(data, settings.fast, getter, setter.bind(null, fastKey));
+		newData = MACalculator.calculateEMANew(newData, settings.slow, getter, setter.bind(null, slowKey));
 
 		newData.forEach(each => {
 			if (each[prefix]) {
 				if (each[prefix][slowKey] && each[prefix][fastKey]) {
+					// each[prefix][key] = {};
 					each[prefix].MACDLine = each[prefix][fastKey] - each[prefix][slowKey];
 				}
 			}
 		});
-
-		MACalculator.calculateEMA(newData.slice(MACDOption.slow), MACDOption.signal, "signalLine", prefix + ".MACDLine", prefix);
+		newData = MACalculator.calculateEMANew(newData.slice(settings.slow), settings.signal,
+			(d) => d[prefix].MACDLine, setter.bind(null, "signalLine"));
 
 		newData.forEach(each => {
-			if (each[prefix]) {
+			if (each[prefix]/* && each[prefix][key]*/) {
 				if (each[prefix].MACDLine && each[prefix].signalLine) {
 					each[prefix].histogram = each[prefix].MACDLine - each[prefix].signalLine;
 				}

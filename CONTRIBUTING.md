@@ -1,7 +1,9 @@
 #### Setting up dev environment
 
-```
-$ git clone https://github.com/rrag/react-stockcharts.git
+fork or clone the repo
+
+```sh
+$ git clone <git url>
 $ cd react-stockcharts
 $ npm install
 $ npm run watch
@@ -24,11 +26,4 @@ To update the source update files under `src`
 
 #### Help needed
 
-- [ ] Server side rendering example with svg, integrate with a raster and create a `.png` for a chart which is rendered on the server
-- [ ] Create an extensible api for indicators, refactor sma, ema into that extensible api
-- [ ] Create new indicators as overlays for 
-    - [ ] Bollinger bands
-- [ ] Create new indicators as charts for (like MACD)
-    - [ ] Stocastics
-    - [ ] Relatove Strength Index
-
+Look for issues with the [enhancement](https://github.com/rrag/react-stockcharts/labels/enhancement), [help_wanted](https://github.com/rrag/react-stockcharts/labels/help_wanted)

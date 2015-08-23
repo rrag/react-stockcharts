@@ -11,7 +11,7 @@ var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, CompareSeries 
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 
-var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, CompareTooltip } = ReStock.tooltip;
+var { TooltipContainer, OHLCTooltip, CompareTooltip } = ReStock.tooltip;
 var { StockscaleTransformer } = ReStock.transforms;
 var { XAxis, YAxis } = ReStock.axes;
 var { SMA } = ReStock.indicator;
