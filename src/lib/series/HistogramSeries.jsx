@@ -75,8 +75,9 @@ class HistogramSeries extends React.Component {
 			getFill = this.props.fill;
 		}
 
-		var width = Math.abs(this.context.xScale.range()[0] - this.context.xScale.range()[1]);
-		var barWidth = width / (this.context.plotData.length) * 0.5;
+		var width = this.context.xScale(this.context.xAccessor(this.context.plotData[this.context.plotData.length - 1]))
+			- this.context.xScale(this.context.xAccessor(this.context.plotData[0]));
+		var barWidth = Math.round(width / (this.context.plotData.length) * 0.5);
 
 		var bars = this.context.plotData
 				.filter((d) => (this.context.yAccessor(d) !== undefined) )

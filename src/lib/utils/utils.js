@@ -124,39 +124,6 @@ var Utils = {
 
 		return closestIndex;
 	},
-	getClosestItemIndexForPanLeft(array, value, accessor) {
-		var lo = 0, hi = array.length - 1;
-		while (hi - lo > 1) {
-			var mid = Math.round((lo + hi) / 2);
-			if (accessor(array[mid]) <= value) {
-				lo = mid;
-			} else {
-				hi = mid;
-			}
-		}
-		if (accessor(array[lo]) === value) hi = lo;
-		var closestIndex = (Math.abs(accessor(array[lo]) - value) < Math.abs(accessor(array[hi]) - value))
-							? lo
-							: hi;
-
-		return value > accessor(array[lo]) ? hi : lo;
-	},
-	getClosestItemIndexForPanRight(array, value, accessor) {
-		var lo = 0, hi = array.length - 1;
-		while (hi - lo > 1) {
-			var mid = Math.round((lo + hi) / 2);
-			if (accessor(array[mid]) <= value) {
-				lo = mid;
-			} else {
-				hi = mid;
-			}
-		}
-		if (accessor(array[lo]) === value) hi = lo;
-		var closestIndex = (Math.abs(accessor(array[lo]) - value) < Math.abs(accessor(array[hi]) - value))
-							? lo
-							: hi;
-		return value > accessor(array[hi]) ? hi + 1 : lo;
-	},
 	getClosestItemIndexes(array, value, accessor) {
 		var lo = 0, hi = array.length - 1;
 		while (hi - lo > 1) {
@@ -169,7 +136,10 @@ var Utils = {
 		}
 		if (accessor(array[lo]) === value) hi = lo;
 		// console.log(array[lo], array[hi], closestIndex, lo, hi);
-		return { left: lo, right: hi };
+		return {
+			left: value > accessor(array[lo]) ? hi : lo,
+			right: value > accessor(array[hi]) ? hi + 1 : hi
+		};
 	},
 
 	pluck(array, key) {

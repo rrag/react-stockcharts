@@ -75,8 +75,8 @@ class EventHandler extends React.Component {
 		var domainR = mainChartData.config.accessors.xAccessor(plotData[plotData.length - 1]);
 		var xAccessor = mainChartData.config.accessors.xAccessor;
 
-		var beginIndex = Utils.getClosestItemIndexForPanLeft(dataForInterval, domainL, xAccessor);
-		var endIndex = Utils.getClosestItemIndexForPanRight(dataForInterval, domainR, xAccessor);
+		var beginIndex = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
+		var endIndex = Utils.getClosestItemIndexes(dataForInterval, domainR, xAccessor).right;
 
 		// console.log(plotData[0], plotData[plotData.length - 1]);
 		var newPlotData = dataForInterval.slice(beginIndex, endIndex);
@@ -232,8 +232,8 @@ class EventHandler extends React.Component {
 					domainR = new Date(domainR);
 				}
 
-				var beginIndex = Utils.getClosestItemIndexForPanLeft(fullData, domainL, xAccessor);
-				var endIndex = Utils.getClosestItemIndexForPanRight(fullData, domainR, xAccessor);
+				var beginIndex = Utils.getClosestItemIndexes(fullData, domainL, xAccessor).left;
+				var endIndex = Utils.getClosestItemIndexes(fullData, domainR, xAccessor).right;
 
 				var filteredData = fullData.slice(beginIndex, endIndex);
 

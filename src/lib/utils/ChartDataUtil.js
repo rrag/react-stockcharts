@@ -389,8 +389,8 @@ var ChartDataUtil = {
 			interval = allowedIntervals[i];
 			dataForInterval = data[interval];
 
-			leftIndex = Utils.getClosestItemIndexForPanLeft(dataForInterval, domainL, xAccessor);
-			rightIndex = Utils.getClosestItemIndexForPanRight(dataForInterval, domainR, xAccessor);
+			leftIndex = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
+			rightIndex = Utils.getClosestItemIndexes(dataForInterval, domainR, xAccessor).right;
 
 			// leftIndex = leftX.left;
 			// rightIndex = rightX.right;
