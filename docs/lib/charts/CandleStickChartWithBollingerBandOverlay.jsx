@@ -7,11 +7,11 @@ import ReStock from "ReStock";
 
 var { ChartCanvas, Chart, DataSeries, OverlaySeries,EventCapture } = ReStock;
 
-var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries } = ReStock.series;
+var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, BollingerSeries } = ReStock.series;
 var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 
-var { TooltipContainer, OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
+var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, BollingerBandTooltip } = ReStock.tooltip;
 var { StockscaleTransformer } = ReStock.transforms;
 var { XAxis, YAxis } = ReStock.axes;
 var { EMA, SMA, BollingerBand } = ReStock.indicator;
@@ -32,8 +32,8 @@ var CandleStickChartWithBollingerBandOverlay = React.createClass({
 		var dateFormat = d3.time.format("%Y-%m-%d");
 
 		return (
-			<ChartCanvas width={this.state.width} height={400}
-				margin={{left: 90, right: 70, top:10, bottom: 30}} initialDisplay={30}
+			<ChartCanvas width={this.state.width} height={600}
+				margin={{left: 90, right: 70, top:10, bottom: 30}} initialDisplay={300}
 				dataTransform={[ { transform: StockscaleTransformer } ]}
 				data={data} type={type}>
 				<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}>
@@ -51,6 +51,7 @@ var CandleStickChartWithBollingerBandOverlay = React.createClass({
 							<LineSeries/>
 						</OverlaySeries>
 						<OverlaySeries id={3} indicator={BollingerBand} options={{ period: 20, multiplier: 2, }}>
+							<BollingerSeries />
 						</OverlaySeries>
 					</DataSeries>
 				</Chart>
@@ -84,11 +85,15 @@ var CandleStickChartWithBollingerBandOverlay = React.createClass({
 				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-50, 0]}/>
-					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-48, 15]} forOverlays={[0, 1, 2]} />
+					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-48, 15]} />
+					<BollingerBandTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-48, 60]} forOverlay={3} />
 				</TooltipContainer>
 			</ChartCanvas>
 		);
 	}
 });
+
+// 					<BollingerBandTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-48, 15]} />
+
 
 export default CandleStickChartWithBollingerBandOverlay;

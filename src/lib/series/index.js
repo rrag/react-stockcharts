@@ -7,6 +7,7 @@ import KagiSeries from "./KagiSeries";
 import PointAndFigureSeries from "./PointAndFigureSeries";
 import RenkoSeries from "./RenkoSeries";
 import MACDSeries from "./MACDSeries";
+import BollingerSeries from "./BollingerSeries";
 
 export default {
 	AreaSeries,
@@ -18,4 +19,5 @@ export default {
 	PointAndFigureSeries,
 	RenkoSeries,
 	MACDSeries,
+	BollingerSeries,
 };

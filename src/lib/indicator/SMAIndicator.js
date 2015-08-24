@@ -36,7 +36,10 @@ function SMAIndicator(options, chartProps) {
 	};
 	MA.tooltipLabel = function() {
 		return `SMA (${ settings.period })`;
-	}
+	};
+	MA.isMovingAverage = function() {
+		return true;
+	};
 	return MA;
 }
 

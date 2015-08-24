@@ -9,26 +9,8 @@ import Line from "./Line";
 class MACDSeries extends React.Component {
 	constructor(props) {
 		super(props);
-		// this.getMACDLine = this.getMACDLine.bind(this);
-		// this.getSignalLine = this.getSignalLine.bind(this);
 		this.getHorizontalLine = this.getHorizontalLine.bind(this);
 	}
-	/*getMACDLine() {
-		var dataSeries = d3.svg.line()
-			.defined((d) => (this.context.yAccessor(d) && this.context.yAccessor(d).MACDLine) !== undefined)
-			.x((d) => this.context.xScale(this.context.xAccessor(d)))
-			.y((d) => this.context.yScale(this.context.yAccessor(d).MACDLine));
-
-		return dataSeries(this.context.plotData);
-	}
-	getSignalLine() {
-		var dataSeries = d3.svg.line()
-			.defined((d) => (this.context.yAccessor(d) && this.context.yAccessor(d).signalLine) !== undefined)
-			.x((d) => this.context.xScale(this.context.xAccessor(d)))
-			.y((d) => this.context.yScale(this.context.yAccessor(d).signalLine));
-
-		return dataSeries(this.context.plotData);
-	}*/
 	getChildContext() {
 		var yAccess = this.context.yAccessor;
 		return {

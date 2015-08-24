@@ -208,7 +208,7 @@ class EventHandler extends React.Component {
 		if (panStartDomain === null) {
 			this.handlePanStart(startDomain, mousePosition);
 		} else {
-			requestAnimationFrame(() => {
+			// requestAnimationFrame(() => {
 				var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0],
 					domainRange = panStartDomain[1] - panStartDomain[0],
 					fullData = data[interval],
@@ -261,7 +261,7 @@ class EventHandler extends React.Component {
 					mouseXY: mousePosition,
 					currentCharts: currentCharts,
 				});
-			});
+			//});
 		}
 	}
 	handlePanEnd() {

@@ -23,7 +23,8 @@ var pages = [
 	require("lib/page/MousePointerPage"),
 	require("lib/page/ZoomAndPanPage"),
 	require("lib/page/SvgVsCanvas"),
-	require("lib/page/OverlayPage"),
+	require("lib/page/MAOverlayPage"),
+	require("lib/page/BollingerBandOverlayPage"),
 	require("lib/page/EdgeCoordinatesPage"),
 	require("lib/page/CompareWithPage"),
 	require("lib/page/LotsOfDataPage"),
@@ -187,14 +188,14 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithCompare
 	// CandleStickChartWithMACDIndicator
 	// CandleStickChartWithMACDIndicatorCanvas
-	var Chart = require("lib/charts/CandleStickChartWithEdge");
+	var Chart = require("lib/charts/CandleStickChartWithBollingerBandOverlay");
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	class ExamplesPage extends React.Component {
 		render() {
 			return (
-				<div className="container react-stockchart">
-					<TypeChooser type="svg">
+				<div className="react-stockchart">
+					<TypeChooser type="hybrid">
 						{(type) => <Chart data={data} type={type} />}
 					</TypeChooser>
 				</div>

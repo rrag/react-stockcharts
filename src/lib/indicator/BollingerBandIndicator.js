@@ -28,12 +28,12 @@ function BollingerBandIndicator(options, chartProps, elementProps) {
 		var setter = MACalculator.setter.bind(null, [prefix, key], "middle");
 		var newData = ma(data, period, getter, setter);
 
-		console.log(period, newData.slice(0, 20));
+		// console.log(period, newData.slice(0, 20));
 
-		newData.map((each, i) => newData.slice(i - period, i))
+		newData.map((each, i) => newData.slice(i - period + 1, i + 1))
 			.filter((array) => array.length === period && array.length > 0)
 			.map((array) => {
-				console.log(array);
+				// console.log(array);
 				return {
 					array: array,
 					mean: array[array.length - 1][prefix][key].middle
@@ -45,18 +45,22 @@ function BollingerBandIndicator(options, chartProps, elementProps) {
 						.map(val => val * val)
 						.reduce((a, b) => a + b) / meanAndArray.array.length
 					var standardDev = Math.sqrt(averageOfDeviationSquared);
-					meanAndArray.array[meanAndArray.array.length - 1][prefix][key].stdDev = standardDev;
+					var item = meanAndArray.array[meanAndArray.array.length - 1][prefix][key];
+					item.top = item.middle + settings.multiplier * standardDev;
+					item.bottom = item.middle - settings.multiplier * standardDev;
+					// console.log(meanAndArray.array[meanAndArray.array.length - 1]);
 				});
-		console.log(newData[newData.length - 1]);
+		// console.log(newData[newData.length - 1]);
 		return newData;
 	};
 	indicator.yAccessor = function() {
 		return (d) => {
+			// console.log(d[prefix][key]);
 			if (d && d[prefix]) return d[prefix][key];
 		};
 	};
-	indicator.tooltipLabel = function() {
-		return `EMA (${ settings.period })`;
+	indicator.isBollingerBand = function() {
+		return true;
 	}
 	return indicator;
 }

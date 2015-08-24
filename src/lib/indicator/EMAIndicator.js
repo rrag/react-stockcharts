@@ -35,7 +35,10 @@ function EMAIndicator(options, chartProps, elementProps) {
 	};
 	MA.tooltipLabel = function() {
 		return `EMA (${ settings.period })`;
-	}
+	};
+	MA.isMovingAverage = function() {
+		return true;
+	};
 	return MA;
 }
 

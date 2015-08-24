@@ -49,7 +49,8 @@ class MovingAverageTooltip extends React.Component {
 		return (
 			<g transform={"translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")"} className={this.props.className}>
 				{chartData.config.overlays
-					.filter(eachOverlay => forOverlays.indexOf(eachOverlay.id) > -1)
+					.filter(eachOverlay => eachOverlay.indicator.isMovingAverage && eachOverlay.indicator.isMovingAverage())
+					.filter(eachOverlay => forOverlays === undefined ? true : forOverlays.indexOf(eachOverlay.id) > -1)
 					.map((eachOverlay, idx) => {
 						var yValue = eachOverlay.yAccessor(item);
 						var yDisplayValue = yValue ? this.props.displayFormat(yValue) : "n/a";
@@ -80,7 +81,7 @@ MovingAverageTooltip.propTypes = {
 	onClick: React.PropTypes.func,
 	fontFamily: React.PropTypes.string,
 	fontSize: React.PropTypes.number,
-	forOverlays: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+	forOverlays: React.PropTypes.arrayOf(React.PropTypes.number),
 };
 
 MovingAverageTooltip.defaultProps = {
@@ -89,7 +90,6 @@ MovingAverageTooltip.defaultProps = {
 	displayFormat: Utils.displayNumberFormat,
 	origin: [0, 10],
 	width: 65,
-	forOverlays: []
 };
 
 module.exports = MovingAverageTooltip;

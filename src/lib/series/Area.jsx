@@ -14,27 +14,24 @@ class Line extends React.Component {
 	}
 	drawOnCanvas() {
 		var { canvasContext: ctx } = this.context;
-		var { data, xScale, yScale, xAccessor, yAccessor, fill, stroke, opacity } = this.props;
+		var { data, xScale, yScale, xAccessor, yAccessor, fill, stroke, opacity, base } = this.props;
 		var begin = true;
 		var height = yScale.range()[0];
+		var newBase = (base === undefined) ? () => (height - 1) : base;
 
-		var { strokeStyle, fillStyle } = ctx;
+		var { strokeStyle, fillStyle, globalAlpha } = ctx;
 
 		ctx.fillStyle = fill;
 		ctx.strokeStyle = stroke;
 		ctx.globalAlpha = opacity;
 
 		data.forEach((d) => {
-			if (yAccessor(d) === undefined) {
-				ctx.stroke();
-				ctx.beginPath();
-				begin = true;
-			} else {
+			if (yAccessor(d) !== undefined) {
 				if (begin) {
 					ctx.beginPath();
 					begin = false;
 					let [x, y] = [xScale(xAccessor(d)), yScale(yAccessor(d))];
-					ctx.moveTo(x, height);
+					ctx.moveTo(x, newBase(d));
 					ctx.lineTo(x, y);
 				}
 				ctx.lineTo(xScale(xAccessor(d)), yScale(yAccessor(d)));
@@ -42,20 +39,31 @@ class Line extends React.Component {
 		});
 
 		var last = data[data.length - 1];
-		ctx.lineTo(xScale(xAccessor(last)), height);
+		ctx.lineTo(xScale(xAccessor(last)), newBase(last));
+
+		if (base !== undefined) {
+			data.slice().reverse().forEach((d) => {
+				if (yAccessor(d) !== undefined) {
+					ctx.lineTo(xScale(xAccessor(d)), base(d));
+				}
+			});
+		}
+		ctx.closePath();
 		ctx.fill();
 		ctx.fillStyle = fillStyle;
 		ctx.strokeStyle = strokeStyle;
+		ctx.globalAlpha = globalAlpha;
 	}
 
 	getArea() {
-		var { data, xScale, yScale, xAccessor, yAccessor } = this.props;
+		var { data, xScale, yScale, xAccessor, yAccessor, base } = this.props;
 		var height = yScale.range()[0];
+		if (base === undefined) base = () => (height - 1);
 
 		var areaSeries = d3.svg.area()
 			.defined((d) => yAccessor(d) !== undefined)
 			.x((d) => xScale(xAccessor(d)))
-			.y0(height - 1)
+			.y0(base)
 			.y1((d) => yScale(yAccessor(d)));
 
 		return areaSeries(data);
@@ -82,6 +90,7 @@ Line.propTypes = {
 	fill: React.PropTypes.string,
 	opacity: React.PropTypes.number,
 	type: React.PropTypes.string.isRequired,
+	base: React.PropTypes.func,
 };
 Line.defaultProps = {
 	className: "line ",
