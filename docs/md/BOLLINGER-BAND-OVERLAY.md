@@ -1,0 +1,3 @@
+Learn more about constructing a Bollinger Band [here](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:bollinger_bands)
+
+Example on gist, block and plunker comming soon...

@@ -21,7 +21,7 @@ d3.tsv("data/MSFT.tsv", function(err, data) {
 		// console.log(d);
 	});
 
-	var Chart = require('lib/charts/CandleStickChartWithMACDIndicatorCanvas');
+	var Chart = require('lib/charts/CandleStickChartWithMACDIndicator');
 
-	React.render(<Chart data={data} />, document.getElementById("chart"));
+	React.render(<Chart data={data} type="hybrid"/>, document.getElementById("chart"));
 });

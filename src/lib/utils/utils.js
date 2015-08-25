@@ -138,7 +138,7 @@ var Utils = {
 		// console.log(array[lo], array[hi], closestIndex, lo, hi);
 		return {
 			left: value > accessor(array[lo]) ? hi : lo,
-			right: value > accessor(array[hi]) ? hi + 1 : hi
+			right: value >= accessor(array[hi]) ? hi + 1 : hi
 		};
 	},
 

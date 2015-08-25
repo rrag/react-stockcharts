@@ -18,7 +18,7 @@ var { XAxis, YAxis } = ReStock.axes;
 var { MACD, EMA, SMA } = ReStock.indicator;
 var { ChartWidthMixin } = ReStock.helper;
 
-var CandleStickChartWithMACDIndicatorCanvas = React.createClass({
+var CandleStickChartWithMACDIndicator = React.createClass({
 	mixins: [ChartWidthMixin],
 	propTypes: {
 		data: React.PropTypes.array.isRequired,
@@ -98,4 +98,4 @@ var CandleStickChartWithMACDIndicatorCanvas = React.createClass({
 	}
 });
 
-export default CandleStickChartWithMACDIndicatorCanvas;
+export default CandleStickChartWithMACDIndicator;

@@ -38,8 +38,9 @@ var pages = [
 ];
 
 function compressString(string) {
-	string = string.replace(/\s+/g, "");
-	string = string.replace(/_+/g, "");
+	string = string.replace(/\s+/g, "_");
+	string = string.replace(/[-&]/g, "_");
+	string = string.replace(/_+/g, "_");
 	string = string.toLowerCase();
 	// console.log(string);
 	return string
@@ -111,7 +112,7 @@ function renderPage(data, dataFull, compareData) {
 					<MainContainer>
 						<Sidebar>
 							<MenuGroup>
-								{pages.map((eachPage, idx) => <MenuItem key={idx} current={eachPage === this.state.selectedPage} title={eachPage.title} />)}
+								{pages.map((eachPage, idx) => <MenuItem key={idx} current={eachPage === this.state.selectedPage} title={eachPage.title} anchor={compressString(eachPage.title)} />)}
 							</MenuGroup>
 						</Sidebar>
 						<Page someData={data} lotsOfData={dataFull} compareData={compareData} />
@@ -127,10 +128,32 @@ function renderPage(data, dataFull, compareData) {
 d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 	d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
 		d3.tsv("data/comparison.tsv", (err3, compareData) => {
+			React.initializeTouchEvents(true);
+
 			renderPage(MSFT, MSFTFull, compareData);
 			// renderPartialPage(MSFT, MSFTFull, compareData);
 		});
 	});
+});
+
+document.addEventListener('keypress', function(e) {
+	var keyCode = e.which;
+	// b or s (98 or 115) - Begin performance
+	// e (101) - end performance
+	// l (108) - log performance
+	console.log("pressed ", e.which);
+	var Perf = React.addons.Perf;
+	if (keyCode === 98 || keyCode === 115) {
+		console.log("Perf.start()");
+		Perf.start();
+	} else if (keyCode === 101) {
+		console.log("Perf.stop()");
+		Perf.stop();
+	} else if (keyCode === 108) {
+		Perf.printInclusive();
+		Perf.printExclusive();
+		Perf.printWasted();
+	}
 })
 
 function renderPartialPage(data, dataFull, compareData) {
@@ -187,7 +210,6 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithZoomPan
 	// CandleStickChartWithCompare
 	// CandleStickChartWithMACDIndicator
-	// CandleStickChartWithMACDIndicatorCanvas
 	var Chart = require("lib/charts/CandleStickChartWithBollingerBandOverlay");
 	var TypeChooser = ReStock.helper.TypeChooser;
 
