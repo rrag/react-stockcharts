@@ -9,7 +9,7 @@ $ npm install
 $ npm run watch
 ```
 
-open [http://localhost:4000](http://localhost:4000) in a browser
+open [http://localhost:8090](http://localhost:8090) in a browser
 
 #### Updating documentation
 To update the documentation or add an example, update the files under `docs`.

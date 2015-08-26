@@ -9,7 +9,7 @@ module.exports = {
 	output: {
 		path: path.join(__dirname, "build/dist/"),
 		filename: "react-stockcharts.js",
-		publicPath: "js/",
+		publicPath: "dist/",
 		library: "ReStock",
 		libraryTarget: "umd",
 	},

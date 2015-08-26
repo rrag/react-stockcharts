@@ -5,12 +5,13 @@ var watchConfig = Object.create(webpackConfig);
 
 var watchCompiler = webpack(watchConfig);
 
-var express = require("express");
+var serveStatic = require('serve-static')
 
 // Start a webpack-dev-server
 var server = new WebpackDevServer(watchCompiler, {
 	publicPath: watchConfig.output.publicPath,
 	// hot: true,
+	contentBase: watchConfig.devServer.contentBase,
 	quiet: false,
 	noInfo: false,
 	stats: {
@@ -18,17 +19,10 @@ var server = new WebpackDevServer(watchCompiler, {
 	}
 });
 
-server.listen(8090, "localhost", function(err) {
+server.listen(watchConfig.devServer.port, "localhost", function(err) {
 	if (err) throw new Error("webpack-dev-server", err);
-	console.log("[webpack-dev-server]", "http://localhost:8090/webpack-dev-server/index.html");
+	console.log("[webpack-dev-server]", "http://localhost:" + watchConfig.devServer.port + "/index.html");
 });
 
-
-var app = express();
-
-app.use(express.static("build"));
-app.use(express.static("node_modules"));
-app.use(express.static("docs"));
-app.listen(4000);
-
-console.log("open http://localhost:4000/");
+server.app.use(serveStatic("build"));
+server.app.use(serveStatic("node_modules"));

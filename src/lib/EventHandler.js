@@ -121,6 +121,8 @@ class EventHandler extends React.Component {
 		};
 	}
 	handleMouseMove(mouseXY) {
+		/*if (document.getElementById("debug_here") !== null)
+			document.getElementById("debug_here").innerHTML = "" + mouseXY*/
 		// console.log("mouse move - ", mouseXY);
 		var currentItems = ChartDataUtil.getCurrentItems(this.state.chartData, mouseXY, this.state.plotData);
 			// .filter((eachChartData) => eachChartData.id === this.state.mainChart)
@@ -130,13 +132,12 @@ class EventHandler extends React.Component {
 			return (mouseXY[1] > top && mouseXY[1] < bottom);
 		}).map((chartData) => chartData.id);
 
-		// console.log(currentCharts);
-
 		this.setState({
 			mouseXY: mouseXY,
+			i: 0,
 			currentItems: currentItems,
 			show: true,
-			currentCharts: currentCharts
+			currentCharts: currentCharts,
 		});
 	}
 	handleMouseEnter() {
@@ -276,6 +277,9 @@ class EventHandler extends React.Component {
 			focus: focus,
 		});
 	}
+	/*shouldComponentUpdate(nextProps, nextState) {
+		return nextState.i !== 0;
+	}*/
 	render() {
 		var children = React.Children.map(this.props.children, (child) => {
 			var newChild = Utils.isReactVersion13()

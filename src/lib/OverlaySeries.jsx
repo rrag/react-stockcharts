@@ -31,9 +31,9 @@ OverlaySeries.propTypes = {
 	// type: React.PropTypes.oneOf(["sma", "ema"]),
 	id: React.PropTypes.number.isRequired,
 	// stroke: React.PropTypes.string
-	xAccessor: React.PropTypes.func,
-	yAccessor: React.PropTypes.func,
-	indicator: React.PropTypes.func,
+	// xAccessor: React.PropTypes.func,
+	// yAccessor: React.PropTypes.func,
+	indicator: React.PropTypes.func.isRequired,
 	options: React.PropTypes.object.isRequired,
 };
 OverlaySeries.defaultProps = {

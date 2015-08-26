@@ -25,4 +25,4 @@ Refer to [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ### Stability
 
-This is still alpha state software, the api will change with each minor version.
+This is alpha state software, the api will change with each minor version.

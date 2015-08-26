@@ -1,6 +1,13 @@
 
 var config = require("./webpack.config.docs.js");
+var path = require("path");
 
-config.output.publicPath = "http://localhost:8090/" + config.output.publicPath;
+
+config.devServer = {
+	contentBase: path.join(__dirname, "docs"),
+	port: 8090,
+};
+
+config.output.publicPath = "http://localhost:" + config.devServer.port + "/" + config.output.publicPath;
 
 module.exports = config;

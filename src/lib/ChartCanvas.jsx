@@ -45,7 +45,7 @@ class ChartCanvas extends React.Component {
 		this.updateState(this.props);
 	}
 	componentWillReceiveProps(nextProps) {
-		if (this.props.data !== nextProps.data) {
+		if (this.props.data !== nextProps.data || this.props.dataTransform !== nextProps.dataTransform) {
 			this.updateState(nextProps);
 		}
 	}
