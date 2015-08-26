@@ -64,7 +64,7 @@ BollingerSeries.contextTypes = {
 	type: React.PropTypes.string,
 };
 
-/*BollingerSeries.childContextTypes = {
+/* BollingerSeries.childContextTypes = {
 	yAccessor: React.PropTypes.func.isRequired,
 };
 */

@@ -32,18 +32,16 @@ function BollingerBandIndicator(options, chartProps, elementProps) {
 
 		newData.map((each, i) => newData.slice(i - period + 1, i + 1))
 			.filter((array) => array.length === period && array.length > 0)
-			.map((array) => {
-				// console.log(array);
-				return {
+			.map(array => ({
 					array: array,
 					mean: array[array.length - 1][prefix][key].middle
-				}})
+				}))
 			.forEach((meanAndArray) => {
 					var averageOfDeviationSquared = meanAndArray.array
 						.map(getter)
 						.map(val => val - meanAndArray.mean)
 						.map(val => val * val)
-						.reduce((a, b) => a + b) / meanAndArray.array.length
+						.reduce((a, b) => a + b) / meanAndArray.array.length;
 					var standardDev = Math.sqrt(averageOfDeviationSquared);
 					var item = meanAndArray.array[meanAndArray.array.length - 1][prefix][key];
 					item.top = item.middle + settings.multiplier * standardDev;
@@ -61,7 +59,7 @@ function BollingerBandIndicator(options, chartProps, elementProps) {
 	};
 	indicator.isBollingerBand = function() {
 		return true;
-	}
+	};
 	return indicator;
 }
 

@@ -121,7 +121,7 @@ class EventHandler extends React.Component {
 		};
 	}
 	handleMouseMove(mouseXY) {
-		/*if (document.getElementById("debug_here") !== null)
+		/* if (document.getElementById("debug_here") !== null)
 			document.getElementById("debug_here").innerHTML = "" + mouseXY*/
 		// console.log("mouse move - ", mouseXY);
 		var currentItems = ChartDataUtil.getCurrentItems(this.state.chartData, mouseXY, this.state.plotData);
@@ -262,7 +262,7 @@ class EventHandler extends React.Component {
 					mouseXY: mousePosition,
 					currentCharts: currentCharts,
 				});
-			//});
+			// });
 		}
 	}
 	handlePanEnd() {
@@ -277,9 +277,9 @@ class EventHandler extends React.Component {
 			focus: focus,
 		});
 	}
-	/*shouldComponentUpdate(nextProps, nextState) {
+	/* shouldComponentUpdate(nextProps, nextState) {
 		return nextState.i !== 0;
-	}*/
+	} */
 	render() {
 		var children = React.Children.map(this.props.children, (child) => {
 			var newChild = Utils.isReactVersion13()
