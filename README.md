@@ -1,28 +1,29 @@
-## React Stockcharts
+#### Setting up dev environment
 
-Create highly customizable stock charts
+fork or clone the repo
 
-Built with [React JS](http://facebook.github.io/react/) and [d3](http://d3js.org/)
-
----
-
-### Installation
 ```sh
-npm install react-stockcharts --save
+$ git clone <git url>
+$ cd react-stockcharts
+$ npm install
+$ npm run watch
 ```
 
-### Documentation
+open [http://localhost:8090](http://localhost:8090) in a browser
 
-[Getting started](http://rrag.github.io/react-stockcharts/documentation.html#/getting_started)
+#### Updating documentation
+To update the documentation or add an example, update the files under `docs`.
 
-### Examples
+Most of documentation is written as markdown under the `docs/md` folder
 
-Refer to some [quick start examples](http://rrag.github.io/react-stockcharts/documentation.html#/quick_start_examples)
+see the `docs/documentation.js` file to understand how the different pages are organized
 
-### Contributing
+`docs/lib/charts` folder contains the different charts in the examples, the same are used to build the gists in quick start examples also
 
-Refer to [CONTRIBUTING.md](./CONTRIBUTING.md)
+#### Updating source
 
-### Stability
+To update the source update files under `src`
 
-This is alpha state software, the api will change with each minor version.
+#### Help needed
+
+Look for issues with the [enhancement](https://github.com/rrag/react-stockcharts/labels/enhancement), [help_wanted](https://github.com/rrag/react-stockcharts/labels/help_wanted)
