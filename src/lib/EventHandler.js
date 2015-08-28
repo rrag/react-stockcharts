@@ -4,6 +4,7 @@ import React from "react";
 import Utils from "./utils/utils";
 import PureComponent from "./utils/PureComponent";
 import ChartDataUtil from "./utils/ChartDataUtil";
+import shallowEqual from "./utils/shallowEqual";
 
 import objectAssign from "object-assign";
 
@@ -121,20 +122,19 @@ class EventHandler extends React.Component {
 		};
 	}
 	handleMouseMove(mouseXY) {
-		/* if (document.getElementById("debug_here") !== null)
+		/*if (document.getElementById("debug_here") !== null)
 			document.getElementById("debug_here").innerHTML = "" + mouseXY*/
 		// console.log("mouse move - ", mouseXY);
-		var currentItems = ChartDataUtil.getCurrentItems(this.state.chartData, mouseXY, this.state.plotData);
 			// .filter((eachChartData) => eachChartData.id === this.state.mainChart)
 		var currentCharts = this.state.chartData.filter((chartData) => {
 			var top = chartData.config.origin[1];
 			var bottom = top + chartData.config.height;
 			return (mouseXY[1] > top && mouseXY[1] < bottom);
 		}).map((chartData) => chartData.id);
+		var currentItems = ChartDataUtil.getCurrentItems(this.state.chartData, mouseXY, this.state.plotData);
 
 		this.setState({
 			mouseXY: mouseXY,
-			i: 0,
 			currentItems: currentItems,
 			show: true,
 			currentCharts: currentCharts,
@@ -277,16 +277,16 @@ class EventHandler extends React.Component {
 			focus: focus,
 		});
 	}
-	/* shouldComponentUpdate(nextProps, nextState) {
-		return nextState.i !== 0;
-	} */
 	render() {
+
 		var children = React.Children.map(this.props.children, (child) => {
 			var newChild = Utils.isReactVersion13()
 				? React.withContext(this.getChildContext(), () => {
 					return React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 				})
 				: React.cloneElement(child);
+				// React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
+
 			return newChild;
 		});
 		return (

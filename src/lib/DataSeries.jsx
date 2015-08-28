@@ -2,15 +2,17 @@
 
 import React from "react";
 import Utils from "./utils/utils";
+import objectAssign from "object-assign";
 
 class DataSeries extends React.Component {
 	render() {
 		var children = React.Children.map(this.props.children, (child) => {
 			var newChild = Utils.isReactVersion13()
 				? React.withContext(this.context, () => {
-					return React.createElement(child.type, Utils.mergeObject({ key: child.key, ref: child.ref}, child.props));
+					return React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 				})
 				: React.cloneElement(child);
+				// React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 			return newChild;
 		});
 		return (

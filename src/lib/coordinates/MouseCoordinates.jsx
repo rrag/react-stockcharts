@@ -66,7 +66,7 @@ class MouseCoordinates extends PureComponent {
 		if (!this.context.show) return null;
 		var pointer = this.getPointer();
 
-		return this.getPointer();
+		return pointer;
 	}
 }
 

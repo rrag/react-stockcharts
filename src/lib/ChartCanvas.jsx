@@ -61,11 +61,13 @@ class ChartCanvas extends React.Component {
 	render() {
 		var dimensions = this.getDimensions(this.props);
 		var children = React.Children.map(this.props.children, (child) => {
+			// console.log(child);
 			var newChild = Utils.isReactVersion13()
 				? React.withContext(this.getChildContext(), () => {
 					return React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 				})
 				: React.cloneElement(child);
+				// React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 			return newChild;
 		});
 		var style = `<![CDATA[

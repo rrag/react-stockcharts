@@ -3,6 +3,7 @@
 import React from "react";
 import PureComponent from "./utils/PureComponent";
 import Utils from "./utils/utils";
+import objectAssign from "object-assign";
 
 class Chart extends PureComponent {
 	constructor() {
@@ -64,14 +65,17 @@ class Chart extends PureComponent {
 		}
 	}
 	render() {
-		// console.log("Chart.render()");
+		/*if (document.getElementById("debug_here") !== null)
+			document.getElementById("debug_here").innerHTML = "" + Math.random()*/
+		console.log("Chart.render() - ", this.props.id);
 		var origin = this.getOrigin();
 		var children = React.Children.map(this.props.children, (child) => {
 			var newChild = Utils.isReactVersion13()
 				? React.withContext(this.getChildContext(), () => {
-					return React.createElement(child.type, Utils.mergeObject({ key: child.key, ref: child.ref}, child.props));
+					return React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 				})
 				: React.cloneElement(child);
+				// React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 			return newChild;
 		});
 		return <g transform={`translate(${origin[0]}, ${origin[1]})`}>{children}</g>;

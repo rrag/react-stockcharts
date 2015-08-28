@@ -40,22 +40,7 @@ var Utils = {
 	isNumeric(n) {
 		return !isNaN(parseFloat(n)) && isFinite(n);
 	},
-	mergeObject(a, b) {
-		var newObject = {};
-		Object.keys(a).forEach((key) => {
-			if (a[key] != null) {
-				newObject[key] = a[key];
-			}
-		});
-		Object.keys(b).forEach((key) => {
-			if (b[key] != null) {
-				newObject[key] = b[key];
-			}
-		});
-		return newObject;
-	},
 	mergeRecursive(obj1, obj2) {
-
 		for (var p in obj2) {
 			try {
 				// Property in destination object set; update its value.

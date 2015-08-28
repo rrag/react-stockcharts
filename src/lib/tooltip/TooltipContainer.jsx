@@ -3,20 +3,22 @@
 import React from "react";
 import Utils from "../utils/utils";
 import PureComponent from "../utils/PureComponent";
+import objectAssign from "object-assign";
 
 class TooltipContainer extends PureComponent {
 	render() {
 		var children = React.Children.map(this.props.children, (child) => {
 			var newChild = Utils.isReactVersion13()
 				? React.withContext(this.context, () => {
-					return React.createElement(child.type, Utils.mergeObject({ key: child.key, ref: child.ref}, child.props));
+					return React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 				})
 				: React.cloneElement(child);
+				// React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 			return newChild;
 		});
 		return (
 			<g className="react-stockcharts-toottip-hover">
-				{children}
+				{this.props.children}
 			</g>
 		);
 	}
