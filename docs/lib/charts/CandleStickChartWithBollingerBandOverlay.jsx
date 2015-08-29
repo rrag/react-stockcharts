@@ -58,7 +58,8 @@ var CandleStickChartWithBollingerBandOverlay = React.createClass({
 				<CurrentCoordinate forChart={1} forOverlay={0} />
 				<CurrentCoordinate forChart={1} forOverlay={1} />
 				<CurrentCoordinate forChart={1} forOverlay={2} />
-				<Chart id={2} height={150} origin={(w, h) => [0, h - 150]}>
+				<Chart id={2} yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
+						height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 					<DataSeries yAccessor={(d) => d.volume} >
 						<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
