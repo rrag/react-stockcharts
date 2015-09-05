@@ -5,6 +5,7 @@ import d3 from "d3";
 
 import HistogramSeries from "./HistogramSeries";
 import Line from "./Line";
+import StraightLine from "./StraightLine";
 
 class MACDSeries extends React.Component {
 	constructor(props) {
@@ -18,15 +19,21 @@ class MACDSeries extends React.Component {
 		};
 	}
 	getHorizontalLine() {
-		let { xScale, yScale, xAccessor, yAccessor, plotData } = this.context;
+		let { xScale, yScale, xAccessor, yAccessor, plotData, type } = this.context;
 
 		var first = xAccessor(plotData[0]);
 		var last = xAccessor(plotData[plotData.length - 1]);
 
-		return <line x1={xScale(first)}
+		/* return <line x1={xScale(first)}
 			y1={yScale(0)}
 			x2={xScale(last)}
-			y2={yScale(0)} className="horizontal" />;
+			y2={yScale(0)} className="horizontal" />; */
+		return <StraightLine
+			stroke="black" opacity={0.3} type={type}
+			x1={xScale(first)}
+			y1={yScale(0)}
+			x2={xScale(last)}
+			y2={yScale(0)} />;
 	}
 	render() {
 		// if (this.context.type !== "svg") return null;

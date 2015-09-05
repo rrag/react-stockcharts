@@ -4,7 +4,7 @@ import MACalculator from "../utils/MovingAverageCalculator";
 import objectAssign from "object-assign";
 
 var defaultOptions = {
-	pluck: (d) => d.close,
+	pluck: "close",
 };
 
 function EMAIndicator(options, chartProps, elementProps) {
@@ -15,7 +15,7 @@ function EMAIndicator(options, chartProps, elementProps) {
 		var { pluck } = settings;
 		settings.pluck = (d) => d[pluck];
 	}
-	var key = "ema" + settings.period;
+	var key = "overlay_" + (elementProps.id !== undefined ? elementProps.id : "default");
 	function MA() {
 	}
 	MA.options = function() {
@@ -26,6 +26,8 @@ function EMAIndicator(options, chartProps, elementProps) {
 		var setter = MACalculator.setter.bind(null, [prefix], key);
 
 		var newData = MACalculator.calculateEMANew(data, settings.period, settings.pluck, setter);
+		// console.log(newData[newData.length - 3]);
+
 		return newData;
 	};
 	MA.yAccessor = function() {

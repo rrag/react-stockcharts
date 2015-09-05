@@ -25,6 +25,7 @@ function MACDIndicator(options, chartProps, elementProps) {
 
 	var prefix = "chart_" + chartProps.id;
 	var settings = objectAssign({}, defaultOptions, options);
+	var key = "overlay_" + (elementProps.id !== undefined ? elementProps.id : "default");
 	// var key = "MACD_" + elementProps.id;
 	function MACD() {
 	}
@@ -39,7 +40,8 @@ function MACDIndicator(options, chartProps, elementProps) {
 
 		var setter = (setKey, d, value) => { 
 			if (d[prefix] === undefined) d[prefix] = {};
-			d[prefix][setKey] = value;
+			if (d[prefix][key] === undefined) d[prefix][key] = {};
+			d[prefix][key][setKey] = value;
 			return d;
 		};
 		var getter = (d) => d[settings.pluck];
@@ -49,19 +51,19 @@ function MACDIndicator(options, chartProps, elementProps) {
 
 		newData.forEach(each => {
 			if (each[prefix]) {
-				if (each[prefix][slowKey] && each[prefix][fastKey]) {
+				if (each[prefix][key][slowKey] && each[prefix][key][fastKey]) {
 					// each[prefix][key] = {};
-					each[prefix].MACDLine = each[prefix][fastKey] - each[prefix][slowKey];
+					each[prefix][key].MACDLine = each[prefix][key][fastKey] - each[prefix][key][slowKey];
 				}
 			}
 		});
 		newData = MACalculator.calculateEMANew(newData.slice(settings.slow), settings.signal,
-			(d) => d[prefix].MACDLine, setter.bind(null, "signalLine"));
+			(d) => d[prefix][key].MACDLine, setter.bind(null, "signalLine"));
 
 		newData.forEach(each => {
-			if (each[prefix]/* && each[prefix][key]*/) {
-				if (each[prefix].MACDLine && each[prefix].signalLine) {
-					each[prefix].histogram = each[prefix].MACDLine - each[prefix].signalLine;
+			if (each[prefix] && each[prefix][key]) {
+				if (each[prefix][key].MACDLine && each[prefix][key].signalLine) {
+					each[prefix][key].histogram = each[prefix][key].MACDLine - each[prefix][key].signalLine;
 				}
 			}
 		});
@@ -71,8 +73,10 @@ function MACDIndicator(options, chartProps, elementProps) {
 		return newData;
 	};
 	MACD.yAccessor = function() {
-		return function(d) {
-			if (d && d[prefix]) return { MACDLine: d[prefix].MACDLine, signalLine: d[prefix].signalLine, histogram: d[prefix].histogram };
+		return (d) => {
+			if (d && d[prefix] && d[prefix][key]) { 
+				return { MACDLine: d[prefix][key].MACDLine, signalLine: d[prefix][key].signalLine, histogram: d[prefix][key].histogram };
+			}
 		};
 	};
 	return MACD;

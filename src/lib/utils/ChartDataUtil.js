@@ -106,6 +106,7 @@ var ChartDataUtil = {
 				format: chartProps.yMousePointerDisplayFormat
 			},
 			indicatorOptions: indicator && indicator.options(),
+			domain: indicator && indicator.domain && indicator.domain(),
 			origin: origin,
 			padding: padding,
 			accessors: accessors,
@@ -140,7 +141,8 @@ var ChartDataUtil = {
 			, partialData
 			, config.width/* - config.margin.left - config.margin.right*/
 			, config.height/* - config.margin.top - config.margin.bottom*/
-			, config.padding);
+			, config.padding
+			, config.domain);
 
 		if (domainL && domainR) scales.xScale.domain([domainL, domainR]);
 
@@ -346,7 +348,7 @@ var ChartDataUtil = {
 			});
 		return overlayValues;
 	},
-	updateScales(xyValues, scales, data, width, height, padding) {
+	updateScales(xyValues, scales, data, width, height, padding, overrideDomain) {
 		// console.log("updateScales");
 		// width = width - margin.left - margin.right/**/
 		// height = height - margin.top - margin.bottom/**/
@@ -362,9 +364,12 @@ var ChartDataUtil = {
 
 		scales.yScale.range([height - padding.top, padding.bottom]);
 
-		var domain = d3.extent(xyValues.yValues);
-
-		scales.yScale.domain(domain);
+		if (overrideDomain !== undefined) {
+			scales.yScale.domain(overrideDomain);
+		} else {
+			var domain = d3.extent(xyValues.yValues);
+			scales.yScale.domain(domain);
+		}
 
 		return {
 			xScale: scales.xScale.copy(),

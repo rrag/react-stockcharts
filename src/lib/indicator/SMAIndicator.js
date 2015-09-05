@@ -4,10 +4,10 @@ import MACalculator from "../utils/MovingAverageCalculator";
 import objectAssign from "object-assign";
 
 var defaultOptions = {
-	pluck: (d) => d.close,
+	pluck: "close",
 };
 
-function SMAIndicator(options, chartProps) {
+function SMAIndicator(options, chartProps, elementProps) {
 
 	var prefix = "chart_" + chartProps.id;
 	var settings = objectAssign({}, defaultOptions, options);
@@ -15,7 +15,7 @@ function SMAIndicator(options, chartProps) {
 		var { pluck } = settings;
 		settings.pluck = (d) => d[pluck];
 	}
-	var key = "sma" + settings.period;
+	var key = "overlay_" + (elementProps.id !== undefined ? elementProps.id : "default");
 
 	function MA() {
 	}

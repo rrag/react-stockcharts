@@ -14,7 +14,7 @@ function BollingerBandIndicator(options, chartProps, elementProps) {
 
 	var prefix = "chart_" + chartProps.id;
 	var settings = objectAssign({}, defaultOptions, options);
-	var key = "overlay_" + elementProps.id;
+	var key = "overlay_" + (elementProps.id !== undefined ? elementProps.id : "default");
 	function indicator() {
 	}
 	indicator.options = function() {

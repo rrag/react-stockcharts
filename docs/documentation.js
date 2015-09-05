@@ -29,6 +29,7 @@ var pages = [
 	require("lib/page/CompareWithPage"),
 	require("lib/page/LotsOfDataPage"),
 	require("lib/page/MACDIndicatorPage"),
+	require("lib/page/RSIIndicatorPage"),
 	require("lib/page/HeikinAshiPage"),
 	require("lib/page/KagiPage"),
 	require("lib/page/PointAndFigurePage"),
@@ -208,7 +209,8 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithZoomPan
 	// CandleStickChartWithCompare
 	// CandleStickChartWithMACDIndicator
-	var Chart = require("lib/charts/CandleStickChartWithBollingerBandOverlay");
+	// CandleStickChartWithRSIIndicator
+	var Chart = require("lib/charts/CandleStickChartWithRSIIndicator");
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	class ExamplesPage extends React.Component {

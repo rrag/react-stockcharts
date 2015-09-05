@@ -13,9 +13,6 @@ var million = 1 * 1000 * 1000;
 var thousand = 1 * 1000;
 
 class OHLCTooltip extends React.Component {
-	componentWillReceiveProps() {
-		console.log("jdfhadsf");
-	}
 	render() {
 		var displayDate, fromDate, toDate, open, high, low, close, volume;
 

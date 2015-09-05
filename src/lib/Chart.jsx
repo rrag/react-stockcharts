@@ -67,7 +67,7 @@ class Chart extends PureComponent {
 	render() {
 		/*if (document.getElementById("debug_here") !== null)
 			document.getElementById("debug_here").innerHTML = "" + Math.random()*/
-		console.log("Chart.render() - ", this.props.id);
+		// console.log("Chart.render() - ", this.props.id);
 		var origin = this.getOrigin();
 		var children = React.Children.map(this.props.children, (child) => {
 			var newChild = Utils.isReactVersion13()

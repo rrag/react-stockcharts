@@ -13,7 +13,7 @@ class MACDTooltip extends React.Component {
 		var options = chartData.config.indicatorOptions;
 
 		var item = ChartDataUtil.getCurrentItemForChart(this.props, this.context);
-		var macd = item[`chart_${this.props.forChart}`];
+		var macd = chartData.config.accessors.yAccessor(item);
 		var format = chartData.config.mouseCoordinates.format;
 
 		var MACDLine = (macd && macd.MACDLine && format(macd.MACDLine)) || "n/a";

@@ -6,7 +6,6 @@ var watchConfig = Object.create(webpackConfig);
 var watchCompiler = webpack(watchConfig);
 
 var serveStatic = require('serve-static')
-
 // Start a webpack-dev-server
 var server = new WebpackDevServer(watchCompiler, {
 	publicPath: watchConfig.output.publicPath,

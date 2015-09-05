@@ -1,0 +1,3 @@
+Learn more about constructing a RSI [here](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:relative_strength_index_rsi)
+
+Example on gist, block and plunker comming soon...
