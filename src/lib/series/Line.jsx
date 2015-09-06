@@ -10,7 +10,7 @@ class Line extends React.Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	componentDidUpdate(prevProps, prevState, prevContext) {
-		if (this.props.type !== "svg") this.drawOnCanvas();
+		if (this.context.type !== "svg" && this.context.canvasContext !== undefined) this.drawOnCanvas();
 	}
 	drawOnCanvas() {
 		var { canvasContext: ctx } = this.context;

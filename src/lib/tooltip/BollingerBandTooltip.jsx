@@ -11,20 +11,37 @@ class BollingerBandTooltip extends React.Component {
 	render() {
 		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
 		var item = ChartDataUtil.getCurrentItemForChart(this.props, this.context);
-		if (item[`chart_${this.props.forChart}`] === undefined) return null;
+		var top, middle, bottom;
+		top = middle = bottom = "n/a";
+
 		var { forOverlay } = this.props;
 		var overlays = chartData.config.overlays
 			.filter(eachOverlay => forOverlay === undefined ? true : forOverlay === eachOverlay.id)
 			.filter(eachOverlay => eachOverlay.indicator.isBollingerBand && eachOverlay.indicator.isBollingerBand());
-		if (overlays.length !== 1) return null;
-		var overlay = overlays[0];
-		var options = overlay.indicator.options();
-		var yAccessor = overlay.indicator.yAccessor();
-		var value = yAccessor(item);
-		var format = Utils.displayNumberFormat;
-		var [top, middle, bottom] = [format(value.top), format(value.middle), format(value.bottom)];
+
+		if (chartData.config.accessors.yAccessor(item) !== undefined
+			&& overlays.length === 1) {
+			var overlay = overlays[0];
+			var options = overlay.indicator.options();
+			var yAccessor = overlay.indicator.yAccessor();
+			var value = yAccessor(item);
+			var format = Utils.displayNumberFormat;
+
+			if (value !== undefined) {
+				top = format(value.top);
+				middle = format(value.middle);
+				bottom = format(value.bottom);
+			}
+		}
+
+		var { origin, height, width } = chartData.config;
+		var relativeOrigin = typeof this.props.origin === "function"
+			? this.props.origin(this.context.width, this.context.height)
+			: this.props.origin;
+		var absoluteOrigin = [origin[0] + relativeOrigin[0], origin[1] + relativeOrigin[1]]
+
 		return (
-			<g transform={"translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")"} className={this.props.className}>
+			<g transform={`translate(${ absoluteOrigin[0] }, ${ absoluteOrigin[1] })`} className={this.props.className}>
 				<ToolTipText x={0} y={0}
 					fontFamily={this.props.fontFamily} fontSize={this.props.fontSize}>
 					<ToolTipTSpanLabel>

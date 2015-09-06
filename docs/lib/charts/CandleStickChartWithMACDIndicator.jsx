@@ -78,8 +78,7 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 						edgeAt="left" forChart={1} forOverlay={1} />
 				</EdgeContainer>
 				<Chart id={3} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}
-						height={150} origin={(w, h) => [0, h - 150]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }}
-						>
+						height={150} origin={(w, h) => [0, h - 150]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
 					<XAxis axisAt={150} orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={2}/>
 					<DataSeries indicator={MACD} options={{ fast: 12, slow: 26, signal: 9 }} >
@@ -91,7 +90,7 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
 					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 5]} />
-					<MACDTooltip forChart={3} origin={(w, h) => [-38, h - 130]}/>
+					<MACDTooltip forChart={3} origin={[-38, 15]}/>
 				</TooltipContainer>
 			</ChartCanvas>
 		);

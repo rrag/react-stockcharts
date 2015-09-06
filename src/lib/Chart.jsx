@@ -1,20 +1,27 @@
 "use strict";
 
 import React from "react";
+import objectAssign from "object-assign";
+
 import PureComponent from "./utils/PureComponent";
 import Utils from "./utils/utils";
-import objectAssign from "object-assign";
+import ChartDataUtil from "./utils/ChartDataUtil";
 
 class Chart extends PureComponent {
 	constructor() {
 		super();
 		this.state = {};
-		this.updateCanvasContext = this.updateCanvasContext.bind(this);
+		this.getCurrentCanvasContext = this.getCurrentCanvasContext.bind(this);
+	}
+	getCurrentCanvasContext() {
+		var canvasContextList = this.context.canvasList.filter((each) => parseInt(each.id, 10) === this.props.id);
+		var canvasContext = canvasContextList.length > 0 ? canvasContextList[0].context : undefined;
+		return canvasContext
 	}
 	getChildContext() {
 		var chartData = this.context.chartData.filter((each) => each.id === this.props.id)[0];
-		var origin = this.getOrigin();
-
+		var canvasContext = this.getCurrentCanvasContext();
+		var origin = ChartDataUtil.getChartOrigin(this.props.origin, this.context.width, this.context.height);
 		return {
 			xScale: chartData.plot.scales.xScale,
 			yScale: chartData.plot.scales.yScale,
@@ -26,49 +33,19 @@ class Chart extends PureComponent {
 			isCompareSeries: chartData.config.compareSeries.length > 0,
 			width: this.props.width || this.context.width,
 			height: this.props.height || this.context.height,
-			canvasContext: this.state.canvasContext,
+			canvasContext: canvasContext,
 		};
 	}
-	getOrigin() {
-		var origin = typeof this.props.origin === "function"
-			? this.props.origin(this.context.width, this.context.height)
-			: this.props.origin;
-		return origin;
-	}
 	componentWillUpdate() {
-		if (this.state.canvasContext) {
+		var canvasContext = this.getCurrentCanvasContext();
+		if (canvasContext) {
 			var width = this.props.width || this.context.width;
 			var height = this.props.height || this.context.height;
-			this.state.canvasContext.clearRect(-0.5, -0.5, width, height);
-		}
-	}
-	updateCanvasContext(context) {
-		let ctx = this.getChildContext();
-		let canvas = context.createCanvas(this.getOrigin(), ctx.width, ctx.height);
-		let canvasContext = canvas.getContext('2d');
-		canvasContext.translate(0.5, 0);
-		this.setState({
-			canvasContext: canvasContext
-		});
-	}
-	componentDidMount() {
-		// console.log("Chart.componentDidMount()");
-		if (this.context.type !== "svg") {
-			// console.log("Chart.componentDidMount()");
-			this.updateCanvasContext(this.context);
-		}
-	}
-	componentWillReceiveProps(nextProps, nextContext) {
-		if (nextContext.type !== "svg" && this.context.type === "svg") {
-			// changing from svg to hybrid
-			this.updateCanvasContext(nextContext);
+			canvasContext.clearRect(-1, -1, width, height);
 		}
 	}
 	render() {
-		/*if (document.getElementById("debug_here") !== null)
-			document.getElementById("debug_here").innerHTML = "" + Math.random()*/
-		// console.log("Chart.render() - ", this.props.id);
-		var origin = this.getOrigin();
+		var origin = ChartDataUtil.getChartOrigin(this.props.origin, this.context.width, this.context.height);
 		var children = React.Children.map(this.props.children, (child) => {
 			var newChild = Utils.isReactVersion13()
 				? React.withContext(this.getChildContext(), () => {
@@ -78,7 +55,8 @@ class Chart extends PureComponent {
 				// React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 			return newChild;
 		});
-		return <g transform={`translate(${origin[0]}, ${origin[1]})`}>{children}</g>;
+		var left = origin[0] + 0.5; // refer to http://www.rgraph.net/docs/howto-get-crisp-lines-with-no-antialias.html - similar fix for svg here
+		return <g transform={`translate(${left}, ${origin[1]})`}>{children}</g>;
 	}
 }
 
@@ -105,14 +83,14 @@ Chart.defaultProps = {
 	yDomainUpdate: true,
 	origin: [0, 0],
 	padding: { top: 0, right: 0, bottom: 0, left: 0 },
-	// ref: (...args) => {console.log(args[1].getPublicInstance())},
+	id: 0,
 };
 
 Chart.contextTypes = {
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
 	chartData: React.PropTypes.array,
-	createCanvas: React.PropTypes.func,
+	canvasList: React.PropTypes.array,
 	type: React.PropTypes.string.isRequired,
 };
 

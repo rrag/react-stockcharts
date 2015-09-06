@@ -18,8 +18,15 @@ class CompareTooltip extends React.Component {
 		if (item !== undefined && thisSeries.yAccessor(item) !== undefined) {
 			displayValue = thisSeries.yAccessor(item);
 		}
+
+		var { origin, height, width } = chartData.config;
+		var relativeOrigin = typeof this.props.origin === "function"
+			? this.props.origin(this.context.width, this.context.height)
+			: this.props.origin;
+		var absoluteOrigin = [origin[0] + relativeOrigin[0], origin[1] + relativeOrigin[1]]
+
 		return (
-			<g transform={"translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")"}>
+			<g transform={`translate(${ absoluteOrigin[0] }, ${ absoluteOrigin[1] })`}>
 				<ToolTipText x={0} y={0}
 					fontFamily={this.props.fontFamily} fontSize={this.props.fontSize}>
 					<ToolTipTSpanLabel key="label" x={0} dy="5" fill={thisSeries.stroke}>{thisSeries.displayLabel + ": "}</ToolTipTSpanLabel>

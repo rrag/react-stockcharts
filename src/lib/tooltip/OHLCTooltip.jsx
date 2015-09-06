@@ -35,11 +35,16 @@ class OHLCTooltip extends React.Component {
 			low = Utils.displayNumberFormat(item.low);
 			close = Utils.displayNumberFormat(item.close);
 		}
-		var origin = typeof this.props.origin === "function"
+
+		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
+		var { origin, height, width } = chartData.config;
+		var relativeOrigin = typeof this.props.origin === "function"
 			? this.props.origin(this.context.width, this.context.height)
 			: this.props.origin;
+		var absoluteOrigin = [origin[0] + relativeOrigin[0], origin[1] + relativeOrigin[1]]
+
 		return (
-			<g transform={"translate(" + origin[0] + ", " + origin[1] + ")"}>
+			<g transform={`translate(${ absoluteOrigin[0] }, ${ absoluteOrigin[1] })`}>
 				<ToolTipText x={0} y={0}
 					fontFamily={this.props.fontFamily} fontSize={this.props.fontSize}>
 					<ToolTipTSpanLabel key="label" x={0} dy="5">Date: </ToolTipTSpanLabel>

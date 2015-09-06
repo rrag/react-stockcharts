@@ -24,6 +24,12 @@ var ChartDataUtil = {
 		var item = currentItem ? currentItem.data : {};
 		return item;
 	},
+	getChartOrigin(origin, contextWidth, contextHeight) {
+		var originCoordinates = typeof origin === "function"
+			? origin(contextWidth, contextHeight)
+			: origin;
+		return originCoordinates;
+	},
 	getChartData(props, innerDimensions, partialData, fullData, other) {
 		var charts = this.getCharts(props);
 

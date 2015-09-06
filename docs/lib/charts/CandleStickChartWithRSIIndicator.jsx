@@ -11,7 +11,7 @@ var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, MACDSeries, RS
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 
-var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, MACDTooltip } = ReStock.tooltip;
+var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, MACDTooltip, RSITooltip } = ReStock.tooltip;
 var { StockscaleTransformer } = ReStock.transforms;
 
 var { XAxis, YAxis } = ReStock.axes;
@@ -98,7 +98,8 @@ var CandleStickChartWithRSIIndicator = React.createClass({
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
 					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 5]} />
-					<MACDTooltip forChart={4} origin={(w, h) => [-38, h - 110]}/>
+					<MACDTooltip forChart={4} origin={[-38, 15]}/>
+					<RSITooltip forChart={3} origin={[-38, 15]}/>
 				</TooltipContainer>
 			</ChartCanvas>
 		);

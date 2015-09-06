@@ -1,16 +1,20 @@
 "use strict";
 
 import React from "react";
+import objectAssign from "object-assign";
+
 import ChartDataUtil from "./utils/ChartDataUtil";
 import Utils from "./utils/utils";
-import objectAssign from "object-assign";
 import { DummyTransformer } from "./transforms";
 import EventHandler from "./EventHandler";
 
 class ChartCanvas extends React.Component {
 	constructor() {
 		super();
-		this.createCanvas = this.createCanvas.bind(this);
+		this.getCanvasContextList = this.getCanvasContextList.bind(this);
+		this.state = {
+			canvasList: []
+		}
 	}
 	getDimensions(props) {
 		return {
@@ -20,8 +24,41 @@ class ChartCanvas extends React.Component {
 	}
 	getChildContext() {
 		return {
-			createCanvas: this.createCanvas,
+			canvasList: this.state.canvasList,
 		};
+	}
+	getCanvasContextList() {
+		var canvasList = Object.keys(this.refs)
+			.filter(key => key.indexOf("chart_canvas_") > -1)
+			.map(key => React.findDOMNode(this.refs[key]))
+			.map(canvas => ({ id: canvas.id, context: canvas.getContext('2d') }));
+		canvasList.forEach(ctx => ctx.context.translate(0.5, 0))
+		return canvasList;
+	}
+	componentDidMount() {
+		var canvasList = this.getCanvasContextList();
+		this.setState({
+			canvasList: canvasList,
+		})
+	}
+	componentDidUpdate() {
+		var newCanvasList = this.getCanvasContextList();
+		var { canvasList } = this.state;
+		if (canvasList.length !== newCanvasList.length) {
+			this.setState({
+				canvasList: newCanvasList,
+			})
+		} else {
+			for (var i = 0; i < canvasList.length; i++) {
+				var oldEach = canvasList[i];
+				var newEach = newCanvasList[i];
+				if (oldEach.id !== newEach.id || oldEach.context !== newEach.context) {
+					this.setState({
+						canvasList: newCanvasList,
+					})
+				}
+			}
+		}
 	}
 	updateState(props, context) {
 		var { defaultDataTransform, dataTransform, interval } = props;
@@ -48,15 +85,6 @@ class ChartCanvas extends React.Component {
 		if (this.props.data !== nextProps.data || this.props.dataTransform !== nextProps.dataTransform) {
 			this.updateState(nextProps);
 		}
-	}
-	createCanvas(origin, width, height) {
-		let canvas = document.createElement("canvas");
-		canvas.setAttribute("width", width);
-		canvas.setAttribute("height", height);
-		canvas.setAttribute("style", `position: absolute; left: ${ origin[0] }px; top: ${ origin[1] }px; z-index: -1`);
-
-		React.findDOMNode(this.refs.canvasContainer).appendChild(canvas);
-		return canvas;
 	}
 	render() {
 		var dimensions = this.getDimensions(this.props);
@@ -87,9 +115,25 @@ class ChartCanvas extends React.Component {
 		var { data, options } = this.state;
 		var { interval, initialDisplay, type, height, width, margin, className } = this.props;
 		var displayCount = initialDisplay || this.props.data.length;
+
+		var canvasList = [];
+		if (type !== "svg") {
+			canvasList = ChartDataUtil.getCharts(this.props)
+				.map(each => ({
+					width: each.props.width || dimensions.width,
+					height: each.props.height || dimensions.height,
+					origin: ChartDataUtil.getChartOrigin(each.props.origin, dimensions.width, dimensions.height),
+					id: each.props.id,
+				}));
+		}
 		return (
 			<div style={{position: "relative", height: height, width: width}} className={className} >
-				<div ref="canvasContainer" style={{ position: "relative", top: margin.top, left: margin.left}}></div>
+				<div style={{ position: "relative", top: margin.top, left: margin.left}}>
+					{canvasList
+						.map(each => <canvas key={each.id} ref={`chart_canvas_${ each.id }`} id={each.id}
+							width={each.width} height={each.height}
+							style={{ position: "absolute", left: `${ each.origin[0] }px`, top: `${ each.origin[1] }px`, zIndex: -1 }} /> )}
+				</div>
 				<svg width={width} height={height} style={{ position: "absolute" }}>
 					<style type="text/css" dangerouslySetInnerHTML={{ __html: style }}>
 					</style>
@@ -125,19 +169,7 @@ ChartCanvas.propTypes = {
 };
 
 ChartCanvas.childContextTypes = {
-	// width: React.PropTypes.number.isRequired,
-	// height: React.PropTypes.number.isRequired,
-	// data: React.PropTypes.object.isRequired,
-	// interval: React.PropTypes.string.isRequired,
-	// initialDisplay: React.PropTypes.number.isRequired,
-	// initialStartIndex: React.PropTypes.number.isRequired,
-	// plotData: React.PropTypes.array,
-	// chartData: React.PropTypes.array,
-	// dataTransformProps: React.PropTypes.object,
-
-	createCanvas: React.PropTypes.func,
-	// type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
-	// recordInitialState: React.PropTypes.func.isRequired,
+	canvasList: React.PropTypes.array,
 };
 
 ChartCanvas.defaultProps = {
@@ -147,7 +179,7 @@ ChartCanvas.defaultProps = {
 	defaultDataTransform: [ { transform: DummyTransformer } ],
 	dataTransform: [ ],
 	className: "react-stockchart",
-	// initialDisplay: 30
+	initialDisplay: 30
 };
 
 module.exports = ChartCanvas;

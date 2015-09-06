@@ -9,7 +9,7 @@ class PointAndFigureSeries extends React.Component {
 		this.getColumns = this.getColumns.bind(this);
 	}
 	componentDidUpdate(prevProps, prevState, prevContext) {
-		if (this.context.type !== "svg") this.drawOnCanvas();
+		if (this.context.type !== "svg" && this.context.canvasContext !== undefined) this.drawOnCanvas();
 	}
 	drawOnCanvas() {
 		var ctx = this.context.canvasContext;

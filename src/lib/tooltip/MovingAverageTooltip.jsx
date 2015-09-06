@@ -46,8 +46,15 @@ class MovingAverageTooltip extends React.Component {
 		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
 		var item = ChartDataUtil.getCurrentItemForChart(this.props, this.context);
 		var { forOverlays } = this.props;
+
+		var { origin, height, width } = chartData.config;
+		var relativeOrigin = typeof this.props.origin === "function"
+			? this.props.origin(this.context.width, this.context.height)
+			: this.props.origin;
+		var absoluteOrigin = [origin[0] + relativeOrigin[0], origin[1] + relativeOrigin[1]]
+
 		return (
-			<g transform={"translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")"} className={this.props.className}>
+			<g transform={`translate(${ absoluteOrigin[0] }, ${ absoluteOrigin[1] })`} className={this.props.className}>
 				{chartData.config.overlays
 					.filter(eachOverlay => eachOverlay.indicator.isMovingAverage && eachOverlay.indicator.isMovingAverage())
 					.filter(eachOverlay => forOverlays === undefined ? true : forOverlays.indexOf(eachOverlay.id) > -1)
