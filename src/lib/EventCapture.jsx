@@ -78,6 +78,8 @@ class EventCapture extends React.Component {
 		mouseEvent.preventDefault();
 	}
 	handlePan() {
+		console.log("handlePan")
+
 		var deltaXY = this.context.deltaXY();
 		var newPos = [d3.event.pageX - deltaXY[0], d3.event.pageY - deltaXY[1]];
 		// console.log("moved from- ", startXY, " to ", newPos);
@@ -97,6 +99,15 @@ class EventCapture extends React.Component {
 		}
 		// e.preventDefault();
 	}
+	handleTouchStart(e) {
+		console.log("handleTouchStart", e)
+	}
+	handleTouchEnd(e) {
+		console.log("handleTouchEnd", e)
+	}
+	handleTouchMove(e) {
+		console.log("handleTouchMove", e)
+	}
 	render() {
 		var className = this.context.panInProgress ? "react-stockcharts-grabbing-cursor" : "react-stockcharts-crosshair-cursor";
 
@@ -109,6 +120,10 @@ class EventCapture extends React.Component {
 				onMouseMove={this.handleMouseMove}
 				onWheel={this.handleWheel}
 				onMouseDown={this.handleMouseDown}
+
+				onTouchStart={this.handleTouchStart}
+				onTouchEnd={this.handleTouchEnd}
+				onTouchMove={this.handleTouchMove}
 				/>
 		);
 	}
