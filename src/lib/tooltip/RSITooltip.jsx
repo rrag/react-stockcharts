@@ -10,10 +10,24 @@ import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 class RSITooltip extends React.Component {
 	render() {
 		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
-		var options = chartData.config.indicatorOptions;
+
+		var { forChart, forDataSeries } = this.props;
+		var overlays = chartData.config.overlays
+			.filter(eachOverlay => forDataSeries === undefined ? true : forDataSeries === eachOverlay.id)
+			.filter(eachOverlay => eachOverlay.indicator !== undefined)
+			.filter(eachOverlay => eachOverlay.indicator.isRSI && eachOverlay.indicator.isRSI());
+
+		if (overlays.length > 1 || overlays.length === 0) {
+			console.error(`Could not find Exactly one DataSeries with RSI indicator for Chart id=${ forChart }, either use 
+				single RSI indicator per chart
+				or use forDataSeries property to narrow down to single Series`);
+		}
+
+		var overlay = overlays[0];
+		var options = overlay.indicator.options();
 
 		var item = ChartDataUtil.getCurrentItemForChart(this.props, this.context);
-		var rsi = chartData.config.accessors.yAccessor(item);
+		var rsi = overlay.yAccessor(item);
 		var format = chartData.config.mouseCoordinates.format;
 
 		var value = (rsi !== undefined && format(rsi)) || "n/a";
@@ -31,7 +45,7 @@ class RSITooltip extends React.Component {
 					<ToolTipTSpanLabel>
 						{`RSI (${ options.period }, ${ options.pluck }, ${ options.overSold }, ${ options.overBought }): `}
 					</ToolTipTSpanLabel>
-					<tspan>{`${ value }`}</tspan>
+					<tspan>{value}</tspan>
 				</ToolTipText>
 			</g>
 		);
@@ -55,6 +69,7 @@ RSITooltip.propTypes = {
 			]).isRequired,
 	fontFamily: React.PropTypes.string,
 	fontSize: React.PropTypes.number,
+	forDataSeries: React.PropTypes.number,
 };
 
 RSITooltip.defaultProps = {

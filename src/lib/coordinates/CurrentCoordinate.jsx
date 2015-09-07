@@ -13,19 +13,9 @@ class CurrentCoordinate extends React.Component {
 		var fill = "black";
 
 		if (!this.context.show || item === undefined) return null;
-		var yAccessor = this.props.yAccessor || chartData.config.accessors.yAccessor;
+		var yAccessor;
 
-		if (this.props.forOverlay !== undefined) {
-			var overlays = chartData.config.overlays
-				.filter((each) => each.id === this.props.forOverlay);
-
-			if (overlays.length !== 1) {
-				console.warn("Unique overlay with id={%s} not found", this.props.forOverlay);
-				throw new Error("Unique overlay not found");
-			}
-			fill = overlays[0].stroke;
-			yAccessor = overlays[0].yAccessor;
-		} else if (this.props.forCompareSeries !== undefined) {
+		if (this.props.forCompareSeries !== undefined) {
 			var compSeries = chartData.config.compareSeries
 				.filter((each) => each.id === this.props.forCompareSeries);
 
@@ -35,9 +25,21 @@ class CurrentCoordinate extends React.Component {
 			}
 			fill = compSeries[0].stroke;
 			yAccessor = compSeries[0].percentYAccessor;
+		} else if (this.props.forDataSeries !== undefined) {
+			var overlays = chartData.config.overlays
+				.filter((each) => each.id === this.props.forDataSeries);
+
+			if (overlays.length !== 1) {
+				console.warn("Unique DataSeries with id={%s} not found", this.props.forDataSeries);
+				throw new Error("Unique DataSeries not found");
+			}
+
+			fill = overlays[0].stroke;
+
+			yAccessor = overlays[0].yAccessor;
 		}
 
-		var xValue = chartData.config.accessors.xAccessor(item);
+		var xValue = chartData.config.xAccessor(item);
 		var yValue = yAccessor(item);
 
 		if (yValue === undefined) return null;
@@ -53,7 +55,7 @@ class CurrentCoordinate extends React.Component {
 
 CurrentCoordinate.propTypes = {
 	forChart: React.PropTypes.number.isRequired,
-	forOverlay: React.PropTypes.number,
+	forDataSeries: React.PropTypes.number.isRequired,
 	forCompareSeries: React.PropTypes.number,
 	yAccessor: React.PropTypes.func,
 	r: React.PropTypes.number.isRequired,

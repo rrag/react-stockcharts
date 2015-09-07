@@ -4,7 +4,6 @@
 import ChartCanvas from "./lib/ChartCanvas";
 import Chart from "./lib/Chart";
 import DataSeries from "./lib/DataSeries";
-import OverlaySeries from "./lib/OverlaySeries";
 
 // interaction components
 import EventCapture from "./lib/EventCapture";
@@ -26,7 +25,6 @@ export default {
 	ChartCanvas,
 	Chart,
 	DataSeries,
-	OverlaySeries,
 	EventCapture,
 	series,
 	coordinates,

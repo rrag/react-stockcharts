@@ -37,23 +37,24 @@ class MACDSeries extends React.Component {
 	}
 	render() {
 		// if (this.context.type !== "svg") return null;
-		let { indicatorOptions, xScale, yScale, xAccessor, yAccessor, plotData, type } = this.context;
+		let { indicator, xScale, yScale, xAccessor, yAccessor, plotData, type } = this.context;
+		var options = indicator.options();
 		return (
 			<g className="macd-series">
 				<Line
 					xScale={xScale} yScale={yScale}
 					xAccessor={xAccessor} yAccessor={(d) => yAccessor(d) && yAccessor(d).MACDLine}
 					data={plotData}
-					stroke={indicatorOptions.stroke.MACDLine} fill="none" 
+					stroke={options.stroke.MACDLine} fill="none" 
 					type={type} />
 				<Line
 					xScale={xScale} yScale={yScale}
 					xAccessor={xAccessor} yAccessor={(d) => yAccessor(d) && yAccessor(d).signalLine}
 					data={plotData}
-					stroke={indicatorOptions.stroke.signalLine} fill="none"
+					stroke={options.stroke.signalLine} fill="none"
 					type={type} />
 				<HistogramSeries baseAt={this.context.yScale(0)} className="macd-histogram"
-					stroke={indicatorOptions.stroke.histogram} fill={indicatorOptions.fill.histogram} />
+					stroke={options.stroke.histogram} fill={options.fill.histogram} />
 				{this.getHorizontalLine()}
 			</g>
 		);
@@ -73,7 +74,7 @@ MACDSeries.contextTypes = {
 	xAccessor: React.PropTypes.func.isRequired,
 	yAccessor: React.PropTypes.func.isRequired,
 	plotData: React.PropTypes.array.isRequired,
-	indicatorOptions: React.PropTypes.object.isRequired,
+	indicator: React.PropTypes.func.isRequired,
 	canvasContext: React.PropTypes.object,
 	type: React.PropTypes.string,
 };

@@ -43,45 +43,45 @@ var CandleStickChartWithRSIIndicator = React.createClass({
 						yMousePointerDisplayFormat={(y) => y.toFixed(2)} padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
-					<DataSeries yAccessor={CandlestickSeries.yAccessor} >
+					<DataSeries id={0} yAccessor={CandlestickSeries.yAccessor} >
 						<CandlestickSeries />
-						<OverlaySeries id={0} indicator={EMA} options={{ period: 26 }} >
-							<LineSeries/>
-						</OverlaySeries>
-						<OverlaySeries id={1} indicator={EMA} options={{ period: 12 }} >
-							<LineSeries/>
-						</OverlaySeries>
+					</DataSeries>
+					<DataSeries id={1} indicator={EMA} options={{ period: 26 }} >
+						<LineSeries />
+					</DataSeries>
+					<DataSeries id={2} indicator={EMA} options={{ period: 12 }} >
+						<LineSeries />
 					</DataSeries>
 				</Chart>
-				<CurrentCoordinate forChart={1} forOverlay={0} />
-				<CurrentCoordinate forChart={1} forOverlay={1} />
+				<CurrentCoordinate forChart={1} forDataSeries={1} />
+				<CurrentCoordinate forChart={1} forDataSeries={2} />
 				<Chart id={2} yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 						height={150} origin={(w, h) => [0, h - 400]} >
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-					<DataSeries yAccessor={(d) => d.volume} >
+					<DataSeries id={0} yAccessor={(d) => d.volume} >
 						<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
-						<OverlaySeries id={3} indicator={SMA} options={{ period: 10, pluck:"volume" }} >
-							<AreaSeries opacity={0.5} stroke="steelblue" fill="steelblue" />
-						</OverlaySeries>
+					</DataSeries>
+					<DataSeries id={1} indicator={SMA} options={{ period: 10, pluck:"volume" }} stroke="steelblue" fill="steelblue" >
+						<AreaSeries opacity={0.5} />
 					</DataSeries>
 				</Chart>
-				<CurrentCoordinate forChart={2} forOverlay={3} />
-				<CurrentCoordinate forChart={2}/>
+				<CurrentCoordinate forChart={2} forDataSeries={0} />
+				<CurrentCoordinate forChart={2} forDataSeries={1}/>
 				<EdgeContainer>
 					<EdgeIndicator itemType="last" orient="right"
-						edgeAt="right" forChart={1} forOverlay={0} />
+						edgeAt="right" forChart={1} forDataSeries={1} />
 					<EdgeIndicator itemType="last" orient="right"
-						edgeAt="right" forChart={1} forOverlay={1} />
+						edgeAt="right" forChart={1} forDataSeries={2} />
 					<EdgeIndicator itemType="first" orient="left"
-						edgeAt="left" forChart={1} forOverlay={0} />
+						edgeAt="left" forChart={1} forDataSeries={1} />
 					<EdgeIndicator itemType="first" orient="left"
-						edgeAt="left" forChart={1} forOverlay={1} />
+						edgeAt="left" forChart={1} forDataSeries={2} />
 				</EdgeContainer>
 				<Chart id={3} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}
 						height={125} origin={(w, h) => [0, h - 250]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right" orient="right" ticks={4} />
-					<DataSeries indicator={RSI} options={{ period: 14 }} >
+					<DataSeries id={0} indicator={RSI} options={{ period: 14 }} >
 						<RSISeries />
 					</DataSeries>
 				</Chart>
@@ -89,7 +89,7 @@ var CandleStickChartWithRSIIndicator = React.createClass({
 						height={125} origin={(w, h) => [0, h - 125]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
 					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="right" orient="right" ticks={2}/>
-					<DataSeries indicator={MACD} options={{ fast: 12, slow: 26, signal: 9 }} >
+					<DataSeries id={0} indicator={MACD} options={{ fast: 12, slow: 26, signal: 9 }} >
 						<MACDSeries />
 					</DataSeries>
 				</Chart>
@@ -105,5 +105,13 @@ var CandleStickChartWithRSIIndicator = React.createClass({
 		);
 	}
 });
+
+/*
+
+
+
+
+
+*/
 
 export default CandleStickChartWithRSIIndicator;

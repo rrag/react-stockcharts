@@ -78,7 +78,7 @@ class EventCapture extends React.Component {
 		mouseEvent.preventDefault();
 	}
 	handlePan() {
-		console.log("handlePan")
+		// console.log("handlePan")
 
 		var deltaXY = this.context.deltaXY();
 		var newPos = [d3.event.pageX - deltaXY[0], d3.event.pageY - deltaXY[1]];

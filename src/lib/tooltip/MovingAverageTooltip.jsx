@@ -45,7 +45,7 @@ class MovingAverageTooltip extends React.Component {
 	render() {
 		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
 		var item = ChartDataUtil.getCurrentItemForChart(this.props, this.context);
-		var { forOverlays } = this.props;
+		var { forDataSeries } = this.props;
 
 		var { origin, height, width } = chartData.config;
 		var relativeOrigin = typeof this.props.origin === "function"
@@ -56,8 +56,9 @@ class MovingAverageTooltip extends React.Component {
 		return (
 			<g transform={`translate(${ absoluteOrigin[0] }, ${ absoluteOrigin[1] })`} className={this.props.className}>
 				{chartData.config.overlays
+					.filter(eachOverlay => eachOverlay.indicator !== undefined)
 					.filter(eachOverlay => eachOverlay.indicator.isMovingAverage && eachOverlay.indicator.isMovingAverage())
-					.filter(eachOverlay => forOverlays === undefined ? true : forOverlays.indexOf(eachOverlay.id) > -1)
+					.filter(eachOverlay => forDataSeries === undefined ? true : forDataSeries.indexOf(eachOverlay.id) > -1)
 					.map((eachOverlay, idx) => {
 						var yValue = eachOverlay.yAccessor(item);
 						var yDisplayValue = yValue ? this.props.displayFormat(yValue) : "n/a";
@@ -88,7 +89,7 @@ MovingAverageTooltip.propTypes = {
 	onClick: React.PropTypes.func,
 	fontFamily: React.PropTypes.string,
 	fontSize: React.PropTypes.number,
-	forOverlays: React.PropTypes.arrayOf(React.PropTypes.number),
+	forDataSeries: React.PropTypes.arrayOf(React.PropTypes.number),
 };
 
 MovingAverageTooltip.defaultProps = {

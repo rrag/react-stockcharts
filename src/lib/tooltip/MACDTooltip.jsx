@@ -10,10 +10,22 @@ import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 class MACDTooltip extends React.Component {
 	render() {
 		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
-		var options = chartData.config.indicatorOptions;
+		var { forChart, forDataSeries } = this.props;
+		var overlays = chartData.config.overlays
+			.filter(eachOverlay => forDataSeries === undefined ? true : forDataSeries === eachOverlay.id)
+			.filter(eachOverlay => eachOverlay.indicator !== undefined)
+			.filter(eachOverlay => eachOverlay.indicator.isMACD && eachOverlay.indicator.isMACD());
+
+		if (overlays.length > 1 || overlays.length === 0) {
+			console.error(`Could not find Exactly one DataSeries with MACD indicator for Chart id=${ forChart }, either use 
+				single MACD indicator per chart
+				or use forDataSeries property to narrow down to single Series`);
+		}
+		var overlay = overlays[0];
+		var options = overlay.indicator.options();
 
 		var item = ChartDataUtil.getCurrentItemForChart(this.props, this.context);
-		var macd = chartData.config.accessors.yAccessor(item);
+		var macd = overlay.yAccessor(item);
 		var format = chartData.config.mouseCoordinates.format;
 
 		var MACDLine = (macd && macd.MACDLine && format(macd.MACDLine)) || "n/a";
@@ -54,7 +66,6 @@ MACDTooltip.contextTypes = {
 
 MACDTooltip.propTypes = {
 	forChart: React.PropTypes.number.isRequired,
-	accessor: React.PropTypes.func.isRequired,
 	xDisplayFormat: React.PropTypes.func.isRequired,
 	origin: React.PropTypes.oneOfType([
 				React.PropTypes.array
@@ -62,11 +73,11 @@ MACDTooltip.propTypes = {
 			]).isRequired,
 	fontFamily: React.PropTypes.string,
 	fontSize: React.PropTypes.number,
+	forDataSeries: React.PropTypes.number,
 };
 
 MACDTooltip.defaultProps = {
 	namespace: "ReStock.MACDTooltip",
-	accessor: (d) => { return {date: d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume}; },
 	xDisplayFormat: Utils.displayDateFormat,
 	origin: [0, 0]
 };

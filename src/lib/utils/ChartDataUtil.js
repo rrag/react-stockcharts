@@ -4,7 +4,7 @@ import React from "react";
 import d3 from "d3";
 import ScaleUtils from "../utils/ScaleUtils";
 import OverlayUtils from "../utils/OverlayUtils";
-import Utils from "../utils/utils";
+import Utils from "./utils";
 
 var { overlayColors, pluck, keysAsArray } = Utils;
 
@@ -63,7 +63,7 @@ var ChartDataUtil = {
 	getClosestItem(plotData, mouseXY, chartData) {
 		// console.log(chartData);
 		var xValue = chartData.plot.scales.xScale.invert(mouseXY[0]);
-		var item = Utils.getClosestItem(plotData, xValue, chartData.config.accessors.xAccessor);
+		var item = Utils.getClosestItem(plotData, xValue, chartData.config.xAccessor);
 		return item;
 	},
 	getDimensions(innerDimension, chartProps, margin) {
@@ -85,11 +85,12 @@ var ChartDataUtil = {
 	getChartConfigFor(innerDimension, chartProps, partialData, fullData, passThroughProps) {
 		var { padding } = chartProps;
 		var dimensions = this.getDimensions(innerDimension, chartProps);
-		var indicator = this.getIndicator(chartProps);
-		this.calculateIndicator(fullData, indicator, chartProps);
+		// var indicator = this.getIndicator(chartProps);
+		// this.calculateIndicator(fullData, indicator);
 
-		var accessors = this.getXYAccessors(chartProps, passThroughProps, indicator);
+		// var accessors = this.getXYAccessors(chartProps, passThroughProps, indicator);
 		// identify overlays
+		var xAccessor = this.getXAccessor(chartProps, passThroughProps);
 		var overlaysToAdd = this.identifyOverlaysToAdd(chartProps);
 		var compareBase = this.identifyCompareBase(chartProps);
 		var compareSeries = this.identifyCompareSeries(chartProps);
@@ -103,7 +104,7 @@ var ChartDataUtil = {
 			: chartProps.origin;
 
 		var scales = this.defineScales(chartProps, partialData, passThroughProps);
-		// ror_1, ror_2, ror_base
+
 		var config = {
 			width: dimensions.width,
 			height: dimensions.height,
@@ -111,11 +112,12 @@ var ChartDataUtil = {
 				at: chartProps.yMousePointerDisplayLocation,
 				format: chartProps.yMousePointerDisplayFormat
 			},
-			indicatorOptions: indicator && indicator.options(),
-			domain: indicator && indicator.domain && indicator.domain(),
+			// indicator: indicator,
+			// indicatorOptions: indicator && indicator.options(),
+			// domain: indicator && indicator.domain && indicator.domain(),
 			origin: origin,
 			padding: padding,
-			accessors: accessors,
+			xAccessor: xAccessor,
 			overlays: overlaysToAdd,
 			compareBase: compareBase,
 			compareSeries: compareSeries,
@@ -124,48 +126,55 @@ var ChartDataUtil = {
 		return config;
 	},
 	getChartPlotFor(config, partialData, domainL, domainR) {
-		var overlayYAccessors = pluck(keysAsArray(config.overlays), "yAccessor");
-		// console.log(overlayYAccessors);
-		var yaccessors;
-
+		var yaccessors = pluck(keysAsArray(config.overlays), "yAccessor");
+		// console.log(yaccessors);
 		if (config.compareSeries.length > 0) {
 			this.updateComparisonData(partialData, config.compareBase, config.compareSeries);
 			yaccessors = [(d) => d.compare];
-			// yaccessors = [config.accessors.yAccessor].concat(overlayYAccessors)
-		} else {
-			yaccessors = [config.accessors.yAccessor].concat(overlayYAccessors);
 		}
 		var xyValues = ScaleUtils.flattenData(partialData
-				, [config.accessors.xAccessor]
+				, [config.xAccessor]
 				, yaccessors);
 
 		var overlayValues = this.updateOverlayFirstLast(partialData, config.overlays);
+		var indicators = pluck(keysAsArray(config.overlays), "indicator");
+		var domains = indicators
+			.filter(indicator => indicator !== undefined)
+			.filter(indicator => indicator.domain !== undefined)
+			.map(indicator => indicator.domain());
+
+		var domain;
+		if (domains.length > 0) {
+			domain = domains.reduce((a, b) => {
+				return [Math.min(a[0], b[0]), Math.max(a[1], b[1])];
+			});
+		}
 
 		var scales = this.updateScales(
 			xyValues
 			, config.scaleType
 			, partialData
-			, config.width/* - config.margin.left - config.margin.right*/
-			, config.height/* - config.margin.top - config.margin.bottom*/
+			, config.width
+			, config.height
 			, config.padding
-			, config.domain);
+			, domain);
 
 		if (domainL && domainR) scales.xScale.domain([domainL, domainR]);
 
 		// var last = Utils.cloneMe(partialData[partialData.length - 1]);
-		var last = partialData[partialData.length - 1];
+		// var last = partialData[partialData.length - 1];
 		// var first = Utils.cloneMe(partialData[0]);
-		var first = partialData[0];
+		// var first = partialData[0];
 
-		var drawableWidth = scales.xScale(config.accessors.xAccessor(partialData[partialData.length - 1]))
-			- scales.xScale(config.accessors.xAccessor(partialData[0]));
-
+		/*var drawableWidth = scales.xScale(config.xAccessor(partialData[partialData.length - 1]))
+			- scales.xScale(config.xAccessor(partialData[0]));*/
+		// console.log(overlayValues);
 		var plot = {
-			drawableWidth: drawableWidth,
+			// drawableWidth: drawableWidth,
 			overlayValues: overlayValues,
 			scales: scales,
-			lastItem: last,
-			firstItem: first
+			// lastItem: last,
+			// firstItem: first
 		};
 		return plot;
 	},
@@ -235,6 +244,11 @@ var ChartDataUtil = {
 		});
 		return indicator;
 	},
+	getXAccessor(props, passThroughProps) {
+		var xAccessor = passThroughProps !== undefined && passThroughProps.xAccessor
+			|| props.xAccessor !== undefined && props.xAccessor
+		return xAccessor;
+	},
 	getXYAccessors(props, passThroughProps, indicator) {
 		var accessor = { xAccessor: null, yAccessor: null };
 
@@ -258,25 +272,29 @@ var ChartDataUtil = {
 
 		return accessor;
 	},
-	identifyOverlaysToAdd(props) {
+	identifyOverlaysToAdd(chartProps) {
 		var overlaysToAdd = [];
-		React.Children.forEach(props.children, (child) => {
+		React.Children.forEach(chartProps.children, (child) => {
 			if (/DataSeries$/.test(child.props.namespace)) {
-				React.Children.forEach(child.props.children, (grandChild) => {
-					if (/OverlaySeries$/.test(grandChild.props.namespace)) {
-
-						var indicatorProp = grandChild.props.indicator;
-						var indicator = indicatorProp(grandChild.props.options, props, grandChild.props);
-						var overlay = {
-							id: grandChild.props.id,
-							chartId: props.id,
-							yAccessor: indicator.yAccessor(),
-							indicator: indicator,
-							stroke: indicator.options().stroke || overlayColors(grandChild.props.id)
-						};
-						overlaysToAdd.push(overlay);
-					}
-				});
+				var yAccessor = child.props.yAccessor;
+				var indicatorProp = child.props.indicator;
+				if (yAccessor === undefined && indicatorProp === undefined) {
+					console.error(`Either have yAccessor or indicator which provides a yAccessor for Chart ${ chartProps.id } DataSeries ${ child.props.id }`);
+				}
+				var indicator = indicatorProp !== undefined ? indicatorProp(child.props.options, chartProps, child.props) : undefined;
+				var { stroke, fill } = child.props;
+				if (stroke === undefined && indicator !== undefined && indicator.stroke !== undefined) stroke = indicator.stroke();
+				if (fill === undefined && indicator !== undefined && indicator.fill !== undefined) fill = indicator.fill();
+				var overlay = {
+					id: child.props.id,
+					chartId: chartProps.id,
+					yAccessor: yAccessor || indicator.yAccessor(),
+					indicator: indicator,
+					stroke: stroke,
+					fill: fill,
+					// stroke: indicator.options().stroke || overlayColors(child.props.id)
+				};
+				overlaysToAdd.push(overlay);
 			}
 		});
 		return overlaysToAdd;
@@ -322,7 +340,7 @@ var ChartDataUtil = {
 				.filter((key) => ["D", "W", "M"].indexOf(key) > -1)
 				.forEach((key) => {
 					overlays
-						.filter((eachOverlay) => eachOverlay.id !== undefined)
+						.filter((eachOverlay) => eachOverlay.indicator !== undefined)
 						.forEach((overlay) => {
 							overlay.indicator.calculate(fullData[key]);
 							// OverlayUtils.calculateOverlay(fullData[key], overlay);
@@ -386,7 +404,7 @@ var ChartDataUtil = {
 		return chartData
 			.map((eachChartData) => {
 				var xValue = eachChartData.plot.scales.xScale.invert(mouseXY[0]);
-				var item = Utils.getClosestItem(plotData, xValue, eachChartData.config.accessors.xAccessor);
+				var item = Utils.getClosestItem(plotData, xValue, eachChartData.config.xAccessor);
 				return { id: eachChartData.id, data: item };
 			});
 	},

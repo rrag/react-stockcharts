@@ -33,7 +33,7 @@ var CandleStickStockScaleChartWithVolumeHistogramV3 = React.createClass({
 						height={400} >
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false}/>
-					<DataSeries yAccessor={CandlestickSeries.yAccessor} >
+					<DataSeries id={0} yAccessor={CandlestickSeries.yAccessor} >
 						<CandlestickSeries />
 					</DataSeries>
 				</Chart>
@@ -41,7 +41,7 @@ var CandleStickStockScaleChartWithVolumeHistogramV3 = React.createClass({
 						height={150} origin={(w, h) => [0, h - 150]} >
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-					<DataSeries yAccessor={(d) => d.volume} >
+					<DataSeries id={0} yAccessor={(d) => d.volume} >
 						<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
 					</DataSeries>
 				</Chart>

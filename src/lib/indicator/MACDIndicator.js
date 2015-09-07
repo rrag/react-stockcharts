@@ -79,6 +79,9 @@ function MACDIndicator(options, chartProps, elementProps) {
 			}
 		};
 	};
+	MACD.isMACD = function() {
+		return true;
+	};
 	return MACD;
 }
 

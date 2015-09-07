@@ -32,7 +32,7 @@ var CandleStickStockScaleChart = React.createClass({
 				<Chart id={1} >
 					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="right" orient="right" ticks={5} />
-					<DataSeries yAccessor={CandlestickSeries.yAccessor} >
+					<DataSeries id={0} yAccessor={CandlestickSeries.yAccessor} >
 						<CandlestickSeries />
 					</DataSeries>
 				</Chart>

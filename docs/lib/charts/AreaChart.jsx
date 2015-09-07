@@ -22,10 +22,10 @@ var AreaChart = React.createClass({
 			<ChartCanvas width={this.state.width} height={400}
 				margin={{left: 50, right: 50, top:10, bottom: 30}}
 				data={data} type={type}>
-				<Chart id={0} >
+				<Chart id={0} xAccessor={(d) => d.date}>
 					<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 					<YAxis axisAt="left" orient="left" />
-					<DataSeries yAccessor={(d) => d.close} xAccessor={(d) => d.date}>
+					<DataSeries id={0} yAccessor={(d) => d.close} stroke="steelblue" fill="steelblue">
 						<AreaSeries />
 					</DataSeries>
 				</Chart>

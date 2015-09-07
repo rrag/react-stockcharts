@@ -72,9 +72,9 @@ class EventHandler extends React.Component {
 		var dataForInterval = data[interval];
 		var mainChart = ChartDataUtil.getMainChart(props.children);
 		var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
-		var domainL = mainChartData.config.accessors.xAccessor(plotData[0]);
-		var domainR = mainChartData.config.accessors.xAccessor(plotData[plotData.length - 1]);
-		var xAccessor = mainChartData.config.accessors.xAccessor;
+		var xAccessor = mainChartData.config.xAccessor;
+		var domainL = xAccessor(plotData[0]);
+		var domainR = xAccessor(plotData[plotData.length - 1]);
 
 		var beginIndex = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
 		var endIndex = Utils.getClosestItemIndexes(dataForInterval, domainR, xAccessor).right;
@@ -161,7 +161,7 @@ class EventHandler extends React.Component {
 			item = ChartDataUtil.getClosestItem(plotData, mouseXY, chart),
 			xScale = chart.plot.scales.xScale,
 			domain = xScale.domain(),
-			centerX = chart.config.accessors.xAccessor(item),
+			centerX = chart.config.xAccessor(item),
 			leftX = centerX - domain[0],
 			rightX = domain[1] - centerX,
 			zoom = Math.pow(1 + Math.abs(zoomDirection) / 2, zoomDirection),
@@ -172,10 +172,10 @@ class EventHandler extends React.Component {
 			last = fullData[fullData.length - 1],
 			first = fullData[0];
 
-		domainL = Math.max(getLongValue(chart.config.accessors.xAccessor(first)) - Math.floor(domainRange / 3), domainL);
-		domainR = Math.min(getLongValue(chart.config.accessors.xAccessor(last)) + Math.floor(domainRange / 3), domainR);
+		domainL = Math.max(getLongValue(chart.config.xAccessor(first)) - Math.floor(domainRange / 3), domainL);
+		domainR = Math.min(getLongValue(chart.config.xAccessor(last)) + Math.floor(domainRange / 3), domainR);
 
-		var dataToPlot = ChartDataUtil.getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.accessors.xAccessor);
+		var dataToPlot = ChartDataUtil.getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.xAccessor);
 		if (dataToPlot.data.length < 10) return;
 		var newChartData = chartData.map((eachChart) => {
 			var plot = ChartDataUtil.getChartPlotFor(eachChart.config, dataToPlot.data, domainL, domainR);
@@ -216,7 +216,7 @@ class EventHandler extends React.Component {
 					last = fullData[fullData.length - 1],
 					first = fullData[0],
 					dx = mousePosition[0] - panOrigin[0],
-					xAccessor = chart.config.accessors.xAccessor;
+					xAccessor = chart.config.xAccessor;
 
 				// console.log("pan -- mouse move - ", mousePosition, " dragged by ", dx, " pixels");
 

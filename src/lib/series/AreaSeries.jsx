@@ -8,9 +8,12 @@ import Area from "./Area";
 
 class AreaSeries extends React.Component {
 	render() {
-		let { xScale, yScale, xAccessor, yAccessor, plotData, type } = this.context;
-		let { stroke, fill, opacity } = this.props;
+		let { xScale, yScale, xAccessor, yAccessor, plotData, type, stroke, fill } = this.context;
 
+		if (stroke === undefined) stroke = this.props.stroke;
+		if (fill === undefined) fill = this.props.fill;
+
+		let { opacity } = this.props;
 		return (
 			<g>
 				<Line
@@ -33,12 +36,14 @@ class AreaSeries extends React.Component {
 }
 AreaSeries.propTypes = {
 	stroke: React.PropTypes.string.isRequired,
-	opacity: React.PropTypes.number.isRequired,
 	fill: React.PropTypes.string.isRequired,
+	opacity: React.PropTypes.number.isRequired,
 	className: React.PropTypes.string,
 };
 
 AreaSeries.contextTypes = {
+	stroke: React.PropTypes.string,
+	fill: React.PropTypes.string,
 	xScale: React.PropTypes.func.isRequired,
 	yScale: React.PropTypes.func.isRequired,
 	xAccessor: React.PropTypes.func.isRequired,
@@ -50,7 +55,7 @@ AreaSeries.contextTypes = {
 
 AreaSeries.defaultProps = {
 	namespace: "ReStock.AreaSeries",
-	stroke: "steelblue",
+	stroke: "black",
 	opacity: 0.5,
 	fill: "steelblue",
 };

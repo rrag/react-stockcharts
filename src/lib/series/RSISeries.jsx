@@ -24,7 +24,8 @@ class RSISeries extends React.Component {
 			y2={yScale(yValue)} />;
 	}
 	render() {
-		let { indicatorOptions, xScale, yScale, xAccessor, yAccessor, plotData, stroke, type } = this.context;
+		let { indicator, xScale, yScale, xAccessor, yAccessor, plotData, stroke, type } = this.context;
+		var options = indicator.options();
 		return (
 			<g className={this.props.className}>
 				<Line
@@ -34,9 +35,9 @@ class RSISeries extends React.Component {
 					data={plotData}
 					stroke={stroke} fill="none"
 					type={type} />
-				{this.getHorizontalLine(indicatorOptions.overSold, "brown")}
+				{this.getHorizontalLine(options.overSold, "brown")}
 				{this.getHorizontalLine(50, "black")}
-				{this.getHorizontalLine(indicatorOptions.overBought, "brown")}
+				{this.getHorizontalLine(options.overBought, "brown")}
 			</g>
 		);
 	}
@@ -52,7 +53,7 @@ RSISeries.defaultProps = {
 };
 
 RSISeries.contextTypes = {
-	indicatorOptions: React.PropTypes.object.isRequired,
+	indicator: React.PropTypes.func.isRequired,
 	xScale: React.PropTypes.func.isRequired,
 	yScale: React.PropTypes.func.isRequired,
 	xAccessor: React.PropTypes.func.isRequired,

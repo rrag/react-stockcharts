@@ -14,24 +14,28 @@ class BollingerBandTooltip extends React.Component {
 		var top, middle, bottom;
 		top = middle = bottom = "n/a";
 
-		var { forOverlay } = this.props;
+		var { forDataSeries } = this.props;
 		var overlays = chartData.config.overlays
-			.filter(eachOverlay => forOverlay === undefined ? true : forOverlay === eachOverlay.id)
+			.filter(eachOverlay => forDataSeries === undefined ? true : forDataSeries === eachOverlay.id)
+			.filter(eachOverlay => eachOverlay.indicator !== undefined)
 			.filter(eachOverlay => eachOverlay.indicator.isBollingerBand && eachOverlay.indicator.isBollingerBand());
 
-		if (chartData.config.accessors.yAccessor(item) !== undefined
-			&& overlays.length === 1) {
-			var overlay = overlays[0];
-			var options = overlay.indicator.options();
-			var yAccessor = overlay.indicator.yAccessor();
-			var value = yAccessor(item);
-			var format = Utils.displayNumberFormat;
+		if (overlays.length > 1 || overlays.length === 0) {
+			console.error(`Could not find Exactly one DataSeries with BollingerBand indicator for Chart id=${ forChart }, either use 
+				single BollingerBand indicator per chart
+				or use forDataSeries property to narrow down to single Series`);
+		}
+		var overlay = overlays[0];
+		var options = overlay.indicator.options();
 
-			if (value !== undefined) {
-				top = format(value.top);
-				middle = format(value.middle);
-				bottom = format(value.bottom);
-			}
+		var yAccessor = overlay.indicator.yAccessor();
+		var value = yAccessor(item);
+		var format = Utils.displayNumberFormat;
+
+		if (value !== undefined) {
+			top = format(value.top);
+			middle = format(value.middle);
+			bottom = format(value.bottom);
 		}
 
 		var { origin, height, width } = chartData.config;
@@ -66,7 +70,7 @@ BollingerBandTooltip.propTypes = {
 	onClick: React.PropTypes.func,
 	fontFamily: React.PropTypes.string,
 	fontSize: React.PropTypes.number,
-	forOverlay: React.PropTypes.number.isRequired,
+	forDataSeries: React.PropTypes.number,
 };
 
 BollingerBandTooltip.defaultProps = {

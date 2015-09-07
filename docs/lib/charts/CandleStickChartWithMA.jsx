@@ -36,34 +36,34 @@ var CandleStickChartWithMA = React.createClass({
 					padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
-					<DataSeries yAccessor={CandlestickSeries.yAccessor} >
+					<DataSeries id={0} yAccessor={CandlestickSeries.yAccessor} >
 						<CandlestickSeries />
-						<OverlaySeries id={0} indicator={SMA} options={{ period: 20, pluck: "close" }}>
-							<LineSeries/>
-						</OverlaySeries>
-						<OverlaySeries id={1} indicator={EMA} options={{ period: 20 }} >
-							<LineSeries/>
-						</OverlaySeries>
-						<OverlaySeries id={2} indicator={EMA} options={{ period: 50 }} >
-							<LineSeries/>
-						</OverlaySeries>
+					</DataSeries>
+					<DataSeries id={1} indicator={SMA} options={{ period: 20, pluck: "close" }}>
+						<LineSeries/>
+					</DataSeries>
+					<DataSeries id={2} indicator={EMA} options={{ period: 20 }} >
+						<LineSeries/>
+					</DataSeries>
+					<DataSeries id={3} indicator={EMA} options={{ period: 50 }} >
+						<LineSeries/>
 					</DataSeries>
 				</Chart>
-				<CurrentCoordinate forChart={1} forOverlay={0} />
-				<CurrentCoordinate forChart={1} forOverlay={1} />
-				<CurrentCoordinate forChart={1} forOverlay={2} />
+				<CurrentCoordinate forChart={1} forDataSeries={1} />
+				<CurrentCoordinate forChart={1} forDataSeries={2} />
+				<CurrentCoordinate forChart={1} forDataSeries={3} />
 				<Chart id={2} yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 						height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-					<DataSeries yAccessor={(d) => d.volume}>
+					<DataSeries id={0} yAccessor={(d) => d.volume}>
 						<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
-						<OverlaySeries id={3} indicator={SMA} options={{ period: 10, pluck:"volume" }} >
-							<AreaSeries />
-						</OverlaySeries>
+					</DataSeries>
+					<DataSeries id={1} indicator={SMA} options={{ period: 10, pluck:"volume" }} >
+						<AreaSeries />
 					</DataSeries>
 				</Chart>
-				<CurrentCoordinate forChart={2} forOverlay={3} />
-				<CurrentCoordinate forChart={2}/>
+				<CurrentCoordinate forChart={2} forDataSeries={0} />
+				<CurrentCoordinate forChart={2} forDataSeries={1} />
 				<MouseCoordinates xDisplayFormat={dateFormat} type="crosshair" />
 				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 				<TooltipContainer>

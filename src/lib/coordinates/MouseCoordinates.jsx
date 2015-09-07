@@ -44,7 +44,7 @@ class MouseCoordinates extends PureComponent {
 		if (item === undefined) return null;
 		item = item.data;
 		// console.log(singleChartData, item);
-		var xValue = singleChartData.config.accessors.xAccessor(item);
+		var xValue = singleChartData.config.xAccessor(item);
 
 		var xDisplayValue = this.context.dateAccessor === undefined
 			? xValue

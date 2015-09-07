@@ -15,14 +15,14 @@ class EdgeIndicator extends React.Component {
 		// console.log(chartData.config.compareSeries.length);
 		var displayFormat = chartData.config.compareSeries.length > 0 ? d3.format(".0%") : this.props.displayFormat;
 
-		if (this.props.forOverlay !== undefined
+		if (this.props.forDataSeries !== undefined
 				&& chartData.config.overlays.length > 0
 				&& chartData.plot.overlayValues.length > 0) {
 
 			var overlay = chartData.config.overlays
-				.filter((eachOverlay) => eachOverlay.id === this.props.forOverlay);
+				.filter((eachOverlay) => eachOverlay.id === this.props.forDataSeries);
 			var overlayValue = chartData.plot.overlayValues
-				.filter((eachOverlayValue) => eachOverlayValue.id === this.props.forOverlay);
+				.filter((eachOverlayValue) => eachOverlayValue.id === this.props.forDataSeries);
 
 			item = this.props.itemType === "first"
 				? overlayValue[0].first
@@ -32,44 +32,17 @@ class EdgeIndicator extends React.Component {
 			yAccessor = overlay[0].yAccessor;
 
 			if (item !== undefined) {
-				let yValue = yAccessor(item), xValue = chartData.config.accessors.xAccessor(item);
+				let yValue = yAccessor(item), xValue = chartData.config.xAccessor(item);
 				let x1 = Math.round(chartData.plot.scales.xScale(xValue)), y1 = Math.round(chartData.plot.scales.yScale(yValue));
 
+				let stroke = overlay[0].stroke;
 				let edgeX = this.props.edgeAt === "left"
 					? 0 - this.props.yAxisPad
 					: this.context.width + this.props.yAxisPad;
-
 				edge = <EdgeCoordinate
 						type={this.props.type}
 						className="react-stockcharts-edge-coordinate"
-						fill={overlay[0].stroke}
-						show={true}
-						x1={x1 + chartData.config.origin[0]} y1={y1 + chartData.config.origin[1]}
-						x2={edgeX + chartData.config.origin[0]} y2={y1 + chartData.config.origin[1]}
-						coordinate={displayFormat(yValue)}
-						edgeAt={edgeX}
-						orient={this.props.orient} />;
-			}
-		} else if (this.props.forOverlay === undefined) {
-			item = this.props.itemType === "first"
-				? chartData.firstItem
-				: this.props.itemType === "last"
-					? chartData.lastItem
-					: currentItem;
-			yAccessor = chartData.config.accessors.yAccessor;
-
-			if (item !== undefined && yAccessor !== null) {
-				let yValue = yAccessor(item);
-				let xValue = chartData.accessors.xAccessor(item);
-
-				let x1 = Math.round(chartData.plot.scales.xScale(xValue)), y1 = Math.round(chartData.plot.scales.yScale(yValue));
-				let edgeX = this.props.edgeAt === "left"
-					? 0 - this.props.yAxisPad
-					: this.context.width + this.props.yAxisPad;
-
-				edge = <EdgeCoordinate
-						type={this.props.type}
-						className="react-stockcharts-edge-coordinate"
+						fill={stroke}
 						show={true}
 						x1={x1 + chartData.config.origin[0]} y1={y1 + chartData.config.origin[1]}
 						x2={edgeX + chartData.config.origin[0]} y2={y1 + chartData.config.origin[1]}
@@ -95,7 +68,7 @@ EdgeIndicator.propTypes = {
 	orient: React.PropTypes.oneOf(["left", "right"]),
 	edgeAt: React.PropTypes.oneOf(["left", "right"]),
 	forChart: React.PropTypes.number.isRequired,
-	forOverlay: React.PropTypes.number, // undefined means main Data series of that chart
+	forDataSeries: React.PropTypes.number.isRequired,
 	displayFormat: React.PropTypes.func.isRequired,
 };
 

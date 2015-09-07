@@ -179,7 +179,7 @@ ChartCanvas.defaultProps = {
 	defaultDataTransform: [ { transform: DummyTransformer } ],
 	dataTransform: [ ],
 	className: "react-stockchart",
-	initialDisplay: 30
+	// initialDisplay: 30
 };
 
 module.exports = ChartCanvas;

@@ -25,10 +25,10 @@ var CandleStickChart = React.createClass({
 			<ChartCanvas width={this.state.width} height={400}
 				margin={{left: 50, right: 50, top:10, bottom: 30}}
 				data={data} type={type} >
-				<Chart id={1} >
+				<Chart id={1} xAccessor={(d) => d.date}>
 					<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 					<YAxis axisAt="left" orient="left" ticks={5} />
-					<DataSeries yAccessor={CandlestickSeries.yAccessor} xAccessor={(d) => d.date}>
+					<DataSeries id={0} yAccessor={CandlestickSeries.yAccessor} >
 						<CandlestickSeries />
 					</DataSeries>
 				</Chart>

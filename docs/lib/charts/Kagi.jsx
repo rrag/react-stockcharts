@@ -36,17 +36,17 @@ var Kagi = React.createClass({
 				<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
-					<DataSeries yAccessor={KagiSeries.yAccessor} >
+					<DataSeries id={0} yAccessor={KagiSeries.yAccessor} >
 						<KagiSeries />
 					</DataSeries>
 				</Chart>
 				<Chart id={2} height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-					<DataSeries yAccessor={(d) => d.volume} >
+					<DataSeries id={0} yAccessor={(d) => d.volume} >
 						<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
-						<OverlaySeries id={3} indicator={SMA} options={{ period: 10, pluck:"volume" }} >
-							<AreaSeries/>
-						</OverlaySeries>
+					</DataSeries>
+					<DataSeries id={1} indicator={SMA} options={{ period: 10, pluck:"volume" }} >
+						<AreaSeries/>
 					</DataSeries>
 				</Chart>
 				<MouseCoordinates xDisplayFormat={dateFormat} type="crosshair" />
