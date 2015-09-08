@@ -3,7 +3,7 @@
 npm install react-stockcharts@next --save
 ```
 
-`@next` is a tag used for the npm releases before a proper release, contains alpha/beta/rc
+`next` is a tag used for the npm releases before a proper release, contains alpha/beta/rc
 
 ### Bootstrap
 ```sh

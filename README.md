@@ -8,7 +8,7 @@ Built with [React JS](http://facebook.github.io/react/) and [d3](http://d3js.org
 
 ### Installation
 ```sh
-npm install react-stockcharts@next --save
+npm install react-stockcharts --save
 ```
 
 ### Documentation
