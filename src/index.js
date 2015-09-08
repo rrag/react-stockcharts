@@ -19,7 +19,7 @@ import axes from "./lib/axes";
 import tooltip from "./lib/tooltip";
 import helper from "./lib/helper";
 
-const version = "0.2.0-alpha-8";
+const version = "0.2.0-beta-1";
 
 export default {
 	ChartCanvas,
