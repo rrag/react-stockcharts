@@ -17,7 +17,7 @@ function SMAIndicator(options, chartProps, elementProps) {
 		settings.pluck = (d) => d[pluck];
 	}
 	var key = "overlay_" + (elementProps.id !== undefined ? elementProps.id : "default");
-	var stroke = settings.stroke || overlayColors(elementProps.id)
+	var stroke = settings.stroke || overlayColors(elementProps.id);
 
 	function MA() {
 	}
@@ -27,7 +27,7 @@ function SMAIndicator(options, chartProps, elementProps) {
 	};
 	MA.stroke = function() {
 		return stroke;
-	}
+	};
 	MA.calculate = function(data) {
 		var setter = MACalculator.setter.bind(null, [prefix], key);
 

@@ -73,7 +73,7 @@ function RSIIndicator(options, chartProps, elementProps) {
 	};
 	indicator.domain = function() {
 		return [0, 100];
-	}
+	};
 	indicator.isRSI = function() {
 		return true;
 	};

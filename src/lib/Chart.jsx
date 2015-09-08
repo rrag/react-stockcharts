@@ -16,7 +16,7 @@ class Chart extends PureComponent {
 	getCurrentCanvasContext() {
 		var canvasContextList = this.context.canvasList.filter((each) => parseInt(each.id, 10) === this.props.id);
 		var canvasContext = canvasContextList.length > 0 ? canvasContextList[0].context : undefined;
-		return canvasContext
+		return canvasContext;
 	}
 	getChildContext() {
 		var chartData = this.context.chartData.filter((each) => each.id === this.props.id)[0];

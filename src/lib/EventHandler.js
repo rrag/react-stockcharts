@@ -122,10 +122,6 @@ class EventHandler extends React.Component {
 		};
 	}
 	handleMouseMove(mouseXY) {
-		/*if (document.getElementById("debug_here") !== null)
-			document.getElementById("debug_here").innerHTML = "" + mouseXY*/
-		// console.log("mouse move - ", mouseXY);
-			// .filter((eachChartData) => eachChartData.id === this.state.mainChart)
 		var currentCharts = this.state.chartData.filter((chartData) => {
 			var top = chartData.config.origin[1];
 			var bottom = top + chartData.config.height;

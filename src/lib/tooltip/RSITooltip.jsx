@@ -36,7 +36,7 @@ class RSITooltip extends React.Component {
 		var relativeOrigin = typeof this.props.origin === "function"
 			? this.props.origin(this.context.width, this.context.height)
 			: this.props.origin;
-		var absoluteOrigin = [origin[0] + relativeOrigin[0], origin[1] + relativeOrigin[1]]
+		var absoluteOrigin = [origin[0] + relativeOrigin[0], origin[1] + relativeOrigin[1]];
 
 		return (
 			<g transform={`translate(${ absoluteOrigin[0] }, ${ absoluteOrigin[1] })`}>

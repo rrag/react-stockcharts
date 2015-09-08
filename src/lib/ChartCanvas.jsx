@@ -14,7 +14,7 @@ class ChartCanvas extends React.Component {
 		this.getCanvasContextList = this.getCanvasContextList.bind(this);
 		this.state = {
 			canvasList: []
-		}
+		};
 	}
 	getDimensions(props) {
 		return {
@@ -32,14 +32,14 @@ class ChartCanvas extends React.Component {
 			.filter(key => key.indexOf("chart_canvas_") > -1)
 			.map(key => React.findDOMNode(this.refs[key]))
 			.map(canvas => ({ id: canvas.id, context: canvas.getContext('2d') }));
-		canvasList.forEach(ctx => ctx.context.translate(0.5, 0))
+		canvasList.forEach(ctx => ctx.context.translate(0.5, 0));
 		return canvasList;
 	}
 	componentDidMount() {
 		var canvasList = this.getCanvasContextList();
 		this.setState({
 			canvasList: canvasList,
-		})
+		});
 	}
 	componentDidUpdate() {
 		var newCanvasList = this.getCanvasContextList();
@@ -47,7 +47,7 @@ class ChartCanvas extends React.Component {
 		if (canvasList.length !== newCanvasList.length) {
 			this.setState({
 				canvasList: newCanvasList,
-			})
+			});
 		} else {
 			for (var i = 0; i < canvasList.length; i++) {
 				var oldEach = canvasList[i];
@@ -55,7 +55,7 @@ class ChartCanvas extends React.Component {
 				if (oldEach.id !== newEach.id || oldEach.context !== newEach.context) {
 					this.setState({
 						canvasList: newCanvasList,
-					})
+					});
 				}
 			}
 		}

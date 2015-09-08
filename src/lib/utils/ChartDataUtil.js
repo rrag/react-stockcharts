@@ -161,20 +161,9 @@ var ChartDataUtil = {
 
 		if (domainL && domainR) scales.xScale.domain([domainL, domainR]);
 
-		// var last = Utils.cloneMe(partialData[partialData.length - 1]);
-		// var last = partialData[partialData.length - 1];
-		// var first = Utils.cloneMe(partialData[0]);
-		// var first = partialData[0];
-
-		/*var drawableWidth = scales.xScale(config.xAccessor(partialData[partialData.length - 1]))
-			- scales.xScale(config.xAccessor(partialData[0]));*/
-		// console.log(overlayValues);
 		var plot = {
-			// drawableWidth: drawableWidth,
 			overlayValues: overlayValues,
 			scales: scales,
-			// lastItem: last,
-			// firstItem: first
 		};
 		return plot;
 	},
@@ -246,7 +235,7 @@ var ChartDataUtil = {
 	},
 	getXAccessor(props, passThroughProps) {
 		var xAccessor = passThroughProps !== undefined && passThroughProps.xAccessor
-			|| props.xAccessor !== undefined && props.xAccessor
+			|| props.xAccessor !== undefined && props.xAccessor;
 		return xAccessor;
 	},
 	getXYAccessors(props, passThroughProps, indicator) {
