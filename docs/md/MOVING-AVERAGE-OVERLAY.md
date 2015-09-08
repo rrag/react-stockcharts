@@ -14,19 +14,18 @@ Let us review each of these in a little more detail
 #### Moving average on daily `close` as a `LineSeries`
 
 ```html
-<DataSeries yAccessor={CandlestickSeries.yAccessor} >
-	<CandlestickSeries />
-	<OverlaySeries id={0} indicator={EMA} options={{ period: 20, pluck: "close" }}>
-		<LineSeries/>
-	</OverlaySeries>
-	<OverlaySeries id={1} indicator={EMA} options={{ period: 30 }} >
-		<LineSeries/>
-	</OverlaySeries>
-	<OverlaySeries id={2} indicator={SMA} options={{ period: 50 }} >
-		<LineSeries/>
-	</OverlaySeries>
+<DataSeries id={1} indicator={SMA} options={{ period: 20, pluck: "close" }}>
+	<LineSeries/>
+</DataSeries>
+<DataSeries id={2} indicator={EMA} options={{ period: 20 }} >
+	<LineSeries/>
+</DataSeries>
+<DataSeries id={3} indicator={EMA} options={{ period: 50 }} >
+	<LineSeries/>
 </DataSeries>
 ```
+
+Multiple `DataSeries`, each with a unique numeric `id`
 
 the `{EMA}` and `{SMA}` are from
 
@@ -36,16 +35,16 @@ var { EMA, SMA } = ReStock.indicator;
 
 these indicators are just functions which follow a set of rules (yet to be documented). This makes for some very extensible behavior and user can create custom indicators for their use.
 
-`type` indicates it is a simple moving average, `options` used to specify the moving average `period`, and `pluck` to specify attribute against which moving average is to be calculated. If not specified, `pluck` defaults to `close`
+`options` used to specify the moving average `period`, and `pluck` to specify attribute against which moving average is to be calculated. If not specified, `pluck` defaults to `close`
 
 #### Moving average on daily `volume` as an `AreaSeries`
 
 ```html
-<DataSeries yAccessor={(d) => d.volume} >
-	<HistogramSeries className={(d) => d.close > d.open ? 'up' : 'down'} />
-	<OverlaySeries id={3} indicator={SMA} options={{ period: 10, pluck:'volume' }} >
-		<AreaSeries/>
-	</OverlaySeries>
+<DataSeries id={0} yAccessor={(d) => d.volume}>
+	<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
+</DataSeries>
+<DataSeries id={1} indicator={SMA} options={{ period: 10, pluck:"volume" }} >
+	<AreaSeries />
 </DataSeries>
 ```
 
@@ -54,16 +53,16 @@ Similar to above
 #### Current item indicator as a circle over the different moving averages
 
 ```html
-<CurrentCoordinate forChart={1} forOverlay={0} />
-<CurrentCoordinate forChart={1} forOverlay={1} />
-<CurrentCoordinate forChart={1} forOverlay={2} />
-<CurrentCoordinate forChart={2} forOverlay={3} />
-<CurrentCoordinate forChart={2}/>
+<CurrentCoordinate forChart={1} forDataSeries={1} />
+<CurrentCoordinate forChart={1} forDataSeries={2} />
+<CurrentCoordinate forChart={1} forDataSeries={3} />
+<CurrentCoordinate forChart={2} forDataSeries={0} />
+<CurrentCoordinate forChart={2} forDataSeries={1} />
 ```
 
 That was easy, right?
 
-`forOverlay` is an optional attribute, and absense of that will default the `CurrentCoordinate` to display a circle on the main series. This only makes sense if the main series plots a single value on y. For `CandlestickSeries` as it plots 4 attributes, `CurrentCoordinate` is not valid for `CandlestickSeries`
+`forChart` and `forDataSeries` are self explanatory
 
 #### Moving average tooltip
 

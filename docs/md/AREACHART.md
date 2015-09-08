@@ -28,10 +28,10 @@ d3.tsv("path/to/data.tsv", function(err, data) {
 ```html
 <ChartCanvas width={this.state.width} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}}
 	data={data} type="svg" >
-	<Chart id={0} >
+	<Chart id={0} xAccessor={(d) => d.date}>
 		<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 		<YAxis axisAt="left" orient="left" />
-		<DataSeries yAccessor={(d) => d.close} xAccessor={(d) => d.date}>
+		<DataSeries id={0} yAccessor={(d) => d.close} >
 			<AreaSeries />
 		</DataSeries>
 	</Chart>
@@ -41,30 +41,41 @@ d3.tsv("path/to/data.tsv", function(err, data) {
 Let us review each line
 
 ```html
-<ChartCanvas width={...} height={...} margin={{left: 50, right: 50, top:10, bottom: 30}} data={data}>
+<ChartCanvas width={...} height={...} margin={{left: 50, right: 50, top:10, bottom: 30}} data={data} type="svg" >
 ```
 
-Creates an `svg` element with the provided `height` and `width` and creates a `svg:g` element with the provided `margin`. `data` is well the data used to plot.
+Creates an `svg` element with the provided `height` and `width` and creates a `svg:g` element with the provided `margin`. and `data` is used to plot.
+
+the `type` can take 2 values `svg` or `hybrid`.
+
+Choosing `svg` will create the entire chart using `svg` elements
+Choosing `hybrid` will create the contents of the `DataSeries` using `canvas` but the axis and other elements are `svg`
+
+So irrespective of what type you choose, you will have a `svg` element
 
 ```html
-<Chart id={0}>
+<Chart id={0} xAccessor={(d) => d.date}>
 ```
 
 There can be one or more `Chart`s in each `ChartCanvas` and hence the need for an `id` attribute.
 
-If you are not familiar with [scales](https://github.com/mbostock/d3/wiki/Scales) in d3 I recommend doing so. Each `Chart` defines an `xScale` and `yScale`. For starters, it is easier to understand scale as a function which converts a `domain` say 2011-01-01 to 2014-12-31 to a `range` say 0 to 500 pixels. This scale can now interpolate an input date to a value in pixels which can be drawn.
+The `xAccessor` is to be used for *all* the `DataSeries` inside this `Chart`. This simple example shows one `DataSeries` you will learn more complex examples soon.
 
-With SVG it is important to understand the coordinate system and where the origin `(0, 0)` is located. for a SVG of size 300x100, the 
+If you are not familiar with [scales](https://github.com/mbostock/d3/wiki/Scales) in d3 I recommend doing so. Each `Chart` defines an `xScale` and `yScale`. For starters, it is easier to understand scale as a function which converts a `domain` say 2009-01-05 to 2015-06-08 to a `range` say 0 to 500 pixels. This scale can now interpolate an input date to a value in pixels.
 
-![alt text](http://www.w3.org/TR/SVG/images/coords/InitialCoords.png "Logo Title Text 1")
+With SVG & Canvas it is important to understand the coordinate system and where the origin `(0, 0)` is located. for a SVG of size 300x100, the 
 
-For more details about the SVG coordinate system see [here](http://www.w3.org/TR/SVG/coords.html)
+![alt text](http://www.w3.org/TR/SVG/images/coords/InitialCoords.png "SVG/Canvas coordinate system")
+
+For more details about the coordinate system see [here](http://www.w3.org/TR/SVG/coords.html)
 
 Back to scales,
 
-A time scale converts a date/time domain to a range, this is used as the xScale, the xDomain is calculated from the input data, and the range is calculated as `height - margin.left - margin.right`.
+X Axis uses a time scale
+A time scale converts a date/time domain to a range, this is used as the xScale, the xDomain is calculated from the input data, and the range is calculated as `width - margin.left - margin.right`.
 
-A Linear scale converts a `domain` say 4600 - 6200 to a `range` say 0 to 300 pixels. Like the name represents the data in between is interpolated linear, similarly there is log scale which creates a logrithmic scale, which is not linear.
+Y Axis uses a linear scale
+A Linear scale converts a `domain` say 10 - 45 to a `range` say 0 to 300 pixels. Like the name represents the data in between is interpolated linear.
 
 ```html
 <XAxis axisAt="bottom" orient="bottom" ticks={6}/>
@@ -83,12 +94,14 @@ Similar to `XAxis` except left/right instead of top/bottom
 
 
 ```html
-<DataSeries yAccessor={(d) => d.close} xAccessor={(d) => d.date}>
-    <AreaSeries />
+<DataSeries id={0} yAccessor={(d) => d.close} >
+	<AreaSeries />
 </DataSeries>
 ```
 
-A `DataSeries` is a shell component intended to house the x and y Accessor. You will find in other examples below how `DataSeries` helps create a yAccessor with more than one y  value to plot for a given x, like in candlestick.
+`id` is a required attribute, there can be multiple `DataSeries` per `Chart`, use unique numbers for `id`.
+
+`DataSeries` houses the y Accessor. You will find in other examples later how `DataSeries` helps create a yAccessor with more than one y value to plot for a given x, like in candlestick.
 
 If you are not clear what the arrow functions mean, read more about them [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions). In short
 
@@ -101,6 +114,7 @@ If you are not clear what the arrow functions mean, read more about them [here](
 So you dont want to display the `YAxis` at all, go ahead and just remove that.
 
 Want to display `YAxis` on both left and right? add 
+
 ```html
 <YAxis axisAt="right" orient="right" />
 ```

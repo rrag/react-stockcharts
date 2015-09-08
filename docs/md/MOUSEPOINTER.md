@@ -8,14 +8,14 @@ checkout the [source](https://gist.github.com/rrag/261fa4bc7b67536eb789), [block
 	<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}>
 		<XAxis axisAt="bottom" orient="bottom"/>
 		<YAxis axisAt="right" orient="right" ticks={5} />
-		<DataSeries yAccessor={CandlestickSeries.yAccessor} >
+		<DataSeries id={0} yAccessor={CandlestickSeries.yAccessor} >
 			<CandlestickSeries />
 		</DataSeries>
 	</Chart>
 	<Chart id={2} yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 			height={150} origin={(w, h) => [0, h - 150]}>
 		<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-		<DataSeries yAccessor={(d) => d.volume} >
+		<DataSeries id={0} yAccessor={(d) => d.volume} >
 			<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
 		</DataSeries>
 	</Chart>
@@ -39,7 +39,7 @@ By default none of the events are captured, and each has to be enabled individua
 ```
 Displays the crosshair at the mouse position, the attributes of `MouseCoordinates` are self explanatory.
 
-`Chart` gets a few new props to indicate the y mouse pointer tooltip location and format
+`Chart` gets a few new props to indicate the y mouse pointer edge location and format
 ```html
 <Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}>
 ```

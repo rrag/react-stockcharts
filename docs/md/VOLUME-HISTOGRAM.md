@@ -6,13 +6,13 @@ checkout the [source](https://gist.github.com/rrag/88cd65baa331d57caa83), [block
 	<Chart id={1} >
 		<XAxis axisAt="bottom" orient="bottom"/>
 		<YAxis axisAt="right" orient="right" ticks={5} />
-		<DataSeries yAccessor={CandlestickSeries.yAccessor} >
+		<DataSeries id={0} yAccessor={CandlestickSeries.yAccessor} >
 			<CandlestickSeries />
 		</DataSeries>
 	</Chart>
 	<Chart id={2}>
 		<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-		<DataSeries yAccessor={(d) => d.volume} >
+		<DataSeries id={0} yAccessor={(d) => d.volume} >
 			<HistogramSeries />
 		</DataSeries>
 	</Chart>

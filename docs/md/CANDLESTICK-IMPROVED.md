@@ -33,7 +33,7 @@ d3.tsv("path/to/data.tsv", function(err, data) {
 	<Chart id={1} >
 		<XAxis axisAt="bottom" orient="bottom" />
 		<YAxis axisAt="right" orient="right" ticks={5} />
-		<DataSeries yAccessor={CandlestickSeries.yAccessor} >
+		<DataSeries id={0} yAccessor={CandlestickSeries.yAccessor} >
 			<CandlestickSeries />
 		</DataSeries>
 	</Chart>
@@ -42,7 +42,7 @@ d3.tsv("path/to/data.tsv", function(err, data) {
 
 Compare this with the simpler `AreaChart` example from before
 
-```html
+```js
 dataTransform={[ { transform: StockscaleTransformer } ]} 
 ```
 is the only difference in `<ChartCanvas>`
@@ -53,18 +53,19 @@ Notice that it accepts an array. You can chain multiple transfoms together by ad
 
 ```html
 <Chart id={1} >
-	<XAxis axisAt="bottom" orient="bottom" ticks={5}/>
-	<YAxis axisAt="right" orient="right" ticks={5} />
 ```
-
-Same as for `AreaChart` example above
+You will notice that the `Chart` component does not include the `xAccessor`, that is because it is defined inside the stockscale which provides the `xAccessor` behind the scenes
 
 ```html
+<XAxis axisAt="bottom" orient="bottom" ticks={5}/>
+<YAxis axisAt="right" orient="right" ticks={5} />
 <DataSeries yAccessor={CandlestickSeries.yAccessor} >
 	<CandlestickSeries />
 </DataSeries>
 ```
-You will notice that the `DataSeries` component does not include the `xAccessor`, that is because it is defined inside the stockscale which provides the `xAccessor` behind the scenes
+
+Same as for `AreaChart` example above
+
 
 `yAccessor={CandlestickSeries.yAccessor}` is just a convenience `yAccessor` available, it can also be represented as
 

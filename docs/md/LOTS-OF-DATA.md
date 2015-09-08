@@ -1,6 +1,6 @@
-Let us turn it up a notch, we all have access to lots of historical data for stocks. As an example, let us work with MSFT from 1986-03-13 till 2015-03-26
+Let us turn it up a notch, we all have access to lots of historical data for stocks. As an example, let us work with MSFT from 1986-03-13 till 2015-06-05
 
-That is 7221 one day periods, lot more if you have access to intra day, how can all that fit into one screen? Although technically it can be done there are a few problems
+That is more than 7000 one day periods, lot more if you have access to intra day, how can all that fit into one screen? Although technically it can be done there are a few problems
 
 1. Every time you zoom/pan a chart with that many data points it just does not work. Browsers do not have the power to recalculate the scales for the new domain and appear responsive.
 1. Even with cross hair and tool tip you could see the lag

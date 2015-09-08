@@ -6,13 +6,13 @@ checkout the [source](https://gist.github.com/rrag/0a54ca33b05001f17f8f), [block
 	<Chart id={1} >
 		<XAxis axisAt="bottom" orient="bottom"/>
 		<YAxis axisAt="right" orient="right" ticks={5} />
-		<DataSeries yAccessor={CandlestickSeries.yAccessor} >
+		<DataSeries id={0} yAccessor={CandlestickSeries.yAccessor} >
 			<CandlestickSeries />
 		</DataSeries>
 	</Chart>
 	<Chart id={2} height={150} origin={(w, h) => [0, h - 150]}>
 		<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-		<DataSeries yAccessor={(d) => d.volume} >
+		<DataSeries id={0} yAccessor={(d) => d.volume} >
 			<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
 		</DataSeries>
 	</Chart>
@@ -25,25 +25,21 @@ The portion of interest here is
 <Chart id={2} height={150} origin={(w, h) => [0, h - 150]}>
 ```
 
-the chart has a defined `height` of 150, which is good.
+the chart has a defined `height` of 150.
 
-`origin` can be either a function which returns a `[x, y]` to be used as origin or it can be an array with 2 elements representing `[x, y]`. The default value for `origin` is `[0, 0]`
+`origin` can be either a coordinate [x, y] or a function which returns a `[x, y]` 
 
 `(w, h) => [0, h - 150]` is the same as `function (w, h) { return [0, h - 150]; }`
 
 given the `width` and `height` available inside the `ChartCanvas` as input, this function returns an origin of `[0, height - 150]` to draw the volume histogram
 
-Similarly the `className` of `HistogramSeries` accepts either
-- a function which returns a string 
-- or a string
-
-which is used as the css class
+Similarly the `fill` of `HistogramSeries` accepts either
+- a function which returns a string representing the color
+- or a string representing the color
 
 ```html
 <HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
 ```
-
-a class of 'up' is applied if `close > open` for that day and 'down' otherwise
 
 #### Another Version
 In this you can see how the volume histogram and the candlestick chart do not overlap.

@@ -25,7 +25,7 @@ var AreaChart = React.createClass({
 				<Chart id={0} xAccessor={(d) => d.date}>
 					<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 					<YAxis axisAt="left" orient="left" />
-					<DataSeries id={0} yAccessor={(d) => d.close} stroke="steelblue" fill="steelblue">
+					<DataSeries id={0} yAccessor={(d) => d.close} >
 						<AreaSeries />
 					</DataSeries>
 				</Chart>

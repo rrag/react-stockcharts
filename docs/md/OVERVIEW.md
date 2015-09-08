@@ -11,16 +11,12 @@ There are many charting libraries available, but I feel there are very few that 
 #### SVG vs Canvas
 When deciding on a web technology for charts - not just charts, but ones which are interactive too -  representing many many data points, the decision of performance is bound to come up, and HTML5 presents options.
 
-I am not going to debate between the pros and cons between SVG and Canvas. They are discussed at great length [here](http://stackoverflow.com/questions/12310024/fast-and-responsive-interactive-charts-graphs-svg-canvas-other) and [here](http://stackoverflow.com/questions/5882716/html5-canvas-vs-svg-vs-div). Needless to say they are both very powerful and for charting, there really is no right answer. I have chosen to use SVG for React Stockcharts because,
+I am not going to debate between the pros and cons between SVG and Canvas. They are discussed at great length [here](http://stackoverflow.com/questions/12310024/fast-and-responsive-interactive-charts-graphs-svg-canvas-other) and [here](http://stackoverflow.com/questions/5882716/html5-canvas-vs-svg-vs-div). Needless to say they are both very powerful and for charting, there really is no right answer. With React Stockcharts you have the option to go with complete SVG or a hybrid approach of canvas + SVG. in the hybrid approach SVG is used to draw the axes, mouse pointer and edge coordinates, while the actual chart is drawn using canvas.
 
-- you will see very soon the performance is not an issue really, thanks to React JS and the virtual dom
-- the flexibility of development and the convinenience of debuging a DOM is hard to beat
-- styling with css is something I cannot give up
-
-That said, I do wish to some day create a fork of this on Canvas.
+The SVG approach is best for server side rendering, while for browser side I recommend using the hybrid mode for improved responsiveness to pan actions.
 
 #### DOM Manipulation
 
-The only place where DOM Manipulation is used is in the `XAxis` and `YAxis` components, I will soon migrate to use the native `svg` axes provided by [react-d3](https://github.com/esbullington/react-d3), at which time the entire project will be built with native svg components making server side rendering possible.
+All SVG components use ReactJS, to create the svg elements, there is no DOM manipulation. For dealing with Canvas, since canvas is a DOM object, it has to be done via a `componentDidMount` / `componentDidUpdate`
 
 Now let us get started with a very simple AreaChart
