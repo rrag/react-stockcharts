@@ -15,17 +15,7 @@ var StochasticIndicatorPage = React.createClass({
 	},
 	saveChartAsImage(e) {
 		var container = React.findDOMNode(this.refs.container);
-		var image = SaveChartAsImage.saveWithWhiteBG(document, React.findDOMNode(this.refs.container));
-
-		var a = document.createElement("a");
-		a.setAttribute("href", image);
-		a.setAttribute("download", "Chart.png");
-		document.body.appendChild(a);
-		a.addEventListener("click", function(e) {
-			a.parentNode.removeChild(a);
-		});
-		console.log("HEER");
-		a.click();
+		SaveChartAsImage.saveChartAsImage(container);
 	},
 	render() {
 		return (
