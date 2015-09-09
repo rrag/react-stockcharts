@@ -71,7 +71,7 @@ class EventHandler extends PureComponent {
 		if (nextProps.type !== "svg" && this.state.initialRender) {
 			this.setState({
 				initialRender: false,
-			})
+			});
 		} else {
 			var { interval, chartData, plotData } = this.state;
 			var { data, options, dimensions } = nextProps;

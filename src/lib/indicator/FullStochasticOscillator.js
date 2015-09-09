@@ -47,7 +47,7 @@ function FullStochasticOscillator(options, chartProps, elementProps) {
 
 			var oscilator = (ohlc.close - highAndLow[1]) / (highAndLow[0] - highAndLow[1]) * 100;
 
-			setter("stochasticOscillatorBase", data[i], oscilator)
+			setter("stochasticOscillatorBase", data[i], oscilator);
 		}
 
 		var newData = MACalculator.calculateSMANew(data.slice(settings.period), settings.K,
