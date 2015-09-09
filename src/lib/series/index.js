@@ -9,6 +9,7 @@ import RenkoSeries from "./RenkoSeries";
 import MACDSeries from "./MACDSeries";
 import BollingerSeries from "./BollingerSeries";
 import RSISeries from "./RSISeries";
+import StochasticSeries from "./StochasticSeries";
 
 export default {
 	AreaSeries,
@@ -22,4 +23,5 @@ export default {
 	MACDSeries,
 	BollingerSeries,
 	RSISeries,
+	StochasticSeries,
 };

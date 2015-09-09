@@ -105,6 +105,16 @@ var ChartDataUtil = {
 
 		var scales = this.defineScales(chartProps, partialData, passThroughProps);
 
+		var indicatorsWithTicks = overlaysToAdd
+			.filter(overlay => overlay.indicator !== undefined)
+			.filter(overlay => overlay.indicator.yTicks !== undefined);
+
+		var yTicks;
+		if (indicatorsWithTicks.length > 0) {
+			yTicks = indicatorsWithTicks.map(overlay => overlay.indicator.yTicks())
+				.reduce((ticks1, ticks2) => ticks1.concat(ticks2));
+		}
+
 		var config = {
 			width: dimensions.width,
 			height: dimensions.height,
@@ -121,7 +131,8 @@ var ChartDataUtil = {
 			overlays: overlaysToAdd,
 			compareBase: compareBase,
 			compareSeries: compareSeries,
-			scaleType: scales
+			scaleType: scales,
+			yTicks: yTicks,
 		};
 		return config;
 	},

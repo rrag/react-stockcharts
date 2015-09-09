@@ -30,6 +30,7 @@ var pages = [
 	require("lib/page/LotsOfDataPage"),
 	require("lib/page/MACDIndicatorPage"),
 	require("lib/page/RSIIndicatorPage"),
+	require("lib/page/StochasticIndicatorPage"),
 	require("lib/page/HeikinAshiPage"),
 	require("lib/page/KagiPage"),
 	require("lib/page/PointAndFigurePage"),
@@ -210,7 +211,8 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithCompare
 	// CandleStickChartWithMACDIndicator
 	// CandleStickChartWithRSIIndicator
-	var Chart = require("lib/charts/CandleStickChartWithRSIIndicator");
+	// CandleStickChartWithFullStochasticsIndicator
+	var Chart = require("lib/charts/CandleStickChartWithFullStochasticsIndicator");
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	class ExamplesPage extends React.Component {

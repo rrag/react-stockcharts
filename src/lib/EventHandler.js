@@ -15,7 +15,7 @@ function getLongValue(value) {
 	return value;
 }
 
-class EventHandler extends React.Component {
+class EventHandler extends PureComponent {
 	constructor(props, context) {
 		super(props, context);
 		this.handleMouseMove = this.handleMouseMove.bind(this);
@@ -62,36 +62,45 @@ class EventHandler extends React.Component {
 			chartData: chartData,
 			interval: this.props.interval,
 			mainChart: mainChart,
-			currentCharts: [mainChart]
+			currentCharts: [mainChart],
+			initialRender: true,
 		});
 	}
-	componentWillReceiveProps(props, context) {
-		var { interval, chartData, plotData } = this.state;
-		var { data, options, dimensions } = props;
+	componentWillReceiveProps(nextProps) {
 
-		var dataForInterval = data[interval];
-		var mainChart = ChartDataUtil.getMainChart(props.children);
-		var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
-		var xAccessor = mainChartData.config.xAccessor;
-		var domainL = xAccessor(plotData[0]);
-		var domainR = xAccessor(plotData[plotData.length - 1]);
+		if (nextProps.type !== "svg" && this.state.initialRender) {
+			this.setState({
+				initialRender: false,
+			})
+		} else {
+			var { interval, chartData, plotData } = this.state;
+			var { data, options, dimensions } = nextProps;
 
-		var beginIndex = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
-		var endIndex = Utils.getClosestItemIndexes(dataForInterval, domainR, xAccessor).right;
+			var dataForInterval = data[interval];
+			var mainChart = ChartDataUtil.getMainChart(nextProps.children);
+			var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
+			var xAccessor = mainChartData.config.xAccessor;
+			var domainL = xAccessor(plotData[0]);
+			var domainR = xAccessor(plotData[plotData.length - 1]);
 
-		// console.log(plotData[0], plotData[plotData.length - 1]);
-		var newPlotData = dataForInterval.slice(beginIndex, endIndex);
-		// console.log(newPlotData[0], newPlotData[newPlotData.length - 1]);
-		var newChartData = ChartDataUtil.getChartData(props, dimensions, newPlotData, data, options);
-		// console.log("componentWillReceiveProps");
-		this.setState({
-			chartData: newChartData,
-			plotData: newPlotData,
-			currentItems: [],
-			show: false,
-			mouseXY: [0, 0],
-			mainChart: mainChart
-		});
+			var beginIndex = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
+			var endIndex = Utils.getClosestItemIndexes(dataForInterval, domainR, xAccessor).right;
+
+			// console.log(plotData[0], plotData[plotData.length - 1]);
+			var newPlotData = dataForInterval.slice(beginIndex, endIndex);
+			// console.log(newPlotData[0], newPlotData[newPlotData.length - 1]);
+			var newChartData = ChartDataUtil.getChartData(nextProps, dimensions, newPlotData, data, options);
+			// console.log("componentWillReceiveProps");
+			this.setState({
+				chartData: newChartData,
+				plotData: newPlotData,
+				currentItems: [],
+				show: false,
+				mouseXY: [0, 0],
+				mainChart: mainChart,
+				initialRender: false,
+			});
+		}
 	}
 	getChildContext() {
 		return {

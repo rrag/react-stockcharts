@@ -74,6 +74,9 @@ function RSIIndicator(options, chartProps, elementProps) {
 	indicator.domain = function() {
 		return [0, 100];
 	};
+	indicator.yTicks = function() {
+		return [settings.overSold, 50, settings.overBought];
+	};
 	indicator.isRSI = function() {
 		return true;
 	};

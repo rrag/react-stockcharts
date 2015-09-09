@@ -1,0 +1,3 @@
+Learn more about constructing a Stochastic Oscilator [here](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:stochastic_oscillator_fast_slow_and_full)
+
+Example on gist, block and plunker coming soon...

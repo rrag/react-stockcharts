@@ -5,6 +5,7 @@ import CompareTooltip from "./CompareTooltip";
 import MovingAverageTooltip from "./MovingAverageTooltip";
 import BollingerBandTooltip from "./BollingerBandTooltip";
 import RSITooltip from "./RSITooltip";
+import StochasticTooltip from "./StochasticTooltip";
 
 export default {
 	MACDTooltip,
@@ -14,4 +15,5 @@ export default {
 	MovingAverageTooltip,
 	BollingerBandTooltip,
 	RSITooltip,
+	StochasticTooltip,
 };

@@ -5,9 +5,11 @@ import Axis from "./Axis";
 
 class YAxis extends React.Component {
 	render() {
-		var { axisAt, tickFormat, ticks, percentScale } = this.props;
-		var { yScale } = this.context;
+		var { axisAt, tickFormat, ticks, percentScale, tickValues } = this.props;
+		var { yScale, chartData } = this.context;
 		if (percentScale) yScale = yScale.copy().domain([0, 1]);
+
+		tickValues = tickValues || chartData.config.yTicks;
 
 		var axisLocation;
 
@@ -23,7 +25,7 @@ class YAxis extends React.Component {
 		return (
 			<Axis {...this.props}
 				transform={`translate(${ axisLocation }, 0)`}
-				tickFormat={tickFormat} ticks={[ticks]}
+				tickFormat={tickFormat} ticks={[ticks]} tickValues={tickValues}
 				scale={yScale} />
 		);
 	}
@@ -54,6 +56,7 @@ YAxis.defaultProps = {
 	className: "react-stockcharts-y-axis",
 };
 YAxis.contextTypes = {
+	chartData: React.PropTypes.object.isRequired,
 	xScale: React.PropTypes.func.isRequired,
 	yScale: React.PropTypes.func.isRequired,
 	width: React.PropTypes.number.isRequired,

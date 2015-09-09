@@ -7,18 +7,18 @@ import ReStock from "ReStock";
 
 var { ChartCanvas, Chart, DataSeries, OverlaySeries, EventCapture } = ReStock;
 
-var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, MACDSeries } = ReStock.series;
+var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, StochasticSeries } = ReStock.series;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 
-var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, MACDTooltip } = ReStock.tooltip;
+var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, StochasticTooltip } = ReStock.tooltip;
 var { StockscaleTransformer } = ReStock.transforms;
 
 var { XAxis, YAxis } = ReStock.axes;
-var { MACD, EMA, SMA } = ReStock.indicator;
+var { MACD, EMA, SMA, FullStochasticOscillator } = ReStock.indicator;
 var { ChartWidthMixin } = ReStock.helper;
 
-var CandleStickChartWithMACDIndicator = React.createClass({
+var CandleStickChartWithFullStochasticsIndicator = React.createClass({
 	mixins: [ChartWidthMixin],
 	propTypes: {
 		data: React.PropTypes.array.isRequired,
@@ -35,11 +35,11 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 		var dateFormat = d3.time.format("%Y-%m-%d");
 
 		return (
-			<ChartCanvas width={this.state.width} height={600}
+			<ChartCanvas width={this.state.width} height={750}
 				margin={{left: 70, right: 70, top:20, bottom: 30}} initialDisplay={200} 
 				dataTransform={[ { transform: StockscaleTransformer } ]}
 				data={data} type={type}>
-				<Chart id={1} yMousePointerDisplayLocation="right" height={400}
+				<Chart id={1} yMousePointerDisplayLocation="right" height={325}
 						yMousePointerDisplayFormat={(y) => y.toFixed(2)} padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
@@ -56,7 +56,7 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 				<CurrentCoordinate forChart={1} forDataSeries={1} />
 				<CurrentCoordinate forChart={1} forDataSeries={2} />
 				<Chart id={2} yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
-						height={150} origin={(w, h) => [0, h - 300]} >
+						height={100} origin={(w, h) => [0, h - 475]} >
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 					<DataSeries id={0} yAccessor={(d) => d.volume} >
 						<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
@@ -78,11 +78,27 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 						edgeAt="left" forChart={1} forDataSeries={2} />
 				</EdgeContainer>
 				<Chart id={3} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}
-						height={150} origin={(w, h) => [0, h - 150]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
+						height={125} origin={(w, h) => [0, h - 375]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
+					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
+					<YAxis axisAt="right" orient="right" ticks={2}/>
+					<DataSeries id={1} indicator={FullStochasticOscillator} options={{ period: 14, K: 1, D: 3 }} >
+						<StochasticSeries />
+					</DataSeries>
+				</Chart>
+				<Chart id={4} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}
+						height={125} origin={(w, h) => [0, h - 250]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
+					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
+					<YAxis axisAt="right" orient="right" ticks={2}/>
+					<DataSeries id={1} indicator={FullStochasticOscillator} options={{ period: 14, K: 3, D: 3 }} >
+						<StochasticSeries />
+					</DataSeries>
+				</Chart>
+				<Chart id={5} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}
+						height={125} origin={(w, h) => [0, h - 125]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={2}/>
-					<DataSeries id={0} indicator={MACD} options={{ fast: 12, slow: 26, signal: 9 }} >
-						<MACDSeries />
+					<DataSeries id={1} indicator={FullStochasticOscillator} options={{ period: 14, K: 3, D: 3 }} >
+						<StochasticSeries />
 					</DataSeries>
 				</Chart>
 				<MouseCoordinates xDisplayFormat={dateFormat} type="crosshair" />
@@ -90,11 +106,17 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
 					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 5]} />
-					<MACDTooltip forChart={3} origin={[-38, 15]}/>
+					<StochasticTooltip forChart={3} origin={[-38, 15]}>Fast STO</StochasticTooltip>
+					<StochasticTooltip forChart={4} origin={[-38, 15]}>Slow STO</StochasticTooltip>
+					<StochasticTooltip forChart={5} origin={[-38, 15]}>Full STO</StochasticTooltip>
 				</TooltipContainer>
 			</ChartCanvas>
 		);
 	}
 });
 
-export default CandleStickChartWithMACDIndicator;
+/*
+
+*/
+
+export default CandleStickChartWithFullStochasticsIndicator;
