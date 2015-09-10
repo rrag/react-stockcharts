@@ -3,7 +3,9 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "ReStock";
+import ReStock from "../../../src/";
+
+// var ReStock = require("../../../src/");
 
 var { ChartCanvas, Chart, DataSeries, OverlaySeries, EventCapture } = ReStock;
 
@@ -30,12 +32,12 @@ var CandleStickChartWithFullStochasticsIndicator = React.createClass({
 		}
 	},
 	render() {
-		if (this.state === null || !this.state.width) return <div />;
+		var width = this.props.width || this.state !== null && this.state.width;
+		if (!width) return <div />;
 		var { data, type } = this.props;
 		var dateFormat = d3.time.format("%Y-%m-%d");
-
 		return (
-			<ChartCanvas width={this.state.width} height={750}
+			<ChartCanvas width={width} height={750}
 				margin={{left: 70, right: 70, top:20, bottom: 30}} initialDisplay={200} 
 				dataTransform={[ { transform: StockscaleTransformer } ]}
 				data={data} type={type}>
