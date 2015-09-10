@@ -1,9 +1,7 @@
 ### Installation
 ```sh
-npm install react-stockcharts@next --save
+npm install react-stockcharts --save
 ```
-
-`next` is a tag used for the npm releases before a proper release, contains alpha/beta/rc
 
 ### Bootstrap
 ```sh
