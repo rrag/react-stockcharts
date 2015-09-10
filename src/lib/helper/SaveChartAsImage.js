@@ -19,11 +19,11 @@ var SaveChartAsImage = {
 					context.fillStyle = background;
 					context.fillRect(0, 0, canvas.width, canvas.height);
 				}
-				var canvasList = container.getElementsByTagName("canvas")
+				var canvasList = container.getElementsByTagName("canvas");
 				for (var i = 0; i < canvasList.length; i++) {
 					var each = canvasList[i];
 					if (each !== undefined) {
-						var parent = each.parentNode.parentNode.getBoundingClientRect()
+						var parent = each.parentNode.parentNode.getBoundingClientRect();
 						var rect = each.getBoundingClientRect();
 						context.drawImage(each, rect.left - parent.left, rect.top - parent.top);
 					}
@@ -31,7 +31,7 @@ var SaveChartAsImage = {
 
 				context.drawImage(image, 0, 0);
 				cb(canvas.toDataURL('image/png'));
-			}
+			};
 			image.src = uri;
 		});
 	},
