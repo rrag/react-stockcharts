@@ -27,27 +27,27 @@ class BollingerSeries extends React.Component {
 				<Line
 					xScale={xScale} yScale={yScale}
 					xAccessor={xAccessor} yAccessor={(d) => yAccessor(d) && yAccessor(d).top}
-					data={plotData}
+					plotData={plotData}
 					stroke={stroke.top} fill="none" 
 					type={type} />
 				<Line
 					xScale={xScale} yScale={yScale}
 					xAccessor={xAccessor} yAccessor={(d) => yAccessor(d) && yAccessor(d).middle}
-					data={plotData}
+					plotData={plotData}
 					stroke={stroke.middle} fill="none"
 					type={type} />
 				<Line
 					xScale={xScale} yScale={yScale}
 					xAccessor={xAccessor} yAccessor={(d) => yAccessor(d) && yAccessor(d).bottom}
-					data={plotData}
+					plotData={plotData}
 					stroke={stroke.bottom} fill="none"
 					type={type} />
 				<Area
 					className={className}
 					xScale={xScale} yScale={yScale}
 					xAccessor={xAccessor} yAccessor={(d) => yAccessor(d) && yAccessor(d).top}
-					base={(d) => yScale(yAccessor(d) && yAccessor(d).bottom)}
-					data={plotData}
+					base={(scale, d) => scale(yAccessor(d) && yAccessor(d).bottom)}
+					plotData={plotData}
 					stroke="none" fill={fill} opacity={opacity}
 					type={type} />
 			</g>

@@ -20,14 +20,14 @@ class AreaSeries extends React.Component {
 					className={this.props.className}
 					xScale={xScale} yScale={yScale}
 					xAccessor={xAccessor} yAccessor={yAccessor}
-					data={plotData}
+					plotData={plotData}
 					stroke={stroke} fill="none"
 					type={type} />
 				<Area
 					className={this.props.className}
 					xScale={xScale} yScale={yScale}
 					xAccessor={xAccessor} yAccessor={yAccessor}
-					data={plotData}
+					plotData={plotData}
 					stroke="none" fill={fill} opacity={opacity}
 					type={type} />
 			</g>

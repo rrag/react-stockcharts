@@ -88,14 +88,17 @@ class EventCapture extends React.Component {
 			this.context.onPan(newPos, chartData.plot.scales.xScale.domain());
 		}
 	}
-	handlePanEnd() {
+	handlePanEnd(event) {
+		var deltaXY = this.context.deltaXY();
+		var newPos = [d3.event.pageX - deltaXY[0], d3.event.pageY - deltaXY[1]];
+
 		var win = d3Window(React.findDOMNode(this.refs.capture));
 
 		d3.select(win)
 			.on(mousemove, null)
 			.on(mouseup, null);
 		if (this.props.pan && this.context.onPanEnd) {
-			this.context.onPanEnd();
+			this.context.onPanEnd(newPos);
 		}
 		// e.preventDefault();
 	}

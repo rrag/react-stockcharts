@@ -1,96 +1,110 @@
 "use strict";
 
 import React from "react";
+import BaseCanvasSeries from "./BaseCanvasSeries";
 
-class HistogramSeries extends React.Component {
+class HistogramSeries extends BaseCanvasSeries {
 	constructor(props) {
 		super(props);
-		this.getBars = this.getBars.bind(this);
 		this.getBarsSVG = this.getBarsSVG.bind(this);
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
-	componentDidUpdate(prevProps, prevState, prevContext) {
-		if (this.context.type !== "svg" && this.context.canvasContext !== undefined) this.drawOnCanvas();
-	}
 	drawOnCanvas() {
-		var ctx = this.context.canvasContext;
-		var bars = this.getBars();
+		var { compareSeries, indicator, xAccessor, yAccessor, canvasContext, xScale, yScale, plotData } = this.context;
+
+		this.drawOnCanvasStatic(this.props, compareSeries, indicator, xAccessor, yAccessor, canvasContext, xScale, yScale, plotData);
+	}
+	drawOnCanvasStatic(props, compareSeries, indicator, xAccessor, yAccessor, ctx, xScale, yScale, plotData) {
+
+		var bars = this.getBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
 
 		var { fillStyle, strokeStyle, globalAlpha } = ctx;
-		ctx.globalAlpha = this.props.opacity;
+		ctx.globalAlpha = props.opacity;
 
-		bars.forEach(d => {
-			if (d.barWidth < 1) {
-				/* <line key={idx} className={d.className}
+		var each, group = {};
+		for (var i = 0; i < bars.length; i++) {
+			each = bars[i];
+			if (each.x !== undefined) {
+				if (group[each.fill] === undefined) {
+					group[each.fill] = [];
+				}
+				group[each.fill].push(each);
+			}
+		};
+
+		Object.keys(group).forEach(key => {
+			if (group[key][0].barWidth < 1) {
+				ctx.strokeStyle = key;
+			} else {
+				ctx.fillStyle = key;
+			}
+			group[key].forEach(d => {
+				if (d.barWidth < 1) {
+					/* <line key={idx} className={d.className}
+								stroke={this.props.stroke}
+								fill={this.props.fill}
+								x1={d.x} y1={d.y}
+								x2={d.x} y2={d.y + d.height} />*/
+					ctx.beginPath();
+					ctx.moveTo(d.x, d.y);
+					ctx.lineTo(d.x, d.y + d.height);
+					ctx.stroke();
+				} else {
+					/* <rect key={idx} className={d.className}
 							stroke={this.props.stroke}
 							fill={this.props.fill}
-							x1={d.x} y1={d.y}
-							x2={d.x} y2={d.y + d.height} />*/
-				// ctx.fillStyle = d.fill;
-				ctx.strokeStyle = d.fill;
-				ctx.beginPath();
-				ctx.moveTo(d.x, d.y);
-				ctx.lineTo(d.x, d.y + d.height);
-				ctx.stroke();
-			} else {
-				/* <rect key={idx} className={d.className}
-						stroke={this.props.stroke}
-						fill={this.props.fill}
-						x={d.x}
-						y={d.y}
-						width={d.barWidth}
-						height={d.height} /> */
-				ctx.fillStyle = d.fill;
-				ctx.strokeStyle = d.stroke;
-				ctx.beginPath();
-				ctx.rect(d.x, d.y, d.barWidth, d.height);
-				ctx.closePath();
-				ctx.fill();
-			}
+							x={d.x}
+							y={d.y}
+							width={d.barWidth}
+							height={d.height} /> */
+					ctx.beginPath();
+					ctx.rect(d.x, d.y, d.barWidth, d.height);
+					ctx.fill();
+				}
+			})
 		});
-
 		ctx.fillStyle = fillStyle;
 		ctx.strokeStyle = strokeStyle;
 		ctx.globalAlpha = globalAlpha;
-
 	}
-	getBars() {
-		var base = this.props.baseAt === "top"
+	getBars(props, xAccessor, yAccessor, xScale, yScale, plotData) {
+		var { baseAt, direction, className, fill, stroke } = props;
+		var base = baseAt === "top"
 					? 0
-					: this.props.baseAt === "bottom"
-						? this.context.yScale.range()[0]
-						: this.props.baseAt === "middle"
-							? (this.context.yScale.range()[0] + this.context.yScale.range()[1]) / 2
-							: this.props.baseAt;
+					: baseAt === "bottom"
+						? yScale.range()[0]
+						: baseAt === "middle"
+							? (yScale.range()[0] + yScale.range()[1]) / 2
+							: baseAt;
 
-		var dir = this.props.direction === "up" ? -1 : 1;
+		var dir = direction === "up" ? -1 : 1;
 
-		var getClassName = () => this.props.className;
-		if (typeof this.props.className === "function") {
-			getClassName = this.props.className;
+		var getClassName = () => className;
+		if (typeof className === "function") {
+			getClassName = className;
 		}
 
-		var getFill = () => this.props.fill;
-		if (typeof this.props.fill === "function") {
-			getFill = this.props.fill;
+		var getFill = () => fill;
+		if (typeof fill === "function") {
+			getFill = fill;
 		}
 
-		var width = this.context.xScale(this.context.xAccessor(this.context.plotData[this.context.plotData.length - 1]))
-			- this.context.xScale(this.context.xAccessor(this.context.plotData[0]));
-		var barWidth = Math.round(width / (this.context.plotData.length) * 0.5);
+		var width = xScale(xAccessor(plotData[plotData.length - 1]))
+			- xScale(xAccessor(plotData[0]));
+		var barWidth = Math.round(width / (plotData.length) * 0.5);
 
-		var bars = this.context.plotData
-				.filter((d) => (this.context.yAccessor(d) !== undefined) )
+		var bars = plotData
+				.filter((d) => (yAccessor(d) !== undefined) )
 				.map((d, idx) => {
-					var yValue = this.context.yAccessor(d);
-					var x = Math.round(this.context.xScale(this.context.xAccessor(d))) - 0.5 * barWidth,
+					var yValue = yAccessor(d);
+					var x = Math.round(xScale(xAccessor(d))) - 0.5 * barWidth,
 						className = getClassName(d), y, height;
 
 					if (dir > 0) {
 						y = base;
-						height = this.context.yScale.range()[0] - this.context.yScale(yValue);
+						height = yScale.range()[0] - yScale(yValue);
 					} else {
-						y = this.context.yScale(yValue);
+						y = yScale(yValue);
 						height = base - y;
 					}
 
@@ -104,14 +118,17 @@ class HistogramSeries extends React.Component {
 						x: Math.round(x),
 						y: Math.round(y),
 						className: className,
-						stroke: this.props.stroke,
+						stroke: stroke,
 						fill: getFill(d),
 					};
 				});
 		return bars;
 	}
 	getBarsSVG() {
-		var bars = this.getBars();
+		var { xAccessor, yAccessor, xScale, yScale, plotData } = this.context;
+
+		var bars = this.getBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
+
 		return bars.map((d, idx) => {
 			if (d.barWidth <= 1) {
 				return <line key={idx} className={d.className}
@@ -164,16 +181,6 @@ HistogramSeries.defaultProps = {
 	stroke: "none",
 	fill: "steelblue",
 	opacity: 0.5,
-};
-
-HistogramSeries.contextTypes = {
-	xScale: React.PropTypes.func.isRequired,
-	yScale: React.PropTypes.func.isRequired,
-	xAccessor: React.PropTypes.func.isRequired,
-	yAccessor: React.PropTypes.func.isRequired,
-	plotData: React.PropTypes.array.isRequired,
-	canvasContext: React.PropTypes.object,
-	type: React.PropTypes.string,
 };
 
 module.exports = HistogramSeries;

@@ -112,7 +112,7 @@ class ChartCanvas extends React.Component {
 							cursor: pointer;
 						}
 					]]>`;
-		var { data, options } = this.state;
+		var { data, options, canvasList } = this.state;
 		var { interval, initialDisplay, type, height, width, margin, className } = this.props;
 		var displayCount = initialDisplay || this.props.data.length;
 
@@ -146,7 +146,7 @@ class ChartCanvas extends React.Component {
 						<EventHandler ref="chartContainer"
 							data={data} options={options} interval={interval} 
 							initialDisplay={initialDisplay}
-							dimensions={dimensions} type={type}>
+							dimensions={dimensions} type={type} >
 							{children}
 						</EventHandler>
 					</g>

@@ -6,8 +6,8 @@
 - ~~Bolinger Bands~~ - `v0.2`
 - ~~Moving Average Convergence Divergence (MACD)~~ - `v0.1`
 - ~~Relative Strength Index (RSI)~~ - `v0.2`
-- Stochastics - `v0.2`
-- More indicators - suggestions welcome - `v0.3`
+- ~~Stochastics~~ - `v0.2`
+- More indicators - suggestions welcome - `v0.4`
 
 #### Chart types
 
@@ -15,9 +15,10 @@
 - ~~Kagi~~ - `v0.1`
 - ~~Point and Figure~~ - `v0.1`
 - ~~Renko~~ - `v0.1`
-- Better Renko/Mean Renko - `v0.3`
+- Better Renko/Mean Renko - `v0.4`
 - Line break - `v0.3`
 - Volume Profile - `v0.3`
+- Max Drawdown - `v0.3`
 
 #### Chart features
 
@@ -27,7 +28,9 @@
 - ~~Add custom indicators~~ - `v0.2`
 - ~~Pure React axes~~ - `v0.2`
 - ~~Provide option to use canvas instead of svg~~ - `v0.2`
-- Update `CurrentCoordinate` and `EdgeCoordinate` to deal with `DataSeries` which has a `yAccessor` which returns an object - `v0.2.1`
+- Update `CurrentCoordinate` and `EdgeCoordinate` to deal with `DataSeries` which has a `yAccessor` which returns an object - `v0.3`
+- Improve performance of pan in firefox - `v0.3`
+- create a new mode `canvas` in addition to `svg` and `hybrid` eliminating all svg and use just canvas - `v0.3`
 
 #### Documentation
 

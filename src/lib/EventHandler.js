@@ -14,6 +14,7 @@ function getLongValue(value) {
 	}
 	return value;
 }
+var lastRun = new Date().getTime();
 
 class EventHandler extends PureComponent {
 	constructor(props, context) {
@@ -64,6 +65,7 @@ class EventHandler extends PureComponent {
 			mainChart: mainChart,
 			currentCharts: [mainChart],
 			initialRender: true,
+			secretToSuperFastCanvasDraw: [],
 		});
 	}
 	componentWillReceiveProps(nextProps) {
@@ -71,6 +73,7 @@ class EventHandler extends PureComponent {
 		if (nextProps.type !== "svg" && this.state.initialRender) {
 			this.setState({
 				initialRender: false,
+				secretToSuperFastCanvasDraw: [],
 			});
 		} else {
 			var { interval, chartData, plotData } = this.state;
@@ -99,6 +102,7 @@ class EventHandler extends PureComponent {
 				mouseXY: [0, 0],
 				mainChart: mainChart,
 				initialRender: false,
+				secretToSuperFastCanvasDraw: [],
 			});
 		}
 	}
@@ -116,6 +120,7 @@ class EventHandler extends PureComponent {
 			height: this.props.dimensions.height,
 			type: this.props.type,
 			dateAccessor: this.props.options.dateAccessor,
+			secretToSuperFastCanvasDraw: this.state.secretToSuperFastCanvasDraw,
 
 			onMouseMove: this.handleMouseMove,
 			onMouseEnter: this.handleMouseEnter,
@@ -206,75 +211,114 @@ class EventHandler extends PureComponent {
 			focus: true,
 		});
 	}
-	handlePan(mousePosition, startDomain) {
-		// console.log("mousePosition ", mousePosition);
-		/* can also use plotData, use this if you want to pan and show only within that data set*/
+	panHelper(mousePosition) {
 		var { mainChart, chartData, interval, panStartDomain, panOrigin } = this.state;
 		var { data } = this.props;
-		if (panStartDomain === null) {
-			this.handlePanStart(startDomain, mousePosition);
+
+		var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0],
+			domainRange = panStartDomain[1] - panStartDomain[0],
+			fullData = data[interval],
+			last = fullData[fullData.length - 1],
+			first = fullData[0],
+			dx = mousePosition[0] - panOrigin[0],
+			xAccessor = chart.config.xAccessor;
+
+		// console.log("pan -- mouse move - ", mousePosition, " dragged by ", dx, " pixels");
+
+		var domainStart = getLongValue(panStartDomain[0]) - dx / chart.config.width * domainRange;
+		if (domainStart < getLongValue(xAccessor(first)) - Math.floor(domainRange / 3)) {
+			domainStart = getLongValue(xAccessor(first)) - Math.floor(domainRange / 3);
 		} else {
-			// requestAnimationFrame(() => {
-				var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0],
-					domainRange = panStartDomain[1] - panStartDomain[0],
-					fullData = data[interval],
-					last = fullData[fullData.length - 1],
-					first = fullData[0],
-					dx = mousePosition[0] - panOrigin[0],
-					xAccessor = chart.config.xAccessor;
+			domainStart = Math.min(getLongValue(xAccessor(last))
+				+ Math.ceil(domainRange / 3), domainStart + domainRange) - domainRange;
+		}
+		var domainL = domainStart, domainR = domainStart + domainRange;
+		if (panStartDomain[0] instanceof Date) {
+			domainL = new Date(domainL);
+			domainR = new Date(domainR);
+		}
 
-				// console.log("pan -- mouse move - ", mousePosition, " dragged by ", dx, " pixels");
+		var beginIndex = Utils.getClosestItemIndexes(fullData, domainL, xAccessor).left;
+		var endIndex = Utils.getClosestItemIndexes(fullData, domainR, xAccessor).right;
 
-				var domainStart = getLongValue(panStartDomain[0]) - dx / chart.config.width * domainRange;
-				if (domainStart < getLongValue(xAccessor(first)) - Math.floor(domainRange / 3)) {
-					domainStart = getLongValue(xAccessor(first)) - Math.floor(domainRange / 3);
-				} else {
-					domainStart = Math.min(getLongValue(xAccessor(last))
-						+ Math.ceil(domainRange / 3), domainStart + domainRange) - domainRange;
-				}
-				var domainL = domainStart, domainR = domainStart + domainRange;
-				if (panStartDomain[0] instanceof Date) {
-					domainL = new Date(domainL);
-					domainR = new Date(domainR);
-				}
+		var filteredData = fullData.slice(beginIndex, endIndex);
 
-				var beginIndex = Utils.getClosestItemIndexes(fullData, domainL, xAccessor).left;
-				var endIndex = Utils.getClosestItemIndexes(fullData, domainR, xAccessor).right;
+		var newChartData = chartData.map((eachChart) => {
+			var plot = ChartDataUtil.getChartPlotFor(eachChart.config, filteredData, domainL, domainR);
+			return {
+				id: eachChart.id,
+				config: eachChart.config,
+				plot: plot
+			};
+		});
+		var currentItems = ChartDataUtil.getCurrentItems(newChartData, mousePosition, filteredData);
 
-				var filteredData = fullData.slice(beginIndex, endIndex);
-
-				var newChartData = chartData.map((eachChart) => {
-					var plot = ChartDataUtil.getChartPlotFor(eachChart.config, filteredData, domainL, domainR);
-					return {
-						id: eachChart.id,
-						config: eachChart.config,
-						plot: plot
-					};
-				});
-				var currentItems = ChartDataUtil.getCurrentItems(newChartData, mousePosition, filteredData);
-
-				var currentCharts = newChartData.filter((eachChartData) => {
-					var top = eachChartData.config.origin[1];
-					var bottom = top + eachChartData.config.height;
-					return (mousePosition[1] > top && mousePosition[1] < bottom);
-				}).map((eachChartData) => eachChartData.id);
-
-				this.setState({
-					chartData: newChartData,
-					plotData: filteredData,
-					currentItems: currentItems,
-					// show: true,
-					mouseXY: mousePosition,
-					currentCharts: currentCharts,
-				});
-			// });
+		var currentCharts = newChartData.filter((eachChartData) => {
+			var top = eachChartData.config.origin[1];
+			var bottom = top + eachChartData.config.height;
+			return (mousePosition[1] > top && mousePosition[1] < bottom);
+		}).map((eachChartData) => eachChartData.id);
+		return {
+			chartData: newChartData,
+			plotData: filteredData,
+			mouseXY: mousePosition,
+			currentItems: currentItems,
+			show: true,
+			currentCharts: currentCharts,
 		}
 	}
-	handlePanEnd() {
+	getCurrentCanvasContext(canvasList, chartId) {
+		var canvasContextList = canvasList.filter((each) => parseInt(each.id, 10) === chartId);
+		var canvasContext = canvasContextList.length > 0 ? canvasContextList[0].context : undefined;
+		return canvasContext;
+	}
+	handlePan(mousePosition, startDomain) {
+		/* can also use plotData, use this if you want to pan and show only within that data set*/
+		if (this.state.panStartDomain === null) {
+			this.handlePanStart(startDomain, mousePosition);
+		} else {
+			var { canvasList } = this.context;
+			var { chartData, plotData } = this.panHelper(mousePosition);
+			// console.log(this.state.secretToSuperFastCanvasDraw);
+			requestAnimationFrame(() => {
+				chartData.forEach(eachChart => {
+					var canvasContext = this.getCurrentCanvasContext(canvasList, eachChart.id)
+					canvasContext.clearRect(-1, -1, eachChart.config.width, eachChart.config.height);
+					this.state.secretToSuperFastCanvasDraw
+						.filter(each => eachChart.id === each.chartId)
+						.forEach(each => {
+							eachChart.config.overlays
+								.filter(eachOverlay => eachOverlay.id === each.seriesId)
+								.forEach(eachOverlay => {
+									// console.log("Do Stuff here", i);
+									var { xAccessor, compareSeries } = eachChart.config;
+									var { xScale, yScale } = eachChart.plot.scales;
+									var { yAccessor } = eachOverlay;
+									// xScale, yScale, plotData
+									each.draw(canvasContext, xScale, yScale, plotData);
+								})
+						})
+				});
+
+				/*var delta = (new Date().getTime() - lastRun)/1000;
+				lastRun = new Date().getTime();
+				var fps = 1 / delta;
+
+				document.getElementById("debug_here").innerHTML = fps;*/
+			});
+		}
+	}
+	handlePanEnd(mousePosition) {
+		var state = this.panHelper(mousePosition);
 		this.setState({
+			...state,
+		// });
+		// this.setState({
 			panInProgress: false,
-			panStartDomain: null
+			panStartDomain: null,
+			secretToSuperFastCanvasDraw: [],
 		});
+		// console.log(mousePosition);
 	}
 	handleFocus(focus) {
 		// console.log(focus);
@@ -299,6 +343,9 @@ class EventHandler extends PureComponent {
 		);
 	}
 }
+EventHandler.contextTypes = {
+	canvasList: React.PropTypes.array,
+};
 
 EventHandler.childContextTypes = {
 	plotData: React.PropTypes.array,
@@ -313,6 +360,7 @@ EventHandler.childContextTypes = {
 	height: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 	dateAccessor: React.PropTypes.func,
+	secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
 
 	onMouseMove: React.PropTypes.func,
 	onMouseEnter: React.PropTypes.func,

@@ -12,7 +12,7 @@ class LineSeries extends React.Component {
 				className={this.props.className}
 				xScale={xScale} yScale={yScale}
 				xAccessor={xAccessor} yAccessor={yAccessor}
-				data={plotData}
+				plotData={plotData}
 				stroke={stroke} fill="none"
 				type={type} />
 		);

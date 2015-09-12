@@ -1,37 +1,47 @@
 "use strict";
 
 import React from "react";
+import BaseCanvasSeries from "./BaseCanvasSeries";
 
-class CandlestickSeries extends React.Component {
+class CandlestickSeries extends BaseCanvasSeries {
 	constructor(props) {
 		super(props);
-		this.getWickData = this.getWickData.bind(this);
 		this.getWicksSVG = this.getWicksSVG.bind(this);
-		this.getCandleData = this.getCandleData.bind(this);
 		this.getCandlesSVG = this.getCandlesSVG.bind(this);
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
-	componentDidUpdate(prevProps, prevState, prevContext) {
-		if (this.context.type !== "svg" && this.context.canvasContext !== undefined) this.drawOnCanvas();
-	}
 	drawOnCanvas() {
-		var ctx = this.context.canvasContext;
-		var { stroke, fill } = this.props;
-		var wickData = this.getWickData();
+		var { compareSeries, indicator, xAccessor, yAccessor, canvasContext, xScale, yScale, plotData } = this.context;
+
+		this.drawOnCanvasStatic(this.props, compareSeries, indicator, xAccessor, yAccessor, canvasContext, xScale, yScale, plotData);
+	}
+	drawOnCanvasStatic(props, compareSeries, indicator, xAccessor, yAccessor, ctx, xScale, yScale, plotData) {
+
+		var { stroke, fill } = props;
+		var wickData = this.getWickData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
 		wickData.forEach(d => {
 			ctx.beginPath();
 			ctx.moveTo(d.x1, d.y1);
 			ctx.lineTo(d.x2, d.y2);
 			ctx.stroke();
 		});
-		var candleData = this.getCandleData();
+		var candleData = this.getCandleData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
 		var { fillStyle } = ctx;
 
-		candleData.forEach(d => {
-			if (d.width < 0) {
-				if (d.direction >= 0) ctx.fillStyle = fill.up;
-				else ctx.fillStyle = fill.down;
 
+		var each, group = { up: [], down: [] };
+		for (var i = 0; i < candleData.length; i++) {
+			each = candleData[i];
+			if (each.direction >= 0) {
+				group.up.push(each);
+			} else {
+				group.down.push(each);
+			}
+		};
+
+		ctx.fillStyle = fill.up
+		group.up.forEach(d => {
+			if (d.width < 0) {
 				// <line className={d.className} key={idx} x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height}/>
 				ctx.beginPath();
 				ctx.moveTo(d.x, d.y);
@@ -39,17 +49,11 @@ class CandlestickSeries extends React.Component {
 				ctx.stroke();
 			} else if (d.height === 0) {
 				// <line key={idx} x1={d.x} y1={d.y} x2={d.x + d.width} y2={d.y + d.height} />
-				if (d.direction >= 0) ctx.fillStyle = fill.up;
-				else ctx.fillStyle = fill.down;
-
 				ctx.beginPath();
 				ctx.moveTo(d.x, d.y);
 				ctx.lineTo(d.x + d.width, d.y + d.height);
 				ctx.stroke();
 			} else {
-				if (d.direction >= 0) ctx.fillStyle = fill.up;
-				else ctx.fillStyle = fill.down;
-
 				ctx.beginPath();
 				ctx.rect(d.x, d.y, d.width, d.height);
 				ctx.closePath();
@@ -57,20 +61,46 @@ class CandlestickSeries extends React.Component {
 			}
 		});
 
+		ctx.fillStyle = fill.down
+		group.down.forEach(d => {
+			if (d.width < 0) {
+				// <line className={d.className} key={idx} x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height}/>
+				ctx.beginPath();
+				ctx.moveTo(d.x, d.y);
+				ctx.lineTo(d.x, d.y + d.height);
+				ctx.stroke();
+			} else if (d.height === 0) {
+				// <line key={idx} x1={d.x} y1={d.y} x2={d.x + d.width} y2={d.y + d.height} />
+				ctx.beginPath();
+				ctx.moveTo(d.x, d.y);
+				ctx.lineTo(d.x + d.width, d.y + d.height);
+				ctx.stroke();
+			} else {
+				ctx.beginPath();
+				ctx.rect(d.x, d.y, d.width, d.height);
+				ctx.closePath();
+				ctx.fill();
+			}
+		});
+
+
 		ctx.fillStyle = fillStyle;
 	}
-	getWickData() {
-		var wickData = this.context.plotData
+	getWickData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData) {
+		var isCompareSeries = compareSeries.length > 0;
+
+		var { classNames } = props;
+		var wickData = plotData
 				.filter((d) => d.close !== undefined)
 				.map((d, idx) => {
-					// console.log(this.context.yAccessor);
-					var ohlc = this.context.isCompareSeries ? this.context.yAccessor(d.compare) : this.context.yAccessor(d);
+					// console.log(yAccessor);
+					var ohlc = isCompareSeries ? yAccessor(d.compare) : yAccessor(d);
 
-					var x1 = Math.round(this.context.xScale(this.context.xAccessor(d))),
-						y1 = this.context.yScale(ohlc.high),
+					var x1 = Math.round(xScale(xAccessor(d))),
+						y1 = yScale(ohlc.high),
 						x2 = x1,
-						y2 = this.context.yScale(ohlc.low),
-						className = (ohlc.open <= ohlc.close) ? "up" : "down";
+						y2 = yScale(ohlc.low),
+						className = (ohlc.open <= ohlc.close) ? classNames.up : classNames.down;
 
 					return {
 						x1: x1,
@@ -84,20 +114,24 @@ class CandlestickSeries extends React.Component {
 				});
 		return wickData;
 	}
-	getCandleData() {
-		var { classNames, fill, stroke } = this.props;
-		var width = this.context.xScale(this.context.xAccessor(this.context.plotData[this.context.plotData.length - 1]))
-			- this.context.xScale(this.context.xAccessor(this.context.plotData[0]));
-		var cw = (width / (this.context.plotData.length)) * 0.5;
+	getCandleData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData) {
+		// var { plotData, isCompareSeries, yAccessor, xAccessor, yScale, xScale } = this.context;
+		var isCompareSeries = compareSeries.length > 0;
+
+		var { classNames, fill, stroke } = props;
+
+		var width = xScale(xAccessor(plotData[plotData.length - 1]))
+			- xScale(xAccessor(plotData[0]));
+		var cw = (width / (plotData.length)) * 0.5;
 		var candleWidth = Math.round(cw); // Math.floor(cw) % 2 === 0 ? Math.floor(cw) : Math.round(cw);
-		var candles = this.context.plotData
+		var candles = plotData
 				.filter((d) => d.close !== undefined)
 				.map((d, idx) => {
-					var ohlc = this.context.isCompareSeries ? this.context.yAccessor(d.compare) : this.context.yAccessor(d);
-					var x = Math.round(this.context.xScale(this.context.xAccessor(d)))
+					var ohlc = isCompareSeries ? yAccessor(d.compare) : yAccessor(d);
+					var x = Math.round(xScale(xAccessor(d)))
 							- (candleWidth === 1 ? 0 : 0.5 * candleWidth),
-						y = this.context.yScale(Math.max(ohlc.open, ohlc.close)),
-						height = Math.abs(this.context.yScale(ohlc.open) - this.context.yScale(ohlc.close)),
+						y = yScale(Math.max(ohlc.open, ohlc.close)),
+						height = Math.abs(yScale(ohlc.open) - yScale(ohlc.close)),
 						className = (ohlc.open <= ohlc.close) ? classNames.up : classNames.down;
 					return {
 						// type: "line"
@@ -114,7 +148,9 @@ class CandlestickSeries extends React.Component {
 		return candles;
 	}
 	getWicksSVG() {
-		var wickData = this.getWickData();
+		var { xAccessor, yAccessor, xScale, yScale, compareSeries, plotData } = this.context;
+
+		var wickData = this.getWickData(this.props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
 		var wicks = wickData
 			.map((d, idx) => <line key={idx}
 				className={d.className} stroke={d.stroke} style={{ shapeRendering: "crispEdges" }}
@@ -124,7 +160,9 @@ class CandlestickSeries extends React.Component {
 		return wicks;
 	}
 	getCandlesSVG() {
-		var candleData = this.getCandleData();
+		var { xAccessor, yAccessor, xScale, yScale, compareSeries, plotData } = this.context;
+
+		var candleData = this.getCandleData(this.props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
 		var candles = candleData.map((d, idx) => {
 			if (d.width < 0) return <line className={d.className} key={idx} x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height} stroke={d.fill} />;
 			else if (d.height === 0) return <line key={idx} x1={d.x} y1={d.y} x2={d.x + d.width} y2={d.y + d.height} stroke={d.fill} />;
@@ -146,17 +184,6 @@ class CandlestickSeries extends React.Component {
 		);
 	}
 }
-
-CandlestickSeries.contextTypes = {
-	xScale: React.PropTypes.func.isRequired,
-	yScale: React.PropTypes.func.isRequired,
-	xAccessor: React.PropTypes.func.isRequired,
-	yAccessor: React.PropTypes.func.isRequired,
-	plotData: React.PropTypes.array.isRequired,
-	isCompareSeries: React.PropTypes.bool.isRequired,
-	canvasContext: React.PropTypes.object,
-	type: React.PropTypes.string,
-};
 
 CandlestickSeries.propTypes = {
 	classNames: React.PropTypes.shape({

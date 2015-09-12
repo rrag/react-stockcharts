@@ -1,19 +1,25 @@
 "use strict";
 
 import React from "react";
+import BaseSimpleCanvasSeries from "./BaseSimpleCanvasSeries";
 
-class StraightLine extends React.Component {
+class StraightLine extends BaseSimpleCanvasSeries {
 	constructor(props) {
 		super(props);
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
-	componentDidUpdate(prevProps, prevState, prevContext) {
-		if (this.context.type !== "svg" && this.context.canvasContext !== undefined) this.drawOnCanvas();
-	}
 	drawOnCanvas() {
-		var { canvasContext: ctx } = this.context;
-		var { type, stroke, fill, className, opacity } = this.props;
-		var { x1, y1, x2, y2 } = this.props;
+		var { canvasContext } = this.context;
+		var { plotData, xScale, yScale } = this.props;
+
+		this.drawOnCanvasStatic(this.props, canvasContext, xScale, yScale, plotData);
+	}
+	drawOnCanvasStatic(props, ctx, xScale, yScale, plotData) {
+		var { type, stroke, fill, className, opacity } = props;
+		var { xAccessor, yAccessor, yValue } = props;
+
+		var first = xAccessor(plotData[0]);
+		var last = xAccessor(plotData[plotData.length - 1]);
 
 		ctx.beginPath();
 
@@ -22,8 +28,8 @@ class StraightLine extends React.Component {
 		ctx.strokeStyle = stroke;
 		ctx.globalAlpha = opacity;
 
-		ctx.moveTo(x1, y1);
-		ctx.lineTo(x2, y2);
+		ctx.moveTo(xScale(first), yScale(yValue));
+		ctx.lineTo(xScale(last), yScale(yValue));
 		ctx.stroke();
 
 		ctx.fillStyle = fillStyle;
@@ -32,37 +38,39 @@ class StraightLine extends React.Component {
 	}
 	render() {
 		var { type, stroke, fill, className, opacity } = this.props;
-		var { x1, y1, x2, y2 } = this.props;
+		var { xScale, yScale, xAccessor, yAccessor, plotData, yValue } = this.props;
+
+		var first = xAccessor(plotData[0]);
+		var last = xAccessor(plotData[plotData.length - 1]);
+
 		if (type !== "svg") return null;
 
 		return (
 			<line className={className}
 				stroke={stroke} opacity={opacity}
-				x1={x1} y1={y1}
-				x2={x2} y2={y2} />
+				x1={xScale(first)} y1={yScale(yValue)}
+				x2={xScale(last)} y2={yScale(yValue)} />
 		);
 	}
 }
 
 StraightLine.propTypes = {
 	className: React.PropTypes.string,
-	x1: React.PropTypes.number.isRequired,
-	y1: React.PropTypes.number.isRequired,
-	x2: React.PropTypes.number.isRequired,
-	y2: React.PropTypes.number.isRequired,
+	xScale: React.PropTypes.func.isRequired,
+	yScale: React.PropTypes.func.isRequired,
+	xAccessor: React.PropTypes.func.isRequired,
+	yAccessor: React.PropTypes.func.isRequired,
 	stroke: React.PropTypes.string,
 	fill: React.PropTypes.string,
 	type: React.PropTypes.string.isRequired,
 	opacity: React.PropTypes.number.isRequired,
+	yValue: React.PropTypes.number.isRequired,
 };
 StraightLine.defaultProps = {
 	className: "line ",
 	fill: "none",
 	stroke: "black",
 	opacity: 0.5,
-};
-StraightLine.contextTypes = {
-	canvasContext: React.PropTypes.object,
 };
 
 module.exports = StraightLine;

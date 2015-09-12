@@ -18,7 +18,7 @@ class YAxis extends React.Component {
 		else if (axisAt === "middle") axisLocation = (this.context.width) / 2;
 		else axisLocation = axisAt;
 
-		if (this.context.isCompareSeries) {
+		if (this.context.compareSeries.length > 0) {
 			tickFormat = d3.format(".0%");
 		}
 
@@ -60,7 +60,7 @@ YAxis.contextTypes = {
 	xScale: React.PropTypes.func.isRequired,
 	yScale: React.PropTypes.func.isRequired,
 	width: React.PropTypes.number.isRequired,
-	isCompareSeries: React.PropTypes.bool.isRequired,
+	compareSeries: React.PropTypes.array.isRequired,
 };
 
 export default YAxis;

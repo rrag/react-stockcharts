@@ -13,15 +13,12 @@ class RSISeries extends React.Component {
 	getHorizontalLine(yValue, stroke) {
 		let { xScale, yScale, xAccessor, yAccessor, plotData, type } = this.context;
 
-		var first = xAccessor(plotData[0]);
-		var last = xAccessor(plotData[plotData.length - 1]);
-
 		return <StraightLine
 			stroke={stroke} opacity={0.3} type={type}
-			x1={xScale(first)}
-			y1={yScale(yValue)}
-			x2={xScale(last)}
-			y2={yScale(yValue)} />;
+			xScale={xScale} yScale={yScale}
+			xAccessor={xAccessor} yAccessor={yAccessor}
+			plotData={plotData}
+			yValue={yValue} />;
 	}
 	render() {
 		let { indicator, xScale, yScale, xAccessor, yAccessor, plotData, stroke, type } = this.context;
@@ -32,7 +29,7 @@ class RSISeries extends React.Component {
 					className={this.props.className}
 					xScale={xScale} yScale={yScale}
 					xAccessor={xAccessor} yAccessor={yAccessor}
-					data={plotData}
+					plotData={plotData}
 					stroke={stroke} fill="none"
 					type={type} />
 				{this.getHorizontalLine(options.overSold, "brown")}

@@ -10,6 +10,7 @@ class DataSeries extends React.Component {
 		var overlay = this.context.overlays.filter((each) => each.id === this.props.id)[0];
 
 		return {
+			seriesId: this.props.id,
 			yAccessor: overlay.yAccessor,
 			indicator: overlay.indicator,
 			stroke: overlay.stroke,
@@ -53,5 +54,6 @@ DataSeries.childContextTypes = {
 	indicator: React.PropTypes.func,
 	stroke: React.PropTypes.string,
 	fill: React.PropTypes.string,
+	seriesId: React.PropTypes.number.isRequired,
 };
 module.exports = DataSeries;
