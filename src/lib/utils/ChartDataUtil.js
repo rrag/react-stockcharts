@@ -83,7 +83,7 @@ var ChartDataUtil = {
 		};
 	},
 	getChartConfigFor(innerDimension, chartProps, partialData, fullData, passThroughProps) {
-		var { padding } = chartProps;
+		var { padding, margin } = chartProps;
 		var dimensions = this.getDimensions(innerDimension, chartProps);
 		// var indicator = this.getIndicator(chartProps);
 		// this.calculateIndicator(fullData, indicator);

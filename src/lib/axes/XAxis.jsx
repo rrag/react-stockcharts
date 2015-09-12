@@ -19,10 +19,9 @@ class XAxis extends React.Component {
 		}
 
 		if (ticks) ticks = [ticks];
-		// console.log(axisAt, axisLocation);
 		return (
 			<Axis {...this.props}
-				transform={`translate(0, ${ axisLocation })`}
+				transform={[0, axisLocation]}
 				showTicks={showTicks} tickFormat={tickFormat} ticks={ticks}
 				scale={this.context.xScale} />
 		);
@@ -50,12 +49,14 @@ XAxis.defaultProps = {
 	showGrid: false,
 	showTicks: true,
 	className: "react-stockcharts-x-axis",
+	ticks: 10,
 };
+
 XAxis.contextTypes = {
 	xScale: React.PropTypes.func.isRequired,
 	yScale: React.PropTypes.func.isRequired,
 	height: React.PropTypes.number.isRequired,
 	width: React.PropTypes.number.isRequired,
-};
+}
 
 export default XAxis;

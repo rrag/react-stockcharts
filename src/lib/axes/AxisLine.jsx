@@ -1,7 +1,8 @@
 'use strict';
 
-var React = require('react');
-var d3 = require('d3');
+import React from "react";
+import d3 from "d3";
+import objectAssign from "object-assign";
 
 function d3_scaleExtent(domain) {
 	var start = domain[0], stop = domain[domain.length - 1];
@@ -14,7 +15,7 @@ function d3_scaleRange(scale) {
 
 class AxisLine extends React.Component {
 	render() {
-		var { orient, scale, outerTickSize, fill, stroke, strokeWidth, className, shapeRendering } = this.props;
+		var { orient, scale, outerTickSize, fill, stroke, strokeWidth, className, shapeRendering, opacity } = this.props;
 		var sign = orient === "top" || orient === "left" ? -1 : 1;
 
 		var range = d3_scaleRange(scale);
@@ -33,6 +34,7 @@ class AxisLine extends React.Component {
 				shapeRendering={shapeRendering}
 				d={d}
 				fill={fill}
+				opacity={opacity}
 				stroke={stroke}
 				strokeWidth={strokeWidth} >
 			</path>
@@ -49,6 +51,7 @@ AxisLine.propTypes = {
 	fill: React.PropTypes.string,
 	stroke: React.PropTypes.string,
 	strokeWidth: React.PropTypes.number,
+	opacity: React.PropTypes.number,
 };
 
 AxisLine.defaultProps = {
@@ -58,6 +61,41 @@ AxisLine.defaultProps = {
 	fill: "none",
 	stroke: "#000",
 	strokeWidth: 1,
+	opacity: 1,
 };
+
+AxisLine.drawOnCanvasStatic = (props, ctx, chartData, xScale, yScale) => {
+	props = objectAssign({}, AxisLine.defaultProps, props);
+
+	var { orient, outerTickSize, fill, stroke, strokeWidth, className, shapeRendering, opacity } = props;
+
+	var sign = orient === "top" || orient === "left" ? -1 : 1;
+	var xAxis = (orient === "bottom" || orient === "top")
+
+	var range = d3_scaleRange(xAxis ? xScale : yScale);
+
+	var { strokeStyle, globalAlpha } = ctx;
+
+	ctx.strokeStyle = stroke;
+	ctx.globalAlpha = opacity;
+
+	ctx.beginPath();
+
+	if (xAxis) {
+		ctx.moveTo(range[0], sign * outerTickSize);
+		ctx.lineTo(range[0], 0);
+		ctx.lineTo(range[1], 0);
+		ctx.lineTo(range[1], sign * outerTickSize);
+	} else {
+		ctx.moveTo(sign * outerTickSize, range[0]);
+		ctx.lineTo(0, range[0]);
+		ctx.lineTo(0, range[1]);
+		ctx.lineTo(sign * outerTickSize, range[1]);
+	}
+	ctx.stroke();
+
+	ctx.strokeStyle = strokeStyle;
+	ctx.globalAlpha = globalAlpha;
+}
 
 module.exports = AxisLine;

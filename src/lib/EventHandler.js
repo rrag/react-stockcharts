@@ -195,10 +195,15 @@ class EventHandler extends PureComponent {
 				plot: plot
 			};
 		});
+		var { axesCanvasContext } = this.context;
+		if (axesCanvasContext !== undefined)
+			axesCanvasContext.clearRect(-1, -1, axesCanvasContext.canvas.width + 2, axesCanvasContext.canvas.height + 2);
+
 		this.setState({
 			chartData: newChartData,
 			plotData: dataToPlot.data,
-			interval: dataToPlot.interval
+			interval: dataToPlot.interval,
+			secretToSuperFastCanvasDraw: [],
 		});
 	}
 
@@ -277,38 +282,46 @@ class EventHandler extends PureComponent {
 		if (this.state.panStartDomain === null) {
 			this.handlePanStart(startDomain, mousePosition);
 		} else {
-			var { canvasList } = this.context;
-			var { chartData, plotData } = this.panHelper(mousePosition);
+			var { canvasList, axesCanvasContext } = this.context;
+			var state = this.panHelper(mousePosition);
+			var { chartData, plotData } = state;
 			// console.log(this.state.secretToSuperFastCanvasDraw);
-			requestAnimationFrame(() => {
-				chartData.forEach(eachChart => {
-					var canvasContext = this.getCurrentCanvasContext(canvasList, eachChart.id)
-					canvasContext.clearRect(-1, -1, eachChart.config.width, eachChart.config.height);
-					this.state.secretToSuperFastCanvasDraw
-						.filter(each => eachChart.id === each.chartId)
-						.forEach(each => {
-							eachChart.config.overlays
-								.filter(eachOverlay => eachOverlay.id === each.seriesId)
-								.forEach(eachOverlay => {
-									// console.log("Do Stuff here", i);
-									var { xAccessor, compareSeries } = eachChart.config;
-									var { xScale, yScale } = eachChart.plot.scales;
-									var { yAccessor } = eachOverlay;
-									// xScale, yScale, plotData
-									each.draw(canvasContext, xScale, yScale, plotData);
-								})
-						})
+			if (this.props.type !== "svg") {
+				requestAnimationFrame(() => {
+					axesCanvasContext.clearRect(-1, -1, axesCanvasContext.canvas.width + 2, axesCanvasContext.canvas.height + 2);
+					chartData.forEach(eachChart => {
+						var canvasContext = this.getCurrentCanvasContext(canvasList, eachChart.id)
+						canvasContext.clearRect(-1, -1, eachChart.config.width, eachChart.config.height);
+						this.state.secretToSuperFastCanvasDraw
+							.filter(each => eachChart.id === each.chartId)
+							.forEach(each => {
+								var { xScale, yScale } = eachChart.plot.scales;
+
+								eachChart.config.overlays
+									.filter(eachOverlay => eachOverlay.id === each.seriesId)
+									.forEach(eachOverlay => {
+										// console.log("Do Stuff here", i);
+										var { xAccessor, compareSeries } = eachChart.config;
+										var { yAccessor } = eachOverlay;
+										// xScale, yScale, plotData
+										each.draw(canvasContext, xScale, yScale, plotData);
+									});
+								if (each.type === "axis") {
+									each.draw(axesCanvasContext, eachChart, xScale, yScale);
+								}
+							})
+					});
 				});
-
-				/*var delta = (new Date().getTime() - lastRun)/1000;
-				lastRun = new Date().getTime();
-				var fps = 1 / delta;
-
-				document.getElementById("debug_here").innerHTML = fps;*/
-			});
+			} else {
+				this.setState(state);
+			}
 		}
 	}
 	handlePanEnd(mousePosition) {
+		var { axesCanvasContext } = this.context;
+		if (axesCanvasContext !== undefined)
+			axesCanvasContext.clearRect(-1, -1, axesCanvasContext.canvas.width + 2, axesCanvasContext.canvas.height + 2);
+
 		var state = this.panHelper(mousePosition);
 		this.setState({
 			...state,
@@ -327,7 +340,6 @@ class EventHandler extends PureComponent {
 		});
 	}
 	render() {
-
 		var children = React.Children.map(this.props.children, (child) => {
 			var newChild = Utils.isReactVersion13()
 				? React.withContext(this.getChildContext(), () => {
@@ -345,6 +357,8 @@ class EventHandler extends PureComponent {
 }
 EventHandler.contextTypes = {
 	canvasList: React.PropTypes.array,
+	axesCanvasContext: React.PropTypes.object,
+
 };
 
 EventHandler.childContextTypes = {

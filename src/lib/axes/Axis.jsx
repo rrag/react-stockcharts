@@ -6,7 +6,48 @@ import AxisTicks from "./AxisTicks";
 import AxisLine from "./AxisLine";
 
 class Axis extends React.Component {
+	constructor(props) {
+		super(props);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+	}
+	componentDidUpdate(prevProps, prevState, prevContext) {
+		if (this.props.type !== "svg" && this.context.axesCanvasContext !== undefined) this.drawOnCanvas();
+	}
+	componentWillMount() {
+		this.componentWillReceiveProps(this.props, this.context);
+	}
+	componentWillReceiveProps(nextProps, nextContext) {
+		var { axesCanvasContext, chartData, margin, chartId } = this.context;
+		var draw = this.drawOnCanvasStatic.bind(this, margin, nextProps);
+
+		nextContext.secretToSuperFastCanvasDraw.push({
+			chartId: chartId,
+			type: "axis",
+			draw: draw,
+		});
+	}
+	drawOnCanvas() {
+		var { axesCanvasContext, chartData, margin } = this.context;
+		var { scale } = this.props;
+
+		this.drawOnCanvasStatic(margin, this.props, axesCanvasContext, chartData, scale, scale);
+	}
+	drawOnCanvasStatic(margin, props, ctx, chartData, xScale, yScale) {
+		var { transform, showDomain, showTicks } = props;
+		var originX = 0.5 + chartData.config.origin[0] + margin.left + transform[0];
+		var originY = 0.5 + chartData.config.origin[1] + margin.top + transform[1];
+		ctx.setTransform(1, 0, 0, 1, 0, 0);
+		ctx.translate(originX, originY);
+
+		if (showDomain) AxisLine.drawOnCanvasStatic(props, ctx, chartData, xScale, yScale);
+		if (showTicks) AxisTicks.drawOnCanvasStatic(props, ctx, chartData, xScale, yScale);
+
+		ctx.setTransform(1, 0, 0, 1, 0, 0);
+		ctx.translate(0.5, 0.5);
+	}
 	render() {
+		if (this.context.type !== "svg") return null;
+
 		var domain = this.props.showDomain
 			? <AxisLine {...this.props} />
 			: null;
@@ -17,7 +58,7 @@ class Axis extends React.Component {
 		if (this.props.className) className = this.props.defaultClassName.concat(this.props.className);
 		return (
 			<g className={className}
-				transform={this.props.transform}>
+				transform={`translate(${ this.props.transform[0] }, ${ this.props.transform[1] })`}>
 				{ticks}
 				{domain}
 			</g>
@@ -42,7 +83,6 @@ Axis.propTypes = {
 	fontSize: React.PropTypes.number.isRequired,
 };
 
-
 Axis.defaultProps = {
 	defaultClassName: "react-stockcharts-axis ",
 	showDomain: true,
@@ -50,5 +90,14 @@ Axis.defaultProps = {
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 12,
 };
+
+Axis.contextTypes = {
+	axesCanvasContext: React.PropTypes.object,
+	type: React.PropTypes.string,
+	chartData: React.PropTypes.object.isRequired,
+	chartId: React.PropTypes.number.isRequired,
+	margin: React.PropTypes.object.isRequired,
+	secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
+}
 
 export default Axis;

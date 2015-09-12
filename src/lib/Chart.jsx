@@ -43,7 +43,7 @@ class Chart extends PureComponent {
 		if (canvasContext) {
 			var width = this.props.width || this.context.width;
 			var height = this.props.height || this.context.height;
-			canvasContext.clearRect(-1, -1, width, height);
+			canvasContext.clearRect(-1, -1, width + 2, height + 2);
 		}
 	}
 	render() {

@@ -24,7 +24,7 @@ class YAxis extends React.Component {
 
 		return (
 			<Axis {...this.props}
-				transform={`translate(${ axisLocation }, 0)`}
+				transform={[axisLocation, 0]}
 				tickFormat={tickFormat} ticks={[ticks]} tickValues={tickValues}
 				scale={yScale} />
 		);
@@ -54,6 +54,7 @@ YAxis.defaultProps = {
 	showGrid: false,
 	showDomain: false,
 	className: "react-stockcharts-y-axis",
+	ticks: 10,
 };
 YAxis.contextTypes = {
 	chartData: React.PropTypes.object.isRequired,
