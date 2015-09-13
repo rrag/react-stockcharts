@@ -9,12 +9,16 @@ class StraightLine extends BaseSimpleCanvasSeries {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas() {
-		var { canvasContext } = this.context;
+		var { canvasOrigin, canvasContext } = this.context;
 		var { plotData, xScale, yScale } = this.props;
 
-		this.drawOnCanvasStatic(this.props, canvasContext, xScale, yScale, plotData);
+		this.drawOnCanvasStatic(this.props, canvasOrigin, canvasContext, xScale, yScale, plotData);
 	}
-	drawOnCanvasStatic(props, ctx, xScale, yScale, plotData) {
+	drawOnCanvasStatic(props, canvasOrigin, ctx, xScale, yScale, plotData) {
+
+		ctx.setTransform(1, 0, 0, 1, 0, 0);
+		ctx.translate(canvasOrigin[0], canvasOrigin[1]);
+
 		var { type, stroke, fill, className, opacity } = props;
 		var { xAccessor, yAccessor, yValue } = props;
 

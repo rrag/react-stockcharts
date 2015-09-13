@@ -282,16 +282,15 @@ class EventHandler extends PureComponent {
 		if (this.state.panStartDomain === null) {
 			this.handlePanStart(startDomain, mousePosition);
 		} else {
-			var { canvasList, axesCanvasContext } = this.context;
+			var { canvasList, axesCanvasContext, margin } = this.context;
 			var state = this.panHelper(mousePosition);
 			var { chartData, plotData } = state;
 			// console.log(this.state.secretToSuperFastCanvasDraw);
 			if (this.props.type !== "svg") {
 				requestAnimationFrame(() => {
+					axesCanvasContext.setTransform(1, 0, 0, 1, 0, 0);
 					axesCanvasContext.clearRect(-1, -1, axesCanvasContext.canvas.width + 2, axesCanvasContext.canvas.height + 2);
 					chartData.forEach(eachChart => {
-						var canvasContext = this.getCurrentCanvasContext(canvasList, eachChart.id)
-						canvasContext.clearRect(-1, -1, eachChart.config.width, eachChart.config.height);
 						this.state.secretToSuperFastCanvasDraw
 							.filter(each => eachChart.id === each.chartId)
 							.forEach(each => {
@@ -304,13 +303,16 @@ class EventHandler extends PureComponent {
 										var { xAccessor, compareSeries } = eachChart.config;
 										var { yAccessor } = eachOverlay;
 										// xScale, yScale, plotData
-										each.draw(canvasContext, xScale, yScale, plotData);
+										each.draw(axesCanvasContext, xScale, yScale, plotData);
 									});
 								if (each.type === "axis") {
 									each.draw(axesCanvasContext, eachChart, xScale, yScale);
 								}
-							})
+							});
 					});
+					this.state.secretToSuperFastCanvasDraw
+						.filter(each => each.chartId === undefined)
+						.forEach(each => each.draw(axesCanvasContext, chartData));
 				});
 			} else {
 				this.setState(state);
@@ -358,6 +360,7 @@ class EventHandler extends PureComponent {
 EventHandler.contextTypes = {
 	canvasList: React.PropTypes.array,
 	axesCanvasContext: React.PropTypes.object,
+	margin: React.PropTypes.object.isRequired,
 
 };
 

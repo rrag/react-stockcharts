@@ -10,8 +10,8 @@ class BaseSimpleCanvasSeries extends React.Component {
 		this.componentWillReceiveProps(this.props, this.context);
 	}
 	componentWillReceiveProps(nextProps, nextContext) {
-		var { compareSeries, indicator, xAccessor, yAccessor, seriesId, chartId } = nextContext;
-		var draw = this.drawOnCanvasStatic.bind(this, nextProps);
+		var { canvasOrigin, compareSeries, indicator, xAccessor, yAccessor, seriesId, chartId } = nextContext;
+		var draw = this.drawOnCanvasStatic.bind(this, nextProps, canvasOrigin);
 
 		nextContext.secretToSuperFastCanvasDraw.push({
 			chartId: chartId,
@@ -26,6 +26,7 @@ BaseSimpleCanvasSeries.contextTypes = {
 	secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
 	chartId: React.PropTypes.number.isRequired,
 	seriesId: React.PropTypes.number.isRequired,
+	canvasOrigin: React.PropTypes.array,
 };
 
 module.exports = BaseSimpleCanvasSeries;

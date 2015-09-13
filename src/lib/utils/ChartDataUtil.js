@@ -16,12 +16,17 @@ var ChartDataUtil = {
 		return this.getChildren(props.children, /Chart$/);
 	},
 	getChartDataForChart(props, context) {
-		var chartData = context.chartData.filter((each) => each.id === props.forChart)[0];
-		return chartData;
+		return this.getChartDataForChartNew(context.chartData, props.forChart);
 	},
 	getCurrentItemForChart(props, context) {
-		var currentItem = context.currentItems.filter((each) => each.id === props.forChart)[0];
-		var item = currentItem ? currentItem.data : {};
+		return this.getCurrentItemForChartNew(context.currentItems, props.forChart);
+	},
+	getChartDataForChartNew(chartData, chartId) {
+		return chartData.filter((each) => each.id === chartId)[0];
+	},
+	getCurrentItemForChartNew(currentItems, chartId) {
+		var currentItem = currentItems.filter((each) => each.id === chartId)[0];
+		var item = currentItem !== undefined ? currentItem.data : {};
 		return item;
 	},
 	getChartOrigin(origin, contextWidth, contextHeight) {

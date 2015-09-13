@@ -12,7 +12,8 @@
   "dependencies": {
     "d3": "^3.5.6",
     "object-assign": "^4.0.1",
-    "react": "^0.14.0-beta3"
+    "react": "^0.14.0-beta3",
+    "save-svg-as-png": "git://github.com/exupero/saveSvgAsPng.git#gh-pages"
   },
   "devDependencies": {
     "autoprefixer-loader": "^2.0.0",
@@ -39,7 +40,6 @@
     "remarkable-loader": "0.1.0",
     "rimraf": "^2.4.2",
     "sass-loader": "^2.0.1",
-    "save-svg-as-png": "git://github.com/exupero/saveSvgAsPng.git#gh-pages",
     "serve-static": "^1.10.0",
     "shelljs": "^0.5.3",
     "style-loader": "^0.12.3",

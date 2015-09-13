@@ -10,11 +10,14 @@ class HistogramSeries extends BaseCanvasSeries {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas() {
-		var { compareSeries, indicator, xAccessor, yAccessor, canvasContext, xScale, yScale, plotData } = this.context;
+		var { compareSeries, indicator, xAccessor, yAccessor, canvasContext, xScale, yScale, plotData, canvasOrigin } = this.context;
 
-		this.drawOnCanvasStatic(this.props, compareSeries, indicator, xAccessor, yAccessor, canvasContext, xScale, yScale, plotData);
+		this.drawOnCanvasStatic(this.props, canvasOrigin, compareSeries, indicator, xAccessor, yAccessor, canvasContext, xScale, yScale, plotData);
 	}
-	drawOnCanvasStatic(props, compareSeries, indicator, xAccessor, yAccessor, ctx, xScale, yScale, plotData) {
+	drawOnCanvasStatic(props, canvasOrigin, compareSeries, indicator, xAccessor, yAccessor, ctx, xScale, yScale, plotData) {
+
+		ctx.setTransform(1, 0, 0, 1, 0, 0);
+		ctx.translate(canvasOrigin[0], canvasOrigin[1]);
 
 		var bars = this.getBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
 

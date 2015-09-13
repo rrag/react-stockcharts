@@ -48,9 +48,13 @@ Tick.drawOnCanvasStatic = (tick, ctx, chartData, result) => {
 	ctx.font = `${ fontSize }px ${fontFamily}`;
 	ctx.fillStyle = tickStroke;
 	ctx.textAlign = textAnchor === "middle" ? "center" : textAnchor;
+	ctx.textBaseline = 'middle';
 
-	ctx.fillText(format(tick), origin[0] + x, origin[1] + y2 + y + canvas_dy); 
+	ctx.fillText(format(tick), origin[0] + x, origin[1] + y2 + y); 
 
+	ctx.font = font;
+	ctx.fillStyle = fillStyle;
+	ctx.textAlign = textAlign;
 }
 
 class AxisTicks extends React.Component {
@@ -145,37 +149,5 @@ AxisTicks.drawOnCanvasStatic = (props, ctx, chartData, xScale, yScale) => {
 	result.ticks.forEach((tick) => {
 		Tick.drawOnCanvasStatic(tick, ctx, chartData, result);
 	})
-	/*var { orient, outerTickSize, fill, stroke, strokeWidth, className, shapeRendering, opacity } = props;
-
-	var sign = orient === "top" || orient === "left" ? -1 : 1;
-	var xAxis = (orient === "bottom" || orient === "top")
-
-	var range = d3_scaleRange(xAxis ? xScale : yScale);
-
-	var { strokeStyle, globalAlpha } = ctx;
-
-	ctx.strokeStyle = stroke;
-	ctx.globalAlpha = opacity;
-
-	ctx.beginPath();
-
-	if (xAxis) {
-		ctx.moveTo(range[0], sign * outerTickSize);
-		ctx.lineTo(range[0], 0);
-		ctx.lineTo(range[1], 0);
-		ctx.lineTo(range[1], sign * outerTickSize);
-	} else {
-		ctx.moveTo(sign * outerTickSize, range[0]);
-		ctx.lineTo(0, range[0]);
-		ctx.lineTo(0, range[1]);
-		ctx.lineTo(sign * outerTickSize, range[1]);
-	}
-	ctx.stroke();
-
-	ctx.strokeStyle = strokeStyle;
-	ctx.globalAlpha = globalAlpha;
-
-	ctx.setTransform(1, 0, 0, 1, 0, 0);
-	ctx.translate(0.5, 0)*/
 }
 module.exports = AxisTicks;

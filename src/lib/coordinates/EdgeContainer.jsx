@@ -22,8 +22,13 @@ class EdgeContainer extends PureComponent {
 }
 
 EdgeContainer.contextTypes = {
+	width: React.PropTypes.number.isRequired,
 	chartData: React.PropTypes.array.isRequired,
-	currentItems: React.PropTypes.array.isRequired,
+	// currentItems: React.PropTypes.array.isRequired,
+	axesCanvasContext: React.PropTypes.object,
+	type: React.PropTypes.string,
+	margin: React.PropTypes.object.isRequired,
+	secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
 };
 
 module.exports = EdgeContainer;

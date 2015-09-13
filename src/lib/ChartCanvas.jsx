@@ -24,23 +24,12 @@ class ChartCanvas extends React.Component {
 	}
 	getChildContext() {
 		return {
-			canvasList: this.state.canvasList,
 			axesCanvasContext: this.state.axesCanvasContext,
 			mouseCoordCanvasContext: this.state.mouseCoordCanvasContext,
 			margin: this.props.margin,
 		};
 	}
 	getCanvasContextList() {
-		var canvasList = Object.keys(this.refs)
-			.filter(key => key.indexOf("chart_canvas_") > -1)
-			.map(key => React.findDOMNode(this.refs[key]))
-			.map(canvas => ({ id: canvas.id, context: canvas.getContext('2d') }));
-
-		canvasList.forEach(ctx => { 
-			ctx.context.setTransform(1, 0, 0, 1, 0, 0);
-			ctx.context.translate(0.5, 0.5)
-		});
-
 		var axesCanvasContext = this.refs.canvas_axes.getContext('2d');
 		var mouseCoordCanvasContext = this.refs.canvas_mouse_coordinates.getContext('2d');
 
@@ -49,7 +38,6 @@ class ChartCanvas extends React.Component {
 			ctx.translate(0.5, 0.5)
 		});
 		return {
-			canvasList: canvasList,
 			axesCanvasContext: axesCanvasContext,
 			mouseCoordCanvasContext: mouseCoordCanvasContext,
 		};
@@ -58,24 +46,6 @@ class ChartCanvas extends React.Component {
 		var canvases = this.getCanvasContextList();
 		// var canvasList = canvases.canvasList;
 		this.setState(canvases);
-	}
-	componentDidUpdate() {
-		var canvases = this.getCanvasContextList();
-		var newCanvasList = canvases.canvasList;
-
-		var { canvasList } = this.state;
-		if (canvasList.length !== newCanvasList.length) {
-			this.setState(canvases);
-		} else {
-			for (var i = 0; i < canvasList.length; i++) {
-				var oldEach = canvasList[i];
-				var newEach = newCanvasList[i];
-				if (oldEach.id !== newEach.id || oldEach.context !== newEach.context) {
-					this.setState(canvases);
-					break;
-				}
-			}
-		}
 	}
 	updateState(props, context) {
 		var { defaultDataTransform, dataTransform, interval } = props;
@@ -145,12 +115,6 @@ class ChartCanvas extends React.Component {
 		}
 		return (
 			<div style={{position: "relative", height: height, width: width}} className={className} >
-				<div style={{ position: "relative", top: margin.top, left: margin.left}}>
-					{canvasList
-						.map(each => <canvas key={each.id} ref={`chart_canvas_${ each.id }`} id={each.id}
-							width={each.width} height={each.height}
-							style={{ position: "absolute", left: `${ each.origin[0] }px`, top: `${ each.origin[1] }px`, zIndex: -1 }} /> )}
-				</div>
 				<canvas key="axes" id="axes" ref="canvas_axes" width={width} height={height}
 					style={{ position: "absolute", left: 0, top: 0, zIndex: -1 }} />
 				<svg width={width} height={height} style={{ position: "absolute" }}>
@@ -190,7 +154,6 @@ ChartCanvas.propTypes = {
 };
 
 ChartCanvas.childContextTypes = {
-	canvasList: React.PropTypes.array,
 	axesCanvasContext: React.PropTypes.object,
 	mouseCoordCanvasContext: React.PropTypes.object,
 	margin: React.PropTypes.object,

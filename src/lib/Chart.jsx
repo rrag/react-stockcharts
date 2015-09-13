@@ -8,20 +8,15 @@ import Utils from "./utils/utils";
 import ChartDataUtil from "./utils/ChartDataUtil";
 
 class Chart extends PureComponent {
-	constructor() {
-		super();
-		this.state = {};
-		this.getCurrentCanvasContext = this.getCurrentCanvasContext.bind(this);
-	}
-	getCurrentCanvasContext() {
-		var canvasContextList = this.context.canvasList.filter((each) => parseInt(each.id, 10) === this.props.id);
-		var canvasContext = canvasContextList.length > 0 ? canvasContextList[0].context : undefined;
-		return canvasContext;
-	}
 	getChildContext() {
 		var chartData = this.context.chartData.filter((each) => each.id === this.props.id)[0];
-		var canvasContext = this.getCurrentCanvasContext();
-		var origin = ChartDataUtil.getChartOrigin(this.props.origin, this.context.width, this.context.height);
+		var canvasContext = this.context.axesCanvasContext;
+
+		if (canvasContext) {
+			var originX = 0.5 + chartData.config.origin[0] + this.context.margin.left;
+			var originY = 0.5 + chartData.config.origin[1] + this.context.margin.top;
+		}
+
 		return {
 			chartId: this.props.id,
 			xScale: chartData.plot.scales.xScale,
@@ -36,15 +31,8 @@ class Chart extends PureComponent {
 			width: chartData.config.width,
 			height: chartData.config.height,
 			canvasContext: canvasContext,
+			canvasOrigin: [originX, originY],
 		};
-	}
-	componentWillUpdate() {
-		var canvasContext = this.getCurrentCanvasContext();
-		if (canvasContext) {
-			var width = this.props.width || this.context.width;
-			var height = this.props.height || this.context.height;
-			canvasContext.clearRect(-1, -1, width + 2, height + 2);
-		}
 	}
 	render() {
 		var origin = ChartDataUtil.getChartOrigin(this.props.origin, this.context.width, this.context.height);
@@ -92,7 +80,8 @@ Chart.contextTypes = {
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
 	chartData: React.PropTypes.array,
-	canvasList: React.PropTypes.array,
+	axesCanvasContext: React.PropTypes.object,
+	margin: React.PropTypes.object.isRequired,
 	type: React.PropTypes.string.isRequired,
 };
 
@@ -109,6 +98,7 @@ Chart.childContextTypes = {
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
 	canvasContext: React.PropTypes.object,
+	canvasOrigin: React.PropTypes.array,
 	chartId: React.PropTypes.number.isRequired,
 };
 

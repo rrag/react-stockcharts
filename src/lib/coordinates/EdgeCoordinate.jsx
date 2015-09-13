@@ -1,53 +1,38 @@
 "use strict";
 
 import React from "react";
+import objectAssign from "object-assign"; // "../utils/Object.assign"
 
 class EdgeCoordinate extends React.Component {
+
 	render() {
-		if (!this.props.show) return null;
+		var { className } = this.props;
 
-		var displayCoordinate = this.props.coordinate;
-		var rectWidth = this.props.rectWidth
-			? this.props.rectWidth
-			: (this.props.type === "horizontal")
-				? 60
-				: 100,
-			rectHeight = 20;
+		var edge = EdgeCoordinate.helper(this.props);
+		if (edge === null) return null;
+		var line, coordinateBase, coordinate;
 
-		var edgeXRect, edgeYRect, edgeXText, edgeYText;
-
-		if (this.props.type === "horizontal") {
-
-			edgeXRect = (this.props.orient === "right") ? this.props.edgeAt + 1 : this.props.edgeAt - rectWidth - 1;
-			edgeYRect = this.props.y1 - (rectHeight / 2);
-			edgeXText = (this.props.orient === "right") ? this.props.edgeAt + (rectWidth / 2) : this.props.edgeAt - (rectWidth / 2);
-			edgeYText = this.props.y1;
-		} else {
-			edgeXRect = this.props.x1 - (rectWidth / 2);
-			edgeYRect = (this.props.orient === "bottom") ? this.props.edgeAt : this.props.edgeAt - rectHeight;
-			edgeXText = this.props.x1;
-			edgeYText = (this.props.orient === "bottom") ? this.props.edgeAt + (rectHeight / 2) : this.props.edgeAt - (rectHeight / 2);
+		if (edge.line !== undefined) {
+			line = <line
+					className="react-stockcharts-cross-hair" opacity={edge.line.opacity} stroke={edge.line.stroke}
+					x1={edge.line.x1} y1={edge.line.y1}
+					x2={edge.line.x2} y2={edge.line.y2} />
 		}
-		var coordinateBase = null, coordinate = null;
-		if (displayCoordinate !== undefined) {
-			coordinateBase = (<rect key={1} className="react-stockchart-text-background"
-								x={edgeXRect}
-								y={edgeYRect}
-								height={rectHeight} width={rectWidth}
-								fill={this.props.fill}  opacity={this.props.opacity} />);
-			coordinate = (<text key={2} x={edgeXText}
-								y={edgeYText}
-								style={{"textAnchor": "middle"}}
-								fontFamily={this.props.fontFamily}
-								fontSize={this.props.fontSize}
-								dy=".32em" fill={this.props.textFill} >{displayCoordinate}</text>);
+		if (edge.coordinateBase !== undefined) {
+			coordinateBase = <rect key={1} className="react-stockchart-text-background"
+								x={edge.coordinateBase.edgeXRect}
+								y={edge.coordinateBase.edgeYRect}
+								height={edge.coordinateBase.rectHeight} width={edge.coordinateBase.rectWidth}
+								fill={edge.coordinateBase.fill}  opacity={edge.coordinateBase.opacity} />
+			coordinate = (<text key={2} x={edge.coordinate.edgeXText}
+								y={edge.coordinate.edgeYText}
+								textAnchor={edge.coordinate.textAnchor}
+								fontFamily={edge.coordinate.fontFamily}
+								fontSize={edge.coordinate.fontSize}
+								dy=".32em" fill={edge.coordinate.textFill} >{edge.coordinate.displayCoordinate}</text>);
 		}
-		var line = this.props.hideLine ? null : <line
-					className="react-stockcharts-cross-hair" opacity={0.3} stroke="black"
-					x1={this.props.x1} y1={this.props.y1}
-					x2={this.props.x2} y2={this.props.y2} />;
 		return (
-			<g className={this.props.className}>
+			<g className={className}>
 				{line}
 				{coordinateBase}
 				{coordinate}
@@ -81,4 +66,93 @@ EdgeCoordinate.defaultProps = {
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 13,
 };
+
+
+EdgeCoordinate.helper = (props) => {
+	var { coordinate: displayCoordinate, show, rectWidth, type, orient, edgeAt, hideLine, className } = props;
+	var { fill, opacity, fontFamily, fontSize, textFill } = props;
+	var { x1, y1, x2, y2 } = props;
+
+	if (!show) return null;
+
+	rectWidth = rectWidth ? rectWidth : (type === "horizontal") ? 60 : 100;
+	var rectHeight = 20;
+
+	var edgeXRect, edgeYRect, edgeXText, edgeYText;
+
+	if (type === "horizontal") {
+
+		edgeXRect = (orient === "right") ? edgeAt + 1 : edgeAt - rectWidth - 1;
+		edgeYRect = y1 - (rectHeight / 2);
+		edgeXText = (orient === "right") ? edgeAt + (rectWidth / 2) : edgeAt - (rectWidth / 2);
+		edgeYText = y1;
+	} else {
+		edgeXRect = x1 - (rectWidth / 2);
+		edgeYRect = (orient === "bottom") ? edgeAt : edgeAt - rectHeight;
+		edgeXText = x1;
+		edgeYText = (orient === "bottom") ? edgeAt + (rectHeight / 2) : edgeAt - (rectHeight / 2);
+	}
+	var coordinateBase, coordinate, textAnchor = "middle";
+	if (displayCoordinate !== undefined) {
+		coordinateBase = {
+			edgeXRect, edgeYRect, rectHeight, rectWidth, fill, opacity
+		};
+		coordinate = {
+			edgeXText, edgeYText, textAnchor, fontFamily, fontSize, textFill, displayCoordinate
+		};
+	}
+	var line = hideLine ? undefined : {
+		opacity: 0.3, stroke: "black", x1, y1, x2, y2
+	}
+	return {
+		coordinateBase, coordinate, line
+	}
+}
+
+EdgeCoordinate.drawOnCanvasStatic = (ctx, props) => {
+	props = objectAssign({}, EdgeCoordinate.defaultProps, props);
+
+	var edge = EdgeCoordinate.helper(props);
+
+	if (edge === null) return;
+
+	if (edge.coordinateBase !== undefined) {
+		var { globalAlpha, fillStyle } = ctx;
+
+		ctx.globalAlpha = edge.coordinateBase.opacity;
+		ctx.fillStyle = edge.coordinateBase.fill;
+
+		ctx.beginPath();
+		ctx.rect(edge.coordinateBase.edgeXRect, edge.coordinateBase.edgeYRect, edge.coordinateBase.rectWidth, edge.coordinateBase.rectHeight);
+		ctx.fill();
+
+		var { font, textAlign } = ctx;
+
+		ctx.font = `${ edge.coordinate.fontSize }px ${edge.coordinate.fontFamily}`;
+		ctx.fillStyle = edge.coordinate.textFill;
+		ctx.textAlign = edge.coordinate.textAnchor === "middle" ? "center" : edge.coordinate.textAnchor;
+		ctx.textBaseline = "middle";
+
+		ctx.fillText(edge.coordinate.displayCoordinate, edge.coordinate.edgeXText, edge.coordinate.edgeYText); 
+
+		ctx.font = font;
+		ctx.textAlign = textAlign;
+		ctx.globalAlpha = globalAlpha;
+		ctx.fillStyle = fillStyle;
+	}
+	if (edge.line !== undefined) {
+		var { globalAlpha, strokeStyle } = ctx;
+
+		ctx.globalAlpha = edge.line.opacity;
+		ctx.strokeStyle = edge.line.stroke;
+
+		ctx.beginPath();
+		ctx.moveTo(edge.line.x1, edge.line.y1);
+		ctx.lineTo(edge.line.x2, edge.line.y2);
+		ctx.stroke();
+
+		ctx.globalAlpha = globalAlpha;
+		ctx.strokeStyle = strokeStyle;
+	}
+}
 module.exports = EdgeCoordinate;
