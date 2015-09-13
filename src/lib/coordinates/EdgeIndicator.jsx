@@ -95,9 +95,6 @@ EdgeIndicator.drawOnCanvasStatic = (margin, props, width, ctx, chartDataArray) =
 	ctx.translate(originX, originY);
 
 	EdgeCoordinate.drawOnCanvasStatic(ctx, edge);
-
-	// ctx.setTransform(1, 0, 0, 1, 0, 0);
-	// ctx.translate(0.5, 0.5);
 }
 EdgeIndicator.helper = (props, width, chartData) => {
 	var { type: edgeType, displayFormat, forChart, forDataSeries, itemType, edgeAt, yAxisPad, orient } = props;
@@ -107,8 +104,6 @@ EdgeIndicator.helper = (props, width, chartData) => {
 	var edge = null, item, yAccessor;
 	// console.log(chartData.config.compareSeries.length);
 	var displayFormat = currentChartData.config.compareSeries.length > 0 ? d3.format(".0%") : displayFormat;
-
-
 
 	if (forDataSeries !== undefined
 			&& currentChartData.config.overlays.length > 0

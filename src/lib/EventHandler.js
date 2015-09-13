@@ -68,6 +68,13 @@ class EventHandler extends PureComponent {
 			secretToSuperFastCanvasDraw: [],
 		});
 	}
+	clearMainCanvas() {
+		var { axesCanvasContext } = this.context;
+		if (axesCanvasContext) {
+			axesCanvasContext.setTransform(1, 0, 0, 1, 0, 0);
+			axesCanvasContext.clearRect(-1, -1, axesCanvasContext.canvas.width + 2, axesCanvasContext.canvas.height + 2);
+		}
+	}
 	componentWillReceiveProps(nextProps) {
 
 		if (nextProps.type !== "svg" && this.state.initialRender) {
@@ -195,9 +202,7 @@ class EventHandler extends PureComponent {
 				plot: plot
 			};
 		});
-		var { axesCanvasContext } = this.context;
-		if (axesCanvasContext !== undefined)
-			axesCanvasContext.clearRect(-1, -1, axesCanvasContext.canvas.width + 2, axesCanvasContext.canvas.height + 2);
+		this.clearMainCanvas();
 
 		this.setState({
 			chartData: newChartData,
@@ -264,12 +269,12 @@ class EventHandler extends PureComponent {
 			return (mousePosition[1] > top && mousePosition[1] < bottom);
 		}).map((eachChartData) => eachChartData.id);
 		return {
-			chartData: newChartData,
 			plotData: filteredData,
-			mouseXY: mousePosition,
-			currentItems: currentItems,
 			show: true,
+			mouseXY: mousePosition,
 			currentCharts: currentCharts,
+			chartData: newChartData,
+			currentItems: currentItems,
 		}
 	}
 	getCurrentCanvasContext(canvasList, chartId) {
@@ -288,8 +293,8 @@ class EventHandler extends PureComponent {
 			// console.log(this.state.secretToSuperFastCanvasDraw);
 			if (this.props.type !== "svg") {
 				requestAnimationFrame(() => {
-					axesCanvasContext.setTransform(1, 0, 0, 1, 0, 0);
-					axesCanvasContext.clearRect(-1, -1, axesCanvasContext.canvas.width + 2, axesCanvasContext.canvas.height + 2);
+					this.clearMainCanvas();
+
 					chartData.forEach(eachChart => {
 						this.state.secretToSuperFastCanvasDraw
 							.filter(each => eachChart.id === each.chartId)
@@ -320,9 +325,7 @@ class EventHandler extends PureComponent {
 		}
 	}
 	handlePanEnd(mousePosition) {
-		var { axesCanvasContext } = this.context;
-		if (axesCanvasContext !== undefined)
-			axesCanvasContext.clearRect(-1, -1, axesCanvasContext.canvas.width + 2, axesCanvasContext.canvas.height + 2);
+		this.clearMainCanvas();
 
 		var state = this.panHelper(mousePosition);
 		this.setState({

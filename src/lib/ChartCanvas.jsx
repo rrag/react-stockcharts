@@ -12,9 +12,6 @@ class ChartCanvas extends React.Component {
 	constructor() {
 		super();
 		this.getCanvasContextList = this.getCanvasContextList.bind(this);
-		this.state = {
-			canvasList: []
-		};
 	}
 	getDimensions(props) {
 		return {
@@ -23,29 +20,39 @@ class ChartCanvas extends React.Component {
 		};
 	}
 	getChildContext() {
+		var axesCanvasContext, mouseCoordCanvasContext;
+		if (this.state.canvases) {
+			axesCanvasContext = this.state.canvases.axesCanvasContext;
+			mouseCoordCanvasContext = this.state.canvases.mouseCoordCanvasContext;
+		}
 		return {
-			axesCanvasContext: this.state.axesCanvasContext,
-			mouseCoordCanvasContext: this.state.mouseCoordCanvasContext,
+			axesCanvasContext: axesCanvasContext,
+			mouseCoordCanvasContext: mouseCoordCanvasContext,
 			margin: this.props.margin,
 		};
 	}
 	getCanvasContextList() {
-		var axesCanvasContext = this.refs.canvas_axes.getContext('2d');
-		var mouseCoordCanvasContext = this.refs.canvas_mouse_coordinates.getContext('2d');
+		var contexts = ["canvas_axes", "canvas_mouse_coordinates"]
+			.map(key => this.refs[key])
+			.map(each => each.getContext('2d'))
 
-		[axesCanvasContext, mouseCoordCanvasContext].forEach(ctx => { 
-			ctx.setTransform(1, 0, 0, 1, 0, 0);
-			ctx.translate(0.5, 0.5)
-		});
 		return {
-			axesCanvasContext: axesCanvasContext,
-			mouseCoordCanvasContext: mouseCoordCanvasContext,
+			axesCanvasContext: contexts[0],
+			mouseCoordCanvasContext: contexts[1],
 		};
 	}
 	componentDidMount() {
-		var canvases = this.getCanvasContextList();
-		// var canvasList = canvases.canvasList;
-		this.setState(canvases);
+		this.componentDidUpdate();
+	}
+	componentDidUpdate() {
+		if (this.props.type === "svg" && this.state.canvases !== null) {
+			this.setState({ canvases: null });
+		} else if (this.props.type !== "svg" && !this.state.canvases) {
+			var canvases = this.getCanvasContextList();
+			this.setState({
+				canvases: canvases
+			});
+		}
 	}
 	updateState(props, context) {
 		var { defaultDataTransform, dataTransform, interval } = props;
@@ -113,10 +120,14 @@ class ChartCanvas extends React.Component {
 					id: each.props.id,
 				}));
 		}
+		var axesCanvas = (this.props.type !== "svg") ? <canvas key="axes" id="axes" ref="canvas_axes" width={width} height={height}
+					style={{ position: "absolute", left: 0, top: 0, zIndex: -1 }} /> : null;
+		var mouseCanvas = (this.props.type !== "svg") ? <canvas key="mouse_coordinates" id="mouse" ref="canvas_mouse_coordinates" width={width} height={height}
+					style={{ position: "absolute", left: 0, top: 0, zIndex: -1 }} /> : null;
 		return (
 			<div style={{position: "relative", height: height, width: width}} className={className} >
-				<canvas key="axes" id="axes" ref="canvas_axes" width={width} height={height}
-					style={{ position: "absolute", left: 0, top: 0, zIndex: -1 }} />
+				{axesCanvas}
+				{mouseCanvas}
 				<svg width={width} height={height} style={{ position: "absolute" }}>
 					<style type="text/css" dangerouslySetInnerHTML={{ __html: style }}>
 					</style>
@@ -134,8 +145,6 @@ class ChartCanvas extends React.Component {
 						</EventHandler>
 					</g>
 				</svg>
-				<canvas key="mouse_coordinates" id="mouse" ref="canvas_mouse_coordinates" width={width} height={height}
-					style={{ position: "absolute", left: 0, top: 0, zIndex: -1 }} />
 			</div>
 		);
 	}
