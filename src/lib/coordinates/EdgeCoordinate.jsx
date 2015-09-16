@@ -117,8 +117,7 @@ EdgeCoordinate.drawOnCanvasStatic = (ctx, props) => {
 	if (edge === null) return;
 
 	if (edge.coordinateBase !== undefined) {
-		var { globalAlpha, fillStyle } = ctx;
-
+		// var { globalAlpha, fillStyle } = ctx;
 		ctx.globalAlpha = edge.coordinateBase.opacity;
 		ctx.fillStyle = edge.coordinateBase.fill;
 
@@ -126,23 +125,14 @@ EdgeCoordinate.drawOnCanvasStatic = (ctx, props) => {
 		ctx.rect(edge.coordinateBase.edgeXRect, edge.coordinateBase.edgeYRect, edge.coordinateBase.rectWidth, edge.coordinateBase.rectHeight);
 		ctx.fill();
 
-		var { font, textAlign } = ctx;
-
 		ctx.font = `${ edge.coordinate.fontSize }px ${edge.coordinate.fontFamily}`;
 		ctx.fillStyle = edge.coordinate.textFill;
 		ctx.textAlign = edge.coordinate.textAnchor === "middle" ? "center" : edge.coordinate.textAnchor;
 		ctx.textBaseline = "middle";
 
 		ctx.fillText(edge.coordinate.displayCoordinate, edge.coordinate.edgeXText, edge.coordinate.edgeYText); 
-
-		ctx.font = font;
-		ctx.textAlign = textAlign;
-		ctx.globalAlpha = globalAlpha;
-		ctx.fillStyle = fillStyle;
 	}
 	if (edge.line !== undefined) {
-		var { globalAlpha, strokeStyle } = ctx;
-
 		ctx.globalAlpha = edge.line.opacity;
 		ctx.strokeStyle = edge.line.stroke;
 
@@ -150,9 +140,6 @@ EdgeCoordinate.drawOnCanvasStatic = (ctx, props) => {
 		ctx.moveTo(edge.line.x1, edge.line.y1);
 		ctx.lineTo(edge.line.x2, edge.line.y2);
 		ctx.stroke();
-
-		ctx.globalAlpha = globalAlpha;
-		ctx.strokeStyle = strokeStyle;
 	}
 }
 module.exports = EdgeCoordinate;

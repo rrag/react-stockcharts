@@ -12,8 +12,17 @@ class EdgeIndicator extends React.Component {
 		super(props);
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
+	componentDidMount() {
+		var { type } = this.props;
+		var { getCanvasContexts } = this.context;
+
+		if (type !== "svg" && getCanvasContexts !== undefined) {
+			var contexts = getCanvasContexts();
+			if (contexts) this.drawOnCanvas(contexts.axes);
+		}
+	}
 	componentDidUpdate() {
-		if (this.props.type !== "svg" && this.context.axesCanvasContext !== undefined) this.drawOnCanvas();
+		this.componentDidMount();
 	}
 	componentWillMount() {
 		this.componentWillReceiveProps(this.props, this.context);
@@ -27,9 +36,9 @@ class EdgeIndicator extends React.Component {
 			draw: draw,
 		});
 	}
-	drawOnCanvas() {
-		var { axesCanvasContext, chartData, margin, width } = this.context;
-		EdgeIndicator.drawOnCanvasStatic(margin, this.props, width, axesCanvasContext, chartData);
+	drawOnCanvas(ctx) {
+		var { chartData, margin, width } = this.context;
+		EdgeIndicator.drawOnCanvasStatic(margin, this.props, width, ctx, chartData);
 	}
 	render() {
 		if (this.context.type !== "svg") return null;
@@ -56,8 +65,7 @@ class EdgeIndicator extends React.Component {
 EdgeIndicator.contextTypes = {
 	width: React.PropTypes.number.isRequired,
 	chartData: React.PropTypes.array.isRequired,
-	// currentItems: React.PropTypes.array.isRequired,
-	axesCanvasContext: React.PropTypes.object,
+	getCanvasContexts: React.PropTypes.func,
 	type: React.PropTypes.string,
 	margin: React.PropTypes.object.isRequired,
 	secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
@@ -88,13 +96,15 @@ EdgeIndicator.drawOnCanvasStatic = (margin, props, width, ctx, chartDataArray) =
 
 	if (edge === undefined) return null;
 
-	var originX = edge.chartOrigin[0] + margin.left;
-	var originY = edge.chartOrigin[1] + margin.top;
+	var originX = margin.left;
+	var originY = margin.top;
+	ctx.save();
 
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
 	ctx.translate(originX, originY);
 
 	EdgeCoordinate.drawOnCanvasStatic(ctx, edge);
+	ctx.restore();
 }
 EdgeIndicator.helper = (props, width, chartData) => {
 	var { type: edgeType, displayFormat, forChart, forDataSeries, itemType, edgeAt, yAxisPad, orient } = props;

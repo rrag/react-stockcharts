@@ -28,6 +28,7 @@ class EventHandler extends PureComponent {
 		this.handlePanEnd = this.handlePanEnd.bind(this);
 		this.handleFocus = this.handleFocus.bind(this);
 		this.deltaXY = this.deltaXY.bind(this);
+		this.getCanvasContexts = this.getCanvasContexts.bind(this);
 
 		this.state = {
 			focus: false,
@@ -69,11 +70,18 @@ class EventHandler extends PureComponent {
 		});
 	}
 	clearMainCanvas() {
-		var { axesCanvasContext } = this.context;
-		if (axesCanvasContext) {
-			axesCanvasContext.setTransform(1, 0, 0, 1, 0, 0);
-			axesCanvasContext.clearRect(-1, -1, axesCanvasContext.canvas.width + 2, axesCanvasContext.canvas.height + 2);
+		var canvases = this.props.canvasContexts();
+		if (canvases && canvases.axes) {
+			var { axes } = canvases;
+			axes.setTransform(1, 0, 0, 1, 0, 0);
+			axes.clearRect(-1, -1, axes.canvas.width + 2, axes.canvas.height + 2);
 		}
+	}
+	clearCanvas(...canvasList) {
+		canvasList.forEach(each => {
+			each.setTransform(1, 0, 0, 1, 0, 0);
+			each.clearRect(-1, -1, each.canvas.width + 2, each.canvas.height + 2);
+		})
 	}
 	componentWillReceiveProps(nextProps) {
 
@@ -81,26 +89,36 @@ class EventHandler extends PureComponent {
 			this.setState({
 				initialRender: false,
 				secretToSuperFastCanvasDraw: [],
+				canvases: null,
 			});
 		} else {
 			var { interval, chartData, plotData } = this.state;
-			var { data, options, dimensions } = nextProps;
+			var { data: nextData, options, dimensions, initialDisplay } = nextProps;
+			var { data: prevData } = this.props;
 
-			var dataForInterval = data[interval];
+			var dataForInterval = nextData[interval];
 			var mainChart = ChartDataUtil.getMainChart(nextProps.children);
 			var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
 			var xAccessor = mainChartData.config.xAccessor;
-			var domainL = xAccessor(plotData[0]);
-			var domainR = xAccessor(plotData[plotData.length - 1]);
 
-			var beginIndex = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
-			var endIndex = Utils.getClosestItemIndexes(dataForInterval, domainR, xAccessor).right;
+			if (nextData === prevData) {
+				var domainL = xAccessor(plotData[0]);
+				var domainR = xAccessor(plotData[plotData.length - 1]);
+
+				var beginIndex = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
+				var endIndex = Utils.getClosestItemIndexes(dataForInterval, domainR, xAccessor).right;
+			} else {
+				console.log("NOT same data");
+				var beginIndex = Math.max(dataForInterval.length - initialDisplay, 0);
+				var endIndex = dataForInterval.length;
+			}
 
 			// console.log(plotData[0], plotData[plotData.length - 1]);
 			var newPlotData = dataForInterval.slice(beginIndex, endIndex);
 			// console.log(newPlotData[0], newPlotData[newPlotData.length - 1]);
-			var newChartData = ChartDataUtil.getChartData(nextProps, dimensions, newPlotData, data, options);
+			var newChartData = ChartDataUtil.getChartData(nextProps, dimensions, newPlotData, nextData, options);
 			// console.log("componentWillReceiveProps");
+
 			this.setState({
 				chartData: newChartData,
 				plotData: newPlotData,
@@ -110,6 +128,7 @@ class EventHandler extends PureComponent {
 				mainChart: mainChart,
 				initialRender: false,
 				secretToSuperFastCanvasDraw: [],
+				canvases: null,
 			});
 		}
 	}
@@ -128,7 +147,9 @@ class EventHandler extends PureComponent {
 			type: this.props.type,
 			dateAccessor: this.props.options.dateAccessor,
 			secretToSuperFastCanvasDraw: this.state.secretToSuperFastCanvasDraw,
+			margin: this.props.margin,
 
+			getCanvasContexts: this.getCanvasContexts,
 			onMouseMove: this.handleMouseMove,
 			onMouseEnter: this.handleMouseEnter,
 			onMouseLeave: this.handleMouseLeave,
@@ -150,6 +171,17 @@ class EventHandler extends PureComponent {
 		}).map((chartData) => chartData.id);
 		var currentItems = ChartDataUtil.getCurrentItems(this.state.chartData, mouseXY, this.state.plotData);
 
+		var { chartData } = this.state;
+
+		var contexts = this.getCanvasContexts();
+
+		if (contexts && contexts.mouseCoord) {
+			var { mouseCoord } = contexts;
+
+			mouseCoord.setTransform(1, 0, 0, 1, 0, 0);
+			mouseCoord.clearRect(-1, -1, mouseCoord.canvas.width + 2, mouseCoord.canvas.height + 2);
+		}
+
 		this.setState({
 			mouseXY: mouseXY,
 			currentItems: currentItems,
@@ -157,14 +189,34 @@ class EventHandler extends PureComponent {
 			currentCharts: currentCharts,
 		});
 	}
+	getCanvasContexts() {
+		// console.log(this.state.canvases, this.props.canvasContexts())
+		return this.state.canvases || this.props.canvasContexts();
+	}
 	handleMouseEnter() {
-		// console.log("enter");
+		// if type === svg remove state.canvases
+		// if type !== svg get canvases and set in state if state.canvases is not present already
+		var { type, canvasContexts } = this.props;
+		var { canvases } = this.state;
+		if (type === "svg") {
+			canvases = null;
+		} else {
+			canvases = canvasContexts();
+		}
 		this.setState({
-			show: true
+			show: true,
+			canvases: canvases,
 		});
 	}
 	handleMouseLeave() {
-		// console.log("leave");
+		var contexts = this.getCanvasContexts();
+
+		if (contexts && contexts.mouseCoord) {
+			var { mouseCoord } = contexts;
+			mouseCoord.setTransform(1, 0, 0, 1, 0, 0);
+			mouseCoord.clearRect(-1, -1, mouseCoord.canvas.width + 2, mouseCoord.canvas.height + 2);
+		}
+
 		this.setState({
 			show: false
 		});
@@ -287,13 +339,17 @@ class EventHandler extends PureComponent {
 		if (this.state.panStartDomain === null) {
 			this.handlePanStart(startDomain, mousePosition);
 		} else {
-			var { canvasList, axesCanvasContext, margin } = this.context;
+
 			var state = this.panHelper(mousePosition);
-			var { chartData, plotData } = state;
 			// console.log(this.state.secretToSuperFastCanvasDraw);
 			if (this.props.type !== "svg") {
+
+				var { canvasList, getCanvasContexts, margin } = this.context;
+				var { axes: axesCanvasContext, mouseCoord: mouseContext } = this.getCanvasContexts();
+				var { chartData, plotData } = state;
+
 				requestAnimationFrame(() => {
-					this.clearMainCanvas();
+					this.clearCanvas(axesCanvasContext, mouseContext);
 
 					chartData.forEach(eachChart => {
 						this.state.secretToSuperFastCanvasDraw
@@ -317,7 +373,22 @@ class EventHandler extends PureComponent {
 					});
 					this.state.secretToSuperFastCanvasDraw
 						.filter(each => each.chartId === undefined)
+						.filter(each => each.type === "axis")
 						.forEach(each => each.draw(axesCanvasContext, chartData));
+					this.state.secretToSuperFastCanvasDraw
+						.filter(each => each.type === "mouse")
+						.forEach(each => each.draw(mouseContext, state.show && this.state.show,
+							state.mouseXY, state.currentCharts, state.chartData, state.currentItems));
+						/* ctx, show, mouseXY, currentCharts, chartData, currentItems
+		return {
+			plotData: filteredData,
+			show: true,
+			mouseXY: mousePosition,
+			currentCharts: currentCharts,
+			chartData: newChartData,
+			currentItems: currentItems,
+		}
+						*/
 				});
 			} else {
 				this.setState(state);
@@ -332,6 +403,7 @@ class EventHandler extends PureComponent {
 			...state,
 		// });
 		// this.setState({
+			show: this.state.show,
 			panInProgress: false,
 			panStartDomain: null,
 			secretToSuperFastCanvasDraw: [],
@@ -360,13 +432,12 @@ class EventHandler extends PureComponent {
 		);
 	}
 }
-EventHandler.contextTypes = {
+/*EventHandler.contextTypes = {
 	canvasList: React.PropTypes.array,
 	axesCanvasContext: React.PropTypes.object,
 	margin: React.PropTypes.object.isRequired,
-
 };
-
+*/
 EventHandler.childContextTypes = {
 	plotData: React.PropTypes.array,
 	chartData: React.PropTypes.array,
@@ -381,7 +452,9 @@ EventHandler.childContextTypes = {
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 	dateAccessor: React.PropTypes.func,
 	secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
+	margin: React.PropTypes.object.isRequired,
 
+	getCanvasContexts: React.PropTypes.func,
 	onMouseMove: React.PropTypes.func,
 	onMouseEnter: React.PropTypes.func,
 	onMouseLeave: React.PropTypes.func,

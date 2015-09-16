@@ -8,27 +8,13 @@ class Line extends BaseSimpleCanvasSeries {
 	constructor(props) {
 		super(props);
 		this.getPath = this.getPath.bind(this);
-		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
-	drawOnCanvas() {
-		var { canvasOrigin, canvasContext } = this.context;
-		var { plotData, xScale, yScale } = this.props;
-
-		this.drawOnCanvasStatic(this.props, canvasOrigin, canvasContext, xScale, yScale, plotData);
-	}
-	drawOnCanvasStatic(props, canvasOrigin, ctx, xScale, yScale, plotData) {
-
-		ctx.setTransform(1, 0, 0, 1, 0, 0);
-		ctx.translate(canvasOrigin[0], canvasOrigin[1]);
-
+	drawOnCanvasStatic(props, ctx, xScale, yScale, plotData) {
 		var { xAccessor, yAccessor, stroke } = props;
-		// var { plotData, xScale, yScale, xAccessor, yAccessor, stroke } = this.props;
 
 		var path = this.getPath();
 		ctx.beginPath();
 
-		var { strokeStyle } = ctx;
-		// console.log(stroke);
 		ctx.strokeStyle = stroke;
 		var begin = true;
 		plotData.forEach((d) => {
@@ -46,7 +32,6 @@ class Line extends BaseSimpleCanvasSeries {
 			}
 		});
 		ctx.stroke();
-		ctx.strokeStyle = strokeStyle;
 	}
 
 	getPath() {

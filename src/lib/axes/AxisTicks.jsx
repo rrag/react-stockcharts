@@ -2,7 +2,7 @@
 
 import React from "react";
 import d3 from "d3";
-import objectAssign from "object-assign"; // "../utils/Object.assign"
+import objectAssign from "object-assign";
 
 function d3_identity(d) {
 	return d;
@@ -44,17 +44,12 @@ Tick.drawOnCanvasStatic = (tick, ctx, chartData, result) => {
 	ctx.lineTo(origin[0] + x2, origin[1] + y2);
 	ctx.stroke();
 
-	var { font, fillStyle, textAlign } = ctx;
 	ctx.font = `${ fontSize }px ${fontFamily}`;
 	ctx.fillStyle = tickStroke;
 	ctx.textAlign = textAnchor === "middle" ? "center" : textAnchor;
 	ctx.textBaseline = 'middle';
 
 	ctx.fillText(format(tick), origin[0] + x, origin[1] + y2 + y); 
-
-	ctx.font = font;
-	ctx.fillStyle = fillStyle;
-	ctx.textAlign = textAlign;
 }
 
 class AxisTicks extends React.Component {
@@ -150,4 +145,5 @@ AxisTicks.drawOnCanvasStatic = (props, ctx, chartData, xScale, yScale) => {
 		Tick.drawOnCanvasStatic(tick, ctx, chartData, result);
 	})
 }
+
 module.exports = AxisTicks;

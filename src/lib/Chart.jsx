@@ -10,27 +10,20 @@ import ChartDataUtil from "./utils/ChartDataUtil";
 class Chart extends PureComponent {
 	getChildContext() {
 		var chartData = this.context.chartData.filter((each) => each.id === this.props.id)[0];
-		var canvasContext = this.context.axesCanvasContext;
 
-		if (canvasContext) {
-			var originX = 0.5 + chartData.config.origin[0] + this.context.margin.left;
-			var originY = 0.5 + chartData.config.origin[1] + this.context.margin.top;
-		}
+		var originX = 0.5 + chartData.config.origin[0] + this.context.margin.left;
+		var originY = 0.5 + chartData.config.origin[1] + this.context.margin.top;
 
 		return {
 			chartId: this.props.id,
 			xScale: chartData.plot.scales.xScale,
 			yScale: chartData.plot.scales.yScale,
 			xAccessor: chartData.config.xAccessor,
-			// yAccessor: chartData.config.accessors.yAccessor,
 			overlays: chartData.config.overlays,
 			compareSeries: chartData.config.compareSeries,
-			// indicatorOptions: chartData.config.indicatorOptions,
-			// isCompareSeries: chartData.config.compareSeries.length > 0,
 			chartData: chartData,
 			width: chartData.config.width,
 			height: chartData.config.height,
-			canvasContext: canvasContext,
 			canvasOrigin: [originX, originY],
 		};
 	}
@@ -45,8 +38,9 @@ class Chart extends PureComponent {
 				// React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 			return newChild;
 		});
-		var left = origin[0] + 0.5; // refer to http://www.rgraph.net/docs/howto-get-crisp-lines-with-no-antialias.html - similar fix for svg here
-		return <g transform={`translate(${left}, ${origin[1]})`}>{children}</g>;
+		var x = origin[0]; // + 0.5; // refer to http://www.rgraph.net/docs/howto-get-crisp-lines-with-no-antialias.html - similar fix for svg here
+		var y = origin[1]; // + 0.5; // refer to http://www.rgraph.net/docs/howto-get-crisp-lines-with-no-antialias.html - similar fix for svg here
+		return <g transform={`translate(${ x }, ${ y })`}>{children}</g>;
 	}
 }
 
@@ -80,7 +74,6 @@ Chart.contextTypes = {
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
 	chartData: React.PropTypes.array,
-	axesCanvasContext: React.PropTypes.object,
 	margin: React.PropTypes.object.isRequired,
 	type: React.PropTypes.string.isRequired,
 };
@@ -90,14 +83,10 @@ Chart.childContextTypes = {
 	yScale: React.PropTypes.func.isRequired,
 	xAccessor: React.PropTypes.func.isRequired,
 	chartData: React.PropTypes.object.isRequired,
-	// yAccessor: React.PropTypes.func.isRequired,
 	overlays: React.PropTypes.array.isRequired,
-	// indicatorOptions: React.PropTypes.object,
-	// isCompareSeries: React.PropTypes.bool.isRequired,
 	compareSeries: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
-	canvasContext: React.PropTypes.object,
 	canvasOrigin: React.PropTypes.array,
 	chartId: React.PropTypes.number.isRequired,
 };

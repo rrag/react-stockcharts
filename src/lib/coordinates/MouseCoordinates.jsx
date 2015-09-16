@@ -8,19 +8,50 @@ import CrossHair from "./CrossHair";
 class MouseCoordinates extends PureComponent {
 	constructor(props, context) {
 		super(props, context);
-		this.getPointer = this.getPointer.bind(this);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
-	getPointer() {
+	drawOnCanvas(ctx) {
 		var { mouseXY, currentCharts, chartData, currentItems, show } = this.context;
-		return MouseCoordinates.helper(this.context, this.props, show, mouseXY, currentCharts, chartData, currentItems);
+
+		MouseCoordinates.drawOnCanvasStatic(this.context, this.props, ctx, show, mouseXY, currentCharts, chartData, currentItems)
+	}
+	componentDidMount() {
+		var { type, getCanvasContexts } = this.context;
+
+		if (type !== "svg" && getCanvasContexts !== undefined) {
+			var contexts = getCanvasContexts();
+			if (contexts) this.drawOnCanvas(contexts.mouseCoord);
+		}
+	}
+	componentDidUpdate() {
+		this.componentDidMount();
+	}
+	componentWillMount() {
+		this.componentWillReceiveProps(this.props, this.context);
+	}
+	componentWillReceiveProps(nextProps, nextContext) {
+		var draw = MouseCoordinates.drawOnCanvasStatic.bind(null, nextContext, nextProps);
+
+		var temp = nextContext.secretToSuperFastCanvasDraw.filter(each => each.type === "mouse");
+		if (temp.length === 0) {
+			nextContext.secretToSuperFastCanvasDraw.push({
+				type: "mouse",
+				draw: draw,
+			});
+		} else {
+			temp[0].draw = draw;
+		}
 	}
 	render() {
-		var pointer = this.getPointer();
+		var { type, mouseXY, currentCharts, chartData, currentItems, show } = this.context;
+		if (type !== "svg") return null;
+
+		var pointer = MouseCoordinates.helper(this.context, this.props, show, mouseXY, currentCharts, chartData, currentItems);
 
 		if (!pointer) return null
 
-		return <CrossHair height={pointer.height} width={pointer.width} mouseXY={[pointer.x, pointer.y]}
-					xDisplayValue={pointer.xDisplayFormat(pointer.xDisplayValue)} edges={pointer.edges}/>;
+		return <CrossHair height={pointer.height} width={pointer.width} mouseXY={pointer.mouseXY}
+					xDisplayValue={pointer.xDisplayValue} edges={pointer.edges}/>;
 	}
 }
 
@@ -34,9 +65,10 @@ MouseCoordinates.contextTypes = {
 	chartData: React.PropTypes.array.isRequired,
 	currentItems: React.PropTypes.array.isRequired,
 	currentCharts: React.PropTypes.array.isRequired,
-
-	mouseCoordCanvasContext: React.PropTypes.object,
+	getCanvasContexts: React.PropTypes.func,
 	margin: React.PropTypes.object.isRequired,
+	secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
+	type: React.PropTypes.string.isRequired,
 };
 
 MouseCoordinates.propTypes = {
@@ -54,7 +86,26 @@ MouseCoordinates.defaultProps = {
 	yDisplayFormat: Utils.displayNumberFormat,
 };
 
+MouseCoordinates.drawOnCanvasStatic = (context, props, ctx, show, mouseXY, currentCharts, chartData, currentItems) => {
+	var { margin } = context;
+	var pointer = MouseCoordinates.helper(context, props, show, mouseXY, currentCharts, chartData, currentItems);
+
+	if (!pointer) return null
+
+	var originX = 0.5 + margin.left;
+	var originY = 0.5 + margin.top;
+
+	ctx.save();
+
+	ctx.setTransform(1, 0, 0, 1, 0, 0);
+	ctx.translate(originX, originY);
+
+	CrossHair.drawOnCanvasStatic(ctx, pointer);
+	ctx.restore();
+}
+
 MouseCoordinates.helper = (context, props, show, mouseXY, currentCharts, chartData, currentItems) => {
+	if (!show) return;
 	var { mainChart, dateAccessor, height, width } = context;
 	var { snapX, type, xDisplayFormat } = props;
 	var edges = chartData
@@ -99,7 +150,7 @@ MouseCoordinates.helper = (context, props, show, mouseXY, currentCharts, chartDa
 	var x = snapX ? Math.round(singleChartData.plot.scales.xScale(xValue)) : mouseXY[0];
 	var y = mouseXY[1];
 
-	return { height, width, x, y, xDisplayFormat, xDisplayValue, edges };
+	return { height, width, mouseXY: [x, y], xDisplayValue: xDisplayFormat(xDisplayValue), edges };
 };
 
 module.exports = MouseCoordinates;

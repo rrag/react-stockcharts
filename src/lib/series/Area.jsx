@@ -9,25 +9,12 @@ class Area extends BaseSimpleCanvasSeries {
 	constructor(props) {
 		super(props);
 		this.getArea = this.getArea.bind(this);
-		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
-	drawOnCanvas() {
-		var { canvasOrigin, canvasContext } = this.context;
-		var { plotData, xScale, yScale } = this.props;
-
-		this.drawOnCanvasStatic(this.props, canvasOrigin, canvasContext, xScale, yScale, plotData);
-	}
-	drawOnCanvasStatic(props, canvasOrigin, ctx, xScale, yScale, plotData) {
-
-		ctx.setTransform(1, 0, 0, 1, 0, 0);
-		ctx.translate(canvasOrigin[0], canvasOrigin[1]);
-
+	drawOnCanvasStatic(props, ctx, xScale, yScale, plotData) {
 		var { xAccessor, yAccessor, fill, stroke, opacity, base } = props;
 		var begin = true;
 		var height = yScale.range()[0];
 		var newBase = (base === undefined) ? () => (height - 1) : base;
-
-		var { strokeStyle, fillStyle, globalAlpha } = ctx;
 
 		ctx.fillStyle = fill;
 		ctx.strokeStyle = stroke;
@@ -58,11 +45,7 @@ class Area extends BaseSimpleCanvasSeries {
 		}
 		ctx.closePath();
 		ctx.fill();
-		ctx.fillStyle = fillStyle;
-		ctx.strokeStyle = strokeStyle;
-		ctx.globalAlpha = globalAlpha;
 	}
-
 	getArea() {
 		var { plotData, xScale, yScale, xAccessor, yAccessor, base } = this.props;
 		var height = yScale.range()[0];

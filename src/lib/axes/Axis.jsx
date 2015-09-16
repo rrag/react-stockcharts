@@ -10,9 +10,6 @@ class Axis extends React.Component {
 		super(props);
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
-	componentDidUpdate(prevProps, prevState, prevContext) {
-		if (this.props.type !== "svg" && this.context.axesCanvasContext !== undefined) this.drawOnCanvas();
-	}
 	componentWillMount() {
 		this.componentWillReceiveProps(this.props, this.context);
 	}
@@ -26,11 +23,20 @@ class Axis extends React.Component {
 			draw: draw,
 		});
 	}
-	drawOnCanvas() {
-		var { axesCanvasContext, chartData, margin, canvasOrigin } = this.context;
+	componentDidMount() {
+		if (this.props.type !== "svg" && this.context.getCanvasContexts !== undefined) {
+			var contexts = this.context.getCanvasContexts();
+			if (contexts) this.drawOnCanvas(contexts.axes);
+		}
+	}
+	componentDidUpdate(prevProps, prevState, prevContext) {
+		this.componentDidMount();
+	}
+	drawOnCanvas(ctx) {
+		var { chartData, margin, canvasOrigin } = this.context;
 		var { scale } = this.props;
 
-		Axis.drawOnCanvasStatic(margin, this.props, canvasOrigin, axesCanvasContext, chartData, scale, scale);
+		Axis.drawOnCanvasStatic(margin, this.props, canvasOrigin, ctx, chartData, scale, scale);
 	}
 
 	render() {
@@ -80,7 +86,7 @@ Axis.defaultProps = {
 };
 
 Axis.contextTypes = {
-	axesCanvasContext: React.PropTypes.object,
+	getCanvasContexts: React.PropTypes.func,
 	type: React.PropTypes.string,
 	chartData: React.PropTypes.object.isRequired,
 	chartId: React.PropTypes.number.isRequired,
@@ -91,8 +97,7 @@ Axis.contextTypes = {
 
 Axis.drawOnCanvasStatic = (margin, props, canvasOrigin, ctx, chartData, xScale, yScale) => {
 	var { transform, showDomain, showTicks } = props;
-	// var originX = 0.5 + chartData.config.origin[0] + margin.left + transform[0];
-	// var originY = 0.5 + chartData.config.origin[1] + margin.top + transform[1];
+	ctx.save();
 
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
 	ctx.translate(canvasOrigin[0] + transform[0], canvasOrigin[1] + transform[1]);
@@ -100,8 +105,7 @@ Axis.drawOnCanvasStatic = (margin, props, canvasOrigin, ctx, chartData, xScale, 
 	if (showDomain) AxisLine.drawOnCanvasStatic(props, ctx, chartData, xScale, yScale);
 	if (showTicks) AxisTicks.drawOnCanvasStatic(props, ctx, chartData, xScale, yScale);
 
-	// ctx.setTransform(1, 0, 0, 1, 0, 0);
-	// ctx.translate(0.5, 0.5);
+	ctx.restore();
 }
 
 export default Axis;

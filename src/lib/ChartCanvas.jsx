@@ -7,11 +7,21 @@ import ChartDataUtil from "./utils/ChartDataUtil";
 import Utils from "./utils/utils";
 import { DummyTransformer } from "./transforms";
 import EventHandler from "./EventHandler";
+import CanvasContainer from "./CanvasContainer";
+
+function deepEquals(arr1, arr2) {
+	if (arr1.length === arr2.length) {
+		var result = true;
+		arr1.forEach((each, i) => result && each === arr2[i])
+		return result;
+	}
+	return false;
+}
 
 class ChartCanvas extends React.Component {
 	constructor() {
 		super();
-		this.getCanvasContextList = this.getCanvasContextList.bind(this);
+		this.getCanvases = this.getCanvases.bind(this);
 	}
 	getDimensions(props) {
 		return {
@@ -19,40 +29,9 @@ class ChartCanvas extends React.Component {
 			width: props.width - props.margin.left - props.margin.right,
 		};
 	}
-	getChildContext() {
-		var axesCanvasContext, mouseCoordCanvasContext;
-		if (this.state.canvases) {
-			axesCanvasContext = this.state.canvases.axesCanvasContext;
-			mouseCoordCanvasContext = this.state.canvases.mouseCoordCanvasContext;
-		}
-		return {
-			axesCanvasContext: axesCanvasContext,
-			mouseCoordCanvasContext: mouseCoordCanvasContext,
-			margin: this.props.margin,
-		};
-	}
-	getCanvasContextList() {
-		var contexts = ["canvas_axes", "canvas_mouse_coordinates"]
-			.map(key => this.refs[key])
-			.map(each => each.getContext('2d'))
-
-		return {
-			axesCanvasContext: contexts[0],
-			mouseCoordCanvasContext: contexts[1],
-		};
-	}
-	componentDidMount() {
-		this.componentDidUpdate();
-	}
-	componentDidUpdate() {
-		if (this.props.type === "svg" && this.state.canvases !== null) {
-			this.setState({ canvases: null });
-		} else if (this.props.type !== "svg" && !this.state.canvases) {
-			var canvases = this.getCanvasContextList();
-			this.setState({
-				canvases: canvases
-			});
-		}
+	getCanvases() {
+		if (this.refs && this.refs.canvases)
+			return this.refs.canvases.getCanvasContexts();
 	}
 	updateState(props, context) {
 		var { defaultDataTransform, dataTransform, interval } = props;
@@ -76,7 +55,9 @@ class ChartCanvas extends React.Component {
 		this.updateState(this.props);
 	}
 	componentWillReceiveProps(nextProps) {
-		if (this.props.data !== nextProps.data || this.props.dataTransform !== nextProps.dataTransform) {
+		if (this.props.data !== nextProps.data || !deepEquals(this.props.dataTransform, nextProps.dataTransform)) {
+			// console.log(this.props.data !== nextProps.data, deepEquals(this.props.dataTransform, nextProps.dataTransform));
+			// console.log(this.props.dataTransform[0] === nextProps.dataTransform[0]);
 			this.updateState(nextProps);
 		}
 	}
@@ -107,27 +88,11 @@ class ChartCanvas extends React.Component {
 						}
 					]]>`;
 		var { data, options, canvasList } = this.state;
-		var { interval, initialDisplay, type, height, width, margin, className } = this.props;
-		var displayCount = initialDisplay || this.props.data.length;
+		var { interval, initialDisplay, type, height, width, margin, className, clip } = this.props;
 
-		var canvasList = [];
-		if (type !== "svg") {
-			canvasList = ChartDataUtil.getCharts(this.props)
-				.map(each => ({
-					width: each.props.width || dimensions.width,
-					height: each.props.height || dimensions.height,
-					origin: ChartDataUtil.getChartOrigin(each.props.origin, dimensions.width, dimensions.height),
-					id: each.props.id,
-				}));
-		}
-		var axesCanvas = (this.props.type !== "svg") ? <canvas key="axes" id="axes" ref="canvas_axes" width={width} height={height}
-					style={{ position: "absolute", left: 0, top: 0, zIndex: -1 }} /> : null;
-		var mouseCanvas = (this.props.type !== "svg") ? <canvas key="mouse_coordinates" id="mouse" ref="canvas_mouse_coordinates" width={width} height={height}
-					style={{ position: "absolute", left: 0, top: 0, zIndex: -1 }} /> : null;
 		return (
 			<div style={{position: "relative", height: height, width: width}} className={className} >
-				{axesCanvas}
-				{mouseCanvas}
+				<CanvasContainer ref="canvases" width={width} height={height} type={this.props.type} />
 				<svg width={width} height={height} style={{ position: "absolute" }}>
 					<style type="text/css" dangerouslySetInnerHTML={{ __html: style }}>
 					</style>
@@ -136,11 +101,11 @@ class ChartCanvas extends React.Component {
 							<rect x="0" y="0" width={dimensions.width} height={dimensions.height} />
 						</clipPath>
 					</defs>
-					<g transform={`translate(${margin.left}, ${margin.top})`}>
+					<g transform={`translate(${margin.left + 0.5}, ${margin.top + 0.5})`}>
 						<EventHandler ref="chartContainer"
 							data={data} options={options} interval={interval} 
 							initialDisplay={initialDisplay}
-							dimensions={dimensions} type={type} >
+							dimensions={dimensions} type={type} margin={margin} canvasContexts={this.getCanvases}>
 							{children}
 						</EventHandler>
 					</g>
@@ -159,14 +124,16 @@ ChartCanvas.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	initialDisplay: React.PropTypes.number,
 	dataTransform: React.PropTypes.array.isRequired,
-	className: React.PropTypes.string
+	className: React.PropTypes.string,
+	// clip: React.PropTypes.bool.isRequired,
 };
 
-ChartCanvas.childContextTypes = {
+/*ChartCanvas.childContextTypes = {
 	axesCanvasContext: React.PropTypes.object,
 	mouseCoordCanvasContext: React.PropTypes.object,
 	margin: React.PropTypes.object,
-};
+	// clipRectangle: React.PropTypes.array.isRequired,
+};*/
 
 ChartCanvas.defaultProps = {
 	margin: {top: 20, right: 30, bottom: 30, left: 80},
@@ -175,6 +142,7 @@ ChartCanvas.defaultProps = {
 	defaultDataTransform: [ { transform: DummyTransformer } ],
 	dataTransform: [ ],
 	className: "react-stockchart",
+	// clip: true,
 	// initialDisplay: 30
 };
 
