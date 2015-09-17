@@ -3,17 +3,13 @@
 import React from "react";
 
 class BaseCanvasSeries extends React.Component {
-	constructor(props) {
-		super(props);
-		this.drawOnCanvas = this.drawOnCanvas.bind(this);
-	}
 	componentDidMount() {
 		var { type } = this.props;
 		var { getCanvasContexts } = this.context;
 
 		if (type !== "svg" && getCanvasContexts !== undefined) {
 			var contexts = getCanvasContexts();
-			if (contexts) this.drawOnCanvas(contexts.axes);
+			if (contexts) BaseCanvasSeries.drawOnCanvas(contexts.axes, this.context, this.props, this.getCanvasDraw());
 		}
 	}
 	componentDidUpdate() {
@@ -33,13 +29,7 @@ class BaseCanvasSeries extends React.Component {
 			draw: draw,
 		});
 	}
-	drawOnCanvas(ctx) {
-		var callback = this.getCanvasDraw();
-		var { height, width, compareSeries, indicator, xAccessor, yAccessor, xScale, yScale, plotData, canvasOrigin } = this.context;
-		BaseCanvasSeries.drawModifiedStatic(this.props, callback, canvasOrigin, height, width, compareSeries, indicator, xAccessor, yAccessor, ctx, xScale, yScale, plotData);
-	}
-
-}
+};
 
 BaseCanvasSeries.contextTypes = {
 	getCanvasContexts: React.PropTypes.func,
@@ -60,6 +50,11 @@ BaseCanvasSeries.contextTypes = {
 	plotData: React.PropTypes.array.isRequired,
 };
 
+BaseCanvasSeries.drawOnCanvas = (canvasContext, context, props, callback) => {
+	var { height, width, compareSeries, indicator, xAccessor, yAccessor, xScale, yScale, plotData, canvasOrigin } = context;
+	BaseCanvasSeries.drawModifiedStatic(props, callback, canvasOrigin, height, width, compareSeries, indicator, xAccessor, yAccessor, canvasContext, xScale, yScale, plotData);
+};
+
 BaseCanvasSeries.drawModifiedStatic = (props, callback, canvasOrigin, height, width, compareSeries, indicator, xAccessor, yAccessor, ctx, xScale, yScale, plotData) => {
 	ctx.save();
 
@@ -70,8 +65,8 @@ BaseCanvasSeries.drawModifiedStatic = (props, callback, canvasOrigin, height, wi
 	ctx.rect(-1, -1, width, height);
 	ctx.clip();
 
-	callback(props, canvasOrigin, height, width, compareSeries, indicator, xAccessor, yAccessor, ctx, xScale, yScale, plotData);
+	callback(props, height, width, compareSeries, indicator, xAccessor, yAccessor, ctx, xScale, yScale, plotData);
 	ctx.restore();
-}
+};
 
 module.exports = BaseCanvasSeries;

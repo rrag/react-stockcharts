@@ -9,14 +9,6 @@ import { DummyTransformer } from "./transforms";
 import EventHandler from "./EventHandler";
 import CanvasContainer from "./CanvasContainer";
 
-function deepEquals(arr1, arr2) {
-	if (arr1.length === arr2.length) {
-		var result = true;
-		arr1.forEach((each, i) => result && each === arr2[i])
-		return result;
-	}
-	return false;
-}
 
 class ChartCanvas extends React.Component {
 	constructor() {
@@ -32,34 +24,6 @@ class ChartCanvas extends React.Component {
 	getCanvases() {
 		if (this.refs && this.refs.canvases)
 			return this.refs.canvases.getCanvasContexts();
-	}
-	updateState(props, context) {
-		var { defaultDataTransform, dataTransform, interval } = props;
-		var i = 0, eachTransform, options = {}, data = props.data;
-		var transforms = defaultDataTransform.concat(dataTransform);
-		for (i = 0; i < transforms.length; i++) {
-			// console.log(transforms[i]);
-			eachTransform = transforms[i].transform();
-			options = objectAssign({}, options, transforms[i].options);
-			options = eachTransform.options(options);
-			data = eachTransform(data, interval);
-		}
-
-		var state = {
-			data: data,
-			options: options
-		};
-		this.setState(state);
-	}
-	componentWillMount() {
-		this.updateState(this.props);
-	}
-	componentWillReceiveProps(nextProps) {
-		if (this.props.data !== nextProps.data || !deepEquals(this.props.dataTransform, nextProps.dataTransform)) {
-			// console.log(this.props.data !== nextProps.data, deepEquals(this.props.dataTransform, nextProps.dataTransform));
-			// console.log(this.props.dataTransform[0] === nextProps.dataTransform[0]);
-			this.updateState(nextProps);
-		}
 	}
 	render() {
 		var dimensions = this.getDimensions(this.props);
@@ -87,8 +51,8 @@ class ChartCanvas extends React.Component {
 							cursor: pointer;
 						}
 					]]>`;
-		var { data, options, canvasList } = this.state;
-		var { interval, initialDisplay, type, height, width, margin, className, clip } = this.props;
+		// var { options } = this.state;
+		var { data, dataTransform, interval, initialDisplay, type, height, width, margin, className, clip } = this.props;
 
 		return (
 			<div style={{position: "relative", height: height, width: width}} className={className} >
@@ -103,7 +67,7 @@ class ChartCanvas extends React.Component {
 					</defs>
 					<g transform={`translate(${margin.left + 0.5}, ${margin.top + 0.5})`}>
 						<EventHandler ref="chartContainer"
-							data={data} options={options} interval={interval} 
+							rawData={data} dataTransform={dataTransform} interval={interval} 
 							initialDisplay={initialDisplay}
 							dimensions={dimensions} type={type} margin={margin} canvasContexts={this.getCanvases}>
 							{children}
@@ -139,7 +103,7 @@ ChartCanvas.defaultProps = {
 	margin: {top: 20, right: 30, bottom: 30, left: 80},
 	interval: "D",
 	type: "hybrid",
-	defaultDataTransform: [ { transform: DummyTransformer } ],
+	// defaultDataTransform: [ { transform: DummyTransformer } ],
 	dataTransform: [ ],
 	className: "react-stockchart",
 	// clip: true,

@@ -13,7 +13,7 @@ class CompareSeries extends React.Component {
 				className={this.props.className}
 				xScale={xScale} yScale={yScale}
 				xAccessor={xAccessor} yAccessor={thisSeries.percentYAccessor}
-				data={plotData}
+				plotData={plotData}
 				stroke={thisSeries.stroke} fill="none"
 				type={type} />
 		);

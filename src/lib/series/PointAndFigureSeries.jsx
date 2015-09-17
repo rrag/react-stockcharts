@@ -1,101 +1,20 @@
 "use strict";
 
 import React from "react";
+import BaseCanvasSeries from "./BaseCanvasSeries";
 
-class PointAndFigureSeries extends React.Component {
-	constructor(props) {
-		super(props);
-		this.drawOnCanvas = this.drawOnCanvas.bind(this);
-		this.getColumns = this.getColumns.bind(this);
-	}
-	componentDidUpdate(prevProps, prevState, prevContext) {
-		if (this.context.type !== "svg" && this.context.canvasContext !== undefined) this.drawOnCanvas();
-	}
-	drawOnCanvas() {
-		var ctx = this.context.canvasContext;
-		var { fillStyle, strokeStyle } = ctx;
-		var columns = this.getColumns();
-		var { stroke, fill, strokeWidth, className } = this.props;
-
-		columns.forEach(col => {
-			let [offsetX, offsetY] = col.offset;
-			col.boxes.forEach(box => {
-				if (col.direction > 0) {
-					ctx.fillStyle = fill.up;
-					ctx.strokeStyle = stroke.up;
-
-					ctx.beginPath();
-
-					ctx.moveTo(offsetX, offsetY + box.open);
-					ctx.lineTo(offsetX + box.columnWidth, offsetY + box.close);
-					ctx.moveTo(offsetX, offsetY + box.close);
-					ctx.lineTo(offsetX + box.columnWidth, offsetY + box.open);
-
-					ctx.stroke();
-				} else {
-					ctx.fillStyle = fill.down;
-					ctx.strokeStyle = stroke.down;
-
-					ctx.beginPath();
-
-					let [x, y] = [offsetX + box.columnWidth / 2, offsetY + box.open + box.boxHeight / 2];
-					let [rx, ry] = [box.columnWidth / 2, box.boxHeight / 2];
-
-					ctx.ellipse(x, y, rx, ry, 0, 0, 2 * Math.PI);
-					ctx.stroke();
-				}
-			});
-		});
-
-		// ctx.fill();
-		ctx.stroke();
-
-		ctx.fillStyle = fillStyle;
-		ctx.strokeStyle = strokeStyle;
-	}
+class PointAndFigureSeries extends BaseCanvasSeries {
 	handleClick(idx) {
 		console.log(this.context.plotData[idx]);
 	}
-	getColumns() {
-		var { xScale, xAccessor, yScale, yAccessor, plotData } = this.context;
-		var width = xScale(xAccessor(plotData[plotData.length - 1]))
-			- xScale(xAccessor(plotData[0]));
-
-		var columnWidth = (width / (plotData.length - 1));
-
-		var anyBox, j = 0;
-		while (anyBox === undefined) {
-			if (plotData[j].close !== undefined) {
-				anyBox = plotData[j].boxes[0];
-			}
-			j++;
-		}
-
-		var boxHeight = Math.abs(yScale(anyBox.open) - yScale(anyBox.close));
-
-		var columns = plotData
-				.filter((d) => d.close !== undefined)
-				.map((d, idx) => {
-					var boxes = d.boxes.map((box, i) => ({
-							columnWidth: columnWidth,
-							boxHeight: boxHeight,
-							open: yScale(box.open),
-							close: yScale(box.close),
-							// y2: yScale(box.close),
-						})
-					);
-					var xOffset = (xScale(xAccessor(d)) - (columnWidth / 2));
-					return {
-						boxes: boxes,
-						direction: d.direction,
-						offset: [xOffset, 0],
-					};
-				});
-		return columns;
+	getCanvasDraw() {
+		return PointAndFigureSeries.drawOnCanvasStatic;
 	}
 	render() {
 		if (this.context.type !== "svg") return null;
-		var columns = this.getColumns();
+		var { xScale, xAccessor, yScale, yAccessor, plotData } = this.context;
+
+		var columns = PointAndFigureSeries.getColumns(xScale, xAccessor, yScale, yAccessor, plotData);
 		var { stroke, fill, strokeWidth, className } = this.props;
 
 		return (
@@ -127,16 +46,6 @@ class PointAndFigureSeries extends React.Component {
 	}
 }
 
-PointAndFigureSeries.contextTypes = {
-	xScale: React.PropTypes.func.isRequired,
-	yScale: React.PropTypes.func.isRequired,
-	xAccessor: React.PropTypes.func.isRequired,
-	yAccessor: React.PropTypes.func.isRequired,
-	plotData: React.PropTypes.array.isRequired,
-	canvasContext: React.PropTypes.object,
-	type: React.PropTypes.string,
-};
-
 PointAndFigureSeries.defaultProps = {
 	className: "react-stockcharts-point-and-figure",
 	namespace: "ReStock.PointAndFigureSeries",
@@ -152,5 +61,80 @@ PointAndFigureSeries.defaultProps = {
 };
 
 PointAndFigureSeries.yAccessor = (d) => ({open: d.open, high: d.high, low: d.low, close: d.close});
+
+PointAndFigureSeries.drawOnCanvasStatic = (props, height, width, compareSeries, indicator, xAccessor, yAccessor, ctx, xScale, yScale, plotData) => {
+	var columns = PointAndFigureSeries.getColumns(xScale, xAccessor, yScale, yAccessor, plotData);
+	var { stroke, fill, strokeWidth, className } = props;
+
+	columns.forEach(col => {
+		let [offsetX, offsetY] = col.offset;
+		col.boxes.forEach(box => {
+			if (col.direction > 0) {
+				ctx.fillStyle = fill.up;
+				ctx.strokeStyle = stroke.up;
+
+				ctx.beginPath();
+
+				ctx.moveTo(offsetX, offsetY + box.open);
+				ctx.lineTo(offsetX + box.columnWidth, offsetY + box.close);
+				ctx.moveTo(offsetX, offsetY + box.close);
+				ctx.lineTo(offsetX + box.columnWidth, offsetY + box.open);
+
+				ctx.stroke();
+			} else {
+				ctx.fillStyle = fill.down;
+				ctx.strokeStyle = stroke.down;
+
+				ctx.beginPath();
+
+				let [x, y] = [offsetX + box.columnWidth / 2, offsetY + box.open + box.boxHeight / 2];
+				let [rx, ry] = [box.columnWidth / 2, box.boxHeight / 2];
+
+				ctx.ellipse(x, y, rx, ry, 0, 0, 2 * Math.PI);
+				ctx.stroke();
+			}
+		});
+	});
+
+	ctx.stroke();
+}
+
+PointAndFigureSeries.getColumns = (xScale, xAccessor, yScale, yAccessor, plotData) => {
+
+	var width = xScale(xAccessor(plotData[plotData.length - 1]))
+		- xScale(xAccessor(plotData[0]));
+
+	var columnWidth = (width / (plotData.length - 1));
+
+	var anyBox, j = 0;
+	while (anyBox === undefined) {
+		if (plotData[j].close !== undefined) {
+			anyBox = plotData[j].boxes[0];
+		}
+		j++;
+	}
+
+	var boxHeight = Math.abs(yScale(anyBox.open) - yScale(anyBox.close));
+
+	var columns = plotData
+			.filter((d) => d.close !== undefined)
+			.map((d, idx) => {
+				var boxes = d.boxes.map((box, i) => ({
+						columnWidth: columnWidth,
+						boxHeight: boxHeight,
+						open: yScale(box.open),
+						close: yScale(box.close),
+						// y2: yScale(box.close),
+					})
+				);
+				var xOffset = (xScale(xAccessor(d)) - (columnWidth / 2));
+				return {
+					boxes: boxes,
+					direction: d.direction,
+					offset: [xOffset, 0],
+				};
+			});
+	return columns;
+};
 
 module.exports = PointAndFigureSeries;

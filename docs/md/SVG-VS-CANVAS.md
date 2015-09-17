@@ -11,8 +11,6 @@ Here is where `canvas` shines. Given this dilema react-stockcharts provides 2 op
 - svg only
 - svg and canvas
 
-It is not pure `canvas` for the second option because there is no performance penality for using svg for certain components. react-stockcharts uses canvas for the places where performance is important.
-
-While the chart themselves are drawn in canvas, the axes & ticks, the tool tip, the mousepointer cross hair, edge coordinates are all SVG.
+Except the tooltip everything else, including the crosshair, axes, the chart series are all drawn on canvas. The tooltip I am retaining it in `svg` because of the ability to attach mouse hover and click event to the `svg` DOM. If there are better suggestions to use `canvas` for tooltip and also support click events and mouse hover state please share them.
 
 Below you can see the improvements in responsiveness to pan actions when using the svg + canvas option

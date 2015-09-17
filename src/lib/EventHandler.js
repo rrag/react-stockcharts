@@ -5,8 +5,10 @@ import Utils from "./utils/utils";
 import PureComponent from "./utils/PureComponent";
 import ChartDataUtil from "./utils/ChartDataUtil";
 import shallowEqual from "./utils/shallowEqual";
+import { DummyTransformer } from "./transforms";
 
 import objectAssign from "object-assign";
+
 
 function getLongValue(value) {
 	if (value instanceof Date) {
@@ -14,7 +16,15 @@ function getLongValue(value) {
 	}
 	return value;
 }
-var lastRun = new Date().getTime();
+function deepEquals(arr1, arr2) {
+	if (arr1.length === arr2.length) {
+		var result = true;
+		arr1.forEach((each, i) => result && each === arr2[i])
+		return result;
+	}
+	return false;
+}
+
 
 class EventHandler extends PureComponent {
 	constructor(props, context) {
@@ -47,10 +57,29 @@ class EventHandler extends PureComponent {
 			return this.state.deltaXY;
 		}
 	}
+	getTransformedData(rawData, defaultDataTransform, dataTransform, interval) {
+		var i = 0, eachTransform, options = {}, data = rawData;
+		var transforms = defaultDataTransform.concat(dataTransform);
+		for (i = 0; i < transforms.length; i++) {
+			// console.log(transforms[i]);
+			eachTransform = transforms[i].transform();
+			options = objectAssign({}, options, transforms[i].options);
+			options = eachTransform.options(options);
+			data = eachTransform(data, interval);
+		}
+		return {
+			data: data,
+			options: options
+		};
+	}
 	componentWillMount() {
 		// console.log("EventHandler.componentWillMount");
 		var { props, context } = this;
-		var { data, initialDisplay, options, interval, dimensions } = props;
+		var { initialDisplay, rawData, defaultDataTransform, dataTransform, interval, dimensions } = props;
+
+		var transformedData = this.getTransformedData(rawData, defaultDataTransform, dataTransform, interval);
+
+		var { data, options } = transformedData;
 
 		var dataForInterval = data[interval];
 		var mainChart = ChartDataUtil.getMainChart(props.children);
@@ -60,6 +89,8 @@ class EventHandler extends PureComponent {
 		var chartData = ChartDataUtil.getChartData(props, dimensions, plotData, data, options);
 
 		this.setState({
+			data: data,
+			options: options,
 			plotData: plotData,
 			chartData: chartData,
 			interval: this.props.interval,
@@ -69,12 +100,114 @@ class EventHandler extends PureComponent {
 			secretToSuperFastCanvasDraw: [],
 		});
 	}
-	clearMainCanvas() {
-		var canvases = this.props.canvasContexts();
+	componentWillReceiveProps(nextProps) {
+
+		var { rawData: prevData, dataTransform: prevDataTransform } = this.props;
+		var { rawData: nextData, dataTransform: nextDataTransform } = nextProps;
+		var { dimensions, initialDisplay, defaultDataTransform, interval: intervalProp } = nextProps;
+
+		var { data, options } = this.state;
+		var dataChanged = false, dataAltered = false, dataPushed = false;
+		if (prevData !== nextData || !deepEquals(prevDataTransform, nextDataTransform)) {
+			var transformedData = this.getTransformedData(nextData, defaultDataTransform, nextDataTransform, intervalProp);
+			data = transformedData.data;
+			options = transformedData.options;
+
+			if (prevData[0] === nextData[0]) {
+				dataPushed = prevData.length < nextData.length;
+				dataAltered = prevData.length === nextData.length;
+			}
+			dataChanged = true;
+		}
+
+		var { interval, chartData, plotData } = this.state;
+
+		// console.log(nextData, interval);
+		var dataForInterval = data[interval];
+		var mainChart = ChartDataUtil.getMainChart(nextProps.children);
+		var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
+		var xAccessor = mainChartData.config.xAccessor;
+
+		var retainXDomainDiff = true;
+		if (dataPushed) {
+			var domainL = xAccessor(plotData[1]);
+
+			var beginIndex = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
+			var endIndex = beginIndex + plotData.length;
+		} else if (dataChanged) {
+			// console.log("NOT same data.. ", dataChanged, dataAltered, dataPushed);
+
+			var beginIndex = Math.max(dataForInterval.length - initialDisplay, 0);
+			var endIndex = dataForInterval.length;
+			// if data is altered then the domain diff has to be retained, else dont retain since the data has changed
+			retainXDomainDiff = dataAltered;
+		} else {
+			// dataAltered or default case
+			var domainL = xAccessor(plotData[0]);
+
+			var beginIndex = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
+			var endIndex = beginIndex + plotData.length;
+		} 
+
+		// console.log(plotData[0], plotData[plotData.length - 1]);
+		var newPlotData = dataForInterval.slice(beginIndex, endIndex);
+		// console.log(dataForInterval[0], newPlotData[newPlotData.length - 1]);
+
+
+		var newChartData = ChartDataUtil.getChartData(nextProps, dimensions, newPlotData, data, options);
+
+
+		if (retainXDomainDiff) {
+			var xScale = chartData[0].plot.scales.xScale;
+			var startDomain = xScale.domain();
+
+			var leftDelta = xAccessor(plotData[0]) - startDomain[0];
+			var rightDelta = startDomain[1] - xAccessor(plotData[plotData.length - 1]);
+			var domainL = xAccessor(newPlotData[0]) - leftDelta;
+			var domainR = xAccessor(newPlotData[newPlotData.length - 1]) + rightDelta;
+
+			// console.log(domainL, domainR, xAccessor(newPlotData[0]), xAccessor(newPlotData[newPlotData.length - 1]));
+			// console.log(domainR - domainL, xAccessor(newPlotData[newPlotData.length - 1]) - xAccessor(newPlotData[0]));
+			/*if (rightDelta > 1) {
+				domainL = xAccessor(newPlotData[0]);
+				var dx = xAccessor(newPlotData[newPlotData.length - 1]) - xAccessor(plotData[plotData.length - 1]);
+				if (dx > 0) {
+					domainR = xAccessor(plotData[plotData.length - 1]) + dx;
+				}
+			}*/
+
+			newChartData = newChartData.map((eachChart) => {
+				var plot = ChartDataUtil.getChartPlotFor(eachChart.config, newPlotData, domainL, domainR);
+				return {
+					id: eachChart.id,
+					config: eachChart.config,
+					plot: plot
+				};
+			});
+		}
+
+		// console.log(newPlotData.length);
+
+		var newCurrentItems = ChartDataUtil.getCurrentItems(newChartData, this.state.mouseXY, newPlotData);
+
+		this.clearBothCanvas(nextProps);
+		this.setState({
+			data: data,
+			options: options,
+			chartData: newChartData,
+			plotData: newPlotData,
+			currentItems: newCurrentItems,
+			mainChart: mainChart,
+			initialRender: false,
+			secretToSuperFastCanvasDraw: [],
+			canvases: null,
+		});
+	}
+	clearBothCanvas(props) {
+		props = props || this.props;
+		var canvases = props.canvasContexts();
 		if (canvases && canvases.axes) {
-			var { axes } = canvases;
-			axes.setTransform(1, 0, 0, 1, 0, 0);
-			axes.clearRect(-1, -1, axes.canvas.width + 2, axes.canvas.height + 2);
+			this.clearCanvas(canvases.axes, canvases.mouseCoord);
 		}
 	}
 	clearCanvas(...canvasList) {
@@ -82,55 +215,6 @@ class EventHandler extends PureComponent {
 			each.setTransform(1, 0, 0, 1, 0, 0);
 			each.clearRect(-1, -1, each.canvas.width + 2, each.canvas.height + 2);
 		})
-	}
-	componentWillReceiveProps(nextProps) {
-
-		if (nextProps.type !== "svg" && this.state.initialRender) {
-			this.setState({
-				initialRender: false,
-				secretToSuperFastCanvasDraw: [],
-				canvases: null,
-			});
-		} else {
-			var { interval, chartData, plotData } = this.state;
-			var { data: nextData, options, dimensions, initialDisplay } = nextProps;
-			var { data: prevData } = this.props;
-
-			var dataForInterval = nextData[interval];
-			var mainChart = ChartDataUtil.getMainChart(nextProps.children);
-			var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
-			var xAccessor = mainChartData.config.xAccessor;
-
-			if (nextData === prevData) {
-				var domainL = xAccessor(plotData[0]);
-				var domainR = xAccessor(plotData[plotData.length - 1]);
-
-				var beginIndex = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
-				var endIndex = Utils.getClosestItemIndexes(dataForInterval, domainR, xAccessor).right;
-			} else {
-				console.log("NOT same data");
-				var beginIndex = Math.max(dataForInterval.length - initialDisplay, 0);
-				var endIndex = dataForInterval.length;
-			}
-
-			// console.log(plotData[0], plotData[plotData.length - 1]);
-			var newPlotData = dataForInterval.slice(beginIndex, endIndex);
-			// console.log(newPlotData[0], newPlotData[newPlotData.length - 1]);
-			var newChartData = ChartDataUtil.getChartData(nextProps, dimensions, newPlotData, nextData, options);
-			// console.log("componentWillReceiveProps");
-
-			this.setState({
-				chartData: newChartData,
-				plotData: newPlotData,
-				currentItems: [],
-				show: false,
-				mouseXY: [0, 0],
-				mainChart: mainChart,
-				initialRender: false,
-				secretToSuperFastCanvasDraw: [],
-				canvases: null,
-			});
-		}
 	}
 	getChildContext() {
 		return {
@@ -145,7 +229,7 @@ class EventHandler extends PureComponent {
 			width: this.props.dimensions.width,
 			height: this.props.dimensions.height,
 			type: this.props.type,
-			dateAccessor: this.props.options.dateAccessor,
+			dateAccessor: this.state.options.dateAccessor,
 			secretToSuperFastCanvasDraw: this.state.secretToSuperFastCanvasDraw,
 			margin: this.props.margin,
 
@@ -223,8 +307,7 @@ class EventHandler extends PureComponent {
 	}
 	handleZoom(zoomDirection, mouseXY) {
 		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
-		var { mainChart, chartData, plotData, interval } = this.state;
-		var { data } = this.props;
+		var { data, mainChart, chartData, plotData, interval } = this.state;
 
 		var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0],
 			item = ChartDataUtil.getClosestItem(plotData, mouseXY, chart),
@@ -254,7 +337,7 @@ class EventHandler extends PureComponent {
 				plot: plot
 			};
 		});
-		this.clearMainCanvas();
+		this.clearBothCanvas();
 
 		this.setState({
 			chartData: newChartData,
@@ -274,8 +357,7 @@ class EventHandler extends PureComponent {
 		});
 	}
 	panHelper(mousePosition) {
-		var { mainChart, chartData, interval, panStartDomain, panOrigin } = this.state;
-		var { data } = this.props;
+		var { data, mainChart, chartData, interval, panStartDomain, panOrigin } = this.state;
 
 		var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0],
 			domainRange = panStartDomain[1] - panStartDomain[0],
@@ -322,7 +404,7 @@ class EventHandler extends PureComponent {
 		}).map((eachChartData) => eachChartData.id);
 		return {
 			plotData: filteredData,
-			show: true,
+			// show: true,
 			mouseXY: mousePosition,
 			currentCharts: currentCharts,
 			chartData: newChartData,
@@ -375,20 +457,17 @@ class EventHandler extends PureComponent {
 						.filter(each => each.chartId === undefined)
 						.filter(each => each.type === "axis")
 						.forEach(each => each.draw(axesCanvasContext, chartData));
+
 					this.state.secretToSuperFastCanvasDraw
 						.filter(each => each.type === "mouse")
-						.forEach(each => each.draw(mouseContext, state.show && this.state.show,
+						.forEach(each => each.draw(mouseContext, this.state.show,
 							state.mouseXY, state.currentCharts, state.chartData, state.currentItems));
-						/* ctx, show, mouseXY, currentCharts, chartData, currentItems
-		return {
-			plotData: filteredData,
-			show: true,
-			mouseXY: mousePosition,
-			currentCharts: currentCharts,
-			chartData: newChartData,
-			currentItems: currentItems,
-		}
-						*/
+
+					this.state.secretToSuperFastCanvasDraw
+						.filter(each => each.type === "currentcoordinate")
+						.forEach(each => each.draw(mouseContext, this.state.show,
+							state.mouseXY, state.currentCharts, state.chartData, state.currentItems));
+
 				});
 			} else {
 				this.setState(state);
@@ -396,7 +475,7 @@ class EventHandler extends PureComponent {
 		}
 	}
 	handlePanEnd(mousePosition) {
-		this.clearMainCanvas();
+		this.clearBothCanvas();
 
 		var state = this.panHelper(mousePosition);
 		this.setState({
@@ -438,6 +517,11 @@ class EventHandler extends PureComponent {
 	margin: React.PropTypes.object.isRequired,
 };
 */
+
+EventHandler.defaultProps = {
+	defaultDataTransform: [ { transform: DummyTransformer } ],
+};
+
 EventHandler.childContextTypes = {
 	plotData: React.PropTypes.array,
 	chartData: React.PropTypes.array,

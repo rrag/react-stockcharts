@@ -10,41 +10,8 @@ class Area extends BaseSimpleCanvasSeries {
 		super(props);
 		this.getArea = this.getArea.bind(this);
 	}
-	drawOnCanvasStatic(props, ctx, xScale, yScale, plotData) {
-		var { xAccessor, yAccessor, fill, stroke, opacity, base } = props;
-		var begin = true;
-		var height = yScale.range()[0];
-		var newBase = (base === undefined) ? () => (height - 1) : base;
-
-		ctx.fillStyle = fill;
-		ctx.strokeStyle = stroke;
-		ctx.globalAlpha = opacity;
-
-		plotData.forEach((d) => {
-			if (yAccessor(d) !== undefined) {
-				if (begin) {
-					ctx.beginPath();
-					begin = false;
-					let [x, y] = [xScale(xAccessor(d)), yScale(yAccessor(d))];
-					ctx.moveTo(x, newBase(yScale, d));
-					ctx.lineTo(x, y);
-				}
-				ctx.lineTo(xScale(xAccessor(d)), yScale(yAccessor(d)));
-			}
-		});
-
-		var last = plotData[plotData.length - 1];
-		ctx.lineTo(xScale(xAccessor(last)), newBase(yScale, last));
-
-		if (base !== undefined) {
-			plotData.slice().reverse().forEach((d) => {
-				if (yAccessor(d) !== undefined) {
-					ctx.lineTo(xScale(xAccessor(d)), base(yScale, d));
-				}
-			});
-		}
-		ctx.closePath();
-		ctx.fill();
+	getCanvasDraw() {
+		return Area.drawOnCanvasStatic;
 	}
 	getArea() {
 		var { plotData, xScale, yScale, xAccessor, yAccessor, base } = this.props;
@@ -87,6 +54,43 @@ Area.defaultProps = {
 	className: "line ",
 	fill: "none",
 	opacity: 1,
+};
+
+Area.drawOnCanvasStatic = (props, ctx, xScale, yScale, plotData) => {
+	var { xAccessor, yAccessor, fill, stroke, opacity, base } = props;
+	var begin = true;
+	var height = yScale.range()[0];
+	var newBase = (base === undefined) ? () => (height - 1) : base;
+
+	ctx.fillStyle = fill;
+	ctx.strokeStyle = stroke;
+	ctx.globalAlpha = opacity;
+
+	plotData.forEach((d) => {
+		if (yAccessor(d) !== undefined) {
+			if (begin) {
+				ctx.beginPath();
+				begin = false;
+				let [x, y] = [xScale(xAccessor(d)), yScale(yAccessor(d))];
+				ctx.moveTo(x, newBase(yScale, d));
+				ctx.lineTo(x, y);
+			}
+			ctx.lineTo(xScale(xAccessor(d)), yScale(yAccessor(d)));
+		}
+	});
+
+	var last = plotData[plotData.length - 1];
+	ctx.lineTo(xScale(xAccessor(last)), newBase(yScale, last));
+
+	if (base !== undefined) {
+		plotData.slice().reverse().forEach((d) => {
+			if (yAccessor(d) !== undefined) {
+				ctx.lineTo(xScale(xAccessor(d)), base(yScale, d));
+			}
+		});
+	}
+	ctx.closePath();
+	ctx.fill();
 };
 
 module.exports = Area;

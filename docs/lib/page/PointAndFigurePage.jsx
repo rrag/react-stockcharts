@@ -4,6 +4,7 @@ var React = require('react');
 var ContentSection = require('lib/content-section');
 var Row = require('lib/row');
 var Section = require('lib/section');
+var TypeChooser = require("src/").helper.TypeChooser;
 
 var PointAndFigure = require('lib/charts/PointAndFigure');
 
@@ -21,7 +22,9 @@ var PointAndFigurePage = React.createClass({
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<PointAndFigure data={this.props.someData} type="svg" />
+						<TypeChooser>
+							{(type) => <PointAndFigure data={this.props.someData} type={type} />}
+						</TypeChooser>
 					</Section>
 				</Row>
 			</ContentSection>

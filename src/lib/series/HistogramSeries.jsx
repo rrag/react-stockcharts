@@ -70,7 +70,7 @@ HistogramSeries.defaultProps = {
 	opacity: 0.5,
 };
 
-HistogramSeries.drawOnCanvasStatic = (props, canvasOrigin, height, width, compareSeries, indicator, xAccessor, yAccessor, ctx, xScale, yScale, plotData) => {
+HistogramSeries.drawOnCanvasStatic = (props, height, width, compareSeries, indicator, xAccessor, yAccessor, ctx, xScale, yScale, plotData) => {
 	var bars = HistogramSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
 
 	ctx.globalAlpha = props.opacity;

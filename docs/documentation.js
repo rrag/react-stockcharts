@@ -27,6 +27,7 @@ var pages = [
 	require("lib/page/BollingerBandOverlayPage"),
 	require("lib/page/EdgeCoordinatesPage"),
 	require("lib/page/CompareWithPage"),
+	require("lib/page/UpdatingDataPage"),
 	require("lib/page/LotsOfDataPage"),
 	require("lib/page/MACDIndicatorPage"),
 	require("lib/page/RSIIndicatorPage"),
@@ -212,17 +213,16 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithMACDIndicator
 	// CandleStickChartWithRSIIndicator
 	// CandleStickChartWithFullStochasticsIndicator
-	var Chart = require("lib/charts/CandleStickChartWithFullStochasticsIndicator");
+	// CandleStickChartWithUpdatingData
+	var Chart = require("lib/charts/CandleStickChartWithUpdatingData");
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	class ExamplesPage extends React.Component {
 		render() {
 			return (
-				<div className="react-stockchart">
-					<TypeChooser type="hybrid">
-						{(type) => <Chart data={data} type={type} />}
-					</TypeChooser>
-				</div>
+				<TypeChooser type="hybrid">
+					{(type) => <Chart data={data} type={type} />}
+				</TypeChooser>
 			)
 		}
 	};

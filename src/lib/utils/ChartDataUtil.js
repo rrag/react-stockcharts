@@ -35,13 +35,13 @@ var ChartDataUtil = {
 			: origin;
 		return originCoordinates;
 	},
-	getChartData(props, innerDimensions, partialData, fullData, other) {
+	getChartData(props, innerDimensions, partialData, fullData, other, domainL, domainR) {
 		var charts = this.getCharts(props);
 
 		return charts.map((each) => {
 			var chartProps = each.props;
 			var config = this.getChartConfigFor(innerDimensions, chartProps, partialData, fullData, other);
-			var plot = this.getChartPlotFor(config, partialData);
+			var plot = this.getChartPlotFor(config, partialData, domainL, domainR);
 
 			// console.log(config.compareSeries);
 
@@ -175,7 +175,9 @@ var ChartDataUtil = {
 			, config.padding
 			, domain);
 
-		if (domainL && domainR) scales.xScale.domain([domainL, domainR]);
+		if (domainL && domainR) {
+			scales.xScale.domain([domainL, domainR]);
+		}
 
 		var plot = {
 			overlayValues: overlayValues,

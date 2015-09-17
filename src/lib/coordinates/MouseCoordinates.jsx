@@ -6,21 +6,12 @@ import PureComponent from "../utils/PureComponent";
 import CrossHair from "./CrossHair";
 
 class MouseCoordinates extends PureComponent {
-	constructor(props, context) {
-		super(props, context);
-		this.drawOnCanvas = this.drawOnCanvas.bind(this);
-	}
-	drawOnCanvas(ctx) {
-		var { mouseXY, currentCharts, chartData, currentItems, show } = this.context;
-
-		MouseCoordinates.drawOnCanvasStatic(this.context, this.props, ctx, show, mouseXY, currentCharts, chartData, currentItems)
-	}
 	componentDidMount() {
 		var { type, getCanvasContexts } = this.context;
 
 		if (type !== "svg" && getCanvasContexts !== undefined) {
 			var contexts = getCanvasContexts();
-			if (contexts) this.drawOnCanvas(contexts.mouseCoord);
+			if (contexts) MouseCoordinates.drawOnCanvas(contexts.mouseCoord, this.context, this.props);
 		}
 	}
 	componentDidUpdate() {
@@ -44,6 +35,7 @@ class MouseCoordinates extends PureComponent {
 	}
 	render() {
 		var { type, mouseXY, currentCharts, chartData, currentItems, show } = this.context;
+
 		if (type !== "svg") return null;
 
 		var pointer = MouseCoordinates.helper(this.context, this.props, show, mouseXY, currentCharts, chartData, currentItems);
@@ -86,6 +78,11 @@ MouseCoordinates.defaultProps = {
 	yDisplayFormat: Utils.displayNumberFormat,
 };
 
+MouseCoordinates.drawOnCanvas = (canvasContext, context, props) => {
+	var { mouseXY, currentCharts, chartData, currentItems, show } = context;
+
+	MouseCoordinates.drawOnCanvasStatic(context, props, canvasContext, show, mouseXY, currentCharts, chartData, currentItems)
+}
 MouseCoordinates.drawOnCanvasStatic = (context, props, ctx, show, mouseXY, currentCharts, chartData, currentItems) => {
 	var { margin } = context;
 	var pointer = MouseCoordinates.helper(context, props, show, mouseXY, currentCharts, chartData, currentItems);

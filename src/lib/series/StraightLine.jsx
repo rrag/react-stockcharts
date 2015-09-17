@@ -4,22 +4,8 @@ import React from "react";
 import BaseSimpleCanvasSeries from "./BaseSimpleCanvasSeries";
 
 class StraightLine extends BaseSimpleCanvasSeries {
-	drawOnCanvasStatic(props, ctx, xScale, yScale, plotData) {
-
-		var { type, stroke, fill, className, opacity } = props;
-		var { xAccessor, yAccessor, yValue } = props;
-
-		var first = xAccessor(plotData[0]);
-		var last = xAccessor(plotData[plotData.length - 1]);
-
-		ctx.beginPath();
-
-		ctx.strokeStyle = stroke;
-		ctx.globalAlpha = opacity;
-
-		ctx.moveTo(xScale(first), yScale(yValue));
-		ctx.lineTo(xScale(last), yScale(yValue));
-		ctx.stroke();
+	getCanvasDraw() {
+		return StraightLine.drawOnCanvasStatic;
 	}
 	render() {
 		var { type, stroke, fill, className, opacity } = this.props;
@@ -56,6 +42,24 @@ StraightLine.defaultProps = {
 	fill: "none",
 	stroke: "black",
 	opacity: 0.5,
+};
+
+StraightLine.drawOnCanvasStatic = (props, ctx, xScale, yScale, plotData) => {
+
+	var { type, stroke, fill, className, opacity } = props;
+	var { xAccessor, yAccessor, yValue } = props;
+
+	var first = xAccessor(plotData[0]);
+	var last = xAccessor(plotData[plotData.length - 1]);
+
+	ctx.beginPath();
+
+	ctx.strokeStyle = stroke;
+	ctx.globalAlpha = opacity;
+
+	ctx.moveTo(xScale(first), yScale(yValue));
+	ctx.lineTo(xScale(last), yScale(yValue));
+	ctx.stroke();
 };
 
 module.exports = StraightLine;
