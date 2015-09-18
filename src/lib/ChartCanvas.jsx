@@ -21,6 +21,12 @@ class ChartCanvas extends React.Component {
 			width: props.width - props.margin.left - props.margin.right,
 		};
 	}
+	pushData(array) {
+		this.refs.chartContainer.pushData(array);
+	}
+	alterData(array) {
+		this.refs.chartContainer.alterData(array);
+	}
 	getCanvases() {
 		if (this.refs && this.refs.canvases)
 			return this.refs.canvases.getCanvasContexts();

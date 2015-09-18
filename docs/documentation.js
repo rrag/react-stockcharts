@@ -131,13 +131,13 @@ function renderPage(data, dataFull, compareData) {
 d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 	d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
 		d3.tsv("data/comparison.tsv", (err3, compareData) => {
-			/// renderPage(MSFT, MSFTFull, compareData);
-			renderPartialPage(MSFT, MSFTFull, compareData);
+			renderPage(MSFT, MSFTFull, compareData);
+			// renderPartialPage(MSFT, MSFTFull, compareData);
 		});
 	});
 });
 
-document.addEventListener('keypress', function(e) {
+/*document.addEventListener('keypress', function(e) {
 	var keyCode = e.which;
 	// b or s (98 or 115) - Begin performance
 	// e (101) - end performance
@@ -155,7 +155,7 @@ document.addEventListener('keypress', function(e) {
 		Perf.printExclusive();
 		Perf.printWasted();
 	}
-})
+})*/
 
 function renderPartialPage(data, dataFull, compareData) {
 	data.forEach((d, i) => {

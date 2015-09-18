@@ -90,6 +90,7 @@ class EventHandler extends PureComponent {
 
 		this.setState({
 			data: data,
+			rawData: rawData,
 			options: options,
 			plotData: plotData,
 			chartData: chartData,
@@ -106,118 +107,229 @@ class EventHandler extends PureComponent {
 		var { rawData: nextData, dataTransform: nextDataTransform } = nextProps;
 		var { dimensions, initialDisplay, defaultDataTransform, interval: intervalProp } = nextProps;
 
-		var { data, options, interval, chartData, plotData } = this.state;
+		var { data, options, interval, chartData, plotData, rawData } = this.state;
 		var prevDataForInterval = data[interval];
 
-		var dataChanged = false, dataAltered = false, dataPushed = false, deltaPushed;
+		var dataChanged = false;
 		if (prevData !== nextData || !deepEquals(prevDataTransform, nextDataTransform)) {
 			var transformedData = this.getTransformedData(nextData, defaultDataTransform, nextDataTransform, intervalProp);
 			data = transformedData.data;
 			options = transformedData.options;
 
-			if (prevData[0] === nextData[0]) {
-				dataPushed = prevData.length < nextData.length;
-				dataAltered = prevData.length === nextData.length;
-				deltaPushed = nextData.length - prevData.length;
-			}
 			dataChanged = true;
+			rawData = nextData;
 		}
 
 		var dataForInterval = data[interval];
+
 		var mainChart = ChartDataUtil.getMainChart(nextProps.children);
 		var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
-		var xAccessor = mainChartData.config.xAccessor;
+		var xScale = mainChartData.plot.scales.xScale;
 
-		// var retainXDomainDiff = true;
-		var xScale = chartData[0].plot.scales.xScale;
 		var domainL, domainR, startDomain = xScale.domain();
-
-		var lastItemVisible = plotData[plotData.length - 1] === prevDataForInterval[prevDataForInterval.length - 1];
 		// console.log(dataPushed, lastItemVisible);
-		if (dataPushed) {
-			if (lastItemVisible) {
-				var leftDelta = xAccessor(plotData[0]) - startDomain[0];
-				var rightDelta = startDomain[1] - xAccessor(plotData[plotData.length - 1]);
 
-				var left = xAccessor(plotData[1]);
-				var endIndex = dataForInterval.length;
-				if (rightDelta + leftDelta >= deltaPushed) {
-					left = xAccessor(plotData[0]);
-				} else {
-					left = xAccessor(plotData[deltaPushed]);
-				}
-				var beginIndex = Utils.getClosestItemIndexes(dataForInterval, left, xAccessor).left;
-				// var newPlotData = dataForInterval.slice(beginIndex, endIndex);
-			} else {
-				// 
-				domainL = startDomain[0];
-				domainR = startDomain[1];
-				var beginIndex = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
-				var endIndex = beginIndex + plotData.length;
-			}
-
-		} else if (dataAltered) {
-
-			var left = xAccessor(plotData[0]);
-			var beginIndex = Utils.getClosestItemIndexes(dataForInterval, left, xAccessor).left;
-			var endIndex = beginIndex + plotData.length;
-
-			domainL = startDomain[0];
-			domainR = startDomain[1];
-		} else if (dataChanged) {
-			// console.log("NOT same data.. ", dataChanged, dataAltered, dataPushed);
-
-			// if data is altered then the domain diff has to be retained, else dont retain since the data has changed
+		if (dataChanged) {
 			var beginIndex = Math.max(dataForInterval.length - initialDisplay, 0);
 			var endIndex = dataForInterval.length;
 
+			plotData = dataForInterval.slice(beginIndex, endIndex);
+
 		} else {
-			// default case
-			var left = xAccessor(plotData[0]);
-			var beginIndex = Utils.getClosestItemIndexes(dataForInterval, left, xAccessor).left;
-			var endIndex = beginIndex + plotData.length;
 
 			domainL = startDomain[0];
 			domainR = startDomain[1];
 		}
 
 		// console.log(plotData[0], plotData[plotData.length - 1]);
-		var newPlotData = dataForInterval.slice(beginIndex, endIndex);
-		var newChartData = ChartDataUtil.getChartData(nextProps, dimensions, newPlotData, data, options);
-		// console.log(dataForInterval[0], newPlotData[newPlotData.length - 1]);
-		if (lastItemVisible && domainL === undefined) {
-			if (rightDelta > deltaPushed) {
-				domainL = startDomain[0] + (xAccessor(newPlotData[newPlotData.length - 1]) - xAccessor(plotData[plotData.length - 1]));
-				domainR = startDomain[1] + (xAccessor(newPlotData[newPlotData.length - 1]) - xAccessor(plotData[plotData.length - 1]))
-				// (rightDelta + leftDelta) >= deltaPushed
-			}
-		}
+		var newChartData = ChartDataUtil.getChartData(nextProps, dimensions, plotData, data, options);
 
-		if (domainL !== undefined && domainR !== undefined) {
-			newChartData = newChartData.map((eachChart) => {
-				var plot = ChartDataUtil.getChartPlotFor(eachChart.config, newPlotData, domainL, domainR);
-				return {
-					id: eachChart.id,
-					config: eachChart.config,
-					plot: plot
-				};
-			});
-		}
+		newChartData = newChartData.map((eachChart) => {
+			var plot = ChartDataUtil.getChartPlotFor(eachChart.config, plotData, domainL, domainR);
+			return {
+				id: eachChart.id,
+				config: eachChart.config,
+				plot: plot
+			};
+		});
 
-		var newCurrentItems = ChartDataUtil.getCurrentItems(newChartData, this.state.mouseXY, newPlotData);
+		var newCurrentItems = ChartDataUtil.getCurrentItems(newChartData, this.state.mouseXY, plotData);
 
 		this.clearBothCanvas(nextProps);
+
 		this.setState({
+			rawData: rawData,
 			data: data,
 			options: options,
 			chartData: newChartData,
-			plotData: newPlotData,
+			plotData: plotData,
 			currentItems: newCurrentItems,
 			mainChart: mainChart,
 			initialRender: false,
 			secretToSuperFastCanvasDraw: [],
 			canvases: null,
 		});
+	}
+	pushData(array) {
+		if (array === undefined || array === null || array.length === 0) return;
+
+		var { dataTransform, defaultDataTransform, dimensions  } = this.props;
+		var { rawData, data, options, interval, chartData, plotData, mainChart } = this.state;
+
+		var newRawData = rawData.concat(array);
+		var transformedData = this.getTransformedData(newRawData, defaultDataTransform, dataTransform, interval);
+
+		var prevDataForInterval = data[interval];
+		var dataForInterval = transformedData.data[interval];
+
+		var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
+		var xAccessor = mainChartData.config.xAccessor;
+		var xScale = mainChartData.plot.scales.xScale;
+
+		var deltaPushed = array.length;
+
+		var startDomain = xScale.domain();
+		var domainL, domainR;
+
+		var lastItemVisible = plotData[plotData.length - 1] === prevDataForInterval[prevDataForInterval.length - 1];
+
+		var beginIndex, endIndex;
+		if (lastItemVisible) {
+			var left = xAccessor(plotData[deltaPushed]);
+
+			var tick = xScale(xAccessor(plotData[1])) - xScale(xAccessor(plotData[0]));
+
+			// console.log(tick);
+
+			if ((xScale(xAccessor(plotData[0])) - xScale(startDomain[0])) > tick) {
+				left = xAccessor(plotData[0]);
+			}
+
+			beginIndex = Utils.getClosestItemIndexes(dataForInterval, left, xAccessor).left;
+			endIndex = dataForInterval.length;
+
+		} else {
+			// 
+			domainL = startDomain[0];
+			domainR = startDomain[1];
+			var beginIndex = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
+			var endIndex = beginIndex + plotData.length;
+		}
+
+		var newPlotData = dataForInterval.slice(beginIndex, endIndex);
+
+		if (lastItemVisible && domainL === undefined) {
+			if (startDomain[1] > xAccessor(plotData[plotData.length - 1])) {
+				domainL = startDomain[0] + (xAccessor(newPlotData[newPlotData.length - 1]) - xAccessor(plotData[plotData.length - 1]));
+				domainR = startDomain[1] + (xAccessor(newPlotData[newPlotData.length - 1]) - xAccessor(plotData[plotData.length - 1]))
+			}
+		}
+
+		var newChartData = ChartDataUtil.getChartData(this.props, dimensions, newPlotData, transformedData.data, transformedData.options);
+
+		if (domainL === undefined) {
+			domainL = xAccessor(newPlotData[0]);
+			domainR = xAccessor(newPlotData[newPlotData.length - 1]);
+		}
+
+		var l = 2, i = 0, speed = 5;
+
+		var updateState = (L, R) => {
+			newChartData = newChartData.map((eachChart) => {
+				var plot = ChartDataUtil.getChartPlotFor(eachChart.config, newPlotData, L, R);
+				return {
+					id: eachChart.id,
+					config: eachChart.config,
+					plot: plot
+				};
+			});
+
+			var newCurrentItems = ChartDataUtil.getCurrentItems(newChartData, this.state.mouseXY, newPlotData);
+
+			this.clearBothCanvas(this.props);
+
+			// console.log(L, R, this.state.secretToSuperFastCanvasDraw.length);
+
+			this.setState({
+				rawData: newRawData,
+				data: transformedData.data,
+				options: transformedData.options,
+				chartData: newChartData,
+				plotData: newPlotData,
+				currentItems: newCurrentItems,
+				secretToSuperFastCanvasDraw: [],
+				canvases: null,
+			});
+		}
+
+		var timeout = setInterval(() => {
+			var dxL = (startDomain[0] - domainL) / l;
+			var dxR = (startDomain[1] - domainR) / l;
+
+			i++;
+			// console.log(L, R);
+			// console.log(startDomain[0], domainL, startDomain[0] - dxL * i, i);
+			// console.log(startDomain[1], domainR, startDomain[1] - dxR * i, i);
+
+			updateState(startDomain[0] - dxL * i, startDomain[1] - dxR * i);
+			if (i === l) clearInterval(timeout);
+		}, speed);
+	}
+	alterData(newRawData) {
+		if (newRawData === undefined || newRawData === null || newRawData.length === 0) return;
+
+		var { dataTransform, defaultDataTransform, dimensions  } = this.props;
+		var { rawData, data, options, interval, chartData, plotData, mainChart } = this.state;
+
+		if (rawData.length !== newRawData.length) {
+			console.log(rawData.length, newRawData.length);
+			throw Error("Have to update data of same length");
+		}
+
+		var transformedData = this.getTransformedData(newRawData, defaultDataTransform, dataTransform, interval);
+
+		var dataForInterval = transformedData.data[interval];
+
+		var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
+		var xAccessor = mainChartData.config.xAccessor;
+		var xScale = mainChartData.plot.scales.xScale;
+
+		var startDomain = xScale.domain();
+
+		var left = xAccessor(plotData[0]);
+		var beginIndex = Utils.getClosestItemIndexes(dataForInterval, left, xAccessor).left;
+		var endIndex = beginIndex + plotData.length;
+
+		var newPlotData = dataForInterval.slice(beginIndex, endIndex);
+
+		var newChartData = ChartDataUtil.getChartData(this.props, dimensions, newPlotData, transformedData.data, transformedData.options);
+
+		newChartData = newChartData.map((eachChart) => {
+			var plot = ChartDataUtil.getChartPlotFor(eachChart.config, newPlotData, startDomain[0], startDomain[1]);
+			return {
+				id: eachChart.id,
+				config: eachChart.config,
+				plot: plot
+			};
+		});
+
+		var newCurrentItems = ChartDataUtil.getCurrentItems(newChartData, this.state.mouseXY, newPlotData);
+
+		this.clearBothCanvas(this.props);
+
+		// console.log(newPlotData.length);
+
+		this.setState({
+			rawData: newRawData,
+			data: transformedData.data,
+			options: transformedData.options,
+			chartData: newChartData,
+			plotData: newPlotData,
+			currentItems: newCurrentItems,
+			secretToSuperFastCanvasDraw: [],
+			canvases: null,
+		});
+
 	}
 	clearBothCanvas(props) {
 		props = props || this.props;
