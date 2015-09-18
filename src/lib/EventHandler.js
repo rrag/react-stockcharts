@@ -106,8 +106,10 @@ class EventHandler extends PureComponent {
 		var { rawData: nextData, dataTransform: nextDataTransform } = nextProps;
 		var { dimensions, initialDisplay, defaultDataTransform, interval: intervalProp } = nextProps;
 
-		var { data, options } = this.state;
-		var dataChanged = false, dataAltered = false, dataPushed = false;
+		var { data, options, interval, chartData, plotData } = this.state;
+		var prevDataForInterval = data[interval];
+
+		var dataChanged = false, dataAltered = false, dataPushed = false, deltaPushed;
 		if (prevData !== nextData || !deepEquals(prevDataTransform, nextDataTransform)) {
 			var transformedData = this.getTransformedData(nextData, defaultDataTransform, nextDataTransform, intervalProp);
 			data = transformedData.data;
@@ -116,66 +118,82 @@ class EventHandler extends PureComponent {
 			if (prevData[0] === nextData[0]) {
 				dataPushed = prevData.length < nextData.length;
 				dataAltered = prevData.length === nextData.length;
+				deltaPushed = nextData.length - prevData.length;
 			}
 			dataChanged = true;
 		}
 
-		var { interval, chartData, plotData } = this.state;
-
-		// console.log(nextData, interval);
 		var dataForInterval = data[interval];
 		var mainChart = ChartDataUtil.getMainChart(nextProps.children);
 		var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
 		var xAccessor = mainChartData.config.xAccessor;
 
-		var retainXDomainDiff = true;
-		if (dataPushed) {
-			var domainL = xAccessor(plotData[1]);
+		// var retainXDomainDiff = true;
+		var xScale = chartData[0].plot.scales.xScale;
+		var domainL, domainR, startDomain = xScale.domain();
 
-			var beginIndex = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
+		var lastItemVisible = plotData[plotData.length - 1] === prevDataForInterval[prevDataForInterval.length - 1];
+		// console.log(dataPushed, lastItemVisible);
+		if (dataPushed) {
+			if (lastItemVisible) {
+				var leftDelta = xAccessor(plotData[0]) - startDomain[0];
+				var rightDelta = startDomain[1] - xAccessor(plotData[plotData.length - 1]);
+
+				var left = xAccessor(plotData[1]);
+				var endIndex = dataForInterval.length;
+				if (rightDelta + leftDelta >= deltaPushed) {
+					left = xAccessor(plotData[0]);
+				} else {
+					left = xAccessor(plotData[deltaPushed]);
+				}
+				var beginIndex = Utils.getClosestItemIndexes(dataForInterval, left, xAccessor).left;
+				// var newPlotData = dataForInterval.slice(beginIndex, endIndex);
+			} else {
+				// 
+				domainL = startDomain[0];
+				domainR = startDomain[1];
+				var beginIndex = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
+				var endIndex = beginIndex + plotData.length;
+			}
+
+		} else if (dataAltered) {
+
+			var left = xAccessor(plotData[0]);
+			var beginIndex = Utils.getClosestItemIndexes(dataForInterval, left, xAccessor).left;
 			var endIndex = beginIndex + plotData.length;
+
+			domainL = startDomain[0];
+			domainR = startDomain[1];
 		} else if (dataChanged) {
 			// console.log("NOT same data.. ", dataChanged, dataAltered, dataPushed);
 
+			// if data is altered then the domain diff has to be retained, else dont retain since the data has changed
 			var beginIndex = Math.max(dataForInterval.length - initialDisplay, 0);
 			var endIndex = dataForInterval.length;
-			// if data is altered then the domain diff has to be retained, else dont retain since the data has changed
-			retainXDomainDiff = dataAltered;
-		} else {
-			// dataAltered or default case
-			var domainL = xAccessor(plotData[0]);
 
-			var beginIndex = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
+		} else {
+			// default case
+			var left = xAccessor(plotData[0]);
+			var beginIndex = Utils.getClosestItemIndexes(dataForInterval, left, xAccessor).left;
 			var endIndex = beginIndex + plotData.length;
-		} 
+
+			domainL = startDomain[0];
+			domainR = startDomain[1];
+		}
 
 		// console.log(plotData[0], plotData[plotData.length - 1]);
 		var newPlotData = dataForInterval.slice(beginIndex, endIndex);
-		// console.log(dataForInterval[0], newPlotData[newPlotData.length - 1]);
-
-
 		var newChartData = ChartDataUtil.getChartData(nextProps, dimensions, newPlotData, data, options);
+		// console.log(dataForInterval[0], newPlotData[newPlotData.length - 1]);
+		if (lastItemVisible && domainL === undefined) {
+			if (rightDelta > deltaPushed) {
+				domainL = startDomain[0] + (xAccessor(newPlotData[newPlotData.length - 1]) - xAccessor(plotData[plotData.length - 1]));
+				domainR = startDomain[1] + (xAccessor(newPlotData[newPlotData.length - 1]) - xAccessor(plotData[plotData.length - 1]))
+				// (rightDelta + leftDelta) >= deltaPushed
+			}
+		}
 
-
-		if (retainXDomainDiff) {
-			var xScale = chartData[0].plot.scales.xScale;
-			var startDomain = xScale.domain();
-
-			var leftDelta = xAccessor(plotData[0]) - startDomain[0];
-			var rightDelta = startDomain[1] - xAccessor(plotData[plotData.length - 1]);
-			var domainL = xAccessor(newPlotData[0]) - leftDelta;
-			var domainR = xAccessor(newPlotData[newPlotData.length - 1]) + rightDelta;
-
-			// console.log(domainL, domainR, xAccessor(newPlotData[0]), xAccessor(newPlotData[newPlotData.length - 1]));
-			// console.log(domainR - domainL, xAccessor(newPlotData[newPlotData.length - 1]) - xAccessor(newPlotData[0]));
-			/*if (rightDelta > 1) {
-				domainL = xAccessor(newPlotData[0]);
-				var dx = xAccessor(newPlotData[newPlotData.length - 1]) - xAccessor(plotData[plotData.length - 1]);
-				if (dx > 0) {
-					domainR = xAccessor(plotData[plotData.length - 1]) + dx;
-				}
-			}*/
-
+		if (domainL !== undefined && domainR !== undefined) {
 			newChartData = newChartData.map((eachChart) => {
 				var plot = ChartDataUtil.getChartPlotFor(eachChart.config, newPlotData, domainL, domainR);
 				return {
@@ -185,8 +203,6 @@ class EventHandler extends PureComponent {
 				};
 			});
 		}
-
-		// console.log(newPlotData.length);
 
 		var newCurrentItems = ChartDataUtil.getCurrentItems(newChartData, this.state.mouseXY, newPlotData);
 

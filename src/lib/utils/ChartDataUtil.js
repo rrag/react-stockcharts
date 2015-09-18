@@ -175,7 +175,7 @@ var ChartDataUtil = {
 			, config.padding
 			, domain);
 
-		if (domainL && domainR) {
+		if (domainL !== undefined && domainR !== undefined) {
 			scales.xScale.domain([domainL, domainR]);
 		}
 

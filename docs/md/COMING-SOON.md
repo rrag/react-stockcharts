@@ -29,12 +29,13 @@
 - ~~Pure React axes~~ - `v0.2`
 - ~~Provide option to use canvas instead of svg~~ - `v0.2`
 - Update `CurrentCoordinate` and `EdgeCoordinate` to deal with `DataSeries` which has a `yAccessor` which returns an object - `v0.3`
-- Improve performance of pan in firefox - `v0.3`
-- create a new mode `canvas` in addition to `svg` and `hybrid` eliminating all svg and use just canvas - `v0.3`
+- ~~Improve performance of pan in firefox~~ - `v0.2.1`
+- ~~Create example for data updating at regular intervals~~ - `v0.2.1`
+- ~~create a new mode `canvas` in addition to `svg` and `hybrid` eliminating all svg and use just canvas~~ (not doing) - `v0.3`
 
 #### Documentation
 
-- Explain how to create custom dataTransform - `v0.2.1`
+- Explain how to create custom dataTransform - `v0.3`
 - Explain how to create custom indicators - `v0.2.1`
 
 #### More examples

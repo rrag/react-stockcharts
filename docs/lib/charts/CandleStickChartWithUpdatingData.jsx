@@ -34,7 +34,7 @@ var CandleStickChartWithUpdatingData = React.createClass({
 	getInitialState() {
 		var length = 30;
 		return {
-			data: this.props.data.slice(0, 30),
+			data: this.props.data.slice(0, 20),
 		};
 	},
 	componentDidMount() {
@@ -42,7 +42,7 @@ var CandleStickChartWithUpdatingData = React.createClass({
 			this.setState({
 				data: this.props.data.slice(0, this.state.data.length + 1),
 			});
-		}, 1000);
+		}, 2000);
 	},
 	componentWillUnmount() {
 		clearInterval(interval);

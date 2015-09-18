@@ -62,7 +62,7 @@ BaseCanvasSeries.drawModifiedStatic = (props, callback, canvasOrigin, height, wi
 	ctx.translate(canvasOrigin[0], canvasOrigin[1]);
 
 	ctx.beginPath();
-	ctx.rect(-1, -1, width, height);
+	ctx.rect(-1, -1, width + 1, height + 1);
 	ctx.clip();
 
 	callback(props, height, width, compareSeries, indicator, xAccessor, yAccessor, ctx, xScale, yScale, plotData);
