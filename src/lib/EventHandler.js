@@ -232,7 +232,7 @@ class EventHandler extends PureComponent {
 			domainR = xAccessor(newPlotData[newPlotData.length - 1]);
 		}
 
-		var l = 2, i = 0, speed = 5;
+		var l = 3, i = 0, speed = 16;
 
 		var updateState = (L, R) => {
 			newChartData = newChartData.map((eachChart) => {
@@ -261,19 +261,35 @@ class EventHandler extends PureComponent {
 				canvases: null,
 			});
 		}
+		if (lastItemVisible) {
 
-		var timeout = setInterval(() => {
-			var dxL = (startDomain[0] - domainL) / l;
-			var dxR = (startDomain[1] - domainR) / l;
+			var timeout = setInterval(() => {
+				var dxL = (startDomain[0] - domainL) / l;
+				var dxR = (startDomain[1] - domainR) / l;
 
-			i++;
-			// console.log(L, R);
-			// console.log(startDomain[0], domainL, startDomain[0] - dxL * i, i);
-			// console.log(startDomain[1], domainR, startDomain[1] - dxR * i, i);
+				i++;
 
-			updateState(startDomain[0] - dxL * i, startDomain[1] - dxR * i);
-			if (i === l) clearInterval(timeout);
-		}, speed);
+				var L = i === l ? domainL : startDomain[0] - dxL * i;
+				var R = i === l ? domainR : startDomain[1] - dxR * i;
+				// console.log(i, L, domainL, R, domainR);
+				// console.log(startDomain[0], domainL, startDomain[0] - dxL * i, i);
+				// console.log(startDomain[1], domainR, startDomain[1] - dxR * i, i);
+
+				updateState(L, R);
+				if (i === l) clearInterval(timeout);
+			}, speed);
+		} else {
+			this.setState({
+				rawData: newRawData,
+				data: transformedData.data,
+				options: transformedData.options,
+				// chartData: newChartData,
+				// plotData: newPlotData,
+				// currentItems: newCurrentItems,
+				// secretToSuperFastCanvasDraw: [],
+				// canvases: null,
+			});
+		}
 	}
 	alterData(newRawData) {
 		if (newRawData === undefined || newRawData === null || newRawData.length === 0) return;
