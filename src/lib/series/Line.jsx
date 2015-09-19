@@ -52,9 +52,10 @@ Line.drawOnCanvasStatic = (props, ctx, xScale, yScale, plotData) => {
 	var { xAccessor, yAccessor, stroke } = props;
 
 	var path = Line.getPath(props);
-	ctx.beginPath();
 
 	ctx.strokeStyle = stroke;
+	ctx.beginPath();
+
 	var begin = true;
 	plotData.forEach((d) => {
 		if (yAccessor(d) === undefined) {
