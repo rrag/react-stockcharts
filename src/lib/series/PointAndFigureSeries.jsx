@@ -97,7 +97,7 @@ PointAndFigureSeries.drawOnCanvasStatic = (props, height, width, compareSeries, 
 	});
 
 	ctx.stroke();
-}
+};
 
 PointAndFigureSeries.getColumns = (xScale, xAccessor, yScale, yAccessor, plotData) => {
 

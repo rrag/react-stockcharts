@@ -79,14 +79,14 @@ CurrentCoordinate.contextTypes = {
 CurrentCoordinate.drawOnCanvas = (canvasContext, context, props) => {
 	var { mouseXY, currentCharts, chartData, currentItems, show } = context;
 
-	CurrentCoordinate.drawOnCanvasStatic(context, props, canvasContext, show, mouseXY, currentCharts, chartData, currentItems)
+	CurrentCoordinate.drawOnCanvasStatic(context, props, canvasContext, show, mouseXY, currentCharts, chartData, currentItems);
 };
 
 CurrentCoordinate.drawOnCanvasStatic = (context, props, ctx, show, mouseXY, currentCharts, chartData, currentItems) => {
 	var { margin } = context;
 	var circle = CurrentCoordinate.helper(props, show, chartData, currentItems);
 
-	if (!circle) return null
+	if (!circle) return null;
 
 	var originX = 0.5 + margin.left;
 	var originY = 0.5 + margin.top;
@@ -96,13 +96,13 @@ CurrentCoordinate.drawOnCanvasStatic = (context, props, ctx, show, mouseXY, curr
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
 	ctx.translate(originX, originY);
 
-	ctx.fillStyle = circle.fill
+	ctx.fillStyle = circle.fill;
 	ctx.beginPath();
 	ctx.arc(circle.x, circle.y, circle.r, 0, 2 * Math.PI, false);
 	ctx.fill();
 	// CurrentCoordinate.drawOnCanvasStatic(ctx, pointer);
 	ctx.restore();
-}
+};
 
 CurrentCoordinate.helper = (props, show, chartData, currentItems) => {
 	var { forChart, forCompareSeries, forDataSeries, r } = props;

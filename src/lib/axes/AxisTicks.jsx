@@ -50,7 +50,7 @@ Tick.drawOnCanvasStatic = (tick, ctx, chartData, result) => {
 	ctx.textBaseline = 'middle';
 
 	ctx.fillText(format(tick), origin[0] + x, origin[1] + y2 + y); 
-}
+};
 
 class AxisTicks extends React.Component {
 	render() {
@@ -131,19 +131,19 @@ AxisTicks.helper = (props, scale) => {
 		textAnchor = sign < 0 ? "end" : "start";
 	}
 	return { ticks, scale, tickTransform, tickStroke, dy, canvas_dy, x, y, x2, y2, textAnchor, fontSize, fontFamily, format };
-}
+};
 
 AxisTicks.drawOnCanvasStatic = (props, ctx, chartData, xScale, yScale) => {
 	props = objectAssign({}, AxisTicks.defaultProps, props);
 
 	var { orient } = props;
-	var xAxis = (orient === "bottom" || orient === "top")
+	var xAxis = (orient === "bottom" || orient === "top");
 
 	var result = AxisTicks.helper(props, xAxis ? xScale : yScale);
 
 	result.ticks.forEach((tick) => {
 		Tick.drawOnCanvasStatic(tick, ctx, chartData, result);
-	})
-}
+	});
+};
 
 module.exports = AxisTicks;

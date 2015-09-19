@@ -105,7 +105,8 @@ EdgeIndicator.drawOnCanvasStatic = (margin, props, width, ctx, chartDataArray) =
 
 	EdgeCoordinate.drawOnCanvasStatic(ctx, edge);
 	ctx.restore();
-}
+};
+
 EdgeIndicator.helper = (props, width, chartData) => {
 	var { type: edgeType, displayFormat, forChart, forDataSeries, itemType, edgeAt, yAxisPad, orient } = props;
 
@@ -126,7 +127,7 @@ EdgeIndicator.helper = (props, width, chartData) => {
 
 		item = itemType === "first"
 			? overlayValue[0].first
-			: overlayValue[0].last
+			: overlayValue[0].last;
 
 		yAccessor = overlay[0].yAccessor;
 
@@ -155,6 +156,6 @@ EdgeIndicator.helper = (props, width, chartData) => {
 		}
 	}
 	return edge;
-}
+};
 
 module.exports = EdgeIndicator;

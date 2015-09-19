@@ -106,6 +106,6 @@ Axis.drawOnCanvasStatic = (margin, props, canvasOrigin, ctx, chartData, xScale, 
 	if (showTicks) AxisTicks.drawOnCanvasStatic(props, ctx, chartData, xScale, yScale);
 
 	ctx.restore();
-}
+};
 
 export default Axis;

@@ -28,8 +28,9 @@ class ChartCanvas extends React.Component {
 		this.refs.chartContainer.alterData(array);
 	}
 	getCanvases() {
-		if (this.refs && this.refs.canvases)
+		if (this.refs && this.refs.canvases) {
 			return this.refs.canvases.getCanvasContexts();
+		}
 	}
 	render() {
 		var dimensions = this.getDimensions(this.props);
@@ -97,13 +98,6 @@ ChartCanvas.propTypes = {
 	className: React.PropTypes.string,
 	// clip: React.PropTypes.bool.isRequired,
 };
-
-/*ChartCanvas.childContextTypes = {
-	axesCanvasContext: React.PropTypes.object,
-	mouseCoordCanvasContext: React.PropTypes.object,
-	margin: React.PropTypes.object,
-	// clipRectangle: React.PropTypes.array.isRequired,
-};*/
 
 ChartCanvas.defaultProps = {
 	margin: {top: 20, right: 30, bottom: 30, left: 80},

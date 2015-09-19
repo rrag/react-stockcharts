@@ -16,14 +16,14 @@ class EdgeCoordinate extends React.Component {
 			line = <line
 					className="react-stockcharts-cross-hair" opacity={edge.line.opacity} stroke={edge.line.stroke}
 					x1={edge.line.x1} y1={edge.line.y1}
-					x2={edge.line.x2} y2={edge.line.y2} />
+					x2={edge.line.x2} y2={edge.line.y2} />;
 		}
 		if (edge.coordinateBase !== undefined) {
 			coordinateBase = <rect key={1} className="react-stockchart-text-background"
 								x={edge.coordinateBase.edgeXRect}
 								y={edge.coordinateBase.edgeYRect}
 								height={edge.coordinateBase.rectHeight} width={edge.coordinateBase.rectWidth}
-								fill={edge.coordinateBase.fill}  opacity={edge.coordinateBase.opacity} />
+								fill={edge.coordinateBase.fill}  opacity={edge.coordinateBase.opacity} />;
 			coordinate = (<text key={2} x={edge.coordinate.edgeXText}
 								y={edge.coordinate.edgeYText}
 								textAnchor={edge.coordinate.textAnchor}
@@ -103,11 +103,11 @@ EdgeCoordinate.helper = (props) => {
 	}
 	var line = hideLine ? undefined : {
 		opacity: 0.3, stroke: "black", x1, y1, x2, y2
-	}
+	};
 	return {
 		coordinateBase, coordinate, line
-	}
-}
+	};
+};
 
 EdgeCoordinate.drawOnCanvasStatic = (ctx, props) => {
 	props = objectAssign({}, EdgeCoordinate.defaultProps, props);
@@ -141,5 +141,6 @@ EdgeCoordinate.drawOnCanvasStatic = (ctx, props) => {
 		ctx.lineTo(edge.line.x2, edge.line.y2);
 		ctx.stroke();
 	}
-}
+};
+
 module.exports = EdgeCoordinate;

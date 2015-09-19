@@ -70,7 +70,7 @@ AxisLine.drawOnCanvasStatic = (props, ctx, chartData, xScale, yScale) => {
 	var { orient, outerTickSize, fill, stroke, strokeWidth, className, shapeRendering, opacity } = props;
 
 	var sign = orient === "top" || orient === "left" ? -1 : 1;
-	var xAxis = (orient === "bottom" || orient === "top")
+	var xAxis = (orient === "bottom" || orient === "top");
 
 	var range = d3_scaleRange(xAxis ? xScale : yScale);
 
@@ -96,6 +96,6 @@ AxisLine.drawOnCanvasStatic = (props, ctx, chartData, xScale, yScale) => {
 
 	ctx.strokeStyle = strokeStyle;
 	ctx.globalAlpha = globalAlpha;
-}
+};
 
 module.exports = AxisLine;

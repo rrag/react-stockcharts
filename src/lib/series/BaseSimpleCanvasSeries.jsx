@@ -13,7 +13,7 @@ class BaseSimpleCanvasSeries extends React.Component {
 		}
 	}
 	componentDidUpdate() {
-		this.componentDidMount()
+		this.componentDidMount();
 	}
 	componentWillMount() {
 		this.componentWillReceiveProps(this.props, this.context);

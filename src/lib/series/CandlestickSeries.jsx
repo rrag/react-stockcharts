@@ -104,7 +104,7 @@ CandlestickSeries.drawOnCanvasStatic = (props, height, width, compareSeries, ind
 		}
 	};
 
-	ctx.fillStyle = fill.up
+	ctx.fillStyle = fill.up;
 	group.up.forEach(d => {
 		if (d.width < 0) {
 			// <line className={d.className} key={idx} x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height}/>
@@ -126,7 +126,7 @@ CandlestickSeries.drawOnCanvasStatic = (props, height, width, compareSeries, ind
 		}
 	});
 
-	ctx.fillStyle = fill.down
+	ctx.fillStyle = fill.down;
 	group.down.forEach(d => {
 		if (d.width < 0) {
 			// <line className={d.className} key={idx} x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height}/>
@@ -148,7 +148,8 @@ CandlestickSeries.drawOnCanvasStatic = (props, height, width, compareSeries, ind
 		}
 	});
 	// ctx.fillStyle = fillStyle;
-}
+};
+
 CandlestickSeries.getWickData = (props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData) => {
 	var isCompareSeries = compareSeries.length > 0;
 

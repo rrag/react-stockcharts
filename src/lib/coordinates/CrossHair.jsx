@@ -73,7 +73,7 @@ CrossHair.helper = (props) => {
 			edgeAt: (edge.at === "left" ? x1 : x2),
 			orient: edge.at,
 			hideLine: true
-		}
+		};
 	});
 	edges.push({
 		type: "vertical",
@@ -98,7 +98,7 @@ CrossHair.helper = (props) => {
 		};
 	}
 	return { edges, line };
-}
+};
 
 CrossHair.drawOnCanvasStatic = (ctx, props) => {
 	props = objectAssign({}, CrossHair.defaultProps, props);
@@ -117,6 +117,6 @@ CrossHair.drawOnCanvasStatic = (ctx, props) => {
 		ctx.lineTo(line.x2, line.y2);
 		ctx.stroke();
 	}
-}
+};
 
 module.exports = CrossHair;

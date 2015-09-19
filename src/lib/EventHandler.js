@@ -19,7 +19,9 @@ function getLongValue(value) {
 function deepEquals(arr1, arr2) {
 	if (arr1.length === arr2.length) {
 		var result = true;
-		arr1.forEach((each, i) => result && each === arr2[i])
+		arr1.forEach((each, i) => {
+			result = result && each.transform === arr2[i].transform && each.options === arr2[i].options;
+		});
 		return result;
 	}
 	return false;
@@ -221,7 +223,7 @@ class EventHandler extends PureComponent {
 		if (lastItemVisible && domainL === undefined) {
 			if (startDomain[1] > xAccessor(plotData[plotData.length - 1])) {
 				domainL = startDomain[0] + (xAccessor(newPlotData[newPlotData.length - 1]) - xAccessor(plotData[plotData.length - 1]));
-				domainR = startDomain[1] + (xAccessor(newPlotData[newPlotData.length - 1]) - xAccessor(plotData[plotData.length - 1]))
+				domainR = startDomain[1] + (xAccessor(newPlotData[newPlotData.length - 1]) - xAccessor(plotData[plotData.length - 1]));
 			}
 		}
 
@@ -232,7 +234,7 @@ class EventHandler extends PureComponent {
 			domainR = xAccessor(newPlotData[newPlotData.length - 1]);
 		}
 
-		var l = 3, i = 0, speed = 16;
+		var l = 2, i = 0, speed = 16;
 
 		var updateState = (L, R) => {
 			newChartData = newChartData.map((eachChart) => {
@@ -260,7 +262,7 @@ class EventHandler extends PureComponent {
 				secretToSuperFastCanvasDraw: [],
 				canvases: null,
 			});
-		}
+		};
 		if (lastItemVisible) {
 
 			var timeout = setInterval(() => {
@@ -351,14 +353,14 @@ class EventHandler extends PureComponent {
 		props = props || this.props;
 		var canvases = props.canvasContexts();
 		if (canvases && canvases.axes) {
-			this.clearCanvas(canvases.axes, canvases.mouseCoord);
+			this.clearCanvas([canvases.axes, canvases.mouseCoord]);
 		}
 	}
-	clearCanvas(...canvasList) {
+	clearCanvas(canvasList) {
 		canvasList.forEach(each => {
 			each.setTransform(1, 0, 0, 1, 0, 0);
 			each.clearRect(-1, -1, each.canvas.width + 2, each.canvas.height + 2);
-		})
+		});
 	}
 	getChildContext() {
 		return {
@@ -553,7 +555,7 @@ class EventHandler extends PureComponent {
 			currentCharts: currentCharts,
 			chartData: newChartData,
 			currentItems: currentItems,
-		}
+		};
 	}
 	getCurrentCanvasContext(canvasList, chartId) {
 		var canvasContextList = canvasList.filter((each) => parseInt(each.id, 10) === chartId);
@@ -575,7 +577,7 @@ class EventHandler extends PureComponent {
 				var { chartData, plotData } = state;
 
 				requestAnimationFrame(() => {
-					this.clearCanvas(axesCanvasContext, mouseContext);
+					this.clearCanvas([axesCanvasContext, mouseContext]);
 
 					chartData.forEach(eachChart => {
 						this.state.secretToSuperFastCanvasDraw
@@ -622,16 +624,12 @@ class EventHandler extends PureComponent {
 		this.clearBothCanvas();
 
 		var state = this.panHelper(mousePosition);
-		this.setState({
-			...state,
-		// });
-		// this.setState({
+		this.setState(objectAssign({}, state, {
 			show: this.state.show,
 			panInProgress: false,
 			panStartDomain: null,
 			secretToSuperFastCanvasDraw: [],
-		});
-		// console.log(mousePosition);
+		}));
 	}
 	handleFocus(focus) {
 		// console.log(focus);
@@ -655,12 +653,6 @@ class EventHandler extends PureComponent {
 		);
 	}
 }
-/*EventHandler.contextTypes = {
-	canvasList: React.PropTypes.array,
-	axesCanvasContext: React.PropTypes.object,
-	margin: React.PropTypes.object.isRequired,
-};
-*/
 
 EventHandler.defaultProps = {
 	defaultDataTransform: [ { transform: DummyTransformer } ],

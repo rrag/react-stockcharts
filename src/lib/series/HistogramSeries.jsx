@@ -115,7 +115,7 @@ HistogramSeries.drawOnCanvasStatic = (props, height, width, compareSeries, indic
 				ctx.rect(d.x, d.y, d.barWidth, d.height);
 				ctx.fill();
 			}
-		})
+		});
 	});
 };
 HistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData) => {
@@ -174,6 +174,6 @@ HistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData
 				};
 			});
 	return bars;
-}
+};
 
 module.exports = HistogramSeries;

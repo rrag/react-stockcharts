@@ -36,7 +36,7 @@
 #### Documentation
 
 - Explain how to create custom dataTransform - `v0.3`
-- Explain how to create custom indicators - `v0.2.1`
+- Explain how to create custom indicators - `v0.2.2`
 
 #### More examples
 

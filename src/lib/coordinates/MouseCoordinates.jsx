@@ -40,7 +40,7 @@ class MouseCoordinates extends PureComponent {
 
 		var pointer = MouseCoordinates.helper(this.context, this.props, show, mouseXY, currentCharts, chartData, currentItems);
 
-		if (!pointer) return null
+		if (!pointer) return null;
 
 		return <CrossHair height={pointer.height} width={pointer.width} mouseXY={pointer.mouseXY}
 					xDisplayValue={pointer.xDisplayValue} edges={pointer.edges}/>;
@@ -81,13 +81,13 @@ MouseCoordinates.defaultProps = {
 MouseCoordinates.drawOnCanvas = (canvasContext, context, props) => {
 	var { mouseXY, currentCharts, chartData, currentItems, show } = context;
 
-	MouseCoordinates.drawOnCanvasStatic(context, props, canvasContext, show, mouseXY, currentCharts, chartData, currentItems)
-}
+	MouseCoordinates.drawOnCanvasStatic(context, props, canvasContext, show, mouseXY, currentCharts, chartData, currentItems);
+};
 MouseCoordinates.drawOnCanvasStatic = (context, props, ctx, show, mouseXY, currentCharts, chartData, currentItems) => {
 	var { margin } = context;
 	var pointer = MouseCoordinates.helper(context, props, show, mouseXY, currentCharts, chartData, currentItems);
 
-	if (!pointer) return null
+	if (!pointer) return null;
 
 	var originX = 0.5 + margin.left;
 	var originY = 0.5 + margin.top;
@@ -99,7 +99,7 @@ MouseCoordinates.drawOnCanvasStatic = (context, props, ctx, show, mouseXY, curre
 
 	CrossHair.drawOnCanvasStatic(ctx, pointer);
 	ctx.restore();
-}
+};
 
 MouseCoordinates.helper = (context, props, show, mouseXY, currentCharts, chartData, currentItems) => {
 	if (!show) return;

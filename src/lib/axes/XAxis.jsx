@@ -57,6 +57,6 @@ XAxis.contextTypes = {
 	yScale: React.PropTypes.func.isRequired,
 	height: React.PropTypes.number.isRequired,
 	width: React.PropTypes.number.isRequired,
-}
+};
 
 export default XAxis;
