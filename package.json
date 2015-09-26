@@ -12,8 +12,8 @@
   "dependencies": {
     "d3": "^3.5.6",
     "object-assign": "^4.0.1",
-    "react": "^0.14.0-rc1",
-    "react-dom": "^0.14.0-rc1",
+    "react": "^0.14.0 || 0.14.0-rc1",
+    "react-dom": "^0.14.0 || 0.14.0-rc1",
     "save-svg-as-png": "git://github.com/exupero/saveSvgAsPng.git#gh-pages"
   },
   "peerDependencies": {

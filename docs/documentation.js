@@ -37,6 +37,7 @@ var pages = [
 	require("lib/page/KagiPage"),
 	require("lib/page/PointAndFigurePage"),
 	require("lib/page/RenkoPage"),
+	require("lib/page/CreatingCustomChartSeriesPage"),
 	require("lib/page/ChangeLogPage"),
 	require("lib/page/ComingSoonPage"),
 ];

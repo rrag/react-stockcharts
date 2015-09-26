@@ -71,7 +71,7 @@ CandlestickSeries.getCandlesSVG = (props) => {
 CandlestickSeries.yAccessor = (d) => ({open: d.open, high: d.high, low: d.low, close: d.close});
 
 CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { height, width, compareSeries, indicator, xAccessor, yAccessor } = props;
+	var { compareSeries, xAccessor, yAccessor } = props;
 	var { stroke, fill } = props;
 	var wickData = CandlestickSeries.getWickData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
 	wickData.forEach(d => {

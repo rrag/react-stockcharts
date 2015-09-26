@@ -1,3 +1,37 @@
+## v0.2.2
+
+#### Breaking Changes
+
+1. Use react & react-dom 0.14.0-rc1 as dependency, added `peerDependency` to resolve [#12](https://github.com/rrag/react-stockcharts/issues/12)
+
+#### Internal changes
+
+1. Change the way chart series are developed so `context` is not used.
+
+## v0.2.1
+
+#### Breaking Changes
+
+1. Use react 0.14.0-beta3 as dependency
+
+#### Other changes
+
+1. Improve the handling of the chart on [updating data](#/updating_data)
+    1. provide a new `pushData` method to push new data points, and another `alterData` method to modify existing data. By creating these methods, it is easy to identify if a change to the Chart is due to data changes or change of height/width of the chart
+1. Add example for serverside rendering
+1. Add example for downloading chart as png - works for both canvas & svg
+
+#### Internal changes
+
+1. In an attempt to improve performance of pan actions on firefox, the pan actions when done for canvas now do not update the state during pan. To achieve this the following changes were done
+    1. Create Canvas based X & YAxis
+    1. Canvas based `EdgeCoordinates` and `MouseCoordinates` and `CurrentCoordinate`
+    1. Create 2 canvas as against one for each chart.
+        - One canvas that is redrawn on mouse move, this canvas contains the `MouseCoordinates`, `CurrentCoordinate`, and 
+        - One canvas that is drawn on zoom or pan action, this contains everything else, including the `XAxis`, `YAxis`, the actual Chart series, `EdgeCoordinate`
+
+
+
 ## v0.2
 
 #### Breaking Changes

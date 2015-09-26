@@ -35,7 +35,7 @@ HistogramSeries.defaultProps = {
 };
 
 HistogramSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { height, width, compareSeries, indicator, xAccessor, yAccessor } = props;
+	var { height, width, xAccessor, yAccessor } = props;
 
 	var bars = HistogramSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
 
