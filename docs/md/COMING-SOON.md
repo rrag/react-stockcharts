@@ -7,7 +7,7 @@
 - ~~Moving Average Convergence Divergence (MACD)~~ - `v0.1`
 - ~~Relative Strength Index (RSI)~~ - `v0.2`
 - ~~Stochastics~~ - `v0.2`
-- More indicators - suggestions welcome - `v0.4`
+- More indicators - suggestions welcome - `v0.5`
 
 #### Chart types
 
@@ -15,10 +15,10 @@
 - ~~Kagi~~ - `v0.1`
 - ~~Point and Figure~~ - `v0.1`
 - ~~Renko~~ - `v0.1`
-- Better Renko/Mean Renko - `v0.4`
-- Line break - `v0.3`
-- Volume Profile - `v0.3`
-- Max Drawdown - `v0.3`
+- Better Renko/Mean Renko - `v0.5`
+- Line break - `v0.5`
+- Volume Profile - `v0.4`
+- Max Drawdown - `v0.4`
 
 #### Chart features
 
@@ -28,15 +28,18 @@
 - ~~Add custom indicators~~ - `v0.2`
 - ~~Pure React axes~~ - `v0.2`
 - ~~Provide option to use canvas instead of svg~~ - `v0.2`
-- Update `CurrentCoordinate` and `EdgeCoordinate` to deal with `DataSeries` which has a `yAccessor` which returns an object - `v0.3`
+- ~~Save chart as image~~ - `v0.2.1`
+- ~~Render chart on server~~ - `v0.2.1`
 - ~~Improve performance of pan in firefox~~ - `v0.2.1`
-- ~~Create example for data updating at regular intervals~~ - `v0.2.1`
 - ~~create a new mode `canvas` in addition to `svg` and `hybrid` eliminating all svg and use just canvas~~ (not doing) - `v0.3`
+- ~~Create example for data updating at regular intervals~~ - `v0.2.1`
+- Update `CurrentCoordinate` and `EdgeCoordinate` to deal with `DataSeries` which has a `yAccessor` which returns an object - `v0.3`
 
 #### Documentation
 
 - Explain how to create custom dataTransform - `v0.3`
 - Explain how to create custom indicators - `v0.2.2`
+- Explain how to create custom data series - `v0.2.2`
 
 #### More examples
 
@@ -61,7 +64,7 @@
 - ~~Getting Started page with steps to get started via npm~~
 - ~~remove esprima-fb~~
 - ~~configure options for advanced chart types~~ - `v0.2`
-- Add tests and coverage - `v0.3`
+- Add tests and coverage - `v0.4`
 
 #### Dependencies
 - ~~Experiment with React 0.13 instead of React 0.14~~ - `v0.1`

@@ -35,3 +35,7 @@ Now before you begin jumping to write a new series yourself, I suggest you look 
 - `StraightLine.jsx`
 
 are not series themselves but are building blocks which are used in other Series. See [StochasticSeries.jsx](https://github.com/rrag/react-stockcharts/tree/master/src/lib/series/StochasticSeries.jsx), [RSISeries.jsx](https://github.com/rrag/react-stockcharts/tree/master/src/lib/series/RSISeries.jsx) for some examples of how these building blocks are used to create a more complex Series.
+
+If you build a new Series with just these building blocks, you do not need to handle the drawing of the chart on svg or canvas as these building blocks handle it. But if you are creating a series without these or adding some custom features, the following rules apply
+
+Although not necessary it is easier ...... TODO
