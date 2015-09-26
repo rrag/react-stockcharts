@@ -19,7 +19,6 @@ module.exports = {
 		loaders: [
 			{ test: /\.json$/, loader: "json" },
 			{ test: /\.(js|jsx)$/, loaders: ["babel"], exclude: /node_modules/ },
-			{ test: /\.scss$/, loaders: ["style", "css", "autoprefixer", "sass?outputStyle=expanded"] },
 		]
 	},
 	plugins: [
@@ -27,10 +26,14 @@ module.exports = {
 	],
 	externals: {
 		"react": "React",
+		"react-dom": "ReactDOM",
 		"d3": "d3",
 	},
 	resolve: {
 		// root: [__dirname, path.join(__dirname, "src"), path.join(__dirname, "docs")],
+		/* alias: {
+			"react-dom": "react/lib/ReactDOM"
+		}, */
 		extensions: ["", ".js", ".jsx", ".scss", ".md"]
 	}
 };
