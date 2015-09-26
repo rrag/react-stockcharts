@@ -1,6 +1,6 @@
 checkout the [source](https://gist.github.com/rrag/0a54ca33b05001f17f8f), [block](http://bl.ocks.org/rrag/0a54ca33b05001f17f8f), [plunker](http://plnkr.co/edit/gist:0a54ca33b05001f17f8f?p=preview) of this example
 
-```html
+```jsx
 <ChartCanvas width={this.state.width} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}} initialDisplay={100}
 	dataTransform={[ { transform: StockscaleTransformer } ]} data={data} type="svg" >
 	<Chart id={1} >
@@ -21,7 +21,7 @@ checkout the [source](https://gist.github.com/rrag/0a54ca33b05001f17f8f), [block
 
 The portion of interest here is
 
-```html
+```jsx
 <Chart id={2} height={150} origin={(w, h) => [0, h - 150]}>
 ```
 
@@ -37,7 +37,7 @@ Similarly the `fill` of `HistogramSeries` accepts either
 - a function which returns a string representing the color
 - or a string representing the color
 
-```html
+```jsx
 <HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
 ```
 

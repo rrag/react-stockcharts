@@ -4,7 +4,7 @@ checkout the [source](https://gist.github.com/rrag/70ea3fe28ad35bf3ed4c), [block
 
 The edge values are updated on zoom and pan too
 
-```html
+```jsx
 <EdgeContainer>
 	<EdgeIndicator itemType="last" orient="right" edgeAt="right" forChart={1} forDataSeries={1} />
 	<EdgeIndicator itemType="last" orient="right" edgeAt="right" forChart={1} forDataSeries={2} />

@@ -1,6 +1,7 @@
 "use strict";
 
 var React = require("react");
+var ReactServer = require("react-dom/server");
 var d3 = require("d3");
 var parseDate = d3.time.format("%Y-%m-%d").parse
 
@@ -38,8 +39,8 @@ var fs = require("fs"),
 
 var delimiter = "\t";
 
-var fs = require('fs'),
-	readline = require('readline');
+var fs = require("fs"),
+	readline = require("readline");
 
 var rd = readline.createInterface({
 	input: fs.createReadStream(path.join("..", "..", "data", "MSFT.tsv")),
@@ -64,7 +65,7 @@ rd.on("line", function(line) {
 	length++;
 });
 
-rd.on('close', function() {
+rd.on("close", function() {
 	MSFT.forEach(function(d) {
 		d.date = new Date(parseDate(d.date).getTime());
 		d.open = +d.open;
@@ -74,7 +75,7 @@ rd.on('close', function() {
 		d.volume = +d.volume;
 		// console.log(d);
 	});
-	var svg = React.renderToString(React.createElement(Chart, { data: MSFT, type: "svg", width: 1000 }));
+	var svg = ReactServer.renderToString(React.createElement(Chart, { data: MSFT, type: "svg", width: 1000 }));
 
 	fs.writeFileSync(path.join("output.html"), svg);
 })

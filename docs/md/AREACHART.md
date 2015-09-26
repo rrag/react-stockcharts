@@ -25,7 +25,7 @@ d3.tsv("path/to/data.tsv", function(err, data) {
 ```
 
 
-```html
+```jsx
 <ChartCanvas width={this.state.width} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}}
 	data={data} type="svg" >
 	<Chart id={0} xAccessor={(d) => d.date}>
@@ -40,7 +40,7 @@ d3.tsv("path/to/data.tsv", function(err, data) {
 
 Let us review each line
 
-```html
+```jsx
 <ChartCanvas width={...} height={...} margin={{left: 50, right: 50, top:10, bottom: 30}} data={data} type="svg" >
 ```
 
@@ -53,7 +53,7 @@ Choosing `hybrid` will create the contents of the `DataSeries` using `canvas` bu
 
 So irrespective of what type you choose, you will have a `svg` element
 
-```html
+```jsx
 <Chart id={0} xAccessor={(d) => d.date}>
 ```
 
@@ -67,7 +67,7 @@ With SVG & Canvas it is important to understand the coordinate system and where 
 
 ![alt text](http://www.w3.org/TR/SVG/images/coords/InitialCoords.png "SVG/Canvas coordinate system")
 
-For more details about the coordinate system see [here](http://www.w3.org/TR/SVG/coords.html)
+For more details about the coordinate system see [here](http://www.w3.org/TR/SVG/coords.jsx)
 
 Back to scales,
 
@@ -77,7 +77,7 @@ A time scale converts a date/time domain to a range, this is used as the xScale,
 Y Axis uses a linear scale
 A Linear scale converts a `domain` say 10 - 45 to a `range` say 0 to 300 pixels. Like the name represents the data in between is interpolated linear.
 
-```html
+```jsx
 <XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 ```
 The `ticks` attribute simple passes on the value to the [d3.axis](https://github.com/mbostock/d3/wiki/SVG-Axes#ticks), the `XAxis` also has the following optional attributes `innerTickSize, outerTickSize, tickFormat, tickPadding, tickSize, ticks, tickValues` all of which correspond to a function with the same name in d3.axis.
@@ -87,13 +87,13 @@ The `ticks` attribute simple passes on the value to the [d3.axis](https://github
 `orient` takes on possible values as `top, bottom`, this orients the axis ticks on the top/bottom
 
 
-```html
+```jsx
 <YAxis axisAt="left" orient="left" />
 ```
 Similar to `XAxis` except left/right instead of top/bottom
 
 
-```html
+```jsx
 <DataSeries id={0} yAccessor={(d) => d.close} >
 	<AreaSeries />
 </DataSeries>
@@ -115,7 +115,7 @@ So you dont want to display the `YAxis` at all, go ahead and just remove that.
 
 Want to display `YAxis` on both left and right? add 
 
-```html
+```jsx
 <YAxis axisAt="right" orient="right" />
 ```
 next to the existing `YAxis`
@@ -123,7 +123,7 @@ next to the existing `YAxis`
 Create custom components and use them, it is explained [here](http://add.link.here)
 
 Want to add a `YAxis` with a percent scale on the right? add
-```html
+```jsx
 <YAxis axisAt="right" orient="right" percentScale={true} tickFormat={d3.format(".0%")}/>
 ```
 and you get.

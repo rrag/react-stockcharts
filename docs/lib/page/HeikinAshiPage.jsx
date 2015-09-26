@@ -6,7 +6,7 @@ var Row = require('lib/row');
 var Section = require('lib/section');
 var TypeChooser = require("src/").helper.TypeChooser;
 
-var HeikinAshiChart = require('lib/charts/HaikinAshi');
+var HaikinAshi = require('lib/charts/HaikinAshi');
 
 var HeikinAshiPage = React.createClass({
 	statics: {
@@ -23,7 +23,7 @@ var HeikinAshiPage = React.createClass({
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser>
-							{(type) => <HeikinAshiChart data={this.props.someData} type={type} />}
+							{(type) => <HaikinAshi data={this.props.someData} type={type} />}
 						</TypeChooser>
 					</Section>
 				</Row>

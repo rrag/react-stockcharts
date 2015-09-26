@@ -5,7 +5,7 @@ checkout the [source](https://gist.github.com/rrag/a8465abe0061df1b7976), [block
 
 
 The only change is enabling `zoom` and `pan`
-```html
+```jsx
 <EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 ```
 other than enabling `zoom` and `pan`, `defaultFocus` of `true` means mouse scroll over the chart, triggers zoom action if zoom is enabled. If `defaultFocus` is `false`, you have to click on the chart to get focus and then all scroll events are zoom events if `zoom` is enabled

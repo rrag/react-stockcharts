@@ -6,6 +6,7 @@ var Row = require('lib/row');
 var Section = require('lib/section');
 
 var Kagi = require('lib/charts/Kagi');
+var TypeChooser = require("src/").helper.TypeChooser;
 
 var KagiPage = React.createClass({
 	statics: {
@@ -21,7 +22,9 @@ var KagiPage = React.createClass({
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<Kagi data={this.props.lotsOfData} type="svg" />
+						<TypeChooser>
+							{(type) => <Kagi data={this.props.lotsOfData} type={type} />}
+						</TypeChooser>
 					</Section>
 				</Row>
 			</ContentSection>

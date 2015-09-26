@@ -4,7 +4,7 @@ There are 2 methods - `alterData` and `pushData` - exposed by `ChartCanvas` whic
 
 Add a `ref` to the `ChartCanvas`
 
-```html
+```jsx
 <ChartCanvas ref="chart" width={...} height={...} margin={...} dataTransform={...} data={...} type={...}>
 	<Chart id={1} ...>
 		<YAxis ... />

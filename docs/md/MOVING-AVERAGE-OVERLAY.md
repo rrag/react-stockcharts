@@ -13,7 +13,7 @@ Let us review each of these in a little more detail
 
 #### Moving average on daily `close` as a `LineSeries`
 
-```html
+```jsx
 <DataSeries id={1} indicator={SMA} options={{ period: 20, pluck: "close" }}>
 	<LineSeries/>
 </DataSeries>
@@ -39,7 +39,7 @@ these indicators are just functions which follow a set of rules (yet to be docum
 
 #### Moving average on daily `volume` as an `AreaSeries`
 
-```html
+```jsx
 <DataSeries id={0} yAccessor={(d) => d.volume}>
 	<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
 </DataSeries>
@@ -52,7 +52,7 @@ Similar to above
 
 #### Current item indicator as a circle over the different moving averages
 
-```html
+```jsx
 <CurrentCoordinate forChart={1} forDataSeries={1} />
 <CurrentCoordinate forChart={1} forDataSeries={2} />
 <CurrentCoordinate forChart={1} forDataSeries={3} />
@@ -66,7 +66,7 @@ That was easy, right?
 
 #### Moving average tooltip
 
-```html
+```jsx
 <TooltipContainer>
 	<OHLCTooltip forChart={1} origin={[-40, 0]}/>
 	<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 15]}/>

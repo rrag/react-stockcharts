@@ -27,7 +27,7 @@ d3.tsv("path/to/data.tsv", function(err, data) {
 ...
 ```
 
-```html
+```jsx
 <ChartCanvas width={this.state.width} height={400} margin={{left: 50, right: 50, top:10, bottom: 30}}
 	dataTransform={[ { transform: StockscaleTransformer } ]} data={data} type="svg">
 	<Chart id={1} >
@@ -51,12 +51,12 @@ is the only difference in `<ChartCanvas>`
 
 Notice that it accepts an array. You can chain multiple transfoms together by adding them to the array. Some examples of that can be seen in the advanced chart types later on. Using this technique user can create custom transforms, and create their own components which uses the modified data.
 
-```html
+```jsx
 <Chart id={1} >
 ```
 You will notice that the `Chart` component does not include the `xAccessor`, that is because it is defined inside the stockscale which provides the `xAccessor` behind the scenes
 
-```html
+```jsx
 <XAxis axisAt="bottom" orient="bottom" ticks={5}/>
 <YAxis axisAt="right" orient="right" ticks={5} />
 <DataSeries yAccessor={CandlestickSeries.yAccessor} >
