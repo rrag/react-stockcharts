@@ -1,50 +1,41 @@
 "use strict";
 
 import React from "react";
-import BaseCanvasSeries from "./BaseCanvasSeries";
+import wrap from "./wrap";
 
-class PointAndFigureSeries extends BaseCanvasSeries {
-	handleClick(idx) {
-		console.log(this.context.plotData[idx]);
-	}
-	getCanvasDraw() {
-		return PointAndFigureSeries.drawOnCanvasStatic;
-	}
-	render() {
-		if (this.context.type !== "svg") return null;
-		var { xScale, xAccessor, yScale, yAccessor, plotData } = this.context;
+const PointAndFigureSeries = (props) => {
+	var { xScale, xAccessor, yScale, yAccessor, plotData } = props;
 
-		var columns = PointAndFigureSeries.getColumns(xScale, xAccessor, yScale, yAccessor, plotData);
-		var { stroke, fill, strokeWidth, className } = this.props;
+	var columns = PointAndFigureSeries.getColumns(xScale, xAccessor, yScale, yAccessor, plotData);
+	var { stroke, fill, strokeWidth, className } = props;
 
-		return (
-			<g>
-				{columns.map((col, idx) => (
-					<g key={idx} className={col.className} transform={`translate(${ col.offset[0] }, ${ col.offset[1] })`}>
-						{col.boxes.map((box, i) => {
-							if (col.direction > 0) {
-								return (
-									<g key={`${ idx }-${ i }`}>
-										<line className="up" strokeWidth={strokeWidth} stroke={stroke.up} fill={fill.up}
-											x1={0} y1={box.open} x2={box.columnWidth} y2={box.close} />
-										<line className="up" strokeWidth={strokeWidth} stroke={stroke.up} fill={fill.up}
-											x1={0} y1={box.close} x2={box.columnWidth} y2={box.open} />
-									</g>
-								);
-							}
+	return (
+		<g>
+			{columns.map((col, idx) => (
+				<g key={idx} className={col.className} transform={`translate(${ col.offset[0] }, ${ col.offset[1] })`}>
+					{col.boxes.map((box, i) => {
+						if (col.direction > 0) {
 							return (
-								<ellipse key={`${ idx }-${ i }`}
-									className="down" strokeWidth={strokeWidth} stroke={stroke.down} fill={fill.down}
-									cx={box.columnWidth / 2} cy={(box.open + box.close) / 2}
-									rx={box.columnWidth / 2} ry={box.boxHeight / 2} />
+								<g key={`${ idx }-${ i }`}>
+									<line className="up" strokeWidth={strokeWidth} stroke={stroke.up} fill={fill.up}
+										x1={0} y1={box.open} x2={box.columnWidth} y2={box.close} />
+									<line className="up" strokeWidth={strokeWidth} stroke={stroke.up} fill={fill.up}
+										x1={0} y1={box.close} x2={box.columnWidth} y2={box.open} />
+								</g>
 							);
-						})}
-					</g>
-				))}
-			</g>
-		);
-	}
-}
+						}
+						return (
+							<ellipse key={`${ idx }-${ i }`}
+								className="down" strokeWidth={strokeWidth} stroke={stroke.down} fill={fill.down}
+								cx={box.columnWidth / 2} cy={(box.open + box.close) / 2}
+								rx={box.columnWidth / 2} ry={box.boxHeight / 2} />
+						);
+					})}
+				</g>
+			))}
+		</g>
+	);
+};
 
 PointAndFigureSeries.defaultProps = {
 	className: "react-stockcharts-point-and-figure",
@@ -62,7 +53,9 @@ PointAndFigureSeries.defaultProps = {
 
 PointAndFigureSeries.yAccessor = (d) => ({open: d.open, high: d.high, low: d.low, close: d.close});
 
-PointAndFigureSeries.drawOnCanvasStatic = (props, height, width, compareSeries, indicator, xAccessor, yAccessor, ctx, xScale, yScale, plotData) => {
+PointAndFigureSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
+	var { xAccessor, yAccessor } = props;
+
 	var columns = PointAndFigureSeries.getColumns(xScale, xAccessor, yScale, yAccessor, plotData);
 	var { stroke, fill, strokeWidth, className } = props;
 
@@ -137,4 +130,4 @@ PointAndFigureSeries.getColumns = (xScale, xAccessor, yScale, yAccessor, plotDat
 	return columns;
 };
 
-module.exports = PointAndFigureSeries;
+export default wrap(PointAndFigureSeries);

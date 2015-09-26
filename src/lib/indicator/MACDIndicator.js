@@ -85,4 +85,4 @@ function MACDIndicator(options, chartProps, elementProps) {
 	return MACD;
 }
 
-module.exports = MACDIndicator;
+export default MACDIndicator;

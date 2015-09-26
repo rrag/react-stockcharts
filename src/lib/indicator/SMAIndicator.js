@@ -48,4 +48,4 @@ function SMAIndicator(options, chartProps, elementProps) {
 	return MA;
 }
 
-module.exports = SMAIndicator;
+export default SMAIndicator;

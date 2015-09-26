@@ -1,29 +1,23 @@
 "use strict";
 
 import React from "react";
-import BaseSimpleCanvasSeries from "./BaseSimpleCanvasSeries";
 
-class StraightLine extends BaseSimpleCanvasSeries {
-	getCanvasDraw() {
-		return StraightLine.drawOnCanvasStatic;
-	}
-	render() {
-		var { type, stroke, fill, className, opacity } = this.props;
-		var { xScale, yScale, xAccessor, yAccessor, plotData, yValue } = this.props;
+import wrap from "./wrap";
 
-		var first = xAccessor(plotData[0]);
-		var last = xAccessor(plotData[plotData.length - 1]);
+const StraightLine = (props) => {
+	var { stroke, fill, className, opacity } = props;
+	var { xScale, yScale, xAccessor, yAccessor, plotData, yValue } = props;
 
-		if (type !== "svg") return null;
+	var first = xAccessor(plotData[0]);
+	var last = xAccessor(plotData[plotData.length - 1]);
 
-		return (
-			<line className={className}
-				stroke={stroke} opacity={opacity}
-				x1={xScale(first)} y1={yScale(yValue)}
-				x2={xScale(last)} y2={yScale(yValue)} />
-		);
-	}
-}
+	return (
+		<line className={className}
+			stroke={stroke} opacity={opacity}
+			x1={xScale(first)} y1={yScale(yValue)}
+			x2={xScale(last)} y2={yScale(yValue)} />
+	);
+};
 
 StraightLine.propTypes = {
 	className: React.PropTypes.string,
@@ -44,7 +38,7 @@ StraightLine.defaultProps = {
 	opacity: 0.5,
 };
 
-StraightLine.drawOnCanvasStatic = (props, ctx, xScale, yScale, plotData) => {
+StraightLine.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 
 	var { type, stroke, fill, className, opacity } = props;
 	var { xAccessor, yAccessor, yValue } = props;
@@ -62,4 +56,4 @@ StraightLine.drawOnCanvasStatic = (props, ctx, xScale, yScale, plotData) => {
 	ctx.stroke();
 };
 
-module.exports = StraightLine;
+export default wrap(StraightLine);

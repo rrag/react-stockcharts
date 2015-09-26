@@ -1,6 +1,8 @@
 "use strict";
 
 import React from "react";
+import ReactDOM from "react-dom";
+
 import d3 from "d3";
 
 import Utils from "./utils/utils";
@@ -66,7 +68,7 @@ class EventCapture extends React.Component {
 			var dx = mouseEvent.pageX - mouseXY[0],
 				dy = mouseEvent.pageY - mouseXY[1];
 
-			var win = d3Window(React.findDOMNode(this.refs.capture));
+			var win = d3Window(ReactDOM.findDOMNode(this.refs.capture));
 			d3.select(win)
 				.on(mousemove, this.handlePan)
 				.on(mouseup, this.handlePanEnd);
@@ -92,7 +94,7 @@ class EventCapture extends React.Component {
 		var deltaXY = this.context.deltaXY();
 		var newPos = [d3.event.pageX - deltaXY[0], d3.event.pageY - deltaXY[1]];
 
-		var win = d3Window(React.findDOMNode(this.refs.capture));
+		var win = d3Window(ReactDOM.findDOMNode(this.refs.capture));
 
 		d3.select(win)
 			.on(mousemove, null)

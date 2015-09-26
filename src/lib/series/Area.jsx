@@ -3,39 +3,16 @@
 import React from "react";
 import d3 from "d3";
 
-import BaseSimpleCanvasSeries from "./BaseSimpleCanvasSeries";
+import wrap from "./wrap";
 
-class Area extends BaseSimpleCanvasSeries {
-	constructor(props) {
-		super(props);
-		this.getArea = this.getArea.bind(this);
-	}
-	getCanvasDraw() {
-		return Area.drawOnCanvasStatic;
-	}
-	getArea() {
-		var { plotData, xScale, yScale, xAccessor, yAccessor, base } = this.props;
-		var height = yScale.range()[0];
-		if (base === undefined) base = () => (height - 1);
+const Area = (props) => {
+	var { stroke, fill, className, opacity } = props;
 
-		var areaSeries = d3.svg.area()
-			.defined((d) => yAccessor(d) !== undefined)
-			.x((d) => xScale(xAccessor(d)))
-			.y0(base.bind(null, yScale))
-			.y1((d) => yScale(yAccessor(d)));
-
-		return areaSeries(plotData);
-	}
-	render() {
-		var { type, stroke, fill, className, opacity } = this.props;
-		if (type !== "svg") return null;
-
-		className = className.concat((stroke !== undefined) ? "" : " line-stroke");
-		return (
-			<path d={this.getArea()} stroke={stroke} fill={fill} className={className} opacity={opacity} />
-		);
-	}
-}
+	className = className.concat((stroke !== undefined) ? "" : " line-stroke");
+	return (
+		<path d={Area.getArea(props)} stroke={stroke} fill={fill} className={className} opacity={opacity} />
+	);
+};
 
 Area.propTypes = {
 	className: React.PropTypes.string,
@@ -50,13 +27,27 @@ Area.propTypes = {
 	type: React.PropTypes.string.isRequired,
 	base: React.PropTypes.func,
 };
+
 Area.defaultProps = {
 	className: "line ",
 	fill: "none",
 	opacity: 1,
 };
+Area.getArea = (props) => {
+	var { plotData, xScale, yScale, xAccessor, yAccessor, base } = props;
+	var height = yScale.range()[0];
+	if (base === undefined) base = () => (height - 1);
 
-Area.drawOnCanvasStatic = (props, ctx, xScale, yScale, plotData) => {
+	var areaSeries = d3.svg.area()
+		.defined((d) => yAccessor(d) !== undefined)
+		.x((d) => xScale(xAccessor(d)))
+		.y0(base.bind(null, yScale))
+		.y1((d) => yScale(yAccessor(d)));
+
+	return areaSeries(plotData);
+};
+
+Area.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { xAccessor, yAccessor, fill, stroke, opacity, base } = props;
 	var begin = true;
 	var height = yScale.range()[0];
@@ -93,4 +84,4 @@ Area.drawOnCanvasStatic = (props, ctx, xScale, yScale, plotData) => {
 	ctx.fill();
 };
 
-module.exports = Area;
+export default wrap(Area);

@@ -3,57 +3,26 @@
 import React from "react";
 import d3 from "d3";
 
-class KagiSeries extends React.Component {
-	constructor(props) {
-		super(props);
-		this.drawOnCanvas = this.drawOnCanvas.bind(this);
-	}
-	componentDidUpdate(prevProps, prevState, prevContext) {
-		// if (this.context.type !== "svg") this.drawOnCanvas();
-	}
-	drawOnCanvas() {
-		var ctx = this.context.canvasContext;
-		var { stroke, fill } = this.props;
-		// TODO implement canvas draw
-	}
-	render() {
-		// if (this.context.type !== "svg") return null;
-		var kagiLine = [];
-		var kagi = {};
-		for (let i = 0; i < this.context.plotData.length; i++) {
-			var d = this.context.plotData[i];
-			if (d.close === undefined) continue;
-			if (kagi.type === undefined) kagi.type = d.startAs;
-			if (kagi.plot === undefined) kagi.plot = [];
-			var idx = this.context.xAccessor(d);
-			kagi.plot.push([idx, d.open]);
+import wrap from "./wrap";
 
-			if (d.changePoint !== undefined) {
-				kagi.plot.push([idx, d.changePoint]);
-				kagiLine.push(kagi);
-				kagi = {
-					type: d.changeTo
-					, plot: []
-				};
-				kagi.plot.push([idx, d.changePoint]);
-			}
-		}
-		var { stroke, fill, strokeWidth } = this.props;
-		var paths = kagiLine.map((each, i) => {
-			var dataSeries = d3.svg.line()
-				.x((item) => this.context.xScale(item[0]))
-				.y((item) => this.context.yScale(item[1]))
-				.interpolate("step-before");
-			return (<path key={i} d={dataSeries(each.plot)} className={each.type}
-				stroke={stroke[each.type]} fill={fill[each.type]} strokeWidth={strokeWidth} />);
-		});
-		return (
-			<g className={this.props.className}>
-				{paths}
-			</g>
-		);
-	}
-}
+const KagiSeries = (props) => {
+	var { className, stroke, fill, strokeWidth } = props;
+	var { xAccessor, xScale, yScale, plotData } = props;
+
+	var paths = KagiSeries.helper(plotData, xAccessor).map((each, i) => {
+		var dataSeries = d3.svg.line()
+			.x((item) => xScale(item[0]))
+			.y((item) => yScale(item[1]))
+			.interpolate("step-before");
+		return (<path key={i} d={dataSeries(each.plot)} className={each.type}
+			stroke={stroke[each.type]} fill={fill[each.type]} strokeWidth={strokeWidth} />);
+	});
+	return (
+		<g className={className}>
+			{paths}
+		</g>
+	);
+};
 
 KagiSeries.defaultProps = {
 	namespace: "ReStock.KagiSeries",
@@ -61,7 +30,7 @@ KagiSeries.defaultProps = {
 	strokeWidth: 2,
 	stroke: {
 		yang: "#6BA583",
-		yin: "red"
+		yin: "#E60000"
 	},
 	fill: {
 		yang: "none",
@@ -69,16 +38,70 @@ KagiSeries.defaultProps = {
 	},
 };
 
-KagiSeries.contextTypes = {
-	xScale: React.PropTypes.func.isRequired,
-	yScale: React.PropTypes.func.isRequired,
-	xAccessor: React.PropTypes.func.isRequired,
-	yAccessor: React.PropTypes.func.isRequired,
-	plotData: React.PropTypes.array.isRequired,
-	canvasContext: React.PropTypes.object,
-	type: React.PropTypes.string,
-};
-
 KagiSeries.yAccessor = (d) => ({open: d.open, high: d.high, low: d.low, close: d.close});
 
-module.exports = KagiSeries;
+KagiSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
+	var { xAccessor, yAccessor, stroke, fill, strokeWidth } = props;
+	var begin = true;
+
+	var paths = KagiSeries.helper(plotData, xAccessor)
+		.forEach((each, i) => {
+			ctx.strokeStyle = stroke[each.type];
+			ctx.lineWidth = strokeWidth;
+
+			ctx.beginPath();
+			var prevX, prevY;
+			each.plot.forEach(d => {
+				var [x, y] = [xScale(d[0]), yScale(d[1])];
+				if (begin) {
+					ctx.moveTo(x, y);
+					begin = false;
+				} else {
+					if (prevX !== undefined) {
+						ctx.lineTo(prevX, y);
+					}
+					ctx.lineTo(x, y);
+				}
+				prevX = x;
+				prevY = y;
+
+				// console.log(d);
+
+			});
+			ctx.stroke();
+		});
+};
+
+KagiSeries.helper = (plotData, xAccessor) => {
+	var kagiLine = [];
+	var kagi = {};
+	for (let i = 0; i < plotData.length; i++) {
+		var d = plotData[i];
+		if (d.close === undefined) continue;
+		if (kagi.type === undefined) kagi.type = d.startAs;
+		if (kagi.plot === undefined) kagi.plot = [];
+		var idx = xAccessor(d);
+		kagi.plot.push([idx, d.open]);
+
+		if (d.changeTo !== undefined) {
+			kagi.plot.push([idx, d.changePoint]);
+			// console.log(d, idx);
+			kagi.added = true;
+			kagiLine.push(kagi);
+
+			kagi = {
+				type: d.changeTo,
+				plot: [],
+				added: false,
+			};
+			kagi.plot.push([idx, d.changePoint]);
+		}
+	}
+	if (!kagi.added) {
+		kagiLine.push(kagi);
+	}
+
+	return kagiLine;
+};
+
+export default wrap(KagiSeries);

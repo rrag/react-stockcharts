@@ -52,4 +52,4 @@ function EMAIndicator(options, chartProps, elementProps) {
 	return MA;
 }
 
-module.exports = EMAIndicator;
+export default EMAIndicator;

@@ -11,6 +11,12 @@ import BollingerSeries from "./BollingerSeries";
 import RSISeries from "./RSISeries";
 import StochasticSeries from "./StochasticSeries";
 
+import Area from "./Area";
+import Line from "./Line";
+import StraightLine from "./StraightLine";
+
+import wrap from "./wrap";
+
 export default {
 	AreaSeries,
 	LineSeries,
@@ -24,4 +30,8 @@ export default {
 	BollingerSeries,
 	RSISeries,
 	StochasticSeries,
+	Area,
+	Line,
+	StraightLine,
+	wrap,
 };

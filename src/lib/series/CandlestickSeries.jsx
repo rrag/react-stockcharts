@@ -1,54 +1,18 @@
 "use strict";
 
 import React from "react";
-import BaseCanvasSeries from "./BaseCanvasSeries";
 
-class CandlestickSeries extends BaseCanvasSeries {
-	constructor(props) {
-		super(props);
-		this.getWicksSVG = this.getWicksSVG.bind(this);
-		this.getCandlesSVG = this.getCandlesSVG.bind(this);
-	}
-	getCanvasDraw() {
-		return CandlestickSeries.drawOnCanvasStatic;
-	}
-	getWicksSVG() {
-		var { xAccessor, yAccessor, xScale, yScale, compareSeries, plotData } = this.context;
+import wrap from "./wrap";
 
-		var wickData = CandlestickSeries.getWickData(this.props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
-		var wicks = wickData
-			.map((d, idx) => <line key={idx}
-				className={d.className} stroke={d.stroke} style={{ shapeRendering: "crispEdges" }}
-				x1={d.x1} y1={d.y1}
-				x2={d.x2} y2={d.y2} />
-			);
-		return wicks;
-	}
-	getCandlesSVG() {
-		var { xAccessor, yAccessor, xScale, yScale, compareSeries, plotData } = this.context;
-
-		var candleData = CandlestickSeries.getCandleData(this.props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
-		var candles = candleData.map((d, idx) => {
-			if (d.width < 0) return <line className={d.className} key={idx} x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height} stroke={d.fill} />;
-			else if (d.height === 0) return <line key={idx} x1={d.x} y1={d.y} x2={d.x + d.width} y2={d.y + d.height} stroke={d.fill} />;
-			return <rect  className={d.className} key={idx} x={d.x} y={d.y} width={d.width} height={d.height} fill={d.fill} stroke={d.stroke} />;
-		});
-		return candles;
-	}
-	render() {
-		if (this.context.type !== "svg") return null;
-		return (
-			<g className="react-stockcharts-candlestick">
-				<g className="react-stockcharts-candlestick-wick" key="wicks">
-					{this.getWicksSVG()}
-				</g>
-				<g className="react-stockcharts-candlestick-candle" key="candles">
-					{this.getCandlesSVG()}
-				</g>
-			</g>
-		);
-	}
-}
+const CandlestickSeries = (props) => 
+	<g className="react-stockcharts-candlestick">
+		<g className="react-stockcharts-candlestick-wick" key="wicks">
+			{CandlestickSeries.getWicksSVG(props)}
+		</g>
+		<g className="react-stockcharts-candlestick-candle" key="candles">
+			{CandlestickSeries.getCandlesSVG(props)}
+		</g>
+	</g>;
 
 CandlestickSeries.propTypes = {
 	classNames: React.PropTypes.shape({
@@ -66,7 +30,6 @@ CandlestickSeries.propTypes = {
 };
 
 CandlestickSeries.defaultProps = {
-	namespace: "ReStock.CandlestickSeries",
 	classNames: {
 		up: "up",
 		down: "down"
@@ -81,9 +44,34 @@ CandlestickSeries.defaultProps = {
 	},
 };
 
+CandlestickSeries.getWicksSVG = (props) => {
+	var { xAccessor, yAccessor, xScale, yScale, compareSeries, plotData } = props;
+
+	var wickData = CandlestickSeries.getWickData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
+	var wicks = wickData
+		.map((d, idx) => <line key={idx}
+			className={d.className} stroke={d.stroke} style={{ shapeRendering: "crispEdges" }}
+			x1={d.x1} y1={d.y1}
+			x2={d.x2} y2={d.y2} />
+		);
+	return wicks;
+};
+CandlestickSeries.getCandlesSVG = (props) => {
+	var { xAccessor, yAccessor, xScale, yScale, compareSeries, plotData } = props;
+
+	var candleData = CandlestickSeries.getCandleData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
+	var candles = candleData.map((d, idx) => {
+		if (d.width < 0) return <line className={d.className} key={idx} x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height} stroke={d.fill} />;
+		else if (d.height === 0) return <line key={idx} x1={d.x} y1={d.y} x2={d.x + d.width} y2={d.y + d.height} stroke={d.fill} />;
+		return <rect  className={d.className} key={idx} x={d.x} y={d.y} width={d.width} height={d.height} fill={d.fill} stroke={d.stroke} />;
+	});
+	return candles;
+};
+
 CandlestickSeries.yAccessor = (d) => ({open: d.open, high: d.high, low: d.low, close: d.close});
 
-CandlestickSeries.drawOnCanvasStatic = (props, height, width, compareSeries, indicator, xAccessor, yAccessor, ctx, xScale, yScale, plotData) => {
+CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
+	var { height, width, compareSeries, indicator, xAccessor, yAccessor } = props;
 	var { stroke, fill } = props;
 	var wickData = CandlestickSeries.getWickData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
 	wickData.forEach(d => {
@@ -180,7 +168,6 @@ CandlestickSeries.getWickData = (props, xAccessor, yAccessor, xScale, yScale, co
 };
 
 CandlestickSeries.getCandleData = (props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData) => {
-	// var { plotData, isCompareSeries, yAccessor, xAccessor, yScale, xScale } = this.context;
 	var isCompareSeries = compareSeries.length > 0;
 
 	var { classNames, fill, stroke } = props;
@@ -213,4 +200,4 @@ CandlestickSeries.getCandleData = (props, xAccessor, yAccessor, xScale, yScale, 
 	return candles;
 };
 
-module.exports = CandlestickSeries;
+export default wrap(CandlestickSeries);

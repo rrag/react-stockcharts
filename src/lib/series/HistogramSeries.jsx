@@ -1,53 +1,18 @@
 "use strict";
 
 import React from "react";
-import BaseCanvasSeries from "./BaseCanvasSeries";
+import wrap from "./wrap";
 
-class HistogramSeries extends BaseCanvasSeries {
-	constructor(props) {
-		super(props);
-		this.getBarsSVG = this.getBarsSVG.bind(this);
-	}
-	getCanvasDraw() {
-		return HistogramSeries.drawOnCanvasStatic;
-	}
-	getBarsSVG() {
-		var { xAccessor, yAccessor, xScale, yScale, plotData } = this.context;
-
-		var bars = HistogramSeries.getBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
-
-		return bars.map((d, idx) => {
-			if (d.barWidth <= 1) {
-				return <line key={idx} className={d.className}
-							stroke={d.stroke}
-							fill={d.fill}
-							x1={d.x} y1={d.y}
-							x2={d.x} y2={d.y + d.height} />;
-			}
-			return <rect key={idx} className={d.className}
-						stroke={d.stroke}
-						fill={d.fill}
-						x={d.x}
-						y={d.y}
-						width={d.barWidth}
-						opacity={this.props.opacity}
-						height={d.height} />;
-		});
-	}
-	render() {
-		if (this.context.type !== "svg") return null;
-		return (
-			<g className="histogram">
-				{this.getBarsSVG()}
-			</g>
-		);
-	}
-}
+const HistogramSeries = (props) => 
+	<g className="histogram">
+		{HistogramSeries.getBarsSVG(props)}
+	</g>;
 
 HistogramSeries.propTypes = {
 	baseAt: React.PropTypes.oneOfType([
-				React.PropTypes.oneOf(["top", "bottom", "middle"])
-				, React.PropTypes.number
+				React.PropTypes.oneOf(["top", "bottom", "middle"]),
+				React.PropTypes.number,
+				React.PropTypes.func,
 			]).isRequired,
 	direction: React.PropTypes.oneOf(["up", "down"]).isRequired,
 	stroke: React.PropTypes.string,
@@ -61,7 +26,6 @@ HistogramSeries.propTypes = {
 };
 
 HistogramSeries.defaultProps = {
-	namespace: "ReStock.HistogramSeries",
 	baseAt: "bottom",
 	direction: "up",
 	className: "bar",
@@ -70,7 +34,9 @@ HistogramSeries.defaultProps = {
 	opacity: 0.5,
 };
 
-HistogramSeries.drawOnCanvasStatic = (props, height, width, compareSeries, indicator, xAccessor, yAccessor, ctx, xScale, yScale, plotData) => {
+HistogramSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
+	var { height, width, compareSeries, indicator, xAccessor, yAccessor } = props;
+
 	var bars = HistogramSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
 
 	ctx.globalAlpha = props.opacity;
@@ -95,8 +61,8 @@ HistogramSeries.drawOnCanvasStatic = (props, height, width, compareSeries, indic
 		group[key].forEach(d => {
 			if (d.barWidth < 1) {
 				/* <line key={idx} className={d.className}
-							stroke={this.props.stroke}
-							fill={this.props.fill}
+							stroke={stroke}
+							fill={fill}
 							x1={d.x} y1={d.y}
 							x2={d.x} y2={d.y + d.height} />*/
 				ctx.beginPath();
@@ -105,8 +71,8 @@ HistogramSeries.drawOnCanvasStatic = (props, height, width, compareSeries, indic
 				ctx.stroke();
 			} else {
 				/* <rect key={idx} className={d.className}
-						stroke={this.props.stroke}
-						fill={this.props.fill}
+						stroke={stroke}
+						fill={fill}
 						x={d.x}
 						y={d.y}
 						width={d.barWidth}
@@ -118,6 +84,31 @@ HistogramSeries.drawOnCanvasStatic = (props, height, width, compareSeries, indic
 		});
 	});
 };
+
+HistogramSeries.getBarsSVG = (props) => {
+	var { xAccessor, yAccessor, xScale, yScale, plotData } = props;
+
+	var bars = HistogramSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
+
+	return bars.map((d, idx) => {
+		if (d.barWidth <= 1) {
+			return <line key={idx} className={d.className}
+						stroke={d.stroke}
+						fill={d.fill}
+						x1={d.x} y1={d.y}
+						x2={d.x} y2={d.y + d.height} />;
+		}
+		return <rect key={idx} className={d.className}
+					stroke={d.stroke}
+					fill={d.fill}
+					x={d.x}
+					y={d.y}
+					width={d.barWidth}
+					opacity={props.opacity}
+					height={d.height} />;
+	});
+};
+
 HistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData) => {
 	var { baseAt, direction, className, fill, stroke } = props;
 	var base = baseAt === "top"
@@ -151,16 +142,21 @@ HistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData
 				var x = (xScale(xAccessor(d))) - 0.5 * barWidth,
 					className = getClassName(d), y, height;
 
+				var newBase = base;
+				if (typeof base === "function") {
+					newBase = base(xScale, yScale, d);
+				}
+
 				if (dir > 0) {
-					y = base;
+					y = newBase;
 					height = yScale.range()[0] - yScale(yValue);
 				} else {
 					y = yScale(yValue);
-					height = base - y;
+					height = newBase - y;
 				}
 
 				if (height < 0) {
-					y = base;
+					y = newBase;
 					height = -height;
 				}
 				return {
@@ -176,4 +172,4 @@ HistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData
 	return bars;
 };
 
-module.exports = HistogramSeries;
+export default wrap(HistogramSeries);

@@ -83,4 +83,4 @@ function RSIIndicator(options, chartProps, elementProps) {
 	return indicator;
 }
 
-module.exports = RSIIndicator;
+export default RSIIndicator;

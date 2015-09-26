@@ -1,10 +1,11 @@
 "use strict";
 
 import React from "react";
+import ReactDOM from "react-dom";
 
 var ChartWidthMixin = {
 	handleWindowResize() {
-		var el = React.findDOMNode(this);
+		var el = ReactDOM.findDOMNode(this);
 		var w = el.parentNode.clientWidth;
 		// console.log("width = ", w);
 		this.setState({
@@ -17,7 +18,7 @@ var ChartWidthMixin = {
 	},
 	componentDidMount() {
 		window.addEventListener("resize", this.handleWindowResize);
-		var el = React.findDOMNode(this);
+		var el = ReactDOM.findDOMNode(this);
 		var w = el.parentNode.clientWidth;
 		this.setState({
 			width: w

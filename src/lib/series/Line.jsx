@@ -2,22 +2,13 @@
 
 import React from "react";
 import d3 from "d3";
+import wrap from "./wrap";
 
-import BaseSimpleCanvasSeries from "./BaseSimpleCanvasSeries";
+const Line = (props) => {
+	var { stroke, fill, className } = props;
 
-class Line extends BaseSimpleCanvasSeries {
-	getCanvasDraw() {
-		return Line.drawOnCanvasStatic;
-	}
-	render() {
-		var { type, stroke, fill, className } = this.props;
-		if (type !== "svg") return null;
-
-		className = className.concat((stroke) ? "" : " line-stroke");
-		return (
-			<path d={Line.getPath(this.props)} stroke={stroke} fill={fill} className={className}/>
-		);
-	}
+	className = className.concat((stroke) ? "" : " line-stroke");
+	return <path d={Line.getPath(props)} stroke={stroke} fill={fill} className={className}/>;
 };
 
 Line.propTypes = {
@@ -48,7 +39,7 @@ Line.getPath = (props) => {
 	return dataSeries(plotData);
 };
 
-Line.drawOnCanvasStatic = (props, ctx, xScale, yScale, plotData) => {
+Line.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { xAccessor, yAccessor, stroke } = props;
 
 	var path = Line.getPath(props);
@@ -74,4 +65,4 @@ Line.drawOnCanvasStatic = (props, ctx, xScale, yScale, plotData) => {
 	ctx.stroke();
 };
 
-module.exports = Line;
+export default wrap(Line);

@@ -79,4 +79,4 @@ function FullStochasticOscillator(options, chartProps, elementProps) {
 	return indicator;
 }
 
-module.exports = FullStochasticOscillator;
+export default FullStochasticOscillator;

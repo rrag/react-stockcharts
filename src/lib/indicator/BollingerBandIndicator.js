@@ -63,4 +63,4 @@ function BollingerBandIndicator(options, chartProps, elementProps) {
 	return indicator;
 }
 
-module.exports = BollingerBandIndicator;
+export default BollingerBandIndicator;
