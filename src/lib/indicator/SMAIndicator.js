@@ -8,44 +8,45 @@ var defaultOptions = {
 	pluck: "close",
 };
 
-function SMAIndicator(options, chartProps, elementProps) {
+function SMAIndicator(options, chartProps, dataSeriesProps) {
 
-	var prefix = "chart_" + chartProps.id;
+	var prefix = `chart_${ chartProps.id }`;
+	var key = `overlay_${ dataSeriesProps.id }`;
+
 	var settings = objectAssign({}, defaultOptions, options);
 	if (typeof settings.pluck === "string") {
 		var { pluck } = settings;
 		settings.pluck = (d) => d[pluck];
 	}
-	var key = "overlay_" + (elementProps.id !== undefined ? elementProps.id : "default");
-	var stroke = settings.stroke || overlayColors(elementProps.id);
+	var stroke = settings.stroke || overlayColors(dataSeriesProps.id);
 
-	function MA() {
+	function indicator() {
 	}
 
-	MA.options = function() {
+	indicator.options = function() {
 		return settings;
 	};
-	MA.stroke = function() {
+	indicator.stroke = function() {
 		return stroke;
 	};
-	MA.calculate = function(data) {
+	indicator.calculate = function(data) {
 		var setter = MACalculator.setter.bind(null, [prefix], key);
 
 		var newData = MACalculator.calculateSMANew(data, settings.period, settings.pluck, setter);
 		return newData;
 	};
-	MA.yAccessor = function() {
+	indicator.yAccessor = function() {
 		return (d) => {
 			if (d && d[prefix]) return d[prefix][key];
 		};
 	};
-	MA.tooltipLabel = function() {
+	indicator.tooltipLabel = function() {
 		return `SMA (${ settings.period })`;
 	};
-	MA.isMovingAverage = function() {
+	indicator.isMovingAverage = function() {
 		return true;
 	};
-	return MA;
+	return indicator;
 }
 
 export default SMAIndicator;

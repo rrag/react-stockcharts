@@ -17,11 +17,12 @@ var defaultOptions = {
 	overBought: 20,
 };
 
-function FullStochasticOscillator(options, chartProps, elementProps) {
+function FullStochasticOscillator(options, chartProps, dataSeriesProps) {
 
-	var prefix = "chart_" + chartProps.id;
+	var prefix = `chart_${ chartProps.id }`;
+	var key = `overlay_${ dataSeriesProps.id }`;
+
 	var settings = objectAssign({}, defaultOptions, options);
-	var key = "overlay_" + (elementProps.id !== undefined ? elementProps.id : "default");
 
 	function indicator() {
 	}

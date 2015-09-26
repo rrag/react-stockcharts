@@ -4,7 +4,7 @@ I have described this before and using `svg` is very convenient from a developer
 
 However there comes a point where performance & memory become a bottleneck, especially in tablets/mobile (well in desktops too).
 
-Pan actions become laggy and not so responsive. and when looking at a lot of data points like the chart below, there are approx 250 DOM elements. and on pan action all these are updated to different `x`, `y`, `height` & `width`. The time taken to calculate of these values is negligible (<10 ms) but when rendering them, it is as you can see for yourself.
+Pan actions become lag behind and not so responsive. and when looking at a lot of data points like the chart below, there are approx 250 DOM elements. and on pan action all these are updated to different `x`, `y`, `height` & `width`. The time taken to calculate the new values on pan is negligible (<10 ms) but when rendering them, you can see for yourself.
 
 Here is where `canvas` shines. Given this dilema react-stockcharts provides 2 options. 
 

@@ -21,18 +21,19 @@ var defaultOptions = {
 	}
 };
 
-function MACDIndicator(options, chartProps, elementProps) {
+function MACDIndicator(options, chartProps, dataSeriesProps) {
 
-	var prefix = "chart_" + chartProps.id;
+	var prefix = `chart_${ chartProps.id }`;
+	var key = `overlay_${ dataSeriesProps.id }`;
+
 	var settings = objectAssign({}, defaultOptions, options);
-	var key = "overlay_" + (elementProps.id !== undefined ? elementProps.id : "default");
-	// var key = "MACD_" + elementProps.id;
-	function MACD() {
+
+	function indicator() {
 	}
-	MACD.options = function() {
+	indicator.options = function() {
 		return settings;
 	};
-	MACD.calculate = function(data) {
+	indicator.calculate = function(data) {
 		// console.log(prefix, options);
 		var fastKey = "ema" + settings.fast;
 		var slowKey = "ema" + settings.slow;
@@ -72,17 +73,17 @@ function MACDIndicator(options, chartProps, elementProps) {
 		// console.log(newData[newData.length - 3]);
 		return newData;
 	};
-	MACD.yAccessor = function() {
+	indicator.yAccessor = function() {
 		return (d) => {
 			if (d && d[prefix] && d[prefix][key]) { 
 				return { MACDLine: d[prefix][key].MACDLine, signalLine: d[prefix][key].signalLine, histogram: d[prefix][key].histogram };
 			}
 		};
 	};
-	MACD.isMACD = function() {
+	indicator.isMACD = function() {
 		return true;
 	};
-	return MACD;
+	return indicator;
 }
 
 export default MACDIndicator;

@@ -10,11 +10,13 @@ var defaultOptions = {
 	maType: "sma"
 };
 
-function BollingerBandIndicator(options, chartProps, elementProps) {
+function BollingerBandIndicator(options, chartProps, dataSeriesProps) {
 
-	var prefix = "chart_" + chartProps.id;
+	var prefix = `chart_${ chartProps.id }`;
+	var key = `overlay_${ dataSeriesProps.id }`;
+
 	var settings = objectAssign({}, defaultOptions, options);
-	var key = "overlay_" + (elementProps.id !== undefined ? elementProps.id : "default");
+
 	function indicator() {
 	}
 	indicator.options = function() {
