@@ -16,6 +16,8 @@ var { XAxis, YAxis } = ReStock.axes;
 var { SMA } = ReStock.indicator;
 var { ChartWidthMixin } = ReStock.helper;
 
+var pointAndFigureTransformOptions = { boxSize: 0.5 };
+
 var PointAndFigure = React.createClass({
 	mixins: [ChartWidthMixin],
 	propTypes: {
@@ -30,7 +32,7 @@ var PointAndFigure = React.createClass({
 		return (
 			<ChartCanvas width={this.state.width} height={400}
 				margin={{left: 90, right: 70, top:10, bottom: 30}} initialDisplay={30}
-				dataTransform={[ { transform: StockscaleTransformer }, { transform: PointAndFigureTransformer, options: { boxSize: 0.5 } } ]}
+				dataTransform={[ { transform: StockscaleTransformer }, { transform: PointAndFigureTransformer, options: pointAndFigureTransformOptions } ]}
 				data={data} type={type}>
 				<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}>
 					<XAxis axisAt="bottom" orient="bottom"/>
