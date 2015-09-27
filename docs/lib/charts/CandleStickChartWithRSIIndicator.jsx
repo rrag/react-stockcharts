@@ -106,12 +106,4 @@ var CandleStickChartWithRSIIndicator = React.createClass({
 	}
 });
 
-/*
-
-
-
-
-
-*/
-
 export default CandleStickChartWithRSIIndicator;

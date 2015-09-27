@@ -5,8 +5,6 @@ import d3 from "d3";
 
 import ReStock from "../../../src/";
 
-// var ReStock = require("../../../src/");
-
 var { ChartCanvas, Chart, DataSeries, OverlaySeries, EventCapture } = ReStock;
 
 var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, StochasticSeries } = ReStock.series;
@@ -116,9 +114,5 @@ var CandleStickChartWithFullStochasticsIndicator = React.createClass({
 		);
 	}
 });
-
-/*
-
-*/
 
 export default CandleStickChartWithFullStochasticsIndicator;
