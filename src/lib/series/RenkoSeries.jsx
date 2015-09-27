@@ -21,7 +21,7 @@ const RenkoSeries = (props) => {
 			</g>
 		</g>
 	);
-}
+};
 
 RenkoSeries.propTypes = {
 	classNames: React.PropTypes.shape({

@@ -30,7 +30,7 @@ const StochasticSeries = (props) => {
 			{StochasticSeries.getHorizontalLine(props, options.overBought, "brown")}
 		</g>
 	);
-}
+};
 
 StochasticSeries.getHorizontalLine = (props, yValue, stroke) => {
 

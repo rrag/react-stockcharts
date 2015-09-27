@@ -30,7 +30,7 @@ const AreaSeries = (props) => {
 				type={type} />
 		</g>
 	);
-}
+};
 
 AreaSeries.propTypes = {
 	stroke: React.PropTypes.string,

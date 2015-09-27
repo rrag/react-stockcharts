@@ -22,7 +22,7 @@ const RSISeries = (props) => {
 			{RSISeries.getHorizontalLine(props, options.overBought, "brown")}
 		</g>
 	);
-}
+};
 
 RSISeries.getHorizontalLine = (props, yValue, stroke) => {
 	let { xScale, yScale, xAccessor, yAccessor, plotData, type } = props;

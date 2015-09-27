@@ -34,7 +34,7 @@ const MACDSeries = (props) => {
 			{MACDSeries.getHorizontalLine(props)}
 		</g>
 	);
-}
+};
 
 MACDSeries.getHorizontalLine = (props) => {
 	let { xScale, yScale, xAccessor, yAccessor, plotData, type } = props;

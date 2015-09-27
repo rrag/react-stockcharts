@@ -19,7 +19,7 @@ const CompareSeries = (props) => {
 			stroke={thisSeries.stroke} fill="none"
 			type={type} />
 	);
-}
+};
 
 CompareSeries.propTypes = {
 	className: React.PropTypes.string,
