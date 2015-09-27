@@ -22,12 +22,12 @@ Add a `ref` to the `ChartCanvas`
 Be sure to call these methods *after* the initial render.
 
 ```js
-this.refs.pushData( [ /* array of data to be pushed */ {...}, {...}, ... ] );
+this.refs.chart.pushData( [ /* array of data to be pushed */ {...}, {...}, ... ] );
 ```
 and
 
 ```js
-this.refs.alterData(data); // send the complete data. you have to ensure that the length of the original data passed and the new data sending here match in length
+this.refs.chart.alterData(data); // send the complete data. you have to ensure that the length of the original data passed and the new data sending here match in length
 ```
 
 A live example below, Here are a keys to press to see the push and alter data2
