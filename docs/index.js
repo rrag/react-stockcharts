@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 var d3 = require('d3');
 
 require('stylesheets/re-stock');
@@ -23,5 +24,5 @@ d3.tsv("data/MSFT.tsv", function(err, data) {
 
 	var Chart = require('lib/charts/CandleStickChartWithMACDIndicator');
 
-	React.render(<Chart data={data} type="hybrid"/>, document.getElementById("chart"));
+	ReactDOM.render(<Chart data={data} type="hybrid"/>, document.getElementById("chart"));
 });

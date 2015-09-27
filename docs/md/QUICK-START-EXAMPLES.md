@@ -26,3 +26,18 @@ Kagi - [source](https://gist.github.com/rrag/d1e5b75ac12f754bb21d), [block](http
 P & F - [source](https://gist.github.com/rrag/d43ef867bead0f1de663), [block](http://bl.ocks.org/rrag/d43ef867bead0f1de663), [plunker](http://plnkr.co/edit/gist:d43ef867bead0f1de663?p=preview)
 
 Renko - [source](https://gist.github.com/rrag/df51fa445c26e123beb9), [block](http://bl.ocks.org/rrag/df51fa445c26e123beb9), [plunker](http://plnkr.co/edit/gist:df51fa445c26e123beb9?p=preview)
+
+#### Indicators
+
+Moving Average Convergence Divergence (MACD) - [source](https://gist.github.com/rrag/109a2b8021689e1ffc79), [block](http://bl.ocks.org/rrag/109a2b8021689e1ffc79), [plunker](http://plnkr.co/edit/gist:109a2b8021689e1ffc79?p=preview)
+
+Relative Strength Index (RSI) - [source](https://gist.github.com/rrag/78817a1ccf0a450eed0c), [block](http://bl.ocks.org/rrag/78817a1ccf0a450eed0c), [plunker](http://plnkr.co/edit/gist:78817a1ccf0a450eed0c?p=preview)
+
+Full Stochastics Indicator (configurable to get Slow & Fast Stochastic Oscilator) - [source](https://gist.github.com/rrag/3957c24595cc025eb3ef), [block](http://bl.ocks.org/rrag/3957c24595cc025eb3ef), [plunker](http://plnkr.co/edit/gist:3957c24595cc025eb3ef?p=preview)
+
+Bollinger Bands - [source](https://gist.github.com/rrag/b993d5fcc5c09dd66a6e), [block](http://bl.ocks.org/rrag/b993d5fcc5c09dd66a6e), [plunker](http://plnkr.co/edit/gist:b993d5fcc5c09dd66a6e?p=preview)
+
+
+#### Other
+
+Add data / update data - [source](https://gist.github.com/rrag/555ea9d11c621a895171), [block](http://bl.ocks.org/rrag/555ea9d11c621a895171), [plunker](http://plnkr.co/edit/gist:555ea9d11c621a895171?p=preview)
