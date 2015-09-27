@@ -39,7 +39,6 @@ const PointAndFigureSeries = (props) => {
 
 PointAndFigureSeries.defaultProps = {
 	className: "react-stockcharts-point-and-figure",
-	namespace: "ReStock.PointAndFigureSeries",
 	strokeWidth: 1,
 	stroke: {
 		up: "#6BA583",

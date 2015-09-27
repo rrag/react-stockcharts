@@ -39,7 +39,6 @@ RenkoSeries.propTypes = {
 };
 
 RenkoSeries.defaultProps = {
-	namespace: "ReStock.RenkoSeries",
 	classNames: {
 		up: "up",
 		down: "down"

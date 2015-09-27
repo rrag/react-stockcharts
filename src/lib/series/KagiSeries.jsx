@@ -25,7 +25,6 @@ const KagiSeries = (props) => {
 };
 
 KagiSeries.defaultProps = {
-	namespace: "ReStock.KagiSeries",
 	className: "react-stockcharts-kagi",
 	strokeWidth: 2,
 	stroke: {

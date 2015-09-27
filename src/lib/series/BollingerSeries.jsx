@@ -44,7 +44,6 @@ const BollingerSeries = (props) => {
 };
 
 BollingerSeries.defaultProps = {
-	namespace: "ReStock.BollingerSeries",
 	stroke: {
 		top: "brown",
 		middle: "black",

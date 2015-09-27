@@ -40,7 +40,6 @@ AreaSeries.propTypes = {
 };
 
 AreaSeries.defaultProps = {
-	namespace: "ReStock.AreaSeries",
 	stroke: "steelblue",
 	opacity: 0.5,
 	fill: "steelblue",

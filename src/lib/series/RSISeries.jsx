@@ -40,7 +40,6 @@ RSISeries.propTypes = {
 };
 
 RSISeries.defaultProps = {
-	namespace: "ReStock.RSISeries",
 	className: "react-stockcharts-rsi-series"
 };
 

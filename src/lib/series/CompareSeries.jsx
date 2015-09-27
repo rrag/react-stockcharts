@@ -29,7 +29,6 @@ CompareSeries.propTypes = {
 };
 
 CompareSeries.defaultProps = {
-	namespace: "ReStock.CompareSeries",
 	className: "line "
 };
 

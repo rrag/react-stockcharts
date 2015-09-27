@@ -23,7 +23,6 @@ LineSeries.propTypes = {
 };
 
 LineSeries.defaultProps = {
-	namespace: "ReStock.LineSeries",
 	className: "line "
 };
 
