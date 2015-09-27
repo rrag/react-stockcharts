@@ -6,7 +6,7 @@ This section describes how to create a new `XXXIndicator` yourself.
 
 --- 
 
-Now before you begin jumping to write a new indicator yourself, I suggest you look at the [source of a few](https://github.com/rrag/react-stockcharts/tree/next/src/lib/indicator)
+Now before you begin jumping to write a new indicator yourself, I suggest you look at the [source of a few](https://github.com/rrag/react-stockcharts/tree/master/src/lib/indicator)
 
 The simplest one is `SMAIndicator.js`
 
