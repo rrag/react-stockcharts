@@ -18,7 +18,9 @@ var { XAxis, YAxis } = ReStock.axes;
 var { MACD, EMA, SMA } = ReStock.indicator;
 var { ChartWidthMixin } = ReStock.helper;
 
-var interval, length = 30, rawData;
+var interval, length = 150, rawData;
+var func;
+var speed = 1000;
 
 var CandleStickChartWithUpdatingData = React.createClass({
 	mixins: [ChartWidthMixin],
@@ -36,67 +38,66 @@ var CandleStickChartWithUpdatingData = React.createClass({
 			data: this.props.data.slice(0, length),
 		};
 	},
-	componentDidMount() {
-		var func;
-		var speed = 1000;
-		document.addEventListener("keypress", function(e) {
-			var keyCode = e.which;
-			switch (keyCode) {
-				case 50: {
-					// 2 (50) - Start alter data
-					func = () => {
-						var exceptLast = rawData.slice(0, rawData.length - 1);
-						var last = rawData[rawData.length - 1];
+	onKeyPress(e) {
+		var keyCode = e.which;
+		switch (keyCode) {
+			case 50: {
+				// 2 (50) - Start alter data
+				func = () => {
+					var exceptLast = rawData.slice(0, rawData.length - 1);
+					var last = rawData[rawData.length - 1];
 
-						last = {
-							...last,
-							close: (Math.random() * (last.high - last.low)) + last.close
-						}
+					last = {
+						...last,
+						close: (Math.random() * (last.high - last.low)) + last.close
+					}
 
-						this.refs.chartCanvas.alterData(exceptLast.concat(last));
+					this.refs.chartCanvas.alterData(exceptLast.concat(last));
 
-					};
-					break;
-				}
-				case 49: {
-					// 1 (49) - Start Push data
-					func = () => {
-						var pushMe = this.props.data.slice(length, length + 1);
-						rawData = rawData.concat(pushMe);
-						this.refs.chartCanvas.pushData(pushMe);
-						length ++;
-						if (this.props.data.length === length) clearInterval(interval);
-					};
-					break;
-				}
-				case 48: {
-					// 0 (48) - Clear interval
-					func = null;
-					if (interval) clearInterval(interval);
-					break;
-				}
-				case 43: {
-					// + (43) - increase the speed
-					speed = Math.max(speed / 2, 100);
-					break;
-				}
-				case 45: {
-					// - (45) - reduce the speed
-					var delta = Math.min(speed, 1000);
-					speed = speed + delta;
-					break;
-				}
+				};
+				break;
 			}
-			if (func) {
+			case 49: {
+				// 1 (49) - Start Push data
+				func = () => {
+					var pushMe = this.props.data.slice(length, length + 1);
+					rawData = rawData.concat(pushMe);
+					this.refs.chartCanvas.pushData(pushMe);
+					length ++;
+					if (this.props.data.length === length) clearInterval(interval);
+				};
+				break;
+			}
+			case 48: {
+				// 0 (48) - Clear interval
+				func = null;
 				if (interval) clearInterval(interval);
-				console.log("speed  = ", speed);
-				interval = setInterval(func, speed);
+				break;
 			}
-		}.bind(this));
+			case 43: {
+				// + (43) - increase the speed
+				speed = Math.max(speed / 2, 100);
+				break;
+			}
+			case 45: {
+				// - (45) - reduce the speed
+				var delta = Math.min(speed, 1000);
+				speed = speed + delta;
+				break;
+			}
+		}
+		if (func) {
+			if (interval) clearInterval(interval);
+			console.log("speed  = ", speed);
+			interval = setInterval(func, speed);
+		}
+	},
+	componentDidMount() {
+		document.addEventListener("keypress", this.onKeyPress);
 	},
 	componentWillUnmount() {
 		if (interval) clearInterval(interval);
-		document.removeEventListener("keypress");
+		document.removeEventListener("keypress", this.onKeyPress);
 	},
 	render() {
 		if (this.state === null || !this.state.width) return <div />;
