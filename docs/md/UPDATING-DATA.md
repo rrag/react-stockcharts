@@ -40,4 +40,4 @@ key | outcome
 +   | increase the speed
 -   | reduce the speed
 
-Example on plunker coming soon...
+checkout the [source](https://gist.github.com/rrag/555ea9d11c621a895171), [block](http://bl.ocks.org/rrag/555ea9d11c621a895171), [plunker](http://plnkr.co/edit/gist:555ea9d11c621a895171?p=preview) of this example
