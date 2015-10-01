@@ -40,7 +40,7 @@ If you build a new Series with just these building blocks, you do not need to ha
 
 It is necessary that all Series be Pure, meaning, they have no state and given the same set of `props` as input the same output is provided on both canvas and svg depending on what is configured.
 
-Since we depend on React 0.14 for the library, we might as well use the [Components as Functions](https://medium.com/@joshblack/stateless-components-in-react-0-14-f9798f8b992d).
+~~Since we depend on React 0.14 for the library, we might as well use the [Components as Functions](https://medium.com/@joshblack/stateless-components-in-react-0-14-f9798f8b992d).~~
 
 some boilerplate code below
 
@@ -50,47 +50,50 @@ import ReStock from "react-stockcharts";
 
 import { wrap } from ReStock.series;
 
-const MyNewSeries = (props) => {
+class MyNewSeries extends React.Component {
+    render() {
+        var { props } = this;
 
-    // The following are available from props
+        // The following are available from props
 
-    // plotData is an array containing the points to be displayed on the screen. This is not the same as the data
-    //      you provided as input. It is most likely smaller in size since it contains a filtered list of items 
-    //      which are to be displayed for the domain of xScale
+        // plotData is an array containing the points to be displayed on the screen. This is not the same as the data
+        //      you provided as input. It is most likely smaller in size since it contains a filtered list of items 
+        //      which are to be displayed for the domain of xScale
 
-    // The x & y Accessor are used to get the x & y value for each element in the plotData
+        // The x & y Accessor are used to get the x & y value for each element in the plotData
 
-    // The x & y Scale can be used to get the value in pixels for a x, y value
+        // The x & y Scale can be used to get the value in pixels for a x, y value
 
-    var { xAccessor, yAccessor, xScale, yScale, plotData } = props;
+        var { xAccessor, yAccessor, xScale, yScale, plotData } = props;
 
 
-    // In the event there is a CompareSeries in that Chart this is available
-    // TODO explain more about compare series and why it is special
+        // In the event there is a CompareSeries in that Chart this is available
+        // TODO explain more about compare series and why it is special
 
-    var { compareSeries } = props;
+        var { compareSeries } = props;
 
-    // indicator is available if you have used one on the DataSeries surrounding this Series
-    // Read more on how to write an indicator in the "Custom - Create indicator" section
+        // indicator is available if you have used one on the DataSeries surrounding this Series
+        // Read more on how to write an indicator in the "Custom - Create indicator" section
 
-    var { indicator } = props;
+        var { indicator } = props;
 
-    // this is available if there is a stroke / fill defined in the DataSeries surrounding this Series
-    //      or the stroke / fill defined in the indicator above
+        // this is available if there is a stroke / fill defined in the DataSeries surrounding this Series
+        //      or the stroke / fill defined in the indicator above
 
-    var { stroke, fill } = props;
+        var { stroke, fill } = props;
 
-    // type is the value you have provided at the ChartCanvas, it can be "svg" or "hybrid"
-    // height and width of this Chart
+        // type is the value you have provided at the ChartCanvas, it can be "svg" or "hybrid"
+        // height and width of this Chart
 
-    var { type, height, width } = props;
+        var { type, height, width } = props;
 
-    // In addition to the above, any props you define when using this component are also available.
-    // If say you create a prop called xAccessor, this will override the xAccessor provided by react-stockcharts
+        // In addition to the above, any props you define when using this component are also available.
+        // If say you create a prop called xAccessor, this will override the xAccessor provided by react-stockcharts
 
-    ...
-    return svg; /* return an svg element */
-};
+        ...
+        return svg; /* return an svg element */
+    }
+}
 
 MyNewSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
     // This is an optional method

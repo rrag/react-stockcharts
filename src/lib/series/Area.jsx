@@ -5,13 +5,16 @@ import d3 from "d3";
 
 import wrap from "./wrap";
 
-const Area = (props) => {
-	var { stroke, fill, className, opacity } = props;
+class Area extends React.Component {
+	render() {
+		var { props } = this;
+		var { stroke, fill, className, opacity } = props;
 
-	className = className.concat((stroke !== undefined) ? "" : " line-stroke");
-	return (
-		<path d={Area.getArea(props)} stroke={stroke} fill={fill} className={className} opacity={opacity} />
-	);
+		className = className.concat((stroke !== undefined) ? "" : " line-stroke");
+		return (
+			<path d={Area.getArea(props)} stroke={stroke} fill={fill} className={className} opacity={opacity} />
+		);
+	}
 };
 
 Area.propTypes = {

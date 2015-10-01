@@ -3,10 +3,14 @@
 import React from "react";
 import wrap from "./wrap";
 
-const HistogramSeries = (props) => 
-	<g className="histogram">
-		{HistogramSeries.getBarsSVG(props)}
-	</g>;
+class HistogramSeries extends React.Component {
+	render() {
+		var { props } = this;
+		return <g className="histogram">
+			{HistogramSeries.getBarsSVG(props)}
+		</g>;
+	}
+}
 
 HistogramSeries.propTypes = {
 	baseAt: React.PropTypes.oneOfType([

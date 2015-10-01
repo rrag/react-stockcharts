@@ -4,20 +4,23 @@ import React from "react";
 
 import wrap from "./wrap";
 
-const StraightLine = (props) => {
-	var { stroke, fill, className, opacity } = props;
-	var { xScale, yScale, xAccessor, yAccessor, plotData, yValue } = props;
+class StraightLine extends React.Component {
+	render() {
+		var { props } = this;
+		var { stroke, fill, className, opacity } = props;
+		var { xScale, yScale, xAccessor, yAccessor, plotData, yValue } = props;
 
-	var first = xAccessor(plotData[0]);
-	var last = xAccessor(plotData[plotData.length - 1]);
+		var first = xAccessor(plotData[0]);
+		var last = xAccessor(plotData[plotData.length - 1]);
 
-	return (
-		<line className={className}
-			stroke={stroke} opacity={opacity}
-			x1={xScale(first)} y1={yScale(yValue)}
-			x2={xScale(last)} y2={yScale(yValue)} />
-	);
-};
+		return (
+			<line className={className}
+				stroke={stroke} opacity={opacity}
+				x1={xScale(first)} y1={yScale(yValue)}
+				x2={xScale(last)} y2={yScale(yValue)} />
+		);
+	}
+}
 
 StraightLine.propTypes = {
 	className: React.PropTypes.string,

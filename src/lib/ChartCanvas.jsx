@@ -4,7 +4,6 @@ import React from "react";
 import objectAssign from "object-assign";
 
 import ChartDataUtil from "./utils/ChartDataUtil";
-import Utils from "./utils/utils";
 import { DummyTransformer } from "./transforms";
 import EventHandler from "./EventHandler";
 import CanvasContainer from "./CanvasContainer";
@@ -34,16 +33,6 @@ class ChartCanvas extends React.Component {
 	}
 	render() {
 		var dimensions = this.getDimensions(this.props);
-		var children = React.Children.map(this.props.children, (child) => {
-			// console.log(child);
-			var newChild = Utils.isReactVersion13()
-				? React.withContext(this.getChildContext(), () => {
-					return React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
-				})
-				: React.cloneElement(child);
-				// React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
-			return newChild;
-		});
 		var style = `<![CDATA[
 						.react-stockcharts-grabbing-cursor {
 							cursor: grabbing;
@@ -58,7 +47,6 @@ class ChartCanvas extends React.Component {
 							cursor: pointer;
 						}
 					]]>`;
-		// var { options } = this.state;
 		var { data, dataTransform, interval, initialDisplay, type, height, width, margin, className, clip } = this.props;
 
 		return (
@@ -77,7 +65,7 @@ class ChartCanvas extends React.Component {
 							rawData={data} dataTransform={dataTransform} interval={interval} 
 							initialDisplay={initialDisplay}
 							dimensions={dimensions} type={type} margin={margin} canvasContexts={this.getCanvases}>
-							{children}
+							{this.props.children}
 						</EventHandler>
 					</g>
 				</svg>

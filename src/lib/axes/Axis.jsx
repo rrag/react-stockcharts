@@ -14,8 +14,8 @@ class Axis extends React.Component {
 		this.componentWillReceiveProps(this.props, this.context);
 	}
 	componentWillReceiveProps(nextProps, nextContext) {
-		var { axesCanvasContext, chartData, margin, chartId, canvasOrigin } = nextContext;
-		var draw = Axis.drawOnCanvasStatic.bind(null, margin, nextProps, canvasOrigin);
+		var { axesCanvasContext, chartData, margin, chartId, canvasOriginX, canvasOriginY } = nextContext;
+		var draw = Axis.drawOnCanvasStatic.bind(null, margin, nextProps, [canvasOriginX, canvasOriginY]);
 
 		nextContext.secretToSuperFastCanvasDraw.push({
 			chartId: chartId,
@@ -33,10 +33,10 @@ class Axis extends React.Component {
 		this.componentDidMount();
 	}
 	drawOnCanvas(ctx) {
-		var { chartData, margin, canvasOrigin } = this.context;
+		var { chartData, margin, canvasOriginX, canvasOriginY } = this.context;
 		var { scale } = this.props;
 
-		Axis.drawOnCanvasStatic(margin, this.props, canvasOrigin, ctx, chartData, scale, scale);
+		Axis.drawOnCanvasStatic(margin, this.props, [canvasOriginX, canvasOriginY], ctx, chartData, scale, scale);
 	}
 
 	render() {
@@ -91,7 +91,8 @@ Axis.contextTypes = {
 	chartData: React.PropTypes.object.isRequired,
 	chartId: React.PropTypes.number.isRequired,
 	margin: React.PropTypes.object.isRequired,
-	canvasOrigin: React.PropTypes.array,
+	canvasOriginX: React.PropTypes.number,
+	canvasOriginY: React.PropTypes.number,
 	secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
 };
 

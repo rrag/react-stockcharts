@@ -5,24 +5,27 @@ import d3 from "d3";
 
 import wrap from "./wrap";
 
-const KagiSeries = (props) => {
-	var { className, stroke, fill, strokeWidth } = props;
-	var { xAccessor, xScale, yScale, plotData } = props;
+class KagiSeries extends React.Component {
+	render() {
+		var { props } = this;
+		var { className, stroke, fill, strokeWidth } = props;
+		var { xAccessor, xScale, yScale, plotData } = props;
 
-	var paths = KagiSeries.helper(plotData, xAccessor).map((each, i) => {
-		var dataSeries = d3.svg.line()
-			.x((item) => xScale(item[0]))
-			.y((item) => yScale(item[1]))
-			.interpolate("step-before");
-		return (<path key={i} d={dataSeries(each.plot)} className={each.type}
-			stroke={stroke[each.type]} fill={fill[each.type]} strokeWidth={strokeWidth} />);
-	});
-	return (
-		<g className={className}>
-			{paths}
-		</g>
-	);
-};
+		var paths = KagiSeries.helper(plotData, xAccessor).map((each, i) => {
+			var dataSeries = d3.svg.line()
+				.x((item) => xScale(item[0]))
+				.y((item) => yScale(item[1]))
+				.interpolate("step-before");
+			return (<path key={i} d={dataSeries(each.plot)} className={each.type}
+				stroke={stroke[each.type]} fill={fill[each.type]} strokeWidth={strokeWidth} />);
+		});
+		return (
+			<g className={className}>
+				{paths}
+			</g>
+		);
+	}
+}
 
 KagiSeries.defaultProps = {
 	className: "react-stockcharts-kagi",

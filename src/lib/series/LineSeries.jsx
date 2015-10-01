@@ -5,18 +5,21 @@ import Line from "./Line";
 
 import wrap from "./wrap";
 
-const LineSeries = (props) => {
-	let { className, xScale, yScale, xAccessor, yAccessor, plotData, stroke, type } = props;
-	return (
-		<Line
-			className={className}
-			xScale={xScale} yScale={yScale}
-			xAccessor={xAccessor} yAccessor={yAccessor}
-			plotData={plotData}
-			stroke={stroke} fill="none"
-			type={type} />
-	);
-};
+class LineSeries extends React.Component {
+	render() {
+		var { props } = this;
+		let { className, xScale, yScale, xAccessor, yAccessor, plotData, stroke, type } = props;
+		return (
+			<Line
+				className={className}
+				xScale={xScale} yScale={yScale}
+				xAccessor={xAccessor} yAccessor={yAccessor}
+				plotData={plotData}
+				stroke={stroke} fill="none"
+				type={type} />
+		);
+	}
+}
 
 LineSeries.propTypes = {
 	className: React.PropTypes.string,

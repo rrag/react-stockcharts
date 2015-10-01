@@ -4,15 +4,19 @@ import React from "react";
 
 import wrap from "./wrap";
 
-const CandlestickSeries = (props) => 
-	<g className="react-stockcharts-candlestick">
-		<g className="react-stockcharts-candlestick-wick" key="wicks">
-			{CandlestickSeries.getWicksSVG(props)}
-		</g>
-		<g className="react-stockcharts-candlestick-candle" key="candles">
-			{CandlestickSeries.getCandlesSVG(props)}
-		</g>
-	</g>;
+class CandlestickSeries extends React.Component {
+	render() {
+		var { props } = this;
+		return <g className="react-stockcharts-candlestick">
+			<g className="react-stockcharts-candlestick-wick" key="wicks">
+				{CandlestickSeries.getWicksSVG(props)}
+			</g>
+			<g className="react-stockcharts-candlestick-candle" key="candles">
+				{CandlestickSeries.getCandlesSVG(props)}
+			</g>
+		</g>;
+	}
+}
 
 CandlestickSeries.propTypes = {
 	classNames: React.PropTypes.shape({

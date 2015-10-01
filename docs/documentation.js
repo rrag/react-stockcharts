@@ -1,7 +1,7 @@
 "use strict";
 
 var React = require("react");
-var ReactDOM = require("react-dom");
+// var ReactDOM = require("react-dom");
 var d3 = require("d3");
 var parseDate = d3.time.format("%Y-%m-%d").parse
 
@@ -128,7 +128,7 @@ function renderPage(data, dataFull, compareData) {
 		}
 	};
 
-	ReactDOM.render(<ExamplesPage />, document.getElementById("chart-goes-here"));
+	React.render(<ExamplesPage />, document.getElementById("chart-goes-here"));
 }
 
 d3.tsv("data/MSFT.tsv", (err, MSFT) => {
@@ -217,7 +217,7 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithRSIIndicator
 	// CandleStickChartWithFullStochasticsIndicator
 	// CandleStickChartWithUpdatingData
-	var Chart = require("lib/charts/CandleStickChartWithUpdatingData");
+	var Chart = require("lib/charts/CandleStickChartWithMACDIndicator");
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	class ExamplesPage extends React.Component {
@@ -229,5 +229,5 @@ function renderPartialPage(data, dataFull, compareData) {
 			)
 		}
 	};
-	ReactDOM.render(<ExamplesPage />, document.getElementById("chart-goes-here"));
+	React.render(<ExamplesPage />, document.getElementById("chart-goes-here"));
 }

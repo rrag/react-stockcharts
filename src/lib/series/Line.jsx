@@ -4,12 +4,15 @@ import React from "react";
 import d3 from "d3";
 import wrap from "./wrap";
 
-const Line = (props) => {
-	var { stroke, fill, className } = props;
+class Line extends React.Component {
+	render() {
+		var { props } = this;
+		var { stroke, fill, className } = props;
 
-	className = className.concat((stroke) ? "" : " line-stroke");
-	return <path d={Line.getPath(props)} stroke={stroke} fill={fill} className={className}/>;
-};
+		className = className.concat((stroke) ? "" : " line-stroke");
+		return <path d={Line.getPath(props)} stroke={stroke} fill={fill} className={className}/>;
+	}
+}
 
 Line.propTypes = {
 	className: React.PropTypes.string,

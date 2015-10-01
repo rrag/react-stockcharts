@@ -3,25 +3,28 @@
 import React from "react";
 import wrap from "./wrap";
 
-const RenkoSeries = (props) => {
-	var { plotData, xScale, xAccessor, yScale, yAccessor } = props;
+class RenkoSeries extends React.Component {
+	render() {
+		var { props } = this;
+		var { plotData, xScale, xAccessor, yScale, yAccessor } = props;
 
-	var candles = RenkoSeries.getRenko(props, plotData, xScale, xAccessor, yScale, yAccessor)
-		.map((each, idx) => (<rect key={idx} className={each.className}
-							fill={each.fill}
-							x={each.x}
-							y={each.y}
-							width={each.width}
-							height={each.height} />));
+		var candles = RenkoSeries.getRenko(props, plotData, xScale, xAccessor, yScale, yAccessor)
+			.map((each, idx) => (<rect key={idx} className={each.className}
+								fill={each.fill}
+								x={each.x}
+								y={each.y}
+								width={each.width}
+								height={each.height} />));
 
-	return (
-		<g>
-			<g className="candle">
-				{candles}
+		return (
+			<g>
+				<g className="candle">
+					{candles}
+				</g>
 			</g>
-		</g>
-	);
-};
+		);
+	}
+}
 
 RenkoSeries.propTypes = {
 	classNames: React.PropTypes.shape({

@@ -3,39 +3,42 @@
 import React from "react";
 import wrap from "./wrap";
 
-const PointAndFigureSeries = (props) => {
-	var { xScale, xAccessor, yScale, yAccessor, plotData } = props;
+class PointAndFigureSeries extends React.Component {
+	render() {
+		var { props } = this;
+		var { xScale, xAccessor, yScale, yAccessor, plotData } = props;
 
-	var columns = PointAndFigureSeries.getColumns(xScale, xAccessor, yScale, yAccessor, plotData);
-	var { stroke, fill, strokeWidth, className } = props;
+		var columns = PointAndFigureSeries.getColumns(xScale, xAccessor, yScale, yAccessor, plotData);
+		var { stroke, fill, strokeWidth, className } = props;
 
-	return (
-		<g>
-			{columns.map((col, idx) => (
-				<g key={idx} className={col.className} transform={`translate(${ col.offset[0] }, ${ col.offset[1] })`}>
-					{col.boxes.map((box, i) => {
-						if (col.direction > 0) {
+		return (
+			<g>
+				{columns.map((col, idx) => (
+					<g key={idx} className={col.className} transform={`translate(${ col.offset[0] }, ${ col.offset[1] })`}>
+						{col.boxes.map((box, i) => {
+							if (col.direction > 0) {
+								return (
+									<g key={`${ idx }-${ i }`}>
+										<line className="up" strokeWidth={strokeWidth} stroke={stroke.up} fill={fill.up}
+											x1={0} y1={box.open} x2={box.columnWidth} y2={box.close} />
+										<line className="up" strokeWidth={strokeWidth} stroke={stroke.up} fill={fill.up}
+											x1={0} y1={box.close} x2={box.columnWidth} y2={box.open} />
+									</g>
+								);
+							}
 							return (
-								<g key={`${ idx }-${ i }`}>
-									<line className="up" strokeWidth={strokeWidth} stroke={stroke.up} fill={fill.up}
-										x1={0} y1={box.open} x2={box.columnWidth} y2={box.close} />
-									<line className="up" strokeWidth={strokeWidth} stroke={stroke.up} fill={fill.up}
-										x1={0} y1={box.close} x2={box.columnWidth} y2={box.open} />
-								</g>
+								<ellipse key={`${ idx }-${ i }`}
+									className="down" strokeWidth={strokeWidth} stroke={stroke.down} fill={fill.down}
+									cx={box.columnWidth / 2} cy={(box.open + box.close) / 2}
+									rx={box.columnWidth / 2} ry={box.boxHeight / 2} />
 							);
-						}
-						return (
-							<ellipse key={`${ idx }-${ i }`}
-								className="down" strokeWidth={strokeWidth} stroke={stroke.down} fill={fill.down}
-								cx={box.columnWidth / 2} cy={(box.open + box.close) / 2}
-								rx={box.columnWidth / 2} ry={box.boxHeight / 2} />
-						);
-					})}
-				</g>
-			))}
-		</g>
-	);
-};
+						})}
+					</g>
+				))}
+			</g>
+		);
+	}
+}
 
 PointAndFigureSeries.defaultProps = {
 	className: "react-stockcharts-point-and-figure",

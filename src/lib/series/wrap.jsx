@@ -31,7 +31,8 @@ function wrap(WrappedSeries) {
 		componentWillReceiveProps(nextProps, nextContext) {
 			var callback = WrappedSeries.drawOnCanvas;
 			if (callback) {
-				var { canvasOrigin, height, width, compareSeries, indicator, xAccessor, yAccessor, seriesId, chartId } = nextContext;
+				var { canvasOriginX, canvasOriginY , height, width, compareSeries, indicator, xAccessor, yAccessor, seriesId, chartId } = nextContext;
+				var canvasOrigin = [canvasOriginX, canvasOriginY];
 				var draw = BaseCanvasSeries.baseReStockDrawOnCanvas.bind(null, nextProps, callback, canvasOrigin, height, width, compareSeries, indicator, xAccessor, yAccessor);
 
 				nextContext.secretToSuperFastCanvasDraw.push({
@@ -64,7 +65,8 @@ function wrap(WrappedSeries) {
 
 	BaseCanvasSeries.contextTypes = {
 		getCanvasContexts: React.PropTypes.func,
-		canvasOrigin: React.PropTypes.array,
+		canvasOriginX: React.PropTypes.number,
+		canvasOriginY: React.PropTypes.number,
 		height: React.PropTypes.number.isRequired,
 		width: React.PropTypes.number.isRequired,
 		secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
@@ -84,7 +86,8 @@ function wrap(WrappedSeries) {
 	};
 
 	BaseCanvasSeries.baseReStockDrawOnCanvasHelper = (canvasContext, context, props, callback) => {
-		var { height, width, compareSeries, indicator, xAccessor, yAccessor, xScale, yScale, plotData, canvasOrigin } = context;
+		var { height, width, compareSeries, indicator, xAccessor, yAccessor, xScale, yScale, plotData, canvasOriginX, canvasOriginY } = context;
+		var canvasOrigin = [canvasOriginX, canvasOriginY];
 		BaseCanvasSeries.baseReStockDrawOnCanvas(props, callback, canvasOrigin, height, width, compareSeries, indicator, xAccessor, yAccessor, canvasContext, xScale, yScale, plotData);
 	};
 

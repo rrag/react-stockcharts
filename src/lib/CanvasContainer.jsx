@@ -1,13 +1,22 @@
 "use strict";
 
 import React from "react";
+import Utils from "./utils/utils";
 
 class CanvasContainer extends React.Component {
 	getCanvasContexts() {
+		var axesCanvasDOM = Utils.isReactVersion14()
+			? this.refs.canvas_axes
+			: React.findDOMNode(this.refs.canvas_axes);
+
+		var mouseCoordDOM = Utils.isReactVersion14()
+			? this.refs.canvas_mouse_coordinates
+			: React.findDOMNode(this.refs.canvas_mouse_coordinates);
+
 		if (this.refs.canvas_axes) {
 			return {
-				axes: this.refs.canvas_axes.getContext('2d'),
-				mouseCoord: this.refs.canvas_mouse_coordinates.getContext('2d')
+				axes: axesCanvasDOM.getContext('2d'),
+				mouseCoord: mouseCoordDOM.getContext('2d')
 			};
 		}
 	}

@@ -7,30 +7,33 @@ import Area from "./Area";
 
 import wrap from "./wrap";
 
-const AreaSeries = (props) => {
-	let { className, xScale, yScale, xAccessor, yAccessor, plotData, type, stroke, fill, defaultStroke } = props;
+class AreaSeries extends React.Component {
+	render() {
+		var { props } = this;
+		let { className, xScale, yScale, xAccessor, yAccessor, plotData, type, stroke, fill, defaultStroke } = props;
 
-	let { opacity } = props;
+		let { opacity } = props;
 
-	return (
-		<g>
-			<Line
-				className={className}
-				xScale={xScale} yScale={yScale}
-				xAccessor={xAccessor} yAccessor={yAccessor}
-				plotData={plotData}
-				stroke={stroke} fill="none"
-				type={type} />
-			<Area
-				className={className}
-				xScale={xScale} yScale={yScale}
-				xAccessor={xAccessor} yAccessor={yAccessor}
-				plotData={plotData}
-				stroke="none" fill={fill} opacity={opacity}
-				type={type} />
-		</g>
-	);
-};
+		return (
+			<g>
+				<Line
+					className={className}
+					xScale={xScale} yScale={yScale}
+					xAccessor={xAccessor} yAccessor={yAccessor}
+					plotData={plotData}
+					stroke={stroke} fill="none"
+					type={type} />
+				<Area
+					className={className}
+					xScale={xScale} yScale={yScale}
+					xAccessor={xAccessor} yAccessor={yAccessor}
+					plotData={plotData}
+					stroke="none" fill={fill} opacity={opacity}
+					type={type} />
+			</g>
+		);
+	}
+}
 
 AreaSeries.propTypes = {
 	stroke: React.PropTypes.string,

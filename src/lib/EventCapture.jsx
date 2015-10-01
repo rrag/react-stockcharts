@@ -67,7 +67,11 @@ class EventCapture extends React.Component {
 			var dx = mouseEvent.pageX - mouseXY[0],
 				dy = mouseEvent.pageY - mouseXY[1];
 
-			var win = d3Window(this.refs.capture);
+			var captureDOM = Utils.isReactVersion14()
+				? this.refs.capture
+				: React.findDOMNode(this.refs.capture);
+
+			var win = d3Window(captureDOM);
 			d3.select(win)
 				.on(mousemove, this.handlePan)
 				.on(mouseup, this.handlePanEnd);
@@ -93,7 +97,11 @@ class EventCapture extends React.Component {
 		var deltaXY = this.context.deltaXY();
 		var newPos = [d3.event.pageX - deltaXY[0], d3.event.pageY - deltaXY[1]];
 
-		var win = d3Window(this.refs.capture);
+		var captureDOM = Utils.isReactVersion14()
+			? this.refs.capture
+			: React.findDOMNode(this.refs.capture);
+
+		var win = d3Window(captureDOM);
 
 		d3.select(win)
 			.on(mousemove, null)

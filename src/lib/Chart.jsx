@@ -24,7 +24,8 @@ class Chart extends PureComponent {
 			chartData: chartData,
 			width: chartData.config.width,
 			height: chartData.config.height,
-			canvasOrigin: [originX, originY],
+			canvasOriginX: originX,
+			canvasOriginY: originY,
 		};
 	}
 	render() {
@@ -87,7 +88,8 @@ Chart.childContextTypes = {
 	compareSeries: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
-	canvasOrigin: React.PropTypes.array,
+	canvasOriginX: React.PropTypes.number,
+	canvasOriginY: React.PropTypes.number,
 	chartId: React.PropTypes.number.isRequired,
 };
 
