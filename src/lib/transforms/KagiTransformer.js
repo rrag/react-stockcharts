@@ -131,18 +131,28 @@ function KagiTransformer() {
 				}
 
 				var startAs = line.changeTo || line.startAs;
+				line.added = true;
 				kagiData.push(line);
 				direction = -1 * direction; // direction is reversed
 
-				line = {
-					open: nextLineOpen
-					, close: pricingMethod(d)
-					, startAs: startAs
-					, changePoint: nextChangePoint
-					, changeTo: nextChangeTo
-				};
+				line = objectAssign({}, line);
+				line.open = nextLineOpen;
+				line.close = pricingMethod(d);
+				line.startAs = startAs;
+				line.changePoint = nextChangePoint;
+				line.changeTo = nextChangeTo;
+				line.added = false;
+				line.from = undefined;
+				indexMutator(line, index);
+			} else {
+				// console.log("MOVING IN REV DIR BUT..", line.open, line.close, pricingMethod(d));
 			}
+			line.current = pricingMethod(d);
+			var dir = line.close - line.open;
+			dir = dir / Math.abs(dir);
+			line.reverseAt = dir > 0 ? line.close - reversalThreshold(d) : line.open - reversalThreshold(d);
 		});
+		if (!line.added) kagiData.push(line);
 
 		return {"D": kagiData};
 	};

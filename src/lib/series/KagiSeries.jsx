@@ -46,32 +46,50 @@ KagiSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { xAccessor, yAccessor, stroke, fill, strokeWidth } = props;
 	var begin = true;
 
-	var paths = KagiSeries.helper(plotData, xAccessor)
-		.forEach((each, i) => {
-			ctx.strokeStyle = stroke[each.type];
-			ctx.lineWidth = strokeWidth;
+	var paths = KagiSeries.helper(plotData, xAccessor);
 
-			ctx.beginPath();
-			var prevX, prevY;
-			each.plot.forEach(d => {
-				var [x, y] = [xScale(d[0]), yScale(d[1])];
-				if (begin) {
-					ctx.moveTo(x, y);
-					begin = false;
-				} else {
-					if (prevX !== undefined) {
-						ctx.lineTo(prevX, y);
-					}
-					ctx.lineTo(x, y);
+	paths.forEach((each, i) => {
+		ctx.strokeStyle = stroke[each.type];
+		ctx.lineWidth = strokeWidth;
+
+		ctx.beginPath();
+		var prevX, prevY;
+		each.plot.forEach(d => {
+			var [x, y] = [xScale(d[0]), yScale(d[1])];
+			if (begin) {
+				ctx.moveTo(x, y);
+				begin = false;
+			} else {
+				if (prevX !== undefined) {
+					ctx.lineTo(prevX, y);
 				}
-				prevX = x;
-				prevY = y;
+				ctx.lineTo(x, y);
+			}
+			prevX = x;
+			prevY = y;
 
-				// console.log(d);
+			// console.log(d);
 
-			});
-			ctx.stroke();
 		});
+		ctx.stroke();
+	});
+	var lastPlot = paths[paths.length - 1].plot;
+	var last = lastPlot[lastPlot.length - 1];
+	ctx.beginPath();
+	// ctx.strokeStyle = "black";
+	ctx.lineWidth = 1;
+
+	var [x, y1, y2] = [xScale(last[0]), yScale(last[2]), yScale(last[3])];
+	// console.log(last, x, y);
+	ctx.moveTo(x, y1);
+	ctx.lineTo(x + 10, y1);
+	ctx.stroke();
+
+	ctx.beginPath();
+	ctx.strokeStyle = "black";
+	ctx.moveTo(x - 10, y2);
+	ctx.lineTo(x, y2);
+	ctx.stroke();
 };
 
 KagiSeries.helper = (plotData, xAccessor) => {
@@ -87,7 +105,6 @@ KagiSeries.helper = (plotData, xAccessor) => {
 
 		if (d.changeTo !== undefined) {
 			kagi.plot.push([idx, d.changePoint]);
-			// console.log(d, idx);
 			kagi.added = true;
 			kagiLine.push(kagi);
 
@@ -100,8 +117,11 @@ KagiSeries.helper = (plotData, xAccessor) => {
 		}
 	}
 	if (!kagi.added) {
+		kagi.plot.push([idx, d.close, d.current, d.reverseAt]);
 		kagiLine.push(kagi);
 	}
+
+	// console.log(d.reverseAt);
 
 	return kagiLine;
 };

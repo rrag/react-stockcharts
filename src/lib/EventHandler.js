@@ -197,7 +197,7 @@ class EventHandler extends PureComponent {
 
 		var beginIndex, endIndex;
 		if (lastItemVisible) {
-			var left = xAccessor(plotData[deltaPushed]);
+			/* var left = xAccessor(plotData[deltaPushed]);
 
 			var tick = xScale(xAccessor(plotData[1])) - xScale(xAccessor(plotData[0]));
 
@@ -205,11 +205,11 @@ class EventHandler extends PureComponent {
 
 			if ((xScale(xAccessor(plotData[0])) - xScale(startDomain[0])) > tick) {
 				left = xAccessor(plotData[0]);
-			}
+			} */
 
-			beginIndex = Utils.getClosestItemIndexes(dataForInterval, left, xAccessor).left;
+			// beginIndex = Utils.getClosestItemIndexes(dataForInterval, left, xAccessor).left;
 			endIndex = dataForInterval.length;
-
+			beginIndex = dataForInterval.length - plotData.length;
 		} else {
 			// 
 			domainL = startDomain[0];
@@ -219,6 +219,7 @@ class EventHandler extends PureComponent {
 		}
 
 		var newPlotData = dataForInterval.slice(beginIndex, endIndex);
+		// console.log(newPlotData[newPlotData.length - 1]);
 
 		if (lastItemVisible && domainL === undefined) {
 			if (startDomain[1] > xAccessor(plotData[plotData.length - 1])) {

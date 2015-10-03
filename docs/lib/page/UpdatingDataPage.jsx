@@ -7,6 +7,7 @@ var Section = require('lib/section');
 var TypeChooser = require("src/").helper.TypeChooser;
 
 var CandleStickChartWithUpdatingData = require('lib/charts/CandleStickChartWithUpdatingData');
+var KagiWithUpdatingData = require('lib/charts/KagiWithUpdatingData');
 
 var UpdatingDataPage = React.createClass({
 	statics: {
@@ -24,6 +25,13 @@ var UpdatingDataPage = React.createClass({
 					<Section colSpan={2}>
 						<TypeChooser>
 							{(type) => <CandleStickChartWithUpdatingData data={this.props.lotsOfData.slice(200)} type={type} />}
+						</TypeChooser>
+					</Section>
+				</Row>
+				<Row>
+					<Section colSpan={2}>
+						<TypeChooser>
+							{(type) => <KagiWithUpdatingData data={this.props.lotsOfData} type={type} />}
 						</TypeChooser>
 					</Section>
 				</Row>
