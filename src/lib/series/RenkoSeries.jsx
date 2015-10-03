@@ -52,7 +52,8 @@ RenkoSeries.defaultProps = {
 	},
 	fill: {
 		up: "#6BA583",
-		down: "red"
+		down: "#E60000",
+		partial: "steelblue",
 	},
 };
 
@@ -61,10 +62,13 @@ RenkoSeries.yAccessor = (d) => ({open: d.open, high: d.high, low: d.low, close: 
 RenkoSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { xAccessor, yAccessor } = props;
 
-	RenkoSeries.getRenko(props, plotData, xScale, xAccessor, yScale, yAccessor).forEach(d => {
+	var renko = RenkoSeries.getRenko(props, plotData, xScale, xAccessor, yScale, yAccessor)
+	renko.forEach(d => {
 		ctx.beginPath();
-		ctx.fillStyle = d.fill;
+
 		ctx.strokeStyle = d.stroke;
+		ctx.fillStyle = d.fill;
+
 		ctx.rect(d.x, d.y, d.width, d.height);
 		ctx.closePath();
 		ctx.fill();
@@ -77,7 +81,6 @@ RenkoSeries.getRenko = (props, plotData, xScale, xAccessor, yScale, yAccessor) =
 		- xScale(xAccessor(plotData[0]));
 
 	var candleWidth = (width / (plotData.length - 1));
-
 	var candles = plotData
 			.filter((d) => d.close !== undefined)
 			.map((d, idx) => {
@@ -88,6 +91,9 @@ RenkoSeries.getRenko = (props, plotData, xScale, xAccessor, yScale, yAccessor) =
 					className = (ohlc.open <= ohlc.close) ? classNames.up : classNames.down,
 					svgfill = (ohlc.open <= ohlc.close) ? fill.up : fill.down;
 
+				if (!d.fullyFormed) {
+					svgfill = fill.partial;
+				}
 				return {
 					className: className,
 					fill: svgfill,

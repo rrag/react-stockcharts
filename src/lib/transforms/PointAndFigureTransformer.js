@@ -93,8 +93,7 @@ function PointAndFigureTransformer() {
 		columnData.push(column);
 
 		rawData.D.forEach(function(d) {
-			column.volume = column.volume || 0;
-			column.volume += d.volume;
+			column.volume = (column.volume || 0) + d.volume;
 
 			if (!box.startOfYear) {
 				box.startOfYear = d.startOfYear;
@@ -182,7 +181,7 @@ function PointAndFigureTransformer() {
 					var idx = indexAccessor(column) + 1;
 					column = {
 						boxes: [],
-
+						volume: 0,
 						direction: -1 * column.direction
 					};
 					indexMutator(column, idx);
