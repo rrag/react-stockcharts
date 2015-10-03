@@ -62,7 +62,7 @@ RenkoSeries.yAccessor = (d) => ({open: d.open, high: d.high, low: d.low, close: 
 RenkoSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { xAccessor, yAccessor } = props;
 
-	var renko = RenkoSeries.getRenko(props, plotData, xScale, xAccessor, yScale, yAccessor)
+	var renko = RenkoSeries.getRenko(props, plotData, xScale, xAccessor, yScale, yAccessor);
 	renko.forEach(d => {
 		ctx.beginPath();
 
