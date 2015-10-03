@@ -24,5 +24,5 @@ d3.tsv("data/MSFT.tsv", function(err, data) {
 
 	var Chart = require('lib/charts/CandleStickChartWithMACDIndicator');
 
-	ReactDOM.render(<Chart data={data} type="hybrid"/>, document.getElementById("chart"));
+	React.render(<Chart data={data} type="hybrid"/>, document.getElementById("chart"));
 });
