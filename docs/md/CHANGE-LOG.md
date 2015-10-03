@@ -1,3 +1,15 @@
+## v0.2.4
+
+#### Changes
+
+1. Fix updating data for Kagi, Renko, P&F. Add examples [#17](https://github.com/rrag/react-stockcharts/issues/17)
+
+## v0.2.3
+
+#### Changes
+
+1. Make it work with both react 0.13.3 & 0.14.0-rc1 [#12](https://github.com/rrag/react-stockcharts/issues/12)
+
 ## v0.2.2
 
 #### Breaking Changes
