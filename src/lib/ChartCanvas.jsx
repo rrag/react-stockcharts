@@ -47,12 +47,12 @@ class ChartCanvas extends React.Component {
 							cursor: pointer;
 						}
 					]]>`;
-		var { data, dataTransform, interval, initialDisplay, type, height, width, margin, className, clip } = this.props;
+		var { data, dataTransform, interval, initialDisplay, type, height, width, margin, className, clip, zIndex } = this.props;
 
 		return (
 			<div style={{position: "relative", height: height, width: width}} className={className} >
-				<CanvasContainer ref="canvases" width={width} height={height} type={this.props.type} />
-				<svg width={width} height={height} style={{ position: "absolute" }}>
+				<CanvasContainer ref="canvases" width={width} height={height} type={this.props.type} zIndex={zIndex}/>
+				<svg width={width} height={height} style={{ position: "absolute", zIndex: (zIndex + 1) }}>
 					<style type="text/css" dangerouslySetInnerHTML={{ __html: style }}>
 					</style>
 					<defs>
@@ -84,6 +84,7 @@ ChartCanvas.propTypes = {
 	initialDisplay: React.PropTypes.number,
 	dataTransform: React.PropTypes.array.isRequired,
 	className: React.PropTypes.string,
+	zIndex: React.PropTypes.number,
 	// clip: React.PropTypes.bool.isRequired,
 };
 
@@ -94,6 +95,7 @@ ChartCanvas.defaultProps = {
 	// defaultDataTransform: [ { transform: DummyTransformer } ],
 	dataTransform: [ ],
 	className: "react-stockchart",
+	zIndex: 1,
 	// clip: true,
 	// initialDisplay: 30
 };

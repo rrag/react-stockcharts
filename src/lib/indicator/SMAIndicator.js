@@ -6,6 +6,7 @@ import { overlayColors } from "../utils/utils";
 
 var defaultOptions = {
 	pluck: "close",
+	period: 10,
 };
 
 function SMAIndicator(options, chartProps, dataSeriesProps) {

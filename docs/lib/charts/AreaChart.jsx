@@ -1,7 +1,7 @@
 "use strict";
 
 import React from "react";
-import ReStock from "ReStock";
+import ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart, DataSeries } = ReStock;
 

@@ -21,14 +21,14 @@ class CanvasContainer extends React.Component {
 		}
 	}
 	render() {
-		var { height, width, type } = this.props;
+		var { height, width, type, zIndex } = this.props;
 		if (type === "svg") return null;
 		return (
-			<div>
+			<div style={{zIndex: zIndex}}>
 				<canvas ref="canvas_axes" width={width} height={height}
-					style={{ position: "absolute", left: 0, top: 0, zIndex: -1 }} />
+					style={{ position: "absolute", left: 0, top: 0}} />
 				<canvas ref="canvas_mouse_coordinates" width={width} height={height}
-					style={{ position: "absolute", left: 0, top: 0, zIndex: -1 }} />
+					style={{ position: "absolute", left: 0, top: 0}} />
 			</div>
 		);
 	}
