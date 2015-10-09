@@ -1,3 +1,16 @@
+## v0.2.5
+
+#### Changes
+
+1. Add default yAccessor to Area & Line Series
+1. Add checks for defensive iteration of children
+1. Fix Kagi defect where volume is not reset
+1. Add utility method to convert hex to rgba
+1. Fix axes so svg and canvas result in near pixel perfect output
+1. Round off x of Histogram so svg and canvas look similar
+1. Change import in examples from ReStock to react-stockcharts
+1. Add zIndex as property to ChartCanvas
+
 ## v0.2.4
 
 #### Changes
