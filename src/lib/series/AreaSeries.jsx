@@ -48,4 +48,6 @@ AreaSeries.defaultProps = {
 	fill: "steelblue",
 };
 
+AreaSeries.yAccessor = (d) => d.close;
+
 export default wrap(AreaSeries);

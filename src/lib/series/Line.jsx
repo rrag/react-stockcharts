@@ -59,7 +59,7 @@ Line.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 		} else {
 			if (begin) {
 				begin = false;
-				let [x, y] = [xScale(xAccessor(d)), yScale(yAccessor(d))];
+				let [x, y] = [~~ (0.5 + xScale(xAccessor(d))), ~~ (0.5 + yScale(yAccessor(d)))];
 				ctx.moveTo(x, y);
 			}
 			ctx.lineTo(xScale(xAccessor(d)), yScale(yAccessor(d)));

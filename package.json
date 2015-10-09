@@ -12,11 +12,11 @@
   "dependencies": {
     "d3": "^3.5.6",
     "object-assign": "^4.0.1",
-    "react": "^0.13.3 || 0.14.0-rc1",
+    "react": "0.13.3 || ^0.14.0",
     "save-svg-as-png": "git://github.com/exupero/saveSvgAsPng.git#gh-pages"
   },
   "peerDependencies": {
-    "react": "^0.13.3 || 0.14.0-rc1"
+    "react": "0.13.3 || ^0.14.0"
   },
   "devDependencies": {
     "autoprefixer-loader": "^3.1.0",

@@ -137,13 +137,15 @@ HistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData
 
 	var width = xScale(xAccessor(plotData[plotData.length - 1]))
 		- xScale(xAccessor(plotData[0]));
-	var barWidth = (width / (plotData.length) * 0.5);
+	var barWidth = Math.round(width / (plotData.length) * 0.5);
 
 	var bars = plotData
 			.filter((d) => (yAccessor(d) !== undefined) )
 			.map((d, idx) => {
 				var yValue = yAccessor(d);
-				var x = (xScale(xAccessor(d))) - 0.5 * barWidth,
+				var x = Math.round(xScale(xAccessor(d)))
+						- (barWidth === 1 ? 0 : 0.5 * barWidth),
+				// var x = (xScale(xAccessor(d))) - 0.5 * barWidth,
 					className = getClassName(d), y, height;
 
 				var newBase = base;

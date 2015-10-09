@@ -31,6 +31,7 @@ class Chart extends PureComponent {
 	render() {
 		var origin = ChartDataUtil.getChartOrigin(this.props.origin, this.context.width, this.context.height);
 		var children = React.Children.map(this.props.children, (child) => {
+			if (child === undefined || child === null) return child;
 			var newChild = Utils.isReactVersion13()
 				? React.withContext(this.getChildContext(), () => {
 					return React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));

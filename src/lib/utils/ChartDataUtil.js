@@ -55,7 +55,7 @@ var ChartDataUtil = {
 	getChildren(children, regex) {
 		var matchingChildren = [];
 		React.Children.forEach(children, (child) => {
-			if (regex.test(child.props.namespace)) matchingChildren.push(child);
+			if (React.isValidElement(child) && regex.test(child.props.namespace)) matchingChildren.push(child);
 		});
 		return matchingChildren;
 	},
@@ -282,7 +282,7 @@ var ChartDataUtil = {
 	identifyOverlaysToAdd(chartProps) {
 		var overlaysToAdd = [];
 		React.Children.forEach(chartProps.children, (child) => {
-			if (/DataSeries$/.test(child.props.namespace)) {
+			if (React.isValidElement(child) && /DataSeries$/.test(child.props.namespace)) {
 				var yAccessor = child.props.yAccessor;
 				var indicatorProp = child.props.indicator;
 				if (yAccessor === undefined && indicatorProp === undefined) {
@@ -309,7 +309,7 @@ var ChartDataUtil = {
 	identifyCompareBase(props) {
 		var compareBase;
 		React.Children.forEach(props.children, (child) => {
-			if (/DataSeries$/.test(child.props.namespace)) {
+			if (React.isValidElement(child) && /DataSeries$/.test(child.props.namespace)) {
 				compareBase = child.props.compareBase;
 			}
 		});
@@ -318,9 +318,9 @@ var ChartDataUtil = {
 	identifyCompareSeries(props) {
 		var overlaysToAdd = [];
 		React.Children.forEach(props.children, (child) => {
-			if (/DataSeries$/.test(child.props.namespace)) {
+			if (React.isValidElement(child) && /DataSeries$/.test(child.props.namespace)) {
 				React.Children.forEach(child.props.children, (grandChild) => {
-					if (/CompareSeries$/.test(grandChild.props.namespace)) {
+					if (React.isValidElement(grandChild) && /CompareSeries$/.test(grandChild.props.namespace)) {
 						overlaysToAdd.push({
 							yAccessor: grandChild.props.yAccessor,
 							id: grandChild.props.id,

@@ -34,14 +34,23 @@ var CandleStickChartWithFullStochasticsIndicator = React.createClass({
 		if (!width) return <div />;
 		var { data, type } = this.props;
 		var dateFormat = d3.time.format("%Y-%m-%d");
+		var margin = {left: 70, right: 70, top:20, bottom: 30};
+		var height = 750;
+		var gridHeight = height - margin.top - margin.bottom;
+		var gridWidth = width - margin.left - margin.right;
+
+		var showGrid = true;
+		var yGrid = showGrid ? { innerTickSize: -1 * gridWidth, tickStrokeOpacity: 0.2 } : {};
+		var xGrid = showGrid ? { innerTickSize: -1 * gridHeight, tickStrokeOpacity: 0.2 } : {};
+
 		return (
-			<ChartCanvas width={width} height={750}
-				margin={{left: 70, right: 70, top:20, bottom: 30}} initialDisplay={200} 
+			<ChartCanvas width={width} height={height}
+				margin={margin} initialDisplay={200} 
 				dataTransform={[ { transform: StockscaleTransformer } ]}
 				data={data} type={type}>
 				<Chart id={1} yMousePointerDisplayLocation="right" height={325}
 						yMousePointerDisplayFormat={(y) => y.toFixed(2)} padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
-					<YAxis axisAt="right" orient="right" ticks={5} />
+					<YAxis axisAt="right" orient="right" ticks={5} {...yGrid}/>
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<DataSeries id={0} yAccessor={CandlestickSeries.yAccessor} >
 						<CandlestickSeries />
@@ -95,8 +104,8 @@ var CandleStickChartWithFullStochasticsIndicator = React.createClass({
 				</Chart>
 				<Chart id={5} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}
 						height={125} origin={(w, h) => [0, h - 125]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
-					<XAxis axisAt="bottom" orient="bottom"/>
-					<YAxis axisAt="right" orient="right" ticks={2}/>
+					<XAxis axisAt="bottom" orient="bottom" {...xGrid} />
+					<YAxis axisAt="right" orient="right" ticks={2} />
 					<DataSeries id={1} indicator={FullStochasticOscillator} options={{ period: 14, K: 3, D: 3 }} >
 						<StochasticSeries />
 					</DataSeries>

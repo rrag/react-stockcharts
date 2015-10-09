@@ -143,6 +143,7 @@ function KagiTransformer() {
 				line.changeTo = nextChangeTo;
 				line.added = false;
 				line.from = undefined;
+				line.volume = 0;
 				indexMutator(line, index);
 			} else {
 				// console.log("MOVING IN REV DIR BUT..", line.open, line.close, pricingMethod(d));

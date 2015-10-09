@@ -26,7 +26,10 @@ LineSeries.propTypes = {
 };
 
 LineSeries.defaultProps = {
+	stroke: "steelblue",
 	className: "line "
 };
+
+LineSeries.yAccessor = (d) => d.close;
 
 export default wrap(LineSeries);
