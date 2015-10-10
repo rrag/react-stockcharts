@@ -27,7 +27,6 @@ function deepEquals(arr1, arr2) {
 	return false;
 }
 
-
 class EventHandler extends PureComponent {
 	constructor(props, context) {
 		super(props, context);
@@ -379,6 +378,7 @@ class EventHandler extends PureComponent {
 			dateAccessor: this.state.options.dateAccessor,
 			secretToSuperFastCanvasDraw: this.state.secretToSuperFastCanvasDraw,
 			margin: this.props.margin,
+			dataTransform: this.props.dataTransform,
 
 			getCanvasContexts: this.getCanvasContexts,
 			onMouseMove: this.handleMouseMove,
@@ -674,6 +674,7 @@ EventHandler.childContextTypes = {
 	dateAccessor: React.PropTypes.func,
 	secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
 	margin: React.PropTypes.object.isRequired,
+	dataTransform: React.PropTypes.array,
 
 	getCanvasContexts: React.PropTypes.func,
 	onMouseMove: React.PropTypes.func,

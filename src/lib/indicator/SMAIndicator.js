@@ -4,10 +4,8 @@ import MACalculator from "../utils/MovingAverageCalculator";
 import objectAssign from "object-assign";
 import { overlayColors } from "../utils/utils";
 
-var defaultOptions = {
-	pluck: "close",
-	period: 10,
-};
+import { SMA as defaultOptions } from "./defaultOptions";
+
 
 function SMAIndicator(options, chartProps, dataSeriesProps) {
 

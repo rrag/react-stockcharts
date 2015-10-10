@@ -48,6 +48,7 @@ function wrap(WrappedSeries) {
 			var callback = WrappedSeries.drawOnCanvas;
 
 			if (type !== "svg" && callback !== undefined) return null;
+
 			return <WrappedSeries ref="wrappedSeries"
 				type={type}
 				height={height} width={width}

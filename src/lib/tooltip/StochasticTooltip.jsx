@@ -9,8 +9,9 @@ import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
 class StochasticTooltip extends React.Component {
 	render() {
+		var { onClick, forChart, forDataSeries } = this.props;
+
 		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
-		var { forChart, forDataSeries } = this.props;
 		var overlays = chartData.config.overlays
 			.filter(eachOverlay => forDataSeries === undefined ? true : forDataSeries === eachOverlay.id)
 			.filter(eachOverlay => eachOverlay.indicator !== undefined)
@@ -39,7 +40,8 @@ class StochasticTooltip extends React.Component {
 		var label = this.props.children || "Stochastic";
 
 		return (
-			<g transform={`translate(${ absoluteOrigin[0] }, ${ absoluteOrigin[1] })`}>
+			<g transform={`translate(${ absoluteOrigin[0] }, ${ absoluteOrigin[1] })`}
+				onClick={onClick.bind(null, options)}>
 				<ToolTipText x={0} y={0} fontFamily={this.props.fontFamily} fontSize={this.props.fontSize}>
 					<ToolTipTSpanLabel>{`${ label } %K(`}</ToolTipTSpanLabel>
 					<tspan fill={options.stroke.K}>{`${ options.period }, ${ options.K }`}</tspan>
@@ -72,6 +74,7 @@ StochasticTooltip.propTypes = {
 	fontFamily: React.PropTypes.string,
 	fontSize: React.PropTypes.number,
 	forDataSeries: React.PropTypes.number,
+	onClick: React.PropTypes.func,
 };
 
 StochasticTooltip.defaultProps = {

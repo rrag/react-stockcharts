@@ -3,17 +3,25 @@
 import calculateATR from "../utils/ATRCalculator";
 import objectAssign from "object-assign";
 
-var defaultOptions = {
-	period: 14,
-	pricingMethod: (d) => ({ high: d.high, low: d.low })
-};
+import { Renko as defaultOptions } from "./defaultOptions";
+
 function RenkoTransformer() {
 	var newOptions;
 	function transform(rawData, interval) {
-		var { dateAccessor, dateMutator, indexAccessor, indexMutator, period, pricingMethod } = newOptions;
+		var { reversalType, fixedBrickSize, dateAccessor, dateMutator, indexAccessor, indexMutator, period, source } = newOptions;
 
-		calculateATR(rawData.D, period);
-		var brickSize = function(d) { return d["atr" + period]; };
+		var brickSize, pricingMethod;
+		if (reversalType === "ATR") {
+			calculateATR(rawData.D, period);
+			brickSize = d => d["atr" + period];
+		} else {
+			brickSize = d => fixedBrickSize;
+		}
+		if (source = "hi/lo") {
+			pricingMethod = d => ({ high: d.high, low: d.low })
+		} else {
+			pricingMethod = d => ({ high: d.close, low: d.close })
+		}
 
 		var renkoData = [];
 
@@ -22,11 +30,6 @@ function RenkoTransformer() {
 
 		rawData.D.forEach( function(d) {
 			if (brick.from === undefined) {
-				// brick.index = index++;
-				// brick.date = d.date;
-				// brick.displayDate = d.displayDate;
-				// brick.fromDate = d.displayDate;
-				// brick.from = d.index;
 				brick.high = d.high;
 				brick.low = d.low;
 				brick.startOfYear = d.startOfYear;

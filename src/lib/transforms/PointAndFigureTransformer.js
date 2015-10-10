@@ -2,11 +2,7 @@
 
 import objectAssign from "object-assign";
 
-var defaultOptions = {
-	boxSize: 0.5,
-	reversal: 3,
-	pricingMethod: (d) => ({ high: d.high, low: d.low }),
-};
+import { PointAndFigure as defaultOptions } from "./defaultOptions";
 
 function createBox(d, dateAccessor, dateMutator) {
 	var box = {
@@ -80,7 +76,14 @@ function updateColumns(columnData, dateAccessor, dateMutator) {
 function PointAndFigureTransformer() {
 	var newOptions;
 	function transform(rawData, interval) {
-		var { dateAccessor, dateMutator, indexAccessor, indexMutator, reversal, boxSize, pricingMethod } = newOptions;
+		var { dateAccessor, dateMutator, indexAccessor, indexMutator, reversal, boxSize, source } = newOptions;
+
+		var pricingMethod;
+		if (source = "hi/lo") {
+			pricingMethod = d => ({ high: d.high, low: d.low })
+		} else {
+			pricingMethod = d => ({ high: d.close, low: d.close })
+		}
 
 		var columnData = [];
 

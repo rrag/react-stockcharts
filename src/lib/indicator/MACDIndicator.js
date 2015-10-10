@@ -4,22 +4,7 @@ import MACalculator from "../utils/MovingAverageCalculator";
 import Utils from "../utils/utils.js";
 import objectAssign from "object-assign";
 
-var defaultOptions = {
-	fast: 12,
-	slow: 26,
-	signal: 9,
-	pluck: "close",
-	fill: {
-		MACDLine: 'none',
-		signalLine: 'none',
-		histogram: 'steelblue'
-	},
-	stroke: {
-		MACDLine: 'red',
-		signalLine: 'green',
-		histogram: 'steelblue'
-	}
-};
+import { MACD as defaultOptions } from "./defaultOptions";
 
 function MACDIndicator(options, chartProps, dataSeriesProps) {
 

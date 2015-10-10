@@ -65,7 +65,7 @@ Area.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 			if (begin) {
 				ctx.beginPath();
 				begin = false;
-				let [x, y] = [xScale(xAccessor(d)), yScale(yAccessor(d))];
+				let [x, y] = [~~ (0.5 + xScale(xAccessor(d))), ~~ (0.5 + yScale(yAccessor(d)))];
 				ctx.moveTo(x, newBase(yScale, d));
 				ctx.lineTo(x, y);
 			}

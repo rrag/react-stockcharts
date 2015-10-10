@@ -3,12 +3,7 @@
 import MACalculator from "../utils/MovingAverageCalculator";
 import objectAssign from "object-assign";
 
-var defaultOptions = {
-	period: 20,
-	pluck: "close",
-	multiplier: 2,
-	maType: "sma"
-};
+import { BollingerBand as defaultOptions } from "./defaultOptions";
 
 function BollingerBandIndicator(options, chartProps, dataSeriesProps) {
 
@@ -25,7 +20,7 @@ function BollingerBandIndicator(options, chartProps, dataSeriesProps) {
 	indicator.calculate = function(data) {
 		var { period } = settings;
 
-		var ma = settings.maType === "sma" ? MACalculator.calculateSMANew : MACalculator.calculateEMANew;
+		var ma = settings.movingAverageType === "sma" ? MACalculator.calculateSMANew : MACalculator.calculateEMANew;
 		var getter = (d) => d[settings.pluck];
 		var setter = MACalculator.setter.bind(null, [prefix, key], "middle");
 		var newData = ma(data, period, getter, setter);

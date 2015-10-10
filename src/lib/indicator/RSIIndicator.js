@@ -2,12 +2,8 @@
 
 import objectAssign from "object-assign";
 
-var defaultOptions = {
-	period: 14,
-	pluck: "close",
-	overSold: 70,
-	overBought: 30,
-};
+import { RSI as defaultOptions } from "./defaultOptions";
+
 
 function RSIIndicator(options, chartProps, dataSeriesProps) {
 

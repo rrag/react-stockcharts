@@ -5,9 +5,7 @@ import objectAssign from "object-assign";
 
 import { overlayColors } from "../utils/utils";
 
-var defaultOptions = {
-	pluck: "close",
-};
+import { EMA as defaultOptions } from "./defaultOptions";
 
 function EMAIndicator(options, chartProps, dataSeriesProps) {
 

@@ -4,18 +4,7 @@ import MACalculator from "../utils/MovingAverageCalculator";
 import Utils from "../utils/utils.js";
 import objectAssign from "object-assign";
 
-var defaultOptions = {
-	period: 12,
-	K: 3,
-	D: 3,
-	ohlc: (d) => ({open: d.open, high: d.high, low: d.low, close: d.close}),
-	stroke: {
-		D: 'green',
-		K: 'red',
-	},
-	overSold: 80,
-	overBought: 20,
-};
+import { FullStochasticOscillator as defaultOptions } from "./defaultOptions";
 
 function FullStochasticOscillator(options, chartProps, dataSeriesProps) {
 

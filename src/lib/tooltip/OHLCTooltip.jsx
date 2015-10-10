@@ -6,6 +6,7 @@ import Utils from "../utils/utils";
 import ChartDataUtil from "../utils/ChartDataUtil";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
+import objectAssign from "object-assign";
 
 
 var billion = 1 * 1000 * 1000 * 1000;
@@ -14,11 +15,14 @@ var thousand = 1 * 1000;
 
 class OHLCTooltip extends React.Component {
 	render() {
+		var { onClick, xDisplayFormat, fontFamily, fontSize, forChart } = this.props;
+		var { dataTransform } = this.context;
 		var displayDate, fromDate, toDate, open, high, low, close, volume;
 
 		displayDate = fromDate = toDate = open = high = low = close = volume = "n/a";
 
 		var item = ChartDataUtil.getCurrentItemForChart(this.props, this.context);
+		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
 
 		if (item !== undefined && item.close !== undefined) {
 			volume = (item.volume / billion > 1)
@@ -29,14 +33,13 @@ class OHLCTooltip extends React.Component {
 						? (item.volume / thousand).toFixed(2) + "k"
 						: item.volume;
 
-			displayDate = this.props.xDisplayFormat(item.date);
+			displayDate = xDisplayFormat(item.date);
 			open = Utils.displayNumberFormat(item.open);
 			high = Utils.displayNumberFormat(item.high);
 			low = Utils.displayNumberFormat(item.low);
 			close = Utils.displayNumberFormat(item.close);
 		}
 
-		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
 		var { origin, height, width } = chartData.config;
 		var relativeOrigin = typeof this.props.origin === "function"
 			? this.props.origin(this.context.width, this.context.height)
@@ -44,9 +47,10 @@ class OHLCTooltip extends React.Component {
 		var absoluteOrigin = [origin[0] + relativeOrigin[0], origin[1] + relativeOrigin[1]];
 
 		return (
-			<g transform={`translate(${ absoluteOrigin[0] }, ${ absoluteOrigin[1] })`}>
+			<g transform={`translate(${ absoluteOrigin[0] }, ${ absoluteOrigin[1] })`}
+				onClick={onClick}>
 				<ToolTipText x={0} y={0}
-					fontFamily={this.props.fontFamily} fontSize={this.props.fontSize}>
+					fontFamily={fontFamily} fontSize={fontSize}>
 					<ToolTipTSpanLabel key="label" x={0} dy="5">Date: </ToolTipTSpanLabel>
 					<tspan key="value">{displayDate}</tspan>
 					<ToolTipTSpanLabel key="label_O"> O: </ToolTipTSpanLabel><tspan key="value_O">{open}</tspan>
@@ -65,6 +69,7 @@ OHLCTooltip.contextTypes = {
 	currentItems: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
+	dataTransform: React.PropTypes.array,
 };
 
 OHLCTooltip.propTypes = {
@@ -77,6 +82,7 @@ OHLCTooltip.propTypes = {
 			]).isRequired,
 	fontFamily: React.PropTypes.string,
 	fontSize: React.PropTypes.number,
+	onClick: React.PropTypes.func,
 };
 
 OHLCTooltip.defaultProps = {

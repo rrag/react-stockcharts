@@ -9,12 +9,9 @@ import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
 
 class SingleMAToolTip extends React.Component {
-	handleClick(overlay) {
-		if (this.props.onClick) {
-			this.props.onClick(overlay);
-		}
-	}
 	render() {
+		var { onClick, forChart, forDataSeries, overlay } = this.props;
+
 		var translate = "translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")";
 		return (
 			<g transform={translate}>
@@ -24,7 +21,8 @@ class SingleMAToolTip extends React.Component {
 					<ToolTipTSpanLabel>{this.props.displayName}</ToolTipTSpanLabel>
 					<tspan x="5" dy="15">{this.props.value}</tspan>
 				</ToolTipText>
-				<rect x={0} y={0} width={55} height={30} onClick={this.handleClick.bind(this, this.props.overlay)}
+				<rect x={0} y={0} width={55} height={30}
+					onClick={onClick.bind(null, overlay)}
 					fill="none" stroke="none" />
 			</g>
 		);
@@ -45,7 +43,7 @@ class MovingAverageTooltip extends React.Component {
 	render() {
 		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
 		var item = ChartDataUtil.getCurrentItemForChart(this.props, this.context);
-		var { forDataSeries } = this.props;
+		var { onClick, forChart, forDataSeries } = this.props;
 
 		var { origin, height, width } = chartData.config;
 		var relativeOrigin = typeof this.props.origin === "function"
@@ -69,7 +67,7 @@ class MovingAverageTooltip extends React.Component {
 							displayName={eachOverlay.indicator.tooltipLabel()}
 							value={yDisplayValue}
 							overlay={eachOverlay}
-							onClick={this.props.onClick}
+							forChart={forChart} forDataSeries={eachOverlay.id} onClick={onClick}
 							fontFamily={this.props.fontFamily} fontSize={this.props.fontSize} />;
 					})}
 			</g>
