@@ -1,6 +1,6 @@
 export const BollingerBand = {
 	period: 20,
-	pluck: "close",
+	source: "close",
 	multiplier: 2,
 	movingAverageType: "sma"
 };
@@ -9,7 +9,7 @@ export const MACD = {
 	fast: 12,
 	slow: 26,
 	signal: 9,
-	pluck: "close",
+	source: "close",
 	fill: {
 		histogram: 'steelblue'
 	},
@@ -35,17 +35,17 @@ export const FullStochasticOscillator = {
 
 export const RSI = {
 	period: 14,
-	pluck: "close",
+	source: "close",
 	overSold: 70,
 	overBought: 30,
 };
 
 export const EMA = {
-	pluck: "close",
+	source: "close",
 	period: 10,
 };
 
 export const SMA = {
-	pluck: "close",
+	source: "close",
 	period: 10,
 };

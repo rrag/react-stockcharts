@@ -13,11 +13,7 @@ function SMAIndicator(options, chartProps, dataSeriesProps) {
 	var key = `overlay_${ dataSeriesProps.id }`;
 
 	var settings = objectAssign({}, defaultOptions, options);
-	if (typeof settings.pluck === "string") {
-		var { pluck } = settings;
-		settings.pluck = (d) => d[pluck];
-	}
-	var stroke = settings.stroke || overlayColors(dataSeriesProps.id);
+	if (!settings.stroke) settings.stroke = overlayColors(dataSeriesProps.id);
 
 	function indicator() {
 	}
@@ -26,12 +22,13 @@ function SMAIndicator(options, chartProps, dataSeriesProps) {
 		return settings;
 	};
 	indicator.stroke = function() {
-		return stroke;
+		return settings.stroke;
 	};
 	indicator.calculate = function(data) {
 		var setter = MACalculator.setter.bind(null, [prefix], key);
 
-		var newData = MACalculator.calculateSMANew(data, settings.period, settings.pluck, setter);
+		var { source } = settings;
+		var newData = MACalculator.calculateSMANew(data, settings.period, d => d[source], setter);
 		return newData;
 	};
 	indicator.yAccessor = function() {

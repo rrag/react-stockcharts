@@ -9,7 +9,7 @@ import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
 class RSITooltip extends React.Component {
 	render() {
-		var { onClick, forChart, forDataSeries } = this.props;
+		var { onClick, forChart, forDataSeries, fontSize, fontFamily } = this.props;
 
 		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
 
@@ -41,11 +41,11 @@ class RSITooltip extends React.Component {
 
 		return (
 			<g transform={`translate(${ absoluteOrigin[0] }, ${ absoluteOrigin[1] })`}
-				onClick={onClick.bind(null, options)}>
+				onClick={onClick}>
 				<ToolTipText x={0} y={0}
-					fontFamily={this.props.fontFamily} fontSize={this.props.fontSize}>
+					fontFamily={fontFamily} fontSize={fontSize}>
 					<ToolTipTSpanLabel>
-						{`RSI (${ options.period }, ${ options.pluck }, ${ options.overSold }, ${ options.overBought }): `}
+						{`RSI (${ options.period }, ${ options.source }, ${ options.overSold }, ${ options.overBought }): `}
 					</ToolTipTSpanLabel>
 					<tspan>{value}</tspan>
 				</ToolTipText>

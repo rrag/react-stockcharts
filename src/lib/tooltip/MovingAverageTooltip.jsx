@@ -10,7 +10,7 @@ import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
 class SingleMAToolTip extends React.Component {
 	render() {
-		var { onClick, forChart, forDataSeries, overlay } = this.props;
+		var { onClick, forChart, forDataSeries, options } = this.props;
 
 		var translate = "translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")";
 		return (
@@ -22,7 +22,7 @@ class SingleMAToolTip extends React.Component {
 					<tspan x="5" dy="15">{this.props.value}</tspan>
 				</ToolTipText>
 				<rect x={0} y={0} width={55} height={30}
-					onClick={onClick.bind(null, overlay)}
+					onClick={onClick.bind(null, { chartId: forChart, dataSeriesId: forDataSeries, ...options })}
 					fill="none" stroke="none" />
 			</g>
 		);
@@ -66,7 +66,7 @@ class MovingAverageTooltip extends React.Component {
 							color={eachOverlay.stroke}
 							displayName={eachOverlay.indicator.tooltipLabel()}
 							value={yDisplayValue}
-							overlay={eachOverlay}
+							options={eachOverlay.indicator.options()}
 							forChart={forChart} forDataSeries={eachOverlay.id} onClick={onClick}
 							fontFamily={this.props.fontFamily} fontSize={this.props.fontSize} />;
 					})}

@@ -18,7 +18,9 @@ function wrap(WrappedSeries) {
 
 				if (type !== "svg" && getCanvasContexts !== undefined) {
 					var contexts = getCanvasContexts();
-					if (contexts) BaseCanvasSeries.baseReStockDrawOnCanvasHelper(contexts.axes, this.context, this.props, callback);
+					var { defaultProps } = WrappedSeries;
+					var props = {...defaultProps, ...this.props};
+					if (contexts) BaseCanvasSeries.baseReStockDrawOnCanvasHelper(contexts.axes, this.context, props, callback);
 				}
 			}
 		}
@@ -33,7 +35,11 @@ function wrap(WrappedSeries) {
 			if (callback) {
 				var { canvasOriginX, canvasOriginY , height, width, compareSeries, indicator, xAccessor, yAccessor, seriesId, chartId } = nextContext;
 				var canvasOrigin = [canvasOriginX, canvasOriginY];
-				var draw = BaseCanvasSeries.baseReStockDrawOnCanvas.bind(null, nextProps, callback, canvasOrigin, height, width, compareSeries, indicator, xAccessor, yAccessor);
+
+				var { defaultProps } = WrappedSeries;
+				var props = {...defaultProps, ...nextProps};
+
+				var draw = BaseCanvasSeries.baseReStockDrawOnCanvas.bind(null, props, callback, canvasOrigin, height, width, compareSeries, indicator, xAccessor, yAccessor);
 
 				nextContext.secretToSuperFastCanvasDraw.push({
 					chartId: chartId,
@@ -49,7 +55,10 @@ function wrap(WrappedSeries) {
 
 			if (type !== "svg" && callback !== undefined) return null;
 
+			var { defaultProps } = WrappedSeries;
+
 			return <WrappedSeries ref="wrappedSeries"
+				{...defaultProps}
 				type={type}
 				height={height} width={width}
 				compareSeries={compareSeries}
@@ -89,6 +98,7 @@ function wrap(WrappedSeries) {
 	BaseCanvasSeries.baseReStockDrawOnCanvasHelper = (canvasContext, context, props, callback) => {
 		var { height, width, compareSeries, indicator, xAccessor, yAccessor, xScale, yScale, plotData, canvasOriginX, canvasOriginY } = context;
 		var canvasOrigin = [canvasOriginX, canvasOriginY];
+
 		BaseCanvasSeries.baseReStockDrawOnCanvas(props, callback, canvasOrigin, height, width, compareSeries, indicator, xAccessor, yAccessor, canvasContext, xScale, yScale, plotData);
 	};
 
@@ -111,8 +121,8 @@ function wrap(WrappedSeries) {
 	};
 
 	Object.keys(WrappedSeries)
-		// .filter((key) => key !== "propTypes")
-		// .filter((key) => key !== "defaultProps")
+		.filter((key) => key !== "propTypes")
+		.filter(key => key !== "defaultProps")
 		.filter(key => key !== "displayName")
 		.filter(key => key !== "contextTypes")
 		.filter(key => key !== "childContextTypes")

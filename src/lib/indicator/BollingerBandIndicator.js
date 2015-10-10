@@ -21,7 +21,7 @@ function BollingerBandIndicator(options, chartProps, dataSeriesProps) {
 		var { period } = settings;
 
 		var ma = settings.movingAverageType === "sma" ? MACalculator.calculateSMANew : MACalculator.calculateEMANew;
-		var getter = (d) => d[settings.pluck];
+		var getter = d => d[settings.source];
 		var setter = MACalculator.setter.bind(null, [prefix, key], "middle");
 		var newData = ma(data, period, getter, setter);
 

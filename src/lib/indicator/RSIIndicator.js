@@ -17,9 +17,9 @@ function RSIIndicator(options, chartProps, dataSeriesProps) {
 		return settings;
 	};
 	indicator.calculate = function(data) {
-		var { period, pluck } = settings;
+		var { period, source } = settings;
 
-		var getter = (d) => d[pluck];
+		var getter = d => d[source];
 		var now, prev, change;
 
 		var first = data[0];

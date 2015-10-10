@@ -22,7 +22,7 @@ function MACDIndicator(options, chartProps, dataSeriesProps) {
 		// console.log(prefix, options);
 		var fastKey = "ema" + settings.fast;
 		var slowKey = "ema" + settings.slow;
-		var source = settings.pluck;
+		var { source } = settings;
 
 		var setter = (setKey, d, value) => { 
 			if (d[prefix] === undefined) d[prefix] = {};
@@ -30,7 +30,7 @@ function MACDIndicator(options, chartProps, dataSeriesProps) {
 			d[prefix][key][setKey] = value;
 			return d;
 		};
-		var getter = (d) => d[settings.pluck];
+		var getter = (d) => d[source];
 
 		var newData = MACalculator.calculateEMANew(data, settings.fast, getter, setter.bind(null, fastKey));
 		newData = MACalculator.calculateEMANew(newData, settings.slow, getter, setter.bind(null, slowKey));

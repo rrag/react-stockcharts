@@ -42,7 +42,7 @@ class MACDTooltip extends React.Component {
 
 		return (
 			<g transform={`translate(${ absoluteOrigin[0] }, ${ absoluteOrigin[1] })`}
-				onClick={onClick.bind(null, options)}>
+				onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={this.props.fontFamily} fontSize={this.props.fontSize}>
 					<ToolTipTSpanLabel>MACD (</ToolTipTSpanLabel>

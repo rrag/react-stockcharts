@@ -1,6 +1,7 @@
 ## React Stockcharts
 
 [![Join the chat at https://gitter.im/rrag/react-stockcharts](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rrag/react-stockcharts?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![npm version](https://badge.fury.io/js/react-stockcharts.svg)](https://badge.fury.io/js/react-stockcharts)
 
 Create highly customizable stock charts
 
@@ -20,6 +21,10 @@ npm install react-stockcharts --save
 ### Examples
 
 Refer to some [quick start examples](http://rrag.github.io/react-stockcharts/documentation.html#/quick_start_examples)
+
+### Demo
+
+A [demo](http://rrag.github.io/stockcharts-demo/) built with react-stockcharts
 
 ### Contributing
 

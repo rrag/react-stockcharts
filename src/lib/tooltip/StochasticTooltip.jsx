@@ -41,7 +41,7 @@ class StochasticTooltip extends React.Component {
 
 		return (
 			<g transform={`translate(${ absoluteOrigin[0] }, ${ absoluteOrigin[1] })`}
-				onClick={onClick.bind(null, options)}>
+				onClick={onClick}>
 				<ToolTipText x={0} y={0} fontFamily={this.props.fontFamily} fontSize={this.props.fontSize}>
 					<ToolTipTSpanLabel>{`${ label } %K(`}</ToolTipTSpanLabel>
 					<tspan fill={options.stroke.K}>{`${ options.period }, ${ options.K }`}</tspan>

@@ -48,11 +48,11 @@ class BollingerBandTooltip extends React.Component {
 		return (
 			<g transform={`translate(${ absoluteOrigin[0] }, ${ absoluteOrigin[1] })`}
 				className={this.props.className}
-				onClick={onClick.bind(null, options)}>
+				onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={this.props.fontFamily} fontSize={this.props.fontSize}>
 					<ToolTipTSpanLabel>
-						{`BB (${ options.period }, ${ options.pluck }, ${ options.multiplier }, ${ options.movingAverageType }): `}
+						{`BB (${ options.period }, ${ options.source }, ${ options.multiplier }, ${ options.movingAverageType }): `}
 					</ToolTipTSpanLabel>
 					<tspan>{`${ top }, ${ middle }, ${ bottom }`}</tspan>
 				</ToolTipText>
