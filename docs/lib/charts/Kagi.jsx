@@ -22,6 +22,9 @@ var Kagi = React.createClass({
 		data: React.PropTypes.array.isRequired,
 		type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 	},
+	getChartCanvas() {
+		return this.refs.chartCanvas;
+	},
 	render() {
 		if (this.state === null || !this.state.width) return <div />;
 		var { data, type } = this.props;
@@ -29,7 +32,7 @@ var Kagi = React.createClass({
 		var dateFormat = d3.time.format("%Y-%m-%d");
 
 		return (
-			<ChartCanvas width={this.state.width} height={400}
+			<ChartCanvas ref="chartCanvas" width={this.state.width} height={400}
 				margin={{left: 90, right: 70, top:10, bottom: 30}} initialDisplay={30}
 				dataTransform={[ { transform: StockscaleTransformer }, { transform: KagiTransformer } ]}
 				data={data} type={type}>

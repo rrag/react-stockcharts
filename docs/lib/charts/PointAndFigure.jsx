@@ -16,7 +16,7 @@ var { XAxis, YAxis } = ReStock.axes;
 var { SMA } = ReStock.indicator;
 var { ChartWidthMixin } = ReStock.helper;
 
-var pointAndFigureTransformOptions = { boxSize: 0.5 };
+var pointAndFigureTransformOptions = { boxSize: 0.25 };
 
 var PointAndFigure = React.createClass({
 	mixins: [ChartWidthMixin],
@@ -24,13 +24,16 @@ var PointAndFigure = React.createClass({
 		data: React.PropTypes.array.isRequired,
 		type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 	},
+	getChartCanvas() {
+		return this.refs.chartCanvas;
+	},
 	render() {
 		if (this.state === null || !this.state.width) return <div />;
 		var { data, type } = this.props;
 		var dateFormat = d3.time.format("%Y-%m-%d");
 
 		return (
-			<ChartCanvas width={this.state.width} height={400}
+			<ChartCanvas ref="chartCanvas" width={this.state.width} height={400}
 				margin={{left: 90, right: 70, top:10, bottom: 30}} initialDisplay={30}
 				dataTransform={[ { transform: StockscaleTransformer }, { transform: PointAndFigureTransformer, options: pointAndFigureTransformOptions } ]}
 				data={data} type={type}>

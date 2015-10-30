@@ -29,13 +29,16 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 			type: "svg"
 		}
 	},
+	getChartCanvas() {
+		return this.refs.chartCanvas;
+	},
 	render() {
 		if (this.state === null || !this.state.width) return <div />;
 		var { data, type } = this.props;
 		var dateFormat = d3.time.format("%Y-%m-%d");
 
 		return (
-			<ChartCanvas width={this.state.width} height={600}
+			<ChartCanvas ref="chartCanvas" width={this.state.width} height={600}
 				margin={{left: 70, right: 70, top:20, bottom: 30}} initialDisplay={200} 
 				dataTransform={[ { transform: StockscaleTransformer } ]}
 				data={data} type={type}>

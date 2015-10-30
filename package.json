@@ -56,7 +56,6 @@
     "preversion": "npm run lint",
     "version": "node scripts/updateVersion.js && git add \"src/index.js\"",
     "postversion": "git push origin `git rev-parse --abbrev-ref HEAD` && git push origin `git describe`",
-    "publish:docs": "npm run build:docs && cp -r build/* ../react-stockcharts-gh-pages/react-stockcharts && cd ../react-stockcharts-gh-pages/react-stockcharts && git commit -am \"update docs\" && git push origin gh-pages",
     "npm:publish:next": "npm run release && cd build && npm publish --tag next",
     "npm:publish:latest": "npm run release && cd build && npm publish",
     "info": "npm info react-stockcharts"
