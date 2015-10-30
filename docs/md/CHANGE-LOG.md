@@ -1,8 +1,16 @@
+## v0.2.6
+
+#### Changes
+
+1. User `save-svg-as-png` `v1.0.1` instead of referring from source
+1. Add onClick handler for all tooltips
+1. Change onClick handler of `MovingAverageTooltip` to provide `chartId, dataSeriesId, options`
+
 ## v0.2.5
 
 #### Changes
 
-1. use 0.14.0 instead of 0.14.0-rc1
+1. use React 0.14.0 instead of 0.14.0-rc1
 1. Add default yAccessor to Area & Line Series
 1. Add checks for defensive iteration of children
 1. Fix Kagi defect where volume is not reset
