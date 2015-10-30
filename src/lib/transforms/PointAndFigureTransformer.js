@@ -80,9 +80,9 @@ function PointAndFigureTransformer() {
 
 		var pricingMethod;
 		if (source = "hi/lo") {
-			pricingMethod = d => ({ high: d.high, low: d.low })
+			pricingMethod = d => ({ high: d.high, low: d.low });
 		} else {
-			pricingMethod = d => ({ high: d.close, low: d.close })
+			pricingMethod = d => ({ high: d.close, low: d.close });
 		}
 
 		var columnData = [];

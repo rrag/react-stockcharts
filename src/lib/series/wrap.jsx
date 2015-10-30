@@ -19,7 +19,7 @@ function wrap(WrappedSeries) {
 				if (type !== "svg" && getCanvasContexts !== undefined) {
 					var contexts = getCanvasContexts();
 					var { defaultProps } = WrappedSeries;
-					var props = {...defaultProps, ...this.props};
+					var props = objectAssign({}, defaultProps, this.props);
 					if (contexts) BaseCanvasSeries.baseReStockDrawOnCanvasHelper(contexts.axes, this.context, props, callback);
 				}
 			}
@@ -37,7 +37,7 @@ function wrap(WrappedSeries) {
 				var canvasOrigin = [canvasOriginX, canvasOriginY];
 
 				var { defaultProps } = WrappedSeries;
-				var props = {...defaultProps, ...nextProps};
+				var props = objectAssign({}, defaultProps, nextProps);
 
 				var draw = BaseCanvasSeries.baseReStockDrawOnCanvas.bind(null, props, callback, canvasOrigin, height, width, compareSeries, indicator, xAccessor, yAccessor);
 

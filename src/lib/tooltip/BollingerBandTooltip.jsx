@@ -74,7 +74,6 @@ BollingerBandTooltip.propTypes = {
 	fontFamily: React.PropTypes.string,
 	fontSize: React.PropTypes.number,
 	forDataSeries: React.PropTypes.number,
-	onClick: React.PropTypes.func,
 };
 
 BollingerBandTooltip.defaultProps = {

@@ -1,6 +1,7 @@
 "use strict";
 
 import React from "react";
+import objectAssign from "object-assign";
 
 import Utils from "../utils/utils";
 import ChartDataUtil from "../utils/ChartDataUtil";
@@ -22,7 +23,7 @@ class SingleMAToolTip extends React.Component {
 					<tspan x="5" dy="15">{this.props.value}</tspan>
 				</ToolTipText>
 				<rect x={0} y={0} width={55} height={30}
-					onClick={onClick.bind(null, { chartId: forChart, dataSeriesId: forDataSeries, ...options })}
+					onClick={onClick.bind(null, objectAssign({ chartId: forChart, dataSeriesId: forDataSeries}, options))}
 					fill="none" stroke="none" />
 			</g>
 		);
