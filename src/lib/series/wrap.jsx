@@ -41,7 +41,7 @@ function wrap(WrappedSeries) {
 
 				var draw = BaseCanvasSeries.baseReStockDrawOnCanvas.bind(null, props, callback, canvasOrigin, height, width, compareSeries, indicator, xAccessor, yAccessor);
 
-				nextContext.secretToSuperFastCanvasDraw.push({
+				nextContext.callbackForCanvasDraw({
 					chartId: chartId,
 					seriesId: seriesId,
 					draw: draw,
@@ -79,7 +79,8 @@ function wrap(WrappedSeries) {
 		canvasOriginY: React.PropTypes.number,
 		height: React.PropTypes.number.isRequired,
 		width: React.PropTypes.number.isRequired,
-		secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
+		// secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
+		callbackForCanvasDraw: React.PropTypes.func.isRequired,
 		chartId: React.PropTypes.number.isRequired,
 		seriesId: React.PropTypes.number.isRequired,
 		stroke: React.PropTypes.string,
@@ -112,6 +113,7 @@ function wrap(WrappedSeries) {
 		ctx.rect(-1, -1, width + 1, height + 1);
 		ctx.clip();
 
+		// console.log("HERE");
 		if (callback) {
 			var newProps = objectAssign({}, { height, width, compareSeries, indicator, xAccessor, yAccessor }, props);
 			callback(newProps, ctx, xScale, yScale, plotData);

@@ -17,7 +17,7 @@ class Axis extends React.Component {
 		var { axesCanvasContext, chartData, margin, chartId, canvasOriginX, canvasOriginY } = nextContext;
 		var draw = Axis.drawOnCanvasStatic.bind(null, margin, nextProps, [canvasOriginX, canvasOriginY]);
 
-		nextContext.secretToSuperFastCanvasDraw.push({
+		nextContext.callbackForCanvasDraw({
 			chartId: chartId,
 			type: "axis",
 			draw: draw,
@@ -93,7 +93,8 @@ Axis.contextTypes = {
 	margin: React.PropTypes.object.isRequired,
 	canvasOriginX: React.PropTypes.number,
 	canvasOriginY: React.PropTypes.number,
-	secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
+	// secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
+	callbackForCanvasDraw: React.PropTypes.func.isRequired,
 };
 
 Axis.drawOnCanvasStatic = (margin, props, canvasOrigin, ctx, chartData, xScale, yScale) => {

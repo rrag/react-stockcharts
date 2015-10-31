@@ -134,8 +134,8 @@ function renderPage(data, dataFull, compareData) {
 d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 	d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
 		d3.tsv("data/comparison.tsv", (err3, compareData) => {
-			renderPage(MSFT, MSFTFull, compareData);
-			// renderPartialPage(MSFT, MSFTFull, compareData);
+			// renderPage(MSFT, MSFTFull, compareData);
+			renderPartialPage(MSFT, MSFTFull, compareData);
 		});
 	});
 });
@@ -220,7 +220,8 @@ function renderPartialPage(data, dataFull, compareData) {
 	// KagiWithUpdatingData
 	// RenkoWithUpdatingData
 	// PointAndFigureWithUpdatingData
-	var Chart = require("lib/charts/PointAndFigureWithUpdatingData");
+	// CandleStickChartWithInteractiveIndicator
+	var Chart = require("lib/charts/CandleStickChartWithInteractiveIndicator");
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	// data, dataFull, compareData

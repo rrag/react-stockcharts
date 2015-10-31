@@ -31,7 +31,7 @@ class EdgeIndicator extends React.Component {
 		var { chartData, margin, width } = nextContext;
 		var draw = EdgeIndicator.drawOnCanvasStatic.bind(null, margin, nextProps, width);
 
-		nextContext.secretToSuperFastCanvasDraw.push({
+		nextContext.callbackForCanvasDraw({
 			type: "axis",
 			draw: draw,
 		});
@@ -68,7 +68,8 @@ EdgeIndicator.contextTypes = {
 	getCanvasContexts: React.PropTypes.func,
 	type: React.PropTypes.string,
 	margin: React.PropTypes.object.isRequired,
-	secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
+	// secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
+	callbackForCanvasDraw: React.PropTypes.func.isRequired,
 };
 
 EdgeIndicator.propTypes = {

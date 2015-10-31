@@ -13,7 +13,7 @@ class EdgeContainer extends PureComponent {
 				? React.withContext(this.context, () => {
 					return React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 				})
-				: React.cloneElement(child);
+				: child;
 				// React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 			return newChild;
 		});
@@ -28,7 +28,7 @@ EdgeContainer.contextTypes = {
 	axesCanvasContext: React.PropTypes.object,
 	type: React.PropTypes.string,
 	margin: React.PropTypes.object.isRequired,
-	secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
+	// secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
 };
 
 module.exports = EdgeContainer;

@@ -22,12 +22,12 @@ class CurrentCoordinate extends React.Component {
 
 		var { forChart, forCompareSeries, forDataSeries } = nextProps;
 
-		var temp = nextContext.secretToSuperFastCanvasDraw
+		var temp = nextContext.getAllCanvasDrawCallback()
 			.filter(each => each.type === "currentcoordinate" && each.forChart === forChart && each.forDataSeries === forDataSeries)
 			.filter(each => each.forCompareSeries === forCompareSeries);
 
 		if (temp.length === 0) {
-			nextContext.secretToSuperFastCanvasDraw.push({
+			nextContext.callbackForCanvasDraw({
 				type: "currentcoordinate",
 				forChart,
 				forDataSeries,
@@ -35,7 +35,13 @@ class CurrentCoordinate extends React.Component {
 				draw,
 			});
 		} else {
-			temp[0].draw = draw;
+			nextContext.callbackForCanvasDraw(temp[0], {
+				type: "currentcoordinate",
+				forChart,
+				forDataSeries,
+				forCompareSeries,
+				draw,
+			});
 		}
 	}
 	render() {
@@ -72,7 +78,9 @@ CurrentCoordinate.contextTypes = {
 
 	getCanvasContexts: React.PropTypes.func,
 	margin: React.PropTypes.object.isRequired,
-	secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
+	// secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
+	callbackForCanvasDraw: React.PropTypes.func.isRequired,
+	getAllCanvasDrawCallback: React.PropTypes.func,
 	type: React.PropTypes.string.isRequired,
 };
 

@@ -58,11 +58,11 @@ class EventCapture extends React.Component {
 	}
 	handleMouseDown(e) {
 		var mouseEvent = e || d3.event;
-
+		var { onPanStart, deltaXY, focus, onFocus } = this.context;
 		var chartData = this.context.chartData.filter((each) => each.id === this.props.mainChart) [0];
-		if (this.props.pan && this.context.onPanStart) {
+		if (this.props.pan && onPanStart) {
 			var mouseXY = Utils.mousePosition(mouseEvent);
-			this.context.onPanStart(chartData.plot.scales.xScale.domain(), mouseXY);
+			onPanStart(chartData.plot.scales.xScale.domain(), mouseXY);
 
 			var dx = mouseEvent.pageX - mouseXY[0],
 				dy = mouseEvent.pageY - mouseXY[1];
@@ -76,9 +76,9 @@ class EventCapture extends React.Component {
 				.on(mousemove, this.handlePan)
 				.on(mouseup, this.handlePanEnd);
 
-			this.context.deltaXY([dx, dy]);
+			deltaXY([dx, dy]);
 		} else {
-			if (!this.context.focus && this.context.onFocus) this.context.onFocus(true);
+			if (!focus && onFocus) onFocus(true);
 		}
 		mouseEvent.preventDefault();
 	}

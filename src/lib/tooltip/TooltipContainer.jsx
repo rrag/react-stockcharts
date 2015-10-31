@@ -12,7 +12,7 @@ class TooltipContainer extends PureComponent {
 				? React.withContext(this.context, () => {
 					return React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 				})
-				: React.cloneElement(child);
+				: child;
 				// React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 			return newChild;
 		});

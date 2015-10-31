@@ -19,6 +19,8 @@ import axes from "./lib/axes";
 import tooltip from "./lib/tooltip";
 import helper from "./lib/helper";
 
+import interactive from "./lib/interactive";
+
 const version = "0.2.6";
 
 export default {
@@ -33,6 +35,7 @@ export default {
 	axes,
 	tooltip,
 	helper,
+	interactive,
 	version
 };
 

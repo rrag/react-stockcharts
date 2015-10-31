@@ -13,10 +13,15 @@ class CanvasContainer extends React.Component {
 			? this.refs.canvas_mouse_coordinates
 			: React.findDOMNode(this.refs.canvas_mouse_coordinates);
 
+		var interactiveDOM = Utils.isReactVersion14()
+			? this.refs.canvas_interactive
+			: React.findDOMNode(this.refs.canvas_interactive);
+
 		if (this.refs.canvas_axes) {
 			return {
 				axes: axesCanvasDOM.getContext('2d'),
-				mouseCoord: mouseCoordDOM.getContext('2d')
+				mouseCoord: mouseCoordDOM.getContext('2d'),
+				interactive: interactiveDOM.getContext('2d'),
 			};
 		}
 	}
@@ -28,6 +33,8 @@ class CanvasContainer extends React.Component {
 				<canvas ref="canvas_axes" width={width} height={height}
 					style={{ position: "absolute", left: 0, top: 0}} />
 				<canvas ref="canvas_mouse_coordinates" width={width} height={height}
+					style={{ position: "absolute", left: 0, top: 0}} />
+				<canvas ref="canvas_interactive" width={width} height={height}
 					style={{ position: "absolute", left: 0, top: 0}} />
 			</div>
 		);

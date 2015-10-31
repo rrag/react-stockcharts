@@ -23,14 +23,17 @@ class MouseCoordinates extends PureComponent {
 	componentWillReceiveProps(nextProps, nextContext) {
 		var draw = MouseCoordinates.drawOnCanvasStatic.bind(null, nextContext, nextProps);
 
-		var temp = nextContext.secretToSuperFastCanvasDraw.filter(each => each.type === "mouse");
+		var temp = nextContext.getAllCanvasDrawCallback().filter(each => each.type === "mouse");
 		if (temp.length === 0) {
-			nextContext.secretToSuperFastCanvasDraw.push({
+			nextContext.callbackForCanvasDraw({
 				type: "mouse",
 				draw: draw,
 			});
 		} else {
-			temp[0].draw = draw;
+			nextContext.callbackForCanvasDraw(temp[0], {
+				type: "mouse",
+				draw: draw,
+			});
 		}
 	}
 	render() {
@@ -59,7 +62,9 @@ MouseCoordinates.contextTypes = {
 	currentCharts: React.PropTypes.array.isRequired,
 	getCanvasContexts: React.PropTypes.func,
 	margin: React.PropTypes.object.isRequired,
-	secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
+	// secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
+	callbackForCanvasDraw: React.PropTypes.func.isRequired,
+	getAllCanvasDrawCallback: React.PropTypes.func,
 	type: React.PropTypes.string.isRequired,
 };
 

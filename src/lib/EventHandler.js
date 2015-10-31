@@ -40,6 +40,10 @@ class EventHandler extends PureComponent {
 		this.handleFocus = this.handleFocus.bind(this);
 		this.deltaXY = this.deltaXY.bind(this);
 		this.getCanvasContexts = this.getCanvasContexts.bind(this);
+		this.pushCallbackForCanvasDraw = this.pushCallbackForCanvasDraw.bind(this);
+		this.getAllCanvasDrawCallback = this.getAllCanvasDrawCallback.bind(this);
+		this.storeToChartState = this.storeToChartState.bind(this);
+		this.getChartStateFor = this.getChartStateFor.bind(this);
 
 		this.state = {
 			focus: false,
@@ -357,6 +361,7 @@ class EventHandler extends PureComponent {
 		}
 	}
 	clearCanvas(canvasList) {
+		// console.log("CLEARING...", canvasList.length)
 		canvasList.forEach(each => {
 			each.setTransform(1, 0, 0, 1, 0, 0);
 			each.clearRect(-1, -1, each.canvas.width + 2, each.canvas.height + 2);
@@ -376,10 +381,17 @@ class EventHandler extends PureComponent {
 			height: this.props.dimensions.height,
 			type: this.props.type,
 			dateAccessor: this.state.options.dateAccessor,
-			secretToSuperFastCanvasDraw: this.state.secretToSuperFastCanvasDraw,
+
+			// secretToSuperFastCanvasDraw: this.state.secretToSuperFastCanvasDraw,
+
 			margin: this.props.margin,
 			dataTransform: this.props.dataTransform,
 
+			storeToChartState: this.storeToChartState,
+			getChartStateFor: this.getChartStateFor,
+			callbackForCanvasDraw: this.pushCallbackForCanvasDraw,
+			getAllCanvasDrawCallback: this.getAllCanvasDrawCallback,
+			subscribe: this.subscribe,
 			getCanvasContexts: this.getCanvasContexts,
 			onMouseMove: this.handleMouseMove,
 			onMouseEnter: this.handleMouseEnter,
@@ -393,6 +405,37 @@ class EventHandler extends PureComponent {
 			panInProgress: this.state.panInProgress,
 			focus: this.state.focus
 		};
+	}
+	pushCallbackForCanvasDraw(findThis, replaceWith) {
+		var { secretToSuperFastCanvasDraw } = this.state;
+		/// AAAAAAAAAAAAAAHHHHH mutating state, instead of setting it, if only there is a better way
+		// console.log(findThis, secretToSuperFastCanvasDraw.length);
+		if (replaceWith) {
+			var t = secretToSuperFastCanvasDraw.forEach((each, idx) => {
+				if (each === findThis) {
+					secretToSuperFastCanvasDraw[idx] = replaceWith;
+				}
+			});
+		} else {
+			/// AAAAAAAAAAAAAAHHHHH mutating state, instead of setting it, if only there is a better way
+			secretToSuperFastCanvasDraw.push(findThis);
+		}
+		/* this.setState({
+			secretToSuperFastCanvasDraw: secretToSuperFastCanvasDraw.concat(cb),
+		}) */
+	}
+	getAllCanvasDrawCallback() {
+		var { secretToSuperFastCanvasDraw } = this.state;
+		return secretToSuperFastCanvasDraw;
+	}
+	subscribe(eventType, callback) {
+		console.log(eventType, callback);
+	}
+	storeToChartState(key, value) {
+
+	}
+	getChartStateFor(key) {
+
 	}
 	handleMouseMove(mouseXY) {
 		var currentCharts = this.state.chartData.filter((chartData) => {
@@ -576,12 +619,17 @@ class EventHandler extends PureComponent {
 				var { canvasList, getCanvasContexts, margin } = this.context;
 				var { axes: axesCanvasContext, mouseCoord: mouseContext } = this.getCanvasContexts();
 				var { chartData, plotData } = state;
+				var { secretToSuperFastCanvasDraw, show } = this.state;
 
 				requestAnimationFrame(() => {
-					this.clearCanvas([axesCanvasContext, mouseContext]);
+					// this.clearCanvas([axesCanvasContext, mouseContext]);
+					// this.clearCanvas([axesCanvasContext, mouseContext]);
+					this.clearBothCanvas();
+
+					// console.log(secretToSuperFastCanvasDraw.length)
 
 					chartData.forEach(eachChart => {
-						this.state.secretToSuperFastCanvasDraw
+						secretToSuperFastCanvasDraw
 							.filter(each => eachChart.id === each.chartId)
 							.forEach(each => {
 								var { xScale, yScale } = eachChart.plot.scales;
@@ -600,19 +648,19 @@ class EventHandler extends PureComponent {
 								}
 							});
 					});
-					this.state.secretToSuperFastCanvasDraw
+					secretToSuperFastCanvasDraw
 						.filter(each => each.chartId === undefined)
 						.filter(each => each.type === "axis")
 						.forEach(each => each.draw(axesCanvasContext, chartData));
 
-					this.state.secretToSuperFastCanvasDraw
+					secretToSuperFastCanvasDraw
 						.filter(each => each.type === "mouse")
-						.forEach(each => each.draw(mouseContext, this.state.show,
+						.forEach(each => each.draw(mouseContext, show,
 							state.mouseXY, state.currentCharts, state.chartData, state.currentItems));
 
-					this.state.secretToSuperFastCanvasDraw
+					secretToSuperFastCanvasDraw
 						.filter(each => each.type === "currentcoordinate")
-						.forEach(each => each.draw(mouseContext, this.state.show,
+						.forEach(each => each.draw(mouseContext, show,
 							state.mouseXY, state.currentCharts, state.chartData, state.currentItems));
 
 				});
@@ -644,13 +692,13 @@ class EventHandler extends PureComponent {
 				? React.withContext(this.getChildContext(), () => {
 					return React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 				})
-				: React.cloneElement(child);
+				: child;
 				// React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 
 			return newChild;
 		});
 		return (
-			<g>{children}</g>
+			<g>{this.props.children}</g>
 		);
 	}
 }
@@ -672,10 +720,17 @@ EventHandler.childContextTypes = {
 	height: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 	dateAccessor: React.PropTypes.func,
-	secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
+
+	// secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
+
 	margin: React.PropTypes.object.isRequired,
 	dataTransform: React.PropTypes.array,
 
+	subscribe: React.PropTypes.func,
+	storeToChartState: React.PropTypes.func,
+	getChartStateFor: React.PropTypes.func, 
+	callbackForCanvasDraw: React.PropTypes.func,
+	getAllCanvasDrawCallback: React.PropTypes.func,
 	getCanvasContexts: React.PropTypes.func,
 	onMouseMove: React.PropTypes.func,
 	onMouseEnter: React.PropTypes.func,
