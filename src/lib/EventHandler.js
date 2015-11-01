@@ -93,7 +93,7 @@ class EventHandler extends PureComponent {
 		var plotData = dataForInterval.slice(beginIndex);
 
 		var chartData = ChartDataUtil.getChartData(props, dimensions, plotData, data, options);
-		console.log("componentWillMount", chartData);
+		// console.log("componentWillMount", chartData);
 		this.setState({
 			data: data,
 			rawData: rawData,

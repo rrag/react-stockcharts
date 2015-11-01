@@ -58,7 +58,7 @@ MouseCoordinates.propTypes = {
 };
 
 MouseCoordinates.defaultProps = {
-	show: false,
+	// show: false,
 	snapX: true,
 	type: "crosshair",
 	xDisplayFormat: Utils.displayDateFormat,
@@ -74,6 +74,7 @@ MouseCoordinates.drawOnCanvasStatic = (props, ctx, show, mouseXY, currentCharts,
 	var { margin } = props;
 	var pointer = MouseCoordinates.helper(props, show, mouseXY, currentCharts, chartData, currentItems);
 
+	// console.log("HERE", show);
 	if (!pointer) return null;
 
 	var originX = 0.5 + margin.left;
