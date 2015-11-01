@@ -46,11 +46,10 @@ var ChartDataUtil = {
 
 			var plot = this.getChartPlotFor(config, partialData, domainL, domainR);
 
-
 			return {
 				id: each.props.id,
 				config: config,
-				plot: plot
+				plot: plot,
 			};
 		});
 	},

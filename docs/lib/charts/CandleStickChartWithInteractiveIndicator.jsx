@@ -57,6 +57,8 @@ var CandleStickChartWithInteractiveIndicator = React.createClass({
 					<DataSeries id={2} indicator={EMA} options={{ period: 12 }} >
 						<LineSeries/>
 					</DataSeries>
+					<TrendLine enabled={true}
+						snap={true} snapTo={d => [d.open, d.high, d.low, d.close]} />
 				</Chart>
 				<CurrentCoordinate forChart={1} forDataSeries={1} />
 				<CurrentCoordinate forChart={1} forDataSeries={2} />
@@ -90,7 +92,7 @@ var CandleStickChartWithInteractiveIndicator = React.createClass({
 						<MACDSeries />
 					</DataSeries>
 				</Chart>
-				<TrendLine />
+				<MouseCoordinates xDisplayFormat={dateFormat} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
