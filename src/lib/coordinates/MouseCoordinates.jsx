@@ -8,9 +8,9 @@ import CrossHair from "./CrossHair";
 
 class MouseCoordinates extends React.Component {
 	componentDidMount() {
-		var { type, getCanvasContexts } = this.props;
+		var { chartCanvasType, getCanvasContexts } = this.props;
 
-		if (type !== "svg" && getCanvasContexts !== undefined) {
+		if (chartCanvasType !== "svg" && getCanvasContexts !== undefined) {
 			var contexts = getCanvasContexts();
 			if (contexts) MouseCoordinates.drawOnCanvas(contexts.mouseCoord, this.props);
 		}
@@ -38,11 +38,11 @@ class MouseCoordinates extends React.Component {
 		}
 	}
 	render() {
-		var { type, mouseXY, currentCharts, chartData, currentItems, show } = this.props;
+		var { chartCanvasType, mouseXY, currentCharts, chartData, currentItems, show } = this.props;
 
-		if (type !== "svg") return null;
+		if (chartCanvasType !== "svg") return null;
 
-		var pointer = MouseCoordinates.helper(this.props, this.props, show, mouseXY, currentCharts, chartData, currentItems);
+		var pointer = MouseCoordinates.helper(this.props, show, mouseXY, currentCharts, chartData, currentItems);
 
 		if (!pointer) return null;
 
@@ -113,8 +113,8 @@ MouseCoordinates.helper = (props, show, mouseXY, currentCharts, chartData, curre
 			return each;
 		});
 
-	// console.log(edges);
 	var singleChartData = chartData.filter((eachChartData) => eachChartData.id === mainChart)[0];
+	// console.log(props, show, mouseXY, currentCharts, chartData, currentItems);
 
 	// var yDisplayFormat = singleChartData.config.compareSeries.length > 0 ? (d) => (Math.round(d * 10000) / 100).toFixed(2) + "%" : this.props.yDisplayFormat;
 
@@ -152,5 +152,5 @@ export default pure(MouseCoordinates, {
 	// secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
 	callbackForCanvasDraw: React.PropTypes.func.isRequired,
 	getAllCanvasDrawCallback: React.PropTypes.func,
-	type: React.PropTypes.string.isRequired,
+	chartCanvasType: React.PropTypes.string.isRequired,
 });

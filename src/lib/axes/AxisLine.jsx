@@ -76,6 +76,9 @@ AxisLine.drawOnCanvasStatic = (props, ctx, chartData, xScale, yScale) => {
 
 	var { strokeStyle, globalAlpha } = ctx;
 
+
+	// console.log(ctx.strokeStyle, stroke);
+
 	ctx.strokeStyle = stroke;
 	ctx.globalAlpha = opacity;
 

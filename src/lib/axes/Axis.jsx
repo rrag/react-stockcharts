@@ -24,7 +24,7 @@ class Axis extends React.Component {
 		});
 	}
 	componentDidMount() {
-		if (this.props.type !== "svg" && this.context.getCanvasContexts !== undefined) {
+		if (this.context.chartCanvasType !== "svg" && this.context.getCanvasContexts !== undefined) {
 			var contexts = this.context.getCanvasContexts();
 			if (contexts) this.drawOnCanvas(contexts.axes);
 		}
@@ -40,7 +40,7 @@ class Axis extends React.Component {
 	}
 
 	render() {
-		if (this.context.type !== "svg") return null;
+		if (this.context.chartCanvasType !== "svg") return null;
 
 		var domain = this.props.showDomain
 			? <AxisLine {...this.props} />
@@ -87,7 +87,7 @@ Axis.defaultProps = {
 
 Axis.contextTypes = {
 	getCanvasContexts: React.PropTypes.func,
-	type: React.PropTypes.string,
+	chartCanvasType: React.PropTypes.string,
 	chartData: React.PropTypes.object.isRequired,
 	chartId: React.PropTypes.number.isRequired,
 	margin: React.PropTypes.object.isRequired,

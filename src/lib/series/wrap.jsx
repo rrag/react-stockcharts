@@ -15,10 +15,10 @@ function wrap(WrappedSeries) {
 		componentDidMount() {
 			var callback = WrappedSeries.drawOnCanvas;
 			if (callback) {
-				var { type } = this.props;
+				var { chartCanvasType } = this.context;
 				var { getCanvasContexts } = this.props;
 
-				if (type !== "svg" && getCanvasContexts !== undefined) {
+				if (chartCanvasType !== "svg" && getCanvasContexts !== undefined) {
 					var contexts = getCanvasContexts();
 					var { defaultProps } = WrappedSeries;
 					var props = objectAssign({}, defaultProps, this.props);
@@ -53,9 +53,9 @@ function wrap(WrappedSeries) {
 		}
 		render() {
 			var callback = WrappedSeries.drawOnCanvas;
-			var { type } = this.props;
+			var { chartCanvasType } = this.props;
 
-			if (type !== "svg" && callback !== undefined) return null;
+			if (chartCanvasType !== "svg" && callback !== undefined) return null;
 
 			return <WrappedSeries ref="wrappedSeries"
 				{...this.props} />;
@@ -136,7 +136,7 @@ function wrap(WrappedSeries) {
 		stroke: React.PropTypes.string,
 		fill: React.PropTypes.string,
 
-		type: React.PropTypes.string,
+		chartCanvasType: React.PropTypes.string,
 		indicator: React.PropTypes.func,
 		xScale: React.PropTypes.func.isRequired,
 		yScale: React.PropTypes.func.isRequired,

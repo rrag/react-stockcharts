@@ -10,6 +10,7 @@ class CompareSeries extends React.Component {
 		var { props } = this;
 		let { className, compareSeries, xScale, yScale, xAccessor, plotData, type, id } = props;
 
+		// console.log(compareSeries);
 		var thisSeries = compareSeries.filter(each => each.id === id)[0];
 		return (
 			<Line
@@ -31,7 +32,8 @@ CompareSeries.propTypes = {
 };
 
 CompareSeries.defaultProps = {
-	className: "line "
+	className: "line ",
+	namespace: "ReStock.CompareSeries",
 };
 
 export default wrap(CompareSeries);

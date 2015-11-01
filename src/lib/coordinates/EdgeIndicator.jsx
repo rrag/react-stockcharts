@@ -13,10 +13,9 @@ class EdgeIndicator extends React.Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	componentDidMount() {
-		var { type } = this.props;
-		var { getCanvasContexts } = this.context;
+		var { chartCanvasType, getCanvasContexts } = this.context;
 
-		if (type !== "svg" && getCanvasContexts !== undefined) {
+		if (chartCanvasType !== "svg" && getCanvasContexts !== undefined) {
 			var contexts = getCanvasContexts();
 			if (contexts) this.drawOnCanvas(contexts.axes);
 		}
@@ -41,7 +40,7 @@ class EdgeIndicator extends React.Component {
 		EdgeIndicator.drawOnCanvasStatic(margin, this.props, width, ctx, chartData);
 	}
 	render() {
-		if (this.context.type !== "svg") return null;
+		if (this.context.chartCanvasType !== "svg") return null;
 
 		var { width, chartData } = this.context;
 		var edge = EdgeIndicator.helper(this.props, width, chartData);
@@ -66,7 +65,7 @@ EdgeIndicator.contextTypes = {
 	width: React.PropTypes.number.isRequired,
 	chartData: React.PropTypes.array.isRequired,
 	getCanvasContexts: React.PropTypes.func,
-	type: React.PropTypes.string,
+	chartCanvasType: React.PropTypes.string,
 	margin: React.PropTypes.object.isRequired,
 	// secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
 	callbackForCanvasDraw: React.PropTypes.func.isRequired,

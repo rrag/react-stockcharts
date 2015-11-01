@@ -27,7 +27,6 @@ Area.propTypes = {
 	stroke: React.PropTypes.string,
 	fill: React.PropTypes.string,
 	opacity: React.PropTypes.number,
-	type: React.PropTypes.string.isRequired,
 	base: React.PropTypes.func,
 };
 
@@ -41,12 +40,14 @@ Area.getArea = (props) => {
 	var height = yScale.range()[0];
 	if (base === undefined) base = () => (height - 1);
 
+
 	var areaSeries = d3.svg.area()
 		.defined((d) => yAccessor(d) !== undefined)
 		.x((d) => xScale(xAccessor(d)))
 		.y0(base.bind(null, yScale))
 		.y1((d) => yScale(yAccessor(d)));
 
+	// console.log("HERE", yAccessor(plotData[0]));
 	return areaSeries(plotData);
 };
 

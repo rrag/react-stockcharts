@@ -23,7 +23,6 @@ Line.propTypes = {
 	plotData: React.PropTypes.array.isRequired,
 	stroke: React.PropTypes.string,
 	fill: React.PropTypes.string,
-	type: React.PropTypes.string.isRequired,
 };
 
 Line.defaultProps = {

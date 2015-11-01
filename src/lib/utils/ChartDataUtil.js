@@ -41,9 +41,11 @@ var ChartDataUtil = {
 		return charts.map((each) => {
 			var chartProps = each.props;
 			var config = this.getChartConfigFor(innerDimensions, chartProps, partialData, fullData, other);
-			var plot = this.getChartPlotFor(config, partialData, domainL, domainR);
 
 			// console.log(config.compareSeries);
+
+			var plot = this.getChartPlotFor(config, partialData, domainL, domainR);
+
 
 			return {
 				id: each.props.id,

@@ -31,6 +31,7 @@ function pure(PureSeries, contextShape) {
 
 	PureCanvasSeries.contextTypes = contextShape;
 	PureCanvasSeries.yAccessor = PureSeries.yAccessor;
+	PureCanvasSeries.defaultProps = PureSeries.defaultProps;
 
 	/*Object.keys(PureSeries)
 		.filter((key) => key !== "propTypes")

@@ -12,6 +12,8 @@ function SMAIndicator(options, chartProps, dataSeriesProps) {
 	var prefix = `chart_${ chartProps.id }`;
 	var key = `overlay_${ dataSeriesProps.id }`;
 
+	if (options.pluck) options.source = options.pluck
+
 	var settings = objectAssign({}, defaultOptions, options);
 	if (!settings.stroke) settings.stroke = overlayColors(dataSeriesProps.id);
 

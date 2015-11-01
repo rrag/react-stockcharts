@@ -93,7 +93,7 @@ class EventHandler extends PureComponent {
 		var plotData = dataForInterval.slice(beginIndex);
 
 		var chartData = ChartDataUtil.getChartData(props, dimensions, plotData, data, options);
-		// console.log("componentWillMount");
+		console.log("componentWillMount", chartData);
 		this.setState({
 			data: data,
 			rawData: rawData,
@@ -162,7 +162,7 @@ class EventHandler extends PureComponent {
 		var newCurrentItems = ChartDataUtil.getCurrentItems(newChartData, this.state.mouseXY, plotData);
 
 		this.clearBothCanvas(nextProps);
-		console.log("componentWillReceiveProps");
+		// console.log("componentWillReceiveProps");
 
 		this.setState({
 			rawData: rawData,
@@ -381,7 +381,7 @@ class EventHandler extends PureComponent {
 			currentCharts: this.state.currentCharts,
 			width: this.props.dimensions.width,
 			height: this.props.dimensions.height,
-			type: this.props.type,
+			chartCanvasType: this.props.type,
 			dateAccessor: this.state.options.dateAccessor,
 
 			// secretToSuperFastCanvasDraw: this.state.secretToSuperFastCanvasDraw,
@@ -411,6 +411,9 @@ class EventHandler extends PureComponent {
 	pushCallbackForCanvasDraw(findThis, replaceWith) {
 		var { secretToSuperFastCanvasDraw } = this.state;
 		/// AAAAAAAAAAAAAAHHHHH mutating state, instead of setting it, if only there is a better way
+
+		// this.secretArray - explore using this to avoid state mutation.
+
 		// console.log(findThis, secretToSuperFastCanvasDraw.length);
 		if (replaceWith) {
 			var t = secretToSuperFastCanvasDraw.forEach((each, idx) => {
@@ -726,7 +729,7 @@ EventHandler.childContextTypes = {
 	mainChart: React.PropTypes.number,
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
-	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	chartCanvasType: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 	dateAccessor: React.PropTypes.func,
 
 	// secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,

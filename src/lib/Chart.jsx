@@ -14,6 +14,7 @@ class Chart extends PureComponent {
 		var originX = 0.5 + chartData.config.origin[0] + this.context.margin.left;
 		var originY = 0.5 + chartData.config.origin[1] + this.context.margin.top;
 
+		// console.log(chartData.config.compareSeries);
 		return {
 			chartId: this.props.id,
 			xScale: chartData.plot.scales.xScale,
@@ -77,7 +78,6 @@ Chart.contextTypes = {
 	height: React.PropTypes.number.isRequired,
 	chartData: React.PropTypes.array,
 	margin: React.PropTypes.object.isRequired,
-	type: React.PropTypes.string.isRequired,
 };
 
 Chart.childContextTypes = {

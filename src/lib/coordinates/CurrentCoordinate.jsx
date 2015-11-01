@@ -5,9 +5,9 @@ import pure from "../pure";
 
 class CurrentCoordinate extends React.Component {
 	componentDidMount() {
-		var { type, getCanvasContexts } = this.props;
+		var { chartCanvasType, getCanvasContexts } = this.props;
 
-		if (type !== "svg" && getCanvasContexts !== undefined) {
+		if (chartCanvasType !== "svg" && getCanvasContexts !== undefined) {
 			var contexts = getCanvasContexts();
 			if (contexts) CurrentCoordinate.drawOnCanvas(contexts.mouseCoord, this.props);
 		}
@@ -47,9 +47,9 @@ class CurrentCoordinate extends React.Component {
 	}
 	render() {
 		var { className } = this.props;
-		var { type, show, chartData, currentItems } = this.props;
+		var { chartCanvasType, show, chartData, currentItems } = this.props;
 
-		if (type !== "svg") return null;
+		if (chartCanvasType !== "svg") return null;
 
 		var circle = CurrentCoordinate.helper(this.props, show, chartData, currentItems);
 
@@ -157,5 +157,5 @@ export default pure(CurrentCoordinate, {
 	margin: React.PropTypes.object.isRequired,
 	callbackForCanvasDraw: React.PropTypes.func.isRequired,
 	getAllCanvasDrawCallback: React.PropTypes.func,
-	type: React.PropTypes.string.isRequired,
+	chartCanvasType: React.PropTypes.string.isRequired,
 });

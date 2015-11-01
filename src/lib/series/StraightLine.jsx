@@ -30,7 +30,6 @@ StraightLine.propTypes = {
 	yAccessor: React.PropTypes.func.isRequired,
 	stroke: React.PropTypes.string,
 	fill: React.PropTypes.string,
-	type: React.PropTypes.string.isRequired,
 	opacity: React.PropTypes.number.isRequired,
 	yValue: React.PropTypes.number.isRequired,
 };
