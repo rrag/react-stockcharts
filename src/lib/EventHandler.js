@@ -410,7 +410,7 @@ class EventHandler extends PureComponent {
 	}
 	pushCallbackForCanvasDraw(findThis, replaceWith) {
 		var { secretToSuperFastCanvasDraw } = this.state;
-		/// AAAAAAAAAAAAAAHHHHH mutating state, instead of setting it, if only there is a better way
+		// AAAAAAAAAAAAAAHHHHH mutating state, instead of setting it, if only there is a better way
 
 		// this.secretArray - explore using this to avoid state mutation.
 
@@ -422,7 +422,7 @@ class EventHandler extends PureComponent {
 				}
 			});
 		} else {
-			/// AAAAAAAAAAAAAAHHHHH mutating state, instead of setting it, if only there is a better way
+			// AAAAAAAAAAAAAAHHHHH mutating state, instead of setting it, if only there is a better way
 			secretToSuperFastCanvasDraw.push(findThis);
 			/* console.log(secretToSuperFastCanvasDraw.concat(findThis).length);
 			this.setState({

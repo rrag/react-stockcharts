@@ -5,7 +5,7 @@ import React from "react";
 class TrendLine extends React.Component {
 	componentWillMount() {
 		var { subscribe } = this.context;
-		subscribe("mouseup", () => {console.log("JHHH")});
+		subscribe("mouseup", () => {console.log("JHHH");});
 	}
 	render() {
 		var { type, mainChart, mouseXY, currentCharts, chartData, currentItems, show } = this.context;

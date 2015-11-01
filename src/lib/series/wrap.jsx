@@ -62,7 +62,7 @@ function wrap(WrappedSeries) {
 		}
 	};
 
-/*
+		/*
 			var { type, height, width, compareSeries, indicator, xAccessor,
 				yAccessor, xScale, yScale, plotData, stroke, fill } = this.props;
 			// var { defaultProps } = WrappedSeries;
@@ -78,7 +78,7 @@ function wrap(WrappedSeries) {
 				xScale={xScale} yScale={yScale}
 				stroke={stroke} fill={fill}
 				plotData={plotData}
-*/
+		*/
 
 	BaseCanvasSeries.displayName = `wrap(${ getDisplayName(WrappedSeries) })`;
 
@@ -113,7 +113,7 @@ function wrap(WrappedSeries) {
 		ctx.restore();
 	};
 
-	/*Object.keys(WrappedSeries)
+	/* Object.keys(WrappedSeries)
 		.filter((key) => key !== "propTypes")
 		.filter(key => key !== "defaultProps")
 		.filter(key => key !== "displayName")

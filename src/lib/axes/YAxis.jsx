@@ -2,7 +2,7 @@
 
 import React from "react";
 import Axis from "./Axis";
-import PureComponent from "../utils/PureComponent"
+import PureComponent from "../utils/PureComponent";
 
 class YAxis extends PureComponent {
 	render() {
