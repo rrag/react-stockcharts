@@ -1,33 +1,34 @@
 "use strict";
 
 import React from "react";
+import pure from "../pure";
 
 class CurrentCoordinate extends React.Component {
 	componentDidMount() {
-		var { type, getCanvasContexts } = this.context;
+		var { type, getCanvasContexts } = this.props;
 
 		if (type !== "svg" && getCanvasContexts !== undefined) {
 			var contexts = getCanvasContexts();
-			if (contexts) CurrentCoordinate.drawOnCanvas(contexts.mouseCoord, this.context, this.props);
+			if (contexts) CurrentCoordinate.drawOnCanvas(contexts.mouseCoord, this.props);
 		}
 	}
 	componentDidUpdate() {
 		this.componentDidMount();
 	}
 	componentWillMount() {
-		this.componentWillReceiveProps(this.props, this.context);
+		this.componentWillReceiveProps(this.props);
 	}
-	componentWillReceiveProps(nextProps, nextContext) {
-		var draw = CurrentCoordinate.drawOnCanvasStatic.bind(null, nextContext, nextProps);
+	componentWillReceiveProps(nextProps) {
+		var draw = CurrentCoordinate.drawOnCanvasStatic.bind(null, nextProps);
 
 		var { forChart, forCompareSeries, forDataSeries } = nextProps;
 
-		var temp = nextContext.getAllCanvasDrawCallback()
+		var temp = nextProps.getAllCanvasDrawCallback()
 			.filter(each => each.type === "currentcoordinate" && each.forChart === forChart && each.forDataSeries === forDataSeries)
 			.filter(each => each.forCompareSeries === forCompareSeries);
 
 		if (temp.length === 0) {
-			nextContext.callbackForCanvasDraw({
+			nextProps.callbackForCanvasDraw({
 				type: "currentcoordinate",
 				forChart,
 				forDataSeries,
@@ -35,7 +36,7 @@ class CurrentCoordinate extends React.Component {
 				draw,
 			});
 		} else {
-			nextContext.callbackForCanvasDraw(temp[0], {
+			nextProps.callbackForCanvasDraw(temp[0], {
 				type: "currentcoordinate",
 				forChart,
 				forDataSeries,
@@ -46,7 +47,7 @@ class CurrentCoordinate extends React.Component {
 	}
 	render() {
 		var { className } = this.props;
-		var { type, show, chartData, currentItems } = this.context;
+		var { type, show, chartData, currentItems } = this.props;
 
 		if (type !== "svg") return null;
 
@@ -69,29 +70,18 @@ CurrentCoordinate.propTypes = {
 	className: React.PropTypes.string,
 };
 
-CurrentCoordinate.defaultProps = { namespace: "ReStock.CurrentCoordinate", r: 3 };
-
-CurrentCoordinate.contextTypes = {
-	show: React.PropTypes.bool.isRequired,
-	currentItems: React.PropTypes.array.isRequired,
-	chartData: React.PropTypes.array.isRequired,
-
-	getCanvasContexts: React.PropTypes.func,
-	margin: React.PropTypes.object.isRequired,
-	// secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
-	callbackForCanvasDraw: React.PropTypes.func.isRequired,
-	getAllCanvasDrawCallback: React.PropTypes.func,
-	type: React.PropTypes.string.isRequired,
+CurrentCoordinate.defaultProps = {
+	r: 3
 };
 
-CurrentCoordinate.drawOnCanvas = (canvasContext, context, props) => {
-	var { mouseXY, currentCharts, chartData, currentItems, show } = context;
+CurrentCoordinate.drawOnCanvas = (canvasContext, props) => {
+	var { mouseXY, currentCharts, chartData, currentItems, show } = props;
 
-	CurrentCoordinate.drawOnCanvasStatic(context, props, canvasContext, show, mouseXY, currentCharts, chartData, currentItems);
+	CurrentCoordinate.drawOnCanvasStatic(props, canvasContext, show, mouseXY, currentCharts, chartData, currentItems);
 };
 
-CurrentCoordinate.drawOnCanvasStatic = (context, props, ctx, show, mouseXY, currentCharts, chartData, currentItems) => {
-	var { margin } = context;
+CurrentCoordinate.drawOnCanvasStatic = (props, ctx, show, mouseXY, currentCharts, chartData, currentItems) => {
+	var { margin } = props;
 	var circle = CurrentCoordinate.helper(props, show, chartData, currentItems);
 
 	if (!circle) return null;
@@ -158,4 +148,14 @@ CurrentCoordinate.helper = (props, show, chartData, currentItems) => {
 	return { x, y, r, fill };
 };
 
-module.exports = CurrentCoordinate;
+export default pure(CurrentCoordinate, {
+	show: React.PropTypes.bool.isRequired,
+	currentItems: React.PropTypes.array.isRequired,
+	chartData: React.PropTypes.array.isRequired,
+
+	getCanvasContexts: React.PropTypes.func,
+	margin: React.PropTypes.object.isRequired,
+	callbackForCanvasDraw: React.PropTypes.func.isRequired,
+	getAllCanvasDrawCallback: React.PropTypes.func,
+	type: React.PropTypes.string.isRequired,
+});

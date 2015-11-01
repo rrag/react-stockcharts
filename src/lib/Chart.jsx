@@ -94,4 +94,4 @@ Chart.childContextTypes = {
 	chartId: React.PropTypes.number.isRequired,
 };
 
-module.exports = Chart;
+export default Chart;

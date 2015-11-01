@@ -2,8 +2,9 @@
 
 import React from "react";
 import Axis from "./Axis";
+import PureComponent from "../utils/PureComponent"
 
-class XAxis extends React.Component {
+class XAxis extends PureComponent {
 	render() {
 		var { axisAt, showTicks, tickFormat, ticks } = this.props;
 

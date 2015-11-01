@@ -100,4 +100,4 @@ ChartCanvas.defaultProps = {
 	// initialDisplay: 30
 };
 
-module.exports = ChartCanvas;
+export default ChartCanvas;

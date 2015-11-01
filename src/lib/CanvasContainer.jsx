@@ -47,4 +47,4 @@ CanvasContainer.propTypes = {
 	type: React.PropTypes.string.isRequired,
 };
 
-module.exports = CanvasContainer;
+export default CanvasContainer;

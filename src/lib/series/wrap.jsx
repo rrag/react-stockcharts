@@ -3,6 +3,8 @@
 import React from "react";
 import objectAssign from "object-assign";
 
+import pure from "../pure";
+
 function getDisplayName(Series) {
 	var name = Series.displayName || Series.name || "Series";
 	return name;
@@ -14,13 +16,13 @@ function wrap(WrappedSeries) {
 			var callback = WrappedSeries.drawOnCanvas;
 			if (callback) {
 				var { type } = this.props;
-				var { getCanvasContexts } = this.context;
+				var { getCanvasContexts } = this.props;
 
 				if (type !== "svg" && getCanvasContexts !== undefined) {
 					var contexts = getCanvasContexts();
 					var { defaultProps } = WrappedSeries;
 					var props = objectAssign({}, defaultProps, this.props);
-					if (contexts) BaseCanvasSeries.baseReStockDrawOnCanvasHelper(contexts.axes, this.context, props, callback);
+					if (contexts) BaseCanvasSeries.baseReStockDrawOnCanvasHelper(contexts.axes, props, callback);
 				}
 			}
 		}
@@ -28,12 +30,13 @@ function wrap(WrappedSeries) {
 			this.componentDidMount();
 		}
 		componentWillMount() {
-			this.componentWillReceiveProps(this.props, this.context);
+			this.componentWillReceiveProps(this.props);
 		}
-		componentWillReceiveProps(nextProps, nextContext) {
+		componentWillReceiveProps(nextProps) {
 			var callback = WrappedSeries.drawOnCanvas;
 			if (callback) {
-				var { canvasOriginX, canvasOriginY , height, width, compareSeries, indicator, xAccessor, yAccessor, seriesId, chartId } = nextContext;
+				var { canvasOriginX, canvasOriginY , height, width, compareSeries,
+					indicator, xAccessor, yAccessor, seriesId, chartId } = nextProps;
 				var canvasOrigin = [canvasOriginX, canvasOriginY];
 
 				var { defaultProps } = WrappedSeries;
@@ -41,7 +44,7 @@ function wrap(WrappedSeries) {
 
 				var draw = BaseCanvasSeries.baseReStockDrawOnCanvas.bind(null, props, callback, canvasOrigin, height, width, compareSeries, indicator, xAccessor, yAccessor);
 
-				nextContext.callbackForCanvasDraw({
+				nextProps.callbackForCanvasDraw({
 					chartId: chartId,
 					seriesId: seriesId,
 					draw: draw,
@@ -49,15 +52,23 @@ function wrap(WrappedSeries) {
 			}
 		}
 		render() {
-			var { type, height, width, compareSeries, indicator, xAccessor, yAccessor, xScale, yScale, plotData, stroke, fill } = this.context;
-
 			var callback = WrappedSeries.drawOnCanvas;
+			var { type } = this.props;
 
 			if (type !== "svg" && callback !== undefined) return null;
 
-			var { defaultProps } = WrappedSeries;
-
 			return <WrappedSeries ref="wrappedSeries"
+				{...this.props} />;
+		}
+	};
+
+/*
+			var { type, height, width, compareSeries, indicator, xAccessor,
+				yAccessor, xScale, yScale, plotData, stroke, fill } = this.props;
+			// var { defaultProps } = WrappedSeries;
+
+			// console.log(this.props);
+
 				{...defaultProps}
 				type={type}
 				height={height} width={width}
@@ -67,43 +78,23 @@ function wrap(WrappedSeries) {
 				xScale={xScale} yScale={yScale}
 				stroke={stroke} fill={fill}
 				plotData={plotData}
-				{...this.props} />;
-		}
-	};
+*/
 
 	BaseCanvasSeries.displayName = `wrap(${ getDisplayName(WrappedSeries) })`;
 
-	BaseCanvasSeries.contextTypes = {
-		getCanvasContexts: React.PropTypes.func,
-		canvasOriginX: React.PropTypes.number,
-		canvasOriginY: React.PropTypes.number,
-		height: React.PropTypes.number.isRequired,
-		width: React.PropTypes.number.isRequired,
-		// secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
-		callbackForCanvasDraw: React.PropTypes.func.isRequired,
-		chartId: React.PropTypes.number.isRequired,
-		seriesId: React.PropTypes.number.isRequired,
-		stroke: React.PropTypes.string,
-		fill: React.PropTypes.string,
-
-		type: React.PropTypes.string,
-		indicator: React.PropTypes.func,
-		xScale: React.PropTypes.func.isRequired,
-		yScale: React.PropTypes.func.isRequired,
-		xAccessor: React.PropTypes.func.isRequired,
-		yAccessor: React.PropTypes.func.isRequired,
-		compareSeries: React.PropTypes.array.isRequired,
-		plotData: React.PropTypes.array.isRequired,
-	};
-
-	BaseCanvasSeries.baseReStockDrawOnCanvasHelper = (canvasContext, context, props, callback) => {
-		var { height, width, compareSeries, indicator, xAccessor, yAccessor, xScale, yScale, plotData, canvasOriginX, canvasOriginY } = context;
+	BaseCanvasSeries.baseReStockDrawOnCanvasHelper = (canvasContext, props, callback) => {
+		var { height, width, compareSeries, indicator, xAccessor, yAccessor,
+			xScale, yScale, plotData, canvasOriginX, canvasOriginY } = props;
 		var canvasOrigin = [canvasOriginX, canvasOriginY];
 
-		BaseCanvasSeries.baseReStockDrawOnCanvas(props, callback, canvasOrigin, height, width, compareSeries, indicator, xAccessor, yAccessor, canvasContext, xScale, yScale, plotData);
+		BaseCanvasSeries.baseReStockDrawOnCanvas(props, callback, canvasOrigin, height, width,
+			compareSeries, indicator, xAccessor, yAccessor, canvasContext, xScale, yScale, plotData);
 	};
 
-	BaseCanvasSeries.baseReStockDrawOnCanvas = (props, callback, canvasOrigin, height, width, compareSeries, indicator, xAccessor, yAccessor, ctx, xScale, yScale, plotData) => {
+	BaseCanvasSeries.baseReStockDrawOnCanvas = (props, callback,
+			canvasOrigin, height, width, compareSeries, indicator,
+			xAccessor, yAccessor, ctx, xScale, yScale, plotData) => {
+
 		ctx.save();
 
 		ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -122,16 +113,38 @@ function wrap(WrappedSeries) {
 		ctx.restore();
 	};
 
-	Object.keys(WrappedSeries)
+	/*Object.keys(WrappedSeries)
 		.filter((key) => key !== "propTypes")
 		.filter(key => key !== "defaultProps")
 		.filter(key => key !== "displayName")
 		.filter(key => key !== "contextTypes")
 		.filter(key => key !== "childContextTypes")
-		.forEach(key => BaseCanvasSeries[key] = WrappedSeries[key]);
+		.forEach(key => BaseCanvasSeries[key] = WrappedSeries[key]);*/
 
+	BaseCanvasSeries.yAccessor = WrappedSeries.yAccessor;
+	BaseCanvasSeries.defaultProps = WrappedSeries.defaultProps;
 	// console.log(Object.keys(BaseCanvasSeries))
-	return BaseCanvasSeries;
+	return pure(BaseCanvasSeries, {
+		getCanvasContexts: React.PropTypes.func,
+		canvasOriginX: React.PropTypes.number,
+		canvasOriginY: React.PropTypes.number,
+		height: React.PropTypes.number.isRequired,
+		width: React.PropTypes.number.isRequired,
+		callbackForCanvasDraw: React.PropTypes.func.isRequired,
+		chartId: React.PropTypes.number.isRequired,
+		seriesId: React.PropTypes.number.isRequired,
+		stroke: React.PropTypes.string,
+		fill: React.PropTypes.string,
+
+		type: React.PropTypes.string,
+		indicator: React.PropTypes.func,
+		xScale: React.PropTypes.func.isRequired,
+		yScale: React.PropTypes.func.isRequired,
+		xAccessor: React.PropTypes.func.isRequired,
+		yAccessor: React.PropTypes.func.isRequired,
+		compareSeries: React.PropTypes.array.isRequired,
+		plotData: React.PropTypes.array.isRequired,
+	});
 }
 
 export default wrap;

@@ -3,7 +3,12 @@
 import React from "react";
 import Utils from "./utils/utils";
 import objectAssign from "object-assign";
+import PureComponent from "./utils/PureComponent";
 
+
+// Cannot make this PureComponent because its children use some things from context 
+// and making this pure would stop its children from updating on state changes of EventHandler
+// refer to https://github.com/facebook/react/issues/2517
 class DataSeries extends React.Component {
 
 	getChildContext() {
@@ -50,10 +55,11 @@ DataSeries.contextTypes = {
 	overlays: React.PropTypes.array.isRequired,
 };
 DataSeries.childContextTypes = {
+	seriesId: React.PropTypes.number.isRequired,
 	yAccessor: React.PropTypes.func.isRequired,
 	indicator: React.PropTypes.func,
 	stroke: React.PropTypes.string,
 	fill: React.PropTypes.string,
-	seriesId: React.PropTypes.number.isRequired,
 };
-module.exports = DataSeries;
+
+export default DataSeries;

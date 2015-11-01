@@ -2,8 +2,9 @@
 
 import React from "react";
 import Axis from "./Axis";
+import PureComponent from "../utils/PureComponent"
 
-class YAxis extends React.Component {
+class YAxis extends PureComponent {
 	render() {
 		var { axisAt, tickFormat, ticks, percentScale, tickValues } = this.props;
 		var { yScale, chartData } = this.context;

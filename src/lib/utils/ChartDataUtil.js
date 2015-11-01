@@ -283,7 +283,7 @@ var ChartDataUtil = {
 		var overlaysToAdd = [];
 		React.Children.forEach(chartProps.children, (child) => {
 			if (React.isValidElement(child) && /DataSeries$/.test(child.props.namespace)) {
-				var yAccessor = child.props.yAccessor;
+				var { yAccessor } = child.props;
 				var indicatorProp = child.props.indicator;
 				if (yAccessor === undefined && indicatorProp === undefined) {
 					console.error(`Either have yAccessor or indicator which provides a yAccessor for Chart ${ chartProps.id } DataSeries ${ child.props.id }`);

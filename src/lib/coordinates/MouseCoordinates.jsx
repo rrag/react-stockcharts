@@ -2,46 +2,47 @@
 
 import React from "react";
 import Utils from "../utils/utils";
-import PureComponent from "../utils/PureComponent";
+// import PureComponent from "../utils/PureComponent";
+import pure from "../pure";
 import CrossHair from "./CrossHair";
 
-class MouseCoordinates extends PureComponent {
+class MouseCoordinates extends React.Component {
 	componentDidMount() {
-		var { type, getCanvasContexts } = this.context;
+		var { type, getCanvasContexts } = this.props;
 
 		if (type !== "svg" && getCanvasContexts !== undefined) {
 			var contexts = getCanvasContexts();
-			if (contexts) MouseCoordinates.drawOnCanvas(contexts.mouseCoord, this.context, this.props);
+			if (contexts) MouseCoordinates.drawOnCanvas(contexts.mouseCoord, this.props);
 		}
 	}
 	componentDidUpdate() {
 		this.componentDidMount();
 	}
 	componentWillMount() {
-		this.componentWillReceiveProps(this.props, this.context);
+		this.componentWillReceiveProps(this.props, this.props);
 	}
-	componentWillReceiveProps(nextProps, nextContext) {
-		var draw = MouseCoordinates.drawOnCanvasStatic.bind(null, nextContext, nextProps);
+	componentWillReceiveProps(nextProps) {
+		var draw = MouseCoordinates.drawOnCanvasStatic.bind(null, nextProps);
 
-		var temp = nextContext.getAllCanvasDrawCallback().filter(each => each.type === "mouse");
+		var temp = nextProps.getAllCanvasDrawCallback().filter(each => each.type === "mouse");
 		if (temp.length === 0) {
-			nextContext.callbackForCanvasDraw({
+			nextProps.callbackForCanvasDraw({
 				type: "mouse",
 				draw: draw,
 			});
 		} else {
-			nextContext.callbackForCanvasDraw(temp[0], {
+			nextProps.callbackForCanvasDraw(temp[0], {
 				type: "mouse",
 				draw: draw,
 			});
 		}
 	}
 	render() {
-		var { type, mouseXY, currentCharts, chartData, currentItems, show } = this.context;
+		var { type, mouseXY, currentCharts, chartData, currentItems, show } = this.props;
 
 		if (type !== "svg") return null;
 
-		var pointer = MouseCoordinates.helper(this.context, this.props, show, mouseXY, currentCharts, chartData, currentItems);
+		var pointer = MouseCoordinates.helper(this.props, this.props, show, mouseXY, currentCharts, chartData, currentItems);
 
 		if (!pointer) return null;
 
@@ -50,24 +51,6 @@ class MouseCoordinates extends PureComponent {
 	}
 }
 
-MouseCoordinates.contextTypes = {
-	width: React.PropTypes.number.isRequired,
-	height: React.PropTypes.number.isRequired,
-	mainChart: React.PropTypes.number.isRequired,
-	show: React.PropTypes.bool,
-	mouseXY: React.PropTypes.array,
-	dateAccessor: React.PropTypes.func,
-	chartData: React.PropTypes.array.isRequired,
-	currentItems: React.PropTypes.array.isRequired,
-	currentCharts: React.PropTypes.array.isRequired,
-	getCanvasContexts: React.PropTypes.func,
-	margin: React.PropTypes.object.isRequired,
-	// secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
-	callbackForCanvasDraw: React.PropTypes.func.isRequired,
-	getAllCanvasDrawCallback: React.PropTypes.func,
-	type: React.PropTypes.string.isRequired,
-};
-
 MouseCoordinates.propTypes = {
 	xDisplayFormat: React.PropTypes.func.isRequired,
 	yDisplayFormat: React.PropTypes.func.isRequired,
@@ -75,7 +58,6 @@ MouseCoordinates.propTypes = {
 };
 
 MouseCoordinates.defaultProps = {
-	namespace: "ReStock.MouseCoordinates",
 	show: false,
 	snapX: true,
 	type: "crosshair",
@@ -83,14 +65,14 @@ MouseCoordinates.defaultProps = {
 	yDisplayFormat: Utils.displayNumberFormat,
 };
 
-MouseCoordinates.drawOnCanvas = (canvasContext, context, props) => {
-	var { mouseXY, currentCharts, chartData, currentItems, show } = context;
+MouseCoordinates.drawOnCanvas = (canvasContext, props) => {
+	var { mouseXY, currentCharts, chartData, currentItems, show } = props;
 
-	MouseCoordinates.drawOnCanvasStatic(context, props, canvasContext, show, mouseXY, currentCharts, chartData, currentItems);
+	MouseCoordinates.drawOnCanvasStatic(props, canvasContext, show, mouseXY, currentCharts, chartData, currentItems);
 };
-MouseCoordinates.drawOnCanvasStatic = (context, props, ctx, show, mouseXY, currentCharts, chartData, currentItems) => {
-	var { margin } = context;
-	var pointer = MouseCoordinates.helper(context, props, show, mouseXY, currentCharts, chartData, currentItems);
+MouseCoordinates.drawOnCanvasStatic = (props, ctx, show, mouseXY, currentCharts, chartData, currentItems) => {
+	var { margin } = props;
+	var pointer = MouseCoordinates.helper(props, show, mouseXY, currentCharts, chartData, currentItems);
 
 	if (!pointer) return null;
 
@@ -106,10 +88,9 @@ MouseCoordinates.drawOnCanvasStatic = (context, props, ctx, show, mouseXY, curre
 	ctx.restore();
 };
 
-MouseCoordinates.helper = (context, props, show, mouseXY, currentCharts, chartData, currentItems) => {
+MouseCoordinates.helper = (props, show, mouseXY, currentCharts, chartData, currentItems) => {
 	if (!show) return;
-	var { mainChart, dateAccessor, height, width } = context;
-	var { snapX, type, xDisplayFormat } = props;
+	var { mainChart, dateAccessor, height, width, snapX, type, xDisplayFormat } = props;
 	var edges = chartData
 		.filter((eachChartData) => currentCharts.indexOf(eachChartData.id) > -1)
 		.map((each) => {
@@ -155,4 +136,21 @@ MouseCoordinates.helper = (context, props, show, mouseXY, currentCharts, chartDa
 	return { height, width, mouseXY: [x, y], xDisplayValue: xDisplayFormat(xDisplayValue), edges };
 };
 
-module.exports = MouseCoordinates;
+// export default MouseCoordinates;
+export default pure(MouseCoordinates, {
+	width: React.PropTypes.number.isRequired,
+	height: React.PropTypes.number.isRequired,
+	mainChart: React.PropTypes.number.isRequired,
+	show: React.PropTypes.bool,
+	mouseXY: React.PropTypes.array,
+	dateAccessor: React.PropTypes.func,
+	chartData: React.PropTypes.array.isRequired,
+	currentItems: React.PropTypes.array.isRequired,
+	currentCharts: React.PropTypes.array.isRequired,
+	getCanvasContexts: React.PropTypes.func,
+	margin: React.PropTypes.object.isRequired,
+	// secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
+	callbackForCanvasDraw: React.PropTypes.func.isRequired,
+	getAllCanvasDrawCallback: React.PropTypes.func,
+	type: React.PropTypes.string.isRequired,
+});

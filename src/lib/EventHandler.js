@@ -45,6 +45,7 @@ class EventHandler extends PureComponent {
 		this.storeToChartState = this.storeToChartState.bind(this);
 		this.getChartStateFor = this.getChartStateFor.bind(this);
 
+		this.secretArray = [];
 		this.state = {
 			focus: false,
 			currentItems: [],
@@ -92,7 +93,7 @@ class EventHandler extends PureComponent {
 		var plotData = dataForInterval.slice(beginIndex);
 
 		var chartData = ChartDataUtil.getChartData(props, dimensions, plotData, data, options);
-
+		// console.log("componentWillMount");
 		this.setState({
 			data: data,
 			rawData: rawData,
@@ -161,6 +162,7 @@ class EventHandler extends PureComponent {
 		var newCurrentItems = ChartDataUtil.getCurrentItems(newChartData, this.state.mouseXY, plotData);
 
 		this.clearBothCanvas(nextProps);
+		console.log("componentWillReceiveProps");
 
 		this.setState({
 			rawData: rawData,
@@ -419,6 +421,12 @@ class EventHandler extends PureComponent {
 		} else {
 			/// AAAAAAAAAAAAAAHHHHH mutating state, instead of setting it, if only there is a better way
 			secretToSuperFastCanvasDraw.push(findThis);
+			/* console.log(secretToSuperFastCanvasDraw.concat(findThis).length);
+			this.setState({
+				secretToSuperFastCanvasDraw: secretToSuperFastCanvasDraw.concat(findThis),
+			}, () => {
+				console.log(this.state.secretToSuperFastCanvasDraw.length);
+			});*/
 		}
 		/* this.setState({
 			secretToSuperFastCanvasDraw: secretToSuperFastCanvasDraw.concat(cb),
@@ -698,7 +706,7 @@ class EventHandler extends PureComponent {
 			return newChild;
 		});
 		return (
-			<g>{this.props.children}</g>
+			<g>{children}</g>
 		);
 	}
 }
@@ -745,4 +753,4 @@ EventHandler.childContextTypes = {
 	deltaXY: React.PropTypes.func,
 };
 
-module.exports = EventHandler;
+export default EventHandler;
