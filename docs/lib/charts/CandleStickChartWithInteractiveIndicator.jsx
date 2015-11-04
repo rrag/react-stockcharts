@@ -60,8 +60,6 @@ var CandleStickChartWithInteractiveIndicator = React.createClass({
 					<TrendLine enabled={true}
 						snap={true} snapTo={d => [d.open, d.high, d.low, d.close]} />
 				</Chart>
-				<CurrentCoordinate forChart={1} forDataSeries={1} />
-				<CurrentCoordinate forChart={1} forDataSeries={2} />
 				<Chart id={2} yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 						height={150} origin={(w, h) => [0, h - 300]} >
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>

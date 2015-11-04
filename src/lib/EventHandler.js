@@ -48,6 +48,7 @@ class EventHandler extends PureComponent {
 
 		this.subscriptions = [];
 		this.canvasDrawCallbackList = [];
+		this.panHappened = false;
 		// this.secretArray = [];
 		this.state = {
 			focus: false,
@@ -358,7 +359,7 @@ class EventHandler extends PureComponent {
 		props = props || this.props;
 		var canvases = props.canvasContexts();
 		if (canvases && canvases.axes) {
-			this.clearCanvas([canvases.axes, canvases.mouseCoord]);
+			this.clearCanvas([canvases.axes, canvases.mouseCoord, canvases.interactive]);
 		}
 	}
 	clearCanvas(canvasList) {
@@ -421,7 +422,6 @@ class EventHandler extends PureComponent {
 		return this.canvasDrawCallbackList;
 	}
 	subscribe(forChart, eventType, callback) {
-		console.log(eventType, callback);
 		this.subscriptions.push({
 			forChart,
 			subscriptionId: (subscriptionCount++),
@@ -445,10 +445,7 @@ class EventHandler extends PureComponent {
 		var contexts = this.getCanvasContexts();
 
 		if (contexts && contexts.mouseCoord) {
-			var { mouseCoord } = contexts;
-
-			mouseCoord.setTransform(1, 0, 0, 1, 0, 0);
-			mouseCoord.clearRect(-1, -1, mouseCoord.canvas.width + 2, mouseCoord.canvas.height + 2);
+			this.clearCanvas([contexts.mouseCoord, contexts.interactive]);
 		}
 
 		this.setState({
@@ -456,6 +453,8 @@ class EventHandler extends PureComponent {
 			currentItems: currentItems,
 			show: true,
 			currentCharts: currentCharts,
+		}, () => {
+			this.triggerCallback("mousemove");
 		});
 	}
 	getCanvasContexts() {
@@ -481,9 +480,7 @@ class EventHandler extends PureComponent {
 		var contexts = this.getCanvasContexts();
 
 		if (contexts && contexts.mouseCoord) {
-			var { mouseCoord } = contexts;
-			mouseCoord.setTransform(1, 0, 0, 1, 0, 0);
-			mouseCoord.clearRect(-1, -1, mouseCoord.canvas.width + 2, mouseCoord.canvas.height + 2);
+			this.clearCanvas([contexts.mouseCoord])
 		}
 
 		this.setState({
@@ -540,6 +537,7 @@ class EventHandler extends PureComponent {
 			panOrigin: panOrigin,
 			focus: true,
 		});
+		this.panHappened = false;
 	}
 	panHelper(mousePosition) {
 		var { data, mainChart, chartData, interval, panStartDomain, panOrigin } = this.state;
@@ -607,11 +605,12 @@ class EventHandler extends PureComponent {
 			this.handlePanStart(startDomain, mousePosition);
 		} else {
 
+			this.panHappened = true;
 			var state = this.panHelper(mousePosition);
 			if (this.props.type !== "svg") {
 
 				var { canvasList, getCanvasContexts, margin } = this.context;
-				var { axes: axesCanvasContext, mouseCoord: mouseContext } = this.getCanvasContexts();
+				var { axes: axesCanvasContext, mouseCoord: mouseContext, interactive } = this.getCanvasContexts();
 				var { chartData, plotData } = state;
 				var { show } = this.state;
 				var { canvasDrawCallbackList } = this;
@@ -641,8 +640,12 @@ class EventHandler extends PureComponent {
 								if (each.type === "axis") {
 									each.draw(axesCanvasContext, eachChart, xScale, yScale);
 								}
+								if (each.type === "interactive") {
+									each.draw(interactive, { ...state, chartData: eachChart });
+								}
 							});
 					});
+
 					canvasDrawCallbackList
 						.filter(each => each.chartId === undefined)
 						.filter(each => each.type === "axis")
@@ -676,18 +679,25 @@ class EventHandler extends PureComponent {
 			panInProgress: false,
 			panStartDomain: null,
 		}), () => {
-			var callbackList = this.subscriptions.filter(each => each.eventType === "mouseup");
-			callbackList.forEach(each => {
-				// console.log(each);
-				var { plotData, mouseXY, currentCharts, chartData, currentItems } = this.state;
-				var singleChartData = chartData.filter(eachItem => eachItem.id === each.forChart)[0];
-				var singleCurrentItem = currentItems.filter(eachItem => eachItem.id === each.forChart)[0];
-				each.callback({
-					plotData, mouseXY, currentCharts,
-					chartData: singleChartData,
-					currentItem: singleCurrentItem.data,
-				});
-			})
+			if (!this.panHappened) {
+				this.triggerCallback("click");
+			} else {
+				this.triggerCallback("panend");
+			}
+		});
+	}
+	triggerCallback(eventType) {
+		var callbackList = this.subscriptions.filter(each => each.eventType === eventType);
+		callbackList.forEach(each => {
+			// console.log(each);
+			var { plotData, mouseXY, currentCharts, chartData, currentItems } = this.state;
+			var singleChartData = chartData.filter(eachItem => eachItem.id === each.forChart)[0];
+			var singleCurrentItem = currentItems.filter(eachItem => eachItem.id === each.forChart)[0];
+			each.callback({
+				plotData, mouseXY, currentCharts,
+				chartData: singleChartData,
+				currentItem: singleCurrentItem.data,
+			});
 		});
 	}
 	handleFocus(focus) {

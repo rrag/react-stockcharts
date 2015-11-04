@@ -120,6 +120,7 @@ class EventCapture extends React.Component {
 	handleTouchMove(e) {
 		console.log("handleTouchMove", e);
 	}
+
 	render() {
 		var className = this.context.panInProgress ? "react-stockcharts-grabbing-cursor" : "react-stockcharts-crosshair-cursor";
 

@@ -33,6 +33,7 @@ var pages = [
 	require("lib/page/MACDIndicatorPage"),
 	require("lib/page/RSIIndicatorPage"),
 	require("lib/page/StochasticIndicatorPage"),
+	require("lib/page/TrendLineInteractiveIndicatorPage"),
 	require("lib/page/HeikinAshiPage"),
 	require("lib/page/KagiPage"),
 	require("lib/page/PointAndFigurePage"),
@@ -134,8 +135,8 @@ function renderPage(data, dataFull, compareData) {
 d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 	d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
 		d3.tsv("data/comparison.tsv", (err3, compareData) => {
-			// renderPage(MSFT, MSFTFull, compareData);
-			renderPartialPage(MSFT, MSFTFull, compareData);
+			renderPage(MSFT, MSFTFull, compareData);
+			// renderPartialPage(MSFT, MSFTFull, compareData);
 		});
 	});
 });
