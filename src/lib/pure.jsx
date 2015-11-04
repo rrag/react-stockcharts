@@ -31,7 +31,17 @@ function pure(PureSeries, contextShape) {
 
 	PureCanvasSeries.contextTypes = contextShape;
 	PureCanvasSeries.yAccessor = PureSeries.yAccessor;
-	PureCanvasSeries.defaultProps = PureSeries.defaultProps;
+
+	var defaultProps = {};
+
+	if (PureSeries.defaultProps) {
+		Object.keys(PureSeries.defaultProps)
+			.filter(key => key === "namespace")
+			.forEach(key => {
+				defaultProps[key] = PureSeries.defaultProps[key];
+			});
+		PureCanvasSeries.defaultProps = defaultProps;
+	}
 
 	/* Object.keys(PureSeries)
 		.filter((key) => key !== "propTypes")

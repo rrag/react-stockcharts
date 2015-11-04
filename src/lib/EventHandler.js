@@ -427,7 +427,7 @@ class EventHandler extends PureComponent {
 			subscriptionId: (subscriptionCount++),
 			eventType,
 			callback,
-		})
+		});
 	}
 	unsubscribe(subscriptionId) {
 		console.log(subscriptionId);
@@ -480,7 +480,7 @@ class EventHandler extends PureComponent {
 		var contexts = this.getCanvasContexts();
 
 		if (contexts && contexts.mouseCoord) {
-			this.clearCanvas([contexts.mouseCoord])
+			this.clearCanvas([contexts.mouseCoord]);
 		}
 
 		this.setState({
@@ -641,7 +641,7 @@ class EventHandler extends PureComponent {
 									each.draw(axesCanvasContext, eachChart, xScale, yScale);
 								}
 								if (each.type === "interactive") {
-									each.draw(interactive, { ...state, chartData: eachChart });
+									each.draw(interactive, objectAssign({}, state, { chartData: eachChart }));
 								}
 							});
 					});

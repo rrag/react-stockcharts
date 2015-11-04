@@ -14,7 +14,7 @@ class TrendLine extends React.Component {
 		super(props);
 		this.state = {
 			trends: [],
-		}
+		};
 	}
 	componentWillMount() {
 		var { subscribe, chartId, xAccessor } = this.context;
@@ -53,7 +53,7 @@ class TrendLine extends React.Component {
 		} else {
 			this.setState({
 				currentPos: [xValue, yValue],
-			})
+			});
 		}
 	}
 	handleClick(chartId, xAccessor, {mouseXY, currentItem, currentCharts, chartData}) {
@@ -66,7 +66,7 @@ class TrendLine extends React.Component {
 		var yValue = getYValue(snapTo(currentItem), yScale.invert(mouseXY[1]));
 
 		var xValue = xAccessor(currentItem);
-		console.log(start);
+		// console.log(start);
 		if (start) {
 			this.setState({
 				start: null,
@@ -169,15 +169,15 @@ TrendLine.drawOnCanvas = ({ xAccessor, canvasOriginX, canvasOriginY, width, heig
 	ctx.strokeStyle = "black";
 
 	lines.forEach(each => {
-		ctx.beginPath()
+		ctx.beginPath();
 		ctx.moveTo(xScale(each.x1), yScale(each.y1));
 		ctx.lineTo(xScale(each.x2), yScale(each.y2));
 		// console.log(each);
 		ctx.stroke();
-	})
+	});
 
 	ctx.restore();
-}
+};
 
 TrendLine.helper = (plotData, xAccessor, trends, chartData) => {
 	var lines = trends
@@ -185,15 +185,15 @@ TrendLine.helper = (plotData, xAccessor, trends, chartData) => {
 		.map((each, idx) => generateLine(each.start, each.end, xAccessor, plotData));
 
 	return lines;
-}
+};
 
 function generateLine(start, end, xAccessor, plotData) {
 	/* if (end[0] - start[0] === 0) {
 		// vertical line
 		throw new Error("Trendline cannot be a vertical line")
 	} */
-	var m /* slope */ = (end[1] - start[1]) / (end[0] - start[0])
-	var b /* y intercept */ = -1 * m * end[0] + end[1]
+	var m /* slope */ = (end[1] - start[1]) / (end[0] - start[0]);
+	var b /* y intercept */ = -1 * m * end[0] + end[1];
 	// y = m * x + b
 	var x1 = xAccessor(plotData[0]);
 	var y1 = m * x1 + b;

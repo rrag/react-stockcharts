@@ -222,7 +222,7 @@ function renderPartialPage(data, dataFull, compareData) {
 	// RenkoWithUpdatingData
 	// PointAndFigureWithUpdatingData
 	// CandleStickChartWithInteractiveIndicator
-	var Chart = require("lib/charts/CandleStickChartWithInteractiveIndicator");
+	var Chart = require("lib/charts/CandleStickChartWithMACDIndicator");
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	// data, dataFull, compareData
