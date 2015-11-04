@@ -30,11 +30,6 @@ var TrendLineInteractiveIndicatorPage = React.createClass({
 						</TypeChooser>
 					</Section>
 				</Row>
-				<Row>
-					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require("md/STOCHASTIC-INDICATOR")}}></aside>
-					</Section>
-				</Row>
 			</ContentSection>
 		);
 	}

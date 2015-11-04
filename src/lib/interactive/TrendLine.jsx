@@ -66,7 +66,7 @@ class TrendLine extends React.Component {
 		var yValue = getYValue(snapTo(currentItem), yScale.invert(mouseXY[1]));
 
 		var xValue = xAccessor(currentItem);
-		// console.log(xValue, yValue, snapTo(currentItem));
+		console.log(start);
 		if (start) {
 			this.setState({
 				start: null,
@@ -114,15 +114,28 @@ class TrendLine extends React.Component {
 		this.componentDidMount();
 	}
 	render() {
-		var { chartCanvasType, chartData } = this.context;
+		var { chartCanvasType, chartData, plotData, xAccessor } = this.context;
 
 		if (chartCanvasType !== "svg") return null;
 
 		var { xScale, yScale } = chartData.plot.scales;
-		var lines = TrendLine.helper(this.context, this.state.trends, chartData);
+		var { trends, currentPos, start, tempEnd } = this.state;
 
+		var temp = trends;
+		if (start && tempEnd) {
+			temp = this.state.trends.concat({ start, end: tempEnd });
+		}
+
+		var lines = TrendLine.helper(plotData, xAccessor, temp, chartData);
+
+		var circle = (currentPos)
+			? <circle cx={xScale(currentPos[0])} cy={yScale(currentPos[1])} stroke="steelblue" fill="none" strokeWidth={2} r={3} />
+			: null;
+		// console.log(circle);
 		return (
-			<g>{lines
+			<g>
+				{circle}
+				{lines
 				.map((coords, idx) => 
 					<line key={idx} stroke="black" x1={xScale(coords.x1)} y1={yScale(coords.y1)}
 						x2={xScale(coords.x2)} y2={yScale(coords.y2)} />)}
@@ -145,7 +158,6 @@ TrendLine.drawOnCanvas = ({ xAccessor, canvasOriginX, canvasOriginY, width, heig
 	ctx.rect(-1, -1, width + 1, height + 1);
 	ctx.clip();
 
-
 	if (currentPos) {
 		ctx.strokeStyle = "steelblue";
 		ctx.lineWidth = 2;
@@ -166,11 +178,10 @@ TrendLine.drawOnCanvas = ({ xAccessor, canvasOriginX, canvasOriginY, width, heig
 
 	ctx.restore();
 }
-TrendLine.helper = (plotData, xAccessor, trends, chartData) => {
 
-	// var { trends } = this.state;
+TrendLine.helper = (plotData, xAccessor, trends, chartData) => {
 	var lines = trends
-		.filter(each => each.start !== each.end)
+		.filter(each => each.start[0] !== each.end[0])
 		.map((each, idx) => generateLine(each.start, each.end, xAccessor, plotData));
 
 	return lines;
