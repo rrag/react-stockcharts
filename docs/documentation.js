@@ -34,6 +34,7 @@ var pages = [
 	require("lib/page/RSIIndicatorPage"),
 	require("lib/page/StochasticIndicatorPage"),
 	require("lib/page/TrendLineInteractiveIndicatorPage"),
+	require("lib/page/FibonacciInteractiveIndicatorPage"),
 	require("lib/page/HeikinAshiPage"),
 	require("lib/page/KagiPage"),
 	require("lib/page/PointAndFigurePage"),
@@ -222,7 +223,8 @@ function renderPartialPage(data, dataFull, compareData) {
 	// RenkoWithUpdatingData
 	// PointAndFigureWithUpdatingData
 	// CandleStickChartWithInteractiveIndicator
-	var Chart = require("lib/charts/CandleStickChartWithMACDIndicator");
+	// CandleStickChartWithFibonacciInteractiveIndicator
+	var Chart = require("lib/charts/CandleStickChartWithFibonacciInteractiveIndicator");
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	// data, dataFull, compareData

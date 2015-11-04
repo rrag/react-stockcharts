@@ -1,8 +1,22 @@
+## v0.2.9
+
+#### Changes
+
+1. Fix the moving average stroke color bug that was introduced from `v0.2.8`
+1. Initial version of Interactive indicator `TrendLine`
+
+## v0.2.8
+
+#### Changes
+
+1. Create a pure function instead of React Components extending PureComponent, this way the `componentWillReceiveProps` will not be called when no props are changed
+1. Stop mutating the state of `EventHandler`, instead use a separate mutable state variable to hold a list of callbacks for drawing on canvas
+
 ## v0.2.6
 
 #### Changes
 
-1. User `save-svg-as-png` `v1.0.1` instead of referring from source
+1. Use `save-svg-as-png` `v1.0.1` instead of referring from source
 1. Add onClick handler for all tooltips
 1. Change onClick handler of `MovingAverageTooltip` to provide `chartId, dataSeriesId, options`
 
@@ -10,7 +24,7 @@
 
 #### Changes
 
-1. use React 0.14.0 instead of 0.14.0-rc1
+1. Use React 0.14.0 instead of 0.14.0-rc1
 1. Add default yAccessor to Area & Line Series
 1. Add checks for defensive iteration of children
 1. Fix Kagi defect where volume is not reset
