@@ -1,122 +1,73 @@
 "use strict";
 
 import React from "react";
+import objectAssign from "object-assign";
+import makeInteractive from "./makeInteractive";
+import Utils from "../utils/utils.js";
+
 
 class FibonacciRetracement extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			retracements: [],
-		};
+		this.onMousemove = this.onMousemove.bind(this);
+		this.onClick = this.onClick.bind(this);
 	}
-	componentWillMount() {
-		var { subscribe, chartId, xAccessor } = this.context;
-		var clickSubscription = subscribe(chartId, "click", this.handleClick.bind(this, chartId, xAccessor));
-		var mouseMoveSubscription = subscribe(chartId, "mousemove", this.handleMouseMove.bind(this, chartId, xAccessor));
+	onMousemove(chartId, xAccessor, interactive, { mouseXY, currentItem, currentCharts, chartData }, e) {
+		var { enabled } = this.props;
+		if (enabled) {
+			var { xScale, yScale } = chartData.plot.scales;
 
-		this.componentWillReceiveProps(this.props, this.context);
-		this.setState({
-			clickSubscription, mouseMoveSubscription,
-		});
-	}
-	componentWillReceiveProps(nextProps, nextContext) {
-		var { chartId } = nextContext;
+			var yValue = yScale.invert(mouseXY[1]);
+			var xValue = xAccessor(currentItem);
 
-		var draw = FibonacciRetracement.drawOnCanvas.bind(null, nextContext, this.state.retracements, null);
-
-		nextContext.callbackForCanvasDraw({
-			type: "interactive",
-			chartId: chartId,
-			draw: draw,
-		});
-	}
-	handleMouseMove(chartId, xAccessor, { mouseXY, currentItem, currentCharts, chartData }) {
-		var { xScale, yScale } = chartData.plot.scales;
-
-		var { snapTo } = this.props;
-
-		var yValue = yScale.invert(mouseXY[1]);
-		var xValue = xAccessor(currentItem);
-
-		if (this.state.start) {
-			this.setState({
-				tempEnd: [xValue, yValue],
-				currentPos: [xValue, yValue],
-			});
-		} else {
-			this.setState({
-				currentPos: [xValue, yValue],
-			});
+			if (interactive.start) {
+				return objectAssign({}, interactive, {
+					tempEnd: [xValue, yValue],
+					draw: true,
+				});
+			}
 		}
+		return objectAssign({}, interactive, { draw: true });
 	}
-	handleClick(chartId, xAccessor, { mouseXY, currentItem, currentCharts, chartData }) {
-		// console.log({mouseXY, currentItem, currentCharts, chartData});
-		var { start, retracements } = this.state;
+	onClick(chartId, xAccessor, interactive, { mouseXY, currentItem, currentChartstriggerCallback, chartData }, e) { 
+		var { enabled } = this.props;
+		if (!enabled) return interactive;
+
+		var { start, retracements } = interactive;
 
 		var { xScale, yScale } = chartData.plot.scales;
-		// var yValue = yScale.invert(mouseXY[1]);
-		var { snapTo } = this.props;
-		var yValue = yScale.invert(mouseXY[1]);
 
-		var xValue = xAccessor(currentItem);
-		// console.log(start);
+		var yValue = yScale.invert(mouseXY[1]);
+		var xValue = xAccessor(currentItem);interactive
+
+		// console.log(interactive, [xValue, yValue]);
+
 		if (start) {
-			this.setState({
+			return objectAssign({}, interactive, {
 				start: null,
+				tempEnd: null,
 				retracements: retracements.concat({start, end: [xValue, yValue]}),
-			}, () => {
-				var draw = FibonacciRetracement.drawOnCanvas.bind(null, this.context, this.state.retracements, null);
-
-				var temp = this.context.getAllCanvasDrawCallback().filter(each => each.type === "interactive");
-				if (temp.length > 0) {
-					this.context.callbackForCanvasDraw(temp[0], {
-						type: "interactive",
-						chartId: chartId,
-						draw: draw,
-					});
-				}
+				draw: false,
 			});
 		} else {
-			this.setState({
+			return objectAssign({}, interactive, {
 				start: [xValue, yValue],
+				tempEnd: null,
+				draw: false,
 			});
 		}
-	}
-	componentWillUnmount() {
-		var { unsubscribe } = this.context;
-		unsubscribe(this.state.clickSubscription);
-		unsubscribe(this.state.mouseMoveSubscription);
-	}
-	componentDidMount() {
-		var { getCanvasContexts, chartCanvasType, plotData, chartData } = this.context;
-
-		if (chartCanvasType !== "svg" && getCanvasContexts !== undefined) {
-			var contexts = getCanvasContexts();
-			var { start, tempEnd } = this.state;
-			var temp = this.state.retracements;
-			if (start && tempEnd) {
-				temp = this.state.retracements.concat({ start, end: tempEnd });
-			}
-			if (contexts) {
-				FibonacciRetracement.drawOnCanvas(this.context,
-					temp, this.state.currentPos, contexts.interactive, { plotData, chartData });
-			}
-		}
-	}
-	componentDidUpdate() {
-		this.componentDidMount();
 	}
 	render() {
-		var { chartCanvasType, chartData, plotData, xAccessor } = this.context;
+		var { chartCanvasType, chartData, plotData, xAccessor } = this.props;
 
 		if (chartCanvasType !== "svg") return null;
 
 		var { xScale, yScale } = chartData.plot.scales;
-		var { retracements, currentPos, start, tempEnd } = this.state;
+		var { retracements, currentPos, start, tempEnd } = this.state.interactive;
 
 		var temp = retracements;
 		if (start && tempEnd) {
-			temp = this.state.retracements.concat({ start, end: tempEnd });
+			temp = retracements.concat({ start, end: tempEnd });
 		}
 
 		var lines = FibonacciRetracement.helper(plotData, xAccessor, temp, chartData);
@@ -137,54 +88,54 @@ class FibonacciRetracement extends React.Component {
 	}
 }
 
-FibonacciRetracement.drawOnCanvas = ({ xAccessor, canvasOriginX, canvasOriginY, width, height }, 
-		retracements, currentPos, ctx, { plotData, chartData }) => {
-	var lines = FibonacciRetracement.helper(plotData, xAccessor, retracements, chartData);
+FibonacciRetracement.drawOnCanvas = (context,
+		props,
+		interactive,
+		ctx,
+		{ plotData, chartData }) => {
 
-	var { xScale, yScale } = chartData.plot.scales;
+	var { draw } = interactive;
+	if (draw) {
 
-	ctx.save();
+		var { xAccessor, width } = context;
+		var { xScale, yScale } = chartData.plot.scales;
+		var lines = FibonacciRetracement.helper(plotData, xAccessor, interactive, chartData);
 
-	ctx.setTransform(1, 0, 0, 1, 0, 0);
-	ctx.translate(canvasOriginX, canvasOriginY);
+		ctx.strokeStyle = Utils.hexToRGBA(props.stroke, props.opacity);
 
-	ctx.rect(-1, -1, width + 1, height + 1);
-	ctx.clip();
+		lines.forEach(retracements => {
+			var dir = retracements[0].y1 > retracements[retracements.length - 1].y1 ? 3 : -1.3
 
-	ctx.strokeStyle = "black";
+			retracements.forEach((each) => {
+				ctx.beginPath();
+				ctx.moveTo(0, yScale(each.y));
+				ctx.lineTo(width, yScale(each.y));
 
-	lines.forEach(retracements => {
-		var dir = retracements[0].y1 > retracements[retracements.length - 1].y1 ? 3 : -1.3
+				var text = `${ each.y.toFixed(2) } (${ each.percent.toFixed(2) }%)`
+				ctx.fillText(text, 10, yScale(each.y) + dir * 4);
 
-		retracements.forEach((each) => {
-			ctx.beginPath();
-			ctx.moveTo(0, yScale(each.y));
-			ctx.lineTo(width, yScale(each.y));
-
-			var text = `${ each.y.toFixed(2) } (${ each.percent.toFixed(2) }%)`
-			ctx.fillText(text, 10, yScale(each.y) + dir * 4);
-
-			ctx.stroke();
-		})
-	});
-
-	ctx.restore();
+				ctx.stroke();
+			})
+		});
+	}
 };
 
-FibonacciRetracement.helper = (plotData, xAccessor, retracements, chartData) => {
-	var lines = retracements
-		.filter(each => each.start[0] !== each.end[0])
+FibonacciRetracement.helper = (plotData, xAccessor, interactive, chartData) => {
+	var { retracements, start, tempEnd } = interactive;
+
+	var temp = retracements;
+
+	if (start && tempEnd) {
+		temp = temp.concat({ start, end: tempEnd })
+	}
+	var lines = temp
 		.map((each, idx) => generateLine(each.start, each.end, xAccessor, plotData));
 
 	return lines;
 };
 
 function generateLine(start, end, xAccessor, plotData) {
-	/* if (end[0] - start[0] === 0) {
-		// vertical line
-		throw new Error("FibonacciRetracement cannot be a vertical line")
-	} */
-	// 23.6, 38.2, 50.0, 61.8, 78.6, 100
+
 	var first = xAccessor(plotData[0]);
 	var last = xAccessor(plotData[plotData.length - 1]);
 	var dy = end[1] - start[1];
@@ -192,23 +143,6 @@ function generateLine(start, end, xAccessor, plotData) {
 		.map(each => ({ percent: each, y: (end[1] - (each / 100) * dy) }))
 		// .map(each => ({ percent: each.percent, y: each.y, y2: each.y }));
 }
-
-FibonacciRetracement.contextTypes = {
-	chartId: React.PropTypes.number.isRequired,
-	getCanvasContexts: React.PropTypes.func,
-	callbackForCanvasDraw: React.PropTypes.func.isRequired,
-	getAllCanvasDrawCallback: React.PropTypes.func,
-	chartCanvasType: React.PropTypes.string.isRequired,
-	subscribe: React.PropTypes.func.isRequired,
-	unsubscribe: React.PropTypes.func.isRequired,
-	plotData: React.PropTypes.array.isRequired,
-	xAccessor: React.PropTypes.func.isRequired,
-	chartData: React.PropTypes.object.isRequired,
-	canvasOriginX: React.PropTypes.number,
-	canvasOriginY: React.PropTypes.number,
-	height: React.PropTypes.number.isRequired,
-	width: React.PropTypes.number.isRequired,
-};
 
 FibonacciRetracement.propTypes = {
 	snap: React.PropTypes.bool.isRequired,
@@ -219,6 +153,8 @@ FibonacciRetracement.propTypes = {
 FibonacciRetracement.defaultProps = {
 	snap: true,
 	enabled: true,
+	stroke: "#000000",
+	opacity: 0.4,
 };
 
-export default FibonacciRetracement;
+export default makeInteractive(FibonacciRetracement, ["click", "mousemove"], { retracements: [] });

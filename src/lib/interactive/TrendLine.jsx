@@ -1,6 +1,10 @@
 "use strict";
 
 import React from "react";
+import objectAssign from "object-assign";
+
+import makeInteractive from "./makeInteractive";
+import Utils from "../utils/utils.js";
 
 function getYValue(values, currentValue) {
 	var diff = values
@@ -12,106 +16,52 @@ function getYValue(values, currentValue) {
 class TrendLine extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			trends: [],
-		};
+		this.onMousemove = this.onMousemove.bind(this);
+		this.onClick = this.onClick.bind(this);
 	}
-	componentWillMount() {
-		var { subscribe, chartId, xAccessor } = this.context;
-		var clickSubscription = subscribe(chartId, "click", this.handleClick.bind(this, chartId, xAccessor));
-		var mouseMoveSubscription = subscribe(chartId, "mousemove", this.handleMouseMove.bind(this, chartId, xAccessor));
+	onMousemove(chartId, xAccessor, interactive, { mouseXY, currentItem, currentCharts, chartData }, e) {
+		var { enabled, snapTo } = this.props;
+		if (enabled) {
+			var { xScale, yScale } = chartData.plot.scales;
+			var yValue = getYValue(snapTo(currentItem), yScale.invert(mouseXY[1]));
+			var xValue = xAccessor(currentItem);
 
-		this.componentWillReceiveProps(this.props, this.context);
-		this.setState({
-			clickSubscription, mouseMoveSubscription,
-		});
-	}
-	componentWillReceiveProps(nextProps, nextContext) {
-		var { chartId } = nextContext;
-
-		var draw = TrendLine.drawOnCanvas.bind(null, nextContext, this.state.trends, null);
-
-		nextContext.callbackForCanvasDraw({
-			type: "interactive",
-			chartId: chartId,
-			draw: draw,
-		});
-	}
-	handleMouseMove(chartId, xAccessor, { mouseXY, currentItem, currentCharts, chartData }) {
-		var { xScale, yScale } = chartData.plot.scales;
-
-		var { snapTo } = this.props;
-
-		var yValue = getYValue(snapTo(currentItem), yScale.invert(mouseXY[1]));
-		var xValue = xAccessor(currentItem);
-
-		if (this.state.start) {
-			this.setState({
-				tempEnd: [xValue, yValue],
-				currentPos: [xValue, yValue],
-			});
-		} else {
-			this.setState({
-				currentPos: [xValue, yValue],
-			});
-		}
-	}
-	handleClick(chartId, xAccessor, {mouseXY, currentItem, currentCharts, chartData}) {
-		// console.log({mouseXY, currentItem, currentCharts, chartData});
-		var { start, trends } = this.state;
-
-		var { xScale, yScale } = chartData.plot.scales;
-		// var yValue = yScale.invert(mouseXY[1]);
-		var { snapTo } = this.props;
-		var yValue = getYValue(snapTo(currentItem), yScale.invert(mouseXY[1]));
-
-		var xValue = xAccessor(currentItem);
-		// console.log(start);
-		if (start) {
-			this.setState({
-				start: null,
-				trends: trends.concat({start, end: [xValue, yValue]}),
-			}, () => {
-				var draw = TrendLine.drawOnCanvas.bind(null, this.context, this.state.trends, null);
-
-				var temp = this.context.getAllCanvasDrawCallback().filter(each => each.type === "interactive");
-				if (temp.length > 0) {
-					this.context.callbackForCanvasDraw(temp[0], {
-						type: "interactive",
-						chartId: chartId,
-						draw: draw,
-					});
-				}
-			});
-		} else {
-			this.setState({
-				start: [xValue, yValue],
-			});
-		}
-	}
-	componentWillUnmount() {
-		var { unsubscribe } = this.context;
-		unsubscribe(this.state.clickSubscription);
-		unsubscribe(this.state.mouseMoveSubscription);
-	}
-	componentDidMount() {
-		var { getCanvasContexts, chartCanvasType, plotData, chartData } = this.context;
-
-		if (chartCanvasType !== "svg" && getCanvasContexts !== undefined) {
-			var contexts = getCanvasContexts();
-			var { start, tempEnd } = this.state;
-			var temp = this.state.trends;
-			if (start && tempEnd) {
-				temp = this.state.trends.concat({ start, end: tempEnd });
-			}
-			if (contexts) {
-				TrendLine.drawOnCanvas(this.context,
-					temp, this.state.currentPos, contexts.interactive, { plotData, chartData });
+			if (interactive.start) {
+				return objectAssign({}, interactive, {
+					tempEnd: [xValue, yValue],
+					currentPos: [xValue, yValue],
+				});
+			} else {
+				return objectAssign({}, interactive, {
+					currentPos: [xValue, yValue],
+					draw: true,
+				});
 			}
 		}
+		return interactive;
 	}
-	componentDidUpdate() {
-		this.componentDidMount();
+	onClick(chartId, xAccessor, interactive, { mouseXY, currentItem, currentChartstriggerCallback, chartData }, e) { 
+		var { enabled, snapTo } = this.props;
+		if (enabled) {
+			var { start, trends } = interactive;
+
+			var { xScale, yScale } = chartData.plot.scales;
+
+			var yValue = getYValue(snapTo(currentItem), yScale.invert(mouseXY[1]));
+			var xValue = xAccessor(currentItem);
+			if (start) {
+				return objectAssign({}, interactive, {
+					start: null,
+					trends: trends.concat({start, end: [xValue, yValue]}),
+					draw: false,
+				});
+			} else {
+				return objectAssign({}, interactive, {
+					start: [xValue, yValue],
+				});
+			}
+		}
+		return interactive;
 	}
 	render() {
 		var { chartCanvasType, chartData, plotData, xAccessor } = this.context;
@@ -143,44 +93,47 @@ class TrendLine extends React.Component {
 		);
 	}
 }
+TrendLine.drawOnCanvas = (context,
+		props,
+		interactive,
+		ctx,
+		{ plotData, chartData }) => {
 
-TrendLine.drawOnCanvas = ({ xAccessor, canvasOriginX, canvasOriginY, width, height }, 
-		trends, currentPos, ctx, { plotData, chartData }) => {
-	var lines = TrendLine.helper(plotData, xAccessor, trends, chartData);
+	var { currentPos, draw } = interactive;
 
-	var { xScale, yScale } = chartData.plot.scales;
+	if (draw) {
+		var { xAccessor } = context;
+		var lines = TrendLine.helper(plotData, xAccessor, interactive, chartData);
 
-	ctx.save();
+		var { xScale, yScale } = chartData.plot.scales;
 
-	ctx.setTransform(1, 0, 0, 1, 0, 0);
-	ctx.translate(canvasOriginX, canvasOriginY);
+		if (currentPos) {
+			ctx.strokeStyle = "steelblue";
+			ctx.lineWidth = 2;
+			ctx.beginPath();
+			ctx.arc(xScale(currentPos[0]), yScale(currentPos[1]), 3, 0, 2 * Math.PI, false);
+			ctx.stroke();
+		}
+		ctx.lineWidth = 1;
+		ctx.strokeStyle = Utils.hexToRGBA(props.stroke, props.opacity);
 
-	ctx.rect(-1, -1, width + 1, height + 1);
-	ctx.clip();
-
-	if (currentPos) {
-		ctx.strokeStyle = "steelblue";
-		ctx.lineWidth = 2;
-		ctx.beginPath();
-		ctx.arc(xScale(currentPos[0]), yScale(currentPos[1]), 3, 0, 2 * Math.PI, false);
-		ctx.stroke();
+		lines.forEach(each => {
+			ctx.beginPath();
+			ctx.moveTo(xScale(each.x1), yScale(each.y1));
+			ctx.lineTo(xScale(each.x2), yScale(each.y2));
+			// console.log(each);
+			ctx.stroke();
+		});
 	}
-	ctx.lineWidth = 1;
-	ctx.strokeStyle = "black";
-
-	lines.forEach(each => {
-		ctx.beginPath();
-		ctx.moveTo(xScale(each.x1), yScale(each.y1));
-		ctx.lineTo(xScale(each.x2), yScale(each.y2));
-		// console.log(each);
-		ctx.stroke();
-	});
-
-	ctx.restore();
 };
 
-TrendLine.helper = (plotData, xAccessor, trends, chartData) => {
-	var lines = trends
+TrendLine.helper = (plotData, xAccessor, interactive, chartData) => {
+	var { currentPos, start, trends } = interactive;
+	var temp = trends;
+	if (start && currentPos) {
+		temp = temp.concat({start, end: currentPos});
+	}
+	var lines = temp
 		.filter(each => each.start[0] !== each.end[0])
 		.map((each, idx) => generateLine(each.start, each.end, xAccessor, plotData));
 
@@ -203,23 +156,6 @@ function generateLine(start, end, xAccessor, plotData) {
 	return { x1, y1, x2, y2 };
 }
 
-TrendLine.contextTypes = {
-	chartId: React.PropTypes.number.isRequired,
-	getCanvasContexts: React.PropTypes.func,
-	callbackForCanvasDraw: React.PropTypes.func.isRequired,
-	getAllCanvasDrawCallback: React.PropTypes.func,
-	chartCanvasType: React.PropTypes.string.isRequired,
-	subscribe: React.PropTypes.func.isRequired,
-	unsubscribe: React.PropTypes.func.isRequired,
-	plotData: React.PropTypes.array.isRequired,
-	xAccessor: React.PropTypes.func.isRequired,
-	chartData: React.PropTypes.object.isRequired,
-	canvasOriginX: React.PropTypes.number,
-	canvasOriginY: React.PropTypes.number,
-	height: React.PropTypes.number.isRequired,
-	width: React.PropTypes.number.isRequired,
-};
-
 TrendLine.propTypes = {
 	snap: React.PropTypes.bool.isRequired,
 	enabled: React.PropTypes.bool.isRequired,
@@ -229,6 +165,8 @@ TrendLine.propTypes = {
 TrendLine.defaultProps = {
 	snap: true,
 	enabled: true,
+	stroke: "#000000",
+	opacity: 0.7,
 };
 
-export default TrendLine;
+export default makeInteractive(TrendLine, ["click", "mousemove"], { trends: [] });

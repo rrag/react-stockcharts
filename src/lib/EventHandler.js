@@ -422,15 +422,19 @@ class EventHandler extends PureComponent {
 		return this.canvasDrawCallbackList;
 	}
 	subscribe(forChart, eventType, callback) {
+		subscriptionCount++;
+
 		this.subscriptions.push({
 			forChart,
-			subscriptionId: (subscriptionCount++),
+			subscriptionId: subscriptionCount,
 			eventType,
 			callback,
 		});
+		return subscriptionCount;
 	}
 	unsubscribe(subscriptionId) {
-		console.log(subscriptionId);
+		// console.log(subscriptionId);
+		this.subscriptions = this.subscriptions.filter(each => each.subscriptionId === subscriptionId);
 	}
 	handleMouseMove(mouseXY) {
 		var currentCharts = this.state.chartData.filter((chartData) => {
@@ -693,11 +697,14 @@ class EventHandler extends PureComponent {
 			var { plotData, mouseXY, currentCharts, chartData, currentItems } = this.state;
 			var singleChartData = chartData.filter(eachItem => eachItem.id === each.forChart)[0];
 			var singleCurrentItem = currentItems.filter(eachItem => eachItem.id === each.forChart)[0];
-			each.callback({
-				plotData, mouseXY, currentCharts,
-				chartData: singleChartData,
-				currentItem: singleCurrentItem.data,
-			});
+
+			if (currentCharts.indexOf(each.forChart) >= -1) {
+				each.callback({
+					plotData, mouseXY, currentCharts,
+					chartData: singleChartData,
+					currentItem: singleCurrentItem.data,
+				});
+			}
 		});
 	}
 	handleFocus(focus) {
