@@ -19,6 +19,10 @@ class TrendLine extends React.Component {
 		this.onMousemove = this.onMousemove.bind(this);
 		this.onClick = this.onClick.bind(this);
 	}
+	removeIndicator(chartId, xAccessor, interactive) {
+		var indicators = interactive.trends;
+		return objectAssign({}, interactive, { trends: indicators.slice(0, indicators.length - 1)})
+	}
 	onMousemove(chartId, xAccessor, interactive, { mouseXY, currentItem, currentCharts, chartData }, e) {
 		var { enabled, snapTo } = this.props;
 		if (enabled) {
@@ -34,7 +38,6 @@ class TrendLine extends React.Component {
 			} else {
 				return objectAssign({}, interactive, {
 					currentPos: [xValue, yValue],
-					draw: true,
 				});
 			}
 		}
@@ -53,7 +56,6 @@ class TrendLine extends React.Component {
 				return objectAssign({}, interactive, {
 					start: null,
 					trends: trends.concat({start, end: [xValue, yValue]}),
-					draw: false,
 				});
 			} else {
 				return objectAssign({}, interactive, {
@@ -99,32 +101,31 @@ TrendLine.drawOnCanvas = (context,
 		ctx,
 		{ plotData, chartData }) => {
 
-	var { currentPos, draw } = interactive;
+	var { currentPos } = interactive;
 
-	if (draw) {
-		var { xAccessor } = context;
-		var lines = TrendLine.helper(plotData, xAccessor, interactive, chartData);
+	var { xAccessor } = context;
+	var lines = TrendLine.helper(plotData, xAccessor, interactive, chartData);
 
-		var { xScale, yScale } = chartData.plot.scales;
+	var { xScale, yScale } = chartData.plot.scales;
 
-		if (currentPos) {
-			ctx.strokeStyle = "steelblue";
-			ctx.lineWidth = 2;
-			ctx.beginPath();
-			ctx.arc(xScale(currentPos[0]), yScale(currentPos[1]), 3, 0, 2 * Math.PI, false);
-			ctx.stroke();
-		}
-		ctx.lineWidth = 1;
-		ctx.strokeStyle = Utils.hexToRGBA(props.stroke, props.opacity);
-
-		lines.forEach(each => {
-			ctx.beginPath();
-			ctx.moveTo(xScale(each.x1), yScale(each.y1));
-			ctx.lineTo(xScale(each.x2), yScale(each.y2));
-			// console.log(each);
-			ctx.stroke();
-		});
+	var { currentPositionStroke, currentPositionStrokeWidth, currentPositionOpacity, currentPositionRadius } = props;
+	if (currentPos) {
+		ctx.strokeStyle = Utils.hexToRGBA(currentPositionStroke, currentPositionOpacity);
+		ctx.lineWidth = currentPositionStrokeWidth;
+		ctx.beginPath();
+		ctx.arc(xScale(currentPos[0]), yScale(currentPos[1]), currentPositionRadius, 0, 2 * Math.PI, false);
+		ctx.stroke();
 	}
+	ctx.lineWidth = 1;
+	ctx.strokeStyle = Utils.hexToRGBA(props.stroke, props.opacity);
+
+	lines.forEach(each => {
+		ctx.beginPath();
+		ctx.moveTo(xScale(each.x1), yScale(each.y1));
+		ctx.lineTo(xScale(each.x2), yScale(each.y2));
+		// console.log(each);
+		ctx.stroke();
+	});
 };
 
 TrendLine.helper = (plotData, xAccessor, interactive, chartData) => {
@@ -167,6 +168,10 @@ TrendLine.defaultProps = {
 	enabled: true,
 	stroke: "#000000",
 	opacity: 0.7,
+	currentPositionStroke: "#000000",
+	currentPositionOpacity: 1,
+	currentPositionStrokeWidth: 3,
+	currentPositionRadius: 4,
 };
 
 export default makeInteractive(TrendLine, ["click", "mousemove"], { trends: [] });

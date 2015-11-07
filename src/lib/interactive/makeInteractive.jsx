@@ -13,57 +13,66 @@ function capitalizeFirst(str) {
 }
 
 export default function makeInteractive(InteractiveComponent, subscription = [], initialState, reDrawOnPan = true) {
+
 	class InteractiveComponentWrapper extends React.Component {
-		constructor(props) {
-			super(props);
+		constructor(props, context) {
+			super(props, context);
+			this.subscription = this.subscription.bind(this);
+			var { subscribe, chartId, interactiveState } = context;
+
+			this.subscriptionIds = subscription.map(each => subscribe(chartId, each, this.subscription.bind(this, each)));
+
+			/* console.log(props, context);
 			this.state = {
 				interactive: initialState,
-			};
-			this.subscriptionIds = [];
-			this.subscription = this.subscription.bind(this);
+			}; 
+
+			interactiveState.push({
+				chartId,
+				id: interactiveIndicatorId,
+				interactive: initialState,
+			}) */
+		}
+		getInteractiveState(props, context) {
+			var { interactiveState } = context;
+			var state = interactiveState.filter(each => each.id === props.id);
+			var response = { interactive: initialState };
+			if (state.length > 0) {
+				response = state[0];
+			}
+			// console.log(interactiveState, response.interactive, this.props.id);
+			return response;
 		}
 		subscription(event, arg, e) {
+
 			var { chartId, xAccessor } = this.context;
+			var { interactive } = this.getInteractiveState(this.props, this.context);
 
-			var handler = this.refs.interactive[`on${ capitalizeFirst(event) }`];
+			if (e.ctrlKey && event === "click") {
+				var interactiveState = this.refs.interactive.removeIndicator(chartId, xAccessor, interactive, arg, e);
+				return {
+					id: this.props.id,
+					interactive: interactiveState,
+				};
+			} else {
 
-			var { interactive } = this.state;
-			var interactiveState = handler(chartId, xAccessor, interactive, arg, e);
+				var handler = this.refs.interactive[`on${ capitalizeFirst(event) }`];
+				var interactiveState = handler(chartId, xAccessor, interactive, arg, e);
 
-			// console.log(interactiveState);
-			this.setState({
-				interactive: interactiveState,
-			}, () => {
-				var callback = InteractiveComponent.drawOnCanvas;
-
-				if (reDrawOnPan && callback) {
-
-					var { defaultProps } = InteractiveComponent;
-					var props = objectAssign({}, defaultProps, this.props);
-
-					var { interactive } = this.state;
-
-					// console.log(event, interactive);
-
-					var draw = InteractiveComponentWrapper.drawOnCanvas.bind(null, callback, this.context, props, interactive);
-
-					var temp = this.context.getAllCanvasDrawCallback().filter(each => each.type === "interactive");
-					if (temp.length > 0) {
-						this.context.callbackForCanvasDraw(temp[0], {
-							type: "interactive",
-							chartId: chartId,
-							draw: draw,
-						});
-					}
-				}
-			});
+				if (interactiveState === interactive) return false;
+				return {
+					id: this.props.id,
+					interactive: interactiveState,
+				};
+			}
 		}
 		componentDidMount() {
 			var { subscribe, chartId, xAccessor } = this.context;
-			this.subscriptionIds = subscription.map(each => subscribe(chartId, each, this.subscription.bind(this, each)));
+			// this.subscriptionIds = subscription.map(each => subscribe(chartId, each, this.subscription.bind(this, each)));
 			this.componentDidUpdate();
 		}
 		componentDidUpdate() {
+			// console.log("Update");
 			var callback = InteractiveComponent.drawOnCanvas;
 
 			if (callback) {
@@ -73,10 +82,12 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 					var contexts = getCanvasContexts();
 					var { defaultProps } = InteractiveComponent;
 					var props = objectAssign({}, defaultProps, this.props);
+					var { interactive } = this.getInteractiveState(this.props, this.context);
 
+					// console.log(interactive);
 					if (contexts) {
 						InteractiveComponentWrapper.drawOnCanvas(callback,
-							this.context, props, this.state.interactive,
+							this.context, props, interactive,
 							contexts.interactive, { plotData, chartData });
 					}
 				}
@@ -86,20 +97,39 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 			this.componentWillReceiveProps(this.props, this.context);
 		}
 		componentWillReceiveProps(nextProps, nextContext) {
-			var { chartId } = nextContext;
+			// var nextContext = this.context;
+			// var nextProps = this.props;
+
+			var { chartId, getAllCanvasDrawCallback, callbackForCanvasDraw } = nextContext;
 			var callback = InteractiveComponent.drawOnCanvas;
 
 			if (reDrawOnPan && callback) {
 				var { defaultProps } = InteractiveComponent;
 				var props = objectAssign({}, defaultProps, nextProps);
 
-				var draw = InteractiveComponentWrapper.drawOnCanvas.bind(null, callback, nextContext, props, this.state.interactive);
+				var draw = InteractiveComponentWrapper.drawOnCanvas.bind(null, callback, nextContext,
+					props, this.getInteractiveState(nextProps, nextContext).interactive);
 
-				nextContext.callbackForCanvasDraw({
-					type: "interactive",
-					chartId: chartId,
-					draw: draw,
-				});
+				var temp = getAllCanvasDrawCallback()
+					.filter(each => each.type === "interactive")
+					.filter(each => each.id === nextProps.id)
+					.filter(each => each.chartId === chartId)
+					;
+				if (temp.length === 0) {
+					callbackForCanvasDraw({
+						type: "interactive",
+						chartId: chartId,
+						id: nextProps.id,
+						draw: draw,
+					});
+				} else {
+					callbackForCanvasDraw(temp[0], {
+						type: "interactive",
+						chartId: chartId,
+						id: nextProps.id,
+						draw: draw,
+					});
+				}
 			}
 		}
 		componentWillUnmount() {
@@ -126,13 +156,19 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 		ctx.rect(-1, -1, width + 1, height + 1);
 		ctx.clip();
 
+		// console.log(interactiveState);
 		callback(context, props, interactiveState, ctx, chartContext);
 
 		ctx.restore();
 	};
 
+	InteractiveComponentWrapper.propTypes = {
+		id: React.PropTypes.number.isRequired,
+	};
+
 	InteractiveComponentWrapper.contextTypes = {
 		chartId: React.PropTypes.number.isRequired,
+		interactiveState: React.PropTypes.array.isRequired,
 		getCanvasContexts: React.PropTypes.func,
 		callbackForCanvasDraw: React.PropTypes.func.isRequired,
 		getAllCanvasDrawCallback: React.PropTypes.func,

@@ -52,7 +52,7 @@ class EventCapture extends React.Component {
 		if (this.context.onMouseMove && this.props.mouseMove) {
 			if (!this.context.panInProgress) {
 				var newPos = Utils.mousePosition(e);
-				this.context.onMouseMove(newPos);
+				this.context.onMouseMove(newPos, e);
 			}
 		}
 	}
@@ -95,7 +95,8 @@ class EventCapture extends React.Component {
 	}
 	handlePanEnd(event) {
 		var deltaXY = this.context.deltaXY();
-		var newPos = [d3.event.pageX - deltaXY[0], d3.event.pageY - deltaXY[1]];
+		var e = d3.event;
+		var newPos = [e.pageX - deltaXY[0], e.pageY - deltaXY[1]];
 
 		var captureDOM = Utils.isReactVersion14()
 			? this.refs.capture
@@ -107,7 +108,7 @@ class EventCapture extends React.Component {
 			.on(mousemove, null)
 			.on(mouseup, null);
 		if (this.props.pan && this.context.onPanEnd) {
-			this.context.onPanEnd(newPos);
+			this.context.onPanEnd(newPos, e);
 		}
 		// e.preventDefault();
 	}

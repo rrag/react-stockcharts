@@ -12,9 +12,14 @@ class FibonacciRetracement extends React.Component {
 		this.onMousemove = this.onMousemove.bind(this);
 		this.onClick = this.onClick.bind(this);
 	}
+	removeIndicator(chartId, xAccessor, interactive) {
+		var indicators = interactive.retracements;
+		return objectAssign({}, interactive, { retracements: indicators.slice(0, indicators.length - 1)})
+	}
 	onMousemove(chartId, xAccessor, interactive, { mouseXY, currentItem, currentCharts, chartData }, e) {
 		var { enabled } = this.props;
 		if (enabled) {
+			// console.log("HERE");
 			var { xScale, yScale } = chartData.plot.scales;
 
 			var yValue = yScale.invert(mouseXY[1]);
@@ -23,39 +28,37 @@ class FibonacciRetracement extends React.Component {
 			if (interactive.start) {
 				return objectAssign({}, interactive, {
 					tempEnd: [xValue, yValue],
-					draw: true,
 				});
 			}
 		}
-		return objectAssign({}, interactive, { draw: true });
+		return interactive;
 	}
 	onClick(chartId, xAccessor, interactive, { mouseXY, currentItem, currentChartstriggerCallback, chartData }, e) { 
 		var { enabled } = this.props;
-		if (!enabled) return interactive;
+		if (enabled) {
+			var { start, retracements } = interactive;
 
-		var { start, retracements } = interactive;
+			var { xScale, yScale } = chartData.plot.scales;
 
-		var { xScale, yScale } = chartData.plot.scales;
+			var yValue = yScale.invert(mouseXY[1]);
+			var xValue = xAccessor(currentItem);interactive
 
-		var yValue = yScale.invert(mouseXY[1]);
-		var xValue = xAccessor(currentItem);interactive
+			// console.error(interactive, [xValue, yValue]);
 
-		// console.log(interactive, [xValue, yValue]);
-
-		if (start) {
-			return objectAssign({}, interactive, {
-				start: null,
-				tempEnd: null,
-				retracements: retracements.concat({start, end: [xValue, yValue]}),
-				draw: false,
-			});
-		} else {
-			return objectAssign({}, interactive, {
-				start: [xValue, yValue],
-				tempEnd: null,
-				draw: false,
-			});
+			if (start) {
+				return objectAssign({}, interactive, {
+					start: null,
+					tempEnd: null,
+					retracements: retracements.concat({start, end: [xValue, yValue]}),
+				});
+			} else {
+				return objectAssign({}, interactive, {
+					start: [xValue, yValue],
+					tempEnd: null,
+				});
+			}
 		}
+		return interactive;
 	}
 	render() {
 		var { chartCanvasType, chartData, plotData, xAccessor } = this.props;
@@ -94,30 +97,27 @@ FibonacciRetracement.drawOnCanvas = (context,
 		ctx,
 		{ plotData, chartData }) => {
 
-	var { draw } = interactive;
-	if (draw) {
+		// console.error("DRAW")
+	var { xAccessor, width } = context;
+	var { xScale, yScale } = chartData.plot.scales;
+	var lines = FibonacciRetracement.helper(plotData, xAccessor, interactive, chartData);
 
-		var { xAccessor, width } = context;
-		var { xScale, yScale } = chartData.plot.scales;
-		var lines = FibonacciRetracement.helper(plotData, xAccessor, interactive, chartData);
+	ctx.strokeStyle = Utils.hexToRGBA(props.stroke, props.opacity);
 
-		ctx.strokeStyle = Utils.hexToRGBA(props.stroke, props.opacity);
+	lines.forEach(retracements => {
+		var dir = retracements[0].y1 > retracements[retracements.length - 1].y1 ? 3 : -1.3
 
-		lines.forEach(retracements => {
-			var dir = retracements[0].y1 > retracements[retracements.length - 1].y1 ? 3 : -1.3
+		retracements.forEach((each) => {
+			ctx.beginPath();
+			ctx.moveTo(0, yScale(each.y));
+			ctx.lineTo(width, yScale(each.y));
 
-			retracements.forEach((each) => {
-				ctx.beginPath();
-				ctx.moveTo(0, yScale(each.y));
-				ctx.lineTo(width, yScale(each.y));
+			var text = `${ each.y.toFixed(2) } (${ each.percent.toFixed(2) }%)`
+			ctx.fillText(text, 10, yScale(each.y) + dir * 4);
 
-				var text = `${ each.y.toFixed(2) } (${ each.percent.toFixed(2) }%)`
-				ctx.fillText(text, 10, yScale(each.y) + dir * 4);
-
-				ctx.stroke();
-			})
-		});
-	}
+			ctx.stroke();
+		})
+	});
 };
 
 FibonacciRetracement.helper = (plotData, xAccessor, interactive, chartData) => {
@@ -157,4 +157,5 @@ FibonacciRetracement.defaultProps = {
 	opacity: 0.4,
 };
 
+// export default preventUpdate(makeInteractive(FibonacciRetracement, ["click", "mousemove"], { retracements: [] }));
 export default makeInteractive(FibonacciRetracement, ["click", "mousemove"], { retracements: [] });

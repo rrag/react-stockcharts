@@ -57,7 +57,7 @@ var CandleStickChartWithInteractiveIndicator = React.createClass({
 					<DataSeries id={2} indicator={EMA} options={{ period: 12 }} >
 						<LineSeries/>
 					</DataSeries>
-					<TrendLine enabled={true}
+					<TrendLine id={0} enabled={true}
 						snap={true} snapTo={d => [d.open, d.high, d.low, d.close]} />
 				</Chart>
 				<Chart id={2} yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}

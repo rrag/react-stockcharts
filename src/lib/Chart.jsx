@@ -65,12 +65,12 @@ Chart.propTypes = {
 };
 
 Chart.defaultProps = {
+	id: 0,
 	namespace: "ReStock.Chart",
 	transformDataAs: "none",
 	yDomainUpdate: true,
 	origin: [0, 0],
 	padding: { top: 0, right: 0, bottom: 0, left: 0 },
-	id: 0,
 };
 
 Chart.contextTypes = {
@@ -78,6 +78,8 @@ Chart.contextTypes = {
 	height: React.PropTypes.number.isRequired,
 	chartData: React.PropTypes.array,
 	margin: React.PropTypes.object.isRequired,
+	interactiveState: React.PropTypes.array.isRequired,
+	// adding here even when this is not used by Chart, refer to https://github.com/facebook/react/issues/2517
 };
 
 Chart.childContextTypes = {

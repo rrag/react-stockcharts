@@ -57,7 +57,7 @@ var CandleStickChartWithFibonacciInteractiveIndicator = React.createClass({
 					<DataSeries id={2} indicator={EMA} options={{ period: 12 }} >
 						<LineSeries/>
 					</DataSeries>
-					<FibonacciRetracement enabled={true} />
+					<FibonacciRetracement id={0} enabled={true} />
 				</Chart>
 				<Chart id={2} yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 						height={150} origin={(w, h) => [0, h - 300]} >

@@ -48,6 +48,8 @@ class EventHandler extends PureComponent {
 
 		this.subscriptions = [];
 		this.canvasDrawCallbackList = [];
+		// this.interactiveState = [];
+
 		this.panHappened = false;
 		// this.secretArray = [];
 		this.state = {
@@ -56,6 +58,7 @@ class EventHandler extends PureComponent {
 			show: false,
 			mouseXY: [0, 0],
 			panInProgress: false,
+			interactiveState: [],
 		};
 	}
 	deltaXY(dxy) {
@@ -165,9 +168,12 @@ class EventHandler extends PureComponent {
 		var newCurrentItems = ChartDataUtil.getCurrentItems(newChartData, this.state.mouseXY, plotData);
 
 		this.clearBothCanvas(nextProps);
+		this.clearInteractiveCanvas(nextProps);
+
 		// console.log("componentWillReceiveProps");
 
-		this.canvasDrawCallbackList = [];
+		this.clearCanvasDrawCallbackList();
+
 		this.setState({
 			rawData: rawData,
 			data: data,
@@ -257,9 +263,10 @@ class EventHandler extends PureComponent {
 
 			var newCurrentItems = ChartDataUtil.getCurrentItems(newChartData, this.state.mouseXY, newPlotData);
 
-			this.clearBothCanvas(this.props);
+			this.clearBothCanvas();
+			this.clearInteractiveCanvas();
 
-			this.canvasDrawCallbackList = [];
+			this.clearCanvasDrawCallbackList();
 			this.setState({
 				rawData: newRawData,
 				data: transformedData.data,
@@ -339,11 +346,14 @@ class EventHandler extends PureComponent {
 
 		var newCurrentItems = ChartDataUtil.getCurrentItems(newChartData, this.state.mouseXY, newPlotData);
 
-		this.clearBothCanvas(this.props);
+		this.clearBothCanvas();
+		this.clearInteractiveCanvas();
+
 
 		// console.log(newPlotData.length);
 
-		this.canvasDrawCallbackList = [];
+		this.clearCanvasDrawCallbackList();
+
 		this.setState({
 			rawData: newRawData,
 			data: transformedData.data,
@@ -359,7 +369,16 @@ class EventHandler extends PureComponent {
 		props = props || this.props;
 		var canvases = props.canvasContexts();
 		if (canvases && canvases.axes) {
-			this.clearCanvas([canvases.axes, canvases.mouseCoord, canvases.interactive]);
+			// console.log("CLEAR");
+			this.clearCanvas([canvases.axes, canvases.mouseCoord]);
+		}
+	}
+	clearInteractiveCanvas(props) {
+		props = props || this.props;
+		var canvases = props.canvasContexts();
+		if (canvases && canvases.interactive) {
+			// console.error("CLEAR");
+			this.clearCanvas([canvases.interactive]);
 		}
 	}
 	clearCanvas(canvasList) {
@@ -386,6 +405,7 @@ class EventHandler extends PureComponent {
 
 			margin: this.props.margin,
 			dataTransform: this.props.dataTransform,
+			interactiveState: this.state.interactiveState,
 
 			callbackForCanvasDraw: this.pushCallbackForCanvasDraw,
 			getAllCanvasDrawCallback: this.getAllCanvasDrawCallback,
@@ -436,7 +456,7 @@ class EventHandler extends PureComponent {
 		// console.log(subscriptionId);
 		this.subscriptions = this.subscriptions.filter(each => each.subscriptionId === subscriptionId);
 	}
-	handleMouseMove(mouseXY) {
+	handleMouseMove(mouseXY, e) {
 		var currentCharts = this.state.chartData.filter((chartData) => {
 			var top = chartData.config.origin[1];
 			var bottom = top + chartData.config.height;
@@ -446,19 +466,26 @@ class EventHandler extends PureComponent {
 
 		var { chartData } = this.state;
 
+		var interactiveState = this.triggerCallback(
+			"mousemove",
+			{ ...this.state, currentItems, currentCharts },
+			this.state.interactiveState,
+			e);
+
 		var contexts = this.getCanvasContexts();
 
 		if (contexts && contexts.mouseCoord) {
-			this.clearCanvas([contexts.mouseCoord, contexts.interactive]);
+			this.clearCanvas([contexts.mouseCoord]);
 		}
+		// console.log(interactiveState === this.state.interactiveState);
+		if (interactiveState !== this.state.interactiveState) this.clearInteractiveCanvas();
 
 		this.setState({
 			mouseXY: mouseXY,
 			currentItems: currentItems,
 			show: true,
-			currentCharts: currentCharts,
-		}, () => {
-			this.triggerCallback("mousemove");
+			currentCharts,
+			interactiveState,
 		});
 	}
 	getCanvasContexts() {
@@ -524,8 +551,9 @@ class EventHandler extends PureComponent {
 			};
 		});
 		this.clearBothCanvas();
+		this.clearInteractiveCanvas();
 
-		this.canvasDrawCallbackList = [];
+		this.clearCanvasDrawCallbackList();
 		this.setState({
 			chartData: newChartData,
 			plotData: dataToPlot.data,
@@ -623,6 +651,7 @@ class EventHandler extends PureComponent {
 					// this.clearCanvas([axesCanvasContext, mouseContext]);
 					// this.clearCanvas([axesCanvasContext, mouseContext]);
 					this.clearBothCanvas();
+					this.clearInteractiveCanvas();
 
 					// console.log(canvasDrawCallbackList.length)
 
@@ -644,12 +673,13 @@ class EventHandler extends PureComponent {
 								if (each.type === "axis") {
 									each.draw(axesCanvasContext, eachChart, xScale, yScale);
 								}
-								if (each.type === "interactive") {
+								/*if (each.type === "interactive") {
+									console.log("PAN");
 									each.draw(interactive, objectAssign({}, state, { chartData: eachChart }));
-								}
+								}*/
 							});
 					});
-
+					this.drawInteractive(state);
 					canvasDrawCallbackList
 						.filter(each => each.chartId === undefined)
 						.filter(each => each.type === "axis")
@@ -671,44 +701,92 @@ class EventHandler extends PureComponent {
 			}
 		}
 	}
-	handlePanEnd(mousePosition) {
-		this.clearBothCanvas();
+	drawInteractive({ plotData, chartData }) {
+		var { interactive } = this.getCanvasContexts();
 
+		// console.log(interactive);
+		this.canvasDrawCallbackList
+			.filter(each => each.type === "interactive")
+			.forEach(each => {
+				chartData
+					.filter(eachChart => eachChart.id === each.chartId)
+					.forEach(eachChart => {
+						each.draw(interactive, { plotData,  chartData: eachChart });
+						// console.log("DRAW");
+					});
+			});
+	}
+	clearCanvasDrawCallbackList() {
+		this.canvasDrawCallbackList = [];/*this.canvasDrawCallbackList
+			.filter(each => each.type === "interactive");*/
+		// console.log(this.canvasDrawCallbackList);
+	}
+	handlePanEnd(mousePosition, e) {
 		var state = this.panHelper(mousePosition);
 
-		this.canvasDrawCallbackList = [];
+		this.clearCanvasDrawCallbackList();
 
+		var interactiveState = this.panHappened
+			? this.triggerCallback("panend", state, this.state.interactiveState, e)
+			: this.triggerCallback("click", state, this.state.interactiveState, e);
+
+		this.clearBothCanvas();
+		if (interactiveState !== this.state.interactive) this.clearInteractiveCanvas();
+
+		// console.log(interactiveState[0].interactive);
 		this.setState(objectAssign({}, state, {
 			show: this.state.show,
 			panInProgress: false,
 			panStartDomain: null,
-		}), () => {
-			if (!this.panHappened) {
-				this.triggerCallback("click");
-			} else {
-				this.triggerCallback("panend");
-			}
-		});
+			interactiveState,
+		}));
 	}
-	triggerCallback(eventType) {
+	triggerCallback(eventType, state, interactiveState, event) {
+		var { plotData, mouseXY, currentCharts, chartData, currentItems } = state;
 		var callbackList = this.subscriptions.filter(each => each.eventType === eventType);
-		callbackList.forEach(each => {
-			// console.log(each);
-			var { plotData, mouseXY, currentCharts, chartData, currentItems } = this.state;
-			var singleChartData = chartData.filter(eachItem => eachItem.id === each.forChart)[0];
-			var singleCurrentItem = currentItems.filter(eachItem => eachItem.id === each.forChart)[0];
-
-			if (currentCharts.indexOf(each.forChart) >= -1) {
-				each.callback({
-					plotData, mouseXY, currentCharts,
-					chartData: singleChartData,
+		var delta = callbackList.map(each => {
+				// console.log(each);
+				var singleChartData = chartData.filter(eachItem => eachItem.id === each.forChart)[0];
+				var singleCurrentItem = currentItems.filter(eachItem => eachItem.id === each.forChart)[0];
+				return { 
+					callback: each.callback,
+					forChart: each.forChart,
+					plotData,
+					mouseXY,
+					currentCharts,
 					currentItem: singleCurrentItem.data,
-				});
+					chartData: singleChartData
+				};
+			})
+			.filter(each => each.currentCharts.indexOf(each.forChart) >= -1)
+			.map(each => each.callback({
+						plotData: each.plotData,
+						mouseXY: each.mouseXY,
+						chartData: each.chartData,
+						currentItem: each.currentItem,
+					}, event))
+			.filter(each => each);
+
+		// console.log(delta.length);
+		if (delta.length === 0) return interactiveState;
+
+		var i = 0, j = 0, added = false;
+		var newInteractiveState = interactiveState.slice(0);
+		for (i = 0; i < delta.length; i++) {
+			var each = delta[i];
+			for (j = 0; j < newInteractiveState.length; j++) {
+				if (each.id === newInteractiveState[j].id) {
+					newInteractiveState[j] = each
+					added = true;
+				}
 			}
-		});
+			if (!added) newInteractiveState.push(each);
+			added = false;
+		}
+		return newInteractiveState;
 	}
 	handleFocus(focus) {
-		// console.log(focus);
+		// console.log(focus);interactive
 		this.setState({
 			focus: focus,
 		});
@@ -750,6 +828,7 @@ EventHandler.childContextTypes = {
 
 	margin: React.PropTypes.object.isRequired,
 	dataTransform: React.PropTypes.array,
+	interactiveState: React.PropTypes.array.isRequired,
 
 	subscribe: React.PropTypes.func,
 	unsubscribe: React.PropTypes.func,
