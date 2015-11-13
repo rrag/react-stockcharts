@@ -10,21 +10,15 @@ var { CandlestickSeries, HistogramSeries } = ReStock.series;
 
 var { StockscaleTransformer } = ReStock.transforms;
 var { XAxis, YAxis } = ReStock.axes;
-var { ChartWidthMixin } = ReStock.helper;
 
-var CandleStickStockScaleChartWithVolumeHistogramV3 = React.createClass({
-	mixins: [ChartWidthMixin],
-	propTypes: {
-		data: React.PropTypes.array.isRequired,
-		type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
-	},
+var { fitWidth } = ReStock.helper;
+
+class CandleStickStockScaleChartWithVolumeHistogramV3 extends React.Component {
 	render() {
-		if (this.state === null || !this.state.width) return <div />;
-		var { data, type } = this.props;
-		var dateFormat = d3.time.format("%Y-%m-%d");
+		var { data, type, width } = this.props;
 
 		return (
-			<ChartCanvas width={this.state.width} height={600}
+			<ChartCanvas width={width} height={600}
 				margin={{left: 70, right: 70, top:20, bottom: 30}} initialDisplay={100}
 				dataTransform={[ { transform: StockscaleTransformer } ]}
 				data={data} type={type}>
@@ -48,6 +42,16 @@ var CandleStickStockScaleChartWithVolumeHistogramV3 = React.createClass({
 			</ChartCanvas>
 		);
 	}
-});
+}
+CandleStickStockScaleChartWithVolumeHistogramV3.propTypes = {
+	data: React.PropTypes.array.isRequired,
+	width: React.PropTypes.number.isRequired,
+	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+};
+
+CandleStickStockScaleChartWithVolumeHistogramV3.defaultProps = {
+	type: "svg",
+};
+CandleStickStockScaleChartWithVolumeHistogramV3 = fitWidth(CandleStickStockScaleChartWithVolumeHistogramV3);
 
 export default CandleStickStockScaleChartWithVolumeHistogramV3;

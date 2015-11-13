@@ -16,26 +16,16 @@ var { StockscaleTransformer } = ReStock.transforms;
 
 var { XAxis, YAxis } = ReStock.axes;
 var { MACD, EMA, SMA, FullStochasticOscillator } = ReStock.indicator;
-var { ChartWidthMixin } = ReStock.helper;
 
-var CandleStickChartWithFullStochasticsIndicator = React.createClass({
-	mixins: [ChartWidthMixin],
-	propTypes: {
-		data: React.PropTypes.array.isRequired,
-		type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
-	},
-	getDefaultProps() {
-		return {
-			type: "svg"
-		}
-	},
+var { fitWidth } = ReStock.helper;
+
+class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 	render() {
-		var width = this.props.width || this.state !== null && this.state.width;
-		if (!width) return <div />;
-		var { data, type } = this.props;
-		var dateFormat = d3.time.format("%Y-%m-%d");
-		var margin = {left: 70, right: 70, top:20, bottom: 30};
 		var height = 750;
+		var { data, type, width } = this.props;
+
+		var margin = {left: 70, right: 70, top:20, bottom: 30};
+
 		var gridHeight = height - margin.top - margin.bottom;
 		var gridWidth = width - margin.left - margin.right;
 
@@ -110,7 +100,7 @@ var CandleStickChartWithFullStochasticsIndicator = React.createClass({
 						<StochasticSeries />
 					</DataSeries>
 				</Chart>
-				<MouseCoordinates xDisplayFormat={dateFormat} type="crosshair" />
+				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
@@ -122,6 +112,16 @@ var CandleStickChartWithFullStochasticsIndicator = React.createClass({
 			</ChartCanvas>
 		);
 	}
-});
+}
+CandleStickChartWithFullStochasticsIndicator.propTypes = {
+	data: React.PropTypes.array.isRequired,
+	width: React.PropTypes.number.isRequired,
+	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+};
+
+CandleStickChartWithFullStochasticsIndicator.defaultProps = {
+	type: "svg",
+};
+CandleStickChartWithFullStochasticsIndicator = fitWidth(CandleStickChartWithFullStochasticsIndicator);
 
 export default CandleStickChartWithFullStochasticsIndicator;

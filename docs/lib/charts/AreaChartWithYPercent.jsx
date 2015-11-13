@@ -7,19 +7,13 @@ var { ChartCanvas, Chart, DataSeries } = ReStock;
 
 var { AreaSeries } = ReStock.series;
 var { XAxis, YAxis } = ReStock.axes;
-var { ChartWidthMixin } = ReStock.helper;
+var { fitWidth } = ReStock.helper;
 
-var AreaChartWithYPercent = React.createClass({
-	mixins: [ChartWidthMixin],
-	propTypes: {
-		data: React.PropTypes.array.isRequired,
-		type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
-	},
+class AreaChartWithYPercent extends React.Component {
 	render() {
-		if (this.state === null || !this.state.width) return <div />;
-		var { data, type } = this.props;
+		var { data, type, width } = this.props;
 		return (
-			<ChartCanvas width={this.state.width} height={400}
+			<ChartCanvas width={width} height={400}
 				margin={{left: 50, right: 50, top:10, bottom: 30}}
 				data={data} type={type}>
 				<Chart id={0} xAccessor={(d) => d.date}>
@@ -33,7 +27,17 @@ var AreaChartWithYPercent = React.createClass({
 			</ChartCanvas>
 		);
 	}
-});
+};
+AreaChartWithYPercent.propTypes = {
+	data: React.PropTypes.array.isRequired,
+	width: React.PropTypes.number.isRequired,
+	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+};
+
+AreaChartWithYPercent.defaultProps = {
+	type: "svg",
+};
+AreaChartWithYPercent = fitWidth(AreaChartWithYPercent);
 
 
 export default AreaChartWithYPercent;

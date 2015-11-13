@@ -41,8 +41,7 @@ export default function updatingDataWrapper(ChartComponent) {
 							close: (Math.random() * (last.high - last.low)) + last.close
 						}
 
-						this.refs.component.getChartCanvas().alterData(exceptLast.concat(last));
-
+						this.refs.component.getWrappedInstance().getChartCanvas().alterData(exceptLast.concat(last));
 					};
 					break;
 				}
@@ -51,7 +50,7 @@ export default function updatingDataWrapper(ChartComponent) {
 					func = () => {
 						var pushMe = this.props.data.slice(length, length + 1);
 						rawData = rawData.concat(pushMe);
-						this.refs.component.getChartCanvas().pushData(pushMe);
+						this.refs.component.getWrappedInstance().getChartCanvas().pushData(pushMe);
 						length ++;
 						if (this.props.data.length === length) clearInterval(interval);
 					};

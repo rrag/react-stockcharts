@@ -82,6 +82,10 @@ class EventCapture extends React.Component {
 		}
 		mouseEvent.preventDefault();
 	}
+	handleRightClick(e) {
+		e.preventDefault();
+		// console.log("RIGHT CLICK");
+	}
 	handlePan() {
 		// console.log("handlePan")
 
@@ -93,9 +97,9 @@ class EventCapture extends React.Component {
 			this.context.onPan(newPos, chartData.plot.scales.xScale.domain());
 		}
 	}
-	handlePanEnd(event) {
-		var deltaXY = this.context.deltaXY();
+	handlePanEnd() {
 		var e = d3.event;
+		var deltaXY = this.context.deltaXY();
 		var newPos = [e.pageX - deltaXY[0], e.pageY - deltaXY[1]];
 
 		var captureDOM = Utils.isReactVersion14()
@@ -134,7 +138,7 @@ class EventCapture extends React.Component {
 				onMouseMove={this.handleMouseMove}
 				onWheel={this.handleWheel}
 				onMouseDown={this.handleMouseDown}
-
+				onContextMenu={this.handleRightClick}
 				onTouchStart={this.handleTouchStart}
 				onTouchEnd={this.handleTouchEnd}
 				onTouchMove={this.handleTouchMove}

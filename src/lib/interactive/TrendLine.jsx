@@ -20,14 +20,21 @@ class TrendLine extends React.Component {
 		this.onClick = this.onClick.bind(this);
 	}
 	removeIndicator(chartId, xAccessor, interactive) {
-		var indicators = interactive.trends;
-		return objectAssign({}, interactive, { trends: indicators.slice(0, indicators.length - 1)})
+		var { trends, start } = interactive;
+		if (start) {
+			return objectAssign({}, interactive, { start: null });
+		} else {
+			return objectAssign({}, interactive, { trends: trends.slice(0, trends.length - 1)});
+		}
 	}
 	onMousemove(chartId, xAccessor, interactive, { mouseXY, currentItem, currentCharts, chartData }, e) {
-		var { enabled, snapTo } = this.props;
+		var { enabled, snapTo, snap, shouldDisableSnap } = this.props;
 		if (enabled) {
 			var { xScale, yScale } = chartData.plot.scales;
-			var yValue = getYValue(snapTo(currentItem), yScale.invert(mouseXY[1]));
+
+			var yValue = (snap && !shouldDisableSnap(e))
+				? getYValue(snapTo(currentItem), yScale.invert(mouseXY[1]))
+				: yScale.invert(mouseXY[1]);
 			var xValue = xAccessor(currentItem);
 
 			if (interactive.start) {
@@ -44,20 +51,23 @@ class TrendLine extends React.Component {
 		return interactive;
 	}
 	onClick(chartId, xAccessor, interactive, { mouseXY, currentItem, currentChartstriggerCallback, chartData }, e) { 
-		var { enabled, snapTo } = this.props;
+		var { enabled, snapTo, snap, shouldDisableSnap } = this.props;
+
 		if (enabled) {
 			var { start, trends } = interactive;
 
 			var { xScale, yScale } = chartData.plot.scales;
 
-			var yValue = getYValue(snapTo(currentItem), yScale.invert(mouseXY[1]));
+			var yValue = (snap && !shouldDisableSnap(e))
+				? getYValue(snapTo(currentItem), yScale.invert(mouseXY[1]))
+				: yScale.invert(mouseXY[1]);
 			var xValue = xAccessor(currentItem);
 			if (start) {
 				return objectAssign({}, interactive, {
 					start: null,
 					trends: trends.concat({start, end: [xValue, yValue]}),
 				});
-			} else {
+			} else if (e.button === 0) {
 				return objectAssign({}, interactive, {
 					start: [xValue, yValue],
 				});
@@ -66,30 +76,31 @@ class TrendLine extends React.Component {
 		return interactive;
 	}
 	render() {
-		var { chartCanvasType, chartData, plotData, xAccessor } = this.context;
+		var { chartCanvasType, chartData, plotData, xAccessor, interactive } = this.props;
 
 		if (chartCanvasType !== "svg") return null;
-
 		var { xScale, yScale } = chartData.plot.scales;
-		var { trends, currentPos, start, tempEnd } = this.state;
+		var { currentPos } = interactive;
 
-		var temp = trends;
-		if (start && tempEnd) {
-			temp = this.state.trends.concat({ start, end: tempEnd });
-		}
-
-		var lines = TrendLine.helper(plotData, xAccessor, temp, chartData);
+		var { currentPositionStroke, currentPositionStrokeWidth, currentPositionOpacity, currentPositionRadius } = this.props;
+		var { stroke, opacity } = this.props;
 
 		var circle = (currentPos)
-			? <circle cx={xScale(currentPos[0])} cy={yScale(currentPos[1])} stroke="steelblue" fill="none" strokeWidth={2} r={3} />
+			? <circle cx={xScale(currentPos[0])} cy={yScale(currentPos[1])}
+				stroke={currentPositionStroke}
+				opacity={currentPositionOpacity}
+				fill="none"
+				strokeWidth={currentPositionStrokeWidth}
+				r={currentPositionRadius} />
 			: null;
-		// console.log(circle);
+
+		var lines = TrendLine.helper(plotData, xAccessor, interactive, chartData);
 		return (
 			<g>
 				{circle}
 				{lines
 				.map((coords, idx) => 
-					<line key={idx} stroke="black" x1={xScale(coords.x1)} y1={yScale(coords.y1)}
+					<line key={idx} stroke={stroke} opacity={opacity} x1={xScale(coords.x1)} y1={yScale(coords.y1)}
 						x2={xScale(coords.x2)} y2={yScale(coords.y2)} />)}
 			</g>
 		);
@@ -161,13 +172,13 @@ TrendLine.propTypes = {
 	snap: React.PropTypes.bool.isRequired,
 	enabled: React.PropTypes.bool.isRequired,
 	snapTo: React.PropTypes.func,
+	shouldDisableSnap: React.PropTypes.func.isRequired,
 };
 
 TrendLine.defaultProps = {
-	snap: true,
-	enabled: true,
 	stroke: "#000000",
 	opacity: 0.7,
+	shouldDisableSnap: (e) => (e.button === 2 || e.shiftKey),
 	currentPositionStroke: "#000000",
 	currentPositionOpacity: 1,
 	currentPositionStrokeWidth: 3,

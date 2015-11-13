@@ -10,25 +10,19 @@ var { ChartCanvas, Chart, DataSeries } = ReStock;
 
 var { CandlestickSeries } = ReStock.series;
 var { XAxis, YAxis } = ReStock.axes;
-var { ChartWidthMixin } = ReStock.helper;
 var { StockscaleTransformer } = ReStock.transforms;
 
-var CandleStickStockScaleChart = React.createClass({
-	mixins: [ChartWidthMixin],
-	propTypes: {
-		data: React.PropTypes.array.isRequired,
-		type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
-	},
-	render() {
-		if (this.state === null || !this.state.width) return <div />;
-		var { type } = this.props;
+var { fitWidth } = ReStock.helper;
 
-		var data = this.props.data.slice(0, 150);
+class CandleStickStockScaleChart extends React.Component {
+	render() {
+		var { type, data, width } = this.props;
+
 		return (
-			<ChartCanvas width={this.state.width} height={400}
+			<ChartCanvas width={width} height={400}
 				margin={{left: 50, right: 50, top:10, bottom: 30}}
 				dataTransform={[ { transform: StockscaleTransformer } ]}
-				data={data} type={type}>
+				data={data.slice(0, 150)} type={type}>
 				<Chart id={1} >
 					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="right" orient="right" ticks={5} />
@@ -39,7 +33,18 @@ var CandleStickStockScaleChart = React.createClass({
 			</ChartCanvas>
 		);
 	}
-});
+}
+
+CandleStickStockScaleChart.propTypes = {
+	data: React.PropTypes.array.isRequired,
+	width: React.PropTypes.number.isRequired,
+	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+};
+
+CandleStickStockScaleChart.defaultProps = {
+	type: "svg",
+};
+CandleStickStockScaleChart = fitWidth(CandleStickStockScaleChart);
 
 export default CandleStickStockScaleChart;
 

@@ -14,24 +14,17 @@ var { StockscaleTransformer, RenkoTransformer } = ReStock.transforms;
 var { TooltipContainer, OHLCTooltip, MACDTooltip } = ReStock.tooltip;
 var { XAxis, YAxis } = ReStock.axes;
 var { SMA } = ReStock.indicator;
-var { ChartWidthMixin } = ReStock.helper;
 
-var Renko = React.createClass({
-	mixins: [ChartWidthMixin],
-	propTypes: {
-		data: React.PropTypes.array.isRequired,
-		type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
-	},
+var { fitWidth } = ReStock.helper;
+
+class Renko extends React.Component {
 	getChartCanvas() {
 		return this.refs.chartCanvas;
-	},
+	}
 	render() {
-		if (this.state === null || !this.state.width) return <div />;
-		var { data, type } = this.props;
-		var dateFormat = d3.time.format("%Y-%m-%d");
-
+		var { data, type, width } = this.props;
 		return (
-			<ChartCanvas ref="chartCanvas" width={this.state.width} height={400}
+			<ChartCanvas ref="chartCanvas" width={width} height={400}
 				margin={{left: 90, right: 70, top:10, bottom: 30}} initialDisplay={30}
 				dataTransform={[ { transform: StockscaleTransformer }, { transform: RenkoTransformer } ]}
 				data={data} type={type}>
@@ -51,7 +44,7 @@ var Renko = React.createClass({
 						<AreaSeries/>
 					</DataSeries>
 				</Chart>
-				<MouseCoordinates xDisplayFormat={dateFormat} type="crosshair" />
+				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-50, 0]}/>
@@ -59,6 +52,17 @@ var Renko = React.createClass({
 			</ChartCanvas>
 		);
 	}
-});
+}
+
+Renko.propTypes = {
+	data: React.PropTypes.array.isRequired,
+	width: React.PropTypes.number.isRequired,
+	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+};
+
+Renko.defaultProps = {
+	type: "svg",
+};
+Renko = fitWidth(Renko);
 
 export default Renko;

@@ -15,24 +15,14 @@ var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, BollingerBandTooltip 
 var { StockscaleTransformer } = ReStock.transforms;
 var { XAxis, YAxis } = ReStock.axes;
 var { EMA, SMA, BollingerBand } = ReStock.indicator;
-var { ChartWidthMixin } = ReStock.helper;
+var { fitWidth } = ReStock.helper;
 
-var CandleStickChartWithBollingerBandOverlay = React.createClass({
-	mixins: [ChartWidthMixin],
-	propTypes: {
-		data: React.PropTypes.array.isRequired,
-		type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
-	},
+class CandleStickChartWithBollingerBandOverlay extends React.Component {
 	render() {
-		if (this.state === null || !this.state.width) return <div />;
-		var { data, type } = this.props;
-
-		var parseDate = d3.time.format("%Y-%m-%d").parse
-		var dateRange = { from: parseDate("2012-12-01"), to: parseDate("2012-12-31")}
-		var dateFormat = d3.time.format("%Y-%m-%d");
+		var { data, type, width } = this.props;
 
 		return (
-			<ChartCanvas width={this.state.width} height={400}
+			<ChartCanvas width={width} height={400}
 				margin={{left: 90, right: 70, top:10, bottom: 30}} initialDisplay={300}
 				dataTransform={[ { transform: StockscaleTransformer } ]}
 				data={data} type={type}>
@@ -70,7 +60,7 @@ var CandleStickChartWithBollingerBandOverlay = React.createClass({
 				</Chart>
 				<CurrentCoordinate forChart={2} forDataSeries={0} />
 				<CurrentCoordinate forChart={2} forDataSeries={1}/>
-				<MouseCoordinates xDisplayFormat={dateFormat} type="crosshair" />
+				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-50, 0]}/>
@@ -80,6 +70,17 @@ var CandleStickChartWithBollingerBandOverlay = React.createClass({
 			</ChartCanvas>
 		);
 	}
-});
+};
+
+CandleStickChartWithBollingerBandOverlay.propTypes = {
+	data: React.PropTypes.array.isRequired,
+	width: React.PropTypes.number.isRequired,
+	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+};
+
+CandleStickChartWithBollingerBandOverlay.defaultProps = {
+	type: "svg",
+};
+CandleStickChartWithBollingerBandOverlay = fitWidth(CandleStickChartWithBollingerBandOverlay);
 
 export default CandleStickChartWithBollingerBandOverlay;

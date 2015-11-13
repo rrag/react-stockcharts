@@ -16,29 +16,18 @@ var { StockscaleTransformer } = ReStock.transforms;
 
 var { XAxis, YAxis } = ReStock.axes;
 var { MACD, EMA, SMA } = ReStock.indicator;
-var { ChartWidthMixin } = ReStock.helper;
 
-var CandleStickChartWithMACDIndicator = React.createClass({
-	mixins: [ChartWidthMixin],
-	propTypes: {
-		data: React.PropTypes.array.isRequired,
-		type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
-	},
-	getDefaultProps() {
-		return {
-			type: "svg"
-		}
-	},
+var { fitWidth } = ReStock.helper;
+
+class CandleStickChartWithMACDIndicator extends React.Component {
 	getChartCanvas() {
 		return this.refs.chartCanvas;
-	},
+	}
 	render() {
-		if (this.state === null || !this.state.width) return <div />;
-		var { data, type } = this.props;
-		var dateFormat = d3.time.format("%Y-%m-%d");
+		var { data, type, width } = this.props;
 
 		return (
-			<ChartCanvas ref="chartCanvas" width={this.state.width} height={600}
+			<ChartCanvas ref="chartCanvas" width={width} height={600}
 				margin={{left: 70, right: 70, top:20, bottom: 30}} initialDisplay={200} 
 				dataTransform={[ { transform: StockscaleTransformer } ]}
 				data={data} type={type}>
@@ -88,7 +77,7 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 						<MACDSeries />
 					</DataSeries>
 				</Chart>
-				<MouseCoordinates xDisplayFormat={dateFormat} type="crosshair" />
+				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
@@ -98,6 +87,16 @@ var CandleStickChartWithMACDIndicator = React.createClass({
 			</ChartCanvas>
 		);
 	}
-});
+};
+CandleStickChartWithMACDIndicator.propTypes = {
+	data: React.PropTypes.array.isRequired,
+	width: React.PropTypes.number.isRequired,
+	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+};
+
+CandleStickChartWithMACDIndicator.defaultProps = {
+	type: "svg",
+};
+CandleStickChartWithMACDIndicator = fitWidth(CandleStickChartWithMACDIndicator);
 
 export default CandleStickChartWithMACDIndicator;

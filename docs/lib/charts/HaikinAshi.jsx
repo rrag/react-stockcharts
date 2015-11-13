@@ -14,21 +14,13 @@ var { StockscaleTransformer, HeikinAshiTransformer } = ReStock.transforms;
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
 var { XAxis, YAxis } = ReStock.axes;
 var { SMA } = ReStock.indicator;
-var { ChartWidthMixin } = ReStock.helper;
+var { fitWidth } = ReStock.helper;
 
-var HaikinAshi = React.createClass({
-	mixins: [ChartWidthMixin],
-	propTypes: {
-		data: React.PropTypes.array.isRequired,
-		type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
-	},
+class HaikinAshi extends React.Component {
 	render() {
-		if (this.state === null || !this.state.width) return <div />;
-		var { data, type } = this.props;
-		var dateFormat = d3.time.format("%Y-%m-%d");
-
+		var { data, type, width } = this.props;
 		return (
-			<ChartCanvas width={this.state.width} height={400}
+			<ChartCanvas width={width} height={400}
 				margin={{left: 90, right: 70, top:10, bottom: 30}} initialDisplay={30}
 				dataTransform={[ { transform: StockscaleTransformer }, { transform: HeikinAshiTransformer } ]}
 				data={data} type={type}>
@@ -74,7 +66,7 @@ var HaikinAshi = React.createClass({
 					<EdgeIndicator itemType="first" orient="left" edgeAt="left" forChart={2} forDataSeries={1} displayFormat={d3.format(".4s")} />
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right" forChart={2} forDataSeries={1} displayFormat={d3.format(".4s")} />
 				</EdgeContainer>
-				<MouseCoordinates xDisplayFormat={dateFormat} type="crosshair" />
+				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-50, 0]}/>
@@ -83,6 +75,18 @@ var HaikinAshi = React.createClass({
 			</ChartCanvas>
 		);
 	}
-});
+}
+
+HaikinAshi.propTypes = {
+	data: React.PropTypes.array.isRequired,
+	width: React.PropTypes.number.isRequired,
+	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+};
+
+HaikinAshi.defaultProps = {
+	type: "svg",
+};
+
+HaikinAshi = fitWidth(HaikinAshi);
 
 export default HaikinAshi;

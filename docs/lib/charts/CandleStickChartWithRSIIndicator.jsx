@@ -16,26 +16,15 @@ var { StockscaleTransformer } = ReStock.transforms;
 
 var { XAxis, YAxis } = ReStock.axes;
 var { MACD, EMA, SMA, RSI } = ReStock.indicator;
-var { ChartWidthMixin } = ReStock.helper;
 
-var CandleStickChartWithRSIIndicator = React.createClass({
-	mixins: [ChartWidthMixin],
-	propTypes: {
-		data: React.PropTypes.array.isRequired,
-		type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
-	},
-	getDefaultProps() {
-		return {
-			type: "svg"
-		}
-	},
+var { fitWidth } = ReStock.helper;
+
+class CandleStickChartWithRSIIndicator extends React.Component {
 	render() {
-		if (this.state === null || !this.state.width) return <div />;
-		var { data, type } = this.props;
-		var dateFormat = d3.time.format("%Y-%m-%d");
+		var { data, type, width } = this.props;
 
 		return (
-			<ChartCanvas width={this.state.width} height={600}
+			<ChartCanvas width={width} height={600}
 				margin={{left: 70, right: 70, top:20, bottom: 30}} initialDisplay={200} 
 				dataTransform={[ { transform: StockscaleTransformer } ]}
 				data={data} type={type}>
@@ -93,7 +82,7 @@ var CandleStickChartWithRSIIndicator = React.createClass({
 						<MACDSeries />
 					</DataSeries>
 				</Chart>
-				<MouseCoordinates xDisplayFormat={dateFormat} type="crosshair" />
+				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
@@ -104,6 +93,17 @@ var CandleStickChartWithRSIIndicator = React.createClass({
 			</ChartCanvas>
 		);
 	}
-});
+};
+
+CandleStickChartWithRSIIndicator.propTypes = {
+	data: React.PropTypes.array.isRequired,
+	width: React.PropTypes.number.isRequired,
+	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+};
+
+CandleStickChartWithRSIIndicator.defaultProps = {
+	type: "svg",
+};
+CandleStickChartWithRSIIndicator = fitWidth(CandleStickChartWithRSIIndicator);
 
 export default CandleStickChartWithRSIIndicator;

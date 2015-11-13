@@ -18,6 +18,11 @@ var FibonacciInteractiveIndicatorPage = React.createClass({
 			<ContentSection title={FibonacciInteractiveIndicatorPage.title}>
 				<Row>
 					<Section colSpan={2}>
+						<aside dangerouslySetInnerHTML={{__html: require('md/FIBB-RETRACEMENTS-INTERACTIVE-INDICATOR')}}></aside>
+					</Section>
+				</Row>
+				<Row>
+					<Section colSpan={2}>
 						<TypeChooser ref="container">
 							{(type) => (<CandleStickChartWithFibonacciInteractiveIndicator data={this.props.someData} type={type} />)}
 						</TypeChooser>

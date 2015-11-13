@@ -468,7 +468,7 @@ class EventHandler extends PureComponent {
 
 		var interactiveState = this.triggerCallback(
 			"mousemove",
-			{ ...this.state, currentItems, currentCharts },
+			objectAssign({}, this.state, { currentItems, currentCharts }),
 			this.state.interactiveState,
 			e);
 
@@ -673,10 +673,6 @@ class EventHandler extends PureComponent {
 								if (each.type === "axis") {
 									each.draw(axesCanvasContext, eachChart, xScale, yScale);
 								}
-								/*if (each.type === "interactive") {
-									console.log("PAN");
-									each.draw(interactive, objectAssign({}, state, { chartData: eachChart }));
-								}*/
 							});
 					});
 					this.drawInteractive(state);
@@ -717,9 +713,7 @@ class EventHandler extends PureComponent {
 			});
 	}
 	clearCanvasDrawCallbackList() {
-		this.canvasDrawCallbackList = [];/*this.canvasDrawCallbackList
-			.filter(each => each.type === "interactive");*/
-		// console.log(this.canvasDrawCallbackList);
+		this.canvasDrawCallbackList = [];
 	}
 	handlePanEnd(mousePosition, e) {
 		var state = this.panHelper(mousePosition);
@@ -776,7 +770,7 @@ class EventHandler extends PureComponent {
 			var each = delta[i];
 			for (j = 0; j < newInteractiveState.length; j++) {
 				if (each.id === newInteractiveState[j].id) {
-					newInteractiveState[j] = each
+					newInteractiveState[j] = each;
 					added = true;
 				}
 			}

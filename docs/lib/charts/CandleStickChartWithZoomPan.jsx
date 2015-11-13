@@ -13,21 +13,15 @@ var { TooltipContainer, OHLCTooltip } = ReStock.tooltip;
 var { StockscaleTransformer } = ReStock.transforms;
 
 var { XAxis, YAxis } = ReStock.axes;
-var { ChartWidthMixin } = ReStock.helper;
 
-var CandleStickChartWithZoomPan = React.createClass({
-	mixins: [ChartWidthMixin],
-	propTypes: {
-		data: React.PropTypes.array.isRequired,
-		type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
-	},
+var { fitWidth } = ReStock.helper;
+
+class CandleStickChartWithZoomPan extends React.Component {
 	render() {
-		if (this.state === null || !this.state.width) return <div />;
-		var { data, type } = this.props;
-		var dateFormat = d3.time.format("%Y-%m-%d");
+		var { data, type, width } = this.props;
 
 		return (
-			<ChartCanvas width={this.state.width} height={400}
+			<ChartCanvas width={width} height={400}
 				margin={{left: 70, right: 70, top:10, bottom: 30}} initialDisplay={200}
 				dataTransform={[ { transform: StockscaleTransformer } ]}
 				data={data} type={type}>
@@ -45,7 +39,7 @@ var CandleStickChartWithZoomPan = React.createClass({
 						<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
 					</DataSeries>
 				</Chart>
-				<MouseCoordinates xDisplayFormat={dateFormat} type="crosshair" />
+				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
@@ -53,7 +47,18 @@ var CandleStickChartWithZoomPan = React.createClass({
 			</ChartCanvas>
 		);
 	}
-});
+}
+
+CandleStickChartWithZoomPan.propTypes = {
+	data: React.PropTypes.array.isRequired,
+	width: React.PropTypes.number.isRequired,
+	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+};
+
+CandleStickChartWithZoomPan.defaultProps = {
+	type: "svg",
+};
+CandleStickChartWithZoomPan = fitWidth(CandleStickChartWithZoomPan);
 
 
 export default CandleStickChartWithZoomPan;

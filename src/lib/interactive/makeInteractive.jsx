@@ -22,16 +22,6 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 
 			this.subscriptionIds = subscription.map(each => subscribe(chartId, each, this.subscription.bind(this, each)));
 
-			/* console.log(props, context);
-			this.state = {
-				interactive: initialState,
-			}; 
-
-			interactiveState.push({
-				chartId,
-				id: interactiveIndicatorId,
-				interactive: initialState,
-			}) */
 		}
 		getInteractiveState(props, context) {
 			var { interactiveState } = context;
@@ -46,9 +36,10 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 		subscription(event, arg, e) {
 
 			var { chartId, xAccessor } = this.context;
+			var { shouldRemoveLastIndicator } = this.props;
 			var { interactive } = this.getInteractiveState(this.props, this.context);
 
-			if (e.ctrlKey && event === "click") {
+			if (event === "click" && shouldRemoveLastIndicator(e)) {
 				var interactiveState = this.refs.interactive.removeIndicator(chartId, xAccessor, interactive, arg, e);
 				return {
 					id: this.props.id,
@@ -136,10 +127,12 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 			var { unsubscribe } = this.context;
 			this.subscriptionIds.forEach((each) => {
 				unsubscribe(each);
-			})
+			});
 		}
 		render() {
-			return <InteractiveComponent ref="interactive" {...this.props} />;
+			var { interactive } = this.getInteractiveState(this.props, this.context);
+
+			return <InteractiveComponent ref="interactive" {...this.context} {...this.props} interactive={interactive} />;
 		}
 	}
 
@@ -164,8 +157,12 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 
 	InteractiveComponentWrapper.propTypes = {
 		id: React.PropTypes.number.isRequired,
+		shouldRemoveLastIndicator: React.PropTypes.func.isRequired,
 	};
 
+	InteractiveComponentWrapper.defaultProps = {
+		shouldRemoveLastIndicator: (e) => (e.button === 2 && e.ctrlKey),
+	};
 	InteractiveComponentWrapper.contextTypes = {
 		chartId: React.PropTypes.number.isRequired,
 		interactiveState: React.PropTypes.array.isRequired,

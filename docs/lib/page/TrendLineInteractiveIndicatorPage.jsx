@@ -22,6 +22,11 @@ var TrendLineInteractiveIndicatorPage = React.createClass({
 			<ContentSection title={TrendLineInteractiveIndicatorPage.title}>
 				<Row>
 					<Section colSpan={2}>
+						<aside dangerouslySetInnerHTML={{__html: require('md/TRENDLINES-INTERACTIVE-INDICATOR')}}></aside>
+					</Section>
+				</Row>
+				<Row>
+					<Section colSpan={2}>
 						<button type="button" className="btn btn-success btn-lg pull-right" onClick={this.saveChartAsImage} >
 							<span className="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
 						</button>
