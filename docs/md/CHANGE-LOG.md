@@ -1,3 +1,13 @@
+## v0.2.10
+
+#### Changes
+
+1. Create interactive indicators
+    1. `FibonacciRetracement`
+    1. `TrendLine`
+1. Add a new prop `widthRatio` which takes values from 0 to 1 (defaults to 0.5) for `HistogramSeries` & `CandlestickSeries` to control the width
+1. Add new tooltip `SingleValueTooltip`
+
 ## v0.2.9
 
 #### Changes

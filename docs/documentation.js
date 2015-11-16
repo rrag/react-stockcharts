@@ -41,6 +41,7 @@ var pages = [
 	require("lib/page/RenkoPage"),
 	require("lib/page/CreatingCustomIndicatorPage"),
 	require("lib/page/CreatingCustomChartSeriesPage"),
+	require("lib/page/MiscChartsPage"),
 	require("lib/page/ChangeLogPage"),
 	require("lib/page/ComingSoonPage"),
 ];
@@ -224,8 +225,8 @@ function renderPartialPage(data, dataFull, compareData) {
 	// PointAndFigureWithUpdatingData
 	// CandleStickChartWithInteractiveIndicator
 	// CandleStickChartWithFibonacciInteractiveIndicator
-	// AreaChartWithEdge
-	var Chart = require("lib/charts/AreaChartWithEdge");
+	// AreaChartWithZoomPan
+	var Chart = require("lib/charts/AreaChartWithZoomPan");
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	// data, dataFull, compareData
