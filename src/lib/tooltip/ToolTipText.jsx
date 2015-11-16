@@ -21,4 +21,4 @@ ToolTipText.defaultProps = {
 	fontSize: 11,
 };
 
-module.exports = ToolTipText;
+export default ToolTipText;

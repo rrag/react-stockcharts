@@ -99,4 +99,4 @@ MovingAverageTooltip.defaultProps = {
 	width: 65,
 };
 
-module.exports = MovingAverageTooltip;
+export default MovingAverageTooltip;

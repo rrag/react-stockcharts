@@ -224,7 +224,8 @@ function renderPartialPage(data, dataFull, compareData) {
 	// PointAndFigureWithUpdatingData
 	// CandleStickChartWithInteractiveIndicator
 	// CandleStickChartWithFibonacciInteractiveIndicator
-	var Chart = require("lib/charts/CandleStickChartWithFibonacciInteractiveIndicator");
+	// AreaChartWithEdge
+	var Chart = require("lib/charts/AreaChartWithEdge");
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	// data, dataFull, compareData

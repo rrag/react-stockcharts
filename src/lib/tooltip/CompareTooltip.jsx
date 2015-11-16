@@ -58,4 +58,4 @@ CompareTooltip.defaultProps = {
 	origin: [0, 0]
 };
 
-module.exports = CompareTooltip;
+export default CompareTooltip;

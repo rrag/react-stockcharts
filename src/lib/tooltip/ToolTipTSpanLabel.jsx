@@ -8,4 +8,4 @@ class ToolTipTSpanLabel extends React.Component {
 	}
 }
 
-module.exports = ToolTipTSpanLabel;
+export default ToolTipTSpanLabel;

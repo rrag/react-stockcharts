@@ -82,4 +82,4 @@ RSITooltip.defaultProps = {
 	origin: [0, 0]
 };
 
-module.exports = RSITooltip;
+export default RSITooltip;

@@ -20,6 +20,7 @@ HistogramSeries.propTypes = {
 			]).isRequired,
 	direction: React.PropTypes.oneOf(["up", "down"]).isRequired,
 	stroke: React.PropTypes.string,
+	widthRatio: React.PropTypes.number.isRequired,
 	opacity: React.PropTypes.number.isRequired,
 	fill: React.PropTypes.oneOfType([
 			React.PropTypes.func, React.PropTypes.string
@@ -36,6 +37,7 @@ HistogramSeries.defaultProps = {
 	stroke: "none",
 	fill: "steelblue",
 	opacity: 0.5,
+	widthRatio: 0.5,
 };
 
 HistogramSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
@@ -60,6 +62,7 @@ HistogramSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 		if (group[key][0].barWidth < 1) {
 			ctx.strokeStyle = key;
 		} else {
+			ctx.strokeStyle = key;
 			ctx.fillStyle = key;
 		}
 		group[key].forEach(d => {
@@ -84,6 +87,7 @@ HistogramSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 				ctx.beginPath();
 				ctx.rect(d.x, d.y, d.barWidth, d.height);
 				ctx.fill();
+				ctx.stroke();
 			}
 		});
 	});
@@ -114,7 +118,7 @@ HistogramSeries.getBarsSVG = (props) => {
 };
 
 HistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData) => {
-	var { baseAt, direction, className, fill, stroke } = props;
+	var { baseAt, direction, className, fill, stroke, widthRatio } = props;
 	var base = baseAt === "top"
 				? 0
 				: baseAt === "bottom"
@@ -137,7 +141,7 @@ HistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData
 
 	var width = xScale(xAccessor(plotData[plotData.length - 1]))
 		- xScale(xAccessor(plotData[0]));
-	var barWidth = Math.round(width / (plotData.length) * 0.5);
+	var barWidth = Math.ceil(width / (plotData.length - 1) * widthRatio);
 
 	var bars = plotData
 			.filter((d) => (yAccessor(d) !== undefined) )

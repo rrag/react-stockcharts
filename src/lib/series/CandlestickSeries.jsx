@@ -23,6 +23,7 @@ CandlestickSeries.propTypes = {
 		up: React.PropTypes.string,
 		down: React.PropTypes.string
 	}),
+	widthRatio: React.PropTypes.number.isRequired,
 	stroke: React.PropTypes.shape({
 		up: React.PropTypes.string,
 		down: React.PropTypes.string
@@ -38,6 +39,7 @@ CandlestickSeries.defaultProps = {
 		up: "up",
 		down: "down"
 	},
+	widthRatio: 0.5,
 	stroke: {
 		up: "none",
 		down: "none"
@@ -174,11 +176,11 @@ CandlestickSeries.getWickData = (props, xAccessor, yAccessor, xScale, yScale, co
 CandlestickSeries.getCandleData = (props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData) => {
 	var isCompareSeries = compareSeries.length > 0;
 
-	var { classNames, fill, stroke } = props;
+	var { classNames, fill, stroke, widthRatio } = props;
 
 	var width = xScale(xAccessor(plotData[plotData.length - 1]))
 		- xScale(xAccessor(plotData[0]));
-	var cw = (width / (plotData.length)) * 0.5;
+	var cw = (width / (plotData.length - 1)) * widthRatio;
 	var candleWidth = Math.round(cw); // Math.floor(cw) % 2 === 0 ? Math.floor(cw) : Math.round(cw);
 	var candles = plotData
 			.filter((d) => d.close !== undefined)

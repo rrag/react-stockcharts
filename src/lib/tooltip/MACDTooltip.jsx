@@ -86,5 +86,5 @@ MACDTooltip.defaultProps = {
 	origin: [0, 0]
 };
 
-module.exports = MACDTooltip;
+export default MACDTooltip;
 // export default MACDTooltip;

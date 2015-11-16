@@ -83,5 +83,4 @@ StochasticTooltip.defaultProps = {
 	origin: [0, 0]
 };
 
-module.exports = StochasticTooltip;
-// export default StochasticTooltip;
+export default StochasticTooltip;

@@ -31,4 +31,4 @@ TooltipContainer.contextTypes = {
 
 TooltipContainer.defaultProps = { namespace: "ReStock.TooltipContainer" };
 
-module.exports = TooltipContainer;
+export default TooltipContainer;

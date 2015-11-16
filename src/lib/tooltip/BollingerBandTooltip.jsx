@@ -84,4 +84,4 @@ BollingerBandTooltip.defaultProps = {
 	width: 65,
 };
 
-module.exports = BollingerBandTooltip;
+export default BollingerBandTooltip;
