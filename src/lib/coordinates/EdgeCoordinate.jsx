@@ -2,6 +2,7 @@
 
 import React from "react";
 import objectAssign from "object-assign"; // "../utils/Object.assign"
+import Utils from "../utils/utils";
 
 class EdgeCoordinate extends React.Component {
 
@@ -56,21 +57,24 @@ EdgeCoordinate.propTypes = {
 	fontFamily: React.PropTypes.string.isRequired,
 	fontSize: React.PropTypes.number.isRequired,
 };
+
 EdgeCoordinate.defaultProps = {
 	namespace: "ReStock.EdgeCoordinate",
 	orient: "left",
 	hideLine: false,
 	fill: "#8a8a8a",
 	opacity: 1,
-	textFill: "white",
+	textFill: "#FFFFFF",
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 13,
+	lineStroke: "#000000",
+	lineOpacity: 0.3,
 };
 
 
 EdgeCoordinate.helper = (props) => {
 	var { coordinate: displayCoordinate, show, rectWidth, type, orient, edgeAt, hideLine, className } = props;
-	var { fill, opacity, fontFamily, fontSize, textFill } = props;
+	var { fill, opacity, fontFamily, fontSize, textFill, lineStroke, lineOpacity } = props;
 	var { x1, y1, x2, y2 } = props;
 
 	if (!show) return null;
@@ -102,7 +106,7 @@ EdgeCoordinate.helper = (props) => {
 		};
 	}
 	var line = hideLine ? undefined : {
-		opacity: 0.3, stroke: "black", x1, y1, x2, y2
+		opacity: lineOpacity, stroke: lineStroke, x1, y1, x2, y2
 	};
 	return {
 		coordinateBase, coordinate, line
@@ -118,8 +122,7 @@ EdgeCoordinate.drawOnCanvasStatic = (ctx, props) => {
 
 	if (edge.coordinateBase !== undefined) {
 		// var { globalAlpha, fillStyle } = ctx;
-		ctx.globalAlpha = edge.coordinateBase.opacity;
-		ctx.fillStyle = edge.coordinateBase.fill;
+		ctx.fillStyle = Utils.hexToRGBA(edge.coordinateBase.fill, edge.coordinateBase.opacity);
 
 		ctx.beginPath();
 		ctx.rect(edge.coordinateBase.edgeXRect, edge.coordinateBase.edgeYRect, edge.coordinateBase.rectWidth, edge.coordinateBase.rectHeight);
@@ -133,8 +136,7 @@ EdgeCoordinate.drawOnCanvasStatic = (ctx, props) => {
 		ctx.fillText(edge.coordinate.displayCoordinate, edge.coordinate.edgeXText, edge.coordinate.edgeYText); 
 	}
 	if (edge.line !== undefined) {
-		ctx.globalAlpha = edge.line.opacity;
-		ctx.strokeStyle = edge.line.stroke;
+		ctx.strokeStyle = Utils.hexToRGBA(edge.line.stroke, edge.line.opacity);
 
 		ctx.beginPath();
 		ctx.moveTo(edge.line.x1, edge.line.y1);
@@ -143,4 +145,4 @@ EdgeCoordinate.drawOnCanvasStatic = (ctx, props) => {
 	}
 };
 
-module.exports = EdgeCoordinate;
+export default EdgeCoordinate;

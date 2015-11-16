@@ -4,6 +4,7 @@ import React from "react";
 import EdgeCoordinate from "./EdgeCoordinate";
 
 import objectAssign from "object-assign"; // "../utils/Object.assign"
+import Utils from "../utils/utils";
 
 class CrossHair extends React.Component {
 	shouldComponentUpdate(nextProps) {
@@ -17,6 +18,7 @@ class CrossHair extends React.Component {
 					x1={line.x1} y1={line.y1}
 					x2={line.x2} y2={line.y2} />
 			: null;
+
 		return (
 			<g className="crosshair ">
 				{svgLine}
@@ -31,6 +33,13 @@ class CrossHair extends React.Component {
 					edgeAt={edge.edgeAt}
 					orient={edge.orient}
 					hideLine={edge.hideLine}
+					lineStroke={edge.lineStroke}
+					lineOpacity={edge.lineOpacity}
+					textFill={edge.textFill}
+					fill={edge.fill}
+					opacity={edge.opacity}
+					fontFamily={edge.fontFamily}
+					fontSize={edge.fontSize}
 					/>)}
 			</g>
 		);
@@ -53,6 +62,7 @@ CrossHair.defaultProps = {
 
 CrossHair.helper = (props) => {
 	var { width, edges, yAxisPad, mouseXY, xDisplayValue, height } = props;
+	var { stroke, opacity, textStroke, textBGFill, textBGopacity, fontFamily, fontSize } = props;
 	var x1 = 0, x2 = width;
 
 	var edges = edges.map((edge, idx) => {
@@ -72,7 +82,13 @@ CrossHair.helper = (props) => {
 			coordinate: edge.yDisplayValue,
 			edgeAt: (edge.at === "left" ? x1 : x2),
 			orient: edge.at,
-			hideLine: true
+			hideLine: true,
+			lineStroke: stroke,
+			lineOpacity: opacity,
+			textFill: textStroke,
+			fill: textBGFill,
+			opacity: textBGopacity,
+			fontFamily, fontSize
 		};
 	});
 	edges.push({
@@ -84,13 +100,20 @@ CrossHair.helper = (props) => {
 		y2: height,
 		coordinate: xDisplayValue,
 		edgeAt: height,
-		orient: "bottom"
+		orient: "bottom",
+		lineStroke: stroke,
+		lineOpacity: opacity,
+		textFill: textStroke,
+		fill: textBGFill,
+		opacity: textBGopacity,
+		fontFamily, fontSize
 	});
+
 	var line;
 	if (edges.length > 1) {
 		line = {
-			opacity: 0.3,
-			stroke: "black",
+			opacity: opacity,
+			stroke: stroke,
 			x1: x1,
 			y1: mouseXY[1],
 			x2: x2,
@@ -101,16 +124,15 @@ CrossHair.helper = (props) => {
 };
 
 CrossHair.drawOnCanvasStatic = (ctx, props) => {
+	// console.log(props);
 	props = objectAssign({}, CrossHair.defaultProps, props);
-
 	var result = CrossHair.helper(props);
 	var { line, edges } = result;
 
 	edges.forEach(edge => EdgeCoordinate.drawOnCanvasStatic(ctx, edge));
 
 	if (line) {
-		ctx.globalAlpha = line.opacity;
-		ctx.strokeStype = line.stroke;
+		ctx.strokeStyle = Utils.hexToRGBA(line.stroke, line.opacity);
 
 		ctx.beginPath();
 		ctx.moveTo(line.x1, line.y1);
@@ -119,4 +141,4 @@ CrossHair.drawOnCanvasStatic = (ctx, props) => {
 	}
 };
 
-module.exports = CrossHair;
+export default CrossHair;

@@ -41,8 +41,12 @@ CandlestickSeries.defaultProps = {
 	},
 	widthRatio: 0.5,
 	stroke: {
-		up: "none",
-		down: "none"
+		up: "none", //"#6BA583"
+		down: "none" //"red"
+	},
+	wickStroke: {
+		up: "black", //"#6BA583"
+		down: "black" //"red"
 	},
 	fill: {
 		up: "#6BA583",
@@ -78,17 +82,36 @@ CandlestickSeries.yAccessor = (d) => ({open: d.open, high: d.high, low: d.low, c
 
 CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { compareSeries, xAccessor, yAccessor } = props;
-	var { stroke, fill } = props;
+	var { wickStroke, fill } = props;
 	var wickData = CandlestickSeries.getWickData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
-	wickData.forEach(d => {
+	var each, group = { up: [], down: [] };
+
+	for (var i = 0; i < wickData.length; i++) {
+		each = wickData[i];
+		if (each.direction >= 0) {
+			group.up.push(each);
+		} else {
+			group.down.push(each);
+		}
+	};
+	ctx.strokeStyle = wickStroke.up;
+	group.up.forEach(d => {
 		ctx.beginPath();
 		ctx.moveTo(d.x1, d.y1);
 		ctx.lineTo(d.x2, d.y2);
 		ctx.stroke();
-	});
+	})
+	ctx.strokeStyle = wickStroke.down;
+	group.down.forEach(d => {
+		ctx.beginPath();
+		ctx.moveTo(d.x1, d.y1);
+		ctx.lineTo(d.x2, d.y2);
+		ctx.stroke();
+	})
 	var candleData = CandlestickSeries.getCandleData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
 
-	var each, group = { up: [], down: [] };
+	group = { up: [], down: [] };
+
 	for (var i = 0; i < candleData.length; i++) {
 		each = candleData[i];
 		if (each.direction >= 0) {
@@ -147,7 +170,7 @@ CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 CandlestickSeries.getWickData = (props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData) => {
 	var isCompareSeries = compareSeries.length > 0;
 
-	var { classNames } = props;
+	var { classNames, wickStroke } = props;
 	var wickData = plotData
 			.filter((d) => d.close !== undefined)
 			.map((d, idx) => {
@@ -167,7 +190,7 @@ CandlestickSeries.getWickData = (props, xAccessor, yAccessor, xScale, yScale, co
 					y2: y2,
 					className: className,
 					direction: (ohlc.close - ohlc.open),
-					stroke: "black",
+					stroke: (ohlc.open <= ohlc.close) ? wickStroke.up : wickStroke.down,
 				};
 			});
 	return wickData;

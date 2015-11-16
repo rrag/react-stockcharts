@@ -39,7 +39,15 @@ a.button {
         margin-top: 15px;
     }
 }
-
+.dark {
+    background: #303030;
+    .react-stockcharts-tooltip {
+        fill: white;
+    }
+    .react-stockcharts-tooltip-label {
+        fill: yellow;
+    }
+}
 .jumbotron {
     background: steelblue;
     padding: 0px;

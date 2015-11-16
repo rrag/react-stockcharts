@@ -39,6 +39,7 @@ class MouseCoordinates extends React.Component {
 	}
 	render() {
 		var { chartCanvasType, mouseXY, currentCharts, chartData, currentItems, show } = this.props;
+		var { stroke, opacity, textStroke, textBGFill, textBGopacity, fontFamily, fontSize } = this.props;
 
 		if (chartCanvasType !== "svg") return null;
 
@@ -47,7 +48,10 @@ class MouseCoordinates extends React.Component {
 		if (!pointer) return null;
 
 		return <CrossHair height={pointer.height} width={pointer.width} mouseXY={pointer.mouseXY}
-					xDisplayValue={pointer.xDisplayValue} edges={pointer.edges}/>;
+					xDisplayValue={pointer.xDisplayValue} edges={pointer.edges}
+					stroke={stroke} opacity={opacity} textStroke={textStroke}
+					textBGFill={textBGFill} textBGopacity={textBGopacity}
+					fontFamily={fontFamily} fontSize={fontSize} />;
 	}
 }
 
@@ -63,6 +67,20 @@ MouseCoordinates.defaultProps = {
 	type: "crosshair",
 	xDisplayFormat: Utils.displayDateFormat,
 	yDisplayFormat: Utils.displayNumberFormat,
+	stroke: "#000000",
+	opacity: 0.2,
+	textStroke: "#ffffff",
+	textBGFill: "#8a8a8a",
+	textBGopacity: 1,
+	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
+	fontSize: 13,
+
+
+	// fill: "",
+	// opacity: 1,
+	// textFill: "white",
+		// var { fill, opacity, fontFamily, fontSize, textFill } = props;
+
 };
 
 MouseCoordinates.drawOnCanvas = (canvasContext, props) => {
@@ -133,8 +151,10 @@ MouseCoordinates.helper = (props, show, mouseXY, currentCharts, chartData, curre
 	if (xValue === undefined) return null;
 	var x = snapX ? Math.round(singleChartData.plot.scales.xScale(xValue)) : mouseXY[0];
 	var y = mouseXY[1];
+	var { stroke, opacity, textStroke, textBGFill, textBGopacity, fontFamily, fontSize } = props;
 
-	return { height, width, mouseXY: [x, y], xDisplayValue: xDisplayFormat(xDisplayValue), edges };
+	return { height, width, mouseXY: [x, y], xDisplayValue: xDisplayFormat(xDisplayValue), edges,
+		stroke, opacity, textStroke, textBGFill, textBGopacity, fontFamily, fontSize };
 };
 
 // export default MouseCoordinates;

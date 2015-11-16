@@ -27,6 +27,7 @@ class Tick extends React.Component {
 				<line shapeRendering="crispEdges" opacity={tickStrokeOpacity} stroke={tickStroke} x2={x2} y2={y2} />
 				<text 
 					dy={dy} x={x} y={y}
+					fill={tickStroke}
 					fontSize={fontSize}
 					fontFamily={fontFamily}
 					textAnchor={textAnchor}>
@@ -157,4 +158,4 @@ AxisTicks.drawOnCanvasStatic = (props, ctx, chartData, xScale, yScale) => {
 	});
 };
 
-module.exports = AxisTicks;
+export default AxisTicks;

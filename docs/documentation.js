@@ -42,6 +42,7 @@ var pages = [
 	require("lib/page/CreatingCustomIndicatorPage"),
 	require("lib/page/CreatingCustomChartSeriesPage"),
 	require("lib/page/MiscChartsPage"),
+	require("lib/page/DarkThemePage"),
 	require("lib/page/ChangeLogPage"),
 	require("lib/page/ComingSoonPage"),
 ];

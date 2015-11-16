@@ -141,7 +141,7 @@ HistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData
 
 	var width = xScale(xAccessor(plotData[plotData.length - 1]))
 		- xScale(xAccessor(plotData[0]));
-	var barWidth = Math.ceil(width / (plotData.length - 1) * widthRatio);
+	var barWidth = Math.round(width / (plotData.length - 1) * widthRatio);
 
 	var bars = plotData
 			.filter((d) => (yAccessor(d) !== undefined) )

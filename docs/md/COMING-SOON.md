@@ -34,12 +34,14 @@
 - ~~create a new mode `canvas` in addition to `svg` and `hybrid` eliminating all svg and use just canvas~~ (not doing) - `v0.3`
 - ~~Create example for data updating at regular intervals~~ - `v0.2.1`
 - Update `CurrentCoordinate` and `EdgeCoordinate` to deal with `DataSeries` which has a `yAccessor` which returns an object - `v0.3`
+- Add example for a darker background - `v0.3`
 
 #### Documentation
 
 - ~~Explain how to create custom indicators~~ - `v0.2.2`
 - ~~Explain how to create custom data series~~ - `v0.2.2`
 - Explain how to create custom dataTransform - `v0.3`
+- Explain how to create custom Interactive indicator - `v0.3`
 
 #### More examples
 

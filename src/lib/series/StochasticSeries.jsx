@@ -27,9 +27,9 @@ class StochasticSeries extends React.Component {
 					plotData={plotData}
 					stroke={options.stroke.K} fill="none"
 					type={type} />
-				{StochasticSeries.getHorizontalLine(props, options.overSold, "brown")}
-				{StochasticSeries.getHorizontalLine(props, 50, "black")}
-				{StochasticSeries.getHorizontalLine(props, options.overBought, "brown")}
+				{StochasticSeries.getHorizontalLine(props, options.overSold, stroke.top)}
+				{StochasticSeries.getHorizontalLine(props, 50, stroke.middle)}
+				{StochasticSeries.getHorizontalLine(props, options.overBought, stroke.bottom)}
 			</g>
 		);
 	}
@@ -52,7 +52,12 @@ StochasticSeries.propTypes = {
 };
 
 StochasticSeries.defaultProps = {
-	className: "react-stockcharts-rsi-series"
+	className: "react-stockcharts-rsi-series",
+	stroke: {
+		top: "brown",
+		middle: "black",
+		bottom: "brown"
+	}
 };
 
 export default wrap(StochasticSeries);
