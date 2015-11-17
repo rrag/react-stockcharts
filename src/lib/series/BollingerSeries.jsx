@@ -52,7 +52,7 @@ BollingerSeries.defaultProps = {
 		middle: "black",
 		bottom: "brown",
 	},
-	fill: "steelblue",
+	fill: "#4682B4",
 	opacity: 0.2
 };
 

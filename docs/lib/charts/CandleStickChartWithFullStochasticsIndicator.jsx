@@ -34,7 +34,7 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 		var xGrid = showGrid ? { innerTickSize: -1 * gridHeight, tickStrokeOpacity: 0.2 } : {};
 
 		return (
-			<ChartCanvas width={width} height={height}
+			<ChartCanvas width={width} height={750}
 				margin={margin} initialDisplay={200} 
 				dataTransform={[ { transform: StockscaleTransformer } ]}
 				data={data} type={type}>

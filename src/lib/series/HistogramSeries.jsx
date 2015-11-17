@@ -2,6 +2,7 @@
 
 import React from "react";
 import wrap from "./wrap";
+import Utils from "../utils/utils";
 
 class HistogramSeries extends React.Component {
 	render() {
@@ -35,8 +36,8 @@ HistogramSeries.defaultProps = {
 	direction: "up",
 	className: "bar",
 	stroke: "none",
-	fill: "steelblue",
-	opacity: 0.5,
+	fill: "#4682B4",
+	opacity: 1,
 	widthRatio: 0.5,
 };
 
@@ -44,8 +45,6 @@ HistogramSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { height, width, xAccessor, yAccessor } = props;
 
 	var bars = HistogramSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
-
-	ctx.globalAlpha = props.opacity;
 
 	var each, group = {};
 	for (var i = 0; i < bars.length; i++) {
@@ -63,7 +62,7 @@ HistogramSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 			ctx.strokeStyle = key;
 		} else {
 			ctx.strokeStyle = key;
-			ctx.fillStyle = key;
+			ctx.fillStyle = Utils.hexToRGBA(key, props.opacity);
 		}
 		group[key].forEach(d => {
 			if (d.barWidth < 1) {

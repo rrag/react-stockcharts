@@ -3,6 +3,7 @@
 import React from "react";
 
 import wrap from "./wrap";
+import Utils from "../utils/utils";
 
 class StraightLine extends React.Component {
 	render() {
@@ -50,8 +51,7 @@ StraightLine.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 
 	ctx.beginPath();
 
-	ctx.strokeStyle = stroke;
-	ctx.globalAlpha = opacity;
+	ctx.strokeStyle = Utils.hexToRGBA(stroke, opacity);;
 
 	ctx.moveTo(xScale(first), yScale(yValue));
 	ctx.lineTo(xScale(last), yScale(yValue));

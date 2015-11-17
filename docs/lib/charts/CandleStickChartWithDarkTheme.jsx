@@ -7,15 +7,15 @@ import ReStock from "../../../src/";
 
 var { ChartCanvas, Chart, DataSeries, OverlaySeries, EventCapture } = ReStock;
 
-var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, StochasticSeries } = ReStock.series;
+var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, StochasticSeries, BollingerSeries } = ReStock.series;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 
-var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, StochasticTooltip } = ReStock.tooltip;
+var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, StochasticTooltip, BollingerBandTooltip } = ReStock.tooltip;
 var { StockscaleTransformer } = ReStock.transforms;
 
 var { XAxis, YAxis } = ReStock.axes;
-var { MACD, EMA, SMA, FullStochasticOscillator } = ReStock.indicator;
+var { MACD, EMA, SMA, FullStochasticOscillator, BollingerBand } = ReStock.indicator;
 
 var { fitWidth } = ReStock.helper;
 
@@ -30,11 +30,11 @@ class CandleStickChartWithDarkTheme extends React.Component {
 		var gridWidth = width - margin.left - margin.right;
 
 		var showGrid = true;
-		var yGrid = showGrid ? { innerTickSize: -1 * gridWidth, tickStrokeOpacity: 0.3 } : {};
-		var xGrid = showGrid ? { innerTickSize: -1 * gridHeight, tickStrokeOpacity: 0.3 } : {};
+		var yGrid = showGrid ? { innerTickSize: -1 * gridWidth, tickStrokeOpacity: 0.1 } : {};
+		var xGrid = showGrid ? { innerTickSize: -1 * gridHeight, tickStrokeOpacity: 0.1 } : {};
 
 		return (
-			<ChartCanvas width={width} height={height}
+			<ChartCanvas width={width} height={750}
 				margin={margin} initialDisplay={200} 
 				dataTransform={[ { transform: StockscaleTransformer } ]}
 				data={data} type={type}>
@@ -43,13 +43,16 @@ class CandleStickChartWithDarkTheme extends React.Component {
 					<YAxis axisAt="right" orient="right" ticks={5} {...yGrid} tickStroke="#FFFFFF" stroke="#FFFFFF" />
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} stroke="#FFFFFF" opacity={0.5}/>
 					<DataSeries id={0} yAccessor={CandlestickSeries.yAccessor} >
-						<CandlestickSeries wickStroke={{ up: "#6BA583", down: "red" }} />
+						<CandlestickSeries wickStroke={{ up: "#6BA583", down: "#db0000" }} fill={{ up: "#6BA583", down: "#db0000" }}/>
 					</DataSeries>
 					<DataSeries id={1} indicator={EMA} options={{ period: 26 }} >
 						<LineSeries/>
 					</DataSeries>
 					<DataSeries id={2} indicator={EMA} options={{ period: 12 }} >
 						<LineSeries/>
+					</DataSeries>
+					<DataSeries id={3} indicator={BollingerBand} options={{ period: 20, multiplier: 2, }}>
+						<BollingerSeries fill="#adffaf" opacity={0.1} stroke={{ top: "brown", middle: "#8c9900", bottom: "brown" }} />
 					</DataSeries>
 				</Chart>
 				<CurrentCoordinate forChart={1} forDataSeries={1} />
@@ -58,9 +61,9 @@ class CandleStickChartWithDarkTheme extends React.Component {
 						height={100} origin={(w, h) => [0, h - 475]} >
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")} tickStroke="#FFFFFF" />
 					<DataSeries id={0} yAccessor={(d) => d.volume} >
-						<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
+						<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "#db0000"} />
 					</DataSeries>
-					<DataSeries id={1} indicator={SMA} options={{ period: 10, pluck:"volume" }} stroke="steelblue" fill="steelblue">
+					<DataSeries id={1} indicator={SMA} options={{ period: 10, pluck:"volume" }} stroke="#4682B4" fill="#4682B4">
 						<AreaSeries opacity={0.5} />
 					</DataSeries>
 				</Chart>
@@ -103,11 +106,12 @@ class CandleStickChartWithDarkTheme extends React.Component {
 						<StochasticSeries stroke={{ top: "#37a600", middle: "#b8ab00", bottom: "#37a600" }} />
 					</DataSeries>
 				</Chart>
-				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} stroke="#FFFFFF"/>
+				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} stroke="#FFFFFF" opacity={0.4}/>
 				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 				<TooltipContainer>
-					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
-					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 5]} />
+					<OHLCTooltip forChart={1} origin={[-50, -10]}/>
+					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-48, 5]} />
+					<BollingerBandTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-50, 55]} />
 					<StochasticTooltip forChart={3} origin={[-38, 15]}>Fast STO</StochasticTooltip>
 					<StochasticTooltip forChart={4} origin={[-38, 15]}>Slow STO</StochasticTooltip>
 					<StochasticTooltip forChart={5} origin={[-38, 15]}>Full STO</StochasticTooltip>

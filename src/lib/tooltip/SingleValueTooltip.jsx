@@ -88,7 +88,7 @@ SingleValueTooltip.propTypes = {
 
 SingleValueTooltip.defaultProps = {
 	origin: [0, 0],
-	labelStroke: "steelblue",
+	labelStroke: "#4682B4",
 	yDisplayFormat: (d) => d,
 };
 

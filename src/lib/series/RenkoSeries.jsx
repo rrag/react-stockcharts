@@ -53,7 +53,7 @@ RenkoSeries.defaultProps = {
 	fill: {
 		up: "#6BA583",
 		down: "#E60000",
-		partial: "steelblue",
+		partial: "#4682B4",
 	},
 };
 

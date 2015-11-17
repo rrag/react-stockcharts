@@ -121,7 +121,6 @@ EdgeCoordinate.drawOnCanvasStatic = (ctx, props) => {
 	if (edge === null) return;
 
 	if (edge.coordinateBase !== undefined) {
-		// var { globalAlpha, fillStyle } = ctx;
 		ctx.fillStyle = Utils.hexToRGBA(edge.coordinateBase.fill, edge.coordinateBase.opacity);
 
 		ctx.beginPath();

@@ -24,8 +24,16 @@ class CrossHair extends React.Component {
 				{svgLine}
 				{edges.map((edge, idx) => <EdgeCoordinate
 					key={idx}
-					type={edge.type}
 					className="horizontal"
+					{ ...edge }
+					/>)}
+			</g>
+		);
+	}
+}
+
+/*
+type={edge.type}
 					show={edge.show}
 					x1={edge.x1} y1={edge.y1}
 					x2={edge.x2} y2={edge.y2}
@@ -40,11 +48,7 @@ class CrossHair extends React.Component {
 					opacity={edge.opacity}
 					fontFamily={edge.fontFamily}
 					fontSize={edge.fontSize}
-					/>)}
-			</g>
-		);
-	}
-}
+*/
 
 CrossHair.propTypes = {
 	yAxisPad: React.PropTypes.number.isRequired,

@@ -43,9 +43,9 @@ AreaSeries.propTypes = {
 };
 
 AreaSeries.defaultProps = {
-	stroke: "steelblue",
+	stroke: "#4682B4",
 	opacity: 0.5,
-	fill: "steelblue",
+	fill: "#4682B4",
 };
 
 AreaSeries.yAccessor = (d) => d.close;

@@ -3,6 +3,7 @@
 import React from "react";
 
 import wrap from "./wrap";
+import Utils from "../utils/utils";
 
 class CandlestickSeries extends React.Component {
 	render() {
@@ -41,17 +42,18 @@ CandlestickSeries.defaultProps = {
 	},
 	widthRatio: 0.5,
 	stroke: {
-		up: "none", //"#6BA583"
-		down: "none" //"red"
+		up: "none",
+		down: "none"
 	},
 	wickStroke: {
-		up: "black", //"#6BA583"
-		down: "black" //"red"
+		up: "black", // "#6BA583"
+		down: "black" // "red"
 	},
 	fill: {
 		up: "#6BA583",
 		down: "red"
 	},
+	opacity: 1,
 };
 
 CandlestickSeries.getWicksSVG = (props) => {
@@ -82,7 +84,7 @@ CandlestickSeries.yAccessor = (d) => ({open: d.open, high: d.high, low: d.low, c
 
 CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { compareSeries, xAccessor, yAccessor } = props;
-	var { wickStroke, fill } = props;
+	var { wickStroke, fill, opacity } = props;
 	var wickData = CandlestickSeries.getWickData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
 	var each, group = { up: [], down: [] };
 
@@ -100,14 +102,14 @@ CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 		ctx.moveTo(d.x1, d.y1);
 		ctx.lineTo(d.x2, d.y2);
 		ctx.stroke();
-	})
+	});
 	ctx.strokeStyle = wickStroke.down;
 	group.down.forEach(d => {
 		ctx.beginPath();
 		ctx.moveTo(d.x1, d.y1);
 		ctx.lineTo(d.x2, d.y2);
 		ctx.stroke();
-	})
+	});
 	var candleData = CandlestickSeries.getCandleData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
 
 	group = { up: [], down: [] };
@@ -121,7 +123,7 @@ CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 		}
 	};
 
-	ctx.fillStyle = fill.up;
+	ctx.fillStyle = Utils.hexToRGBA(fill.up, opacity);
 	group.up.forEach(d => {
 		if (d.width < 0) {
 			// <line className={d.className} key={idx} x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height}/>
@@ -143,7 +145,7 @@ CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 		}
 	});
 
-	ctx.fillStyle = fill.down;
+	ctx.fillStyle = Utils.hexToRGBA(fill.down, opacity);
 	group.down.forEach(d => {
 		if (d.width < 0) {
 			// <line className={d.className} key={idx} x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height}/>

@@ -36,7 +36,13 @@ var SaveChartAsImage = {
 		});
 	},
 	saveWithWhiteBG(doc, container, cb) {
-		return this.save(doc, container, "white", cb);
+		return this.saveWithBG(doc, container, "white", cb);
+	},
+	saveWithDarkBG(doc, container, cb) {
+		return this.saveWithBG(doc, container, "#303030", cb);
+	},
+	saveWithBG(doc, container, background, cb) {
+		return this.save(doc, container, background, cb);
 	},
 	saveChartAsImage(container) {
 		this.saveWithWhiteBG(document, container, function(src) {

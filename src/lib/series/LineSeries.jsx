@@ -26,7 +26,7 @@ LineSeries.propTypes = {
 };
 
 LineSeries.defaultProps = {
-	stroke: "steelblue",
+	stroke: "#4682B4",
 	className: "line "
 };
 

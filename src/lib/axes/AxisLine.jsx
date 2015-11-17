@@ -3,6 +3,7 @@
 import React from "react";
 import d3 from "d3";
 import objectAssign from "object-assign";
+import Utils from "../utils/utils";
 
 function d3_scaleExtent(domain) {
 	var start = domain[0], stop = domain[domain.length - 1];
@@ -59,7 +60,7 @@ AxisLine.defaultProps = {
 	shapeRendering: "crispEdges",
 	outerTickSize: 6,
 	fill: "none",
-	stroke: "#000",
+	stroke: "#000000",
 	strokeWidth: 1,
 	opacity: 1,
 };
@@ -74,13 +75,7 @@ AxisLine.drawOnCanvasStatic = (props, ctx, chartData, xScale, yScale) => {
 
 	var range = d3_scaleRange(xAxis ? xScale : yScale);
 
-	var { strokeStyle, globalAlpha } = ctx;
-
-
-	// console.log(ctx.strokeStyle, stroke);
-
-	ctx.strokeStyle = stroke;
-	ctx.globalAlpha = opacity;
+	ctx.strokeStyle = Utils.hexToRGBA(stroke, opacity);;
 
 	ctx.beginPath();
 
@@ -97,8 +92,7 @@ AxisLine.drawOnCanvasStatic = (props, ctx, chartData, xScale, yScale) => {
 	}
 	ctx.stroke();
 
-	ctx.strokeStyle = strokeStyle;
-	ctx.globalAlpha = globalAlpha;
+	// ctx.strokeStyle = strokeStyle;
 };
 
 module.exports = AxisLine;
