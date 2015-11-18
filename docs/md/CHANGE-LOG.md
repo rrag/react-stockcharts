@@ -1,3 +1,13 @@
+## v0.2.11
+
+#### Breaking Changes
+
+1. Opacity works only when using Hex colors, using color names like `steelblue` `red` `black` is not recommended. This is to address #1 in [issue #22](https://github.com/rrag/react-stockcharts/issues/22)
+
+#### Changes
+
+1. Support for Dark theme
+
 ## v0.2.10
 
 #### Changes

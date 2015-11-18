@@ -20,7 +20,7 @@ class AreaChartWithYPercent extends React.Component {
 					<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 					<YAxis axisAt="left" orient="left" />
 					<YAxis axisAt="right" orient="right" percentScale={true} tickFormat={d3.format(".0%")}/>
-					<DataSeries id={0} yAccessor={(d) => d.close} stroke="steelblue" fill="steelblue">
+					<DataSeries id={0} yAccessor={(d) => d.close} stroke="#4682B4" fill="#4682B4">
 						<AreaSeries />
 					</DataSeries>
 				</Chart>

@@ -47,7 +47,7 @@ class AreaChartWithEdge extends React.Component {
 						xLabel="Date" /* xLabel is optional, absense will not show the x value */ yLabel="C"
 						xDisplayFormat={d3.time.format("%Y-%m-%d")} yDisplayFormat={(y) => y.toFixed(2)}
 						/* valueStroke="green" - optional prop */
-						/* labelStroke="steelblue" - optional prop */
+						/* labelStroke="#4682B4" - optional prop */
 						origin={[-50, 0]}/>
 					<SingleValueTooltip forChart={1} forSeries={0}
 						yLabel="Volume" yAccessor={(d) => d.volume}
