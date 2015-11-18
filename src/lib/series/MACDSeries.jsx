@@ -31,7 +31,7 @@ class MACDSeries extends React.Component {
 				<HistogramSeries
 					baseAt={(xScale, yScale, d) => yScale(0)}
 					className="macd-histogram"
-					stroke={options.stroke.histogram} fill={options.fill.histogram}
+					stroke={options.stroke.histogram} fill={options.fill.histogram} opacity={options.opacity}
 					yAccessor={(d) => yAccessor(d) && yAccessor(d).histogram} />
 				{MACDSeries.getHorizontalLine(props)}
 			</g>
@@ -40,13 +40,13 @@ class MACDSeries extends React.Component {
 }
 
 MACDSeries.getHorizontalLine = (props) => {
-	let { xScale, yScale, xAccessor, yAccessor, plotData, type } = props;
+	let { xScale, yScale, xAccessor, yAccessor, plotData, type, zeroLineStroke, zeroLineOpacity } = props;
 
 	var first = xAccessor(plotData[0]);
 	var last = xAccessor(plotData[plotData.length - 1]);
 
 	return <StraightLine
-		stroke="black" opacity={0.3} type={type}
+		stroke={zeroLineStroke} opacity={zeroLineOpacity} type={type}
 		xScale={xScale} yScale={yScale}
 		xAccessor={xAccessor} yAccessor={yAccessor}
 		plotData={plotData}
@@ -55,6 +55,11 @@ MACDSeries.getHorizontalLine = (props) => {
 
 MACDSeries.childContextTypes = {
 	yAccessor: React.PropTypes.func.isRequired,
+};
+
+MACDSeries.defaultProps = {
+	zeroLineStroke: "#000000",
+	zeroLineOpacity: 0.3,
 };
 
 export default wrap(MACDSeries);

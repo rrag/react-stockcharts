@@ -384,6 +384,7 @@ class EventHandler extends PureComponent {
 	clearCanvas(canvasList) {
 		// console.log("CLEARING...", canvasList.length)
 		canvasList.forEach(each => {
+			// console.log(each.canvas.id);
 			each.setTransform(1, 0, 0, 1, 0, 0);
 			each.clearRect(-1, -1, each.canvas.width + 2, each.canvas.height + 2);
 		});

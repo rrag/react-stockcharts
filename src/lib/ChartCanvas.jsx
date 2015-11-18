@@ -52,7 +52,7 @@ class ChartCanvas extends React.Component {
 		return (
 			<div style={{position: "relative", height: height, width: width}} className={className} >
 				<CanvasContainer ref="canvases" width={width} height={height} type={this.props.type} zIndex={zIndex}/>
-				<svg width={width} height={height} style={{ position: "absolute", zIndex: (zIndex + 1) }}>
+				<svg width={width} height={height} style={{ position: "absolute", zIndex: (zIndex + 5) }}>
 					<style type="text/css" dangerouslySetInnerHTML={{ __html: style }}>
 					</style>
 					<defs>

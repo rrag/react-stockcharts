@@ -17,11 +17,16 @@ class CanvasContainer extends React.Component {
 			? this.refs.canvas_interactive
 			: React.findDOMNode(this.refs.canvas_interactive);
 
+		var bgDOM = Utils.isReactVersion14()
+			? this.refs.bg
+			: React.findDOMNode(this.refs.bg);
+
 		if (this.refs.canvas_axes) {
 			return {
 				axes: axesCanvasDOM.getContext('2d'),
 				mouseCoord: mouseCoordDOM.getContext('2d'),
 				interactive: interactiveDOM.getContext('2d'),
+				bg: bgDOM.getContext('2d'),
 			};
 		}
 	}
@@ -30,12 +35,14 @@ class CanvasContainer extends React.Component {
 		if (type === "svg") return null;
 		return (
 			<div style={{zIndex: zIndex}}>
+				<canvas ref="bg" width={width} height={height}
+					style={{ position: "absolute", left: 0, top: 0 }} />
 				<canvas ref="canvas_axes" width={width} height={height}
-					style={{ position: "absolute", left: 0, top: 0}} />
+					style={{ position: "absolute", left: 0, top: 0 }} />
 				<canvas ref="canvas_mouse_coordinates" width={width} height={height}
-					style={{ position: "absolute", left: 0, top: 0}} />
+					style={{ position: "absolute", left: 0, top: 0 }} />
 				<canvas ref="canvas_interactive" width={width} height={height}
-					style={{ position: "absolute", left: 0, top: 0}} />
+					style={{ position: "absolute", left: 0, top: 0 }} />
 			</div>
 		);
 	}

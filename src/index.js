@@ -4,6 +4,7 @@
 import ChartCanvas from "./lib/ChartCanvas";
 import Chart from "./lib/Chart";
 import DataSeries from "./lib/DataSeries";
+import BackgroundText from "./lib/BackgroundText";
 
 // interaction components
 import EventCapture from "./lib/EventCapture";
@@ -28,6 +29,7 @@ export default {
 	Chart,
 	DataSeries,
 	EventCapture,
+	BackgroundText,
 	series,
 	coordinates,
 	indicator,

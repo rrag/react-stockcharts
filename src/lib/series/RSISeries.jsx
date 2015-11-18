@@ -17,11 +17,11 @@ class RSISeries extends React.Component {
 					xScale={xScale} yScale={yScale}
 					xAccessor={xAccessor} yAccessor={yAccessor}
 					plotData={plotData}
-					stroke={stroke} fill="none"
+					stroke={stroke.line} fill="none"
 					type={type} />
-				{RSISeries.getHorizontalLine(props, options.overSold, "brown")}
-				{RSISeries.getHorizontalLine(props, 50, "black")}
-				{RSISeries.getHorizontalLine(props, options.overBought, "brown")}
+				{RSISeries.getHorizontalLine(props, options.overSold, stroke.top)}
+				{RSISeries.getHorizontalLine(props, 50, stroke.middle)}
+				{RSISeries.getHorizontalLine(props, options.overBought, stroke.bottom)}
 			</g>
 		);
 	}
@@ -43,7 +43,13 @@ RSISeries.propTypes = {
 };
 
 RSISeries.defaultProps = {
-	className: "react-stockcharts-rsi-series"
+	className: "react-stockcharts-rsi-series",
+	stroke: {
+		line: "#000000",
+		top: "brown",
+		middle: "black",
+		bottom: "brown"
+	}
 };
 
 export default wrap(RSISeries);

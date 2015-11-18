@@ -14,10 +14,11 @@ export const MACD = {
 		histogram: "#4682B4"
 	},
 	stroke: {
-		MACDLine: "red",
-		signalLine: "green",
+		MACDLine: "#FF0000",
+		signalLine: "#00F300",
 		histogram: "#4682B4"
-	}
+	},
+	opacity: 1,
 };
 
 export const FullStochasticOscillator = {
@@ -26,8 +27,8 @@ export const FullStochasticOscillator = {
 	D: 3,
 	ohlc: (d) => ({open: d.open, high: d.high, low: d.low, close: d.close}),
 	stroke: {
-		D: "green",
-		K: "red",
+		D: "#00F300",
+		K: "#FF0000",
 	},
 	overSold: 80,
 	overBought: 20,
