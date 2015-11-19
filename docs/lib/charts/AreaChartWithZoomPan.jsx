@@ -37,7 +37,11 @@ class AreaChartWithEdge extends React.Component {
 						height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 					<DataSeries id={0} yAccessor={(d) => d.volume} >
-						<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} widthRatio={1} />
+						<HistogramSeries
+							stroke={(d) => d.close > d.open ? "#6BA583" : "#FF0000"}
+							fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"}
+							opacity={0.4}
+							widthRatio={1} />
 					</DataSeries>
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />

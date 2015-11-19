@@ -30,7 +30,7 @@
     "html-loader": "^0.3.0",
     "json-loader": "^0.5.3",
     "ncp": "^2.0.0",
-    "node-sass": "^3.3.3",
+    "node-sass": "^3.4.2",
     "prismjs": "git://github.com/PrismJS/prism.git#gh-pages",
     "remarkable-loader": "^0.1.0",
     "rimraf": "^2.4.3",
