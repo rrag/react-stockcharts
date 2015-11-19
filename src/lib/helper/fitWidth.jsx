@@ -1,3 +1,5 @@
+import React from "react";
+
 function getDisplayName(Series) {
 	var name = Series.displayName || Series.name || "Series";
 	return name;
