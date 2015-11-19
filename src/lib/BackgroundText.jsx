@@ -43,8 +43,7 @@ BackgroundText.drawOnCanvas = (ctx, props, { interval }, getText) => {
 	ctx.fillStyle = Utils.hexToRGBA(fill, opacity);
 	ctx.textAlign = textAnchor === "middle" ? "center" : textAnchor;
 
-	if (stroke !== "none")
-		ctx.strokeText(text, x, y);
+	if (stroke !== "none") ctx.strokeText(text, x, y);
 	ctx.fillText(text, x, y);
 
 	ctx.restore();
