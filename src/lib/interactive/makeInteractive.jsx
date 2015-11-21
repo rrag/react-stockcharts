@@ -36,11 +36,15 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 		subscription(event, arg, e) {
 
 			var { chartId, xAccessor } = this.context;
-			var { shouldRemoveLastIndicator } = this.props;
+			var { shouldRemoveLastIndicator, enabled } = this.props;
 			var { interactive } = this.getInteractiveState(this.props, this.context);
 
 			if (event === "click" && shouldRemoveLastIndicator(e)) {
-				var interactiveState = this.refs.interactive.removeIndicator(chartId, xAccessor, interactive, arg, e);
+				var { enabled } = this.props;
+				var interactiveState = interactive
+				if (enabled) {
+					interactiveState = this.refs.interactive.removeIndicator(chartId, xAccessor, interactive, arg, e);
+				}
 				return {
 					id: this.props.id,
 					interactive: interactiveState,
@@ -48,7 +52,10 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 			} else {
 
 				var handler = this.refs.interactive[`on${ capitalizeFirst(event) }`];
-				var interactiveState = handler(chartId, xAccessor, interactive, arg, e);
+				var interactiveState = interactive;
+				if (enabled) {
+					interactiveState = handler(chartId, xAccessor, interactive, arg, e);
+				}
 
 				if (interactiveState === interactive) return false;
 				return {
@@ -158,6 +165,7 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 	InteractiveComponentWrapper.propTypes = {
 		id: React.PropTypes.number.isRequired,
 		shouldRemoveLastIndicator: React.PropTypes.func.isRequired,
+		enabled: React.PropTypes.bool.isRequired,
 	};
 
 	InteractiveComponentWrapper.defaultProps = {

@@ -76,16 +76,17 @@ class TrendLine extends React.Component {
 		return interactive;
 	}
 	render() {
-		var { chartCanvasType, chartData, plotData, xAccessor, interactive } = this.props;
+		var { chartCanvasType, chartData, plotData, xAccessor, interactive, enabled } = this.props;
 
 		if (chartCanvasType !== "svg") return null;
+
 		var { xScale, yScale } = chartData.plot.scales;
 		var { currentPos } = interactive;
 
 		var { currentPositionStroke, currentPositionStrokeWidth, currentPositionOpacity, currentPositionRadius } = this.props;
 		var { stroke, opacity } = this.props;
 
-		var circle = (currentPos)
+		var circle = (currentPos && enabled)
 			? <circle cx={xScale(currentPos[0])} cy={yScale(currentPos[1])}
 				stroke={currentPositionStroke}
 				opacity={currentPositionOpacity}
@@ -119,8 +120,8 @@ TrendLine.drawOnCanvas = (context,
 
 	var { xScale, yScale } = chartData.plot.scales;
 
-	var { currentPositionStroke, currentPositionStrokeWidth, currentPositionOpacity, currentPositionRadius } = props;
-	if (currentPos) {
+	var { enabled, currentPositionStroke, currentPositionStrokeWidth, currentPositionOpacity, currentPositionRadius } = props;
+	if (currentPos && enabled) {
 		ctx.strokeStyle = Utils.hexToRGBA(currentPositionStroke, currentPositionOpacity);
 		ctx.lineWidth = currentPositionStrokeWidth;
 		ctx.beginPath();
