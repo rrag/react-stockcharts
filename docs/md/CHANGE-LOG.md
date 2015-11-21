@@ -1,3 +1,9 @@
+## v0.2.12
+
+#### Changes
+
+1. Fixed a bug where `React` was not imported in `fitWidth`
+
 ## v0.2.11
 
 #### Breaking Changes
