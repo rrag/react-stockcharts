@@ -72,9 +72,8 @@ var ChartDataUtil = {
 		var item = Utils.getClosestItem(plotData, xValue, chartData.config.xAccessor);
 		return item;
 	},
-	getDimensions(innerDimension, chartProps, margin) {
+	getDimensions(innerDimension, chartProps) {
 
-		// console.log(margin);
 		var availableWidth = innerDimension.width;
 		var availableHeight = innerDimension.height;
 

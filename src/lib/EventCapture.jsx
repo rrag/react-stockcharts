@@ -46,6 +46,9 @@ class EventCapture extends React.Component {
 			var zoomDir = e.deltaY > 0 ? this.props.zoomMultiplier : -this.props.zoomMultiplier;
 			var newPos = Utils.mousePosition(e);
 			this.context.onZoom(zoomDir, newPos);
+			if (this.props.onZoom) {
+				this.props.onZoom(e);
+			}
 		}
 	}
 	handleMouseMove(e) {
@@ -88,13 +91,16 @@ class EventCapture extends React.Component {
 	}
 	handlePan() {
 		// console.log("handlePan")
-
+		var e = d3.event;
 		var deltaXY = this.context.deltaXY();
-		var newPos = [d3.event.pageX - deltaXY[0], d3.event.pageY - deltaXY[1]];
+		var newPos = [e.pageX - deltaXY[0], e.pageY - deltaXY[1]];
 		// console.log("moved from- ", startXY, " to ", newPos);
 		if (this.props.pan && this.context.onPan) {
 			var chartData = this.context.chartData.filter((each) => each.id === this.props.mainChart) [0];
 			this.context.onPan(newPos, chartData.plot.scales.xScale.domain());
+			if (this.props.onPan) {
+				this.props.onPan(e);
+			}
 		}
 	}
 	handlePanEnd() {

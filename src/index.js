@@ -21,6 +21,7 @@ import tooltip from "./lib/tooltip";
 import helper from "./lib/helper";
 
 import interactive from "./lib/interactive";
+import Utils from "./lib/utils/utils";
 
 const version = "0.2.12";
 
@@ -38,6 +39,7 @@ export default {
 	tooltip,
 	helper,
 	interactive,
-	version
+	version,
+	Utils
 };
 

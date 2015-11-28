@@ -98,8 +98,19 @@ class EventHandler extends PureComponent {
 		var mainChart = ChartDataUtil.getMainChart(props.children);
 		var beginIndex = Math.max(dataForInterval.length - initialDisplay, 0);
 		var plotData = dataForInterval.slice(beginIndex);
-
 		var chartData = ChartDataUtil.getChartData(props, dimensions, plotData, data, options);
+
+		var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0];
+
+		var domainL = getLongValue(chart.config.xAccessor(plotData[0]));
+		var domainR = getLongValue(chart.config.xAccessor(plotData[plotData.length - 1]));
+
+		var dataToPlot = ChartDataUtil.getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.xAccessor);
+		plotData = dataToPlot.data;
+		chartData = ChartDataUtil.getChartData(props, dimensions, plotData, data, options);
+
+		// if (dataToPlot.data.length < 10) return;
+
 		// console.log("componentWillMount", chartData);
 		this.setState({
 			data: data,
@@ -146,15 +157,22 @@ class EventHandler extends PureComponent {
 			var endIndex = dataForInterval.length;
 
 			plotData = dataForInterval.slice(beginIndex, endIndex);
-
 		} else {
-
 			domainL = startDomain[0];
 			domainR = startDomain[1];
 		}
 
 		// console.log(plotData[0], plotData[plotData.length - 1]);
 		var newChartData = ChartDataUtil.getChartData(nextProps, dimensions, plotData, data, options);
+		var chart = newChartData.filter((eachChart) => eachChart.id === mainChart)[0];
+		var { xAccessor, width } = chart.config;
+		if (!domainL) {
+			domainL = getLongValue(xAccessor(plotData[0]));
+			domainR = getLongValue(xAccessor(plotData[plotData.length - 1]));
+		}
+
+		var dataToPlot = ChartDataUtil.getDataToPlotForDomain(domainL, domainR, data, width, xAccessor);
+		plotData = dataToPlot.data;
 
 		newChartData = newChartData.map((eachChart) => {
 			var plot = ChartDataUtil.getChartPlotFor(eachChart.config, plotData, domainL, domainR);
@@ -349,7 +367,6 @@ class EventHandler extends PureComponent {
 		this.clearBothCanvas();
 		this.clearInteractiveCanvas();
 
-
 		// console.log(newPlotData.length);
 
 		this.clearCanvasDrawCallbackList();
@@ -363,7 +380,54 @@ class EventHandler extends PureComponent {
 			currentItems: newCurrentItems,
 			canvases: null,
 		});
+	}
+	getDataInfo() {
+		var interval = "D";
+		var { data, plotData, chartData, mainChart } = this.state;
+		var dataForInterval = data[interval];
+		var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
+		var { xAccessor } = mainChartData.config;
 
+		return {
+			xAccessor,
+			data: dataForInterval,
+			fullData: {
+				start: dataForInterval[0],
+				end: dataForInterval[dataForInterval.length - 1],
+			},
+			viewData: {
+				start: plotData[0],
+				end: plotData[plotData.length - 1],
+			}
+		}
+	}
+	setViewRange(domainL, domainR) {
+		var { data, mainChart, chartData, plotData, interval, mouseXY } = this.state;
+
+		var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0];
+		var dataToPlot = ChartDataUtil.getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.xAccessor);
+
+		var newChartData = chartData.map((eachChart) => {
+			var plot = ChartDataUtil.getChartPlotFor(eachChart.config, dataToPlot.data, domainL, domainR);
+			return {
+				id: eachChart.id,
+				config: eachChart.config,
+				plot: plot
+			};
+		});
+
+		var currentItems = ChartDataUtil.getCurrentItems(newChartData, mouseXY, dataToPlot.data);
+
+		this.clearBothCanvas();
+		this.clearInteractiveCanvas();
+
+		this.clearCanvasDrawCallbackList();
+		this.setState({
+			chartData: newChartData,
+			plotData: dataToPlot.data,
+			interval: dataToPlot.interval,
+			currentItems,
+		});
 	}
 	clearBothCanvas(props) {
 		props = props || this.props;
@@ -551,6 +615,9 @@ class EventHandler extends PureComponent {
 				plot: plot
 			};
 		});
+
+		var currentItems = ChartDataUtil.getCurrentItems(newChartData, mouseXY, dataToPlot.data);
+
 		this.clearBothCanvas();
 		this.clearInteractiveCanvas();
 
@@ -559,6 +626,7 @@ class EventHandler extends PureComponent {
 			chartData: newChartData,
 			plotData: dataToPlot.data,
 			interval: dataToPlot.interval,
+			currentItems,
 		});
 	}
 
@@ -577,9 +645,9 @@ class EventHandler extends PureComponent {
 
 		var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0],
 			domainRange = panStartDomain[1] - panStartDomain[0],
-			fullData = data[interval],
-			last = fullData[fullData.length - 1],
-			first = fullData[0],
+			dataForInterval = data[interval],
+			last = dataForInterval[dataForInterval.length - 1],
+			first = dataForInterval[0],
 			dx = mousePosition[0] - panOrigin[0],
 			xAccessor = chart.config.xAccessor;
 
@@ -598,10 +666,10 @@ class EventHandler extends PureComponent {
 			domainR = new Date(domainR);
 		}
 
-		var beginIndex = Utils.getClosestItemIndexes(fullData, domainL, xAccessor).left;
-		var endIndex = Utils.getClosestItemIndexes(fullData, domainR, xAccessor).right;
+		var beginIndex = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
+		var endIndex = Utils.getClosestItemIndexes(dataForInterval, domainR, xAccessor).right;
 
-		var filteredData = fullData.slice(beginIndex, endIndex);
+		var filteredData = dataForInterval.slice(beginIndex, endIndex);
 
 		var newChartData = chartData.map((eachChart) => {
 			var plot = ChartDataUtil.getChartPlotFor(eachChart.config, filteredData, domainL, domainR);
