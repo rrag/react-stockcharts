@@ -11,7 +11,7 @@ import wrap from "./wrap";
 class MACDSeries extends React.Component {
 	render() {
 		var { props } = this;
-		let { indicator, xScale, yScale, xAccessor, yAccessor, plotData, type } = props;
+		let { indicator, xScale, yScale, xAccessor, yAccessor, plotData, type, opacity } = props;
 		var options = indicator.options();
 
 		return (
@@ -31,7 +31,7 @@ class MACDSeries extends React.Component {
 				<HistogramSeries
 					baseAt={(xScale, yScale, d) => yScale(0)}
 					className="macd-histogram"
-					stroke={options.stroke.histogram} fill={options.fill.histogram} opacity={options.opacity}
+					stroke={options.stroke.histogram} fill={options.fill.histogram} opacity={opacity}
 					yAccessor={(d) => yAccessor(d) && yAccessor(d).histogram} />
 				{MACDSeries.getHorizontalLine(props)}
 			</g>
@@ -60,6 +60,7 @@ MACDSeries.childContextTypes = {
 MACDSeries.defaultProps = {
 	zeroLineStroke: "#000000",
 	zeroLineOpacity: 0.3,
+	opacity: 0.2,
 };
 
 export default wrap(MACDSeries);

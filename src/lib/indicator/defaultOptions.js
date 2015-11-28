@@ -18,7 +18,7 @@ export const MACD = {
 		signalLine: "#00F300",
 		histogram: "#4682B4"
 	},
-	opacity: 1,
+	// opacity: 1,
 };
 
 export const FullStochasticOscillator = {
