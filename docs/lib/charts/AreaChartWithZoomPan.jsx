@@ -29,7 +29,7 @@ class AreaChartWithEdge extends React.Component {
 				<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
-					<DataSeries id={0} yAccessor={AreaSeries.yAccessor} stroke="green" fill="lightgreen">
+					<DataSeries id={0} yAccessor={AreaSeries.yAccessor} stroke="#76C444" fill="#C7F3AB">
 						<AreaSeries />
 					</DataSeries>
 				</Chart>
@@ -38,7 +38,7 @@ class AreaChartWithEdge extends React.Component {
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 					<DataSeries id={0} yAccessor={(d) => d.volume} >
 						<HistogramSeries
-							stroke={(d) => d.close > d.open ? "#6BA583" : "#FF0000"}
+							stroke
 							fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"}
 							opacity={0.4}
 							widthRatio={1} />

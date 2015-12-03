@@ -20,7 +20,7 @@ HistogramSeries.propTypes = {
 				React.PropTypes.func,
 			]).isRequired,
 	direction: React.PropTypes.oneOf(["up", "down"]).isRequired,
-	stroke: React.PropTypes.string,
+	stroke: React.PropTypes.bool.isRequired,
 	widthRatio: React.PropTypes.number.isRequired,
 	opacity: React.PropTypes.number.isRequired,
 	fill: React.PropTypes.oneOfType([
@@ -35,14 +35,14 @@ HistogramSeries.defaultProps = {
 	baseAt: "bottom",
 	direction: "up",
 	className: "bar",
-	stroke: "none",
+	stroke: false,
 	fill: "#4682B4",
 	opacity: 1,
 	widthRatio: 0.5,
 };
 
 HistogramSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { height, width, xAccessor, yAccessor } = props;
+	var { height, width, xAccessor, yAccessor, stroke } = props;
 
 	var bars = HistogramSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
 
@@ -86,7 +86,7 @@ HistogramSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 				ctx.beginPath();
 				ctx.rect(d.x, d.y, d.barWidth, d.height);
 				ctx.fill();
-				ctx.stroke();
+				if (stroke) ctx.stroke();
 			}
 		});
 	});
@@ -111,7 +111,7 @@ HistogramSeries.getBarsSVG = (props) => {
 					x={d.x}
 					y={d.y}
 					width={d.barWidth}
-					opacity={props.opacity}
+					fillOpacity={props.opacity}
 					height={d.height} />;
 	});
 };
@@ -174,7 +174,7 @@ HistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData
 					x: (x),
 					y: (y),
 					className: className,
-					stroke: stroke,
+					stroke: stroke ? getFill(d) : "none",
 					fill: getFill(d),
 				};
 			});

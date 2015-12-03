@@ -63,7 +63,6 @@ RSITooltip.contextTypes = {
 
 RSITooltip.propTypes = {
 	forChart: React.PropTypes.number.isRequired,
-	accessor: React.PropTypes.func.isRequired,
 	xDisplayFormat: React.PropTypes.func.isRequired,
 	origin: React.PropTypes.oneOfType([
 				React.PropTypes.array
@@ -77,7 +76,6 @@ RSITooltip.propTypes = {
 
 RSITooltip.defaultProps = {
 	namespace: "ReStock.RSITooltip",
-	accessor: (d) => { return {date: d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume}; },
 	xDisplayFormat: Utils.displayDateFormat,
 	origin: [0, 0]
 };

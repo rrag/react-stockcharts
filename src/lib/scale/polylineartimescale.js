@@ -2,11 +2,11 @@
 
 import d3 from "d3";
 
-function financeTimeScale(drawableData, indexAccessor, backingLinearScale) {
+function financeTimeScale(drawableData, indexAccessor, backingLinearScale, dateAccessor = d => d.date) {
 
 	var timeScaleSteps = [
-		{ step: 864e5, f: function(d) { return d.date !== undefined && true; }},  // 1-day
-		{ step: 1728e5, f: function(d, i) { return d.date !== undefined && (i % 2 === 0); }}, // 2-day
+		{ step: 864e5, f: function(d) { return dateAccessor(d) !== undefined && true; }},  // 1-day
+		{ step: 1728e5, f: function(d, i) { return dateAccessor(d) !== undefined && (i % 2 === 0); }}, // 2-day
 		{ step: 8380e5, f: function(d, i, arr) {
 				if (d.startOfMonth) return true;
 				var list = [];
@@ -25,7 +25,7 @@ function financeTimeScale(drawableData, indexAccessor, backingLinearScale) {
 		{ step: 3525e6, f: function(d) {return d.startOfMonth; }},  // 1-month
 		{ step: 7776e6, f: function(d) {return d.startOfQuarter; }},  // 3-month
 		{ step: 31536e6, f: function(d) {return d.startOfYear; }},  // 1-year
-		{ step: 91536e15, f: function(d) {return d.date !== undefined && (d.startOfYear && d.date.getFullYear() % 2 === 0); }}  // 2-year
+		{ step: 91536e15, f: function(d) {return dateAccessor(d) !== undefined && (d.startOfYear && dateAccessor(d).getFullYear() % 2 === 0); }}  // 2-year
 	];
 	var timeScaleStepsBisector = d3.bisector(function(d) { return d.step; }).left;
 	var bisectByIndex = d3.bisector(function(d) { return indexAccessor(d); }).left;
@@ -39,7 +39,7 @@ function financeTimeScale(drawableData, indexAccessor, backingLinearScale) {
 	function formater(d) {
 		var i = 0, format = tickFormat[i];
 		while (!format[1](d)) format = tickFormat[++i];
-		var tickDisplay = format[0](d.date);
+		var tickDisplay = format[0](dateAccessor(d));
 		// console.log(tickDisplay);
 		return tickDisplay;
 	}
@@ -93,18 +93,18 @@ function financeTimeScale(drawableData, indexAccessor, backingLinearScale) {
 	scale.ticks = function(m) {
 		var start, end, count = 0;
 		drawableData.forEach(function(d) {
-			if (d.date !== undefined) {
+			if (dateAccessor(d) !== undefined) {
 				if (start === undefined) start = d;
 				end = d;
 				count++;
 			}
 		});
 		m = (count / drawableData.length) * m;
-		var span = (end.date.getTime() - start.date.getTime());
+		var span = (dateAccessor(end).getTime() - dateAccessor(start).getTime());
 		var target = span / m;
 		/*
-		console.log(drawableData[drawableData.length - 1].date
-			, drawableData[0].date
+		console.log(dateAccessor(drawableData[drawableData.length - 1])
+			, drawableData[0]
 			, span
 			, m
 			, target

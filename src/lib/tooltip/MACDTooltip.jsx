@@ -53,7 +53,7 @@ class MACDTooltip extends React.Component {
 					<ToolTipTSpanLabel> Signal (</ToolTipTSpanLabel>
 						<tspan fill={options.stroke.signalLine}>{options.signal}</tspan>
 						<ToolTipTSpanLabel>): </ToolTipTSpanLabel><tspan fill={options.stroke.signalLine}>{signalLine}</tspan>
-					<ToolTipTSpanLabel> Histogram: </ToolTipTSpanLabel><tspan fill={options.stroke.histogram}>{histogram}</tspan>
+					<ToolTipTSpanLabel> Histogram: </ToolTipTSpanLabel><tspan fill={options.fill.histogram}>{histogram}</tspan>
 				</ToolTipText>
 			</g>
 		);

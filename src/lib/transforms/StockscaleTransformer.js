@@ -56,14 +56,14 @@ function buildWeeklyData(daily, indexMutator, dateAccesor, dateMutator) {
 	return weekly;
 }
 
-function buildMonthlyData(daily, indexMutator, dateAccesor) {
+function buildMonthlyData(daily, indexMutator, dateAccesor, dateMutator) {
 	var monthly = [], prevMonth, eachMonth = {};
 	for (var i = 0; i < daily.length; i++) {
 		var d = daily[i];
 
-		if (!eachMonth.date) indexMutator(eachMonth, i);
+		if (dateAccesor(eachMonth)) indexMutator(eachMonth, i);
 
-		eachMonth.date = dateAccesor(d);
+		dateMutator(eachMonth, dateAccesor(d));
 
 		eachMonth.startOfMonth = eachMonth.startOfMonth || d.startOfMonth;
 		eachMonth.startOfQuarter = eachMonth.startOfQuarter || d.startOfQuarter;

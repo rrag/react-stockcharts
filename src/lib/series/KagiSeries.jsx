@@ -38,12 +38,13 @@ KagiSeries.defaultProps = {
 		yang: "none",
 		yin: "none"
 	},
+	currentValueStroke: "#000000",
 };
 
 KagiSeries.yAccessor = (d) => ({open: d.open, high: d.high, low: d.low, close: d.close});
 
 KagiSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { xAccessor, yAccessor, stroke, fill, strokeWidth } = props;
+	var { xAccessor, yAccessor, stroke, fill, strokeWidth, currentValueStroke } = props;
 	var begin = true;
 
 	var paths = KagiSeries.helper(plotData, xAccessor);
@@ -86,7 +87,7 @@ KagiSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	ctx.stroke();
 
 	ctx.beginPath();
-	ctx.strokeStyle = "black";
+	ctx.strokeStyle = currentValueStroke;
 	ctx.moveTo(x - 10, y2);
 	ctx.lineTo(x, y2);
 	ctx.stroke();

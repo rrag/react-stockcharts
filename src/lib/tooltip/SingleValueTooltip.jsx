@@ -8,8 +8,6 @@ import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 import objectAssign from "object-assign";
 
-var stockScaleXAccessr = (d) => d.date;
-
 class SingleValueTooltip extends React.Component {
 	render() {
 		var { onClick, fontFamily, fontSize, forChart, forSeries } = this.props;
@@ -21,16 +19,15 @@ class SingleValueTooltip extends React.Component {
 		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
 		var item = ChartDataUtil.getCurrentItemForChart(this.props, this.context);
 
-		var xAccessor;
+		/* var xAccessor;
 		if (chartData.plot.scales.xScale.isPolyLinear()) {
 			xAccessor = stockScaleXAccessr;
-		}
+		} */
 
 		var { overlays } = chartData.config;
 		var { yAccessor, stroke, fill } = overlays.filter(each => each.id === forSeries)[0];
 
-
-		xAccessor = this.props.xAccessor || xAccessor || chartData.config.xAccessor;
+		var xAccessor = this.props.xAccessor /* || xAccessor || chartData.config.xAccessor */;
 		yAccessor = this.props.yAccessor || yAccessor;
 
 		if (item !== undefined && yAccessor(item) !== undefined) {
@@ -90,6 +87,7 @@ SingleValueTooltip.defaultProps = {
 	origin: [0, 0],
 	labelStroke: "#4682B4",
 	yDisplayFormat: (d) => d,
+	xAccessor: d => d.date,
 };
 
 export default SingleValueTooltip;

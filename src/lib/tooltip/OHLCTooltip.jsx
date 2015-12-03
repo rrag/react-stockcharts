@@ -15,8 +15,9 @@ var thousand = 1 * 1000;
 
 class OHLCTooltip extends React.Component {
 	render() {
-		var { onClick, xDisplayFormat, fontFamily, fontSize, forChart } = this.props;
+		var { onClick, xDisplayFormat, fontFamily, fontSize, forChart, accessor, volumeFormat } = this.props;
 		var { dataTransform } = this.context;
+
 		var displayDate, fromDate, toDate, open, high, low, close, volume;
 
 		displayDate = fromDate = toDate = open = high = low = close = volume = "n/a";
@@ -24,14 +25,16 @@ class OHLCTooltip extends React.Component {
 		var item = ChartDataUtil.getCurrentItemForChart(this.props, this.context);
 		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
 
-		if (item !== undefined && item.close !== undefined) {
-			volume = (item.volume / billion > 1)
+		if (item !== undefined && accessor(item).close !== undefined) {
+			item = accessor(item);
+			volume = volumeFormat(item.volume);
+			/* volume = (item.volume / billion > 1)
 				? (item.volume / billion).toFixed(2) + "b"
 				: (item.volume / million > 1)
 					? (item.volume / million).toFixed(2) + "m"
 					: (item.volume / thousand > 1)
 						? (item.volume / thousand).toFixed(2) + "k"
-						: item.volume;
+						: item.volume; */
 
 			displayDate = xDisplayFormat(item.date);
 			open = Utils.displayNumberFormat(item.open);
@@ -89,6 +92,7 @@ OHLCTooltip.defaultProps = {
 	namespace: "ReStock.OHLCTooltip",
 	accessor: (d) => { return {date: d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume}; },
 	xDisplayFormat: Utils.displayDateFormat,
+	volumeFormat: d3.format(".4s"),
 	origin: [0, 0],
 };
 

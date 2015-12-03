@@ -45,7 +45,7 @@ PointAndFigureSeries.defaultProps = {
 	strokeWidth: 1,
 	stroke: {
 		up: "#6BA583",
-		down: "red"
+		down: "#FF0000"
 	},
 	fill: {
 		up: "none",

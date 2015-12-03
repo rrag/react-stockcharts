@@ -46,12 +46,12 @@ CandlestickSeries.defaultProps = {
 		down: "none"
 	},
 	wickStroke: {
-		up: "black", // "#6BA583"
-		down: "black" // "red"
+		up: "#000000", // "#6BA583"
+		down: "#000000" // "red"
 	},
 	fill: {
 		up: "#6BA583",
-		down: "red"
+		down: "#FF0000"
 	},
 	opacity: 1,
 };

@@ -16,9 +16,7 @@ export const MACD = {
 	stroke: {
 		MACDLine: "#FF0000",
 		signalLine: "#00F300",
-		histogram: "#4682B4"
 	},
-	// opacity: 1,
 };
 
 export const FullStochasticOscillator = {
