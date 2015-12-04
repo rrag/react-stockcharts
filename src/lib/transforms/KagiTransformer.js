@@ -162,7 +162,7 @@ function KagiTransformer() {
 
 	transform.options = function(opt) {
 		newOptions = objectAssign({}, defaultOptions, opt);
-		console.log(newOptions);
+		// console.log(newOptions);
 		return newOptions;
 	};
 	return transform;

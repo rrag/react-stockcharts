@@ -422,6 +422,7 @@ var ChartDataUtil = {
 
 		var dataForInterval, filteredData, interval, leftX, rightX, leftIndex, rightIndex;
 		for (var i = 0; i < allowedIntervals.length; i++) {
+			if (!data[allowedIntervals[i]]) continue;
 			interval = allowedIntervals[i];
 			dataForInterval = data[interval];
 
