@@ -58,4 +58,4 @@ function HeikinAshiTransformer() {
 	return transform;
 }
 
-module.exports = HeikinAshiTransformer;
+export default HeikinAshiTransformer;

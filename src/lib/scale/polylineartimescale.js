@@ -140,4 +140,4 @@ var defaultFinanceDateTimeScale = function(indexAccessor) {
 	return financeTimeScale([0, 1], indexAccessor, d3.scale.linear());
 };
 
-module.exports = defaultFinanceDateTimeScale;
+export default defaultFinanceDateTimeScale;

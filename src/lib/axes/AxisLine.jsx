@@ -95,4 +95,4 @@ AxisLine.drawOnCanvasStatic = (props, ctx, chartData, xScale, yScale) => {
 	// ctx.strokeStyle = strokeStyle;
 };
 
-module.exports = AxisLine;
+export default AxisLine;

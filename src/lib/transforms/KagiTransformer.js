@@ -169,4 +169,4 @@ function KagiTransformer() {
 }
 
 
-module.exports = KagiTransformer;
+export default KagiTransformer;

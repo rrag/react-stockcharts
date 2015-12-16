@@ -216,4 +216,4 @@ function PointAndFigureTransformer() {
 }
 
 
-module.exports = PointAndFigureTransformer;
+export default PointAndFigureTransformer;

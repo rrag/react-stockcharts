@@ -34,4 +34,4 @@ TypeChooser.defaultProps = {
 	type: "hybrid"
 };
 
-module.exports = TypeChooser;
+export default TypeChooser;

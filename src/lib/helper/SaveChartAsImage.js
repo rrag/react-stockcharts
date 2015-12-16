@@ -60,4 +60,4 @@ var SaveChartAsImage = {
 	}
 };
 
-module.exports = SaveChartAsImage;
+export default SaveChartAsImage;

@@ -20,7 +20,7 @@ function calculateTR(rawData) {
 		});
 }
 
-function calculateATR(rawData, period) {
+export default function calculateATR(rawData, period) {
 	calculateTR(rawData);
 
 	rawData.forEach(function(d, index) {
@@ -29,6 +29,4 @@ function calculateATR(rawData, period) {
 			d["atr" + period] = (Math.round(num * 100) / 100);
 		}
 	});
-}
-
-module.exports = calculateATR;
+};

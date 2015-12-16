@@ -158,4 +158,4 @@ EdgeIndicator.helper = (props, width, chartData) => {
 	return edge;
 };
 
-module.exports = EdgeIndicator;
+export default EdgeIndicator;

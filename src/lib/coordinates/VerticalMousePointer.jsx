@@ -33,4 +33,4 @@ VerticalMousePointer.defaultProps = { namespace: "ReStock.VerticalMousePointer" 
 
 VerticalMousePointer.yAccessor = (d) => ({open: d.open, high: d.high, low: d.low, close: d.close});
 
-module.exports = VerticalMousePointer;
+export default VerticalMousePointer;

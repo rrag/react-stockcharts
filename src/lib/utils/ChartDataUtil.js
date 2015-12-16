@@ -449,4 +449,4 @@ var ChartDataUtil = {
 	}
 };
 
-module.exports = ChartDataUtil;
+export default ChartDataUtil;

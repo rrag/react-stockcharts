@@ -29,4 +29,4 @@ var ChartWidthMixin = {
 	},
 };
 
-module.exports = ChartWidthMixin;
+export default ChartWidthMixin;

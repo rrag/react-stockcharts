@@ -31,5 +31,5 @@ EdgeContainer.contextTypes = {
 	// secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
 };
 
-module.exports = EdgeContainer;
+export default EdgeContainer;
 

@@ -47,4 +47,4 @@ var OverlayUtils = {
 	}
 };
 
-module.exports = OverlayUtils;
+export default OverlayUtils;

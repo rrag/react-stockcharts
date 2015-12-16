@@ -14,4 +14,4 @@ function DummyTransformer() {
 	return transform;
 }
 
-module.exports = DummyTransformer;
+export default DummyTransformer;

@@ -58,4 +58,4 @@ var MACalculator = {
 	},
 };
 
-module.exports = MACalculator;
+export default MACalculator;

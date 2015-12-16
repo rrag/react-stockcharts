@@ -158,4 +158,4 @@ function RenkoTransformer() {
 	return transform;
 }
 
-module.exports = RenkoTransformer;
+export default RenkoTransformer;

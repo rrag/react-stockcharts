@@ -96,4 +96,4 @@ OHLCTooltip.defaultProps = {
 	origin: [0, 0],
 };
 
-module.exports = OHLCTooltip;
+export default OHLCTooltip;

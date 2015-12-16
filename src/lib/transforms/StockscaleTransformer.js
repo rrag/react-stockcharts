@@ -154,4 +154,4 @@ function StockscaleTransformer() {
 	return transform;
 }
 
-module.exports = StockscaleTransformer;
+export default StockscaleTransformer;

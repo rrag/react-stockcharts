@@ -40,4 +40,4 @@ var ScaleUtils = {
 	}
 };
 
-module.exports = ScaleUtils;
+export default ScaleUtils;

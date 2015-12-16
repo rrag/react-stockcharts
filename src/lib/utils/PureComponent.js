@@ -11,4 +11,4 @@ class PureComponent extends React.Component {
 	}
 }
 
-module.exports = PureComponent;
+export default PureComponent;

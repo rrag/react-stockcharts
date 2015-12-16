@@ -46,4 +46,4 @@ function shallowEqual(a, b) {
 	return numKeysA === numKeysB;
 };
 
-module.exports = shallowEqual;
+export default shallowEqual;

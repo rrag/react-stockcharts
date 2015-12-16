@@ -190,4 +190,4 @@ EventCapture.contextTypes = {
 	deltaXY: React.PropTypes.func,
 };
 
-module.exports = EventCapture;
+export default EventCapture;
