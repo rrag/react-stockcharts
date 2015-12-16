@@ -399,13 +399,18 @@ class EventHandler extends PureComponent {
 				start: plotData[0],
 				end: plotData[plotData.length - 1],
 			}
-		}
+		};
 	}
 	setViewRange(domainL, domainR) {
 		var { data, mainChart, chartData, plotData, interval, mouseXY } = this.state;
 
 		var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0];
 		var dataToPlot = ChartDataUtil.getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.xAccessor);
+
+		if (dataToPlot.data.length < 10) {
+			console.warn("Ouch... too much zoom");
+			return;
+		}
 
 		var newChartData = chartData.map((eachChart) => {
 			var plot = ChartDataUtil.getChartPlotFor(eachChart.config, dataToPlot.data, domainL, domainR);

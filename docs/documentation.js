@@ -35,6 +35,8 @@ var pages = [
 	require("lib/page/StochasticIndicatorPage"),
 	require("lib/page/TrendLineInteractiveIndicatorPage"),
 	require("lib/page/FibonacciInteractiveIndicatorPage"),
+	require("lib/page/ClickHandlerCallbackPage"),
+	require("lib/page/BrushSupportPage"),
 	require("lib/page/HeikinAshiPage"),
 	require("lib/page/KagiPage"),
 	require("lib/page/PointAndFigurePage"),

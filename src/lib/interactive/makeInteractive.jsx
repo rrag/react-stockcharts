@@ -21,7 +21,6 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 			var { subscribe, chartId, interactiveState } = context;
 
 			this.subscriptionIds = subscription.map(each => subscribe(chartId, each, this.subscription.bind(this, each)));
-
 		}
 		getInteractiveState(props, context) {
 			var { interactiveState } = context;
@@ -34,15 +33,15 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 			return response;
 		}
 		subscription(event, arg, e) {
-
+			// console.log("HIJOHJ");
 			var { chartId, xAccessor } = this.context;
 			var { shouldRemoveLastIndicator, enabled } = this.props;
 			var { interactive } = this.getInteractiveState(this.props, this.context);
 
 			if (event === "click" && shouldRemoveLastIndicator(e)) {
 				var { enabled } = this.props;
-				var interactiveState = interactive
-				if (enabled) {
+				var interactiveState = interactive;
+				if (enabled && this.refs.interactive.removeIndicator) {
 					interactiveState = this.refs.interactive.removeIndicator(chartId, xAccessor, interactive, arg, e);
 				}
 				return {
@@ -148,16 +147,19 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 	InteractiveComponentWrapper.drawOnCanvas = (callback, context, props, interactiveState, ctx, chartContext) => {
 		// console.log(context, props, interactiveState);
 		var { canvasOriginX, canvasOriginY, width, height } = context;
+
 		ctx.save();
 
 		ctx.setTransform(1, 0, 0, 1, 0, 0);
 		ctx.translate(canvasOriginX, canvasOriginY);
 
+		ctx.beginPath();
 		ctx.rect(-1, -1, width + 1, height + 1);
 		ctx.clip();
 
-		// console.log(interactiveState);
-		callback(context, props, interactiveState, ctx, chartContext);
+		if (callback) {
+			callback(context, props, interactiveState, ctx, chartContext);
+		}
 
 		ctx.restore();
 	};

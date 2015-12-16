@@ -104,6 +104,8 @@ function wrap(WrappedSeries) {
 		ctx.rect(-1, -1, width + 1, height + 1);
 		ctx.clip();
 
+		// console.log(canvasOrigin, width, height);
+
 		// console.log("HERE");
 		if (callback) {
 			var newProps = objectAssign({}, { height, width, compareSeries, indicator, xAccessor, yAccessor }, props);
