@@ -63,7 +63,7 @@ class Brush extends React.Component {
 					startItem: currentItem,
 					tempEndX: null,
 					// brush: null,
-				})
+				});
 			}
 		}
 		return interactive;
@@ -142,7 +142,7 @@ Brush.helper = (plotData, xAccessor, chartData, brush) => {
 		y: 0,
 		width,
 		height: chartData.config.height
-	}
+	};
 };
 
 Brush.propTypes = {
@@ -154,7 +154,7 @@ Brush.defaultProps = {
 	stroke: "#000000",
 	opacity: 0.3,
 	fill: "#3h3h3h",
-	onBrush: e => { console.log(e) },
+	onBrush: e => { console.log(e); },
 };
 
 export default makeInteractive(Brush, ["click", "mousemove"], {} );

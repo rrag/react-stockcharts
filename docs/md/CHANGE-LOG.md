@@ -1,3 +1,16 @@
+## v0.3
+
+#### Breaking Changes
+
+1. Changes to `Histogram` to accept `stroke` as a boolean param instead of a function. the `stroke` color cannot be different from `fill`
+
+#### Changes
+
+1. Add new methods to `ChartCanvas`
+1. Add `Brush` and `ClickCallback` interactive components
+1. Fix bug on zoom, for charts not using stockscale
+1. Change to use ES6 module exports instead of commonjs `module.exports = ...`
+
 ## v0.2.12
 
 #### Changes
