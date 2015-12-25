@@ -21,7 +21,7 @@ import tooltip from "./lib/tooltip";
 import helper from "./lib/helper";
 
 import interactive from "./lib/interactive";
-import Utils from "./lib/utils/utils";
+import * as Utils from "./lib/utils/utils";
 
 const version = "0.3.0";
 

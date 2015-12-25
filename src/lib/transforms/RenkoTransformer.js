@@ -7,7 +7,7 @@ import { Renko as defaultOptions } from "./defaultOptions";
 
 function RenkoTransformer() {
 	var newOptions;
-	function transform(rawData, interval) {
+	function transform(rawData /* , interval */) {
 		var { reversalType, fixedBrickSize, dateAccessor, dateMutator, indexAccessor, indexMutator, period, source } = newOptions;
 
 		var brickSize, pricingMethod;
@@ -15,9 +15,9 @@ function RenkoTransformer() {
 			calculateATR(rawData.D, period);
 			brickSize = d => d["atr" + period];
 		} else {
-			brickSize = d => fixedBrickSize;
+			brickSize = () => fixedBrickSize;
 		}
-		if (source = "hi/lo") {
+		if (source === "hi/lo") {
 			pricingMethod = d => ({ high: d.high, low: d.low });
 		} else {
 			pricingMethod = d => ({ high: d.close, low: d.close });
@@ -99,7 +99,8 @@ function RenkoTransformer() {
 								: prevBrickOpen;
 
 				if (noOfBricks >= 1) {
-					for (var j = 0; j < noOfBricks; j++) {
+					let j = 0;
+					for (j = 0; j < noOfBricks; j++) {
 						brick.close = (brick.open < pricingMethod(d).high)
 										// if brick open is less than current price it means it is green/hollow brick
 											? brick.open + brickSize(d)
@@ -148,7 +149,7 @@ function RenkoTransformer() {
 			}
 
 		});
-		return {"D": renkoData};
+		return { "D": renkoData };
 	};
 
 	transform.options = function(opt) {

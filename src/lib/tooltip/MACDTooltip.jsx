@@ -2,31 +2,32 @@
 
 import React from "react";
 
-import Utils from "../utils/utils";
-import ChartDataUtil from "../utils/ChartDataUtil";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
+
+import { displayDateFormat } from "../utils/utils";
+import { getChartDataForChart, getCurrentItemForChart } from "../utils/ChartDataUtil";
 
 
 class MACDTooltip extends React.Component {
 	render() {
 		var { onClick, forChart, forDataSeries } = this.props;
 
-		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
+		var chartData = getChartDataForChart(this.props, this.context);
 		var overlays = chartData.config.overlays
 			.filter(eachOverlay => forDataSeries === undefined ? true : forDataSeries === eachOverlay.id)
 			.filter(eachOverlay => eachOverlay.indicator !== undefined)
 			.filter(eachOverlay => eachOverlay.indicator.isMACD && eachOverlay.indicator.isMACD());
 
 		if (overlays.length > 1 || overlays.length === 0) {
-			console.error(`Could not find Exactly one DataSeries with MACD indicator for Chart id=${ forChart }, either use 
+			console.error(`Could not find Exactly one DataSeries with MACD indicator for Chart id=${ forChart }, either use
 				single MACD indicator per chart
 				or use forDataSeries property to narrow down to single Series`);
 		}
 		var overlay = overlays[0];
 		var options = overlay.indicator.options();
 
-		var item = ChartDataUtil.getCurrentItemForChart(this.props, this.context);
+		var item = getCurrentItemForChart(this.props, this.context);
 		var macd = overlay.yAccessor(item);
 		var format = chartData.config.mouseCoordinates.format;
 
@@ -34,7 +35,7 @@ class MACDTooltip extends React.Component {
 		var signalLine = (macd && macd.signalLine && format(macd.signalLine)) || "n/a";
 		var histogram = (macd && macd.histogram && format(macd.histogram)) || "n/a";
 
-		var { origin, height, width } = chartData.config;
+		var { origin } = chartData.config;
 		var relativeOrigin = typeof this.props.origin === "function"
 			? this.props.origin(this.context.width, this.context.height)
 			: this.props.origin;
@@ -71,9 +72,9 @@ MACDTooltip.propTypes = {
 	forChart: React.PropTypes.number.isRequired,
 	xDisplayFormat: React.PropTypes.func.isRequired,
 	origin: React.PropTypes.oneOfType([
-				React.PropTypes.array
-				, React.PropTypes.func
-			]).isRequired,
+		React.PropTypes.array,
+		React.PropTypes.func
+	]).isRequired,
 	fontFamily: React.PropTypes.string,
 	fontSize: React.PropTypes.number,
 	forDataSeries: React.PropTypes.number,
@@ -82,7 +83,7 @@ MACDTooltip.propTypes = {
 
 MACDTooltip.defaultProps = {
 	namespace: "ReStock.MACDTooltip",
-	xDisplayFormat: Utils.displayDateFormat,
+	xDisplayFormat: displayDateFormat,
 	origin: [0, 0]
 };
 

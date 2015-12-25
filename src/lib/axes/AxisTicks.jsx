@@ -4,7 +4,7 @@ import React from "react";
 import d3 from "d3";
 import objectAssign from "object-assign";
 
-import Utils from "../utils/utils";
+import { hexToRGBA } from "../utils/utils";
 
 function d3_identity(d) {
 	return d;
@@ -146,7 +146,7 @@ AxisTicks.drawOnCanvasStatic = (props, ctx, chartData, xScale, yScale) => {
 
 	var { tickStroke, tickStrokeOpacity, textAnchor, fontSize, fontFamily } = result;
 
-	ctx.strokeStyle = Utils.hexToRGBA(tickStroke, tickStrokeOpacity);
+	ctx.strokeStyle = hexToRGBA(tickStroke, tickStrokeOpacity);
 
 	ctx.font = `${ fontSize }px ${fontFamily}`;
 	ctx.fillStyle = tickStroke;

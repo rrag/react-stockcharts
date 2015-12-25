@@ -28,7 +28,9 @@ class RSISeries extends React.Component {
 }
 
 RSISeries.getHorizontalLine = (props, yValue, stroke) => {
+	/* eslint-disable react/prop-types */
 	let { xScale, yScale, xAccessor, yAccessor, plotData, type } = props;
+	/* eslint-enable react/prop-types */
 
 	return <StraightLine
 		stroke={stroke} opacity={0.3} type={type}

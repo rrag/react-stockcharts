@@ -1,9 +1,9 @@
 "use strict";
 
-import MACalculator from "../utils/MovingAverageCalculator";
 import objectAssign from "object-assign";
 import { overlayColors } from "../utils/utils";
 
+import * as MACalculator from "../utils/MovingAverageCalculator";
 import { SMA as defaultOptions } from "./defaultOptions";
 
 

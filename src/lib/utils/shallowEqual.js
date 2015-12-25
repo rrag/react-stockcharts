@@ -24,10 +24,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-function isPrimitive(value) {
-	return value == null || (typeof value !== 'function' && typeof value !== 'object');
-};
-
 function shallowEqual(a, b) {
 	if (!a && !b) { return true; }
 	if (!a && b || a && !b) { return false; }

@@ -1,13 +1,14 @@
 "use strict";
 
 import React from "react";
-import Utils from "./utils/utils";
-import PureComponent from "./utils/PureComponent";
-import ChartDataUtil from "./utils/ChartDataUtil";
-import shallowEqual from "./utils/shallowEqual";
-import { DummyTransformer } from "./transforms";
-
 import objectAssign from "object-assign";
+
+import PureComponent from "./utils/PureComponent";
+import shallowEqual from "./utils/shallowEqual";
+
+import { getClosestItemIndexes, isReactVersion13 } from "./utils/utils";
+import { getMainChart, getChartData, getClosest, getDataToPlotForDomain, getChartPlotFor, getCurrentItems } from "./utils/ChartDataUtil";
+import { DummyTransformer } from "./transforms";
 
 var subscriptionCount = 0;
 
@@ -95,19 +96,19 @@ class EventHandler extends PureComponent {
 		var { data, options } = transformedData;
 
 		var dataForInterval = data[interval];
-		var mainChart = ChartDataUtil.getMainChart(props.children);
+		var mainChart = getMainChart(props.children);
 		var beginIndex = Math.max(dataForInterval.length - initialDisplay, 0);
 		var plotData = dataForInterval.slice(beginIndex);
-		var chartData = ChartDataUtil.getChartData(props, dimensions, plotData, data, options);
+		var chartData = getChartData(props, dimensions, plotData, data, options);
 
 		var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0];
 
 		var domainL = getLongValue(chart.config.xAccessor(plotData[0]));
 		var domainR = getLongValue(chart.config.xAccessor(plotData[plotData.length - 1]));
 
-		var dataToPlot = ChartDataUtil.getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.xAccessor);
+		var dataToPlot = getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.xAccessor);
 		plotData = dataToPlot.data;
-		chartData = ChartDataUtil.getChartData(props, dimensions, plotData, data, options);
+		chartData = getChartData(props, dimensions, plotData, data, options);
 
 		// if (dataToPlot.data.length < 10) return;
 
@@ -145,7 +146,7 @@ class EventHandler extends PureComponent {
 
 		var dataForInterval = data[interval];
 
-		var mainChart = ChartDataUtil.getMainChart(nextProps.children);
+		var mainChart = getMainChart(nextProps.children);
 		var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
 		var xScale = mainChartData.plot.scales.xScale;
 
@@ -163,7 +164,7 @@ class EventHandler extends PureComponent {
 		}
 
 		// console.log(plotData[0], plotData[plotData.length - 1]);
-		var newChartData = ChartDataUtil.getChartData(nextProps, dimensions, plotData, data, options);
+		var newChartData = getChartData(nextProps, dimensions, plotData, data, options);
 		var chart = newChartData.filter((eachChart) => eachChart.id === mainChart)[0];
 		var { xAccessor, width } = chart.config;
 		if (!domainL) {
@@ -171,11 +172,11 @@ class EventHandler extends PureComponent {
 			domainR = getLongValue(xAccessor(plotData[plotData.length - 1]));
 		}
 
-		var dataToPlot = ChartDataUtil.getDataToPlotForDomain(domainL, domainR, data, width, xAccessor);
+		var dataToPlot = getDataToPlotForDomain(domainL, domainR, data, width, xAccessor);
 		plotData = dataToPlot.data;
 
 		newChartData = newChartData.map((eachChart) => {
-			var plot = ChartDataUtil.getChartPlotFor(eachChart.config, plotData, domainL, domainR);
+			var plot = getChartPlotFor(eachChart.config, plotData, domainL, domainR);
 			return {
 				id: eachChart.id,
 				config: eachChart.config,
@@ -183,7 +184,7 @@ class EventHandler extends PureComponent {
 			};
 		});
 
-		var newCurrentItems = ChartDataUtil.getCurrentItems(newChartData, this.state.mouseXY, plotData);
+		var newCurrentItems = getCurrentItems(newChartData, this.state.mouseXY, plotData);
 
 		this.clearBothCanvas(nextProps);
 		this.clearInteractiveCanvas(nextProps);
@@ -239,14 +240,14 @@ class EventHandler extends PureComponent {
 				left = xAccessor(plotData[0]);
 			} */
 
-			// beginIndex = Utils.getClosestItemIndexes(dataForInterval, left, xAccessor).left;
+			// beginIndex = getClosestItemIndexes(dataForInterval, left, xAccessor).left;
 			endIndex = dataForInterval.length;
 			beginIndex = dataForInterval.length - plotData.length;
 		} else {
 			// 
 			domainL = startDomain[0];
 			domainR = startDomain[1];
-			var beginIndex = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
+			var beginIndex = getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
 			var endIndex = beginIndex + plotData.length;
 		}
 
@@ -260,7 +261,7 @@ class EventHandler extends PureComponent {
 			}
 		}
 
-		var newChartData = ChartDataUtil.getChartData(this.props, dimensions, newPlotData, transformedData.data, transformedData.options);
+		var newChartData = getChartData(this.props, dimensions, newPlotData, transformedData.data, transformedData.options);
 
 		if (domainL === undefined) {
 			domainL = xAccessor(newPlotData[0]);
@@ -271,7 +272,7 @@ class EventHandler extends PureComponent {
 
 		var updateState = (L, R) => {
 			newChartData = newChartData.map((eachChart) => {
-				var plot = ChartDataUtil.getChartPlotFor(eachChart.config, newPlotData, L, R);
+				var plot = getChartPlotFor(eachChart.config, newPlotData, L, R);
 				return {
 					id: eachChart.id,
 					config: eachChart.config,
@@ -279,7 +280,7 @@ class EventHandler extends PureComponent {
 				};
 			});
 
-			var newCurrentItems = ChartDataUtil.getCurrentItems(newChartData, this.state.mouseXY, newPlotData);
+			var newCurrentItems = getCurrentItems(newChartData, this.state.mouseXY, newPlotData);
 
 			this.clearBothCanvas();
 			this.clearInteractiveCanvas();
@@ -346,15 +347,15 @@ class EventHandler extends PureComponent {
 		var startDomain = xScale.domain();
 
 		var left = xAccessor(plotData[0]);
-		var beginIndex = Utils.getClosestItemIndexes(dataForInterval, left, xAccessor).left;
+		var beginIndex = getClosestItemIndexes(dataForInterval, left, xAccessor).left;
 		var endIndex = beginIndex + plotData.length;
 
 		var newPlotData = dataForInterval.slice(beginIndex, endIndex);
 
-		var newChartData = ChartDataUtil.getChartData(this.props, dimensions, newPlotData, transformedData.data, transformedData.options);
+		var newChartData = getChartData(this.props, dimensions, newPlotData, transformedData.data, transformedData.options);
 
 		newChartData = newChartData.map((eachChart) => {
-			var plot = ChartDataUtil.getChartPlotFor(eachChart.config, newPlotData, startDomain[0], startDomain[1]);
+			var plot = getChartPlotFor(eachChart.config, newPlotData, startDomain[0], startDomain[1]);
 			return {
 				id: eachChart.id,
 				config: eachChart.config,
@@ -362,7 +363,7 @@ class EventHandler extends PureComponent {
 			};
 		});
 
-		var newCurrentItems = ChartDataUtil.getCurrentItems(newChartData, this.state.mouseXY, newPlotData);
+		var newCurrentItems = getCurrentItems(newChartData, this.state.mouseXY, newPlotData);
 
 		this.clearBothCanvas();
 		this.clearInteractiveCanvas();
@@ -405,7 +406,7 @@ class EventHandler extends PureComponent {
 		var { data, mainChart, chartData, plotData, interval, mouseXY } = this.state;
 
 		var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0];
-		var dataToPlot = ChartDataUtil.getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.xAccessor);
+		var dataToPlot = getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.xAccessor);
 
 		if (dataToPlot.data.length < 10) {
 			console.warn("Ouch... too much zoom");
@@ -413,7 +414,7 @@ class EventHandler extends PureComponent {
 		}
 
 		var newChartData = chartData.map((eachChart) => {
-			var plot = ChartDataUtil.getChartPlotFor(eachChart.config, dataToPlot.data, domainL, domainR);
+			var plot = getChartPlotFor(eachChart.config, dataToPlot.data, domainL, domainR);
 			return {
 				id: eachChart.id,
 				config: eachChart.config,
@@ -421,7 +422,7 @@ class EventHandler extends PureComponent {
 			};
 		});
 
-		var currentItems = ChartDataUtil.getCurrentItems(newChartData, mouseXY, dataToPlot.data);
+		var currentItems = getCurrentItems(newChartData, mouseXY, dataToPlot.data);
 
 		this.clearBothCanvas();
 		this.clearInteractiveCanvas();
@@ -532,7 +533,7 @@ class EventHandler extends PureComponent {
 			var bottom = top + chartData.config.height;
 			return (mouseXY[1] > top && mouseXY[1] < bottom);
 		}).map((chartData) => chartData.id);
-		var currentItems = ChartDataUtil.getCurrentItems(this.state.chartData, mouseXY, this.state.plotData);
+		var currentItems = getCurrentItems(this.state.chartData, mouseXY, this.state.plotData);
 
 		var { chartData } = this.state;
 
@@ -593,7 +594,7 @@ class EventHandler extends PureComponent {
 		var { data, mainChart, chartData, plotData, interval } = this.state;
 
 		var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0],
-			item = ChartDataUtil.getClosestItem(plotData, mouseXY, chart),
+			item = getClosest(plotData, mouseXY, chart),
 			xScale = chart.plot.scales.xScale,
 			domain = xScale.domain(),
 			centerX = chart.config.xAccessor(item),
@@ -610,10 +611,10 @@ class EventHandler extends PureComponent {
 		domainL = Math.max(getLongValue(chart.config.xAccessor(first)) - Math.floor(domainRange / 3), domainL);
 		domainR = Math.min(getLongValue(chart.config.xAccessor(last)) + Math.floor(domainRange / 3), domainR);
 
-		var dataToPlot = ChartDataUtil.getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.xAccessor);
+		var dataToPlot = getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.xAccessor);
 		if (dataToPlot.data.length < 10) return;
 		var newChartData = chartData.map((eachChart) => {
-			var plot = ChartDataUtil.getChartPlotFor(eachChart.config, dataToPlot.data, domainL, domainR);
+			var plot = getChartPlotFor(eachChart.config, dataToPlot.data, domainL, domainR);
 			return {
 				id: eachChart.id,
 				config: eachChart.config,
@@ -621,7 +622,7 @@ class EventHandler extends PureComponent {
 			};
 		});
 
-		var currentItems = ChartDataUtil.getCurrentItems(newChartData, mouseXY, dataToPlot.data);
+		var currentItems = getCurrentItems(newChartData, mouseXY, dataToPlot.data);
 
 		this.clearBothCanvas();
 		this.clearInteractiveCanvas();
@@ -671,20 +672,20 @@ class EventHandler extends PureComponent {
 			domainR = new Date(domainR);
 		}
 
-		var beginIndex = Utils.getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
-		var endIndex = Utils.getClosestItemIndexes(dataForInterval, domainR, xAccessor).right;
+		var beginIndex = getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
+		var endIndex = getClosestItemIndexes(dataForInterval, domainR, xAccessor).right;
 
 		var filteredData = dataForInterval.slice(beginIndex, endIndex);
 
 		var newChartData = chartData.map((eachChart) => {
-			var plot = ChartDataUtil.getChartPlotFor(eachChart.config, filteredData, domainL, domainR);
+			var plot = getChartPlotFor(eachChart.config, filteredData, domainL, domainR);
 			return {
 				id: eachChart.id,
 				config: eachChart.config,
 				plot: plot
 			};
 		});
-		var currentItems = ChartDataUtil.getCurrentItems(newChartData, mousePosition, filteredData);
+		var currentItems = getCurrentItems(newChartData, mousePosition, filteredData);
 
 		var currentCharts = newChartData.filter((eachChartData) => {
 			var top = eachChartData.config.origin[1];
@@ -861,7 +862,7 @@ class EventHandler extends PureComponent {
 	}
 	render() {
 		var children = React.Children.map(this.props.children, (child) => {
-			var newChild = Utils.isReactVersion13()
+			var newChild = isReactVersion13()
 				? React.withContext(this.getChildContext(), () => {
 					return React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 				})

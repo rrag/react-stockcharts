@@ -1,8 +1,9 @@
 "use strict";
 
 import React from "react";
-import objectAssign from "object-assign"; // "../utils/Object.assign"
-import Utils from "../utils/utils";
+import objectAssign from "object-assign";
+
+import { hexToRGBA } from "../utils/utils";
 
 class EdgeCoordinate extends React.Component {
 
@@ -121,7 +122,7 @@ EdgeCoordinate.drawOnCanvasStatic = (ctx, props) => {
 	if (edge === null) return;
 
 	if (edge.coordinateBase !== undefined) {
-		ctx.fillStyle = Utils.hexToRGBA(edge.coordinateBase.fill, edge.coordinateBase.opacity);
+		ctx.fillStyle = hexToRGBA(edge.coordinateBase.fill, edge.coordinateBase.opacity);
 
 		ctx.beginPath();
 		ctx.rect(edge.coordinateBase.edgeXRect, edge.coordinateBase.edgeYRect, edge.coordinateBase.rectWidth, edge.coordinateBase.rectHeight);
@@ -135,7 +136,7 @@ EdgeCoordinate.drawOnCanvasStatic = (ctx, props) => {
 		ctx.fillText(edge.coordinate.displayCoordinate, edge.coordinate.edgeXText, edge.coordinate.edgeYText); 
 	}
 	if (edge.line !== undefined) {
-		ctx.strokeStyle = Utils.hexToRGBA(edge.line.stroke, edge.line.opacity);
+		ctx.strokeStyle = hexToRGBA(edge.line.stroke, edge.line.opacity);
 
 		ctx.beginPath();
 		ctx.moveTo(edge.line.x1, edge.line.y1);

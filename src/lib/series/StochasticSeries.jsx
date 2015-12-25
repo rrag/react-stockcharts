@@ -13,13 +13,14 @@ class StochasticSeries extends React.Component {
 		var { className, indicator, xScale, yScale, xAccessor, yAccessor, plotData, stroke, type } = props;
 		var options = indicator.options();
 
+		/* eslint-disable react/jsx-no-bind */
 		return (
 			<g className={className}>
 				<Line
 					xScale={xScale} yScale={yScale}
 					xAccessor={xAccessor} yAccessor={(d) => yAccessor(d) && yAccessor(d).D}
 					plotData={plotData}
-					stroke={options.stroke.D} fill="none" 
+					stroke={options.stroke.D} fill="none"
 					type={type} />
 				<Line
 					xScale={xScale} yScale={yScale}
@@ -32,12 +33,15 @@ class StochasticSeries extends React.Component {
 				{StochasticSeries.getHorizontalLine(props, options.overBought, stroke.bottom)}
 			</g>
 		);
+		/* eslint-enable react/jsx-no-bind */
 	}
 }
 
 StochasticSeries.getHorizontalLine = (props, yValue, stroke) => {
 
-	let { xScale, yScale, xAccessor, yAccessor, plotData, type } = props;
+	/* eslint-disable react/prop-types */
+	var { xScale, yScale, xAccessor, yAccessor, plotData, type } = props;
+	/* eslint-enable react/prop-types */
 
 	return <StraightLine
 		stroke={stroke} opacity={0.3} type={type}
@@ -49,6 +53,13 @@ StochasticSeries.getHorizontalLine = (props, yValue, stroke) => {
 
 StochasticSeries.propTypes = {
 	className: React.PropTypes.string,
+	xScale: React.PropTypes.func,
+	yScale: React.PropTypes.func,
+	xAccessor: React.PropTypes.func,
+	yAccessor: React.PropTypes.func,
+	plotData: React.PropTypes.array,
+	stroke: React.PropTypes.object,
+	type: React.PropTypes.string,
 };
 
 StochasticSeries.defaultProps = {

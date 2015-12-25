@@ -3,7 +3,7 @@
 import React from "react";
 
 import wrap from "./wrap";
-import Utils from "../utils/utils";
+import { hexToRGBA } from "../utils/utils";
 
 class CandlestickSeries extends React.Component {
 	render() {
@@ -33,6 +33,12 @@ CandlestickSeries.propTypes = {
 		up: React.PropTypes.string,
 		down: React.PropTypes.string
 	}),
+	xAccessor: React.PropTypes.func,
+	yAccessor: React.PropTypes.func,
+	xScale: React.PropTypes.func,
+	yScale: React.PropTypes.func,
+	compareSeries: React.PropTypes.array,
+	plotData: React.PropTypes.array,
 };
 
 CandlestickSeries.defaultProps = {
@@ -57,7 +63,11 @@ CandlestickSeries.defaultProps = {
 };
 
 CandlestickSeries.getWicksSVG = (props) => {
+
+	/* eslint-disable react/prop-types */
 	var { xAccessor, yAccessor, xScale, yScale, compareSeries, plotData } = props;
+	/* eslint-disable react/prop-types */
+
 
 	var wickData = CandlestickSeries.getWickData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
 	var wicks = wickData
@@ -69,6 +79,7 @@ CandlestickSeries.getWicksSVG = (props) => {
 	return wicks;
 };
 CandlestickSeries.getCandlesSVG = (props) => {
+
 	var { xAccessor, yAccessor, xScale, yScale, compareSeries, plotData } = props;
 
 	var candleData = CandlestickSeries.getCandleData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
@@ -80,7 +91,7 @@ CandlestickSeries.getCandlesSVG = (props) => {
 	return candles;
 };
 
-CandlestickSeries.yAccessor = (d) => ({open: d.open, high: d.high, low: d.low, close: d.close});
+CandlestickSeries.yAccessor = (d) => ({ open: d.open, high: d.high, low: d.low, close: d.close });
 
 CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { compareSeries, xAccessor, yAccessor } = props;
@@ -88,7 +99,7 @@ CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var wickData = CandlestickSeries.getWickData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
 	var each, group = { up: [], down: [] };
 
-	for (var i = 0; i < wickData.length; i++) {
+	for (let i = 0; i < wickData.length; i++) {
 		each = wickData[i];
 		if (each.direction >= 0) {
 			group.up.push(each);
@@ -114,7 +125,7 @@ CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 
 	group = { up: [], down: [] };
 
-	for (var i = 0; i < candleData.length; i++) {
+	for (let i = 0; i < candleData.length; i++) {
 		each = candleData[i];
 		if (each.direction >= 0) {
 			group.up.push(each);
@@ -123,7 +134,7 @@ CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 		}
 	};
 
-	ctx.fillStyle = Utils.hexToRGBA(fill.up, opacity);
+	ctx.fillStyle = hexToRGBA(fill.up, opacity);
 	group.up.forEach(d => {
 		if (d.width < 0) {
 			// <line className={d.className} key={idx} x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height}/>
@@ -145,7 +156,7 @@ CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 		}
 	});
 
-	ctx.fillStyle = Utils.hexToRGBA(fill.down, opacity);
+	ctx.fillStyle = hexToRGBA(fill.down, opacity);
 	group.down.forEach(d => {
 		if (d.width < 0) {
 			// <line className={d.className} key={idx} x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height}/>
@@ -175,7 +186,7 @@ CandlestickSeries.getWickData = (props, xAccessor, yAccessor, xScale, yScale, co
 	var { classNames, wickStroke } = props;
 	var wickData = plotData
 			.filter((d) => d.close !== undefined)
-			.map((d, idx) => {
+			.map((d) => {
 				// console.log(yAccessor);
 				var ohlc = isCompareSeries ? yAccessor(d.compare) : yAccessor(d);
 
@@ -209,7 +220,7 @@ CandlestickSeries.getCandleData = (props, xAccessor, yAccessor, xScale, yScale, 
 	var candleWidth = Math.round(cw); // Math.floor(cw) % 2 === 0 ? Math.floor(cw) : Math.round(cw);
 	var candles = plotData
 			.filter((d) => d.close !== undefined)
-			.map((d, idx) => {
+			.map((d) => {
 				var ohlc = isCompareSeries ? yAccessor(d.compare) : yAccessor(d);
 				var x = Math.round(xScale(xAccessor(d)))
 						- (candleWidth === 1 ? 0 : 0.5 * candleWidth),

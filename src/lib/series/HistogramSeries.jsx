@@ -1,8 +1,10 @@
 "use strict";
 
 import React from "react";
+
 import wrap from "./wrap";
-import Utils from "../utils/utils";
+
+import { hexToRGBA } from "../utils/utils";
 
 class HistogramSeries extends React.Component {
 	render() {
@@ -15,20 +17,25 @@ class HistogramSeries extends React.Component {
 
 HistogramSeries.propTypes = {
 	baseAt: React.PropTypes.oneOfType([
-				React.PropTypes.oneOf(["top", "bottom", "middle"]),
-				React.PropTypes.number,
-				React.PropTypes.func,
-			]).isRequired,
+		React.PropTypes.oneOf(["top", "bottom", "middle"]),
+		React.PropTypes.number,
+		React.PropTypes.func,
+	]).isRequired,
 	direction: React.PropTypes.oneOf(["up", "down"]).isRequired,
 	stroke: React.PropTypes.bool.isRequired,
 	widthRatio: React.PropTypes.number.isRequired,
 	opacity: React.PropTypes.number.isRequired,
 	fill: React.PropTypes.oneOfType([
-			React.PropTypes.func, React.PropTypes.string
-		]).isRequired,
+		React.PropTypes.func, React.PropTypes.string
+	]).isRequired,
 	className: React.PropTypes.oneOfType([
-			React.PropTypes.func, React.PropTypes.string
-		]).isRequired,
+		React.PropTypes.func, React.PropTypes.string
+	]).isRequired,
+	xAccessor: React.PropTypes.func,
+	yAccessor: React.PropTypes.func,
+	xScale: React.PropTypes.func,
+	yScale: React.PropTypes.func,
+	plotData: React.PropTypes.array,
 };
 
 HistogramSeries.defaultProps = {
@@ -42,7 +49,7 @@ HistogramSeries.defaultProps = {
 };
 
 HistogramSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { height, width, xAccessor, yAccessor, stroke } = props;
+	var { xAccessor, yAccessor, stroke } = props;
 
 	var bars = HistogramSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
 
@@ -62,7 +69,7 @@ HistogramSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 			ctx.strokeStyle = key;
 		} else {
 			ctx.strokeStyle = key;
-			ctx.fillStyle = Utils.hexToRGBA(key, props.opacity);
+			ctx.fillStyle = hexToRGBA(key, props.opacity);
 		}
 		group[key].forEach(d => {
 			if (d.barWidth < 1) {
@@ -93,7 +100,11 @@ HistogramSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 };
 
 HistogramSeries.getBarsSVG = (props) => {
+
+	/* eslint-disable react/prop-types */
 	var { xAccessor, yAccessor, xScale, yScale, plotData } = props;
+	/* eslint-disable react/prop-types */
+
 
 	var bars = HistogramSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
 
@@ -144,7 +155,7 @@ HistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData
 
 	var bars = plotData
 			.filter((d) => (yAccessor(d) !== undefined) )
-			.map((d, idx) => {
+			.map((d) => {
 				var yValue = yAccessor(d);
 				var x = Math.round(xScale(xAccessor(d)))
 						- (barWidth === 1 ? 0 : 0.5 * barWidth),

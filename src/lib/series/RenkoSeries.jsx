@@ -57,7 +57,7 @@ RenkoSeries.defaultProps = {
 	},
 };
 
-RenkoSeries.yAccessor = (d) => ({open: d.open, high: d.high, low: d.low, close: d.close});
+RenkoSeries.yAccessor = (d) => ({ open: d.open, high: d.high, low: d.low, close: d.close });
 
 RenkoSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { xAccessor, yAccessor } = props;
@@ -83,7 +83,7 @@ RenkoSeries.getRenko = (props, plotData, xScale, xAccessor, yScale, yAccessor) =
 	var candleWidth = (width / (plotData.length - 1));
 	var candles = plotData
 			.filter((d) => d.close !== undefined)
-			.map((d, idx) => {
+			.map((d) => {
 				var ohlc = yAccessor(d);
 				var x = xScale(xAccessor(d)) - 0.5 * candleWidth,
 					y = yScale(Math.max(ohlc.open, ohlc.close)),

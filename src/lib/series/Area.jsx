@@ -4,7 +4,7 @@ import React from "react";
 import d3 from "d3";
 
 import wrap from "./wrap";
-import Utils from "../utils/utils";
+import { hexToRGBA } from "../utils/utils";
 
 class Area extends React.Component {
 	render() {
@@ -58,7 +58,7 @@ Area.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var height = yScale.range()[0];
 	var newBase = (base === undefined) ? () => (height - 1) : base;
 
-	ctx.fillStyle = Utils.hexToRGBA(fill, opacity);
+	ctx.fillStyle = hexToRGBA(fill, opacity);
 	ctx.strokeStyle = stroke;
 	// ctx.globalAlpha = opacity;
 

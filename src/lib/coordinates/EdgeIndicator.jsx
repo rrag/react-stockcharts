@@ -3,9 +3,9 @@
 import React from "react";
 import d3 from "d3";
 
-import Utils from "../utils/utils";
+import { displayNumberFormat } from "../utils/utils";
 import EdgeCoordinate from "./EdgeCoordinate";
-import ChartDataUtil from "../utils/ChartDataUtil";
+import { getChartDataForChartNew } from "../utils/ChartDataUtil";
 
 class EdgeIndicator extends React.Component {
 	constructor(props) {
@@ -86,7 +86,7 @@ EdgeIndicator.defaultProps = {
 	type: "horizontal",
 	orient: "left",
 	edgeAt: "left",
-	displayFormat: Utils.displayNumberFormat,
+	displayFormat: displayNumberFormat,
 	yAxisPad: 5,
 	namespace: "ReStock.EdgeIndicator"
 };
@@ -110,7 +110,7 @@ EdgeIndicator.drawOnCanvasStatic = (margin, props, width, ctx, chartDataArray) =
 EdgeIndicator.helper = (props, width, chartData) => {
 	var { type: edgeType, displayFormat, forChart, forDataSeries, itemType, edgeAt, yAxisPad, orient } = props;
 
-	var currentChartData = ChartDataUtil.getChartDataForChartNew(chartData, forChart);
+	var currentChartData = getChartDataForChartNew(chartData, forChart);
 	// var currentItem = ChartDataUtil.getCurrentItemForChartNew(currentItems, forChart);
 	var edge = null, item, yAccessor;
 	// console.log(chartData.config.compareSeries.length);

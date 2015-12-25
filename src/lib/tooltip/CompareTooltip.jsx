@@ -1,8 +1,10 @@
 "use strict";
 
 import React from "react";
-import Utils from "../utils/utils";
-import ChartDataUtil from "../utils/ChartDataUtil";
+
+import { displayDateFormat } from "../utils/utils";
+import { getChartDataForChart, getCurrentItemForChart } from "../utils/ChartDataUtil";
+
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
@@ -10,8 +12,8 @@ class CompareTooltip extends React.Component {
 	render() {
 		var displayValue = "n/a";
 
-		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
-		var item = ChartDataUtil.getCurrentItemForChart(this.props, this.context);
+		var chartData = getChartDataForChart(this.props, this.context);
+		var item = getCurrentItemForChart(this.props, this.context);
 
 		var thisSeries = chartData.config.compareSeries.filter(each => each.id === this.props.forCompareSeries)[0];
 
@@ -19,7 +21,7 @@ class CompareTooltip extends React.Component {
 			displayValue = thisSeries.yAccessor(item);
 		}
 
-		var { origin, height, width } = chartData.config;
+		var { origin } = chartData.config;
 		var relativeOrigin = typeof this.props.origin === "function"
 			? this.props.origin(this.context.width, this.context.height)
 			: this.props.origin;
@@ -41,7 +43,7 @@ CompareTooltip.contextTypes = {
 	chartData: React.PropTypes.array.isRequired,
 	currentItems: React.PropTypes.array.isRequired,
 };
- 
+
 CompareTooltip.propTypes = {
 	forChart: React.PropTypes.number.isRequired,
 	forCompareSeries: React.PropTypes.number.isRequired,
@@ -54,7 +56,7 @@ CompareTooltip.propTypes = {
 
 CompareTooltip.defaultProps = {
 	namespace: "ReStock.CompareTooltip",
-	xDisplayFormat: Utils.displayDateFormat,
+	xDisplayFormat: displayDateFormat,
 	origin: [0, 0]
 };
 

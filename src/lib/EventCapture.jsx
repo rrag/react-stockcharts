@@ -1,10 +1,9 @@
 "use strict";
 
 import React from "react";
-
 import d3 from "d3";
 
-import Utils from "./utils/utils";
+import { mousePosition, isReactVersion14 } from "./utils/utils";
 
 var mousemove = "mousemove.pan", mouseup = "mouseup.pan";
 
@@ -44,7 +43,7 @@ class EventCapture extends React.Component {
 			e.stopPropagation();
 			e.preventDefault();
 			var zoomDir = e.deltaY > 0 ? this.props.zoomMultiplier : -this.props.zoomMultiplier;
-			var newPos = Utils.mousePosition(e);
+			var newPos = mousePosition(e);
 			this.context.onZoom(zoomDir, newPos);
 			if (this.props.onZoom) {
 				this.props.onZoom(e);
@@ -54,7 +53,7 @@ class EventCapture extends React.Component {
 	handleMouseMove(e) {
 		if (this.context.onMouseMove && this.props.mouseMove) {
 			if (!this.context.panInProgress) {
-				var newPos = Utils.mousePosition(e);
+				var newPos = mousePosition(e);
 				this.context.onMouseMove(newPos, e);
 			}
 		}
@@ -64,13 +63,13 @@ class EventCapture extends React.Component {
 		var { onPanStart, deltaXY, focus, onFocus } = this.context;
 		var chartData = this.context.chartData.filter((each) => each.id === this.props.mainChart) [0];
 		if (this.props.pan && onPanStart) {
-			var mouseXY = Utils.mousePosition(mouseEvent);
+			var mouseXY = mousePosition(mouseEvent);
 			onPanStart(chartData.plot.scales.xScale.domain(), mouseXY);
 
 			var dx = mouseEvent.pageX - mouseXY[0],
 				dy = mouseEvent.pageY - mouseXY[1];
 
-			var captureDOM = Utils.isReactVersion14()
+			var captureDOM = isReactVersion14()
 				? this.refs.capture
 				: React.findDOMNode(this.refs.capture);
 
@@ -108,7 +107,7 @@ class EventCapture extends React.Component {
 		var deltaXY = this.context.deltaXY();
 		var newPos = [e.pageX - deltaXY[0], e.pageY - deltaXY[1]];
 
-		var captureDOM = Utils.isReactVersion14()
+		var captureDOM = isReactVersion14()
 			? this.refs.capture
 			: React.findDOMNode(this.refs.capture);
 

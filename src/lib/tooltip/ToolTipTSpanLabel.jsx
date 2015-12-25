@@ -8,4 +8,8 @@ class ToolTipTSpanLabel extends React.Component {
 	}
 }
 
+ToolTipTSpanLabel.propTypes = {
+	children: React.PropTypes.node.isRequired,
+};
+
 export default ToolTipTSpanLabel;

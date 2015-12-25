@@ -1,7 +1,6 @@
 "use strict";
 
 import MACalculator from "../utils/MovingAverageCalculator";
-import Utils from "../utils/utils.js";
 import objectAssign from "object-assign";
 
 import { FullStochasticOscillator as defaultOptions } from "./defaultOptions";

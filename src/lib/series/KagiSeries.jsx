@@ -41,20 +41,20 @@ KagiSeries.defaultProps = {
 	currentValueStroke: "#000000",
 };
 
-KagiSeries.yAccessor = (d) => ({open: d.open, high: d.high, low: d.low, close: d.close});
+KagiSeries.yAccessor = (d) => ({ open: d.open, high: d.high, low: d.low, close: d.close });
 
 KagiSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { xAccessor, yAccessor, stroke, fill, strokeWidth, currentValueStroke } = props;
+	var { xAccessor, stroke, strokeWidth, currentValueStroke } = props;
 	var begin = true;
 
 	var paths = KagiSeries.helper(plotData, xAccessor);
 
-	paths.forEach((each, i) => {
+	paths.forEach((each) => {
 		ctx.strokeStyle = stroke[each.type];
 		ctx.lineWidth = strokeWidth;
 
 		ctx.beginPath();
-		var prevX, prevY;
+		var prevX;
 		each.plot.forEach(d => {
 			var [x, y] = [xScale(d[0]), yScale(d[1])];
 			if (begin) {
@@ -67,8 +67,6 @@ KagiSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 				ctx.lineTo(x, y);
 			}
 			prevX = x;
-			prevY = y;
-
 			// console.log(d);
 
 		});
@@ -96,12 +94,17 @@ KagiSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 KagiSeries.helper = (plotData, xAccessor) => {
 	var kagiLine = [];
 	var kagi = {};
+	var d = plotData[0];
+	var idx = xAccessor(d);
+
 	for (let i = 0; i < plotData.length; i++) {
-		var d = plotData[i];
+		d = plotData[i];
+
 		if (d.close === undefined) continue;
 		if (kagi.type === undefined) kagi.type = d.startAs;
 		if (kagi.plot === undefined) kagi.plot = [];
-		var idx = xAccessor(d);
+
+		idx = xAccessor(d);
 		kagi.plot.push([idx, d.open]);
 
 		if (d.changeTo !== undefined) {
@@ -117,6 +120,7 @@ KagiSeries.helper = (plotData, xAccessor) => {
 			kagi.plot.push([idx, d.changePoint]);
 		}
 	}
+
 	if (!kagi.added) {
 		kagi.plot.push([idx, d.close, d.current, d.reverseAt]);
 		kagiLine.push(kagi);

@@ -18,7 +18,7 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 		constructor(props, context) {
 			super(props, context);
 			this.subscription = this.subscription.bind(this);
-			var { subscribe, chartId, interactiveState } = context;
+			var { subscribe, chartId } = context;
 
 			this.subscriptionIds = subscription.map(each => subscribe(chartId, each, this.subscription.bind(this, each)));
 		}
@@ -38,9 +38,8 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 			var { shouldRemoveLastIndicator, enabled } = this.props;
 			var { interactive } = this.getInteractiveState(this.props, this.context);
 
+			var interactiveState = interactive;
 			if (event === "click" && shouldRemoveLastIndicator(e)) {
-				var { enabled } = this.props;
-				var interactiveState = interactive;
 				if (enabled && this.refs.interactive.removeIndicator) {
 					interactiveState = this.refs.interactive.removeIndicator(chartId, xAccessor, interactive, arg, e);
 				}
@@ -49,9 +48,7 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 					interactive: interactiveState,
 				};
 			} else {
-
 				var handler = this.refs.interactive[`on${ capitalizeFirst(event) }`];
-				var interactiveState = interactive;
 				if (enabled) {
 					interactiveState = handler(chartId, xAccessor, interactive, arg, e);
 				}
@@ -64,8 +61,6 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 			}
 		}
 		componentDidMount() {
-			var { subscribe, chartId, xAccessor } = this.context;
-			// this.subscriptionIds = subscription.map(each => subscribe(chartId, each, this.subscription.bind(this, each)));
 			this.componentDidUpdate();
 		}
 		componentDidUpdate() {

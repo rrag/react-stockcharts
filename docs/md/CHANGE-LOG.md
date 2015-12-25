@@ -1,8 +1,16 @@
-## v0.3
+## v0.3.1
+
+#### Changes
+
+1. Fix [#39](https://github.com/rrag/react-stockcharts/issues/39)
+2. Add eslint rules to prevent these from happening again
+
+## v0.3.0
 
 #### Breaking Changes
 
 1. Changes to `Histogram` to accept `stroke` as a boolean param instead of a function. the `stroke` color cannot be different from `fill`
+1. `OHLCTooltip` uses `d3.format(".4s")` as the format to show volume. This shows a suffix of M (Mega) for Million and G (Giga) for Billion. These are per the [SI-prefix](https://en.wikipedia.org/wiki/Metric_prefix). You can change it to a different format by passing a prop `volumeFormat` that accepts a function taking the volume and returning a formatted string
 
 #### Changes
 

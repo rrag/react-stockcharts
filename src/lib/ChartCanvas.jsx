@@ -3,7 +3,6 @@
 import React from "react";
 import objectAssign from "object-assign";
 
-import ChartDataUtil from "./utils/ChartDataUtil";
 import { DummyTransformer } from "./transforms";
 import EventHandler from "./EventHandler";
 import CanvasContainer from "./CanvasContainer";

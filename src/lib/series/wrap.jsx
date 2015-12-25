@@ -35,7 +35,7 @@ function wrap(WrappedSeries) {
 		componentWillReceiveProps(nextProps) {
 			var callback = WrappedSeries.drawOnCanvas;
 			if (callback) {
-				var { canvasOriginX, canvasOriginY , height, width, compareSeries,
+				var { canvasOriginX, canvasOriginY, height, width, compareSeries,
 					indicator, xAccessor, yAccessor, seriesId, chartId } = nextProps;
 				var canvasOrigin = [canvasOriginX, canvasOriginY];
 
@@ -125,6 +125,12 @@ function wrap(WrappedSeries) {
 
 	BaseCanvasSeries.yAccessor = WrappedSeries.yAccessor;
 	BaseCanvasSeries.defaultProps = WrappedSeries.defaultProps;
+
+	BaseCanvasSeries.propTypes = {
+		getCanvasContexts: React.PropTypes.func,
+		chartCanvasType: React.PropTypes.string,
+	};
+
 	// console.log(Object.keys(BaseCanvasSeries))
 	return pure(BaseCanvasSeries, {
 		getCanvasContexts: React.PropTypes.func,

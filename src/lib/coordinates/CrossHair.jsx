@@ -1,10 +1,11 @@
 "use strict";
 
 import React from "react";
+import objectAssign from "object-assign";
+
 import EdgeCoordinate from "./EdgeCoordinate";
 
-import objectAssign from "object-assign"; // "../utils/Object.assign"
-import Utils from "../utils/utils";
+import { hexToRGBA } from "../utils/utils";
 
 class CrossHair extends React.Component {
 	shouldComponentUpdate(nextProps) {
@@ -136,7 +137,7 @@ CrossHair.drawOnCanvasStatic = (ctx, props) => {
 	edges.forEach(edge => EdgeCoordinate.drawOnCanvasStatic(ctx, edge));
 
 	if (line) {
-		ctx.strokeStyle = Utils.hexToRGBA(line.stroke, line.opacity);
+		ctx.strokeStyle = hexToRGBA(line.stroke, line.opacity);
 
 		ctx.beginPath();
 		ctx.moveTo(line.x1, line.y1);

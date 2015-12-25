@@ -2,22 +2,20 @@
 
 import React from "react";
 
-import Utils from "../utils/utils";
-import ChartDataUtil from "../utils/ChartDataUtil";
+import { getChartDataForChart, getCurrentItemForChart } from "../utils/ChartDataUtil";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
-import objectAssign from "object-assign";
 
 class SingleValueTooltip extends React.Component {
 	render() {
-		var { onClick, fontFamily, fontSize, forChart, forSeries } = this.props;
+		var { fontFamily, fontSize, forSeries } = this.props;
 		var { xDisplayFormat, yDisplayFormat, xLabel, yLabel, labelStroke, valueStroke } = this.props;
 
 		var xDisplayValue = "n/a";
 		var yDisplayValue = "n/a";
 
-		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
-		var item = ChartDataUtil.getCurrentItemForChart(this.props, this.context);
+		var chartData = getChartDataForChart(this.props, this.context);
+		var item = getCurrentItemForChart(this.props, this.context);
 
 		/* var xAccessor;
 		if (chartData.plot.scales.xScale.isPolyLinear()) {
@@ -25,9 +23,9 @@ class SingleValueTooltip extends React.Component {
 		} */
 
 		var { overlays } = chartData.config;
-		var { yAccessor, stroke, fill } = overlays.filter(each => each.id === forSeries)[0];
+		var { yAccessor, stroke } = overlays.filter(each => each.id === forSeries)[0];
 
-		var xAccessor = this.props.xAccessor /* || xAccessor || chartData.config.xAccessor */;
+		var xAccessor = this.props.xAccessor; /* || xAccessor || chartData.config.xAccessor */
 		yAccessor = this.props.yAccessor || yAccessor;
 
 		if (item !== undefined && yAccessor(item) !== undefined) {
@@ -35,7 +33,7 @@ class SingleValueTooltip extends React.Component {
 			yDisplayValue = yDisplayFormat(yAccessor(item));
 		}
 
-		var { origin, height, width } = chartData.config;
+		var { origin } = chartData.config;
 		var relativeOrigin = typeof this.props.origin === "function"
 			? this.props.origin(this.context.width, this.context.height)
 			: this.props.origin;
@@ -73,9 +71,9 @@ SingleValueTooltip.propTypes = {
 	labelStroke: React.PropTypes.string.isRequired,
 	valueStroke: React.PropTypes.string,
 	origin: React.PropTypes.oneOfType([
-				React.PropTypes.array
-				, React.PropTypes.func
-			]).isRequired,
+		React.PropTypes.array,
+		React.PropTypes.func
+	]).isRequired,
 	fontFamily: React.PropTypes.string,
 	fontSize: React.PropTypes.number,
 	onClick: React.PropTypes.func,
@@ -86,7 +84,7 @@ SingleValueTooltip.propTypes = {
 SingleValueTooltip.defaultProps = {
 	origin: [0, 0],
 	labelStroke: "#4682B4",
-	yDisplayFormat: (d) => d,
+	yDisplayFormat: d => d,
 	xAccessor: d => d.date,
 };
 

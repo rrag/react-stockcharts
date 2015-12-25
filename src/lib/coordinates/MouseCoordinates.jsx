@@ -1,10 +1,11 @@
 "use strict";
 
 import React from "react";
-import Utils from "../utils/utils";
-// import PureComponent from "../utils/PureComponent";
+
 import pure from "../pure";
 import CrossHair from "./CrossHair";
+
+import { displayDateFormat, displayNumberFormat } from "../utils/utils";
 
 class MouseCoordinates extends React.Component {
 	componentDidMount() {
@@ -65,8 +66,8 @@ MouseCoordinates.defaultProps = {
 	// show: false,
 	snapX: true,
 	type: "crosshair",
-	xDisplayFormat: Utils.displayDateFormat,
-	yDisplayFormat: Utils.displayNumberFormat,
+	xDisplayFormat: displayDateFormat,
+	yDisplayFormat: displayNumberFormat,
 	stroke: "#000000",
 	opacity: 0.2,
 	textStroke: "#ffffff",

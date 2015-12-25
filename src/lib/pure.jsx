@@ -3,11 +3,10 @@
 import React from "react";
 import shallowEqual from "./utils/shallowEqual";
 
-
 function getDisplayName(Series) {
 	var name = Series.displayName || Series.name || "Series";
 	return name;
-} 
+}
 
 function pure(PureSeries, contextShape) {
 	class PureCanvasSeries extends React.Component {

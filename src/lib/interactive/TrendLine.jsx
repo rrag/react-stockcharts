@@ -4,7 +4,7 @@ import React from "react";
 import objectAssign from "object-assign";
 
 import makeInteractive from "./makeInteractive";
-import Utils from "../utils/utils.js";
+import { hexToRGBA } from "../utils/utils.js";
 
 function getYValue(values, currentValue) {
 	var diff = values
@@ -24,13 +24,13 @@ class TrendLine extends React.Component {
 		if (start) {
 			return objectAssign({}, interactive, { start: null });
 		} else {
-			return objectAssign({}, interactive, { trends: trends.slice(0, trends.length - 1)});
+			return objectAssign({}, interactive, { trends: trends.slice(0, trends.length - 1) });
 		}
 	}
 	onMousemove(chartId, xAccessor, interactive, { mouseXY, currentItem, currentCharts, chartData }, e) {
 		var { enabled, snapTo, snap, shouldDisableSnap } = this.props;
 		if (enabled) {
-			var { xScale, yScale } = chartData.plot.scales;
+			var { yScale } = chartData.plot.scales;
 
 			var yValue = (snap && !shouldDisableSnap(e))
 				? getYValue(snapTo(currentItem), yScale.invert(mouseXY[1]))
@@ -50,13 +50,13 @@ class TrendLine extends React.Component {
 		}
 		return interactive;
 	}
-	onClick(chartId, xAccessor, interactive, { mouseXY, currentItem, currentChartstriggerCallback, chartData }, e) { 
+	onClick(chartId, xAccessor, interactive, { mouseXY, currentItem, currentChartstriggerCallback, chartData }, e) {
 		var { enabled, snapTo, snap, shouldDisableSnap } = this.props;
 
 		if (enabled) {
 			var { start, trends } = interactive;
 
-			var { xScale, yScale } = chartData.plot.scales;
+			var { yScale } = chartData.plot.scales;
 
 			var yValue = (snap && !shouldDisableSnap(e))
 				? getYValue(snapTo(currentItem), yScale.invert(mouseXY[1]))
@@ -65,7 +65,7 @@ class TrendLine extends React.Component {
 			if (start) {
 				return objectAssign({}, interactive, {
 					start: null,
-					trends: trends.concat({start, end: [xValue, yValue]}),
+					trends: trends.concat({ start, end: [xValue, yValue] }),
 				});
 			} else if (e.button === 0) {
 				return objectAssign({}, interactive, {
@@ -100,7 +100,7 @@ class TrendLine extends React.Component {
 			<g>
 				{circle}
 				{lines
-				.map((coords, idx) => 
+				.map((coords, idx) =>
 					<line key={idx} stroke={stroke} opacity={opacity} x1={xScale(coords.x1)} y1={yScale(coords.y1)}
 						x2={xScale(coords.x2)} y2={yScale(coords.y2)} />)}
 			</g>
@@ -122,14 +122,14 @@ TrendLine.drawOnCanvas = (context,
 
 	var { enabled, currentPositionStroke, currentPositionStrokeWidth, currentPositionOpacity, currentPositionRadius } = props;
 	if (currentPos && enabled) {
-		ctx.strokeStyle = Utils.hexToRGBA(currentPositionStroke, currentPositionOpacity);
+		ctx.strokeStyle = hexToRGBA(currentPositionStroke, currentPositionOpacity);
 		ctx.lineWidth = currentPositionStrokeWidth;
 		ctx.beginPath();
 		ctx.arc(xScale(currentPos[0]), yScale(currentPos[1]), currentPositionRadius, 0, 2 * Math.PI, false);
 		ctx.stroke();
 	}
 	ctx.lineWidth = 1;
-	ctx.strokeStyle = Utils.hexToRGBA(props.stroke, props.opacity);
+	ctx.strokeStyle = hexToRGBA(props.stroke, props.opacity);
 
 	lines.forEach(each => {
 		ctx.beginPath();
@@ -140,15 +140,15 @@ TrendLine.drawOnCanvas = (context,
 	});
 };
 
-TrendLine.helper = (plotData, xAccessor, interactive, chartData) => {
+TrendLine.helper = (plotData, xAccessor, interactive /* , chartData */) => {
 	var { currentPos, start, trends } = interactive;
 	var temp = trends;
 	if (start && currentPos) {
-		temp = temp.concat({start, end: currentPos});
+		temp = temp.concat({ start, end: currentPos });
 	}
 	var lines = temp
 		.filter(each => each.start[0] !== each.end[0])
-		.map((each, idx) => generateLine(each.start, each.end, xAccessor, plotData));
+		.map((each) => generateLine(each.start, each.end, xAccessor, plotData));
 
 	return lines;
 };
@@ -174,6 +174,17 @@ TrendLine.propTypes = {
 	enabled: React.PropTypes.bool.isRequired,
 	snapTo: React.PropTypes.func,
 	shouldDisableSnap: React.PropTypes.func.isRequired,
+	chartCanvasType: React.PropTypes.string,
+	chartData: React.PropTypes.object,
+	plotData: React.PropTypes.array,
+	xAccessor: React.PropTypes.func,
+	interactive: React.PropTypes.object,
+	currentPositionStroke: React.PropTypes.string,
+	currentPositionStrokeWidth: React.PropTypes.number,
+	currentPositionOpacity: React.PropTypes.number,
+	currentPositionRadius: React.PropTypes.number,
+	stroke: React.PropTypes.string,
+	opacity: React.PropTypes.number,
 };
 
 TrendLine.defaultProps = {

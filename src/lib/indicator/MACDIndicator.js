@@ -1,9 +1,8 @@
 "use strict";
 
-import MACalculator from "../utils/MovingAverageCalculator";
-import Utils from "../utils/utils.js";
 import objectAssign from "object-assign";
 
+import * as MACalculator from "../utils/MovingAverageCalculator";
 import { MACD as defaultOptions } from "./defaultOptions";
 
 function MACDIndicator(options, chartProps, dataSeriesProps) {

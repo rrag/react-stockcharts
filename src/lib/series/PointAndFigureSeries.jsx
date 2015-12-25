@@ -12,7 +12,7 @@ class PointAndFigureSeries extends React.Component {
 		var { stroke, fill, strokeWidth, className } = props;
 
 		return (
-			<g>
+			<g className={className}>
 				{columns.map((col, idx) => (
 					<g key={idx} className={col.className} transform={`translate(${ col.offset[0] }, ${ col.offset[1] })`}>
 						{col.boxes.map((box, i) => {
@@ -53,13 +53,15 @@ PointAndFigureSeries.defaultProps = {
 	},
 };
 
-PointAndFigureSeries.yAccessor = (d) => ({open: d.open, high: d.high, low: d.low, close: d.close});
+PointAndFigureSeries.yAccessor = (d) => ({ open: d.open, high: d.high, low: d.low, close: d.close });
 
 PointAndFigureSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { xAccessor, yAccessor } = props;
 
 	var columns = PointAndFigureSeries.getColumns(xScale, xAccessor, yScale, yAccessor, plotData);
-	var { stroke, fill, strokeWidth, className } = props;
+	var { stroke, fill, strokeWidth } = props;
+
+	ctx.lineWidth = strokeWidth;
 
 	columns.forEach(col => {
 		let [offsetX, offsetY] = col.offset;
@@ -113,15 +115,14 @@ PointAndFigureSeries.getColumns = (xScale, xAccessor, yScale, yAccessor, plotDat
 
 	var columns = plotData
 			.filter((d) => d.close !== undefined)
-			.map((d, idx) => {
-				var boxes = d.boxes.map((box, i) => ({
-						columnWidth: columnWidth,
-						boxHeight: boxHeight,
-						open: yScale(box.open),
-						close: yScale(box.close),
-						// y2: yScale(box.close),
-					})
-				);
+			.map((d) => {
+				var boxes = d.boxes.map((box) => ({
+					columnWidth: columnWidth,
+					boxHeight: boxHeight,
+					open: yScale(box.open),
+					close: yScale(box.close),
+				}));
+
 				var xOffset = (xScale(xAccessor(d)) - (columnWidth / 2));
 				return {
 					boxes: boxes,

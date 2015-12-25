@@ -2,7 +2,6 @@
 
 import React from "react";
 
-import HistogramSeries from "./HistogramSeries";
 import Line from "./Line";
 import Area from "./Area";
 
@@ -10,16 +9,19 @@ import wrap from "./wrap";
 
 class BollingerSeries extends React.Component {
 	render() {
+
 		var { props } = this;
-		let { xScale, yScale, xAccessor, yAccessor, plotData, type } = props;
-		let { stroke, className, fill, opacity } = props;
+		var { xScale, yScale, xAccessor, yAccessor, plotData, type } = props;
+		var { stroke, className, fill, opacity } = props;
+
+		/* eslint-disable react/jsx-no-bind */
 		return (
 			<g className="bollinger-band-series">
 				<Line
 					xScale={xScale} yScale={yScale}
 					xAccessor={xAccessor} yAccessor={(d) => yAccessor(d) && yAccessor(d).top}
 					plotData={plotData}
-					stroke={stroke.top} fill="none" 
+					stroke={stroke.top} fill="none"
 					type={type} />
 				<Line
 					xScale={xScale} yScale={yScale}
@@ -43,6 +45,7 @@ class BollingerSeries extends React.Component {
 					type={type} />
 			</g>
 		);
+		/* eslint-enable react/jsx-no-bind */
 	}
 }
 

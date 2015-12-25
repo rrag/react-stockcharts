@@ -10,7 +10,7 @@ import wrap from "./wrap";
 class AreaSeries extends React.Component {
 	render() {
 		var { props } = this;
-		let { className, xScale, yScale, xAccessor, yAccessor, plotData, type, stroke, fill, defaultStroke } = props;
+		let { className, xScale, yScale, xAccessor, yAccessor, plotData, type, stroke, fill } = props;
 
 		let { opacity } = props;
 

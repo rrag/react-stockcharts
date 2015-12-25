@@ -2,6 +2,7 @@
 
 import React from "react";
 import d3 from "d3";
+
 import wrap from "./wrap";
 
 class Line extends React.Component {
@@ -43,8 +44,6 @@ Line.getPath = (props) => {
 
 Line.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { xAccessor, yAccessor, stroke } = props;
-
-	var path = Line.getPath(props);
 
 	ctx.strokeStyle = stroke;
 	ctx.beginPath();

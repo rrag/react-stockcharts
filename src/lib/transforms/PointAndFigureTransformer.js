@@ -75,11 +75,11 @@ function updateColumns(columnData, dateAccessor, dateMutator) {
 
 function PointAndFigureTransformer() {
 	var newOptions;
-	function transform(rawData, interval) {
+	function transform(rawData /* , interval */) {
 		var { dateAccessor, dateMutator, indexAccessor, indexMutator, reversal, boxSize, source } = newOptions;
 
 		var pricingMethod;
-		if (source = "hi/lo") {
+		if (source === "hi/lo") {
 			pricingMethod = d => ({ high: d.high, low: d.low });
 		} else {
 			pricingMethod = d => ({ high: d.close, low: d.close });
@@ -88,9 +88,9 @@ function PointAndFigureTransformer() {
 		var columnData = [];
 
 		var column = {
-			boxes: [],
-			open: rawData.D[0].open
-		}, box = createBox(rawData.D[0], dateAccessor, dateMutator);
+				boxes: [],
+				open: rawData.D[0].open
+			}, box = createBox(rawData.D[0], dateAccessor, dateMutator);
 
 		indexMutator(column, 0);
 		columnData.push(column);
@@ -205,7 +205,7 @@ function PointAndFigureTransformer() {
 		});
 		updateColumns(columnData, dateAccessor, dateMutator);
 
-		return {"D": columnData};
+		return { "D": columnData };
 	};
 
 	transform.options = function(opt) {

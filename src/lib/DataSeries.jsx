@@ -1,7 +1,7 @@
 "use strict";
 
 import React from "react";
-import Utils from "./utils/utils";
+import { isReactVersion13 } from "./utils/utils";
 import objectAssign from "object-assign";
 import PureComponent from "./utils/PureComponent";
 
@@ -24,7 +24,7 @@ class DataSeries extends React.Component {
 	}
 	render() {
 		var children = React.Children.map(this.props.children, (child) => {
-			var newChild = Utils.isReactVersion13()
+			var newChild = isReactVersion13()
 				? React.withContext(this.getChildContext(), () => {
 					return React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 				})

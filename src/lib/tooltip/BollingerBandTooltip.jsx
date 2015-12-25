@@ -2,8 +2,9 @@
 
 import React from "react";
 
-import Utils from "../utils/utils";
-import ChartDataUtil from "../utils/ChartDataUtil";
+import { displayNumberFormat } from "../utils/utils";
+import { getChartDataForChart, getCurrentItemForChart } from "../utils/ChartDataUtil";
+
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
@@ -11,8 +12,8 @@ class BollingerBandTooltip extends React.Component {
 	render() {
 		var { onClick, forChart, forDataSeries } = this.props;
 
-		var chartData = ChartDataUtil.getChartDataForChart(this.props, this.context);
-		var item = ChartDataUtil.getCurrentItemForChart(this.props, this.context);
+		var chartData = getChartDataForChart(this.props, this.context);
+		var item = getCurrentItemForChart(this.props, this.context);
 		var top, middle, bottom;
 		top = middle = bottom = "n/a";
 
@@ -22,7 +23,7 @@ class BollingerBandTooltip extends React.Component {
 			.filter(eachOverlay => eachOverlay.indicator.isBollingerBand && eachOverlay.indicator.isBollingerBand());
 
 		if (overlays.length > 1 || overlays.length === 0) {
-			console.error(`Could not find Exactly one DataSeries with BollingerBand indicator for Chart id=${ forChart }, either use 
+			console.error(`Could not find Exactly one DataSeries with BollingerBand indicator for Chart id=${ forChart }, either use
 				single BollingerBand indicator per chart
 				or use forDataSeries property to narrow down to single Series`);
 		}
@@ -31,7 +32,7 @@ class BollingerBandTooltip extends React.Component {
 
 		var yAccessor = overlay.indicator.yAccessor();
 		var value = yAccessor(item);
-		var format = Utils.displayNumberFormat;
+		var format = displayNumberFormat;
 
 		if (value !== undefined) {
 			top = format(value.top);
@@ -39,7 +40,7 @@ class BollingerBandTooltip extends React.Component {
 			bottom = format(value.bottom);
 		}
 
-		var { origin, height, width } = chartData.config;
+		var { origin } = chartData.config;
 		var relativeOrigin = typeof this.props.origin === "function"
 			? this.props.origin(this.context.width, this.context.height)
 			: this.props.origin;
@@ -67,6 +68,7 @@ BollingerBandTooltip.contextTypes = {
 };
 
 BollingerBandTooltip.propTypes = {
+	className: React.PropTypes.string,
 	forChart: React.PropTypes.number.isRequired,
 	displayFormat: React.PropTypes.func.isRequired,
 	origin: React.PropTypes.array.isRequired,
@@ -79,7 +81,7 @@ BollingerBandTooltip.propTypes = {
 BollingerBandTooltip.defaultProps = {
 	namespace: "ReStock.BollingerBandTooltip",
 	className: "react-stockcharts-moving-average-tooltip",
-	displayFormat: Utils.displayNumberFormat,
+	displayFormat: displayNumberFormat,
 	origin: [0, 10],
 	width: 65,
 };

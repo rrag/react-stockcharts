@@ -1,23 +1,23 @@
 "use strict";
 
 import React from "react";
-import Utils from "./utils/utils";
+import { isReactVersion14 } from "./utils/utils";
 
 class CanvasContainer extends React.Component {
 	getCanvasContexts() {
-		var axesCanvasDOM = Utils.isReactVersion14()
+		var axesCanvasDOM = isReactVersion14()
 			? this.refs.canvas_axes
 			: React.findDOMNode(this.refs.canvas_axes);
 
-		var mouseCoordDOM = Utils.isReactVersion14()
+		var mouseCoordDOM = isReactVersion14()
 			? this.refs.canvas_mouse_coordinates
 			: React.findDOMNode(this.refs.canvas_mouse_coordinates);
 
-		var interactiveDOM = Utils.isReactVersion14()
+		var interactiveDOM = isReactVersion14()
 			? this.refs.canvas_interactive
 			: React.findDOMNode(this.refs.canvas_interactive);
 
-		var bgDOM = Utils.isReactVersion14()
+		var bgDOM = isReactVersion14()
 			? this.refs.bg
 			: React.findDOMNode(this.refs.bg);
 

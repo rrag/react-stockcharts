@@ -16,7 +16,7 @@ function KagiTransformer() {
 			calculateATR(data.D, period);
 			reversalThreshold = d => d["atr" + period];
 		} else {
-			reversalThreshold = d => reversal;
+			reversalThreshold = (/* d */) => reversal;
 		}
 
 		pricingMethod = d => d[source];
@@ -157,7 +157,7 @@ function KagiTransformer() {
 		});
 		if (!line.added) kagiData.push(line);
 
-		return {"D": kagiData};
+		return { "D": kagiData };
 	};
 
 	transform.options = function(opt) {

@@ -1,7 +1,7 @@
 import React from "react";
 import PureComponent from "./utils/PureComponent";
 
-import Utils from "./utils/utils";
+import { hexToRGBA } from "./utils/utils";
 
 class BackgroundText extends PureComponent {
 	componentDidMount() {
@@ -37,10 +37,10 @@ BackgroundText.drawOnCanvas = (ctx, props, { interval }, getText) => {
 
 	var text = getText(interval);
 
-	ctx.strokeStyle = Utils.hexToRGBA(stroke, strokeOpacity);
+	ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
 
 	ctx.font = `${ fontSize }px ${ fontFamily }`;
-	ctx.fillStyle = Utils.hexToRGBA(fill, opacity);
+	ctx.fillStyle = hexToRGBA(fill, opacity);
 	ctx.textAlign = textAnchor === "middle" ? "center" : textAnchor;
 
 	if (stroke !== "none") ctx.strokeText(text, x, y);

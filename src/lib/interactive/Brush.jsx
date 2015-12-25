@@ -4,7 +4,8 @@ import React from "react";
 import objectAssign from "object-assign";
 
 import makeInteractive from "./makeInteractive";
-import Utils from "../utils/utils.js";
+
+import { hexToRGBA } from "../utils/utils.js";
 
 function getYValue(values, currentValue) {
 	var diff = values
@@ -119,7 +120,7 @@ Brush.drawOnCanvas = (context,
 		// console.log("DRAWING", enabled, rect);
 
 		ctx.strokeStyle = stroke;
-		ctx.fillStyle = Utils.hexToRGBA(fill, opacity);
+		ctx.fillStyle = hexToRGBA(fill, opacity);
 		ctx.beginPath();
 		ctx.rect(rect.x, rect.y, rect.width, rect.height);
 		ctx.stroke();
