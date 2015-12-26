@@ -1,12 +1,11 @@
 "use strict";
 
 import React from "react";
-import { isReactVersion13 } from "./utils/utils";
 import objectAssign from "object-assign";
-import PureComponent from "./utils/PureComponent";
 
+import { isReactVersion13 } from "./utils/utils";
 
-// Cannot make this PureComponent because its children use some things from context 
+// Cannot make this PureComponent because its children use some things from context
 // and making this pure would stop its children from updating on state changes of EventHandler
 // refer to https://github.com/facebook/react/issues/2517
 class DataSeries extends React.Component {
@@ -26,10 +25,9 @@ class DataSeries extends React.Component {
 		var children = React.Children.map(this.props.children, (child) => {
 			var newChild = isReactVersion13()
 				? React.withContext(this.getChildContext(), () => {
-					return React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
+					return React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref }, child.props));
 				})
 				: child;
-				// React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 			return newChild;
 		});
 		return (
@@ -46,6 +44,7 @@ DataSeries.propTypes = {
 	yAccessor: React.PropTypes.func,
 	indicator: React.PropTypes.func,
 	options: React.PropTypes.object,
+	children: React.PropTypes.node.isRequired,
 };
 DataSeries.defaultProps = {
 	namespace: "ReStock.DataSeries",

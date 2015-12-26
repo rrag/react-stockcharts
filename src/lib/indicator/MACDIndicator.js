@@ -23,7 +23,7 @@ function MACDIndicator(options, chartProps, dataSeriesProps) {
 		var slowKey = "ema" + settings.slow;
 		var { source } = settings;
 
-		var setter = (setKey, d, value) => { 
+		var setter = (setKey, d, value) => {
 			if (d[prefix] === undefined) d[prefix] = {};
 			if (d[prefix][key] === undefined) d[prefix][key] = {};
 			d[prefix][key][setKey] = value;
@@ -59,7 +59,7 @@ function MACDIndicator(options, chartProps, dataSeriesProps) {
 	};
 	indicator.yAccessor = function() {
 		return (d) => {
-			if (d && d[prefix] && d[prefix][key]) { 
+			if (d && d[prefix] && d[prefix][key]) {
 				return { MACDLine: d[prefix][key].MACDLine, signalLine: d[prefix][key].signalLine, histogram: d[prefix][key].histogram };
 			}
 		};

@@ -10,10 +10,10 @@ var SaveChartAsImage = {
 		saveAsPng.svgAsDataUri(container.getElementsByTagName("svg")[0], {}, function(uri) {
 			var image = new Image();
 			image.onload = function() {
-				var canvas = doc.createElement('canvas');
+				var canvas = doc.createElement("canvas");
 				canvas.width = image.width;
 				canvas.height = image.height;
-				var context = canvas.getContext('2d');
+				var context = canvas.getContext("2d");
 
 				if (background !== undefined) {
 					context.fillStyle = background;
@@ -30,7 +30,7 @@ var SaveChartAsImage = {
 				};
 
 				context.drawImage(image, 0, 0);
-				cb(canvas.toDataURL('image/png'));
+				cb(canvas.toDataURL("image/png"));
 			};
 			image.src = uri;
 		});
@@ -51,7 +51,7 @@ var SaveChartAsImage = {
 			a.setAttribute("download", "Chart.png");
 
 			document.body.appendChild(a);
-			a.addEventListener("click", function(e) {
+			a.addEventListener("click", function(/* e */) {
 				a.parentNode.removeChild(a);
 			});
 

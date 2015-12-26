@@ -1,8 +1,8 @@
 "use strict";
 
-import MACalculator from "../utils/MovingAverageCalculator";
 import objectAssign from "object-assign";
 
+import * as MACalculator from "../utils/MovingAverageCalculator";
 import { BollingerBand as defaultOptions } from "./defaultOptions";
 
 function BollingerBandIndicator(options, chartProps, dataSeriesProps) {
@@ -30,21 +30,21 @@ function BollingerBandIndicator(options, chartProps, dataSeriesProps) {
 		newData.map((each, i) => newData.slice(i - period + 1, i + 1))
 			.filter((array) => array.length === period && array.length > 0)
 			.map(array => ({
-					array: array,
-					mean: array[array.length - 1][prefix][key].middle
-				}))
+				array: array,
+				mean: array[array.length - 1][prefix][key].middle
+			}))
 			.forEach((meanAndArray) => {
-					var averageOfDeviationSquared = meanAndArray.array
-						.map(getter)
-						.map(val => val - meanAndArray.mean)
-						.map(val => val * val)
-						.reduce((a, b) => a + b) / meanAndArray.array.length;
-					var standardDev = Math.sqrt(averageOfDeviationSquared);
-					var item = meanAndArray.array[meanAndArray.array.length - 1][prefix][key];
-					item.top = item.middle + settings.multiplier * standardDev;
-					item.bottom = item.middle - settings.multiplier * standardDev;
-					// console.log(meanAndArray.array[meanAndArray.array.length - 1]);
-				});
+				var averageOfDeviationSquared = meanAndArray.array
+					.map(getter)
+					.map(val => val - meanAndArray.mean)
+					.map(val => val * val)
+					.reduce((a, b) => a + b) / meanAndArray.array.length;
+				var standardDev = Math.sqrt(averageOfDeviationSquared);
+				var item = meanAndArray.array[meanAndArray.array.length - 1][prefix][key];
+				item.top = item.middle + settings.multiplier * standardDev;
+				item.bottom = item.middle - settings.multiplier * standardDev;
+				// console.log(meanAndArray.array[meanAndArray.array.length - 1]);
+			});
 		// console.log(newData[newData.length - 1]);
 		return newData;
 	};

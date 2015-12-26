@@ -1,8 +1,8 @@
 "use strict";
 
-import MACalculator from "../utils/MovingAverageCalculator";
 import objectAssign from "object-assign";
 
+import * as MACalculator from "../utils/MovingAverageCalculator";
 import { FullStochasticOscillator as defaultOptions } from "./defaultOptions";
 
 function FullStochasticOscillator(options, chartProps, dataSeriesProps) {
@@ -20,7 +20,7 @@ function FullStochasticOscillator(options, chartProps, dataSeriesProps) {
 	indicator.calculate = function(data) {
 		var arr, highAndLow, ohlc;
 
-		var setter = (setKey, d, value) => { 
+		var setter = (setKey, d, value) => {
 			if (d[prefix] === undefined) d[prefix] = {};
 			if (d[prefix][key] === undefined) d[prefix][key] = {};
 			d[prefix][key][setKey] = value;
@@ -50,7 +50,7 @@ function FullStochasticOscillator(options, chartProps, dataSeriesProps) {
 	};
 	indicator.yAccessor = function() {
 		return (d) => {
-			if (d && d[prefix] && d[prefix][key]) { 
+			if (d && d[prefix] && d[prefix][key]) {
 				return { K: d[prefix][key].K, D: d[prefix][key].D };
 				// return d[prefix][key].K;
 			}

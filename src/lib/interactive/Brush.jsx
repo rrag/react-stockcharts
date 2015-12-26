@@ -7,27 +7,17 @@ import makeInteractive from "./makeInteractive";
 
 import { hexToRGBA } from "../utils/utils.js";
 
-function getYValue(values, currentValue) {
-	var diff = values
-		.map(each => each - currentValue)
-		.reduce((diff1, diff2) => Math.abs(diff1) < Math.abs(diff2) ? diff1 : diff2);
-	return currentValue + diff;
-}
-
 class Brush extends React.Component {
 	constructor(props) {
 		super(props);
 		this.onMousemove = this.onMousemove.bind(this);
 		this.onClick = this.onClick.bind(this);
 	}
-	onMousemove(chartId, xAccessor, interactive, { mouseXY, currentItem, currentCharts, chartData }, e) {
+	onMousemove(chartId, xAccessor, interactive, { currentItem } /* , e */) {
 		var { enabled } = this.props;
 		var { startX } = interactive;
 
 		if (enabled && startX) {
-			var { xScale, yScale } = chartData.plot.scales;
-
-			var yValue = yScale.invert(mouseXY[1]);
 			var xValue = xAccessor(currentItem);
 			return objectAssign({}, interactive, {
 				tempEndX: xValue,
@@ -35,15 +25,12 @@ class Brush extends React.Component {
 		}
 		return interactive;
 	}
-	onClick(chartId, xAccessor, interactive, { mouseXY, currentItem, currentChartstriggerCallback, chartData }, e) { 
+	onClick(chartId, xAccessor, interactive, { mouseXY, currentItem, currentChartstriggerCallback, chartData }, e) {
 		var { enabled, onBrush } = this.props;
 
 		if (enabled) {
-			var { startX, tempEndX } = interactive;
+			var { startX } = interactive;
 
-			var { xScale, yScale } = chartData.plot.scales;
-
-			var yValue = yScale.invert(mouseXY[1]);
 			var xValue = xAccessor(currentItem);
 
 			if (startX) {
@@ -51,7 +38,6 @@ class Brush extends React.Component {
 					startX: null,
 					tempEndX: null,
 					startItem: null,
-					// brush: [interactive.startX, xValue]
 				});
 				setTimeout(() => {
 					onBrush([interactive.startX, xValue], [interactive.startItem, currentItem]);
@@ -71,34 +57,18 @@ class Brush extends React.Component {
 	}
 	render() {
 		var { chartCanvasType, chartData, plotData, xAccessor, interactive, enabled } = this.props;
+		var { fill, stroke, opacity } = this.props;
 
 		if (chartCanvasType !== "svg") return null;
 
-		var { xScale, yScale } = chartData.plot.scales;
-		var { currentPos } = interactive;
+		var { startX, tempEndX } = interactive;
 
-		var { currentPositionStroke, currentPositionStrokeWidth, currentPositionOpacity, currentPositionRadius } = this.props;
-		var { stroke, opacity } = this.props;
-
-		var circle = (currentPos && enabled)
-			? <circle cx={xScale(currentPos[0])} cy={yScale(currentPos[1])}
-				stroke={currentPositionStroke}
-				opacity={currentPositionOpacity}
-				fill="none"
-				strokeWidth={currentPositionStrokeWidth}
-				r={currentPositionRadius} />
-			: null;
-
-		var lines = Brush.helper(plotData, xAccessor, interactive, chartData);
-		return (
-			<g>
-				{circle}
-				{lines
-				.map((coords, idx) => 
-					<line key={idx} stroke={stroke} opacity={opacity} x1={xScale(coords.x1)} y1={yScale(coords.y1)}
-						x2={xScale(coords.x2)} y2={yScale(coords.y2)} />)}
-			</g>
-		);
+		if (enabled && startX && tempEndX) {
+			var brush = [startX, tempEndX];
+			var brush = Brush.helper(plotData, xAccessor, chartData, brush);
+			return <rect {...brush} fill={fill} stroke={stroke} fillOpacity={opacity} />;
+		}
+		return null;
 	}
 }
 
@@ -112,7 +82,7 @@ Brush.drawOnCanvas = (context,
 	var { enabled, stroke, opacity, fill } = props;
 
 	if (enabled && startX && tempEndX) {
-		var brush = [ startX, tempEndX ];
+		var brush = [startX, tempEndX];
 
 		var { xAccessor } = context;
 		var rect = Brush.helper(plotData, xAccessor, chartData, brush);
@@ -129,7 +99,7 @@ Brush.drawOnCanvas = (context,
 };
 
 Brush.helper = (plotData, xAccessor, chartData, brush) => {
-	var { xScale, yScale } = chartData.plot.scales;
+	var { xScale } = chartData.plot.scales;
 
 	var left = Math.min(brush[0], brush[1]);
 	var right = Math.max(brush[0], brush[1]);
@@ -149,6 +119,15 @@ Brush.helper = (plotData, xAccessor, chartData, brush) => {
 Brush.propTypes = {
 	enabled: React.PropTypes.bool.isRequired,
 	onBrush: React.PropTypes.func.isRequired,
+
+	chartCanvasType: React.PropTypes.string,
+	chartData: React.PropTypes.object,
+	plotData: React.PropTypes.array,
+	xAccessor: React.PropTypes.func,
+	interactive: React.PropTypes.object,
+	stroke: React.PropTypes.string,
+	fill: React.PropTypes.string,
+	opacity: React.PropTypes.number,
 };
 
 Brush.defaultProps = {

@@ -9,22 +9,34 @@ import StraightLine from "./StraightLine";
 import wrap from "./wrap";
 
 class MACDSeries extends React.Component {
+	constructor(props) {
+		super(props);
+		this.yAccessorForMACDLine = this.yAccessorForMACDLine.bind(this);
+		this.yAccessorForSignalLine = this.yAccessorForSignalLine.bind(this);
+	}
+	yAccessorForMACDLine(d) {
+		var { yAccessor } = this.props;
+		return yAccessor(d) && yAccessor(d).MACDLine;
+	}
+	yAccessorForSignalLine(d) {
+		var { yAccessor } = this.props;
+		return yAccessor(d) && yAccessor(d).signalLine;
+	}
 	render() {
 		var { className, indicator, xScale, yScale, xAccessor, yAccessor, plotData, type, opacity, histogramStroke } = this.props;
 		var options = indicator.options();
 
-		/* eslint-disable react/jsx-no-bind */
 		return (
 			<g className={className}>
 				<Line
 					xScale={xScale} yScale={yScale}
-					xAccessor={xAccessor} yAccessor={(d) => yAccessor(d) && yAccessor(d).MACDLine}
+					xAccessor={xAccessor} yAccessor={this.yAccessorForMACDLine}
 					plotData={plotData}
 					stroke={options.stroke.MACDLine} fill="none"
 					type={type} />
 				<Line
 					xScale={xScale} yScale={yScale}
-					xAccessor={xAccessor} yAccessor={(d) => yAccessor(d) && yAccessor(d).signalLine}
+					xAccessor={xAccessor} yAccessor={this.yAccessorForSignalLine}
 					plotData={plotData}
 					stroke={options.stroke.signalLine} fill="none"
 					type={type} />
@@ -36,7 +48,6 @@ class MACDSeries extends React.Component {
 				{MACDSeries.getHorizontalLine(this.props)}
 			</g>
 		);
-		/* eslint-enable react/jsx-no-bind */
 	}
 }
 

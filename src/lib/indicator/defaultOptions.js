@@ -23,7 +23,7 @@ export const FullStochasticOscillator = {
 	period: 12,
 	K: 3,
 	D: 3,
-	ohlc: (d) => ({open: d.open, high: d.high, low: d.low, close: d.close}),
+	ohlc: (d) => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
 	stroke: {
 		D: "#00F300",
 		K: "#FF0000",

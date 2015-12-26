@@ -8,23 +8,35 @@ import Line from "./Line";
 import StraightLine from "./StraightLine";
 
 class StochasticSeries extends React.Component {
+	constructor(props) {
+		super(props);
+		this.yAccessorForD = this.yAccessorForD.bind(this);
+		this.yAccessorForK = this.yAccessorForK.bind(this);
+	}
+	yAccessorForD(d) {
+		var { yAccessor } = this.props;
+		return yAccessor(d) && yAccessor(d).D;
+	}
+	yAccessorForK(d) {
+		var { yAccessor } = this.props;
+		return yAccessor(d) && yAccessor(d).K;
+	}
 	render() {
 		var { props } = this;
 		var { className, indicator, xScale, yScale, xAccessor, yAccessor, plotData, stroke, type } = props;
 		var options = indicator.options();
 
-		/* eslint-disable react/jsx-no-bind */
 		return (
 			<g className={className}>
 				<Line
 					xScale={xScale} yScale={yScale}
-					xAccessor={xAccessor} yAccessor={(d) => yAccessor(d) && yAccessor(d).D}
+					xAccessor={xAccessor} yAccessor={this.yAccessorForD}
 					plotData={plotData}
 					stroke={options.stroke.D} fill="none"
 					type={type} />
 				<Line
 					xScale={xScale} yScale={yScale}
-					xAccessor={xAccessor} yAccessor={(d) => yAccessor(d) && yAccessor(d).K}
+					xAccessor={xAccessor} yAccessor={this.yAccessorForK}
 					plotData={plotData}
 					stroke={options.stroke.K} fill="none"
 					type={type} />
@@ -33,7 +45,6 @@ class StochasticSeries extends React.Component {
 				{StochasticSeries.getHorizontalLine(props, options.overBought, stroke.bottom)}
 			</g>
 		);
-		/* eslint-enable react/jsx-no-bind */
 	}
 }
 

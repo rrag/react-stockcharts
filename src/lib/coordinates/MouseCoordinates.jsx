@@ -59,7 +59,22 @@ class MouseCoordinates extends React.Component {
 MouseCoordinates.propTypes = {
 	xDisplayFormat: React.PropTypes.func.isRequired,
 	yDisplayFormat: React.PropTypes.func.isRequired,
-	type: React.PropTypes.oneOf(["crosshair"]).isRequired
+	type: React.PropTypes.oneOf(["crosshair"]).isRequired,
+
+	chartCanvasType: React.PropTypes.string,
+	getCanvasContexts: React.PropTypes.func,
+	mouseXY: React.PropTypes.array,
+	currentCharts: React.PropTypes.array,
+	chartData: React.PropTypes.array,
+	currentItems: React.PropTypes.array,
+	show: React.PropTypes.bool,
+	stroke: React.PropTypes.string,
+	opacity: React.PropTypes.number,
+	textStroke: React.PropTypes.string,
+	textBGFill: React.PropTypes.string,
+	textBGopacity: React.PropTypes.number,
+	fontFamily: React.PropTypes.string,
+	fontSize: React.PropTypes.number,
 };
 
 MouseCoordinates.defaultProps = {
@@ -110,7 +125,7 @@ MouseCoordinates.drawOnCanvasStatic = (props, ctx, show, mouseXY, currentCharts,
 
 MouseCoordinates.helper = (props, show, mouseXY, currentCharts, chartData, currentItems) => {
 	if (!show) return;
-	var { mainChart, dateAccessor, height, width, snapX, type, xDisplayFormat } = props;
+	var { mainChart, dateAccessor, height, width, snapX, xDisplayFormat } = props;
 	var edges = chartData
 		.filter((eachChartData) => currentCharts.indexOf(eachChartData.id) > -1)
 		.map((each) => {

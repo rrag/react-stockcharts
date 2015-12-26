@@ -2,6 +2,8 @@
 
 import React from "react";
 
+import EdgeCoordinate from "./EdgeCoordinate";
+
 class VerticalMousePointer extends React.Component {
 	shouldComponentUpdate(nextProps) {
 		return nextProps.mouseXY !== this.props.mouseXY;
@@ -31,6 +33,6 @@ VerticalMousePointer.propTypes = {
 
 VerticalMousePointer.defaultProps = { namespace: "ReStock.VerticalMousePointer" };
 
-VerticalMousePointer.yAccessor = (d) => ({open: d.open, high: d.high, low: d.low, close: d.close});
+VerticalMousePointer.yAccessor = (d) => ({ open: d.open, high: d.high, low: d.low, close: d.close });
 
 export default VerticalMousePointer;

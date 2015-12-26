@@ -105,14 +105,12 @@ HistogramSeries.getBarsSVG = (props) => {
 	var { xAccessor, yAccessor, xScale, yScale, plotData } = props;
 	/* eslint-disable react/prop-types */
 
-
 	var bars = HistogramSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
 
 	return bars.map((d, idx) => {
 		if (d.barWidth <= 1) {
 			return <line key={idx} className={d.className}
-						stroke={d.stroke}
-						fill={d.fill}
+						stroke={d.fill}
 						x1={d.x} y1={d.y}
 						x2={d.x} y2={d.y + d.height} />;
 		}

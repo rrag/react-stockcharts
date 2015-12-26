@@ -160,6 +160,9 @@ EventCapture.propTypes = {
 	pan: React.PropTypes.bool.isRequired,
 	panSpeedMultiplier: React.PropTypes.number.isRequired,
 	defaultFocus: React.PropTypes.bool.isRequired,
+
+	onZoom: React.PropTypes.func,
+	onPan: React.PropTypes.func,
 };
 
 EventCapture.defaultProps = {

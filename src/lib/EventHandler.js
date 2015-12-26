@@ -4,7 +4,6 @@ import React from "react";
 import objectAssign from "object-assign";
 
 import PureComponent from "./utils/PureComponent";
-import shallowEqual from "./utils/shallowEqual";
 
 import { getClosestItemIndexes, isReactVersion13 } from "./utils/utils";
 import { getMainChart, getChartData, getClosest, getDataToPlotForDomain, getChartPlotFor, getCurrentItems } from "./utils/ChartDataUtil";
@@ -88,7 +87,7 @@ class EventHandler extends PureComponent {
 	}
 	componentWillMount() {
 		// console.log("EventHandler.componentWillMount");
-		var { props, context } = this;
+		var { props } = this;
 		var { initialDisplay, rawData, defaultDataTransform, dataTransform, interval, dimensions } = props;
 
 		var transformedData = this.getTransformedData(rawData, defaultDataTransform, dataTransform, interval);
@@ -132,7 +131,6 @@ class EventHandler extends PureComponent {
 		var { dimensions, initialDisplay, defaultDataTransform, interval: intervalProp } = nextProps;
 
 		var { data, options, interval, chartData, plotData, rawData } = this.state;
-		var prevDataForInterval = data[interval];
 
 		var dataChanged = false;
 		if (prevData !== nextData || !deepEquals(prevDataTransform, nextDataTransform)) {
@@ -209,7 +207,7 @@ class EventHandler extends PureComponent {
 		if (array === undefined || array === null || array.length === 0) return;
 
 		var { dataTransform, defaultDataTransform, dimensions  } = this.props;
-		var { rawData, data, options, interval, chartData, plotData, mainChart } = this.state;
+		var { rawData, data, interval, chartData, plotData, mainChart } = this.state;
 
 		var newRawData = rawData.concat(array);
 		var transformedData = this.getTransformedData(newRawData, defaultDataTransform, dataTransform, interval);
@@ -221,8 +219,6 @@ class EventHandler extends PureComponent {
 		var xAccessor = mainChartData.config.xAccessor;
 		var xScale = mainChartData.plot.scales.xScale;
 
-		var deltaPushed = array.length;
-
 		var startDomain = xScale.domain();
 		var domainL, domainR;
 
@@ -230,25 +226,13 @@ class EventHandler extends PureComponent {
 
 		var beginIndex, endIndex;
 		if (lastItemVisible) {
-			/* var left = xAccessor(plotData[deltaPushed]);
-
-			var tick = xScale(xAccessor(plotData[1])) - xScale(xAccessor(plotData[0]));
-
-			// console.log(tick);
-
-			if ((xScale(xAccessor(plotData[0])) - xScale(startDomain[0])) > tick) {
-				left = xAccessor(plotData[0]);
-			} */
-
-			// beginIndex = getClosestItemIndexes(dataForInterval, left, xAccessor).left;
 			endIndex = dataForInterval.length;
 			beginIndex = dataForInterval.length - plotData.length;
 		} else {
-			// 
 			domainL = startDomain[0];
 			domainR = startDomain[1];
-			var beginIndex = getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
-			var endIndex = beginIndex + plotData.length;
+			beginIndex = getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
+			endIndex = beginIndex + plotData.length;
 		}
 
 		var newPlotData = dataForInterval.slice(beginIndex, endIndex);
@@ -329,7 +313,7 @@ class EventHandler extends PureComponent {
 		if (newRawData === undefined || newRawData === null || newRawData.length === 0) return;
 
 		var { dataTransform, defaultDataTransform, dimensions  } = this.props;
-		var { rawData, data, options, interval, chartData, plotData, mainChart } = this.state;
+		var { rawData, interval, chartData, plotData, mainChart } = this.state;
 
 		if (rawData.length !== newRawData.length) {
 			console.log(rawData.length, newRawData.length);
@@ -403,7 +387,7 @@ class EventHandler extends PureComponent {
 		};
 	}
 	setViewRange(domainL, domainR) {
-		var { data, mainChart, chartData, plotData, interval, mouseXY } = this.state;
+		var { data, mainChart, chartData, mouseXY } = this.state;
 
 		var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0];
 		var dataToPlot = getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.xAccessor);
@@ -500,7 +484,7 @@ class EventHandler extends PureComponent {
 		var { canvasDrawCallbackList } = this;
 		// console.log(findThis, canvasDrawCallbackList.length);
 		if (replaceWith) {
-			var t = canvasDrawCallbackList.forEach((each, idx) => {
+			canvasDrawCallbackList.forEach((each, idx) => {
 				if (each === findThis) {
 					canvasDrawCallbackList[idx] = replaceWith;
 				}
@@ -534,8 +518,6 @@ class EventHandler extends PureComponent {
 			return (mouseXY[1] > top && mouseXY[1] < bottom);
 		}).map((chartData) => chartData.id);
 		var currentItems = getCurrentItems(this.state.chartData, mouseXY, this.state.plotData);
-
-		var { chartData } = this.state;
 
 		var interactiveState = this.triggerCallback(
 			"mousemove",
@@ -714,10 +696,9 @@ class EventHandler extends PureComponent {
 
 			this.panHappened = true;
 			var state = this.panHelper(mousePosition);
-			if (this.props.type !== "svg") {
 
-				var { canvasList, getCanvasContexts, margin } = this.context;
-				var { axes: axesCanvasContext, mouseCoord: mouseContext, interactive } = this.getCanvasContexts();
+			if (this.props.type !== "svg") {
+				var { axes: axesCanvasContext, mouseCoord: mouseContext } = this.getCanvasContexts();
 				var { chartData, plotData } = state;
 				var { show } = this.state;
 				var { canvasDrawCallbackList } = this;
@@ -736,19 +717,24 @@ class EventHandler extends PureComponent {
 							.forEach(each => {
 								var { xScale, yScale } = eachChart.plot.scales;
 
-								eachChart.config.overlays
+								var overlayPresent = eachChart.config.overlays
 									.filter(eachOverlay => eachOverlay.id === each.seriesId)
-									.forEach(eachOverlay => {
+									.length > 0;
+									/* .forEach(eachOverlay => {
 										// console.log("Do Stuff here", i);
-										var { xAccessor, compareSeries } = eachChart.config;
-										var { yAccessor } = eachOverlay;
+										var { xAccessor } = eachChart.config;
 										// xScale, yScale, plotData
 										each.draw(axesCanvasContext, xScale, yScale, plotData);
-									});
+									}); */
+								if (overlayPresent) {
+									each.draw(axesCanvasContext, xScale, yScale, plotData);
+								}
+
 								if (each.type === "axis") {
 									each.draw(axesCanvasContext, eachChart, xScale, yScale);
 								}
 							});
+
 					});
 					this.drawInteractive(state);
 					canvasDrawCallbackList
@@ -814,27 +800,26 @@ class EventHandler extends PureComponent {
 		var { plotData, mouseXY, currentCharts, chartData, currentItems } = state;
 		var callbackList = this.subscriptions.filter(each => each.eventType === eventType);
 		var delta = callbackList.map(each => {
-				// console.log(each);
-				var singleChartData = chartData.filter(eachItem => eachItem.id === each.forChart)[0];
-				var singleCurrentItem = currentItems.filter(eachItem => eachItem.id === each.forChart)[0];
-				return { 
-					callback: each.callback,
-					forChart: each.forChart,
-					plotData,
-					mouseXY,
-					currentCharts,
-					currentItem: singleCurrentItem.data,
-					chartData: singleChartData
-				};
-			})
-			.filter(each => each.currentCharts.indexOf(each.forChart) >= -1)
-			.map(each => each.callback({
-						plotData: each.plotData,
-						mouseXY: each.mouseXY,
-						chartData: each.chartData,
-						currentItem: each.currentItem,
-					}, event))
-			.filter(each => each);
+			// console.log(each);
+			var singleChartData = chartData.filter(eachItem => eachItem.id === each.forChart)[0];
+			var singleCurrentItem = currentItems.filter(eachItem => eachItem.id === each.forChart)[0];
+			return {
+				callback: each.callback,
+				forChart: each.forChart,
+				plotData,
+				mouseXY,
+				currentCharts,
+				currentItem: singleCurrentItem.data,
+				chartData: singleChartData
+			};
+		})
+		.filter(each => each.currentCharts.indexOf(each.forChart) >= -1)
+		.map(each => each.callback({
+			plotData: each.plotData,
+			mouseXY: each.mouseXY,
+			chartData: each.chartData,
+			currentItem: each.currentItem,
+		}, event));
 
 		// console.log(delta.length);
 		if (delta.length === 0) return interactiveState;
@@ -864,10 +849,9 @@ class EventHandler extends PureComponent {
 		var children = React.Children.map(this.props.children, (child) => {
 			var newChild = isReactVersion13()
 				? React.withContext(this.getChildContext(), () => {
-					return React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
+					return React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref }, child.props));
 				})
 				: child;
-				// React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 
 			return newChild;
 		});
@@ -878,7 +862,7 @@ class EventHandler extends PureComponent {
 }
 
 EventHandler.defaultProps = {
-	defaultDataTransform: [ { transform: DummyTransformer } ],
+	defaultDataTransform: [{ transform: DummyTransformer }],
 };
 
 EventHandler.childContextTypes = {
