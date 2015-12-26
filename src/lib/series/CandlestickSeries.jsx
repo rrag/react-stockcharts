@@ -7,19 +7,22 @@ import { hexToRGBA } from "../utils/utils";
 
 class CandlestickSeries extends React.Component {
 	render() {
-		var { props } = this;
-		return <g className="react-stockcharts-candlestick">
-			<g className="react-stockcharts-candlestick-wick" key="wicks">
-				{CandlestickSeries.getWicksSVG(props)}
+		var { className, wickClassName, candleClassName } = this.props;
+		return <g className={className}>
+			<g className={wickClassName} key="wicks">
+				{CandlestickSeries.getWicksSVG(this.props)}
 			</g>
-			<g className="react-stockcharts-candlestick-candle" key="candles">
-				{CandlestickSeries.getCandlesSVG(props)}
+			<g className={candleClassName} key="candles">
+				{CandlestickSeries.getCandlesSVG(this.props)}
 			</g>
 		</g>;
 	}
 }
 
 CandlestickSeries.propTypes = {
+	className: React.PropTypes.string,
+	wickClassName: React.PropTypes.string,
+	candleClassName: React.PropTypes.string,
 	classNames: React.PropTypes.shape({
 		up: React.PropTypes.string,
 		down: React.PropTypes.string
@@ -42,6 +45,9 @@ CandlestickSeries.propTypes = {
 };
 
 CandlestickSeries.defaultProps = {
+	className: "react-stockcharts-candlestick",
+	wickClassName: "react-stockcharts-candlestick-wick",
+	candleClassName: "react-stockcharts-candlestick-candle",
 	classNames: {
 		up: "up",
 		down: "down"

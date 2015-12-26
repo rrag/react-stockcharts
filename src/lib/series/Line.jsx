@@ -7,11 +7,10 @@ import wrap from "./wrap";
 
 class Line extends React.Component {
 	render() {
-		var { props } = this;
-		var { stroke, fill, className } = props;
+		var { stroke, fill, className } = this.props;
 
 		className = className.concat((stroke) ? "" : " line-stroke");
-		return <path d={Line.getPath(props)} stroke={stroke} fill={fill} className={className}/>;
+		return <path d={Line.getPath(this.props)} stroke={stroke} fill={fill} className={className}/>;
 	}
 }
 

@@ -35,20 +35,33 @@ export function getChartOrigin(origin, contextWidth, contextHeight) {
 		: origin;
 	return originCoordinates;
 };
+
+export function getChartDataConfig(props, innerDimensions, other) {
+	var charts = getCharts(props);
+	return charts.map((each) => ({
+		id: each.props.id,
+		config: getChartConfigFor(innerDimensions, each.props, other),
+	}));
+};
+
 export function getChartData(props, innerDimensions, partialData, fullData, other, domainL, domainR) {
 	var charts = getCharts(props);
 
 	return charts.map((each) => {
 		var chartProps = each.props;
-		var config = getChartConfigFor(innerDimensions, chartProps, partialData, fullData, other);
+
+		var config = getChartConfigFor(innerDimensions, chartProps, other);
+		calculateOverlays(fullData, config.overlays);
+		var scaleType = defineScales(chartProps, partialData, other);
 
 		// console.log(config.compareSeries);
 
-		var plot = getChartPlotFor(config, partialData, domainL, domainR);
+		var plot = getChartPlotFor(config, scaleType, partialData, domainL, domainR);
 
 		return {
 			id: each.props.id,
 			config: config,
+			scaleType: scaleType,
 			plot: plot,
 		};
 	});
@@ -89,28 +102,29 @@ export function getDimensions(innerDimension, chartProps) {
 		height: fullHeight
 	};
 };
-export function getChartConfigFor(innerDimension, chartProps, partialData, fullData, passThroughProps) {
+
+
+export function getChartConfigFor(innerDimension, chartProps, other) {
 	var { padding } = chartProps;
 	var dimensions = getDimensions(innerDimension, chartProps);
 	// var indicator = getIndicator(chartProps);
 	// calculateIndicator(fullData, indicator);
 
-	// var accessors = getXYAccessors(chartProps, passThroughProps, indicator);
+	// var accessors = getXYAccessors(chartProps, other, indicator);
 	// identify overlays
-	var xAccessor = getXAccessor(chartProps, passThroughProps);
+	var xAccessor = getXAccessor(chartProps, other);
 	var overlaysToAdd = identifyOverlaysToAdd(chartProps);
 	var compareBase = identifyCompareBase(chartProps);
 	var compareSeries = identifyCompareSeries(chartProps);
 	// console.log(compareBase, compareSeries);
 	// calculate overlays
-	calculateOverlays(fullData, overlaysToAdd);
+	// calculateOverlays(fullData, overlaysToAdd);
 	// calculateRateOfReturn(fullData, compareSeries, compareBase, accessors.yAccessor);
 
 	var origin = typeof chartProps.origin === "function"
 		? chartProps.origin(dimensions.availableWidth, dimensions.availableHeight)
 		: chartProps.origin;
 
-	var scales = defineScales(chartProps, partialData, passThroughProps);
 
 	var indicatorsWithTicks = overlaysToAdd
 		.filter(overlay => overlay.indicator !== undefined)
@@ -138,12 +152,13 @@ export function getChartConfigFor(innerDimension, chartProps, partialData, fullD
 		overlays: overlaysToAdd,
 		compareBase: compareBase,
 		compareSeries: compareSeries,
-		scaleType: scales,
+		// scaleType: scales,
 		yTicks: yTicks,
 	};
 	return config;
 };
-export function getChartPlotFor(config, partialData, domainL, domainR) {
+
+export function getChartPlotFor(config, scaleType, partialData, domainL, domainR) {
 	var yaccessors = pluck(keysAsArray(config.overlays), "yAccessor");
 	// console.log(yaccessors);
 	if (config.compareSeries.length > 0) {
@@ -169,13 +184,13 @@ export function getChartPlotFor(config, partialData, domainL, domainR) {
 	}
 
 	var scales = updateScales(
-		xyValues
-		, config.scaleType
-		, partialData
-		, config.width
-		, config.height
-		, config.padding
-		, domain);
+		xyValues,
+		scaleType,
+		partialData,
+		config.width,
+		config.height,
+		config.padding,
+		domain);
 
 	if (domainL !== undefined && domainR !== undefined) {
 		scales.xScale.domain([domainL, domainR]);
@@ -187,13 +202,14 @@ export function getChartPlotFor(config, partialData, domainL, domainR) {
 	};
 	return plot;
 };
+
 export function getCompareYAccessors(compareWith) {
 	var yAccessors = compareWith.map((eachCompare) => (d) => d["compare_" + eachCompare.id + "_percent"]);
 	yAccessors.push((d) => d.compare_base_percent);
 	return yAccessors;
 };
-export function updateComparisonData(partialData, compareBase, compareSeries) {
 
+export function updateComparisonData(partialData, compareBase, compareSeries) {
 	var first = partialData[0];
 	var base = compareBase(first);
 
@@ -239,6 +255,7 @@ export function defineScales(props, data, passThroughProps) {
 	}
 	return { xScale: xScale, yScale: yScale };
 };
+
 export function getIndicator(props) {
 	var indicator;// = new Array();
 	React.Children.forEach(props.children, (child) => {
@@ -253,11 +270,13 @@ export function getIndicator(props) {
 	});
 	return indicator;
 };
+
 export function getXAccessor(props, passThroughProps) {
 	var xAccessor = passThroughProps !== undefined && passThroughProps.xAccessor
 		|| props.xAccessor !== undefined && props.xAccessor;
 	return xAccessor;
 };
+
 export function getXYAccessors(props, passThroughProps, indicator) {
 	var accessor = { xAccessor: null, yAccessor: null };
 
@@ -281,6 +300,7 @@ export function getXYAccessors(props, passThroughProps, indicator) {
 
 	return accessor;
 };
+
 export function identifyOverlaysToAdd(chartProps) {
 	var overlaysToAdd = [];
 	React.Children.forEach(chartProps.children, (child) => {
@@ -303,11 +323,13 @@ export function identifyOverlaysToAdd(chartProps) {
 				fill: fill,
 				// stroke: indicator.options().stroke || overlayColors(child.props.id)
 			};
+			// console.error(overlay.id, overlay.chartId, overlay.stroke, indicator);
 			overlaysToAdd.push(overlay);
 		}
 	});
 	return overlaysToAdd;
 };
+
 export function identifyCompareBase(props) {
 	var compareBase;
 	React.Children.forEach(props.children, (child) => {
@@ -317,6 +339,7 @@ export function identifyCompareBase(props) {
 	});
 	return compareBase;
 };
+
 export function identifyCompareSeries(props) {
 	var overlaysToAdd = [];
 	React.Children.forEach(props.children, (child) => {
@@ -336,6 +359,7 @@ export function identifyCompareSeries(props) {
 	});
 	return overlaysToAdd;
 };
+
 export function calculateOverlays(fullData, overlays) {
 	if (Array.isArray(fullData)) {
 		overlays
@@ -357,6 +381,7 @@ export function calculateOverlays(fullData, overlays) {
 	// console.table(fullData.M);
 	// console.log(overlays);
 };
+
 export function calculateIndicator(fullData, indicator) {
 	Object.keys(fullData)
 		.filter((key) => ["D", "W", "M"].indexOf(key) > -1)
@@ -364,6 +389,7 @@ export function calculateIndicator(fullData, indicator) {
 			if (indicator) indicator.calculate(fullData[key]);
 		});
 };
+
 export function updateOverlayFirstLast(data, overlays) {
 	// console.log("updateOverlayFirstLast");
 	var overlayValues = [];
@@ -379,6 +405,7 @@ export function updateOverlayFirstLast(data, overlays) {
 		});
 	return overlayValues;
 };
+
 export function updateScales(xyValues, scales, data, width, height, padding, overrideDomain) {
 	// console.log("updateScales");
 	// width = width - margin.left - margin.right/**/
@@ -407,6 +434,7 @@ export function updateScales(xyValues, scales, data, width, height, padding, ove
 		yScale: scales.yScale.copy()
 	};
 };
+
 export function getCurrentItems(chartData, mouseXY, plotData) {
 	return chartData
 		.map((eachChartData) => {
@@ -415,6 +443,7 @@ export function getCurrentItems(chartData, mouseXY, plotData) {
 			return { id: eachChartData.id, data: item };
 		});
 };
+
 export function getDataToPlotForDomain(domainL, domainR, data, width, xAccessor) {
 	var threshold = 0.5; // number of datapoints per 1 px
 	var allowedIntervals = ["D", "W", "M"];

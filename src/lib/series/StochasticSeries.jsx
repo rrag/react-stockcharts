@@ -23,7 +23,7 @@ class StochasticSeries extends React.Component {
 	}
 	render() {
 		var { props } = this;
-		var { className, indicator, xScale, yScale, xAccessor, yAccessor, plotData, stroke, type } = props;
+		var { className, indicator, xScale, yScale, xAccessor, plotData, stroke, type } = props;
 		var options = indicator.options();
 
 		return (

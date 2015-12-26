@@ -32,7 +32,7 @@ class CandleStickChartWithEdge extends React.Component {
 					<DataSeries id={0} yAccessor={CandlestickSeries.yAccessor} >
 						<CandlestickSeries />
 					</DataSeries>
-					<DataSeries id={1} indicator={EMA} options={{ period: 20, pluck: "close" }}>
+					<DataSeries id={1} indicator={EMA} options={{ period: 20, source: "close" }}>
 						<LineSeries/>
 					</DataSeries>
 					<DataSeries id={2} indicator={EMA} options={{ period: 30 }} >
@@ -51,7 +51,7 @@ class CandleStickChartWithEdge extends React.Component {
 					<DataSeries id={0} yAccessor={(d) => d.volume} >
 						<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
 					</DataSeries>
-					<DataSeries id={1} indicator={SMA} options={{ period: 10, pluck:"volume" }} >
+					<DataSeries id={1} indicator={SMA} options={{ period: 10, source:"volume" }} >
 						<AreaSeries/>
 					</DataSeries>
 				</Chart>
@@ -64,8 +64,8 @@ class CandleStickChartWithEdge extends React.Component {
 					<EdgeIndicator itemType="first" orient="left" edgeAt="left" forChart={1} forDataSeries={1} />
 					<EdgeIndicator itemType="first" orient="left" edgeAt="left" forChart={1} forDataSeries={2} />
 					<EdgeIndicator itemType="first" orient="left" edgeAt="left" forChart={1} forDataSeries={3} />
-					<EdgeIndicator itemType="first" orient="left" edgeAt="left" forChart={2} forDataSeries={0} displayFormat={d3.format(".4s")} />
-					<EdgeIndicator itemType="last" orient="right" edgeAt="right" forChart={2} forDataSeries={0} displayFormat={d3.format(".4s")} />
+					<EdgeIndicator itemType="first" orient="left" edgeAt="left" forChart={2} forDataSeries={0} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
+					<EdgeIndicator itemType="last" orient="right" edgeAt="right" forChart={2} forDataSeries={0} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
 					<EdgeIndicator itemType="first" orient="left" edgeAt="left" forChart={2} forDataSeries={1} displayFormat={d3.format(".4s")} />
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right" forChart={2} forDataSeries={1} displayFormat={d3.format(".4s")} />
 				</EdgeContainer>

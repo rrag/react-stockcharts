@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
 import React from "react";
-import d3 from "d3";
 import objectAssign from "object-assign";
+
 import { hexToRGBA } from "../utils/utils";
 
 function d3_scaleExtent(domain) {
@@ -68,14 +68,15 @@ AxisLine.defaultProps = {
 AxisLine.drawOnCanvasStatic = (props, ctx, chartData, xScale, yScale) => {
 	props = objectAssign({}, AxisLine.defaultProps, props);
 
-	var { orient, outerTickSize, fill, stroke, strokeWidth, className, shapeRendering, opacity } = props;
+	var { orient, outerTickSize, stroke, strokeWidth, opacity } = props;
 
 	var sign = orient === "top" || orient === "left" ? -1 : 1;
 	var xAxis = (orient === "bottom" || orient === "top");
 
 	var range = d3_scaleRange(xAxis ? xScale : yScale);
 
-	ctx.strokeStyle = hexToRGBA(stroke, opacity);;
+	ctx.lineWidth = strokeWidth;
+	ctx.strokeStyle = hexToRGBA(stroke, opacity);
 
 	ctx.beginPath();
 

@@ -32,12 +32,11 @@ class BollingerSeries extends React.Component {
 		return scale(yAccessor(d) && yAccessor(d).bottom);
 	}
 	render() {
-		var { props } = this;
-		var { xScale, yScale, xAccessor, yAccessor, plotData, type } = props;
-		var { stroke, className, fill, opacity } = props;
+		var { xScale, yScale, xAccessor, plotData, type } = this.props;
+		var { stroke, areaClassName, className, fill, opacity } = this.props;
 
 		return (
-			<g className="bollinger-band-series">
+			<g className={className}>
 				<Line
 					xScale={xScale} yScale={yScale}
 					xAccessor={xAccessor} yAccessor={this.yAccessorForTop}
@@ -57,7 +56,7 @@ class BollingerSeries extends React.Component {
 					stroke={stroke.bottom} fill="none"
 					type={type} />
 				<Area
-					className={className}
+					className={areaClassName}
 					xScale={xScale} yScale={yScale}
 					xAccessor={xAccessor} yAccessor={this.yAccessorForTop}
 					base={this.yAccessorForScalledBottom}
@@ -69,7 +68,23 @@ class BollingerSeries extends React.Component {
 	}
 }
 
+BollingerSeries.propTypes = {
+	xAccessor: React.PropTypes.func,
+	yAccessor: React.PropTypes.func,
+	xScale: React.PropTypes.func,
+	yScale: React.PropTypes.func,
+	plotData: React.PropTypes.array,
+	stroke: React.PropTypes.object,
+	className: React.PropTypes.string,
+	areaClassName: React.PropTypes.string,
+	fill: React.PropTypes.string,
+	opacity: React.PropTypes.number,
+	type: React.PropTypes.string,
+};
+
 BollingerSeries.defaultProps = {
+	className: "react-stockcharts-bollinger-band-series",
+	areaClassName: "react-stockcharts-bollinger-band-series-area",
 	stroke: {
 		top: "brown",
 		middle: "black",

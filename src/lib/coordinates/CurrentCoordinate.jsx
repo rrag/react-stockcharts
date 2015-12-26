@@ -1,6 +1,7 @@
 "use strict";
 
 import React from "react";
+
 import pure from "../pure";
 
 class CurrentCoordinate extends React.Component {
@@ -68,10 +69,17 @@ CurrentCoordinate.propTypes = {
 	yAccessor: React.PropTypes.func,
 	r: React.PropTypes.number.isRequired,
 	className: React.PropTypes.string,
+
+	chartCanvasType: React.PropTypes.string,
+	getCanvasContexts: React.PropTypes.func,
+	show: React.PropTypes.bool,
+	chartData: React.PropTypes.array,
+	currentItems: React.PropTypes.array,
 };
 
 CurrentCoordinate.defaultProps = {
-	r: 3
+	r: 3,
+	className: "react-stockcharts-current-coordinate",
 };
 
 CurrentCoordinate.drawOnCanvas = (canvasContext, props) => {

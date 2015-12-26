@@ -16,22 +16,23 @@ class EdgeCoordinate extends React.Component {
 
 		if (edge.line !== undefined) {
 			line = <line
-					className="react-stockcharts-cross-hair" opacity={edge.line.opacity} stroke={edge.line.stroke}
-					x1={edge.line.x1} y1={edge.line.y1}
-					x2={edge.line.x2} y2={edge.line.y2} />;
+				className="react-stockcharts-cross-hair" opacity={edge.line.opacity} stroke={edge.line.stroke}
+				x1={edge.line.x1} y1={edge.line.y1}
+				x2={edge.line.x2} y2={edge.line.y2} />;
 		}
 		if (edge.coordinateBase !== undefined) {
 			coordinateBase = <rect key={1} className="react-stockchart-text-background"
-								x={edge.coordinateBase.edgeXRect}
-								y={edge.coordinateBase.edgeYRect}
-								height={edge.coordinateBase.rectHeight} width={edge.coordinateBase.rectWidth}
-								fill={edge.coordinateBase.fill}  opacity={edge.coordinateBase.opacity} />;
+				x={edge.coordinateBase.edgeXRect}
+				y={edge.coordinateBase.edgeYRect}
+				height={edge.coordinateBase.rectHeight} width={edge.coordinateBase.rectWidth}
+				fill={edge.coordinateBase.fill}  opacity={edge.coordinateBase.opacity} />;
+
 			coordinate = (<text key={2} x={edge.coordinate.edgeXText}
-								y={edge.coordinate.edgeYText}
-								textAnchor={edge.coordinate.textAnchor}
-								fontFamily={edge.coordinate.fontFamily}
-								fontSize={edge.coordinate.fontSize}
-								dy=".32em" fill={edge.coordinate.textFill} >{edge.coordinate.displayCoordinate}</text>);
+				y={edge.coordinate.edgeYText}
+				textAnchor={edge.coordinate.textAnchor}
+				fontFamily={edge.coordinate.fontFamily}
+				fontSize={edge.coordinate.fontSize}
+				dy=".32em" fill={edge.coordinate.textFill} >{edge.coordinate.displayCoordinate}</text>);
 		}
 		return (
 			<g className={className}>
@@ -44,6 +45,7 @@ class EdgeCoordinate extends React.Component {
 }
 
 EdgeCoordinate.propTypes = {
+	className: React.PropTypes.string,
 	type: React.PropTypes.oneOf(["vertical", "horizontal"]).isRequired,
 	coordinate: React.PropTypes.any.isRequired,
 	x1: React.PropTypes.number.isRequired,
@@ -61,6 +63,7 @@ EdgeCoordinate.propTypes = {
 
 EdgeCoordinate.defaultProps = {
 	namespace: "ReStock.EdgeCoordinate",
+	className: "react-stockcharts-edgecoordinate",
 	orient: "left",
 	hideLine: false,
 	fill: "#8a8a8a",
@@ -74,7 +77,7 @@ EdgeCoordinate.defaultProps = {
 
 
 EdgeCoordinate.helper = (props) => {
-	var { coordinate: displayCoordinate, show, rectWidth, type, orient, edgeAt, hideLine, className } = props;
+	var { coordinate: displayCoordinate, show, rectWidth, type, orient, edgeAt, hideLine } = props;
 	var { fill, opacity, fontFamily, fontSize, textFill, lineStroke, lineOpacity } = props;
 	var { x1, y1, x2, y2 } = props;
 
@@ -133,7 +136,7 @@ EdgeCoordinate.drawOnCanvasStatic = (ctx, props) => {
 		ctx.textAlign = edge.coordinate.textAnchor === "middle" ? "center" : edge.coordinate.textAnchor;
 		ctx.textBaseline = "middle";
 
-		ctx.fillText(edge.coordinate.displayCoordinate, edge.coordinate.edgeXText, edge.coordinate.edgeYText); 
+		ctx.fillText(edge.coordinate.displayCoordinate, edge.coordinate.edgeXText, edge.coordinate.edgeYText);
 	}
 	if (edge.line !== undefined) {
 		ctx.strokeStyle = hexToRGBA(edge.line.stroke, edge.line.opacity);

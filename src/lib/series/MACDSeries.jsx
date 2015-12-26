@@ -13,6 +13,8 @@ class MACDSeries extends React.Component {
 		super(props);
 		this.yAccessorForMACDLine = this.yAccessorForMACDLine.bind(this);
 		this.yAccessorForSignalLine = this.yAccessorForSignalLine.bind(this);
+		this.yAccessorForHistogram = this.yAccessorForHistogram.bind(this);
+		this.yAccessorForHistogramBase = this.yAccessorForHistogramBase.bind(this);
 	}
 	yAccessorForMACDLine(d) {
 		var { yAccessor } = this.props;
@@ -22,8 +24,15 @@ class MACDSeries extends React.Component {
 		var { yAccessor } = this.props;
 		return yAccessor(d) && yAccessor(d).signalLine;
 	}
+	yAccessorForHistogram(d) {
+		var { yAccessor } = this.props;
+		return yAccessor(d) && yAccessor(d).histogram;
+	}
+	yAccessorForHistogramBase(xScale, yScale/* , d */) {
+		return yScale(0);
+	}
 	render() {
-		var { className, indicator, xScale, yScale, xAccessor, yAccessor, plotData, type, opacity, histogramStroke } = this.props;
+		var { className, indicator, xScale, yScale, xAccessor, plotData, type, opacity, histogramStroke } = this.props;
 		var options = indicator.options();
 
 		return (
@@ -41,10 +50,10 @@ class MACDSeries extends React.Component {
 					stroke={options.stroke.signalLine} fill="none"
 					type={type} />
 				<HistogramSeries
-					baseAt={(xScale, yScale/* , d */) => yScale(0)}
+					baseAt={this.yAccessorForHistogramBase}
 					className="macd-histogram"
 					stroke={histogramStroke} fill={options.fill.histogram} opacity={opacity}
-					yAccessor={(d) => yAccessor(d) && yAccessor(d).histogram} />
+					yAccessor={this.yAccessorForHistogram} />
 				{MACDSeries.getHorizontalLine(this.props)}
 			</g>
 		);

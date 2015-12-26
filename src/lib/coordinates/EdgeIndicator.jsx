@@ -3,13 +3,15 @@
 import React from "react";
 import d3 from "d3";
 
-import { displayNumberFormat } from "../utils/utils";
 import EdgeCoordinate from "./EdgeCoordinate";
+import PureComponent from "../utils/PureComponent";
+
+import { displayNumberFormat } from "../utils/utils";
 import { getChartDataForChartNew } from "../utils/ChartDataUtil";
 
-class EdgeIndicator extends React.Component {
-	constructor(props) {
-		super(props);
+class EdgeIndicator extends PureComponent {
+	constructor(props, context) {
+		super(props, context);
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	componentDidMount() {
@@ -27,7 +29,7 @@ class EdgeIndicator extends React.Component {
 		this.componentWillReceiveProps(this.props, this.context);
 	}
 	componentWillReceiveProps(nextProps, nextContext) {
-		var { chartData, margin, width } = nextContext;
+		var { margin, width } = nextContext;
 		var draw = EdgeIndicator.drawOnCanvasStatic.bind(null, margin, nextProps, width);
 
 		nextContext.callbackForCanvasDraw({
@@ -74,12 +76,15 @@ EdgeIndicator.contextTypes = {
 EdgeIndicator.propTypes = {
 	type: React.PropTypes.oneOf(["horizontal"]).isRequired,
 	className: React.PropTypes.string,
+	fill: React.PropTypes.string,
+	defaultFill: React.PropTypes.string,
 	itemType: React.PropTypes.oneOf(["first", "last", "current"]).isRequired,
 	orient: React.PropTypes.oneOf(["left", "right"]),
 	edgeAt: React.PropTypes.oneOf(["left", "right"]),
 	forChart: React.PropTypes.number.isRequired,
 	forDataSeries: React.PropTypes.number.isRequired,
 	displayFormat: React.PropTypes.func.isRequired,
+
 };
 
 EdgeIndicator.defaultProps = {
@@ -88,7 +93,8 @@ EdgeIndicator.defaultProps = {
 	edgeAt: "left",
 	displayFormat: displayNumberFormat,
 	yAxisPad: 5,
-	namespace: "ReStock.EdgeIndicator"
+	namespace: "ReStock.EdgeIndicator",
+	defaultFill: "#0f0f0f",
 };
 
 EdgeIndicator.drawOnCanvasStatic = (margin, props, width, ctx, chartDataArray) => {
@@ -108,7 +114,7 @@ EdgeIndicator.drawOnCanvasStatic = (margin, props, width, ctx, chartDataArray) =
 };
 
 EdgeIndicator.helper = (props, width, chartData) => {
-	var { type: edgeType, displayFormat, forChart, forDataSeries, itemType, edgeAt, yAxisPad, orient } = props;
+	var { type: edgeType, displayFormat, forChart, forDataSeries, itemType, edgeAt, yAxisPad, orient, fill, defaultFill } = props;
 
 	var currentChartData = getChartDataForChartNew(chartData, forChart);
 	// var currentItem = ChartDataUtil.getCurrentItemForChartNew(currentItems, forChart);
@@ -132,11 +138,17 @@ EdgeIndicator.helper = (props, width, chartData) => {
 		yAccessor = overlay[0].yAccessor;
 
 		if (item !== undefined) {
-			let yValue = yAccessor(item), xValue = currentChartData.config.xAccessor(item);
-			let x1 = Math.round(currentChartData.plot.scales.xScale(xValue)), y1 = Math.round(currentChartData.plot.scales.yScale(yValue));
+			var yValue = yAccessor(item), xValue = currentChartData.config.xAccessor(item);
+			var x1 = Math.round(currentChartData.plot.scales.xScale(xValue)), y1 = Math.round(currentChartData.plot.scales.yScale(yValue));
 
-			let stroke = overlay[0].stroke;
-			let edgeX = edgeAt === "left"
+			var stroke = overlay[0].stroke || fill;
+			// console.log(forChart, forDataSeries, stroke, fill, defaultFill);
+			if (!stroke) console.error(`EdgeIndicator forChart=${forChart} forDataSeries=${forDataSeries} `
+				+ "is not a derived indicator, so a fill color is not auto assigned. Add a fill attribute to specify the color");
+
+			stroke = stroke || defaultFill;
+
+			var edgeX = edgeAt === "left"
 				? 0 - yAxisPad
 				: width + yAxisPad;
 

@@ -35,10 +35,9 @@ class Chart extends PureComponent {
 			if (child === undefined || child === null) return child;
 			var newChild = isReactVersion13()
 				? React.withContext(this.getChildContext(), () => {
-					return React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
+					return React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref }, child.props));
 				})
 				: child;
-				// React.createElement(child.type, objectAssign({ key: child.key, ref: child.ref}, child.props));
 			return newChild;
 		});
 		var x = origin[0]; // + 0.5; // refer to http://www.rgraph.net/docs/howto-get-crisp-lines-with-no-antialias.html - similar fix for svg here
@@ -51,9 +50,9 @@ Chart.propTypes = {
 	height: React.PropTypes.number,
 	width: React.PropTypes.number,
 	origin: React.PropTypes.oneOfType([
-				React.PropTypes.array
-				, React.PropTypes.func
-			]).isRequired,
+		React.PropTypes.array,
+		React.PropTypes.func
+	]).isRequired,
 	id: React.PropTypes.number.isRequired,
 	xScale: React.PropTypes.func,
 	yScale: React.PropTypes.func,

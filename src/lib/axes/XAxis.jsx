@@ -8,7 +8,7 @@ class XAxis extends PureComponent {
 	render() {
 		var { axisAt, showTicks, tickFormat, ticks } = this.props;
 
-		var range = this.context.yScale.range(), axisLocation;
+		var axisLocation;
 		if (axisAt === "top") axisLocation = 0;
 		else if (axisAt === "bottom") axisLocation = this.context.height;
 		else if (axisAt === "middle") axisLocation = (this.context.height) / 2;
@@ -31,9 +31,9 @@ class XAxis extends PureComponent {
 
 XAxis.propTypes = {
 	axisAt: React.PropTypes.oneOfType([
-				React.PropTypes.oneOf(["top", "bottom", "middle"])
-				, React.PropTypes.number
-			]).isRequired,
+		React.PropTypes.oneOf(["top", "bottom", "middle"]),
+		React.PropTypes.number
+	]).isRequired,
 	orient: React.PropTypes.oneOf(["top", "bottom"]).isRequired,
 	innerTickSize: React.PropTypes.number,
 	outerTickSize: React.PropTypes.number,

@@ -10,11 +10,11 @@ class BackgroundText extends PureComponent {
 			if (contexts) BackgroundText.drawOnCanvas(contexts.bg, this.props, this.context, this.props.children);
 		}
 	}
-	componentDidUpdate(prevProps, prevState, prevContext) {
+	componentDidUpdate() {
 		this.componentDidMount();
 	}
 	render() {
-		var { interval, chartCanvasType } = this.context;
+		var { chartCanvasType } = this.context;
 
 		if (chartCanvasType !== "svg") return null;
 

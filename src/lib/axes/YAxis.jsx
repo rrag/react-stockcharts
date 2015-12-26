@@ -1,6 +1,8 @@
 "use strict";
 
 import React from "react";
+import d3 from "d3";
+
 import Axis from "./Axis";
 import PureComponent from "../utils/PureComponent";
 
@@ -34,9 +36,9 @@ class YAxis extends PureComponent {
 
 YAxis.propTypes = {
 	axisAt: React.PropTypes.oneOfType([
-				React.PropTypes.oneOf(["left", "right", "middle"])
-				, React.PropTypes.number
-			]).isRequired,
+		React.PropTypes.oneOf(["left", "right", "middle"]),
+		React.PropTypes.number
+	]).isRequired,
 	orient: React.PropTypes.oneOf(["left", "right"]).isRequired,
 	innerTickSize: React.PropTypes.number,
 	outerTickSize: React.PropTypes.number,

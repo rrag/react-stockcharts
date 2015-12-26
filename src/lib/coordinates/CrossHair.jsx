@@ -33,24 +33,6 @@ class CrossHair extends React.Component {
 	}
 }
 
-/*
-type={edge.type}
-					show={edge.show}
-					x1={edge.x1} y1={edge.y1}
-					x2={edge.x2} y2={edge.y2}
-					coordinate={edge.coordinate}
-					edgeAt={edge.edgeAt}
-					orient={edge.orient}
-					hideLine={edge.hideLine}
-					lineStroke={edge.lineStroke}
-					lineOpacity={edge.lineOpacity}
-					textFill={edge.textFill}
-					fill={edge.fill}
-					opacity={edge.opacity}
-					fontFamily={edge.fontFamily}
-					fontSize={edge.fontSize}
-*/
-
 CrossHair.propTypes = {
 	yAxisPad: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
@@ -70,7 +52,7 @@ CrossHair.helper = (props) => {
 	var { stroke, opacity, textStroke, textBGFill, textBGopacity, fontFamily, fontSize } = props;
 	var x1 = 0, x2 = width;
 
-	var edges = edges.map((edge, idx) => {
+	var edges = edges.map((edge) => {
 		if (edge.at === "left") {
 			x1 = -yAxisPad;
 		}

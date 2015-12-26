@@ -7,8 +7,7 @@ import wrap from "./wrap";
 
 class RSISeries extends React.Component {
 	render() {
-		var { props } = this;
-		let { className, indicator, xScale, yScale, xAccessor, yAccessor, plotData, stroke, type } = props;
+		let { className, indicator, xScale, yScale, xAccessor, yAccessor, plotData, stroke, type } = this.props;
 		var options = indicator.options();
 		return (
 			<g className={className}>
@@ -19,9 +18,9 @@ class RSISeries extends React.Component {
 					plotData={plotData}
 					stroke={stroke.line} fill="none"
 					type={type} />
-				{RSISeries.getHorizontalLine(props, options.overSold, stroke.top)}
-				{RSISeries.getHorizontalLine(props, 50, stroke.middle)}
-				{RSISeries.getHorizontalLine(props, options.overBought, stroke.bottom)}
+				{RSISeries.getHorizontalLine(this.props, options.overSold, stroke.top)}
+				{RSISeries.getHorizontalLine(this.props, 50, stroke.middle)}
+				{RSISeries.getHorizontalLine(this.props, options.overBought, stroke.bottom)}
 			</g>
 		);
 	}
@@ -42,6 +41,15 @@ RSISeries.getHorizontalLine = (props, yValue, stroke) => {
 
 RSISeries.propTypes = {
 	className: React.PropTypes.string,
+
+	indicator: React.PropTypes.func,
+	xScale: React.PropTypes.func,
+	yScale: React.PropTypes.func,
+	xAccessor: React.PropTypes.func,
+	yAccessor: React.PropTypes.func,
+	plotData: React.PropTypes.array,
+	stroke: React.PropTypes.object,
+	type: React.PropTypes.string,
 };
 
 RSISeries.defaultProps = {

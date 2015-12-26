@@ -3,9 +3,9 @@
 #### Changes
 
 1. Fix [#39](https://github.com/rrag/react-stockcharts/issues/39)
-2. Add eslint rules to prevent these from happening again
-3. Change `utils.js` and `ChartDataUtil.js` to use es6 exports
-4. fix `svg` for `Brush`
+1. Add eslint rules to prevent these from happening again
+1. Change `utils.js` and `ChartDataUtil.js` to use es6 exports
+1. fix `svg` for `Brush`
 
 ## v0.3.0
 

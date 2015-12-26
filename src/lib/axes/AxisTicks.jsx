@@ -1,7 +1,6 @@
-'use strict';
+"use strict";
 
 import React from "react";
-import d3 from "d3";
 import objectAssign from "object-assign";
 
 import { hexToRGBA } from "../utils/utils";
@@ -25,7 +24,7 @@ class Tick extends React.Component {
 		return (
 			<g className="tick" transform={`translate(${ transform[0] }, ${ transform[1] })`} >
 				<line shapeRendering="crispEdges" opacity={tickStrokeOpacity} stroke={tickStroke} x2={x2} y2={y2} />
-				<text 
+				<text
 					dy={dy} x={x} y={y}
 					fill={tickStroke}
 					fontSize={fontSize}
@@ -38,8 +37,23 @@ class Tick extends React.Component {
 	}
 }
 
+Tick.propTypes = {
+	transform: React.PropTypes.arrayOf(Number),
+	tickStroke: React.PropTypes.string,
+	tickStrokeOpacity: React.PropTypes.number,
+	textAnchor: React.PropTypes.string,
+	fontSize: React.PropTypes.number,
+	fontFamily: React.PropTypes.string,
+	x: React.PropTypes.number,
+	y: React.PropTypes.number,
+	x2: React.PropTypes.number,
+	y2: React.PropTypes.number,
+	dy: React.PropTypes.string,
+	children: React.PropTypes.node.isRequired,
+};
+
 Tick.drawOnCanvasStatic = (tick, ctx, chartData, result) => {
-	var { scale, tickTransform, dy, canvas_dy, x, y, x2, y2, format } = result;
+	var { scale, tickTransform, canvas_dy, x, y, x2, y2, format } = result;
 
 	var origin = tickTransform(scale, tick);
 
@@ -49,7 +63,7 @@ Tick.drawOnCanvasStatic = (tick, ctx, chartData, result) => {
 	ctx.lineTo(origin[0] + x2, origin[1] + y2);
 	ctx.stroke();
 
-	ctx.fillText(format(tick), origin[0] + x, origin[1] + y + canvas_dy); 
+	ctx.fillText(format(tick), origin[0] + x, origin[1] + y + canvas_dy);
 };
 
 class AxisTicks extends React.Component {
@@ -94,8 +108,8 @@ AxisTicks.defaultProps = {
 };
 
 AxisTicks.helper = (props, scale) => {
-	var { orient, innerTickSize, tickFormat, tickPadding, fontSize, fontFamily, tickStroke, tickStrokeOpacity } = props;
-	var { tickSize, ticks : tickArguments, tickValues } = props;
+	var { orient, innerTickSize, tickFormat, tickPadding, fontSize, fontFamily } = props;
+	var { ticks: tickArguments, tickValues, tickStroke, tickStrokeOpacity } = props;
 
 	var ticks = tickValues === undefined
 		? (scale.ticks

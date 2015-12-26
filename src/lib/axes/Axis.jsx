@@ -14,7 +14,7 @@ class Axis extends React.Component {
 		this.componentWillReceiveProps(this.props, this.context);
 	}
 	componentWillReceiveProps(nextProps, nextContext) {
-		var { axesCanvasContext, chartData, margin, chartId, canvasOriginX, canvasOriginY } = nextContext;
+		var { margin, chartId, canvasOriginX, canvasOriginY } = nextContext;
 		var draw = Axis.drawOnCanvasStatic.bind(null, margin, nextProps, [canvasOriginX, canvasOriginY]);
 
 		nextContext.callbackForCanvasDraw({
@@ -29,7 +29,7 @@ class Axis extends React.Component {
 			if (contexts) this.drawOnCanvas(contexts.axes);
 		}
 	}
-	componentDidUpdate(prevProps, prevState, prevContext) {
+	componentDidUpdate() {
 		this.componentDidMount();
 	}
 	drawOnCanvas(ctx) {
@@ -62,6 +62,8 @@ class Axis extends React.Component {
 
 Axis.propTypes = {
 	className: React.PropTypes.string.isRequired,
+	defaultClassName: React.PropTypes.string.isRequired,
+	transform: React.PropTypes.arrayOf(Number).isRequired,
 	orient: React.PropTypes.oneOf(["top", "bottom", "left", "right"]).isRequired,
 	innerTickSize: React.PropTypes.number,
 	outerTickSize: React.PropTypes.number,

@@ -33,3 +33,11 @@ Refer to [CONTRIBUTING.md](./CONTRIBUTING.md)
 ### Stability
 
 This is alpha state software, the api will change with each minor version.
+
+### Roadmap
+
+[Roadmap](./docs/md/COMING-SOON.md)
+
+### LICENSE
+
+[MIT](./LICENSE)

@@ -30,6 +30,11 @@ class TypeChooser extends React.Component {
 	}
 }
 
+TypeChooser.propTypes = {
+	type: React.PropTypes.oneOf(["svg", "hybrid"]),
+	children: React.PropTypes.func.isRequired,
+};
+
 TypeChooser.defaultProps = {
 	type: "hybrid"
 };

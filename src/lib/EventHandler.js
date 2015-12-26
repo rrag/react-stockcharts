@@ -6,7 +6,7 @@ import objectAssign from "object-assign";
 import PureComponent from "./utils/PureComponent";
 
 import { getClosestItemIndexes, isReactVersion13 } from "./utils/utils";
-import { getMainChart, getChartData, getClosest, getDataToPlotForDomain, getChartPlotFor, getCurrentItems } from "./utils/ChartDataUtil";
+import { getMainChart, getChartData, getChartDataConfig, getClosest, getDataToPlotForDomain, getChartPlotFor, getCurrentItems } from "./utils/ChartDataUtil";
 import { DummyTransformer } from "./transforms";
 
 var subscriptionCount = 0;
@@ -98,16 +98,17 @@ class EventHandler extends PureComponent {
 		var mainChart = getMainChart(props.children);
 		var beginIndex = Math.max(dataForInterval.length - initialDisplay, 0);
 		var plotData = dataForInterval.slice(beginIndex);
-		var chartData = getChartData(props, dimensions, plotData, data, options);
+		var chartConfig = getChartDataConfig(props, dimensions, options);
 
-		var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0];
+		var chart = chartConfig.filter((eachChart) => eachChart.id === mainChart)[0];
 
 		var domainL = getLongValue(chart.config.xAccessor(plotData[0]));
 		var domainR = getLongValue(chart.config.xAccessor(plotData[plotData.length - 1]));
 
 		var dataToPlot = getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.xAccessor);
-		plotData = dataToPlot.data;
-		chartData = getChartData(props, dimensions, plotData, data, options);
+		var updatePlotData = dataToPlot.data;
+
+		var chartData = getChartData(props, dimensions, plotData, data, options);
 
 		// if (dataToPlot.data.length < 10) return;
 
@@ -116,7 +117,7 @@ class EventHandler extends PureComponent {
 			data: data,
 			rawData: rawData,
 			options: options,
-			plotData: plotData,
+			plotData: updatePlotData,
 			chartData: chartData,
 			interval: this.props.interval,
 			mainChart: mainChart,
@@ -174,10 +175,11 @@ class EventHandler extends PureComponent {
 		plotData = dataToPlot.data;
 
 		newChartData = newChartData.map((eachChart) => {
-			var plot = getChartPlotFor(eachChart.config, plotData, domainL, domainR);
+			var plot = getChartPlotFor(eachChart.config, eachChart.scaleType, plotData, domainL, domainR);
 			return {
 				id: eachChart.id,
 				config: eachChart.config,
+				scaleType: eachChart.scaleType,
 				plot: plot
 			};
 		});
@@ -256,10 +258,11 @@ class EventHandler extends PureComponent {
 
 		var updateState = (L, R) => {
 			newChartData = newChartData.map((eachChart) => {
-				var plot = getChartPlotFor(eachChart.config, newPlotData, L, R);
+				var plot = getChartPlotFor(eachChart.config, eachChart.scaleType, newPlotData, L, R);
 				return {
 					id: eachChart.id,
 					config: eachChart.config,
+					scaleType: eachChart.scaleType,
 					plot: plot
 				};
 			});
@@ -339,10 +342,11 @@ class EventHandler extends PureComponent {
 		var newChartData = getChartData(this.props, dimensions, newPlotData, transformedData.data, transformedData.options);
 
 		newChartData = newChartData.map((eachChart) => {
-			var plot = getChartPlotFor(eachChart.config, newPlotData, startDomain[0], startDomain[1]);
+			var plot = getChartPlotFor(eachChart.config, eachChart.scaleType, newPlotData, startDomain[0], startDomain[1]);
 			return {
 				id: eachChart.id,
 				config: eachChart.config,
+				scaleType: eachChart.scaleType,
 				plot: plot
 			};
 		});
@@ -398,10 +402,11 @@ class EventHandler extends PureComponent {
 		}
 
 		var newChartData = chartData.map((eachChart) => {
-			var plot = getChartPlotFor(eachChart.config, dataToPlot.data, domainL, domainR);
+			var plot = getChartPlotFor(eachChart.config, eachChart.scaleType, dataToPlot.data, domainL, domainR);
 			return {
 				id: eachChart.id,
 				config: eachChart.config,
+				scaleType: eachChart.scaleType,
 				plot: plot
 			};
 		});
@@ -596,10 +601,11 @@ class EventHandler extends PureComponent {
 		var dataToPlot = getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.xAccessor);
 		if (dataToPlot.data.length < 10) return;
 		var newChartData = chartData.map((eachChart) => {
-			var plot = getChartPlotFor(eachChart.config, dataToPlot.data, domainL, domainR);
+			var plot = getChartPlotFor(eachChart.config, eachChart.scaleType, dataToPlot.data, domainL, domainR);
 			return {
 				id: eachChart.id,
 				config: eachChart.config,
+				scaleType: eachChart.scaleType,
 				plot: plot
 			};
 		});
@@ -660,10 +666,11 @@ class EventHandler extends PureComponent {
 		var filteredData = dataForInterval.slice(beginIndex, endIndex);
 
 		var newChartData = chartData.map((eachChart) => {
-			var plot = getChartPlotFor(eachChart.config, filteredData, domainL, domainR);
+			var plot = getChartPlotFor(eachChart.config, eachChart.scaleType, filteredData, domainL, domainR);
 			return {
 				id: eachChart.id,
 				config: eachChart.config,
+				scaleType: eachChart.scaleType,
 				plot: plot
 			};
 		});
