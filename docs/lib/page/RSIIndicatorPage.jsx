@@ -1,12 +1,15 @@
 "use strict";
 
-var React = require("react");
-var ContentSection = require("lib/content-section");
-var Row = require("lib/row");
-var Section = require("lib/section");
-var TypeChooser = require("src/").helper.TypeChooser;
+import React from "react";
+import { helper } from "react-stockcharts";
 
-var CandleStickChartWithRSIIndicator = require("lib/charts/CandleStickChartWithRSIIndicator");
+import ContentSection from "lib/content-section";
+import Row from "lib/row";
+import Section from "lib/section";
+
+import CandleStickChartWithRSIIndicator from "lib/charts/CandleStickChartWithRSIIndicator";
+
+var { TypeChooser } = helper;
 
 var RSIIndicatorPage = React.createClass({
 	statics: {
@@ -32,4 +35,4 @@ var RSIIndicatorPage = React.createClass({
 	}
 });
 
-module.exports = RSIIndicatorPage;
+export default RSIIndicatorPage;

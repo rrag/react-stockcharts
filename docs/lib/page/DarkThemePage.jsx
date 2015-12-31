@@ -1,13 +1,16 @@
 "use strict";
 
-var React = require("react");
-var ContentSection = require("lib/content-section");
-var Row = require("lib/row");
-var Section = require("lib/section");
-var SaveChartAsImage = require("src/").helper.SaveChartAsImage;
-var TypeChooser = require("src/").helper.TypeChooser;
+import React from "react";
+import { helper } from "react-stockcharts";
 
-var CandleStickChartWithDarkTheme = require("lib/charts/CandleStickChartWithDarkTheme");
+import ContentSection from "lib/content-section";
+import Row from "lib/row";
+import Section from "lib/section";
+
+import CandleStickChartWithDarkTheme from "lib/charts/CandleStickChartWithDarkTheme";
+
+var { TypeChooser } = helper;
+
 
 var DarkThemePage = React.createClass({
 	statics: {
@@ -37,4 +40,4 @@ var DarkThemePage = React.createClass({
 	}
 });
 
-module.exports = DarkThemePage;
+export default DarkThemePage;

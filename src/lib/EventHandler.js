@@ -7,7 +7,11 @@ import PureComponent from "./utils/PureComponent";
 
 import { getClosestItemIndexes, isReactVersion13 } from "./utils/utils";
 import { getMainChart, getChartData, getChartDataConfig, getClosest, getDataToPlotForDomain, getChartPlotFor, getCurrentItems } from "./utils/ChartDataUtil";
+
+import TT from "./transforms";
+
 import { DummyTransformer } from "./transforms";
+
 
 var subscriptionCount = 0;
 
@@ -73,8 +77,8 @@ class EventHandler extends PureComponent {
 	getTransformedData(rawData, defaultDataTransform, dataTransform, interval) {
 		var i = 0, eachTransform, options = {}, data = rawData;
 		var transforms = defaultDataTransform.concat(dataTransform);
+
 		for (i = 0; i < transforms.length; i++) {
-			// console.log(transforms[i]);
 			eachTransform = transforms[i].transform();
 			options = objectAssign({}, options, transforms[i].options);
 			options = eachTransform.options(options);

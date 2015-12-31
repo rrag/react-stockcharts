@@ -1,12 +1,15 @@
 'use strict';
 
-var React = require('react');
-var ContentSection = require('lib/content-section');
-var Row = require('lib/row');
-var Section = require('lib/section');
-var TypeChooser = require("src/").helper.TypeChooser;
+import React from "react";
+import { helper } from "react-stockcharts";
 
-var CandleStickChartWithEdge = require('lib/charts/CandleStickChartWithEdge');
+import ContentSection from "lib/content-section";
+import Row from "lib/row";
+import Section from "lib/section";
+
+import CandleStickChartWithEdge from "lib/charts/CandleStickChartWithEdge";
+
+var { TypeChooser } = helper;
 
 var LotsOfDataPage = React.createClass({
 	statics: {
@@ -32,4 +35,4 @@ var LotsOfDataPage = React.createClass({
 	}
 });
 
-module.exports = LotsOfDataPage;
+export default LotsOfDataPage;

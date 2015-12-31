@@ -7,12 +7,10 @@ import RSI from "./RSIIndicator";
 import FullStochasticOscillator from "./FullStochasticOscillator";
 import * as defaultOptions from "./defaultOptions";
 
-export default {
-	MACD,
-	EMA,
-	SMA,
-	BollingerBand,
-	RSI,
-	FullStochasticOscillator,
-	defaultOptions,
-};
+export { MACD as MACD };
+export { EMA as EMA };
+export { SMA as SMA };
+export { BollingerBand as BollingerBand };
+export { RSI as RSI };
+export { FullStochasticOscillator as FullStochasticOscillator };
+export { defaultOptions as defaultOptions };

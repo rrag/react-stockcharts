@@ -7,7 +7,7 @@ import RenkoTransformer from "./RenkoTransformer";
 import PointAndFigureTransformer from "./PointAndFigureTransformer";
 import * as defaultOptions from "./defaultOptions";
 
-export default {
+export {
 	DummyTransformer,
 	StockscaleTransformer,
 	HeikinAshiTransformer,

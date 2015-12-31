@@ -1,12 +1,14 @@
 'use strict';
 
-var React = require('react');
-// var ReactDOM = require('react-dom');
-var d3 = require('d3');
+import React from "react";
+import ReactDOM from "react-dom";
+import d3 from "d3";
 
-require('stylesheets/re-stock');
+import Chart from "./lib/charts/CandleStickChartWithMACDIndicator";
 
 var ReadME = require('md/MAIN.md');
+
+require('stylesheets/re-stock');
 
 document.getElementById("content").innerHTML = ReadME;
 
@@ -22,7 +24,5 @@ d3.tsv("data/MSFT.tsv", function(err, data) {
 		// console.log(d);
 	});
 
-	var Chart = require('lib/charts/CandleStickChartWithMACDIndicator');
-
-	React.render(<Chart data={data} type="hybrid"/>, document.getElementById("chart"));
+	ReactDOM.render(<Chart data={data} type="hybrid"/>, document.getElementById("chart"));
 });

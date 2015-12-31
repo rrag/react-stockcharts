@@ -1,7 +1,7 @@
 'use strict';
-var React = require('react');
+import React from "react";
 
-var Nav = React.createClass({
+export default class Nav extends React.Component {
 	render() {
 		return (
 			<nav className="navbar navbar-fixed-top">
@@ -14,6 +14,4 @@ var Nav = React.createClass({
 			</nav>
 		);
 	}
-});
-
-module.exports = Nav;
+};

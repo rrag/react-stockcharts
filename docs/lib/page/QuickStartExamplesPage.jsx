@@ -1,9 +1,10 @@
 'use strict';
 
-var React = require('react');
-var ContentSection = require('lib/content-section');
-var Row = require('lib/row');
-var Section = require('lib/section');
+import React from "react";
+
+import ContentSection from "lib/content-section";
+import Row from "lib/row";
+import Section from "lib/section";
 
 var QuickStartExamplesPage = React.createClass({
 	statics: {
@@ -22,4 +23,4 @@ var QuickStartExamplesPage = React.createClass({
 	}
 });
 
-module.exports = QuickStartExamplesPage;
+export default QuickStartExamplesPage;

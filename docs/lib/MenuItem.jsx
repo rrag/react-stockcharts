@@ -1,17 +1,7 @@
 'use strict';
-var React = require('react');
+import React from "react";
 
-var MenuItem = React.createClass({
-	propTypes: {
-		current: React.PropTypes.bool.isRequired,
-		title: React.PropTypes.string.isRequired,
-		anchor: React.PropTypes.string.isRequired,
-	},
-	getDefaultProps() {
-		return {
-			active: false,
-		};
-	},
+class MenuItem extends React.Component {
 	render() {
 		var className = this.props.current ? 'active' : '';
 		return (
@@ -22,6 +12,18 @@ var MenuItem = React.createClass({
 			</li>
 		);
 	}
-});
+}
+
+MenuItem.propTypes = {
+	current: React.PropTypes.bool.isRequired,
+	title: React.PropTypes.string.isRequired,
+	anchor: React.PropTypes.string.isRequired,
+};
+
+MenuItem.defaultProps = {
+	active: false,
+};
+
+
 // onClick={this.handleClick}
-module.exports = MenuItem;
+export default MenuItem;

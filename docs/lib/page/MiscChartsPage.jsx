@@ -1,12 +1,15 @@
 'use strict';
 
-var React = require('react');
-var ContentSection = require('lib/content-section');
-var Row = require('lib/row');
-var Section = require('lib/section');
-var TypeChooser = require("src/").helper.TypeChooser;
+import React from "react";
+import { helper } from "react-stockcharts";
 
-var AreaChartWithZoomPan = require('lib/charts/AreaChartWithZoomPan');
+import ContentSection from "lib/content-section";
+import Row from "lib/row";
+import Section from "lib/section";
+
+import AreaChartWithZoomPan from "lib/charts/AreaChartWithZoomPan";
+
+var { TypeChooser } = helper;
 
 var MiscChartsPage = React.createClass({
 	statics: {
@@ -32,4 +35,4 @@ var MiscChartsPage = React.createClass({
 	}
 });
 
-module.exports = MiscChartsPage;
+export default MiscChartsPage;

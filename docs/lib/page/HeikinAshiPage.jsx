@@ -1,12 +1,15 @@
 'use strict';
 
-var React = require('react');
-var ContentSection = require('lib/content-section');
-var Row = require('lib/row');
-var Section = require('lib/section');
-var TypeChooser = require("src/").helper.TypeChooser;
+import React from "react";
+import { helper } from "react-stockcharts";
 
-var HaikinAshi = require('lib/charts/HaikinAshi');
+import ContentSection from "lib/content-section";
+import Row from "lib/row";
+import Section from "lib/section";
+
+import HaikinAshi from "lib/charts/HaikinAshi";
+
+var { TypeChooser } = helper;
 
 var HeikinAshiPage = React.createClass({
 	statics: {
@@ -32,4 +35,4 @@ var HeikinAshiPage = React.createClass({
 	}
 });
 
-module.exports = HeikinAshiPage;
+export default HeikinAshiPage;

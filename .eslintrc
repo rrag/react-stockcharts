@@ -6,6 +6,7 @@
 		"arrowFunctions": true,
 		"blockBindings": true,
 		"classes": true,
+		"defaultParams": true,
 		"destructuring": true,
 		"forOf": true,
 		"jsx": true,
@@ -13,7 +14,10 @@
 		"objectLiteralComputedProperties": true,
 		"objectLiteralShorthandMethods": true,
 		"objectLiteralShorthandProperties": true,
+		"restParams": true,
+		"spread": true,
 		"templateStrings": true,
+		"experimentalObjectRestSpread": true,
 	},
 	"env": {
 		"browser": true,

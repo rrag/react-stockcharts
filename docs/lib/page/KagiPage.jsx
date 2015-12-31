@@ -1,12 +1,15 @@
 'use strict';
 
-var React = require('react');
-var ContentSection = require('lib/content-section');
-var Row = require('lib/row');
-var Section = require('lib/section');
+import React from "react";
+import { helper } from "react-stockcharts";
 
-var Kagi = require('lib/charts/Kagi');
-var TypeChooser = require("src/").helper.TypeChooser;
+import ContentSection from "lib/content-section";
+import Row from "lib/row";
+import Section from "lib/section";
+
+import Kagi from "lib/charts/Kagi";
+
+var { TypeChooser } = helper;
 
 var KagiPage = React.createClass({
 	statics: {
@@ -32,4 +35,4 @@ var KagiPage = React.createClass({
 	}
 });
 
-module.exports = KagiPage;
+export default KagiPage;

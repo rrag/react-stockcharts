@@ -3,9 +3,7 @@ import FibonacciRetracement from "./FibonacciRetracement";
 import ClickCallback from "./ClickCallback";
 import Brush from "./Brush";
 
-export default {
-	TrendLine,
-	FibonacciRetracement,
-	Brush,
-	ClickCallback
-};
+export { TrendLine as TrendLine };
+export { FibonacciRetracement as FibonacciRetracement };
+export { Brush as Brush };
+export { ClickCallback as ClickCallback };

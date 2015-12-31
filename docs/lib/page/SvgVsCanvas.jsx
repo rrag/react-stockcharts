@@ -1,12 +1,15 @@
 'use strict';
 
-var React = require('react');
-var ContentSection = require('lib/content-section');
-var Row = require('lib/row');
-var Section = require('lib/section');
-var TypeChooser = require("src/").helper.TypeChooser;
+import React from "react";
+import { helper } from "react-stockcharts";
 
-var CandleStickChartWithZoomPan = require('lib/charts/CandleStickChartWithZoomPan');
+import ContentSection from "lib/content-section";
+import Row from "lib/row";
+import Section from "lib/section";
+
+import CandleStickChartWithZoomPan from "lib/charts/CandleStickChartWithZoomPan";
+
+var { TypeChooser } = helper;
 
 var ZoomAndPanPage = React.createClass({
 	statics: {
@@ -32,4 +35,4 @@ var ZoomAndPanPage = React.createClass({
 	}
 });
 
-module.exports = ZoomAndPanPage;
+export default ZoomAndPanPage;

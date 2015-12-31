@@ -17,21 +17,19 @@ import StraightLine from "./StraightLine";
 
 import wrap from "./wrap";
 
-export default {
-	AreaSeries,
-	LineSeries,
-	CompareSeries,
-	CandlestickSeries,
-	HistogramSeries,
-	KagiSeries,
-	PointAndFigureSeries,
-	RenkoSeries,
-	MACDSeries,
-	BollingerSeries,
-	RSISeries,
-	StochasticSeries,
-	Area,
-	Line,
-	StraightLine,
-	wrap,
-};
+export { AreaSeries as AreaSeries };
+export { LineSeries as LineSeries };
+export { CompareSeries as CompareSeries };
+export { CandlestickSeries as CandlestickSeries };
+export { HistogramSeries as HistogramSeries };
+export { KagiSeries as KagiSeries };
+export { PointAndFigureSeries as PointAndFigureSeries };
+export { RenkoSeries as RenkoSeries };
+export { MACDSeries as MACDSeries };
+export { BollingerSeries as BollingerSeries };
+export { RSISeries as RSISeries };
+export { StochasticSeries as StochasticSeries };
+export { Area as Area };
+export { Line as Line };
+export { StraightLine as StraightLine };
+export { wrap as wrap };

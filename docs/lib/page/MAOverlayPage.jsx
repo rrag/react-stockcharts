@@ -1,11 +1,11 @@
 'use strict';
 
-var React = require('react');
-var ContentSection = require('lib/content-section');
-var Row = require('lib/row');
-var Section = require('lib/section');
+import React from "react";
+import ContentSection from "lib/content-section";
+import Row from "lib/row";
+import Section from "lib/section";
 
-var CandleStickChartWithMA = require('lib/charts/CandleStickChartWithMA');
+import CandleStickChartWithMA from "lib/charts/CandleStickChartWithMA";
 
 var MAOverlayPage = React.createClass({
 	statics: {
@@ -29,4 +29,4 @@ var MAOverlayPage = React.createClass({
 	}
 });
 
-module.exports = MAOverlayPage;
+export default MAOverlayPage;

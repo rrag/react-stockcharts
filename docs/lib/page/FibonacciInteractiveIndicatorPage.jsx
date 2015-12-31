@@ -1,13 +1,15 @@
 "use strict";
 
-var React = require("react");
-var ContentSection = require("lib/content-section");
-var Row = require("lib/row");
-var Section = require("lib/section");
-var SaveChartAsImage = require("src/").helper.SaveChartAsImage;
-var TypeChooser = require("src/").helper.TypeChooser;
+import React from "react";
+import { helper } from "react-stockcharts";
 
-var CandleStickChartWithFibonacciInteractiveIndicator = require("lib/charts/CandleStickChartWithFibonacciInteractiveIndicator");
+import ContentSection from "lib/content-section";
+import Row from "lib/row";
+import Section from "lib/section";
+
+var { TypeChooser } = helper;
+
+import CandleStickChartWithFibonacciInteractiveIndicator from "lib/charts/CandleStickChartWithFibonacciInteractiveIndicator";
 
 var FibonacciInteractiveIndicatorPage = React.createClass({
 	statics: {
@@ -33,4 +35,4 @@ var FibonacciInteractiveIndicatorPage = React.createClass({
 	}
 });
 
-module.exports = FibonacciInteractiveIndicatorPage;
+export default FibonacciInteractiveIndicatorPage;

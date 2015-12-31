@@ -1,9 +1,10 @@
 'use strict';
 
-var React = require('react');
-var ContentSection = require('lib/content-section');
-var Row = require('lib/row');
-var Section = require('lib/section');
+import React from "react";
+
+import ContentSection from "lib/content-section";
+import Row from "lib/row";
+import Section from "lib/section";
 
 var OverviewPage = React.createClass({
 	statics: {
@@ -22,4 +23,4 @@ var OverviewPage = React.createClass({
 	}
 });
 
-module.exports = OverviewPage;
+export default OverviewPage;

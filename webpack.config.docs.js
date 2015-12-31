@@ -16,11 +16,6 @@ myConfig.entry = {
 	"react-stockcharts-documentation": "./docs/documentation.js"
 };
 
-/*myConfig.externals = {
-	"d3": "d3"
-} // removing React & ReactDOM, for testing purposes
-*/
-
 var Prism = require('prismjs'); ///components/prism-core
 
 // console.log(Prism.languages);
@@ -47,7 +42,7 @@ myConfig.plugins.push(new CommonsChunkPlugin({
 
 myConfig.resolve.alias = { "react-stockcharts": path.join(__dirname, "src") }
 myConfig.resolve.root = [__dirname, path.join(__dirname, "docs")];
-// myConfig.devtool = "sourcemap";// "sourcemap", "sourcemap-inline", "eval";
+// myConfig.devtool = "sourcemap";// http://webpack.github.io/docs/configuration.html#devtool
 // myConfig.debug = true;
 
 module.exports = myConfig;

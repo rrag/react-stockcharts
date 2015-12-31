@@ -12,15 +12,15 @@ var server = new WebpackDevServer(watchCompiler, {
 	// hot: true,
 	contentBase: watchConfig.devServer.contentBase,
 	quiet: false,
-	noInfo: false,
+	noInfo: true,
 	stats: {
 		colors: true
 	}
 });
 
-server.listen(watchConfig.devServer.port, "localhost", function(err) {
+server.listen(watchConfig.devServer.port, watchConfig.devServer.host, function(err) {
 	if (err) throw new Error("webpack-dev-server", err);
-	console.log("[webpack-dev-server]", "http://localhost:" + watchConfig.devServer.port + "/index.html");
+	console.log("[webpack-dev-server]", `http://${watchConfig.devServer.host}:${watchConfig.devServer.port}/index.html`);
 });
 
 server.app.use(serveStatic("build"));

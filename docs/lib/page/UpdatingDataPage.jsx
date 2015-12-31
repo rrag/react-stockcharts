@@ -1,15 +1,19 @@
 'use strict';
 
-var React = require('react');
-var ContentSection = require('lib/content-section');
-var Row = require('lib/row');
-var Section = require('lib/section');
-var TypeChooser = require("src/").helper.TypeChooser;
+import React from "react";
+import { helper } from "react-stockcharts";
 
-var CandleStickChartWithUpdatingData = require('lib/charts/CandleStickChartWithUpdatingData');
-var KagiWithUpdatingData = require('lib/charts/KagiWithUpdatingData');
-var PointAndFigureWithUpdatingData = require('lib/charts/PointAndFigureWithUpdatingData');
-var RenkoWithUpdatingData = require('lib/charts/RenkoWithUpdatingData');
+import ContentSection from "lib/content-section";
+import Row from "lib/row";
+import Section from "lib/section";
+
+import CandleStickChartWithUpdatingData from "lib/charts/CandleStickChartWithUpdatingData";
+import KagiWithUpdatingData from "lib/charts/KagiWithUpdatingData";
+import PointAndFigureWithUpdatingData from "lib/charts/PointAndFigureWithUpdatingData";
+import RenkoWithUpdatingData from "lib/charts/RenkoWithUpdatingData";
+
+var TypeChooser = helper.TypeChooser;
+
 
 var UpdatingDataPage = React.createClass({
 	statics: {
@@ -56,4 +60,4 @@ var UpdatingDataPage = React.createClass({
 	}
 });
 
-module.exports = UpdatingDataPage;
+export default UpdatingDataPage;

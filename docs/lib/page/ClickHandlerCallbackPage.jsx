@@ -1,13 +1,15 @@
 "use strict";
 
-var React = require("react");
-var ContentSection = require("lib/content-section");
-var Row = require("lib/row");
-var Section = require("lib/section");
-var SaveChartAsImage = require("src/").helper.SaveChartAsImage;
-var TypeChooser = require("src/").helper.TypeChooser;
+import React from "react";
+import { helper } from "react-stockcharts";
 
-var CandleStickChartWithClickHandlerCallback = require("lib/charts/CandleStickChartWithClickHandlerCallback");
+import ContentSection from "lib/content-section";
+import Row from "lib/row";
+import Section from "lib/section";
+
+import CandleStickChartWithClickHandlerCallback from "lib/charts/CandleStickChartWithClickHandlerCallback";
+
+var { TypeChooser } = helper;
 
 var ClickHandlerCallbackPage = React.createClass({
 	statics: {
@@ -33,4 +35,4 @@ var ClickHandlerCallbackPage = React.createClass({
 	}
 });
 
-module.exports = ClickHandlerCallbackPage;
+export default ClickHandlerCallbackPage;

@@ -1,12 +1,12 @@
 'use strict';
 
-var React = require('react');
-var ContentSection = require('lib/content-section');
-var Row = require('lib/row');
-var Section = require('lib/section');
+import React from "react";
+import ContentSection from "lib/content-section";
+import Row from "lib/row";
+import Section from "lib/section";
 
-var CandleStickChart = require('lib/charts/CandleStickChart');
-var CandleStickStockScaleChart = require('lib/charts/CandleStickStockScaleChart');
+import CandleStickChart from "lib/charts/CandleStickChart";
+import CandleStickStockScaleChart from "lib/charts/CandleStickStockScaleChart";
 
 var CandleStickChartPage = React.createClass({
 	statics: {
@@ -45,4 +45,4 @@ var CandleStickChartPage = React.createClass({
 	}
 });
 
-module.exports = CandleStickChartPage;
+export default CandleStickChartPage;

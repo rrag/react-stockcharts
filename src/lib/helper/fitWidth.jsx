@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 
 function getDisplayName(Series) {
 	var name = Series.displayName || Series.name || "Series";
@@ -14,7 +15,7 @@ export default function fitWidth(Component, withRef = true) {
 		}
 		componentDidMount() {
 			window.addEventListener("resize", this.handleWindowResize);
-			var el = React.findDOMNode(this);
+			var el = ReactDOM.findDOMNode(this);
 			var w = el.parentNode.clientWidth;
 			this.setState({
 				width: w
@@ -24,7 +25,7 @@ export default function fitWidth(Component, withRef = true) {
 			window.removeEventListener("resize", this.handleWindowResize);
 		}
 		handleWindowResize() {
-			var el = React.findDOMNode(this);
+			var el = ReactDOM.findDOMNode(this);
 			var w = el.parentNode.clientWidth;
 			this.setState({
 				width: w

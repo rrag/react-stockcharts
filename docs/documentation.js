@@ -1,52 +1,54 @@
 "use strict";
 
-var React = require("react");
-// var ReactDOM = require("react-dom");
-var d3 = require("d3");
+import React from "react";
+import ReactDOM from "react-dom";
+import d3 from "d3";
+
+import * as ReStock from "react-stockcharts";
+
 var parseDate = d3.time.format("%Y-%m-%d").parse
 
 require("stylesheets/re-stock");
 
-var Nav = require("lib/navbar");
-var Sidebar = require("lib/sidebar");
-var MainContainer = require("lib/main-container");
-var MenuGroup = require("lib/menu-group");
-var MenuItem = require("lib/MenuItem");
-var ReStock = require("src/");
+import Nav from "lib/navbar";
+import Sidebar from "lib/sidebar";
+import MainContainer from "lib/main-container";
+import MenuGroup from "lib/menu-group";
+import MenuItem from "lib/MenuItem";
 
 var pages = [
-	require("lib/page/GettingStartedPage"),
-	require("lib/page/QuickStartExamplesPage"),
-	require("lib/page/OverviewPage"),
-	require("lib/page/AreaChartPage"),
-	require("lib/page/CandleStickChartPage"),
-	require("lib/page/VolumeHistogramPage"),
-	require("lib/page/MousePointerPage"),
-	require("lib/page/ZoomAndPanPage"),
-	require("lib/page/SvgVsCanvas"),
-	require("lib/page/MAOverlayPage"),
-	require("lib/page/BollingerBandOverlayPage"),
-	require("lib/page/EdgeCoordinatesPage"),
-	require("lib/page/CompareWithPage"),
-	require("lib/page/UpdatingDataPage"),
-	require("lib/page/LotsOfDataPage"),
-	require("lib/page/MACDIndicatorPage"),
-	require("lib/page/RSIIndicatorPage"),
-	require("lib/page/StochasticIndicatorPage"),
-	require("lib/page/TrendLineInteractiveIndicatorPage"),
-	require("lib/page/FibonacciInteractiveIndicatorPage"),
-	require("lib/page/ClickHandlerCallbackPage"),
-	require("lib/page/BrushSupportPage"),
-	require("lib/page/HeikinAshiPage"),
-	require("lib/page/KagiPage"),
-	require("lib/page/PointAndFigurePage"),
-	require("lib/page/RenkoPage"),
-	require("lib/page/CreatingCustomIndicatorPage"),
-	require("lib/page/CreatingCustomChartSeriesPage"),
-	require("lib/page/MiscChartsPage"),
-	require("lib/page/DarkThemePage"),
-	require("lib/page/ChangeLogPage"),
-	require("lib/page/ComingSoonPage"),
+	require("lib/page/GettingStartedPage").default,
+	require("lib/page/QuickStartExamplesPage").default,
+	require("lib/page/OverviewPage").default,
+	require("lib/page/AreaChartPage").default,
+	require("lib/page/CandleStickChartPage").default,
+	require("lib/page/VolumeHistogramPage").default,
+	require("lib/page/MousePointerPage").default,
+	require("lib/page/ZoomAndPanPage").default,
+	require("lib/page/SvgVsCanvas").default,
+	require("lib/page/MAOverlayPage").default,
+	require("lib/page/BollingerBandOverlayPage").default,
+	require("lib/page/EdgeCoordinatesPage").default,
+	require("lib/page/CompareWithPage").default,
+	require("lib/page/LotsOfDataPage").default,
+	require("lib/page/UpdatingDataPage").default,
+	require("lib/page/MACDIndicatorPage").default,
+	require("lib/page/RSIIndicatorPage").default,
+	require("lib/page/StochasticIndicatorPage").default,
+	require("lib/page/TrendLineInteractiveIndicatorPage").default,
+	require("lib/page/FibonacciInteractiveIndicatorPage").default,
+	require("lib/page/ClickHandlerCallbackPage").default,
+	require("lib/page/BrushSupportPage").default,
+	require("lib/page/HeikinAshiPage").default,
+	require("lib/page/KagiPage").default,
+	require("lib/page/PointAndFigurePage").default,
+	require("lib/page/RenkoPage").default,
+	require("lib/page/CreatingCustomIndicatorPage").default,
+	require("lib/page/CreatingCustomChartSeriesPage").default,
+	require("lib/page/MiscChartsPage").default,
+	require("lib/page/DarkThemePage").default,
+	require("lib/page/ChangeLogPage").default,
+	require("lib/page/ComingSoonPage").default,
 ];
 
 function compressString(string) {
@@ -134,7 +136,7 @@ function renderPage(data, dataFull, compareData) {
 		}
 	};
 
-	React.render(<ExamplesPage />, document.getElementById("chart-goes-here"));
+	ReactDOM.render(<ExamplesPage />, document.getElementById("chart-goes-here"));
 }
 
 d3.tsv("data/MSFT.tsv", (err, MSFT) => {
@@ -242,5 +244,5 @@ function renderPartialPage(data, dataFull, compareData) {
 			)
 		}
 	};
-	React.render(<ExamplesPage />, document.getElementById("chart-goes-here"));
+	ReactDOM.render(<ExamplesPage />, document.getElementById("chart-goes-here"));
 }

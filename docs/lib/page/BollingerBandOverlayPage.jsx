@@ -1,12 +1,14 @@
 'use strict';
 
-var React = require('react');
-var ContentSection = require('lib/content-section');
-var Row = require('lib/row');
-var Section = require('lib/section');
-var TypeChooser = require("src/").helper.TypeChooser;
+import React from "react";
+import { helper } from "react-stockcharts";
 
-var CandleStickChartWithBollingerBandOverlay = require('lib/charts/CandleStickChartWithBollingerBandOverlay');
+import ContentSection from "lib/content-section";
+import Row from "lib/row";
+import Section from "lib/section";
+import CandleStickChartWithBollingerBandOverlay from "lib/charts/CandleStickChartWithBollingerBandOverlay";
+
+var TypeChooser = helper.TypeChooser;
 
 var BollingerBandOverlayPage = React.createClass({
 	statics: {
@@ -32,4 +34,4 @@ var BollingerBandOverlayPage = React.createClass({
 	}
 });
 
-module.exports = BollingerBandOverlayPage;
+export default BollingerBandOverlayPage;

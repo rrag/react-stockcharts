@@ -1,11 +1,7 @@
 'use strict';
-var React = require('react');
+import React from "react";
 
-var Row = React.createClass({
-	propTypes: {
-		title: React.PropTypes.string,
-		anchor: React.PropTypes.string
-	},
+class Row extends React.Component {
 	render() {
 		var anchor = this.props.anchor || this.props.title;
 		var title = this.props.title
@@ -19,6 +15,11 @@ var Row = React.createClass({
 			</div>
 		);
 	}
-});
+}
 
-module.exports = Row;
+Row.propTypes = {
+	title: React.PropTypes.string,
+	anchor: React.PropTypes.string
+};
+
+export default Row;

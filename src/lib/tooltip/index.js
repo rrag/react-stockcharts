@@ -8,7 +8,7 @@ import BollingerBandTooltip from "./BollingerBandTooltip";
 import RSITooltip from "./RSITooltip";
 import StochasticTooltip from "./StochasticTooltip";
 
-export default {
+export {
 	MACDTooltip,
 	TooltipContainer,
 	OHLCTooltip,
@@ -18,4 +18,4 @@ export default {
 	BollingerBandTooltip,
 	RSITooltip,
 	StochasticTooltip,
-};
+}

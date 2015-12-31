@@ -1,3 +1,20 @@
+## v0.4.0
+
+#### Breaking Changes
+
+1. Drop support for React `0.13.x` and make `0.14.3` the default dependency
+1. Upgraded to use Babel 6 instead of 5, and this caused some breaking changes, due to a faulty implementation of es6 modules.
+
+    Before - In `v0.3.x`
+    ```js
+    import ReStock from "react-stockchart";
+    ```
+    After - In `v0.4.x`
+    ```js
+    import * as ReStock from "react-stockchart";
+    ```
+1. sdfds
+
 ## v0.3.1
 
 #### Changes

@@ -1,11 +1,11 @@
 'use strict';
 
-var React = require('react');
-var ContentSection = require('lib/content-section');
-var Row = require('lib/row');
-var Section = require('lib/section');
+import React from "react";
+import ContentSection from "lib/content-section";
+import Row from "lib/row";
+import Section from "lib/section";
 
-var CandleStickChartWithCHMousePointer = require('lib/charts/CandleStickChartWithCHMousePointer');
+import CandleStickChartWithCHMousePointer from "lib/charts/CandleStickChartWithCHMousePointer";
 
 var MousePointerPage = React.createClass({
 	statics: {
@@ -29,4 +29,4 @@ var MousePointerPage = React.createClass({
 	}
 });
 
-module.exports = MousePointerPage;
+export default MousePointerPage;

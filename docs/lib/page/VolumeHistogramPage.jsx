@@ -1,13 +1,13 @@
 'use strict';
 
-var React = require('react');
-var ContentSection = require('lib/content-section');
-var Row = require('lib/row');
-var Section = require('lib/section');
+import React from "react";
+import ContentSection from "lib/content-section";
+import Row from "lib/row";
+import Section from "lib/section";
 
-var CandleStickStockScaleChartWithVolumeHistogramV1 = require('lib/charts/CandleStickStockScaleChartWithVolumeHistogramV1');
-var CandleStickStockScaleChartWithVolumeHistogramV2 = require('lib/charts/CandleStickStockScaleChartWithVolumeHistogramV2');
-var CandleStickStockScaleChartWithVolumeHistogramV3 = require('lib/charts/CandleStickStockScaleChartWithVolumeHistogramV3');
+import CandleStickStockScaleChartWithVolumeHistogramV1 from "lib/charts/CandleStickStockScaleChartWithVolumeHistogramV1";
+import CandleStickStockScaleChartWithVolumeHistogramV2 from "lib/charts/CandleStickStockScaleChartWithVolumeHistogramV2";
+import CandleStickStockScaleChartWithVolumeHistogramV3 from "lib/charts/CandleStickStockScaleChartWithVolumeHistogramV3";
 
 var VolumeHistogramPage = React.createClass({
 	statics: {
@@ -56,4 +56,4 @@ var VolumeHistogramPage = React.createClass({
 	}
 });
 
-module.exports = VolumeHistogramPage;
+export default VolumeHistogramPage;

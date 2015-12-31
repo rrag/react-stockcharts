@@ -1,13 +1,15 @@
 "use strict";
 
-var React = require("react");
-var ContentSection = require("lib/content-section");
-var Row = require("lib/row");
-var Section = require("lib/section");
-var SaveChartAsImage = require("src/").helper.SaveChartAsImage;
-var TypeChooser = require("src/").helper.TypeChooser;
+import React from "react";
+import { helper } from "react-stockcharts";
 
-var CandleStickChartWithFullStochasticsIndicator = require("lib/charts/CandleStickChartWithFullStochasticsIndicator");
+import ContentSection from "lib/content-section";
+import Row from "lib/row";
+import Section from "lib/section";
+
+import CandleStickChartWithFullStochasticsIndicator from "lib/charts/CandleStickChartWithFullStochasticsIndicator";
+
+var { TypeChooser, SaveChartAsImage } = helper;
 
 var StochasticIndicatorPage = React.createClass({
 	statics: {
@@ -40,4 +42,4 @@ var StochasticIndicatorPage = React.createClass({
 	}
 });
 
-module.exports = StochasticIndicatorPage;
+export default StochasticIndicatorPage;

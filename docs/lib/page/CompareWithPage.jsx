@@ -1,11 +1,11 @@
 'use strict';
 
-var React = require('react');
-var ContentSection = require('lib/content-section');
-var Row = require('lib/row');
-var Section = require('lib/section');
+import React from "react";
+import ContentSection from "lib/content-section";
+import Row from "lib/row";
+import Section from "lib/section";
 
-var CandleStickChartWithCompare = require('lib/charts/CandleStickChartWithCompare');
+import CandleStickChartWithCompare from "lib/charts/CandleStickChartWithCompare";
 
 var CompareWithPage = React.createClass({
 	statics: {
@@ -29,4 +29,4 @@ var CompareWithPage = React.createClass({
 	}
 });
 
-module.exports = CompareWithPage;
+export default CompareWithPage;

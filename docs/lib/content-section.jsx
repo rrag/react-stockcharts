@@ -1,10 +1,8 @@
 'use strict';
-var React = require('react');
 
-var ContentSection = React.createClass({
-	propTypes: {
-		title: React.PropTypes.string.isRequired
-	},
+import React from "react";
+
+class ContentSection extends React.Component {
 	render() {
 		var { className } = this.props;
 		return (
@@ -14,6 +12,10 @@ var ContentSection = React.createClass({
 			</div>
 		);
 	}
-});
+};
 
-module.exports = ContentSection;
+ContentSection.propTypes = {
+	title: React.PropTypes.string.isRequired
+};
+
+export default ContentSection;

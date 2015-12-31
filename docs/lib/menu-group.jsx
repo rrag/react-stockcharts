@@ -1,12 +1,10 @@
 'use strict';
-var React = require('react');
+import React from "react";
 
-var MenuGroup = React.createClass({
+export default class MenuGroup extends React.Component {
 	render() {
 		return (
 			<ul className="nav nav-sidebar">{this.props.children}</ul>
 		);
 	}
-});
-
-module.exports = MenuGroup;
+};

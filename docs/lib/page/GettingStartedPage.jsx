@@ -1,14 +1,12 @@
 'use strict';
 
-var React = require('react');
-var ContentSection = require('lib/content-section');
-var Row = require('lib/row');
-var Section = require('lib/section');
+import React from "react";
 
-var GettingStartedPage = React.createClass({
-	statics: {
-		title: 'Getting Started'
-	},
+import ContentSection from "lib/content-section";
+import Row from "lib/row";
+import Section from "lib/section";
+
+class GettingStartedPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={GettingStartedPage.title}>
@@ -20,14 +18,8 @@ var GettingStartedPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
 
-module.exports = GettingStartedPage;
+GettingStartedPage.title = "Getting Started";
 
-/*
-				<Row>
-					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('README')}}></aside>
-					</Section>
-				</Row>
-*/
+export default GettingStartedPage;

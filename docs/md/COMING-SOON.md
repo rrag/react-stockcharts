@@ -3,10 +3,12 @@
 1. Drop support for React 0.13 and use React 0.14, fix all the deprecation warnings
 1. Provide touch support
 1. Create an alternative for stockscale similar to the one created in [d3fc](https://github.com/ScottLogic/d3fc) with a discontinuty provider for weekends
+1. `EdgeCoordinate` to take `fill` property as function or string
+#### New Chart types
+1. Scatter chart
 
 #### Internal changes
 1. Use stateless components in `RSISeries`, `StochasticSeries` to address react/prop-types lint error
-
 
 ## v0.5.x
 

@@ -10,22 +10,22 @@ import BackgroundText from "./lib/BackgroundText";
 import EventCapture from "./lib/EventCapture";
 
 // chart types & Series
-import series from "./lib/series";
+import * as series from "./lib/series";
 
-import coordinates from "./lib/coordinates";
-import indicator from "./lib/indicator";
+import * as coordinates from "./lib/coordinates";
+import * as indicator from "./lib/indicator";
 
-import transforms from "./lib/transforms";
-import axes from "./lib/axes";
-import tooltip from "./lib/tooltip";
-import helper from "./lib/helper";
+import * as transforms from "./lib/transforms";
+import * as axes from "./lib/axes";
+import * as tooltip from "./lib/tooltip";
+import * as helper from "./lib/helper";
 
-import interactive from "./lib/interactive";
+import * as interactive from "./lib/interactive";
 import * as Utils from "./lib/utils/utils";
 
 const version = "0.3.1";
 
-export default {
+export {
 	ChartCanvas,
 	Chart,
 	DataSeries,

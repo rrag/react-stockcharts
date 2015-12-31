@@ -1,13 +1,16 @@
 "use strict";
 
-var React = require("react");
-var ContentSection = require("lib/content-section");
-var Row = require("lib/row");
-var Section = require("lib/section");
-var SaveChartAsImage = require("src/").helper.SaveChartAsImage;
-var TypeChooser = require("src/").helper.TypeChooser;
+import React from "react";
+import { helper } from "react-stockcharts";
 
-var CandleStickChartWithBrush = require("lib/charts/CandleStickChartWithBrush");
+import ContentSection from "lib/content-section";
+import Row from "lib/row";
+import Section from "lib/section";
+
+import CandleStickChartWithBrush from "lib/charts/CandleStickChartWithBrush";
+
+var { TypeChooser, SaveChartAsImage } = helper;
+
 
 var BrushSupportPage = React.createClass({
 	statics: {
@@ -33,4 +36,4 @@ var BrushSupportPage = React.createClass({
 	}
 });
 
-module.exports = BrushSupportPage;
+export default BrushSupportPage;

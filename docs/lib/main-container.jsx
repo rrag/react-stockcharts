@@ -1,8 +1,9 @@
 'use strict';
-var React = require('react');
-var Row = require('lib/row');
+import React from "react";
 
-var MainContainer = React.createClass({
+import Row from "lib/row";
+
+export default class MainContainer extends React.Component {
 	render() {
 		return (
 			<div className="container-fluid" id="MainContainer">
@@ -10,6 +11,4 @@ var MainContainer = React.createClass({
 			</div>
 		);
 	}
-});
-
-module.exports = MainContainer;
+};

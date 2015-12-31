@@ -4,7 +4,5 @@
 import XAxis from "./XAxis";
 import YAxis from "./YAxis";
 
-export default {
-	XAxis,
-	YAxis,
-};
+export { XAxis as XAxis };
+export { YAxis as YAxis };

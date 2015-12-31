@@ -1,12 +1,13 @@
 'use strict';
 
-var React = require('react');
-var ContentSection = require('lib/content-section');
-var Row = require('lib/row');
-var Section = require('lib/section');
+import React from "react";
 
-var AreaChart = require('lib/charts/AreaChart');
-var AreaChartWithYPercent = require('lib/charts/AreaChartWithYPercent');
+import ContentSection from "lib/content-section";
+import Row from "lib/row";
+import Section from "lib/section";
+
+import AreaChart from "lib/charts/AreaChart";
+import AreaChartWithYPercent from "lib/charts/AreaChartWithYPercent";
 
 var OverviewPage = React.createClass({
 	statics: {
@@ -35,4 +36,4 @@ var OverviewPage = React.createClass({
 	}
 });
 
-module.exports = OverviewPage;
+export default OverviewPage;

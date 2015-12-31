@@ -1,16 +1,7 @@
 'use strict';
-var React = require('react');
+import React from "react";
 
-var Section = React.createClass({
-	propTypes: {
-		colSpan: React.PropTypes.number.isRequired,
-		title: React.PropTypes.string
-	},
-	getDefaultProps() {
-		return {
-			colSpan: 1
-		}
-	},
+class Section extends React.Component {
 	render() {
 		var className = this.props.className + ' col-md-' + (6 * this.props.colSpan);
 		var title = this.props.title ? <h4>{this.props.title}</h4> : null;
@@ -21,6 +12,15 @@ var Section = React.createClass({
 			</div>
 		);
 	}
-});
+}
 
-module.exports = Section;
+Section.propTypes = {
+	colSpan: React.PropTypes.number.isRequired,
+	title: React.PropTypes.string
+};
+
+Section.defaultProps = {
+	colSpan: 1
+};
+
+export default Section;
