@@ -9,13 +9,11 @@ config.devtool = "cheap-module-eval-source-map";
 
 config.devServer = {
 	contentBase: path.join(__dirname, "docs"),
-	host: "localhost",
+	host: "localhost", // "10.0.0.106", "localhost",
 	port: 8090,
 };
 
 config.output.publicPath = `http://${config.devServer.host}:${config.devServer.port}/${config.output.publicPath}`;
-
-console.log("public path = ", config.output.publicPath)
 
 /*
 config.externals = {

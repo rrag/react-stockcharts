@@ -13,7 +13,10 @@
     ```js
     import * as ReStock from "react-stockchart";
     ```
-1. sdfds
+
+#### Changes
+
+1. Implement touch support
 
 ## v0.3.1
 

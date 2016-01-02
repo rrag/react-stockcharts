@@ -67,6 +67,15 @@ export function mergeRecursive(obj1, obj2) {
 	return obj1;
 };
 
+export function touchPosition(touch, e) {
+	var container = e.target,
+		rect = container.getBoundingClientRect(),
+		x = touch.clientX - rect.left - container.clientLeft,
+		y = touch.clientY - rect.top - container.clientTop,
+		xy = [Math.round(x), Math.round(y)];
+	return xy;
+};
+
 export function mousePosition(e) {
 	var container = e.currentTarget,
 		rect = container.getBoundingClientRect(),

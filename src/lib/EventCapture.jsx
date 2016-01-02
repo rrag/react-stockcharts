@@ -3,7 +3,7 @@
 import React from "react";
 import d3 from "d3";
 
-import { mousePosition, isReactVersion14 } from "./utils/utils";
+import { mousePosition, touchPosition, isReactVersion14 } from "./utils/utils";
 
 var mousemove = "mousemove.pan", mouseup = "mouseup.pan";
 
@@ -11,6 +11,18 @@ function d3Window(node) {
 	var d3win = node && (node.ownerDocument && node.ownerDocument.defaultView || node.document && node || node.defaultView);
 	return d3win;
 }
+
+function getTouchProps (touch) {
+	if (!touch) return {};
+	return {
+		pageX: touch.pageX,
+		pageY: touch.pageY,
+		clientX: touch.clientX,
+		clientY: touch.clientY
+	};
+}
+
+
 
 class EventCapture extends React.Component {
 	constructor(props) {
@@ -22,6 +34,11 @@ class EventCapture extends React.Component {
 		this.handleMouseDown = this.handleMouseDown.bind(this);
 		this.handlePanEnd = this.handlePanEnd.bind(this);
 		this.handlePan = this.handlePan.bind(this);
+		this.handleTouchStart = this.handleTouchStart.bind(this);
+		this.handleTouchMove = this.handleTouchMove.bind(this);
+		this.handleTouchEnd = this.handleTouchEnd.bind(this);
+		this.lastTouch = {};
+		this.initialPinch = {};
 	}
 	componentWillMount() {
 		if (this.context.onFocus) this.context.onFocus(this.props.defaultFocus);
@@ -54,31 +71,29 @@ class EventCapture extends React.Component {
 		if (this.context.onMouseMove && this.props.mouseMove) {
 			if (!this.context.panInProgress) {
 				var newPos = mousePosition(e);
-				this.context.onMouseMove(newPos, e);
+				this.context.onMouseMove(newPos, "mouse", e);
 			}
 		}
 	}
 	handleMouseDown(e) {
 		var mouseEvent = e || d3.event;
-		var { onPanStart, deltaXY, focus, onFocus } = this.context;
-		var chartData = this.context.chartData.filter((each) => each.id === this.props.mainChart) [0];
-		if (this.props.pan && onPanStart) {
+		var { mainChart, pan } = this.props;
+		var { onPanStart, focus, onFocus, chartData } = this.context;
+		var mainChartData = chartData.filter((each) => each.id === mainChart) [0];
+		if (pan && onPanStart) {
 			var mouseXY = mousePosition(mouseEvent);
-			onPanStart(chartData.plot.scales.xScale.domain(), mouseXY);
 
 			var dx = mouseEvent.pageX - mouseXY[0],
 				dy = mouseEvent.pageY - mouseXY[1];
 
-			var captureDOM = isReactVersion14()
-				? this.refs.capture
-				: React.findDOMNode(this.refs.capture);
+			var captureDOM = this.refs.capture;
 
 			var win = d3Window(captureDOM);
 			d3.select(win)
 				.on(mousemove, this.handlePan)
 				.on(mouseup, this.handlePanEnd);
 
-			deltaXY([dx, dy]);
+			onPanStart(mainChartData.plot.scales.xScale.domain(), mouseXY, [dx, dy]);
 		} else {
 			if (!focus && onFocus) onFocus(true);
 		}
@@ -90,47 +105,147 @@ class EventCapture extends React.Component {
 	}
 	handlePan() {
 		// console.log("handlePan")
+		var { mainChart, pan: panEnabled, onPan: panListener } = this.props;
+		var { deltaXY: dxdy, chartData, onPan } = this.context;
+
 		var e = d3.event;
-		var deltaXY = this.context.deltaXY();
-		var newPos = [e.pageX - deltaXY[0], e.pageY - deltaXY[1]];
+		var newPos = [e.pageX - dxdy[0], e.pageY - dxdy[1]];
 		// console.log("moved from- ", startXY, " to ", newPos);
-		if (this.props.pan && this.context.onPan) {
-			var chartData = this.context.chartData.filter((each) => each.id === this.props.mainChart) [0];
-			this.context.onPan(newPos, chartData.plot.scales.xScale.domain());
-			if (this.props.onPan) {
-				this.props.onPan(e);
+		if (panEnabled && onPan) {
+			var mainChartData = chartData.filter((each) => each.id === mainChart) [0];
+			onPan(newPos, mainChartData.plot.scales.xScale.domain());
+			if (panListener) {
+				panListener(e);
 			}
 		}
 	}
 	handlePanEnd() {
 		var e = d3.event;
-		var deltaXY = this.context.deltaXY();
-		var newPos = [e.pageX - deltaXY[0], e.pageY - deltaXY[1]];
 
-		var captureDOM = isReactVersion14()
-			? this.refs.capture
-			: React.findDOMNode(this.refs.capture);
+		var { pan: panEnabled } = this.props;
+		var { deltaXY: dxdy, onPanEnd } = this.context;
+
+		var newPos = [e.pageX - dxdy[0], e.pageY - dxdy[1]];
+
+		var captureDOM = this.refs.capture;
 
 		var win = d3Window(captureDOM);
 
 		d3.select(win)
 			.on(mousemove, null)
 			.on(mouseup, null);
-		if (this.props.pan && this.context.onPanEnd) {
-			this.context.onPanEnd(newPos, e);
+		if (panEnabled && onPanEnd) {
+			onPanEnd(newPos, e);
 		}
 		// e.preventDefault();
 	}
 	handleTouchStart(e) {
-		console.log("handleTouchStart", e);
-	}
-	handleTouchEnd(e) {
-		console.log("handleTouchEnd", e);
+		// TODO disableMouseInteraction
+		var { mainChart, pan: panEnabled } = this.props;
+		var { deltaXY: dxdy } = this.context;
+
+		var { onPanStart, onMouseMove, focus, onFocus, chartData, onPanEnd, panInProgress } = this.context;
+		var mainChartData = chartData.filter((each) => each.id === mainChart) [0];
+
+		if (e.touches.length === 1) {
+			var touch = getTouchProps(e.touches[0]);
+			this.lastTouch = touch;
+			var touchXY = touchPosition(touch, e);
+			onMouseMove(touchXY, "touch", e);
+			if (panEnabled && onPanStart) {
+				var dx = touch.pageX - touchXY[0],
+					dy = touch.pageY - touchXY[1];
+
+				onPanStart(mainChartData.plot.scales.xScale.domain(), touchXY, [dx, dy]);
+			}
+		} else if (e.touches.length === 2) {
+			// pinch zoom begin
+			// do nothing pinch zoom is handled in handleTouchMove
+			var touch1 = getTouchProps(e.touches[0]);
+			var touch2 = getTouchProps(e.touches[1]);
+
+			var touch1Pos = touchPosition(touch1, e);
+			var touch2Pos = touchPosition(touch2, e);
+
+			var test = "a";
+			if (panInProgress && panEnabled && onPanEnd) {
+				// end pan first
+				var newPos = [touch1.pageX - dxdy[0], touch1.pageY - dxdy[1]];
+				test = "b" + newPos;
+				onPanEnd(newPos, e);
+				this.lastTouch = null;
+			}
+		}
+
+		if (e.touches.length !== 2) this.initialPinch = null;
+		// var newPos = mousePosition(e);
+		// console.log("handleTouchStart", e);
+		e.preventDefault();
+		// e.stopPropagation();
+		// this.context.onMouseMove(newPos, e);
 	}
 	handleTouchMove(e) {
-		console.log("handleTouchMove", e);
-	}
+		var { mainChart, pan: panEnabled, onPan: panListener, zoom: zoomEnabled } = this.props;
+		var { deltaXY: dxdy, chartData, onPan, onPanEnd, onPinchZoom, focus, panInProgress } = this.context;
 
+		var mainChartData = chartData.filter((each) => each.id === mainChart) [0];
+		if (e.touches.length === 1) {
+			// pan
+			var touch = this.lastTouch = getTouchProps(e.touches[0]);
+
+			var touchPos = touchPosition(touch, e);
+			var newPos = [touch.pageX - dxdy[0], touch.pageY - dxdy[1]];
+			if (panInProgress && panEnabled && onPan) {
+				onPan(newPos, mainChartData.plot.scales.xScale.domain());
+				if (panListener) {
+					panListener(e);
+				}
+			}
+		} else if (e.touches.length === 2) {
+			// pinch zoom
+			if (zoomEnabled && onPinchZoom && focus) {
+				var touch1 = getTouchProps(e.touches[0]);
+				var touch2 = getTouchProps(e.touches[1]);
+
+				var touch1Pos = touchPosition(touch1, e);
+				var touch2Pos = touchPosition(touch2, e);
+
+				if (this.initialPinch === null) {
+					this.initialPinch = {
+						touch1Pos,
+						touch2Pos,
+						range: mainChartData.plot.scales.xScale.range(),
+						mainChartData,
+					};
+				} else if (this.initialPinch && !panInProgress) {
+					onPinchZoom(this.initialPinch, {
+						touch1Pos,
+						touch2Pos,
+						mainChartData,
+					});
+				}
+			}
+		}
+		e.preventDefault();
+
+		// console.log("handleTouchMove", e);
+	}
+	handleTouchEnd(e) {
+		// TODO enableMouseInteraction
+		var { pan: panEnabled } = this.props;
+		var { deltaXY: dxdy, onPanEnd, panInProgress } = this.context;
+
+		if (this.lastTouch) {
+			var newPos = [this.lastTouch.pageX - dxdy[0], this.lastTouch.pageY - dxdy[1]];
+
+			this.initialPinch = null;
+			if (panInProgress && panEnabled && onPanEnd) {
+				onPanEnd(newPos, e);
+			}
+		}
+		// console.log("handleTouchEnd", dxdy, newPos, e);
+		e.preventDefault();
+	}
 	render() {
 		var className = this.context.panInProgress ? "react-stockcharts-grabbing-cursor" : "react-stockcharts-crosshair-cursor";
 
@@ -183,13 +298,14 @@ EventCapture.contextTypes = {
 	onMouseEnter: React.PropTypes.func,
 	onMouseLeave: React.PropTypes.func,
 	onZoom: React.PropTypes.func,
+	onPinchZoom: React.PropTypes.func,
 	onPanStart: React.PropTypes.func,
 	onPan: React.PropTypes.func,
 	onPanEnd: React.PropTypes.func,
 	panInProgress: React.PropTypes.bool,
 	focus: React.PropTypes.bool.isRequired,
 	onFocus: React.PropTypes.func,
-	deltaXY: React.PropTypes.func,
+	deltaXY: React.PropTypes.arrayOf(Number),
 };
 
 export default EventCapture;

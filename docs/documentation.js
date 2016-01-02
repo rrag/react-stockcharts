@@ -8,7 +8,7 @@ import * as ReStock from "react-stockcharts";
 
 var parseDate = d3.time.format("%Y-%m-%d").parse
 
-require("stylesheets/re-stock");
+import "stylesheets/re-stock";
 
 import Nav from "lib/navbar";
 import Sidebar from "lib/sidebar";
@@ -139,11 +139,11 @@ function renderPage(data, dataFull, compareData) {
 	ReactDOM.render(<ExamplesPage />, document.getElementById("chart-goes-here"));
 }
 
-d3.tsv("data/MSFT.tsv", (err, MSFT) => {
-	d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
+d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
+	d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 		d3.tsv("data/comparison.tsv", (err3, compareData) => {
-			renderPage(MSFT, MSFTFull, compareData);
-			// renderPartialPage(MSFT, MSFTFull, compareData);
+			// renderPage(MSFT, MSFTFull, compareData);
+			renderPartialPage(MSFT, MSFTFull, compareData);
 		});
 	});
 });
@@ -231,7 +231,7 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithInteractiveIndicator
 	// CandleStickChartWithFibonacciInteractiveIndicator
 	// AreaChartWithZoomPan
-	var Chart = require("lib/charts/AreaChartWithZoomPan");
+	var Chart = require("lib/charts/CandleStickChartWithMACDIndicator").default;
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	// data, dataFull, compareData

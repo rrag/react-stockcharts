@@ -15,7 +15,7 @@ config.plugins = config.plugins.concat(
 		compress: {
 			drop_console: true
 		}
-	}),
+	})
 );
 
 module.exports = config;

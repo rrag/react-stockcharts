@@ -39,16 +39,18 @@ class EventHandler extends PureComponent {
 		this.handleMouseEnter = this.handleMouseEnter.bind(this);
 		this.handleMouseLeave = this.handleMouseLeave.bind(this);
 		this.handleZoom = this.handleZoom.bind(this);
+		this.handlePinchZoom = this.handlePinchZoom.bind(this);
 		this.handlePanStart = this.handlePanStart.bind(this);
 		this.handlePan = this.handlePan.bind(this);
 		this.handlePanEnd = this.handlePanEnd.bind(this);
 		this.handleFocus = this.handleFocus.bind(this);
-		this.deltaXY = this.deltaXY.bind(this);
+		// this.deltaXY = this.deltaXY.bind(this);
 		this.getCanvasContexts = this.getCanvasContexts.bind(this);
 		this.pushCallbackForCanvasDraw = this.pushCallbackForCanvasDraw.bind(this);
 		this.getAllCanvasDrawCallback = this.getAllCanvasDrawCallback.bind(this);
 		this.subscribe = this.subscribe.bind(this);
 		this.unsubscribe = this.unsubscribe.bind(this);
+		this.pinchCoordinates = this.pinchCoordinates.bind(this);
 
 		this.subscriptions = [];
 		this.canvasDrawCallbackList = [];
@@ -64,16 +66,10 @@ class EventHandler extends PureComponent {
 			panInProgress: false,
 			interactiveState: [],
 		};
-	}
-	deltaXY(dxy) {
-		if (dxy) {
-			this.setState({
-				deltaXY: dxy
-			});
-		} else {
-			return this.state.deltaXY;
-		}
-	}
+	}/*
+	deltaXY() {
+		return this.state.deltaXY;
+	}*/
 	getTransformedData(rawData, defaultDataTransform, dataTransform, interval) {
 		var i = 0, eachTransform, options = {}, data = rawData;
 		var transforms = defaultDataTransform.concat(dataTransform);
@@ -480,11 +476,12 @@ class EventHandler extends PureComponent {
 			onMouseEnter: this.handleMouseEnter,
 			onMouseLeave: this.handleMouseLeave,
 			onZoom: this.handleZoom,
+			onPinchZoom: this.handlePinchZoom,
 			onPanStart: this.handlePanStart,
 			onPan: this.handlePan,
 			onPanEnd: this.handlePanEnd,
 			onFocus: this.handleFocus,
-			deltaXY: this.deltaXY,
+			deltaXY: this.state.deltaXY,
 			panInProgress: this.state.panInProgress,
 			focus: this.state.focus
 		};
@@ -520,7 +517,7 @@ class EventHandler extends PureComponent {
 		// console.log(subscriptionId);
 		this.subscriptions = this.subscriptions.filter(each => each.subscriptionId === subscriptionId);
 	}
-	handleMouseMove(mouseXY, e) {
+	handleMouseMove(mouseXY, inputType, e) {
 		var currentCharts = this.state.chartData.filter((chartData) => {
 			var top = chartData.config.origin[1];
 			var bottom = top + chartData.config.height;
@@ -528,11 +525,19 @@ class EventHandler extends PureComponent {
 		}).map((chartData) => chartData.id);
 		var currentItems = getCurrentItems(this.state.chartData, mouseXY, this.state.plotData);
 
-		var interactiveState = this.triggerCallback(
-			"mousemove",
-			objectAssign({}, this.state, { currentItems, currentCharts }),
-			this.state.interactiveState,
-			e);
+		if (inputType === "mouse") {
+			var interactiveState = this.triggerCallback(
+				"mousemove",
+				objectAssign({}, this.state, { currentItems, currentCharts }),
+				this.state.interactiveState,
+				e);
+		} else {
+			var interactiveState = this.triggerCallback(
+				"touch",
+				objectAssign({}, this.state, { currentItems, currentCharts }),
+				this.state.interactiveState,
+				e);
+		}
 
 		var contexts = this.getCanvasContexts();
 
@@ -579,6 +584,75 @@ class EventHandler extends PureComponent {
 		this.setState({
 			show: false
 		});
+	}
+	pinchCoordinates(pinch) {
+		var { data, plotData, chartData, panInProgress } = this.state;
+
+		var { mainChartData, touch1Pos, touch2Pos, range } = pinch;
+
+		var firstX = mainChartData.config.xAccessor(getClosest(plotData, touch1Pos, mainChartData));
+		var secondX = mainChartData.config.xAccessor(getClosest(plotData, touch2Pos, mainChartData));
+		var pinchCoordinate = firstX < secondX ? {
+				left: firstX,
+				right: secondX,
+				leftxy: touch1Pos,
+				rightxy: touch2Pos,
+			} : {
+				left: secondX,
+				right: firstX,
+				leftxy: touch2Pos,
+				rightxy: touch1Pos,
+			};
+		return pinchCoordinate;
+	}
+	handlePinchZoom(initialPinch, finalPinch) {
+		var { data, chartData } = this.state;
+		var { range } = initialPinch;
+		var { mainChartData } = finalPinch;
+
+		var initial = this.pinchCoordinates(initialPinch);
+		var final = this.pinchCoordinates(finalPinch);
+
+		var left = ((final.leftxy[0] - range[0]) / (final.rightxy[0] - final.leftxy[0])) * (initial.right - initial.left);
+		var right = ((range[1] - final.rightxy[0]) / (final.rightxy[0] - final.leftxy[0])) * (initial.right - initial.left);
+
+		var domainL = initial.left - left;
+		var domainR = initial.right + right;
+
+		var { width, xAccessor } = mainChartData.config
+
+		var dataToPlot = getDataToPlotForDomain(domainL, domainR, data, width, xAccessor);
+
+		if (dataToPlot.data.length < 10) return;
+
+		var newChartData = chartData.map((eachChart) => {
+			var plot = getChartPlotFor(eachChart.config, eachChart.scaleType, dataToPlot.data, domainL, domainR);
+			return {
+				id: eachChart.id,
+				config: eachChart.config,
+				scaleType: eachChart.scaleType,
+				plot: plot
+			};
+		});
+
+		requestAnimationFrame(() => {
+			this.clearBothCanvas();
+			this.clearInteractiveCanvas();
+
+			this.clearCanvasDrawCallbackList();
+			this.setState({
+				chartData: newChartData,
+				plotData: dataToPlot.data,
+				interval: dataToPlot.interval,
+			});
+		})
+
+		// document.getElementById("debug_here").innerHTML = `${panInProgress}`;
+
+		// document.getElementById("debug_here").innerHTML = `${final.rightxy[0] - final.leftxy[0]} -> ${initial.right - initial.left}`;
+		// document.getElementById("debug_here").innerHTML = `${initial.left} - ${initial.right} to ${final.left} - ${final.right}`;
+		// document.getElementById("debug_here").innerHTML = `${id[1] - id[0]} = ${initial.left - id[0]} + ${initial.right - initial.left} + ${id[1] - initial.right}`;
+		// document.getElementById("debug_here").innerHTML = `${range[1] - range[0]}, ${i1[0]}, ${i2[0]}`;
 	}
 	handleZoom(zoomDirection, mouseXY) {
 		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
@@ -628,13 +702,14 @@ class EventHandler extends PureComponent {
 		});
 	}
 
-	handlePanStart(panStartDomain, panOrigin) {
+	handlePanStart(panStartDomain, panOrigin, dxy) {
 		// console.log("panStartDomain - ", panStartDomain, ", panOrigin - ", panOrigin);
 		this.setState({
 			panInProgress: true,
 			panStartDomain: panStartDomain,
 			panOrigin: panOrigin,
 			focus: true,
+			deltaXY: dxy
 		});
 		this.panHappened = false;
 	}
@@ -903,13 +978,14 @@ EventHandler.childContextTypes = {
 	onMouseEnter: React.PropTypes.func,
 	onMouseLeave: React.PropTypes.func,
 	onZoom: React.PropTypes.func,
+	onPinchZoom: React.PropTypes.func,
 	onPanStart: React.PropTypes.func,
 	onPan: React.PropTypes.func,
 	onPanEnd: React.PropTypes.func,
 	panInProgress: React.PropTypes.bool.isRequired,
 	focus: React.PropTypes.bool.isRequired,
 	onFocus: React.PropTypes.func,
-	deltaXY: React.PropTypes.func,
+	deltaXY: React.PropTypes.arrayOf(Number),
 };
 
 export default EventHandler;
