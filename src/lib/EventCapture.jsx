@@ -39,6 +39,7 @@ class EventCapture extends React.Component {
 		this.handleTouchEnd = this.handleTouchEnd.bind(this);
 		this.lastTouch = {};
 		this.initialPinch = {};
+		this.mouseInteraction = true;
 	}
 	componentWillMount() {
 		if (this.context.onFocus) this.context.onFocus(this.props.defaultFocus);
@@ -68,7 +69,7 @@ class EventCapture extends React.Component {
 		}
 	}
 	handleMouseMove(e) {
-		if (this.context.onMouseMove && this.props.mouseMove) {
+		if (this.mouseInteraction && this.context.onMouseMove && this.props.mouseMove) {
 			if (!this.context.panInProgress) {
 				var newPos = mousePosition(e);
 				this.context.onMouseMove(newPos, "mouse", e);
@@ -80,7 +81,7 @@ class EventCapture extends React.Component {
 		var { mainChart, pan } = this.props;
 		var { onPanStart, focus, onFocus, chartData } = this.context;
 		var mainChartData = chartData.filter((each) => each.id === mainChart) [0];
-		if (pan && onPanStart) {
+		if (this.mouseInteraction && pan && onPanStart) {
 			var mouseXY = mousePosition(mouseEvent);
 
 			var dx = mouseEvent.pageX - mouseXY[0],
@@ -111,7 +112,7 @@ class EventCapture extends React.Component {
 		var e = d3.event;
 		var newPos = [e.pageX - dxdy[0], e.pageY - dxdy[1]];
 		// console.log("moved from- ", startXY, " to ", newPos);
-		if (panEnabled && onPan) {
+		if (this.mouseInteraction && panEnabled && onPan) {
 			var mainChartData = chartData.filter((each) => each.id === mainChart) [0];
 			onPan(newPos, mainChartData.plot.scales.xScale.domain());
 			if (panListener) {
@@ -131,16 +132,17 @@ class EventCapture extends React.Component {
 
 		var win = d3Window(captureDOM);
 
-		d3.select(win)
-			.on(mousemove, null)
-			.on(mouseup, null);
-		if (panEnabled && onPanEnd) {
+		if (this.mouseInteraction && panEnabled && onPanEnd) {
+			d3.select(win)
+				.on(mousemove, null)
+				.on(mouseup, null);
 			onPanEnd(newPos, e);
 		}
 		// e.preventDefault();
 	}
 	handleTouchStart(e) {
-		// TODO disableMouseInteraction
+		this.mouseInteraction = false;
+
 		var { mainChart, pan: panEnabled } = this.props;
 		var { deltaXY: dxdy } = this.context;
 
@@ -244,6 +246,7 @@ class EventCapture extends React.Component {
 			}
 		}
 		// console.log("handleTouchEnd", dxdy, newPos, e);
+		this.mouseInteraction = true;
 		e.preventDefault();
 	}
 	render() {

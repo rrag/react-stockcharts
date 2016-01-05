@@ -3,7 +3,7 @@
 import React from "react";
 import d3 from "d3";
 
-import ScaleUtils from "../utils/ScaleUtils";
+import { flattenData } from "../utils/ScaleUtils";
 import { firstDefined, lastDefined } from "../utils/OverlayUtils";
 import { getClosestItem, getClosestItemIndexes, overlayColors, pluck, keysAsArray } from "./utils";
 
@@ -106,25 +106,16 @@ export function getDimensions(innerDimension, chartProps) {
 
 export function getChartConfigFor(innerDimension, chartProps, other) {
 	var { padding } = chartProps;
-	var dimensions = getDimensions(innerDimension, chartProps);
-	// var indicator = getIndicator(chartProps);
-	// calculateIndicator(fullData, indicator);
 
-	// var accessors = getXYAccessors(chartProps, other, indicator);
-	// identify overlays
+	var dimensions = getDimensions(innerDimension, chartProps);
 	var xAccessor = getXAccessor(chartProps, other);
 	var overlaysToAdd = identifyOverlaysToAdd(chartProps);
 	var compareBase = identifyCompareBase(chartProps);
 	var compareSeries = identifyCompareSeries(chartProps);
-	// console.log(compareBase, compareSeries);
-	// calculate overlays
-	// calculateOverlays(fullData, overlaysToAdd);
-	// calculateRateOfReturn(fullData, compareSeries, compareBase, accessors.yAccessor);
 
 	var origin = typeof chartProps.origin === "function"
 		? chartProps.origin(dimensions.availableWidth, dimensions.availableHeight)
 		: chartProps.origin;
-
 
 	var indicatorsWithTicks = overlaysToAdd
 		.filter(overlay => overlay.indicator !== undefined)
@@ -143,16 +134,12 @@ export function getChartConfigFor(innerDimension, chartProps, other) {
 			at: chartProps.yMousePointerDisplayLocation,
 			format: chartProps.yMousePointerDisplayFormat
 		},
-		// indicator: indicator,
-		// indicatorOptions: indicator && indicator.options(),
-		// domain: indicator && indicator.domain && indicator.domain(),
 		origin: origin,
 		padding: padding,
 		xAccessor: xAccessor,
 		overlays: overlaysToAdd,
 		compareBase: compareBase,
 		compareSeries: compareSeries,
-		// scaleType: scales,
 		yTicks: yTicks,
 	};
 	return config;
@@ -165,7 +152,7 @@ export function getChartPlotFor(config, scaleType, partialData, domainL, domainR
 		updateComparisonData(partialData, config.compareBase, config.compareSeries);
 		yaccessors = [(d) => d.compare];
 	}
-	var xyValues = ScaleUtils.flattenData(partialData
+	var xyValues = flattenData(partialData
 			, [config.xAccessor]
 			, yaccessors);
 
@@ -227,9 +214,6 @@ export function updateComparisonData(partialData, compareBase, compareSeries) {
 		});
 
 	});
-
-	// console.table(partialData);
-	// console.log(partialData[7].compare);
 };
 
 export function defineScales(props, data, passThroughProps) {
@@ -407,9 +391,6 @@ export function updateOverlayFirstLast(data, overlays) {
 };
 
 export function updateScales(xyValues, scales, data, width, height, padding, overrideDomain) {
-	// console.log("updateScales");
-	// width = width - margin.left - margin.right/**/
-	// height = height - margin.top - margin.bottom/**/
 
 	scales.xScale.range([padding.left, width - padding.right]);
 	// if polylinear scale then set data

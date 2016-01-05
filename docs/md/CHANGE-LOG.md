@@ -16,7 +16,7 @@
 
 #### Changes
 
-1. Implement touch support
+1. Implement touch support, pan and pinch zoom
 
 ## v0.3.1
 

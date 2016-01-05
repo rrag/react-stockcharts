@@ -14,30 +14,26 @@ function pushToValues(values, eachValue) {
 	}
 }
 
-var ScaleUtils = {
-	flattenData(data, xAccessors, yAccessors) {
-		// console.log(xAccessors, yAccessors);
-		var xValues = [];
-		var yValues = [];
-		data.forEach( (row) => {
-			xAccessors.forEach( (xAccessor) => {
-				var x = xAccessor(row);
-				if (x !== undefined) {
-					pushToValues(xValues, x);
-				}
-			});
-			yAccessors.forEach( (yAccessor) => {
-				var y = yAccessor(row);
-				if (y !== undefined) {
-					pushToValues(yValues, y);
-				}
-			});
+export function flattenData(data, xAccessors, yAccessors) {
+	// console.log(xAccessors, yAccessors);
+	var xValues = [];
+	var yValues = [];
+	data.forEach( (row) => {
+		xAccessors.forEach( (xAccessor) => {
+			var x = xAccessor(row);
+			if (x !== undefined) {
+				pushToValues(xValues, x);
+			}
 		});
-		return {
-			xValues: xValues,
-			yValues: yValues
-		};
-	}
+		yAccessors.forEach( (yAccessor) => {
+			var y = yAccessor(row);
+			if (y !== undefined) {
+				pushToValues(yValues, y);
+			}
+		});
+	});
+	return {
+		xValues: xValues,
+		yValues: yValues
+	};
 };
-
-export default ScaleUtils;

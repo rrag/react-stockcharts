@@ -7,11 +7,7 @@ import PureComponent from "./utils/PureComponent";
 
 import { getClosestItemIndexes, isReactVersion13 } from "./utils/utils";
 import { getMainChart, getChartData, getChartDataConfig, getClosest, getDataToPlotForDomain, getChartPlotFor, getCurrentItems } from "./utils/ChartDataUtil";
-
-import TT from "./transforms";
-
 import { DummyTransformer } from "./transforms";
-
 
 var subscriptionCount = 0;
 
@@ -44,7 +40,6 @@ class EventHandler extends PureComponent {
 		this.handlePan = this.handlePan.bind(this);
 		this.handlePanEnd = this.handlePanEnd.bind(this);
 		this.handleFocus = this.handleFocus.bind(this);
-		// this.deltaXY = this.deltaXY.bind(this);
 		this.getCanvasContexts = this.getCanvasContexts.bind(this);
 		this.pushCallbackForCanvasDraw = this.pushCallbackForCanvasDraw.bind(this);
 		this.getAllCanvasDrawCallback = this.getAllCanvasDrawCallback.bind(this);
@@ -54,10 +49,7 @@ class EventHandler extends PureComponent {
 
 		this.subscriptions = [];
 		this.canvasDrawCallbackList = [];
-		// this.interactiveState = [];
-
 		this.panHappened = false;
-		// this.secretArray = [];
 		this.state = {
 			focus: false,
 			currentItems: [],
@@ -66,10 +58,7 @@ class EventHandler extends PureComponent {
 			panInProgress: false,
 			interactiveState: [],
 		};
-	}/*
-	deltaXY() {
-		return this.state.deltaXY;
-	}*/
+	}
 	getTransformedData(rawData, defaultDataTransform, dataTransform, interval) {
 		var i = 0, eachTransform, options = {}, data = rawData;
 		var transforms = defaultDataTransform.concat(dataTransform);
@@ -293,10 +282,6 @@ class EventHandler extends PureComponent {
 
 				var L = i === l ? domainL : startDomain[0] - dxL * i;
 				var R = i === l ? domainR : startDomain[1] - dxR * i;
-				// console.log(i, L, domainL, R, domainR);
-				// console.log(startDomain[0], domainL, startDomain[0] - dxL * i, i);
-				// console.log(startDomain[1], domainR, startDomain[1] - dxR * i, i);
-
 				updateState(L, R);
 				if (i === l) clearInterval(timeout);
 			}, speed);
@@ -305,10 +290,6 @@ class EventHandler extends PureComponent {
 				rawData: newRawData,
 				data: transformedData.data,
 				options: transformedData.options,
-				// chartData: newChartData,
-				// plotData: newPlotData,
-				// currentItems: newCurrentItems,
-				// canvases: null,
 			});
 		}
 	}
@@ -355,8 +336,6 @@ class EventHandler extends PureComponent {
 
 		this.clearBothCanvas();
 		this.clearInteractiveCanvas();
-
-		// console.log(newPlotData.length);
 
 		this.clearCanvasDrawCallbackList();
 
@@ -590,8 +569,8 @@ class EventHandler extends PureComponent {
 
 		var { mainChartData, touch1Pos, touch2Pos, range } = pinch;
 
-		var firstX = mainChartData.config.xAccessor(getClosest(plotData, touch1Pos, mainChartData));
-		var secondX = mainChartData.config.xAccessor(getClosest(plotData, touch2Pos, mainChartData));
+		var firstX = getLongValue(mainChartData.config.xAccessor(getClosest(plotData, touch1Pos, mainChartData)));
+		var secondX = getLongValue(mainChartData.config.xAccessor(getClosest(plotData, touch2Pos, mainChartData)));
 		var pinchCoordinate = firstX < secondX ? {
 				left: firstX,
 				right: secondX,
@@ -806,12 +785,7 @@ class EventHandler extends PureComponent {
 								var overlayPresent = eachChart.config.overlays
 									.filter(eachOverlay => eachOverlay.id === each.seriesId)
 									.length > 0;
-									/* .forEach(eachOverlay => {
-										// console.log("Do Stuff here", i);
-										var { xAccessor } = eachChart.config;
-										// xScale, yScale, plotData
-										each.draw(axesCanvasContext, xScale, yScale, plotData);
-									}); */
+
 								if (overlayPresent) {
 									each.draw(axesCanvasContext, xScale, yScale, plotData);
 								}
