@@ -62,24 +62,6 @@ function wrap(WrappedSeries) {
 		}
 	};
 
-		/*
-			var { type, height, width, compareSeries, indicator, xAccessor,
-				yAccessor, xScale, yScale, plotData, stroke, fill } = this.props;
-			// var { defaultProps } = WrappedSeries;
-
-			// console.log(this.props);
-
-				{...defaultProps}
-				type={type}
-				height={height} width={width}
-				compareSeries={compareSeries}
-				indicator={indicator}
-				xAccessor={xAccessor} yAccessor={yAccessor}
-				xScale={xScale} yScale={yScale}
-				stroke={stroke} fill={fill}
-				plotData={plotData}
-		*/
-
 	BaseCanvasSeries.displayName = `wrap(${ getDisplayName(WrappedSeries) })`;
 
 	BaseCanvasSeries.baseReStockDrawOnCanvasHelper = (canvasContext, props, callback) => {

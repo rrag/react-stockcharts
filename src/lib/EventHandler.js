@@ -475,6 +475,7 @@ class EventHandler extends PureComponent {
 				}
 			});
 		} else {
+			// console.log(findThis);
 			canvasDrawCallbackList.push(findThis);
 		}
 	}
@@ -785,7 +786,7 @@ class EventHandler extends PureComponent {
 								var overlayPresent = eachChart.config.overlays
 									.filter(eachOverlay => eachOverlay.id === each.seriesId)
 									.length > 0;
-
+								// console.log(each);
 								if (overlayPresent) {
 									each.draw(axesCanvasContext, xScale, yScale, plotData);
 								}
