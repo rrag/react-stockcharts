@@ -11,6 +11,10 @@
   "license": "MIT",
   "dependencies": {
     "d3": "^3.5.12",
+    "lodash.first": "^3.0.0",
+    "lodash.get": "^3.7.0",
+    "lodash.last": "^3.0.0",
+    "lodash.set": "^3.7.4",
     "object-assign": "^4.0.1",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",

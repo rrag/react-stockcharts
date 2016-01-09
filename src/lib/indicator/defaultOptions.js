@@ -5,6 +5,10 @@ export const BollingerBand = {
 	movingAverageType: "sma"
 };
 
+export const ATR = {
+	period: 14,
+}
+
 export const MACD = {
 	fast: 12,
 	slow: 26,

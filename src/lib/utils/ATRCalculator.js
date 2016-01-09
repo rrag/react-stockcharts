@@ -11,7 +11,7 @@ function sumOf(array, offset, length) {
 function calculateTR(rawData) {
 	var prev = rawData[0];
 	rawData
-		.filter((d, idx) => idx > 0)
+		.filter((d, idx) => idx > 0) // skip the first index
 		.forEach(function(d, idx) {
 			d.trueRange = Math.max(d.high - d.low,
 				d.high - prev.close,

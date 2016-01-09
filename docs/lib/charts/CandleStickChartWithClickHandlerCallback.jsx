@@ -54,7 +54,7 @@ class CandlestickChart extends React.Component {
 					<DataSeries id={0} yAccessor={(d) => d.volume} >
 						<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"} />
 					</DataSeries>
-					<DataSeries id={1} indicator={SMA} options={{ period: 10, pluck:"volume" }} stroke="#4682B4" fill="#4682B4">
+					<DataSeries id={1} indicator={SMA} options={{ period: 10, source:"volume" }} stroke="#4682B4" fill="#4682B4">
 						<AreaSeries opacity={0.5} />
 					</DataSeries>
 				</Chart>

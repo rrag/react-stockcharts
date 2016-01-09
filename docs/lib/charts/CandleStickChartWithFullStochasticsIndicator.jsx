@@ -62,7 +62,7 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 							fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"}
 							opacity={0.5} />
 					</DataSeries>
-					<DataSeries id={1} indicator={SMA} options={{ period: 10, pluck:"volume" }} stroke="#4682B4" fill="#4682B4">
+					<DataSeries id={1} indicator={SMA} options={{ period: 10, source:"volume" }} stroke="#4682B4" fill="#4682B4">
 						<AreaSeries opacity={0.5} />
 					</DataSeries>
 				</Chart>

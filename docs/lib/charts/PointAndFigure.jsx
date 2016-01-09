@@ -42,7 +42,7 @@ class PointAndFigure extends React.Component {
 					<DataSeries id={0} yAccessor={(d) => d.volume} >
 						<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
 					</DataSeries>
-					<DataSeries id={3} indicator={SMA} options={{ period: 10, pluck:"volume" }} >
+					<DataSeries id={3} indicator={SMA} options={{ period: 10, source:"volume" }} >
 						<AreaSeries/>
 					</DataSeries>
 				</Chart>

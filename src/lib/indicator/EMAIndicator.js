@@ -6,6 +6,7 @@ import objectAssign from "object-assign";
 import { overlayColors } from "../utils/utils";
 
 import { EMA as defaultOptions } from "./defaultOptions";
+import { merge, ema } from "./calculator";
 
 function EMAIndicator(options, chartProps, dataSeriesProps) {
 
@@ -17,7 +18,17 @@ function EMAIndicator(options, chartProps, dataSeriesProps) {
 	var settings = objectAssign({}, defaultOptions, options);
 	if (!settings.stroke) settings.stroke = overlayColors(dataSeriesProps.id);
 
-	function indicator() {
+	function indicator(data) {
+		var { period, source } = settings;
+
+		var emaAlgorithm = ema().windowSize(period).value(d => d[source]);
+
+		var calculateEMAFor = merge()
+			.algorithm(emaAlgorithm)
+			.mergePath([prefix, key]);
+
+		calculateEMAFor(data);
+		return data;
 	}
 	indicator.options = function() {
 		return settings;
@@ -27,13 +38,7 @@ function EMAIndicator(options, chartProps, dataSeriesProps) {
 	};
 	indicator.calculate = function(data) {
 
-		var setter = MACalculator.setter.bind(null, [prefix], key);
-		var { source } = settings;
-
-		var newData = MACalculator.calculateEMANew(data, settings.period, d => d[source], setter);
-		// console.log(settings.period, newData[newData.length - 3]);
-
-		return newData;
+		return indicator(data);
 	};
 	indicator.yAccessor = function() {
 		return (d) => {

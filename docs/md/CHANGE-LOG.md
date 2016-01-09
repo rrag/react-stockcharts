@@ -13,10 +13,17 @@
     ```js
     import * as ReStock from "react-stockchart";
     ```
+1. `calculate` is removed from all indicators
+
+#### New Features
+
+1. Implement touch support, pan and pinch zoom
 
 #### Changes
 
-1. Implement touch support, pan and pinch zoom
+1. Inspired by [d3fc](https://github.com/ScottLogic/d3fc) change some of the internals
+1. added dependency `lodash.set`, `lodash.get`, `lodash.first`, `lodash.last`
+1. removed dependency `object-assign`
 
 ## v0.3.1
 
