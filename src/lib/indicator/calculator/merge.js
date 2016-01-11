@@ -24,26 +24,30 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import d3 from 'd3';
-import calculator from './slidingWindow';
+import d3 from "d3";
 import setter from "lodash.set"
+
+import calculator from "./slidingWindow";
+import identity from "./identity";
+import { isDefined, isNotDefined } from "../../utils/utils";
 
 // applies an algorithm to an array, merging the result back into
 // the source array using the given merge function.
 export default function() {
 
 	var algorithm = calculator(),
-		mergePath = [];
+		mergePath = [],
+		clean = identity;
 
 	function merge(datum, indicator) {
-		if (indicator) {
+		if (isDefined(indicator) && isDefined(clean(indicator))) {
 			setter(datum, mergePath, indicator);
 		}
 	};
 
-	var mergeCompute = function(data) {
+	function mergeCompute(data) {
 		return d3.zip(data, algorithm(data))
-			.forEach(function(tuple) {
+			.forEach((tuple, i) => {
 				merge(tuple[0], tuple[1]);
 			});
 	};
@@ -61,6 +65,14 @@ export default function() {
 			return merge;
 		}
 		merge = x;
+		return mergeCompute;
+	};
+
+	mergeCompute.clean = function(x) {
+		if (!arguments.length) {
+			return clean;
+		}
+		clean = x;
 		return mergeCompute;
 	};
 
