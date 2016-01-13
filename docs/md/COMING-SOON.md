@@ -2,19 +2,21 @@
 
 1. (Done) Drop support for React 0.13 and use React 0.14, fix all the deprecation warnings
 1. (Done) Provide touch support
-1. `EdgeCoordinate` to take `fill` property as function or string
 
 #### New Chart types
 1. (Done) Scatter chart
 
 #### New Indicators
-1. ATR
+1. (Done) ATR
 1. Force Index
 1. Elder Ray
+1. [Elder Impulse](http://stockcharts.com/school/doku.php?id=chart_school:chart_analysis:elder_impulse_system)
+1. [Envelope](http://www.investopedia.com/terms/e/envelope.asp?optm=sa_v2)
 
 #### Internal changes
 1. Use stateless components in `RSISeries`, `StochasticSeries` to address react/prop-types lint error
 1. remove dependency to `object-assign`
+1. use `d3.nest` for optimizing canvas draws for candlestick, histogram and scatter chart
 
 ## v0.5.x
 
@@ -23,6 +25,7 @@
 1. Create intra day scale
 1. Interactive indicators should be able to subscribe to more events (drag, zoom, pan)
 1. Zoom on y too
+1. `EdgeCoordinate` to take `fill` property as function or string
 
 #### New Chart types
 1. Volume Profile

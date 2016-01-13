@@ -1,10 +1,12 @@
 "use strict";
 
 import objectAssign from "object-assign";
+import d3 from "d3";
+
 import { overlayColors } from "../utils/utils";
 
-import * as MACalculator from "../utils/MovingAverageCalculator";
 import { SMA as defaultOptions } from "./defaultOptions";
+import { slidingWindow, merge } from "./calculator";
 
 
 function SMAIndicator(options, chartProps, dataSeriesProps) {
@@ -17,7 +19,19 @@ function SMAIndicator(options, chartProps, dataSeriesProps) {
 	var settings = objectAssign({}, defaultOptions, options);
 	if (!settings.stroke) settings.stroke = overlayColors(dataSeriesProps.id);
 
-	function indicator() {
+	function indicator(data) {
+		var { period, source } = settings;
+
+		var smaAlgorithm = slidingWindow()
+			.windowSize(period)
+			.accumulator(d3.mean)
+			.value(d => d[source]);
+
+		var evaluator = merge()
+			.algorithm(smaAlgorithm)
+			.mergePath([prefix, key])
+
+		return evaluator(data);
 	}
 
 	indicator.options = function() {
@@ -27,11 +41,8 @@ function SMAIndicator(options, chartProps, dataSeriesProps) {
 		return settings.stroke;
 	};
 	indicator.calculate = function(data) {
-		var setter = MACalculator.setter.bind(null, [prefix], key);
 
-		var { source } = settings;
-		var newData = MACalculator.calculateSMANew(data, settings.period, d => d[source], setter);
-		return newData;
+		return indicator(data)
 	};
 	indicator.yAccessor = function() {
 		return (d) => {

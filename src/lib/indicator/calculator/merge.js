@@ -39,17 +39,19 @@ export default function() {
 		mergePath = [],
 		clean = identity;
 
-	function merge(datum, indicator) {
+	function merge(tuple) {
+		var datum = tuple[0];
+		var indicator = tuple[1];
 		if (isDefined(indicator) && isDefined(clean(indicator))) {
-			setter(datum, mergePath, indicator);
+			return setter(datum, mergePath, indicator);
 		}
+		return datum;
 	};
 
 	function mergeCompute(data) {
-		return d3.zip(data, algorithm(data))
-			.forEach((tuple, i) => {
-				merge(tuple[0], tuple[1]);
-			});
+		d3.zip(data, algorithm(data))
+			.forEach(merge)
+		return data;
 	};
 
 	mergeCompute.algorithm = function(x) {

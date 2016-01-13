@@ -1,3 +1,5 @@
+"use strict";
+
 /*
 https://github.com/ScottLogic/d3fc/blob/master/src/indicator/algorithm/calculator/macd.js
 
@@ -35,7 +37,7 @@ export default function() {
 	var { fast, slow, signal } = defaultOptions;
 	var value = identity;
 
-	var calculator = function(data) {
+	function calculator(data) {
 
 		var fastEMA = ema()
 			.windowSize(fast)

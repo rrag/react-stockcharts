@@ -1,7 +1,7 @@
 "use strict";
 
 /*
-https://github.com/ScottLogic/d3fc/blob/master/src/indicator/algorithm/calculator/macd.js
+https://github.com/ScottLogic/d3fc/blob/master/src/indicator/algorithm/calculator/relativeStrengthIndex.js
 
 The MIT License (MIT)
 
@@ -26,41 +26,57 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import last from "lodash.last";
 import d3 from "d3";
+import last from "lodash.last";
 
 import identity from "./identity";
 import slidingWindow from "./slidingWindow";
-import ema from "./ema";
+import zipper from "./zipper";
 
-import { BollingerBand as defaultOptions } from "../defaultOptions";
-import { isDefined, isNotDefined } from "../../utils/utils";
+import { isDefined } from "../../utils/utils";
+import { FullStochasticOscillator as defaultOptions } from "../defaultOptions";
 
 export default function() {
 
-	var { period: windowSize, multiplier, movingAverageType } = defaultOptions;
-	var value = identity;
+	var { period: windowSize, K: kWindowSize, D: dWindowSize, ohlc: value } = defaultOptions;
+
+	var high = d => value(d).high,
+		low = d => value(d).low,
+		close = d => value(d).close;
 
 	function calculator(data) {
-
-		var meanAlgorithm = movingAverageType === "ema"
-			? ema().windowSize(windowSize).value(value)
-			: slidingWindow().windowSize(windowSize).accumulator(d3.mean).value(value);
-
-		var bollingerBandAlgorithm = slidingWindow()
+		var kWindow = slidingWindow()
 			.windowSize(windowSize)
-			.accumulator((arrayOfTuples) => {
-				var avg = last(arrayOfTuples)[1];
-				var stdDev = d3.deviation(arrayOfTuples, (tuple) => value(tuple[0]));
-				return {
-					top: avg + multiplier * stdDev,
-					middle: avg,
-					bottom: avg - multiplier * stdDev
-				};
+			.accumulator(values => {
+
+				var highestHigh = d3.max(values, high);
+				var lowestLow = d3.min(values, low);
+
+				var currentClose = close(last(values));
+				var k = (currentClose - lowestLow) / (highestHigh - lowestLow) * 100
+
+				return k;
 			});
 
-		var tuples = d3.zip(data, meanAlgorithm(data));
-		return bollingerBandAlgorithm(tuples);
+		var kSmoothed = slidingWindow()
+			.skipInitial(windowSize - 1)
+			.windowSize(kWindowSize)
+			.accumulator(d3.mean);
+
+		var dWindow = slidingWindow()
+			.skipInitial(windowSize -1 + kWindowSize - 1)
+			.windowSize(dWindowSize)
+			.accumulator(d3.mean);
+
+		var stoAlgorithm = zipper()
+			.combine((K, D) => ({ K, D }));
+
+		var kData = kSmoothed(kWindow(data));
+		var dData = dWindow(kData);
+
+		var newData = stoAlgorithm(kData, dData);
+
+		return newData;
 	};
 
 	calculator.windowSize = function(x) {
@@ -70,23 +86,20 @@ export default function() {
 		windowSize = x;
 		return calculator;
 	};
-
-	calculator.multiplier = function(x) {
+	calculator.kWindowSize = function(x) {
 		if (!arguments.length) {
-			return multiplier;
+			return kWindowSize;
 		}
-		multiplier = x;
+		kWindowSize = x;
 		return calculator;
 	};
-
-	calculator.movingAverageType = function(x) {
+	calculator.dWindowSize = function(x) {
 		if (!arguments.length) {
-			return movingAverageType;
+			return dWindowSize;
 		}
-		movingAverageType = x;
+		dWindowSize = x;
 		return calculator;
 	};
-
 	calculator.value = function(x) {
 		if (!arguments.length) {
 			return value;

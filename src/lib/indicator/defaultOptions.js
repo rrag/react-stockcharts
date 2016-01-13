@@ -1,3 +1,5 @@
+"use strict";
+
 export const BollingerBand = {
 	period: 20,
 	source: "close", // "high", "low", "open", "close"
@@ -29,8 +31,8 @@ export const FullStochasticOscillator = {
 	D: 3,
 	ohlc: (d) => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
 	stroke: {
-		D: "#00F300",
-		K: "#FF0000",
+		D: "#17becf",
+		K: "#ff7f0e",
 	},
 	overSold: 80,
 	overBought: 20,

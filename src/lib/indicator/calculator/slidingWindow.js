@@ -1,3 +1,5 @@
+"use strict";
+
 /*
 
 Taken from https://github.com/ScottLogic/d3fc/blob/master/src/indicator/algorithm/calculator/slidingWindow.js
@@ -35,16 +37,18 @@ export default function() {
 	var undefinedValue = d3.functor(undefined),
 		windowSize = d3.functor(10),
 		accumulator = noop,
-		value = identity;
+		value = identity,
+		skipInitial = 0;
 
 	var slidingWindow = function(data) {
 		var size = windowSize.apply(this, arguments);
-		var windowData = data.slice(0, size).map(value);
+		var windowData = data.slice(skipInitial, size + skipInitial).map(value);
+		// console.log(skipInitial, size, data.length, windowData.length);
 		return data.map(function(d, i) {
-			if (i < size - 1) {
+			if (i < (skipInitial + size - 1)) {
 				return undefinedValue(d, i);
 			}
-			if (i >= size) {
+			if (i >= (skipInitial + size)) {
 				// Treat windowData as FIFO rolling buffer
 				windowData.shift();
 				windowData.push(value(d, i));
@@ -72,6 +76,13 @@ export default function() {
 			return accumulator;
 		}
 		accumulator = x;
+		return slidingWindow;
+	};
+	slidingWindow.skipInitial = function(x) {
+		if (!arguments.length) {
+			return skipInitial;
+		}
+		skipInitial = x;
 		return slidingWindow;
 	};
 	slidingWindow.value = function(x) {

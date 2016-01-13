@@ -1,6 +1,5 @@
 "use strict";
 
-import * as MACalculator from "../utils/MovingAverageCalculator";
 import objectAssign from "object-assign";
 
 import { overlayColors } from "../utils/utils";
@@ -27,8 +26,10 @@ function EMAIndicator(options, chartProps, dataSeriesProps) {
 			.algorithm(emaAlgorithm)
 			.mergePath([prefix, key]);
 
-		calculateEMAFor(data);
-		return data;
+		var newData = calculateEMAFor(data);
+		// console.log(newData[20]);
+
+		return newData;
 	}
 	indicator.options = function() {
 		return settings;

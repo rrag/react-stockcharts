@@ -1,3 +1,5 @@
+"use strict";
+
 /*
 https://github.com/ScottLogic/d3fc/blob/master/src/indicator/algorithm/calculator/exponentialMovingAverage.js
 

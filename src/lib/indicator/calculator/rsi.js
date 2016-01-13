@@ -1,7 +1,7 @@
 "use strict";
 
 /*
-https://github.com/ScottLogic/d3fc/blob/master/src/indicator/algorithm/calculator/macd.js
+https://github.com/ScottLogic/d3fc/blob/master/src/indicator/algorithm/calculator/relativeStrengthIndex.js
 
 The MIT License (MIT)
 
@@ -26,41 +26,60 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import last from "lodash.last";
 import d3 from "d3";
+import last from "lodash.last";
 
 import identity from "./identity";
 import slidingWindow from "./slidingWindow";
-import ema from "./ema";
 
-import { BollingerBand as defaultOptions } from "../defaultOptions";
-import { isDefined, isNotDefined } from "../../utils/utils";
+import { isDefined } from "../../utils/utils";
+import { RSI as defaultOptions } from "../defaultOptions";
 
 export default function() {
 
-	var { period: windowSize, multiplier, movingAverageType } = defaultOptions;
+	var { period: windowSize } = defaultOptions;
 	var value = identity;
 
 	function calculator(data) {
 
-		var meanAlgorithm = movingAverageType === "ema"
-			? ema().windowSize(windowSize).value(value)
-			: slidingWindow().windowSize(windowSize).accumulator(d3.mean).value(value);
-
-		var bollingerBandAlgorithm = slidingWindow()
+		var prevAvgGain, prevAvgLoss;
+		var rsiAlgorithm = slidingWindow()
 			.windowSize(windowSize)
-			.accumulator((arrayOfTuples) => {
-				var avg = last(arrayOfTuples)[1];
-				var stdDev = d3.deviation(arrayOfTuples, (tuple) => value(tuple[0]));
-				return {
-					top: avg + multiplier * stdDev,
-					middle: avg,
-					bottom: avg - multiplier * stdDev
-				};
+			.accumulator((arrayOfTuple) => {
+
+				var avgGain = isDefined(prevAvgGain)
+					? (prevAvgGain * (windowSize - 1) + last(arrayOfTuple)[1].gain) / windowSize
+					: d3.mean(arrayOfTuple, (each) => each[1].gain)
+
+				var avgLoss = isDefined(prevAvgLoss)
+					? (prevAvgLoss * (windowSize - 1) + last(arrayOfTuple)[1].loss) / windowSize
+					: d3.mean(arrayOfTuple, (each) => each[1].loss)
+
+				var relativeStrength = avgGain / avgLoss;
+				var rsi = 100 - (100 / (1 + relativeStrength));
+
+				prevAvgGain = avgGain;
+				prevAvgLoss = avgLoss;
+
+				return rsi;
 			});
 
-		var tuples = d3.zip(data, meanAlgorithm(data));
-		return bollingerBandAlgorithm(tuples);
+		var gainsAndLosses = d3.pairs(data)
+			.map(tuple => {
+				var prev = tuple[0];
+				var now = tuple[1];
+				var change = value(now) - value(prev);
+				return {
+					gain: Math.max(change, 0),
+					loss: Math.abs(Math.min(change, 0)),
+				}
+			})
+
+		gainsAndLosses.unshift([0, 0]);
+
+		var rsiData = rsiAlgorithm(d3.zip(data, gainsAndLosses))
+
+		return rsiData;
 	};
 
 	calculator.windowSize = function(x) {
@@ -70,23 +89,6 @@ export default function() {
 		windowSize = x;
 		return calculator;
 	};
-
-	calculator.multiplier = function(x) {
-		if (!arguments.length) {
-			return multiplier;
-		}
-		multiplier = x;
-		return calculator;
-	};
-
-	calculator.movingAverageType = function(x) {
-		if (!arguments.length) {
-			return movingAverageType;
-		}
-		movingAverageType = x;
-		return calculator;
-	};
-
 	calculator.value = function(x) {
 		if (!arguments.length) {
 			return value;
