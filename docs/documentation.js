@@ -232,7 +232,7 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithFibonacciInteractiveIndicator
 	// AreaChartWithZoomPan
 	// AreaChartWithPointsAndEdge
-	var Chart = require("lib/charts/CandleStickChartWithRSIIndicator").default;
+	var Chart = require("lib/charts/Renko").default;
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	// data, dataFull, compareData

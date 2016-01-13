@@ -1,8 +1,9 @@
 "use strict";
 
-import calculateATR from "../utils/ATRCalculator";
+import d3 from "d3";
 import objectAssign from "object-assign";
 
+import { atr, merge } from "../indicator/calculator";
 import { Kagi as defaultOptions } from "./defaultOptions";
 
 function KagiTransformer() {
@@ -12,13 +13,20 @@ function KagiTransformer() {
 		var { dateAccessor, dateMutator, indexMutator } = newOptions;
 
 		var reversalThreshold, pricingMethod;
+
 		if (reversalType === "ATR") {
-			calculateATR(data.D, period);
+			// calculateATR(rawData.D, period);
+			var atrAlgorithm = atr().windowSize(period)
+
+			var atrCalculator = merge()
+				.algorithm(atrAlgorithm)
+				.mergePath("atr" + period)
+
+			atrCalculator(data.D);
 			reversalThreshold = d => d["atr" + period];
 		} else {
-			reversalThreshold = (/* d */) => reversal;
+			reversalThreshold = d3.functor(reversal);
 		}
-
 		pricingMethod = d => d[source];
 
 		var kagiData = [];

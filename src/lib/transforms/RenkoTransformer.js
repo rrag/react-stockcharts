@@ -1,8 +1,9 @@
 "use strict";
 
-import calculateATR from "../utils/ATRCalculator";
+import d3 from "d3";
 import objectAssign from "object-assign";
 
+import { atr, merge } from "../indicator/calculator";
 import { Renko as defaultOptions } from "./defaultOptions";
 
 function RenkoTransformer() {
@@ -12,10 +13,17 @@ function RenkoTransformer() {
 
 		var brickSize, pricingMethod;
 		if (reversalType === "ATR") {
-			calculateATR(rawData.D, period);
+			// calculateATR(rawData.D, period);
+			var atrAlgorithm = atr().windowSize(period)
+
+			var atrCalculator = merge()
+				.algorithm(atrAlgorithm)
+				.mergePath("atr" + period)
+
+			atrCalculator(rawData.D);
 			brickSize = d => d["atr" + period];
 		} else {
-			brickSize = () => fixedBrickSize;
+			brickSize = d3.functor(fixedBrickSize);
 		}
 		if (source === "hi/lo") {
 			pricingMethod = d => ({ high: d.high, low: d.low });
