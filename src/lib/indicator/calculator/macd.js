@@ -28,6 +28,7 @@ THE SOFTWARE.
 
 import identity from "./identity";
 import ema from "./ema";
+import zipper from "./zipper";
 
 import { isDefined, isNotDefined } from "../../utils/utils";
 import { MACD as defaultOptions } from "../defaultOptions";
@@ -48,18 +49,22 @@ export default function() {
 		var signalEMA = ema()
 			.windowSize(signal);
 
-		var macdLine = d3.zip(fastEMA(data), slowEMA(data))
-			.map((tuple) => (isDefined(tuple[0]) && isDefined(tuple[1])) ? tuple[0] - tuple[1] : undefined);
+		var macdLineCalculator = zipper()
+			.combine((fastEMA, slowEMA) => (isDefined(fastEMA) && isDefined(slowEMA)) ? fastEMA - slowEMA : undefined)
+
+		var macdLine = macdLineCalculator(fastEMA(data), slowEMA(data));
 
 		var undefinedArray = new Array(slow);
 		var signalLine = undefinedArray.concat(signalEMA(macdLine.slice(slow)));
 
-		var macd = d3.zip(macdLine, signalLine)
-			.map(tuple => ({
-				MACDLine: tuple[0],
-				signalLine: tuple[1],
-				histogram: (isDefined(tuple[0]) && isDefined(tuple[1])) ? tuple[0] - tuple[1] : undefined,
+		var zip = zipper()
+			.combine((macd, signal) => ({
+				MACDLine: macd,
+				signalLine: signal,
+				histogram: (isDefined(macd) && isDefined(signal)) ? macd - signal : undefined,
 			}));
+
+		var macd = zip(macdLine, signalLine);
 
 		return macd;
 	};

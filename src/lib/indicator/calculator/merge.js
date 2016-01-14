@@ -29,6 +29,8 @@ import setter from "lodash.set"
 
 import calculator from "./slidingWindow";
 import identity from "./identity";
+import zipper from "./zipper";
+
 import { isDefined, isNotDefined } from "../../utils/utils";
 
 // applies an algorithm to an array, merging the result back into
@@ -39,9 +41,7 @@ export default function() {
 		mergePath = [],
 		clean = identity;
 
-	function merge(tuple) {
-		var datum = tuple[0];
-		var indicator = tuple[1];
+	function merge(datum, indicator) {
 		if (isDefined(indicator) && isDefined(clean(indicator))) {
 			return setter(datum, mergePath, indicator);
 		}
@@ -49,9 +49,10 @@ export default function() {
 	};
 
 	function mergeCompute(data) {
-		d3.zip(data, algorithm(data))
-			.forEach(merge)
-		return data;
+		var zip = zipper()
+			.combine(merge);
+
+		return zip(data, algorithm(data));
 	};
 
 	mergeCompute.algorithm = function(x) {

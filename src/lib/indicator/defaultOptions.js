@@ -11,6 +11,11 @@ export const ATR = {
 	period: 14,
 }
 
+export const ForceIndex = {
+	source: "close", // "high", "low", "open", "close"
+	volume: d => d.volume
+}
+
 export const MACD = {
 	fast: 12,
 	slow: 26,

@@ -42,9 +42,7 @@ function EMAIndicator(options, chartProps, dataSeriesProps) {
 		return indicator(data);
 	};
 	indicator.yAccessor = function() {
-		return (d) => {
-			if (d && d[prefix]) return d[prefix][key];
-		};
+		return (d) => (d && d[prefix]) ? d[prefix][key] : undefined;
 	};
 	indicator.tooltipLabel = function() {
 		return `EMA (${ settings.period })`;

@@ -6,6 +6,7 @@ import bollingerband from "./bollingerband";
 import rsi from "./rsi";
 import sto from "./sto";
 import atr from "./atr";
+import forceIndex from "./forceIndex";
 
 export { slidingWindow as slidingWindow };
 export { merge as merge };
@@ -15,3 +16,4 @@ export { bollingerband as bollingerband };
 export { rsi as rsi };
 export { sto as sto };
 export { atr as atr };
+export { forceIndex as forceIndex };

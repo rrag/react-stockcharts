@@ -33,7 +33,7 @@ export default function() {
 	var windowSize = 9,
 		value = identity;
 
-	var exponentialMovingAverage = function(data) {
+	function calculator(data) {
 
 		var alpha = 2 / (windowSize + 1);
 		var previous;
@@ -56,21 +56,21 @@ export default function() {
 		});
 	};
 
-	exponentialMovingAverage.windowSize = function(x) {
+	calculator.windowSize = function(x) {
 		if (!arguments.length) {
 			return windowSize;
 		}
 		windowSize = x;
-		return exponentialMovingAverage;
+		return calculator;
 	};
 
-	exponentialMovingAverage.value = function(x) {
+	calculator.value = function(x) {
 		if (!arguments.length) {
 			return value;
 		}
 		value = x;
-		return exponentialMovingAverage;
+		return calculator;
 	};
 
-	return exponentialMovingAverage;
+	return calculator;
 }

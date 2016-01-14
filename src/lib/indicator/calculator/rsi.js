@@ -45,15 +45,15 @@ export default function() {
 		var prevAvgGain, prevAvgLoss;
 		var rsiAlgorithm = slidingWindow()
 			.windowSize(windowSize)
-			.accumulator((arrayOfTuple) => {
+			.accumulator((values) => {
 
 				var avgGain = isDefined(prevAvgGain)
-					? (prevAvgGain * (windowSize - 1) + last(arrayOfTuple)[1].gain) / windowSize
-					: d3.mean(arrayOfTuple, (each) => each[1].gain)
+					? (prevAvgGain * (windowSize - 1) + last(values).gain) / windowSize
+					: d3.mean(values, (each) => each.gain)
 
 				var avgLoss = isDefined(prevAvgLoss)
-					? (prevAvgLoss * (windowSize - 1) + last(arrayOfTuple)[1].loss) / windowSize
-					: d3.mean(arrayOfTuple, (each) => each[1].loss)
+					? (prevAvgLoss * (windowSize - 1) + last(values).loss) / windowSize
+					: d3.mean(values, (each) => each.loss)
 
 				var relativeStrength = avgGain / avgLoss;
 				var rsi = 100 - (100 / (1 + relativeStrength));
@@ -64,8 +64,10 @@ export default function() {
 				return rsi;
 			});
 
-		var gainsAndLosses = d3.pairs(data)
-			.map(tuple => {
+		var gainsAndLossesCalculator = slidingWindow()
+			.windowSize(2)
+			.undefinedValue(x => [0, 0])
+			.accumulator(tuple => {
 				var prev = tuple[0];
 				var now = tuple[1];
 				var change = value(now) - value(prev);
@@ -75,9 +77,9 @@ export default function() {
 				}
 			})
 
-		gainsAndLosses.unshift([0, 0]);
+		var gainsAndLosses = gainsAndLossesCalculator(data);
 
-		var rsiData = rsiAlgorithm(d3.zip(data, gainsAndLosses))
+		var rsiData = rsiAlgorithm(gainsAndLosses)
 
 		return rsiData;
 	};

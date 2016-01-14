@@ -2,9 +2,12 @@
 
 1. (Done) Drop support for React 0.13 and use React 0.14, fix all the deprecation warnings
 1. (Done) Provide touch support
+1. Indicators derived from other indicators
 
 #### New Chart types
 1. (Done) Scatter chart
+1. Volume Profile
+1. Line break
 
 #### New Indicators
 1. (Done) ATR
@@ -20,6 +23,7 @@
 
 ## v0.5.x
 
+1. Refactor `EventHandler.jsx` and `ChartDataUtil.js` to be functional, avoid mutations
 1. Create an alternative for stockscale similar to the one created in [d3fc](https://github.com/ScottLogic/d3fc) with a discontinuty provider for weekends
 1. Automatic Support & Resistance trendlines
 1. Create intra day scale
@@ -28,10 +32,8 @@
 1. `EdgeCoordinate` to take `fill` property as function or string
 
 #### New Chart types
-1. Volume Profile
 1. Max Drawdown
 1. Better Renko/Mean Renko
-1. Line break
 
 ## v0.6.x
 

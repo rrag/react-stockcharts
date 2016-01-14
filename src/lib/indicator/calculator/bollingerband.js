@@ -32,6 +32,7 @@ import d3 from "d3";
 import identity from "./identity";
 import slidingWindow from "./slidingWindow";
 import ema from "./ema";
+import zipper from "./zipper";
 
 import { BollingerBand as defaultOptions } from "../defaultOptions";
 import { isDefined, isNotDefined } from "../../utils/utils";
@@ -49,9 +50,9 @@ export default function() {
 
 		var bollingerBandAlgorithm = slidingWindow()
 			.windowSize(windowSize)
-			.accumulator((arrayOfTuples) => {
-				var avg = last(arrayOfTuples)[1];
-				var stdDev = d3.deviation(arrayOfTuples, (tuple) => value(tuple[0]));
+			.accumulator((values) => {
+				var avg = last(values).mean;
+				var stdDev = d3.deviation(values, (each) => value(each.datum));
 				return {
 					top: avg + multiplier * stdDev,
 					middle: avg,
@@ -59,7 +60,10 @@ export default function() {
 				};
 			});
 
-		var tuples = d3.zip(data, meanAlgorithm(data));
+		var zip = zipper()
+			.combine((datum, mean) => ({ datum, mean }));
+
+		var tuples = zip(data, meanAlgorithm(data));
 		return bollingerBandAlgorithm(tuples);
 	};
 
