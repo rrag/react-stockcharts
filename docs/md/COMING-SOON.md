@@ -2,7 +2,7 @@
 
 1. (Done) Drop support for React 0.13 and use React 0.14, fix all the deprecation warnings
 1. (Done) Provide touch support
-1. Indicators derived from other indicators
+1. (Done) Indicators derived from other indicators
 
 #### New Chart types
 1. (Done) Scatter chart
@@ -19,7 +19,8 @@
 #### Internal changes
 1. Use stateless components in `RSISeries`, `StochasticSeries` to address react/prop-types lint error
 1. remove dependency to `object-assign`
-1. use `d3.nest` for optimizing canvas draws for candlestick, histogram and scatter chart
+1. (Done) use `d3.nest` for optimizing canvas draws for candlestick, histogram and scatter chart
+1. add `yAccessorNarrow` to all basic Series (added to `HistogramSeries`)
 
 ## v0.5.x
 
@@ -30,6 +31,7 @@
 1. Interactive indicators should be able to subscribe to more events (drag, zoom, pan)
 1. Zoom on y too
 1. `EdgeCoordinate` to take `fill` property as function or string
+1. Add a playground to see live updates
 
 #### New Chart types
 1. Max Drawdown
@@ -39,5 +41,6 @@
 
 Guess this can be `1.0.0`
 
+1. Detailed documentation of each component and its props
 1. Explore spliting project into multiple modules, one for each type of indicator, chart type
 1. use d3 v4 individual modules

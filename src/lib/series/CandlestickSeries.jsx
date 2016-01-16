@@ -103,87 +103,53 @@ CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { compareSeries, xAccessor, yAccessor } = props;
 	var { wickStroke, fill, opacity } = props;
 	var wickData = CandlestickSeries.getWickData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
-	var each, group = { up: [], down: [] };
 
-	for (let i = 0; i < wickData.length; i++) {
-		each = wickData[i];
-		if (each.direction >= 0) {
-			group.up.push(each);
-		} else {
-			group.down.push(each);
-		}
-	};
-	ctx.strokeStyle = wickStroke.up;
-	group.up.forEach(d => {
-		ctx.beginPath();
-		ctx.moveTo(d.x1, d.y1);
-		ctx.lineTo(d.x2, d.y2);
-		ctx.stroke();
+	var wickNest = d3.nest()
+		.key(d => d.stroke)
+		.entries(wickData);
+
+	wickNest.forEach(outer => {
+		var { key, values } = outer;
+		ctx.strokeStyle = key;
+		values.forEach(d => {
+			ctx.beginPath();
+			ctx.moveTo(d.x1, d.y1);
+			ctx.lineTo(d.x2, d.y2);
+			ctx.stroke();
+		})
 	});
-	ctx.strokeStyle = wickStroke.down;
-	group.down.forEach(d => {
-		ctx.beginPath();
-		ctx.moveTo(d.x1, d.y1);
-		ctx.lineTo(d.x2, d.y2);
-		ctx.stroke();
-	});
+
 	var candleData = CandlestickSeries.getCandleData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
 
-	group = { up: [], down: [] };
+	var candleNest = d3.nest()
+		.key(d => d.fill)
+		.entries(candleData);
 
-	for (let i = 0; i < candleData.length; i++) {
-		each = candleData[i];
-		if (each.direction >= 0) {
-			group.up.push(each);
-		} else {
-			group.down.push(each);
-		}
-	};
+	candleNest.forEach(outer => {
+		var { key, values } = outer;
+		ctx.fillStyle = hexToRGBA(key, opacity);
 
-	ctx.fillStyle = hexToRGBA(fill.up, opacity);
-	group.up.forEach(d => {
-		if (d.width < 0) {
-			// <line className={d.className} key={idx} x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height}/>
-			ctx.beginPath();
-			ctx.moveTo(d.x, d.y);
-			ctx.lineTo(d.x, d.y + d.height);
-			ctx.stroke();
-		} else if (d.height === 0) {
-			// <line key={idx} x1={d.x} y1={d.y} x2={d.x + d.width} y2={d.y + d.height} />
-			ctx.beginPath();
-			ctx.moveTo(d.x, d.y);
-			ctx.lineTo(d.x + d.width, d.y + d.height);
-			ctx.stroke();
-		} else {
-			ctx.beginPath();
-			ctx.rect(d.x, d.y, d.width, d.height);
-			ctx.closePath();
-			ctx.fill();
-		}
+		values.forEach(d => {
+			if (d.width < 0) {
+				// <line className={d.className} key={idx} x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height}/>
+				ctx.beginPath();
+				ctx.moveTo(d.x, d.y);
+				ctx.lineTo(d.x, d.y + d.height);
+				ctx.stroke();
+			} else if (d.height === 0) {
+				// <line key={idx} x1={d.x} y1={d.y} x2={d.x + d.width} y2={d.y + d.height} />
+				ctx.beginPath();
+				ctx.moveTo(d.x, d.y);
+				ctx.lineTo(d.x + d.width, d.y + d.height);
+				ctx.stroke();
+			} else {
+				ctx.beginPath();
+				ctx.rect(d.x, d.y, d.width, d.height);
+				ctx.closePath();
+				ctx.fill();
+			}
+		})
 	});
-
-	ctx.fillStyle = hexToRGBA(fill.down, opacity);
-	group.down.forEach(d => {
-		if (d.width < 0) {
-			// <line className={d.className} key={idx} x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height}/>
-			ctx.beginPath();
-			ctx.moveTo(d.x, d.y);
-			ctx.lineTo(d.x, d.y + d.height);
-			ctx.stroke();
-		} else if (d.height === 0) {
-			// <line key={idx} x1={d.x} y1={d.y} x2={d.x + d.width} y2={d.y + d.height} />
-			ctx.beginPath();
-			ctx.moveTo(d.x, d.y);
-			ctx.lineTo(d.x + d.width, d.y + d.height);
-			ctx.stroke();
-		} else {
-			ctx.beginPath();
-			ctx.rect(d.x, d.y, d.width, d.height);
-			ctx.closePath();
-			ctx.fill();
-		}
-	});
-	// ctx.fillStyle = fillStyle;
 };
 
 CandlestickSeries.getWickData = (props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData) => {

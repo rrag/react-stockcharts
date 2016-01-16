@@ -26,7 +26,7 @@ class AreaChartWithEdge extends React.Component {
 				margin={{left: 90, right: 70, top:10, bottom: 30}} initialDisplay={300}
 				dataTransform={[ { transform: StockscaleTransformer } ]}
 				data={data} type={type}>
-				<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}>
+				<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<DataSeries id={0} yAccessor={AreaSeries.yAccessor} stroke="#76C444" fill="#C7F3AB">
@@ -49,7 +49,7 @@ class AreaChartWithEdge extends React.Component {
 				<TooltipContainer>
 					<SingleValueTooltip forChart={1} forSeries={0}
 						xLabel="Date" /* xLabel is optional, absense will not show the x value */ yLabel="C"
-						xDisplayFormat={d3.time.format("%Y-%m-%d")} yDisplayFormat={(y) => y.toFixed(2)}
+						xDisplayFormat={d3.time.format("%Y-%m-%d")} yDisplayFormat={d3.format(".2f")}
 						/* valueStroke="green" - optional prop */
 						/* labelStroke="#4682B4" - optional prop */
 						origin={[-50, 0]}/>

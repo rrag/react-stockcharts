@@ -30,7 +30,7 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 				dataTransform={[ { transform: StockscaleTransformer } ]}
 				data={data} type={type}>
 				<Chart id={1} yMousePointerDisplayLocation="right" height={400}
-						yMousePointerDisplayFormat={(y) => y.toFixed(2)} padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
+						yMousePointerDisplayFormat={d3.format(".2f")} padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<DataSeries id={0} yAccessor={CandlestickSeries.yAccessor} >
@@ -66,7 +66,7 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 					<EdgeIndicator itemType="first" orient="left"
 						edgeAt="left" forChart={1} forDataSeries={2} />
 				</EdgeContainer>
-				<Chart id={3} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}
+				<Chart id={3} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
 						height={150} origin={(w, h) => [0, h - 150]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={2}/>

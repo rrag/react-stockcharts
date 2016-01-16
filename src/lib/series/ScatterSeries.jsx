@@ -35,12 +35,20 @@ ScatterSeries.defaultProps = {
 ScatterSeries.yAccessor = d => d.close;
 
 ScatterSeries.helper = (props, xScale, yScale, plotData) => {
-	var { xAccessor, yAccessor, compareSeries } = props;
+	var { xAccessor, yAccessor, compareSeries, marker: Marker, markerProps } = props;
 
 	var isCompareSeries = compareSeries.length > 0;
+	var mProps = { ...Marker.defaultProps, markerProps };
 
-	return plotData.map(d => ({ x: xAccessor(d), y: isCompareSeries ? yAccessor(d.compare) : yAccessor(d) }))
-		.map(xy => ({ x: xScale(xy.x), y: yScale(xy.y) }));
+	var fill = d3.functor(mProps.fill)
+	var stroke = d3.functor(mProps.stroke)
+
+	return plotData.map(d => ({
+			x: xScale(xAccessor(d)),
+			y: yScale(isCompareSeries ? yAccessor(d.compare) : yAccessor(d)),
+			fill: hexToRGBA(fill(d), mProps.opacity),
+			stroke: stroke(d),
+		}));
 };
 
 ScatterSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
@@ -49,8 +57,27 @@ ScatterSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 
 	var points = ScatterSeries.helper(props, xScale, yScale, plotData);
 
-	points.forEach(point => {
-		marker.drawOnCanvas({ ...marker.defaultProps, ...markerProps }, point, ctx)
+	var nest = d3.nest()
+		.key(d => d.fill)
+		.key(d => d.stroke)
+		.entries(points);
+
+	nest.forEach(fillGroup => {
+		var { key: fillKey, values: fillValues } = fillGroup;
+
+		if (fillKey !== "none") { 
+			ctx.fillStyle = fillKey;
+		}
+
+		fillValues.forEach(strokeGroup => {
+			var { key: strokeKey, values: strokeValues } = strokeGroup;
+
+			ctx.strokeStyle = strokeKey;
+
+			strokeValues.forEach(point => {
+				marker.drawOnCanvasWithNoStateChange({ ...marker.defaultProps, ...markerProps }, point, ctx)
+			})
+		})
 	});
 };
 

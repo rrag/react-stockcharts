@@ -16,6 +16,13 @@ export const ForceIndex = {
 	volume: d => d.volume
 }
 
+export const ElderRay = {
+	period: 13,
+	source: "close", // "high", "low", "open", "close"
+	movingAverageType: "ema",
+	ohlc: (d) => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
+}
+
 export const MACD = {
 	fast: 12,
 	slow: 26,

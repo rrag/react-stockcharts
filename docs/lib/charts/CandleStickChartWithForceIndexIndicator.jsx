@@ -22,17 +22,14 @@ var { fitWidth } = ReStock.helper;
 class CandleStickChartWithForceIndexIndicator extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
-/*
 
-
-*/
 		return (
 			<ChartCanvas width={width} height={550}
 				margin={{left: 70, right: 70, top:20, bottom: 30}} initialDisplay={200} 
 				dataTransform={[ { transform: StockscaleTransformer } ]}
 				data={data} type={type}>
 				<Chart id={1} yMousePointerDisplayLocation="right" height={300}
-						yMousePointerDisplayFormat={(y) => y.toFixed(2)} padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
+						yMousePointerDisplayFormat={d3.format(".2f")} padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<DataSeries id={0} yAccessor={CandlestickSeries.yAccessor} >

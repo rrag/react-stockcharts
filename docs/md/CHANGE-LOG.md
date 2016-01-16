@@ -24,6 +24,7 @@
 1. Inspired by [d3fc](https://github.com/ScottLogic/d3fc) change some of the internals
 1. added dependency `lodash.set`, `lodash.get`, `lodash.first`, `lodash.last`
 1. removed dependency `object-assign`
+1. Change `StraightLine` to take a prop of type which defaults to `horizontal`
 
 ## v0.3.1
 

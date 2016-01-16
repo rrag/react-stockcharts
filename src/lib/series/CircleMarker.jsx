@@ -28,13 +28,21 @@ Circle.defaultProps = {
 
 Circle.drawOnCanvas = (props, point, ctx) => {
 
-	var { stroke, fill, opacity, r } = props;
+	var { stroke, fill, opacity } = props;
 
 	ctx.strokeStyle = stroke;
 
 	if (fill !== "none") { 
 		ctx.fillStyle = hexToRGBA(fill, opacity);
 	}
+
+	Circle.drawOnCanvasWithNoStateChange(props, point, ctx)
+}
+
+
+Circle.drawOnCanvasWithNoStateChange = (props, point, ctx) => {
+
+	var { r } = props;
 
 	ctx.beginPath();
 	ctx.moveTo(point.x, point.y);

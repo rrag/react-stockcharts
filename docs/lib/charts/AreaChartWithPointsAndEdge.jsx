@@ -7,7 +7,7 @@ import * as ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart, DataSeries, OverlaySeries,EventCapture } = ReStock;
 
-var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, ScatterSeries, Circle } = ReStock.series;
+var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, ScatterSeries, CircleMarker } = ReStock.series;
 var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 
@@ -26,12 +26,12 @@ class AreaChartWithPointsAndEdge extends React.Component {
 				margin={{left: 90, right: 70, top:10, bottom: 30}} initialDisplay={100}
 				dataTransform={[ { transform: StockscaleTransformer } ]}
 				data={data} type={type}>
-				<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}>
+				<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<DataSeries id={0} yAccessor={AreaSeries.yAccessor} >
 						<AreaSeries />
-						<ScatterSeries marker={Circle} markerProps={{ r: 3 }} />
+						<ScatterSeries marker={CircleMarker} markerProps={{ r: 3 }} />
 					</DataSeries>
 					<DataSeries id={1} indicator={EMA} options={{ period: 20, source: "close" }}>
 						<LineSeries/>

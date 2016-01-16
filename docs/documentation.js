@@ -36,6 +36,7 @@ var pages = [
 	require("lib/page/RSIIndicatorPage").default,
 	require("lib/page/StochasticIndicatorPage").default,
 	require("lib/page/ForceIndexIndicatorPage").default,
+	require("lib/page/ElderRayIndicatorPage").default,
 	require("lib/page/TrendLineInteractiveIndicatorPage").default,
 	require("lib/page/FibonacciInteractiveIndicatorPage").default,
 	require("lib/page/ClickHandlerCallbackPage").default,
@@ -234,7 +235,8 @@ function renderPartialPage(data, dataFull, compareData) {
 	// AreaChartWithZoomPan
 	// AreaChartWithPointsAndEdge
 	// CandleStickChartWithForceIndexIndicator
-	var Chart = require("lib/charts/CandleStickChartWithForceIndexIndicator").default;
+	// CandleStickChartWithElderRayIndicator
+	var Chart = require("lib/charts/CandleStickChartWithElderRayIndicator").default;
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	// data, dataFull, compareData

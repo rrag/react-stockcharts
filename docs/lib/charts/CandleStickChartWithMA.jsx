@@ -25,7 +25,7 @@ class CandleStickChartWithMA extends React.Component {
 				margin={{left: 70, right: 70, top:10, bottom: 30}} initialDisplay={30}
 				dataTransform={[ { transform: StockscaleTransformer } ]}
 				data={data} type={type}>
-				<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)} 
+				<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} 
 					padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />

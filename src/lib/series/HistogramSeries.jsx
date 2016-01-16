@@ -4,6 +4,7 @@ import React from "react";
 
 import wrap from "./wrap";
 
+import identity from "../indicator/calculator/identity";
 import { hexToRGBA } from "../utils/utils";
 
 class HistogramSeries extends React.Component {
@@ -33,6 +34,7 @@ HistogramSeries.propTypes = {
 	]).isRequired,
 	xAccessor: React.PropTypes.func,
 	yAccessor: React.PropTypes.func,
+	yAccessorNarrow: React.PropTypes.func,
 	xScale: React.PropTypes.func,
 	yScale: React.PropTypes.func,
 	plotData: React.PropTypes.array,
@@ -46,6 +48,7 @@ HistogramSeries.defaultProps = {
 	fill: "#4682B4",
 	opacity: 1,
 	widthRatio: 0.5,
+	yAccessorNarrow: identity,
 };
 
 HistogramSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
@@ -53,25 +56,19 @@ HistogramSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 
 	var bars = HistogramSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
 
-	var each, group = {};
-	for (var i = 0; i < bars.length; i++) {
-		each = bars[i];
-		if (each.x !== undefined) {
-			if (group[each.fill] === undefined) {
-				group[each.fill] = [];
-			}
-			group[each.fill].push(each);
-		}
-	};
+	var nest = d3.nest()
+		.key(d => d.fill)
+		.entries(bars);
 
-	Object.keys(group).forEach(key => {
-		if (group[key][0].barWidth < 1) {
+	nest.forEach(outer => {
+		var { key, values } = outer;
+		if (values[0].barWidth < 1) {
 			ctx.strokeStyle = key;
 		} else {
 			ctx.strokeStyle = key;
 			ctx.fillStyle = hexToRGBA(key, props.opacity);
 		}
-		group[key].forEach(d => {
+		values.forEach(d => {
 			if (d.barWidth < 1) {
 				/* <line key={idx} className={d.className}
 							stroke={stroke}
@@ -95,8 +92,9 @@ HistogramSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 				ctx.fill();
 				if (stroke) ctx.stroke();
 			}
-		});
-	});
+
+		})
+	})
 };
 
 HistogramSeries.getBarsSVG = (props) => {
@@ -126,7 +124,7 @@ HistogramSeries.getBarsSVG = (props) => {
 };
 
 HistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData) => {
-	var { baseAt, direction, className, fill, stroke, widthRatio } = props;
+	var { baseAt, direction, className, fill, stroke, widthRatio, yAccessorNarrow } = props;
 	var base = baseAt === "top"
 				? 0
 				: baseAt === "bottom"
@@ -152,9 +150,9 @@ HistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData
 	var barWidth = Math.round(width / (plotData.length - 1) * widthRatio);
 
 	var bars = plotData
-			.filter((d) => (yAccessor(d) !== undefined) )
+			.filter((d) => (yAccessorNarrow(yAccessor(d)) !== undefined) )
 			.map((d) => {
-				var yValue = yAccessor(d);
+				var yValue = yAccessorNarrow(yAccessor(d));
 				var x = Math.round(xScale(xAccessor(d)))
 						- (barWidth === 1 ? 0 : 0.5 * barWidth),
 				// var x = (xScale(xAccessor(d))) - 0.5 * barWidth,

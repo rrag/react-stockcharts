@@ -23,7 +23,7 @@ class CandleStickStockScaleChartWithVolumeHistogramV3 extends React.Component {
 				dataTransform={[ { transform: StockscaleTransformer } ]}
 				data={data} type={type}>
 
-				<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}
+				<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
 						height={400} >
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false}/>

@@ -2,6 +2,7 @@
 
 import React from "react";
 import d3 from "d3";
+import get from "lodash.get"
 
 export const overlayColors = d3.scale.category10();
 
@@ -20,6 +21,12 @@ export function isDefined(d) {
 
 export function isNotDefined(d) {
 	return ! isDefined(d);
+}
+
+export function sourceFunctor(v) {
+	var type = typeof v;
+	if (type === "string" || type === "object" && Array.isArray(v)) return d => get(d, v);
+	return d3.functor(v);
 }
 
 export function cloneMe(obj) {

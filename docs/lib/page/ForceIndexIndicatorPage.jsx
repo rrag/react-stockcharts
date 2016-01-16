@@ -20,7 +20,7 @@ var ForceIndexIndicatorPage = React.createClass({
 			<ContentSection title={ForceIndexIndicatorPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require("md/MACD-INDICATOR")}}></aside>
+						<aside dangerouslySetInnerHTML={{__html: require("md/FORCE-INDEX-INDICATOR")}}></aside>
 					</Section>
 				</Row>
 				<Row>

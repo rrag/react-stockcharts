@@ -1,6 +1,6 @@
 import AreaSeries from "./AreaSeries";
 import ScatterSeries from "./ScatterSeries";
-import Circle from "./Circle";
+import CircleMarker from "./CircleMarker";
 import LineSeries from "./LineSeries";
 import CompareSeries from "./CompareSeries";
 import CandlestickSeries from "./CandlestickSeries";
@@ -20,7 +20,7 @@ import StraightLine from "./StraightLine";
 import wrap from "./wrap";
 
 export { ScatterSeries as ScatterSeries };
-export { Circle as Circle };
+export { CircleMarker as CircleMarker };
 export { AreaSeries as AreaSeries };
 export { LineSeries as LineSeries };
 export { CompareSeries as CompareSeries };
