@@ -28,7 +28,9 @@ Area.propTypes = {
 	stroke: React.PropTypes.string,
 	fill: React.PropTypes.string,
 	opacity: React.PropTypes.number,
-	base: React.PropTypes.func,
+	base: React.PropTypes.oneOfType([
+		React.PropTypes.func, React.PropTypes.number
+	]),
 };
 
 Area.defaultProps = {
@@ -39,13 +41,12 @@ Area.defaultProps = {
 Area.getArea = (props) => {
 	var { plotData, xScale, yScale, xAccessor, yAccessor, base } = props;
 	var height = yScale.range()[0];
-	if (base === undefined) base = () => (height - 1);
-
+	var newBase = d3.functor( base === undefined ? height - 1: base );
 
 	var areaSeries = d3.svg.area()
 		.defined((d) => yAccessor(d) !== undefined)
 		.x((d) => xScale(xAccessor(d)))
-		.y0(base.bind(null, yScale))
+		.y0(newBase.bind(null, yScale))
 		.y1((d) => yScale(yAccessor(d)));
 
 	// console.log("HERE", yAccessor(plotData[0]));
@@ -56,7 +57,7 @@ Area.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { xAccessor, yAccessor, fill, stroke, opacity, base } = props;
 	var begin = true;
 	var height = yScale.range()[0];
-	var newBase = (base === undefined) ? () => (height - 1) : base;
+	var newBase = d3.functor( base === undefined ? height - 1 : base);
 
 	ctx.fillStyle = hexToRGBA(fill, opacity);
 	ctx.strokeStyle = stroke;
@@ -81,7 +82,7 @@ Area.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	if (base !== undefined) {
 		plotData.slice().reverse().forEach((d) => {
 			if (yAccessor(d) !== undefined) {
-				ctx.lineTo(xScale(xAccessor(d)), base(yScale, d));
+				ctx.lineTo(xScale(xAccessor(d)), newBase(yScale, d));
 			}
 		});
 	}

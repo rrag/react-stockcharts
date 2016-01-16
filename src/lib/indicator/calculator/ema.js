@@ -27,6 +27,7 @@ THE SOFTWARE.
 */
 
 import identity from "./identity";
+import { isDefined, isNotDefined } from "../../utils/utils";
 
 export default function() {
 
@@ -38,18 +39,23 @@ export default function() {
 		var alpha = 2 / (windowSize + 1);
 		var previous;
 		var initialAccumulator = 0;
+		var skip = 0;
 
 		return data.map(function(d, i) {
-			if (i < windowSize - 1) {
-				initialAccumulator += value(d, i);
+			var v = value(d, i);
+			if (isNotDefined(previous) && isNotDefined(v)) {
+				skip++;
 				return undefined;
-			} else if (i === windowSize - 1) {
-				initialAccumulator += value(d, i);
+			} else if (i < windowSize + skip - 1) {
+				initialAccumulator += v;
+				return undefined;
+			} else if (i === windowSize + skip - 1) {
+				initialAccumulator += v;
 				var initialValue = initialAccumulator / windowSize;
 				previous = initialValue;
 				return initialValue;
 			} else {
-				var nextValue = value(d, i) * alpha + (1 - alpha) * previous;
+				var nextValue = v * alpha + (1 - alpha) * previous;
 				previous = nextValue;
 				return nextValue;
 			}

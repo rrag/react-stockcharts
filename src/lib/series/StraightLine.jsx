@@ -35,7 +35,7 @@ StraightLine.propTypes = {
 
 StraightLine.defaultProps = {
 	className: "line ",
-	stroke: "black",
+	stroke: "#000000",
 	opacity: 0.5,
 };
 

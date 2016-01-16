@@ -2,6 +2,7 @@
 
 import objectAssign from "object-assign";
 import d3 from "d3";
+import getter from "lodash.get"
 
 import { overlayColors } from "../utils/utils";
 
@@ -21,11 +22,12 @@ function SMAIndicator(options, chartProps, dataSeriesProps) {
 
 	function indicator(data) {
 		var { period, source } = settings;
+		var value = (typeof source === "function") ? source : d => getter(d, source)
 
 		var smaAlgorithm = slidingWindow()
 			.windowSize(period)
 			.accumulator(d3.mean)
-			.value(d => d[source]);
+			.value(value);
 
 		var evaluator = merge()
 			.algorithm(smaAlgorithm)

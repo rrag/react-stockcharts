@@ -7,7 +7,7 @@ import * as ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart, DataSeries, OverlaySeries, EventCapture } = ReStock;
 
-var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, RSISeries } = ReStock.series;
+var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, RSISeries, StraightLine } = ReStock.series;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 
@@ -22,7 +22,10 @@ var { fitWidth } = ReStock.helper;
 class CandleStickChartWithForceIndexIndicator extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
+/*
 
+
+*/
 		return (
 			<ChartCanvas width={width} height={550}
 				margin={{left: 70, right: 70, top:20, bottom: 30}} initialDisplay={200} 
@@ -68,20 +71,22 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 					<EdgeIndicator itemType="first" orient="left"
 						edgeAt="left" forChart={1} forDataSeries={2} />
 				</EdgeContainer>
-				<Chart id={3} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}
+				<Chart id={3} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".4s")}
 						height={100} origin={(w, h) => [0, h - 200]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
-					<YAxis axisAt="right" orient="right" ticks={4} />
+					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={d3.format("s")}/>
 					<DataSeries id={0} indicator={ForceIndex} >
-						<LineSeries />
+						<AreaSeries baseAt={scale => scale(0)} />
+						<StraightLine yValue={0} />
 					</DataSeries>
 				</Chart>
-				<Chart id={8} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={(y) => y.toFixed(2)}
+				<Chart id={4} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".4s")}
 						height={100} origin={(w, h) => [0, h - 100]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
 					<XAxis axisAt="bottom" orient="bottom" />
-					<YAxis axisAt="right" orient="right" ticks={2}/>
-					<DataSeries id={0} indicator={ATR} options={{ period: 14 }} >
-						<LineSeries />
+					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={d3.format("s")}/>
+					<DataSeries id={0} indicator={EMA} options={{ period: 13, source: [ "chart_3", "overlay_0" ], stroke: "#000000" }} >
+						<AreaSeries baseAt={scale => scale(0)} stroke="steelblue" />
+						<StraightLine yValue={0} />
 					</DataSeries>
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
@@ -89,11 +94,13 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
 					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 5]} />
-					<SingleValueTooltip forChart={8} forSeries={0}
-						yLabel={indicator => `ATR (${ indicator.options().period })`}
-						yDisplayFormat={(y) => y.toFixed(2)}
-						/* valueStroke="green" - optional prop */
-						/* labelStroke="#4682B4" - optional prop */
+					<SingleValueTooltip forChart={3} forSeries={0}
+						yLabel={indicator => `ForceIndex (1)`}
+						yDisplayFormat={d3.format(".4s")}
+						origin={[-40, 15]}/>
+					<SingleValueTooltip forChart={4} forSeries={0}
+						yLabel={indicator => `ForceIndex (${ indicator.options().period })`}
+						yDisplayFormat={d3.format(".4s")}
 						origin={[-40, 15]}/>
 				</TooltipContainer>
 			</ChartCanvas>

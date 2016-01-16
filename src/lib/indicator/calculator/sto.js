@@ -1,7 +1,7 @@
 "use strict";
 
 /*
-https://github.com/ScottLogic/d3fc/blob/master/src/indicator/algorithm/calculator/relativeStrengthIndex.js
+https://github.com/ScottLogic/d3fc/blob/master/src/indicator/algorithm/calculator/stochasticOscillator.js
 
 The MIT License (MIT)
 

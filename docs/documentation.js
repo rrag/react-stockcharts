@@ -35,6 +35,7 @@ var pages = [
 	require("lib/page/MACDIndicatorPage").default,
 	require("lib/page/RSIIndicatorPage").default,
 	require("lib/page/StochasticIndicatorPage").default,
+	require("lib/page/ForceIndexIndicatorPage").default,
 	require("lib/page/TrendLineInteractiveIndicatorPage").default,
 	require("lib/page/FibonacciInteractiveIndicatorPage").default,
 	require("lib/page/ClickHandlerCallbackPage").default,
@@ -142,8 +143,8 @@ function renderPage(data, dataFull, compareData) {
 d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
 	d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 		d3.tsv("data/comparison.tsv", (err3, compareData) => {
-			// renderPage(MSFT, MSFTFull, compareData);
-			renderPartialPage(MSFT, MSFTFull, compareData);
+			renderPage(MSFT, MSFTFull, compareData);
+			// renderPartialPage(MSFT, MSFTFull, compareData);
 		});
 	});
 });
@@ -233,7 +234,7 @@ function renderPartialPage(data, dataFull, compareData) {
 	// AreaChartWithZoomPan
 	// AreaChartWithPointsAndEdge
 	// CandleStickChartWithForceIndexIndicator
-	var Chart = require("lib/charts/CandleStickChartWithMACDIndicator").default;
+	var Chart = require("lib/charts/CandleStickChartWithForceIndexIndicator").default;
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	// data, dataFull, compareData

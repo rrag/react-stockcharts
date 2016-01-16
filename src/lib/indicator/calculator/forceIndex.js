@@ -1,9 +1,9 @@
 "use strict";
 
 import identity from "./identity";
-import ema from "./ema";
 import slidingWindow from "./slidingWindow";
 import zipper from "./zipper";
+
 import { isDefined, isNotDefined } from "../../utils/utils";
 import { ForceIndex as defaultOptions } from "../defaultOptions";
 
@@ -14,30 +14,13 @@ export default function() {
 
 	function calculator(data) {
 
-		var fastEMA = ema()
-			.windowSize(fast)
-			.value(value);
-		var slowEMA = ema()
-			.windowSize(slow)
-			.value(value);
-		var signalEMA = ema()
-			.windowSize(signal);
+		var forceIndexCalulator = slidingWindow()
+			.windowSize(2)
+			.accumulator(([prev, curr]) => (close(curr) - close(prev)) * volume(curr))
 
-		var macdLine = d3.zip(fastEMA(data), slowEMA(data))
-			.map((tuple) => (isDefined(tuple[0]) && isDefined(tuple[1])) ? tuple[0] - tuple[1] : undefined);
+		var forceIndex = forceIndexCalulator(data);
 
-		var undefinedArray = new Array(slow);
-		var signalLine = signalEMA(macdLine.slice(slow))
-		signalLine.unshift(undefinedArray);
-
-		var macd = d3.zip(macdLine, signalLine)
-			.map(tuple => ({
-				MACDLine: tuple[0],
-				signalLine: tuple[1],
-				histogram: (isDefined(tuple[0]) && isDefined(tuple[1])) ? tuple[0] - tuple[1] : undefined,
-			}));
-
-		return macd;
+		return forceIndex;
 	};
 
 	calculator.close = function(x) {

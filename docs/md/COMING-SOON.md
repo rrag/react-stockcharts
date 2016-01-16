@@ -11,7 +11,7 @@
 
 #### New Indicators
 1. (Done) ATR
-1. Force Index
+1. (Done) Force Index
 1. Elder Ray
 1. [Elder Impulse](http://stockcharts.com/school/doku.php?id=chart_school:chart_analysis:elder_impulse_system)
 1. [Envelope](http://www.investopedia.com/terms/e/envelope.asp?optm=sa_v2)

@@ -7,17 +7,17 @@ import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 
-import CandleStickChartWithMACDIndicator from "lib/charts/CandleStickChartWithMACDIndicator";
+import CandleStickChartWithForceIndexIndicator from "lib/charts/CandleStickChartWithForceIndexIndicator";
 
 var { TypeChooser } = helper;
 
-var MACDIndicatorPage = React.createClass({
+var ForceIndexIndicatorPage = React.createClass({
 	statics: {
-		title: "Indicators - MACD"
+		title: "Indicators - ForceIndex"
 	},
 	render() {
 		return (
-			<ContentSection title={MACDIndicatorPage.title}>
+			<ContentSection title={ForceIndexIndicatorPage.title}>
 				<Row>
 					<Section colSpan={2}>
 						<aside dangerouslySetInnerHTML={{__html: require("md/MACD-INDICATOR")}}></aside>
@@ -26,7 +26,7 @@ var MACDIndicatorPage = React.createClass({
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser>
-							{(type) => (<CandleStickChartWithMACDIndicator data={this.props.someData} type={type} />)}
+							{(type) => (<CandleStickChartWithForceIndexIndicator data={this.props.someData} type={type} />)}
 						</TypeChooser>
 					</Section>
 				</Row>
@@ -35,4 +35,4 @@ var MACDIndicatorPage = React.createClass({
 	}
 });
 
-export default MACDIndicatorPage;
+export default ForceIndexIndicatorPage;

@@ -1,7 +1,7 @@
 "use strict";
 
 /*
-https://github.com/ScottLogic/d3fc/blob/master/src/indicator/algorithm/calculator/macd.js
+https://github.com/ScottLogic/d3fc/blob/master/src/indicator/algorithm/calculator/bollingerBands.js
 
 The MIT License (MIT)
 
