@@ -7,7 +7,8 @@
 1. add `yAccessorNarrow` to all basic Series (added to `HistogramSeries`)
 
 #### New Chart types
-1. (Done) Scatter chart
+1. (Almost Done, need example) Scatter chart
+1. (Almost Done, need example) StackedHistogram
 1. Volume Profile
 1. Line break
 1. OHLC Chart
@@ -15,14 +16,16 @@
 #### New Indicators
 1. (Done) ATR
 1. (Done) Force Index
-1. Elder Ray
+1. (Done) Elder Ray
 1. [Elder Impulse](http://stockcharts.com/school/doku.php?id=chart_school:chart_analysis:elder_impulse_system)
 1. [Envelope](http://www.investopedia.com/terms/e/envelope.asp?optm=sa_v2)
 
 #### Internal changes
 1. Use stateless components in `RSISeries`, `StochasticSeries` to address react/prop-types lint error
-1. remove dependency to `object-assign`
+1. remove dependency `object-assign` and add dependency `lodash.set`, `lodash.get`, `lodash.first`, `lodash.last`
 1. (Done) use `d3.nest` for optimizing canvas draws for candlestick, histogram and scatter chart
+1. (Done) Upgraded to use Babel 6 instead of 5
+1. Change `StraightLine` to take a prop of type which defaults to `horizontal`
 
 ## v0.5.x
 
