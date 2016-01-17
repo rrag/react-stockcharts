@@ -12,6 +12,7 @@ import MACDSeries from "./MACDSeries";
 import BollingerSeries from "./BollingerSeries";
 import RSISeries from "./RSISeries";
 import StochasticSeries from "./StochasticSeries";
+import ElderRaySeries from "./ElderRaySeries";
 
 import Area from "./Area";
 import Line from "./Line";
@@ -33,6 +34,7 @@ export { MACDSeries as MACDSeries };
 export { BollingerSeries as BollingerSeries };
 export { RSISeries as RSISeries };
 export { StochasticSeries as StochasticSeries };
+export { ElderRaySeries as ElderRaySeries };
 export { Area as Area };
 export { Line as Line };
 export { StraightLine as StraightLine };

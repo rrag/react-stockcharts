@@ -3,11 +3,14 @@
 1. (Done) Drop support for React 0.13 and use React 0.14, fix all the deprecation warnings
 1. (Done) Provide touch support
 1. (Done) Indicators derived from other indicators
+1. use d3.functor for `ScatterSeries` and add an example
+1. add `yAccessorNarrow` to all basic Series (added to `HistogramSeries`)
 
 #### New Chart types
 1. (Done) Scatter chart
 1. Volume Profile
 1. Line break
+1. OHLC Chart
 
 #### New Indicators
 1. (Done) ATR
@@ -20,7 +23,6 @@
 1. Use stateless components in `RSISeries`, `StochasticSeries` to address react/prop-types lint error
 1. remove dependency to `object-assign`
 1. (Done) use `d3.nest` for optimizing canvas draws for candlestick, histogram and scatter chart
-1. add `yAccessorNarrow` to all basic Series (added to `HistogramSeries`)
 
 ## v0.5.x
 

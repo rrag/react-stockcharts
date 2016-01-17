@@ -74,10 +74,10 @@ MACDSeries.getHorizontalLine = (props) => {
 		yValue={0} />;
 };
 
-MACDSeries.childContextTypes = {
+/*MACDSeries.childContextTypes = {
 	yAccessor: React.PropTypes.func.isRequired,
 };
-
+*/
 MACDSeries.propTypes = {
 	className: React.PropTypes.string,
 	xScale: React.PropTypes.func,

@@ -7,7 +7,7 @@ import * as ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart, DataSeries, OverlaySeries, EventCapture } = ReStock;
 
-var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, RSISeries, StraightLine } = ReStock.series;
+var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, ElderRaySeries, StraightLine } = ReStock.series;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 
@@ -64,16 +64,12 @@ class CandleStickChartWithElderRayIndicator extends React.Component {
 					<EdgeIndicator itemType="first" orient="left"
 						edgeAt="left" forChart={1} forDataSeries={2} />
 				</EdgeContainer>
-				<Chart id={3} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".4s")}
+				<Chart id={3} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
 						height={100} origin={(w, h) => [0, h - 300]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={d3.format("s")}/>
 					<DataSeries id={0} indicator={ElderRay} >
-						<HistogramSeries
-							baseAt={(xScale, yScale, d) => yScale(0)}
-							yAccessorNarrow={(d) => d.bullPower}
-							opacity={0.5} />
-						<StraightLine yValue={0} />
+						<ElderRaySeries />
 					</DataSeries>
 				</Chart>
 				<Chart id={4} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
@@ -83,8 +79,7 @@ class CandleStickChartWithElderRayIndicator extends React.Component {
 					<DataSeries id={0} indicator={Copy} options={{ source: [ "chart_3", "overlay_0", "bullPower" ], period:13 }} >
 						<HistogramSeries
 							baseAt={(xScale, yScale, d) => yScale(0)}
-							fill="green"
-							opacity={0.5} />
+							fill="#6BA583" />
 						<StraightLine yValue={0} />
 					</DataSeries>
 				</Chart>
@@ -95,7 +90,7 @@ class CandleStickChartWithElderRayIndicator extends React.Component {
 					<DataSeries id={0} indicator={Copy} options={{ source: [ "chart_3", "overlay_0", "bearPower" ], period:13 }} >
 						<HistogramSeries
 							baseAt={(xScale, yScale, d) => yScale(0)}
-							fill="red"
+							fill="#FF0000"
 							opacity={0.5} />
 						<StraightLine yValue={0} />
 					</DataSeries>
@@ -106,8 +101,8 @@ class CandleStickChartWithElderRayIndicator extends React.Component {
 					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
 					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 5]} />
 					<SingleValueTooltip forChart={3} forSeries={0}
-						yLabel="NEW SERIES - WORK IN PROGRESS"
-						yDisplayFormat={d3.format(".2f")}
+						yLabel="Elder Ray"
+						yDisplayFormat={d => `${d3.format(".2f")(d.bullPower)}, ${d3.format(".2f")(d.bearPower)}`}
 						origin={[-40, 15]}/>
 					<SingleValueTooltip forChart={4} forSeries={0}
 						yLabel={indicator => `Elder Ray - Bull power (${ indicator.options().period })`}
