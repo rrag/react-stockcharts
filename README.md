@@ -7,6 +7,39 @@ Create highly customizable stock charts
 
 Built with [React JS](http://facebook.github.io/react/) and [d3](http://d3js.org/)
 
+- svg and canvas for improved performance. 
+- pan and zoom, on touch devices too
+
+#### Chart types
+
+-Scatter
+-Area
+-Line
+-Candlestick
+-OHLC
+-HeikenAshi
+-Renko
+-Kagi
+-Point & Figure
+
+#### Indicators
+
+-MACD
+-RSI
+-ATR
+-Stochastic (fast, slow, full)
+-ForceIndex
+-ElderRay
+-Elder Impulse
+(more to come), 
+
+and it is simple to create your own indicator too
+
+#### Interactive Indicators
+
+-Trendline
+-Fibonacci Retracements
+
 ---
 
 ### Installation

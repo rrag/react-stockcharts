@@ -1,4 +1,4 @@
-Elder Ray Indicator
+Elder Impulse Indicator
 
 Learn more about how to [plot](http://stockcharts.com/school/doku.php?id=chart_school:chart_analysis:elder_impulse_system) it
 
