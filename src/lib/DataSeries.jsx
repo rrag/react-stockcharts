@@ -44,7 +44,7 @@ DataSeries.propTypes = {
 	yAccessor: React.PropTypes.func,
 	indicator: React.PropTypes.func,
 	options: React.PropTypes.object,
-	children: React.PropTypes.node.isRequired,
+	children: React.PropTypes.node,
 };
 DataSeries.defaultProps = {
 	namespace: "ReStock.DataSeries",

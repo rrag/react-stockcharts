@@ -7,7 +7,7 @@ import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 
-import CandleStickChartWithElderRayIndicator from "lib/charts/CandleStickChartWithElderRayIndicator";
+import OHLCChartWithElderRayIndicator from "lib/charts/OHLCChartWithElderRayIndicator";
 
 var { TypeChooser } = helper;
 
@@ -26,7 +26,7 @@ var ElderRayIndicatorPage = React.createClass({
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser>
-							{(type) => (<CandleStickChartWithElderRayIndicator data={this.props.someData} type={type} />)}
+							{(type) => (<OHLCChartWithElderRayIndicator data={this.props.someData} type={type} />)}
 						</TypeChooser>
 					</Section>
 				</Row>

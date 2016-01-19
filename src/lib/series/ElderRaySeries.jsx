@@ -8,11 +8,6 @@ import StraightLine from "./StraightLine";
 
 import wrap from "./wrap";
 
-function isTop(input, comparison) {
-	// The values share parity and the input is smaller than the comparison
-	return (input * comparison > 0 && Math.abs(input) < Math.abs(comparison));
-}
-
 class ElderRaySeries extends React.Component {
 	constructor(props) {
 		super(props);

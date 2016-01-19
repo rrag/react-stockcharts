@@ -23,6 +23,14 @@ export const ElderRay = {
 	ohlc: (d) => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
 }
 
+export const ElderImpulse = {
+	stroke: {
+		up: "#6BA583",
+		down: "#FF0000",
+		neutral: "#0000FF",
+	}
+}
+
 export const MACD = {
 	fast: 12,
 	slow: 26,

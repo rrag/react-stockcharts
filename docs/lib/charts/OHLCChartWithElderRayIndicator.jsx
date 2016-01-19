@@ -7,7 +7,7 @@ import * as ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart, DataSeries, OverlaySeries, EventCapture } = ReStock;
 
-var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, ElderRaySeries, StraightLine } = ReStock.series;
+var { OHLCSeries, HistogramSeries, LineSeries, AreaSeries, ElderRaySeries, StraightLine } = ReStock.series;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 
@@ -19,7 +19,7 @@ var { Copy, EMA, SMA, ElderRay } = ReStock.indicator;
 
 var { fitWidth } = ReStock.helper;
 
-class CandleStickChartWithElderRayIndicator extends React.Component {
+class OHLCChartWithElderRayIndicator extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
 
@@ -32,8 +32,8 @@ class CandleStickChartWithElderRayIndicator extends React.Component {
 						yMousePointerDisplayFormat={d3.format(".2f")} padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
-					<DataSeries id={0} yAccessor={CandlestickSeries.yAccessor} >
-						<CandlestickSeries />
+					<DataSeries id={0} yAccessor={OHLCSeries.yAccessor} >
+						<OHLCSeries />
 					</DataSeries>
 					<DataSeries id={1} indicator={EMA} options={{ period: 26 }} >
 						<LineSeries />
@@ -118,15 +118,15 @@ class CandleStickChartWithElderRayIndicator extends React.Component {
 	}
 };
 
-CandleStickChartWithElderRayIndicator.propTypes = {
+OHLCChartWithElderRayIndicator.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
-CandleStickChartWithElderRayIndicator.defaultProps = {
+OHLCChartWithElderRayIndicator.defaultProps = {
 	type: "svg",
 };
-CandleStickChartWithElderRayIndicator = fitWidth(CandleStickChartWithElderRayIndicator);
+OHLCChartWithElderRayIndicator = fitWidth(OHLCChartWithElderRayIndicator);
 
-export default CandleStickChartWithElderRayIndicator;
+export default OHLCChartWithElderRayIndicator;

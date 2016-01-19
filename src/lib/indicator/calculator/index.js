@@ -8,14 +8,18 @@ import sto from "./sto";
 import atr from "./atr";
 import forceIndex from "./forceIndex";
 import elderRay from "./elderRay";
+import zipper from "./zipper";
 
-export { slidingWindow as slidingWindow };
-export { merge as merge };
-export { ema as ema };
-export { macd as macd };
-export { bollingerband as bollingerband };
-export { rsi as rsi };
-export { sto as sto };
-export { atr as atr };
-export { forceIndex as forceIndex };
-export { elderRay as elderRay };
+export {
+	slidingWindow,
+	merge,
+	ema,
+	macd,
+	bollingerband,
+	rsi,
+	sto,
+	atr,
+	forceIndex,
+	elderRay,
+	zipper
+};

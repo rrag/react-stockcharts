@@ -6,6 +6,7 @@ import d3 from "d3";
 import { flattenData } from "../utils/ScaleUtils";
 import { firstDefined, lastDefined } from "../utils/OverlayUtils";
 import { getClosestItem, getClosestItemIndexes, overlayColors, pluck, keysAsArray } from "./utils";
+import { slidingWindow, merge } from "../indicator/calculator";
 
 export function containsChart(props) {
 	return getCharts(props).length > 0;
@@ -46,7 +47,7 @@ export function getChartDataConfig(props, innerDimensions, other) {
 
 export function getChartData(props, innerDimensions, partialData, fullData, other, domainL, domainR) {
 	var charts = getCharts(props);
-
+	calculateChange(fullData);
 	return charts.map((each) => {
 		var chartProps = each.props;
 
@@ -365,6 +366,26 @@ export function calculateOverlays(fullData, overlays) {
 	// console.table(fullData.M);
 	// console.log(overlays);
 };
+
+function calculateChange(fullData) {
+	Object.keys(fullData)
+		.filter(key => ["D", "W", "M"].indexOf(key) > -1)
+		.forEach(key => {
+			var changeAlgorithm = slidingWindow()
+				.windowSize(2)
+				.accumulator(([prev, now]) => ({
+					absolute: now.close - prev.close,
+					percent: ((now.close - prev.close) / prev.close) * 100
+				}));
+
+			var changeCalculator = merge()
+				.algorithm(changeAlgorithm)
+				.mergePath("change");
+
+			changeCalculator(fullData[key]);
+			// console.log(fullData[key][20]);
+		});
+}
 
 export function calculateIndicator(fullData, indicator) {
 	Object.keys(fullData)
