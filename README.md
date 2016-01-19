@@ -12,33 +12,33 @@ Built with [React JS](http://facebook.github.io/react/) and [d3](http://d3js.org
 
 #### Chart types
 
--Scatter
--Area
--Line
--Candlestick
--OHLC
--HeikenAshi
--Renko
--Kagi
--Point & Figure
+- Scatter
+- Area
+- Line
+- Candlestick
+- OHLC
+- HeikenAshi
+- Renko
+- Kagi
+- Point & Figure
 
 #### Indicators
 
--MACD
--RSI
--ATR
--Stochastic (fast, slow, full)
--ForceIndex
--ElderRay
--Elder Impulse
+- MACD
+- RSI
+- ATR
+- Stochastic (fast, slow, full)
+- ForceIndex
+- ElderRay
+- Elder Impulse
 (more to come), 
 
 and it is simple to create your own indicator too
 
 #### Interactive Indicators
 
--Trendline
--Fibonacci Retracements
+- Trendline
+- Fibonacci Retracements
 
 ---
 
