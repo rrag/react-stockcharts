@@ -94,7 +94,7 @@ ChartCanvas.defaultProps = {
 	margin: { top: 20, right: 30, bottom: 30, left: 80 },
 	interval: "D",
 	type: "hybrid",
-	dataTransform: [ ],
+	dataTransform: [],
 	className: "react-stockchart",
 	zIndex: 1,
 	// initialDisplay: 30

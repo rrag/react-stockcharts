@@ -3,7 +3,6 @@
 import d3 from "d3";
 import last from "lodash.last";
 
-import identity from "./identity";
 import slidingWindow from "./slidingWindow";
 import { isDefined } from "../../utils/utils";
 
@@ -39,7 +38,8 @@ export default function() {
 
 				prevATR = atr;
 				return atr;
-			})
+			});
+
 		var newData = atrAlgorithm(trueRangeAlgorithm(data));
 
 		return newData;

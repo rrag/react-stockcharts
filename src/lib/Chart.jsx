@@ -1,6 +1,7 @@
 "use strict";
 
 import React from "react";
+import d3 from "d3";
 import objectAssign from "object-assign";
 
 import PureComponent from "./utils/PureComponent";
@@ -8,6 +9,14 @@ import { isReactVersion13 } from "./utils/utils";
 import { getChartOrigin } from "./utils/ChartDataUtil";
 
 class Chart extends PureComponent {
+	constuctor(props) {
+		// super(props);
+		this.yScale = this.yScale.bind(this);
+	}
+	yScale() {
+		var chartData = this.context.chartData.filter((each) => each.id === this.props.id)[0];
+		return chartData.plot.scales.yScale.copy();
+	}
 	getChildContext() {
 		var chartData = this.context.chartData.filter((each) => each.id === this.props.id)[0];
 
@@ -55,7 +64,7 @@ Chart.propTypes = {
 	]).isRequired,
 	id: React.PropTypes.number.isRequired,
 	xScale: React.PropTypes.func,
-	yScale: React.PropTypes.func,
+	yScale: React.PropTypes.func.isRequired,
 	xDomainUpdate: React.PropTypes.bool,
 	yDomainUpdate: React.PropTypes.bool,
 	yMousePointerDisplayLocation: React.PropTypes.oneOf(["left", "right"]),
@@ -67,9 +76,11 @@ Chart.defaultProps = {
 	id: 0,
 	namespace: "ReStock.Chart",
 	transformDataAs: "none",
+	xDomainUpdate: true,
 	yDomainUpdate: true,
 	origin: [0, 0],
 	padding: { top: 0, right: 0, bottom: 0, left: 0 },
+	yScale: d3.scale.linear(),
 };
 
 Chart.contextTypes = {

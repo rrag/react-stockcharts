@@ -5,7 +5,7 @@ import d3 from "d3";
 
 import { flattenData } from "../utils/ScaleUtils";
 import { firstDefined, lastDefined } from "../utils/OverlayUtils";
-import { getClosestItem, getClosestItemIndexes, overlayColors, pluck, keysAsArray } from "./utils";
+import { isDefined, getClosestItem, getClosestItemIndexes, overlayColors, pluck, keysAsArray } from "./utils";
 import { slidingWindow, merge } from "../indicator/calculator";
 
 export function containsChart(props) {
@@ -106,7 +106,7 @@ export function getDimensions(innerDimension, chartProps) {
 
 
 export function getChartConfigFor(innerDimension, chartProps, other) {
-	var { padding } = chartProps;
+	var { padding, yDomainUpdate, xDomainUpdate } = chartProps;
 
 	var dimensions = getDimensions(innerDimension, chartProps);
 	var xAccessor = getXAccessor(chartProps, other);
@@ -135,6 +135,8 @@ export function getChartConfigFor(innerDimension, chartProps, other) {
 			at: chartProps.yMousePointerDisplayLocation,
 			format: chartProps.yMousePointerDisplayFormat
 		},
+		yDomainUpdate,
+		xDomainUpdate,
 		origin: origin,
 		padding: padding,
 		xAccessor: xAccessor,
@@ -171,14 +173,14 @@ export function getChartPlotFor(config, scaleType, partialData, domainL, domainR
 		});
 	}
 
-	var scales = updateScales(
-		xyValues,
-		scaleType,
-		partialData,
-		config.width,
-		config.height,
-		config.padding,
-		domain);
+	if (!config.yDomainUpdate) {
+		domain = scaleType.yScale.domain();
+	}
+
+	var scales = {
+		xScale: updateXScale(xyValues.xValues, scaleType.xScale, partialData, config.width, config.padding),
+		yScale: updateYScale(xyValues.yValues, scaleType.yScale, partialData, config.height, config.padding, domain),
+	}
 
 	if (domainL !== undefined && domainR !== undefined) {
 		scales.xScale.domain([domainL, domainR]);
@@ -235,9 +237,7 @@ export function defineScales(props, data, passThroughProps) {
 		if (xScale === undefined) xScale = d3.scale.linear();
 		// xScale = polyLinearTimeScale();
 	}
-	if (yScale === undefined) {
-		yScale = d3.scale.linear();
-	}
+
 	return { xScale: xScale, yScale: yScale };
 };
 
@@ -411,30 +411,33 @@ export function updateOverlayFirstLast(data, overlays) {
 	return overlayValues;
 };
 
-export function updateScales(xyValues, scales, data, width, height, padding, overrideDomain) {
-
-	scales.xScale.range([padding.left, width - padding.right]);
+export function updateXScale(xValues, xScale, data, width, padding, overrideXDomain) {
+	// overrideXDomain is currently ignored
+	var copy = xScale.copy();
+	copy.range([padding.left, width - padding.right]);
 	// if polylinear scale then set data
-	if (scales.xScale.isPolyLinear && scales.xScale.isPolyLinear()) {
-		scales.xScale.data(data);
+	if (copy.isPolyLinear && copy.isPolyLinear()) {
+		copy.data(data);
 	} else {
 		// else set the domain
-		scales.xScale.domain(d3.extent(xyValues.xValues));
+		copy.domain(d3.extent(xValues));
 	}
+	return copy;
+};
 
-	scales.yScale.range([height - padding.top, padding.bottom]);
+export function updateYScale(yValues, yScale, data, height, padding, overrideYDomain) {
+	var copy = yScale.copy();
 
-	if (overrideDomain !== undefined) {
-		scales.yScale.domain(overrideDomain);
+	copy.range([height - padding.top, padding.bottom]);
+
+	if (isDefined(overrideYDomain)) {
+		copy.domain(overrideYDomain);
 	} else {
-		var domain = d3.extent(xyValues.yValues);
-		scales.yScale.domain(domain);
+		var domain = d3.extent(yValues);
+		copy.domain(domain);
 	}
 
-	return {
-		xScale: scales.xScale.copy(),
-		yScale: scales.yScale.copy()
-	};
+	return copy;
 };
 
 export function getCurrentItems(chartData, mouseXY, plotData) {

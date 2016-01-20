@@ -25,7 +25,7 @@ function BollingerBandIndicator(options, chartProps, dataSeriesProps) {
 
 		var calculateBBFor = merge()
 			.algorithm(bollingerBandAlgorithm)
-			.mergePath([prefix, key])
+			.mergePath([prefix, key]);
 
 		// console.log(period, data.slice(0, 20));
 

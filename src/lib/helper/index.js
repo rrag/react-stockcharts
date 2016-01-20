@@ -4,7 +4,7 @@ import ChartWidthMixin from "./ChartWidthMixin";
 import SaveChartAsImage from "./SaveChartAsImage";
 import fitWidth from "./fitWidth";
 
-export { 
+export {
 	TypeChooser,
 	ChartWidthMixin,
 	SaveChartAsImage,

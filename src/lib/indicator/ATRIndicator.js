@@ -13,11 +13,11 @@ export default function ATRIndicator(options, chartProps, dataSeriesProps) {
 	var settings = objectAssign({}, defaultOptions, options);
 
 	function indicator(data) {
-		var atrAlgorithm = atr().windowSize(settings.period)
+		var atrAlgorithm = atr().windowSize(settings.period);
 
 		var atrCalculator = merge()
 			.algorithm(atrAlgorithm)
-			.mergePath([prefix, key])
+			.mergePath([prefix, key]);
 		var newData = atrCalculator(data);
 
 		// console.log(newData[20]);

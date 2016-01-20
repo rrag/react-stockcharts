@@ -3,8 +3,7 @@
 1. (Done) Drop support for React 0.13 and use React 0.14, fix all the deprecation warnings
 1. (Done) Provide touch support
 1. (Done) Indicators derived from other indicators
-1. use d3.functor for `ScatterSeries` and add an example
-1. add `yAccessorNarrow` to all basic Series (added to `HistogramSeries`)
+1. (Done) use d3.functor for `ScatterSeries` and add an example
 
 #### New Chart types
 1. (Done) Scatter chart

@@ -505,19 +505,17 @@ class EventHandler extends PureComponent {
 		}).map((chartData) => chartData.id);
 		var currentItems = getCurrentItems(this.state.chartData, mouseXY, this.state.plotData);
 
-		if (inputType === "mouse") {
-			var interactiveState = this.triggerCallback(
+		var interactiveState = inputType === "mouse"
+			? this.triggerCallback(
 				"mousemove",
 				objectAssign({}, this.state, { currentItems, currentCharts }),
 				this.state.interactiveState,
-				e);
-		} else {
-			var interactiveState = this.triggerCallback(
+				e)
+			: this.triggerCallback(
 				"touch",
 				objectAssign({}, this.state, { currentItems, currentCharts }),
 				this.state.interactiveState,
 				e);
-		}
 
 		var contexts = this.getCanvasContexts();
 
@@ -566,23 +564,23 @@ class EventHandler extends PureComponent {
 		});
 	}
 	pinchCoordinates(pinch) {
-		var { data, plotData, chartData, panInProgress } = this.state;
+		var { plotData } = this.state;
 
-		var { mainChartData, touch1Pos, touch2Pos, range } = pinch;
+		var { mainChartData, touch1Pos, touch2Pos } = pinch;
 
 		var firstX = getLongValue(mainChartData.config.xAccessor(getClosest(plotData, touch1Pos, mainChartData)));
 		var secondX = getLongValue(mainChartData.config.xAccessor(getClosest(plotData, touch2Pos, mainChartData)));
 		var pinchCoordinate = firstX < secondX ? {
-				left: firstX,
-				right: secondX,
-				leftxy: touch1Pos,
-				rightxy: touch2Pos,
-			} : {
-				left: secondX,
-				right: firstX,
-				leftxy: touch2Pos,
-				rightxy: touch1Pos,
-			};
+			left: firstX,
+			right: secondX,
+			leftxy: touch1Pos,
+			rightxy: touch2Pos,
+		} : {
+			left: secondX,
+			right: firstX,
+			leftxy: touch2Pos,
+			rightxy: touch1Pos,
+		};
 		return pinchCoordinate;
 	}
 	handlePinchZoom(initialPinch, finalPinch) {
@@ -599,7 +597,7 @@ class EventHandler extends PureComponent {
 		var domainL = initial.left - left;
 		var domainR = initial.right + right;
 
-		var { width, xAccessor } = mainChartData.config
+		var { width, xAccessor } = mainChartData.config;
 
 		var dataToPlot = getDataToPlotForDomain(domainL, domainR, data, width, xAccessor);
 
@@ -625,7 +623,7 @@ class EventHandler extends PureComponent {
 				plotData: dataToPlot.data,
 				interval: dataToPlot.interval,
 			});
-		})
+		});
 
 		// document.getElementById("debug_here").innerHTML = `${panInProgress}`;
 

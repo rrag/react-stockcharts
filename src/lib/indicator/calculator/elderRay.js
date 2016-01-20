@@ -33,7 +33,7 @@ import ema from "./ema";
 import zipper from "./zipper";
 
 import { ElderRay as defaultOptions } from "../defaultOptions";
-import { isDefined, isNotDefined, sourceFunctor } from "../../utils/utils";
+import { isNotDefined, sourceFunctor } from "../../utils/utils";
 
 export default function() {
 
@@ -48,8 +48,8 @@ export default function() {
 
 		var zip = zipper()
 			.combine((datum, mean) => {
-				var bullPower = isDefined(mean) ? ohlc(datum).high - mean : undefined
-				var bearPower = isDefined(mean) ? ohlc(datum).low - mean : undefined
+				var bullPower = isDefined(mean) ? ohlc(datum).high - mean : undefined;
+				var bearPower = isDefined(mean) ? ohlc(datum).low - mean : undefined;
 				return { bullPower, bearPower };
 			});
 

@@ -3,7 +3,7 @@
 import React from "react";
 import d3 from "d3";
 
-import { mousePosition, touchPosition, isReactVersion14 } from "./utils/utils";
+import { mousePosition, touchPosition } from "./utils/utils";
 
 var mousemove = "mousemove.pan", mouseup = "mouseup.pan";
 
@@ -12,7 +12,7 @@ function d3Window(node) {
 	return d3win;
 }
 
-function getTouchProps (touch) {
+function getTouchProps(touch) {
 	if (!touch) return {};
 	return {
 		pageX: touch.pageX,
@@ -146,7 +146,7 @@ class EventCapture extends React.Component {
 		var { mainChart, pan: panEnabled } = this.props;
 		var { deltaXY: dxdy } = this.context;
 
-		var { onPanStart, onMouseMove, focus, onFocus, chartData, onPanEnd, panInProgress } = this.context;
+		var { onPanStart, onMouseMove, chartData, onPanEnd, panInProgress } = this.context;
 		var mainChartData = chartData.filter((each) => each.id === mainChart) [0];
 
 		if (e.touches.length === 1) {
@@ -164,16 +164,10 @@ class EventCapture extends React.Component {
 			// pinch zoom begin
 			// do nothing pinch zoom is handled in handleTouchMove
 			var touch1 = getTouchProps(e.touches[0]);
-			var touch2 = getTouchProps(e.touches[1]);
 
-			var touch1Pos = touchPosition(touch1, e);
-			var touch2Pos = touchPosition(touch2, e);
-
-			var test = "a";
 			if (panInProgress && panEnabled && onPanEnd) {
 				// end pan first
 				var newPos = [touch1.pageX - dxdy[0], touch1.pageY - dxdy[1]];
-				test = "b" + newPos;
 				onPanEnd(newPos, e);
 				this.lastTouch = null;
 			}
@@ -188,14 +182,13 @@ class EventCapture extends React.Component {
 	}
 	handleTouchMove(e) {
 		var { mainChart, pan: panEnabled, onPan: panListener, zoom: zoomEnabled } = this.props;
-		var { deltaXY: dxdy, chartData, onPan, onPanEnd, onPinchZoom, focus, panInProgress } = this.context;
+		var { deltaXY: dxdy, chartData, onPan, onPinchZoom, focus, panInProgress } = this.context;
 
 		var mainChartData = chartData.filter((each) => each.id === mainChart) [0];
 		if (e.touches.length === 1) {
 			// pan
 			var touch = this.lastTouch = getTouchProps(e.touches[0]);
 
-			var touchPos = touchPosition(touch, e);
 			var newPos = [touch.pageX - dxdy[0], touch.pageY - dxdy[1]];
 			if (panInProgress && panEnabled && onPan) {
 				onPan(newPos, mainChartData.plot.scales.xScale.domain());

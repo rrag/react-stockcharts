@@ -35,7 +35,6 @@ import ema from "./ema";
 import zipper from "./zipper";
 
 import { BollingerBand as defaultOptions } from "../defaultOptions";
-import { isDefined, isNotDefined } from "../../utils/utils";
 
 export default function() {
 

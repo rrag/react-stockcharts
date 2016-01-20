@@ -1,18 +1,23 @@
 "use strict";
 
 import React from "react";
+import d3 from "d3";
 
 import wrap from "./wrap";
 import { hexToRGBA } from "../utils/utils";
 
 class ScatterSeries extends React.Component {
 	render() {
-		var { className, fill, stroke, marker: Marker, markerProps, xScale, yScale, plotData } = this.props;
+		var { className, fill, stroke, marker, markerProps, xScale, yScale, plotData } = this.props;
+		var m = d3.functor(marker);
 
 		var points = ScatterSeries.helper(this.props, xScale, yScale, plotData);
 
 		return <g className={className}>
-			{points.map((point, idx) => <Marker key={idx} {...markerProps} point={point} />)}
+			{points.map((point, idx) => {
+				var Marker = m(point.datum);
+				return <Marker key={idx} {...markerProps} point={point} />
+			})}
 		</g>;
 	}
 }
@@ -48,6 +53,7 @@ ScatterSeries.helper = (props, xScale, yScale, plotData) => {
 			y: yScale(isCompareSeries ? yAccessor(d.compare) : yAccessor(d)),
 			fill: hexToRGBA(fill(d), mProps.opacity),
 			stroke: stroke(d),
+			datum: d,
 		}));
 };
 
