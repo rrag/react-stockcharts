@@ -2,11 +2,15 @@
 
 import React from "react";
 import objectAssign from "object-assign";
+import first from "lodash.first";
+import last from "lodash.last";
 
 import PureComponent from "./utils/PureComponent";
+import Chart from "./Chart";
 
-import { getClosestItemIndexes, isReactVersion13 } from "./utils/utils";
-import { getMainChart, getChartData, getChartDataConfig, getClosest, getDataToPlotForDomain, getChartPlotFor, getCurrentItems } from "./utils/ChartDataUtil";
+import { isDefined, clearCanvas, calculate, getClosestItemIndex, getClosestItemIndexes, isReactVersion13 } from "./utils/utils";
+import zipper from "./utils/zipper";
+import { getNewChartConfig, getMainChart, getChartData, getChartDataConfig, getClosest, getDataToPlotForDomain, getChartPlotFor, getCurrentItem } from "./utils/ChartDataUtil";
 import { DummyTransformer } from "./transforms";
 
 var subscriptionCount = 0;
@@ -52,355 +56,67 @@ class EventHandler extends PureComponent {
 		this.panHappened = false;
 		this.state = {
 			focus: false,
-			currentItems: [],
+			currentItem: {},
 			show: false,
 			mouseXY: [0, 0],
 			panInProgress: false,
 			interactiveState: [],
-		};
-	}
-	getTransformedData(rawData, defaultDataTransform, dataTransform, interval) {
-		var i = 0, eachTransform, options = {}, data = rawData;
-		var transforms = defaultDataTransform.concat(dataTransform);
-
-		for (i = 0; i < transforms.length; i++) {
-			eachTransform = transforms[i].transform();
-			options = objectAssign({}, options, transforms[i].options);
-			options = eachTransform.options(options);
-			data = eachTransform(data, interval);
-		}
-		return {
-			data: data,
-			options: options
+			currentCharts: [],
 		};
 	}
 	componentWillMount() {
 		// console.log("EventHandler.componentWillMount");
 		var { props } = this;
-		var { initialDisplay, rawData, defaultDataTransform, dataTransform, interval, dimensions } = props;
+		var { rawData, calculator, interval, dimensions, xScale, xAccessor, xExtents, xDomain, children } = props;
+		var { dataPreProcessor } = props;
 
-		var transformedData = this.getTransformedData(rawData, defaultDataTransform, dataTransform, interval);
+		var data = calculate(dataPreProcessor, calculator, rawData); // calculate data
+		var dataForInterval = Array.isArray(data) ? data : data[interval]; // get data for interval
+		// console.log(data, interval);
+		// var dataForInterval = data; // get data for interval
+		// getXScale
+		// calculate xDomain & xRange
+		// get yscale and yExtents from all Chart children
 
-		var { data, options } = transformedData;
+		var extents = isDefined(xDomain)
+			? xDomain(dataForInterval, xAccessor)
+			: d3.extent(xExtents.map(each => each(dataForInterval, xAccessor)));
+		// compare extents with prev prop extents, set the xScale.domain only if they are different
 
-		var dataForInterval = data[interval];
-		var mainChart = getMainChart(props.children);
-		var beginIndex = Math.max(dataForInterval.length - initialDisplay, 0);
-		var plotData = dataForInterval.slice(beginIndex);
-		var chartConfig = getChartDataConfig(props, dimensions, options);
+		var left = getClosestItemIndexes(dataForInterval, extents[0], xAccessor).right;
+		var right = getClosestItemIndexes(dataForInterval, extents[1], xAccessor).left + 1;
 
-		var chart = chartConfig.filter((eachChart) => eachChart.id === mainChart)[0];
+		var plotData = dataForInterval.slice(left, right);
 
-		var domainL = getLongValue(chart.config.xAccessor(plotData[0]));
-		var domainR = getLongValue(chart.config.xAccessor(plotData[plotData.length - 1]));
+		var myXScale = xScale.copy()
+			.domain(extents)
+			.range([0, dimensions.width]);
 
-		var dataToPlot = getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.xAccessor);
-		var updatePlotData = dataToPlot.data;
+		if (myXScale.data && myXScale.isPolyLinear && myXScale.isPolyLinear()) {
+			myXScale.data(plotData);
+		}
+		// var transformedData = this.getTransformedData(rawData, defaultDataTransform, dataTransform, interval);
 
-		var chartData = getChartData(props, dimensions, plotData, data, options);
+		var chartConfig = getNewChartConfig(dimensions, children);
 
-		// if (dataToPlot.data.length < 10) return;
+		var yDomains = chartConfig
+			.map(({ yExtents }) => d3.extent(d3.merge(yExtents.map(eachExtent => d3.extent(plotData, eachExtent)))));
 
-		// console.log("componentWillMount", chartData);
+		var combine = zipper()
+			.combine((config, domain) => {
+				var { padding: { top, bottom }, height, width, yScale } = config;
+				// console.log(height, width);
+				return { ...config, yScale: yScale.copy().domain(domain).range([height - top, bottom]) };
+			})
+
+		var updatedChartConfig = combine(chartConfig, yDomains)
 		this.setState({
-			data: data,
-			rawData: rawData,
-			options: options,
-			plotData: updatePlotData,
-			chartData: chartData,
-			interval: this.props.interval,
-			mainChart: mainChart,
-			currentCharts: [mainChart],
-			initialRender: true,
-		});
-	}
-	componentWillReceiveProps(nextProps) {
-
-		var { rawData: prevData, dataTransform: prevDataTransform } = this.props;
-		var { rawData: nextData, dataTransform: nextDataTransform } = nextProps;
-		var { dimensions, initialDisplay, defaultDataTransform, interval: intervalProp } = nextProps;
-
-		var { data, options, interval, chartData, plotData, rawData } = this.state;
-
-		var dataChanged = false;
-		if (prevData !== nextData || !deepEquals(prevDataTransform, nextDataTransform)) {
-			var transformedData = this.getTransformedData(nextData, defaultDataTransform, nextDataTransform, intervalProp);
-			data = transformedData.data;
-			options = transformedData.options;
-
-			dataChanged = true;
-			rawData = nextData;
-		}
-
-		var dataForInterval = data[interval];
-
-		var mainChart = getMainChart(nextProps.children);
-		var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
-		var xScale = mainChartData.plot.scales.xScale;
-
-		var domainL, domainR, startDomain = xScale.domain();
-		// console.log(dataPushed, lastItemVisible);
-
-		if (dataChanged) {
-			var beginIndex = Math.max(dataForInterval.length - initialDisplay, 0);
-			var endIndex = dataForInterval.length;
-
-			plotData = dataForInterval.slice(beginIndex, endIndex);
-		} else {
-			domainL = startDomain[0];
-			domainR = startDomain[1];
-		}
-
-		// console.log(plotData[0], plotData[plotData.length - 1]);
-		var newChartData = getChartData(nextProps, dimensions, plotData, data, options);
-		var chart = newChartData.filter((eachChart) => eachChart.id === mainChart)[0];
-		var { xAccessor, width } = chart.config;
-		if (!domainL) {
-			domainL = getLongValue(xAccessor(plotData[0]));
-			domainR = getLongValue(xAccessor(plotData[plotData.length - 1]));
-		}
-
-		var dataToPlot = getDataToPlotForDomain(domainL, domainR, data, width, xAccessor);
-		plotData = dataToPlot.data;
-
-		newChartData = newChartData.map((eachChart) => {
-			var plot = getChartPlotFor(eachChart.config, eachChart.scaleType, plotData, domainL, domainR);
-			return {
-				id: eachChart.id,
-				config: eachChart.config,
-				scaleType: eachChart.scaleType,
-				plot: plot
-			};
-		});
-
-		var newCurrentItems = getCurrentItems(newChartData, this.state.mouseXY, plotData);
-
-		this.clearBothCanvas(nextProps);
-		this.clearInteractiveCanvas(nextProps);
-
-		// console.log("componentWillReceiveProps");
-
-		this.clearCanvasDrawCallbackList();
-
-		this.setState({
-			rawData: rawData,
-			data: data,
-			options: options,
-			chartData: newChartData,
-			plotData: plotData,
-			currentItems: newCurrentItems,
-			mainChart: mainChart,
-			initialRender: false,
-			canvases: null,
-		});
-	}
-	pushData(array) {
-		if (array === undefined || array === null || array.length === 0) return;
-
-		var { dataTransform, defaultDataTransform, dimensions  } = this.props;
-		var { rawData, data, interval, chartData, plotData, mainChart } = this.state;
-
-		var newRawData = rawData.concat(array);
-		var transformedData = this.getTransformedData(newRawData, defaultDataTransform, dataTransform, interval);
-
-		var prevDataForInterval = data[interval];
-		var dataForInterval = transformedData.data[interval];
-
-		var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
-		var xAccessor = mainChartData.config.xAccessor;
-		var xScale = mainChartData.plot.scales.xScale;
-
-		var startDomain = xScale.domain();
-		var domainL, domainR;
-
-		var lastItemVisible = plotData[plotData.length - 1] === prevDataForInterval[prevDataForInterval.length - 1];
-
-		var beginIndex, endIndex;
-		if (lastItemVisible) {
-			endIndex = dataForInterval.length;
-			beginIndex = dataForInterval.length - plotData.length;
-		} else {
-			domainL = startDomain[0];
-			domainR = startDomain[1];
-			beginIndex = getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
-			endIndex = beginIndex + plotData.length;
-		}
-
-		var newPlotData = dataForInterval.slice(beginIndex, endIndex);
-		// console.log(newPlotData[newPlotData.length - 1]);
-
-		if (lastItemVisible && domainL === undefined) {
-			if (startDomain[1] > xAccessor(plotData[plotData.length - 1])) {
-				domainL = startDomain[0] + (xAccessor(newPlotData[newPlotData.length - 1]) - xAccessor(plotData[plotData.length - 1]));
-				domainR = startDomain[1] + (xAccessor(newPlotData[newPlotData.length - 1]) - xAccessor(plotData[plotData.length - 1]));
-			}
-		}
-
-		var newChartData = getChartData(this.props, dimensions, newPlotData, transformedData.data, transformedData.options);
-
-		if (domainL === undefined) {
-			domainL = xAccessor(newPlotData[0]);
-			domainR = xAccessor(newPlotData[newPlotData.length - 1]);
-		}
-
-		var l = 2, i = 0, speed = 16;
-
-		var updateState = (L, R) => {
-			newChartData = newChartData.map((eachChart) => {
-				var plot = getChartPlotFor(eachChart.config, eachChart.scaleType, newPlotData, L, R);
-				return {
-					id: eachChart.id,
-					config: eachChart.config,
-					scaleType: eachChart.scaleType,
-					plot: plot
-				};
-			});
-
-			var newCurrentItems = getCurrentItems(newChartData, this.state.mouseXY, newPlotData);
-
-			this.clearBothCanvas();
-			this.clearInteractiveCanvas();
-
-			this.clearCanvasDrawCallbackList();
-			this.setState({
-				rawData: newRawData,
-				data: transformedData.data,
-				options: transformedData.options,
-				chartData: newChartData,
-				plotData: newPlotData,
-				currentItems: newCurrentItems,
-				canvases: null,
-			});
-		};
-		if (lastItemVisible) {
-
-			var timeout = setInterval(() => {
-				var dxL = (startDomain[0] - domainL) / l;
-				var dxR = (startDomain[1] - domainR) / l;
-
-				i++;
-
-				var L = i === l ? domainL : startDomain[0] - dxL * i;
-				var R = i === l ? domainR : startDomain[1] - dxR * i;
-				updateState(L, R);
-				if (i === l) clearInterval(timeout);
-			}, speed);
-		} else {
-			this.setState({
-				rawData: newRawData,
-				data: transformedData.data,
-				options: transformedData.options,
-			});
-		}
-	}
-	alterData(newRawData) {
-		if (newRawData === undefined || newRawData === null || newRawData.length === 0) return;
-
-		var { dataTransform, defaultDataTransform, dimensions  } = this.props;
-		var { rawData, interval, chartData, plotData, mainChart } = this.state;
-
-		if (rawData.length !== newRawData.length) {
-			console.log(rawData.length, newRawData.length);
-			throw Error("Have to update data of same length");
-		}
-
-		var transformedData = this.getTransformedData(newRawData, defaultDataTransform, dataTransform, interval);
-
-		var dataForInterval = transformedData.data[interval];
-
-		var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
-		var xAccessor = mainChartData.config.xAccessor;
-		var xScale = mainChartData.plot.scales.xScale;
-
-		var startDomain = xScale.domain();
-
-		var left = xAccessor(plotData[0]);
-		var beginIndex = getClosestItemIndexes(dataForInterval, left, xAccessor).left;
-		var endIndex = beginIndex + plotData.length;
-
-		var newPlotData = dataForInterval.slice(beginIndex, endIndex);
-
-		var newChartData = getChartData(this.props, dimensions, newPlotData, transformedData.data, transformedData.options);
-
-		newChartData = newChartData.map((eachChart) => {
-			var plot = getChartPlotFor(eachChart.config, eachChart.scaleType, newPlotData, startDomain[0], startDomain[1]);
-			return {
-				id: eachChart.id,
-				config: eachChart.config,
-				scaleType: eachChart.scaleType,
-				plot: plot
-			};
-		});
-
-		var newCurrentItems = getCurrentItems(newChartData, this.state.mouseXY, newPlotData);
-
-		this.clearBothCanvas();
-		this.clearInteractiveCanvas();
-
-		this.clearCanvasDrawCallbackList();
-
-		this.setState({
-			rawData: newRawData,
-			data: transformedData.data,
-			options: transformedData.options,
-			chartData: newChartData,
-			plotData: newPlotData,
-			currentItems: newCurrentItems,
-			canvases: null,
-		});
-	}
-	getDataInfo() {
-		var interval = "D";
-		var { data, plotData, chartData, mainChart } = this.state;
-		var dataForInterval = data[interval];
-		var mainChartData = chartData.filter((each) => each.id === mainChart)[0];
-		var { xAccessor } = mainChartData.config;
-
-		return {
-			xAccessor,
-			data: dataForInterval,
-			fullData: {
-				start: dataForInterval[0],
-				end: dataForInterval[dataForInterval.length - 1],
-			},
-			viewData: {
-				start: plotData[0],
-				end: plotData[plotData.length - 1],
-			}
-		};
-	}
-	setViewRange(domainL, domainR) {
-		var { data, mainChart, chartData, mouseXY } = this.state;
-
-		var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0];
-		var dataToPlot = getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.xAccessor);
-
-		if (dataToPlot.data.length < 10) {
-			console.warn("Ouch... too much zoom");
-			return;
-		}
-
-		var newChartData = chartData.map((eachChart) => {
-			var plot = getChartPlotFor(eachChart.config, eachChart.scaleType, dataToPlot.data, domainL, domainR);
-			return {
-				id: eachChart.id,
-				config: eachChart.config,
-				scaleType: eachChart.scaleType,
-				plot: plot
-			};
-		});
-
-		var currentItems = getCurrentItems(newChartData, mouseXY, dataToPlot.data);
-
-		this.clearBothCanvas();
-		this.clearInteractiveCanvas();
-
-		this.clearCanvasDrawCallbackList();
-		this.setState({
-			chartData: newChartData,
-			plotData: dataToPlot.data,
-			interval: dataToPlot.interval,
-			currentItems,
+			data,
+			xScale: myXScale,
+			rawData,
+			plotData,
+			extents,
+			chartConfig: updatedChartConfig,
 		});
 	}
 	clearBothCanvas(props) {
@@ -408,7 +124,7 @@ class EventHandler extends PureComponent {
 		var canvases = props.canvasContexts();
 		if (canvases && canvases.axes) {
 			// console.log("CLEAR");
-			this.clearCanvas([canvases.axes, canvases.mouseCoord]);
+			clearCanvas([canvases.axes, canvases.mouseCoord]);
 		}
 	}
 	clearInteractiveCanvas(props) {
@@ -416,34 +132,26 @@ class EventHandler extends PureComponent {
 		var canvases = props.canvasContexts();
 		if (canvases && canvases.interactive) {
 			// console.error("CLEAR");
-			this.clearCanvas([canvases.interactive]);
+			clearCanvas([canvases.interactive]);
 		}
 	}
-	clearCanvas(canvasList) {
-		// console.log("CLEARING...", canvasList.length)
-		canvasList.forEach(each => {
-			// console.log(each.canvas.id);
-			each.setTransform(1, 0, 0, 1, 0, 0);
-			each.clearRect(-1, -1, each.canvas.width + 2, each.canvas.height + 2);
-		});
-	}
+
 	getChildContext() {
 		return {
 			plotData: this.state.plotData,
-			chartData: this.state.chartData,
-			currentItems: this.state.currentItems,
-			mainChart: this.state.mainChart,
+			chartConfig: this.state.chartConfig,
+			currentCharts: this.state.currentCharts,
+			currentItem: this.state.currentItem,
 			show: this.state.show,
 			mouseXY: this.state.mouseXY,
 			interval: this.state.interval,
-			currentCharts: this.state.currentCharts,
 			width: this.props.dimensions.width,
 			height: this.props.dimensions.height,
 			chartCanvasType: this.props.type,
-			dateAccessor: this.state.options.dateAccessor,
+			xScale: this.state.xScale,
+			xAccessor: this.props.xAccessor,
 
 			margin: this.props.margin,
-			dataTransform: this.props.dataTransform,
 			interactiveState: this.state.interactiveState,
 
 			callbackForCanvasDraw: this.pushCallbackForCanvasDraw,
@@ -498,14 +206,19 @@ class EventHandler extends PureComponent {
 		this.subscriptions = this.subscriptions.filter(each => each.subscriptionId === subscriptionId);
 	}
 	handleMouseMove(mouseXY, inputType, e) {
-		var currentCharts = this.state.chartData.filter((chartData) => {
-			var top = chartData.config.origin[1];
-			var bottom = top + chartData.config.height;
-			return (mouseXY[1] > top && mouseXY[1] < bottom);
-		}).map((chartData) => chartData.id);
-		var currentItems = getCurrentItems(this.state.chartData, mouseXY, this.state.plotData);
+		var { chartConfig, plotData, xScale } = this.state;
+		var { xAccessor } = this.props;
 
-		var interactiveState = inputType === "mouse"
+		var currentCharts = chartConfig.filter(eachConfig => {
+			var top = eachConfig.origin[1];
+			var bottom = top + eachConfig.height;
+			return (mouseXY[1] > top && mouseXY[1] < bottom);
+		}).map(chartData => chartData.id);
+
+		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
+		// console.log(currentCharts, currentItem);
+
+		/*var interactiveState = inputType === "mouse"
 			? this.triggerCallback(
 				"mousemove",
 				objectAssign({}, this.state, { currentItems, currentCharts }),
@@ -515,22 +228,22 @@ class EventHandler extends PureComponent {
 				"touch",
 				objectAssign({}, this.state, { currentItems, currentCharts }),
 				this.state.interactiveState,
-				e);
+				e);*/
 
 		var contexts = this.getCanvasContexts();
 
 		if (contexts && contexts.mouseCoord) {
-			this.clearCanvas([contexts.mouseCoord]);
+			clearCanvas([contexts.mouseCoord]);
 		}
 		// console.log(interactiveState === this.state.interactiveState);
-		if (interactiveState !== this.state.interactiveState) this.clearInteractiveCanvas();
+		// if (interactiveState !== this.state.interactiveState) this.clearInteractiveCanvas();
 
 		this.setState({
-			mouseXY: mouseXY,
-			currentItems: currentItems,
+			mouseXY,
+			currentItem,
 			show: true,
 			currentCharts,
-			interactiveState,
+			// interactiveState,
 		});
 	}
 	getCanvasContexts() {
@@ -540,7 +253,7 @@ class EventHandler extends PureComponent {
 	handleMouseEnter() {
 		// if type === svg remove state.canvases
 		// if type !== svg get canvases and set in state if state.canvases is not present already
-		var { type, canvasContexts } = this.props;
+		/*var { type, canvasContexts } = this.props;
 		var { canvases } = this.state;
 		if (type === "svg") {
 			canvases = null;
@@ -548,15 +261,15 @@ class EventHandler extends PureComponent {
 			canvases = canvasContexts();
 		}
 		this.setState({
-			show: true,
+			show: false,
 			canvases: canvases,
-		});
+		});*/
 	}
 	handleMouseLeave() {
 		var contexts = this.getCanvasContexts();
 
 		if (contexts && contexts.mouseCoord) {
-			this.clearCanvas([contexts.mouseCoord]);
+			clearCanvas([contexts.mouseCoord]);
 		}
 
 		this.setState({
@@ -926,8 +639,27 @@ EventHandler.defaultProps = {
 
 EventHandler.childContextTypes = {
 	plotData: React.PropTypes.array,
-	chartData: React.PropTypes.array,
-	currentItems: React.PropTypes.array,
+	chartConfig: React.PropTypes.arrayOf(
+		React.PropTypes.shape({
+			id: React.PropTypes.number.isRequired,
+			origin: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
+			padding: React.PropTypes.shape({
+				top: React.PropTypes.number,
+				bottom: React.PropTypes.number,
+			}),
+			yExtents: React.PropTypes.arrayOf(React.PropTypes.func).isRequired,
+			yScale: React.PropTypes.func.isRequired,
+			mouseCoordinates: React.PropTypes.shape({
+				at: React.PropTypes.string,
+				format: React.PropTypes.func
+			}),
+			width: React.PropTypes.number.isRequired,
+			height: React.PropTypes.number.isRequired,
+		})
+	).isRequired,
+	xScale: React.PropTypes.func.isRequired,
+	xAccessor: React.PropTypes.func.isRequired,
+	currentItem: React.PropTypes.object,
 	show: React.PropTypes.bool,
 	mouseXY: React.PropTypes.array,
 	interval: React.PropTypes.string,

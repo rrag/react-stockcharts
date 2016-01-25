@@ -145,8 +145,8 @@ function renderPage(data, dataFull, compareData) {
 d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
 	d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 		d3.tsv("data/comparison.tsv", (err3, compareData) => {
-			renderPage(MSFT, MSFTFull, compareData);
-			// renderPartialPage(MSFT, MSFTFull, compareData);
+			// renderPage(MSFT, MSFTFull, compareData);
+			renderPartialPage(MSFT, MSFTFull, compareData);
 		});
 	});
 });
@@ -210,19 +210,19 @@ function renderPartialPage(data, dataFull, compareData) {
 	// AreaChartWithYPercent
 	// CandleStickChart
 	// CandleStickStockScaleChart
+	// CandleStickStockScaleChartWithVolumeHistogramV1
+	// CandleStickStockScaleChartWithVolumeHistogramV2
+	// CandleStickStockScaleChartWithVolumeHistogramV3
+	// CandleStickChartWithCHMousePointer
+	// CandleStickChartWithZoomPan
+	// CandleStickChartWithMA
+	// CandleStickChartWithBollingerBandOverlay
 	// CandleStickChartWithEdge
 	// HaikinAshi
 	// Kagi
 	// PointAndFigure
 	// Renko
 	// CandleStickChartWithEdge  - Lots of data -> data={dataFull}/>
-	// CandleStickChartWithCHMousePointer
-	// CandleStickChartWithMA
-	// CandleStickChartWithBollingerBandOverlay
-	// CandleStickStockScaleChartWithVolumeHistogramV1
-	// CandleStickStockScaleChartWithVolumeHistogramV2
-	// CandleStickStockScaleChartWithVolumeHistogramV3
-	// CandleStickChartWithZoomPan
 	// CandleStickChartWithCompare
 	// CandleStickChartWithMACDIndicator
 	// CandleStickChartWithRSIIndicator
@@ -240,7 +240,7 @@ function renderPartialPage(data, dataFull, compareData) {
 	// OHLCChartWithElderImpulseIndicator
 	// CandleStickChartWithBrush
 	// CandleStickChartWith2DBrush
-	var Chart = require("lib/charts/CandleStickChartWith2DBrush").default;
+	var Chart = require("lib/charts/CandleStickChartWithCHMousePointer").default;
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	// data, dataFull, compareData

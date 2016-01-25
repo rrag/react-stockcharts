@@ -29,7 +29,6 @@ function pure(PureSeries, contextShape) {
 	PureCanvasSeries.displayName = `pure(${ getDisplayName(PureSeries) })`;
 
 	PureCanvasSeries.contextTypes = contextShape;
-	PureCanvasSeries.yAccessor = PureSeries.yAccessor;
 
 	var defaultProps = {};
 

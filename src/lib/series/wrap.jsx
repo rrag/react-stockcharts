@@ -36,7 +36,7 @@ function wrap(WrappedSeries) {
 			var callback = WrappedSeries.drawOnCanvas;
 			if (callback) {
 				var { canvasOriginX, canvasOriginY, height, width, compareSeries,
-					indicator, xAccessor, yAccessor, seriesId, chartId } = nextProps;
+					indicator, xAccessor, yAccessor, chartId } = nextProps;
 				var canvasOrigin = [canvasOriginX, canvasOriginY];
 
 				var { defaultProps } = WrappedSeries;
@@ -46,19 +46,19 @@ function wrap(WrappedSeries) {
 
 				nextProps.callbackForCanvasDraw({
 					chartId: chartId,
-					seriesId: seriesId,
+					// seriesId: seriesId,
 					draw: draw,
 				});
 			}
 		}
 		render() {
 			var callback = WrappedSeries.drawOnCanvas;
-			var { chartCanvasType } = this.props;
+			var { chartCanvasType, chartConfig } = this.props;
 
 			if (chartCanvasType !== "svg" && callback !== undefined) return null;
 
 			return <WrappedSeries ref="wrappedSeries"
-				{...this.props} />;
+				{...this.props} yScale={chartConfig.yScale} />;
 		}
 	};
 
@@ -66,11 +66,11 @@ function wrap(WrappedSeries) {
 
 	BaseCanvasSeries.baseReStockDrawOnCanvasHelper = (canvasContext, props, callback) => {
 		var { height, width, compareSeries, indicator, xAccessor, yAccessor,
-			xScale, yScale, plotData, canvasOriginX, canvasOriginY } = props;
+			xScale, chartConfig, plotData, canvasOriginX, canvasOriginY } = props;
 		var canvasOrigin = [canvasOriginX, canvasOriginY];
 
 		BaseCanvasSeries.baseReStockDrawOnCanvas(props, callback, canvasOrigin, height, width,
-			compareSeries, indicator, xAccessor, yAccessor, canvasContext, xScale, yScale, plotData);
+			compareSeries, indicator, xAccessor, yAccessor, canvasContext, xScale, chartConfig.yScale, plotData);
 	};
 
 	BaseCanvasSeries.baseReStockDrawOnCanvas = (props, callback,
@@ -105,7 +105,6 @@ function wrap(WrappedSeries) {
 		.filter(key => key !== "childContextTypes")
 		.forEach(key => BaseCanvasSeries[key] = WrappedSeries[key]);*/
 
-	BaseCanvasSeries.yAccessor = WrappedSeries.yAccessor;
 	BaseCanvasSeries.defaultProps = WrappedSeries.defaultProps;
 
 	BaseCanvasSeries.propTypes = {
@@ -122,17 +121,14 @@ function wrap(WrappedSeries) {
 		width: React.PropTypes.number.isRequired,
 		callbackForCanvasDraw: React.PropTypes.func.isRequired,
 		chartId: React.PropTypes.number.isRequired,
-		seriesId: React.PropTypes.number.isRequired,
+		// seriesId: React.PropTypes.number.isRequired,
 		stroke: React.PropTypes.string,
 		fill: React.PropTypes.string,
-
+		chartConfig: React.PropTypes.object.isRequired,
 		chartCanvasType: React.PropTypes.string,
-		indicator: React.PropTypes.func,
 		xScale: React.PropTypes.func.isRequired,
-		yScale: React.PropTypes.func.isRequired,
+		// yScale: React.PropTypes.func.isRequired,
 		xAccessor: React.PropTypes.func.isRequired,
-		yAccessor: React.PropTypes.func.isRequired,
-		compareSeries: React.PropTypes.array.isRequired,
 		plotData: React.PropTypes.array.isRequired,
 	});
 }

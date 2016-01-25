@@ -1,6 +1,8 @@
 "use strict";
 
 import React from "react";
+import last from "lodash.last";
+import first from "lodash.first";
 
 import wrap from "./wrap";
 import { hexToRGBA } from "../utils/utils";
@@ -37,7 +39,7 @@ CandlestickSeries.propTypes = {
 		down: React.PropTypes.string
 	}),
 	xAccessor: React.PropTypes.func,
-	yAccessor: React.PropTypes.func,
+	yAccessor: React.PropTypes.func.isRequired,
 	xScale: React.PropTypes.func,
 	yScale: React.PropTypes.func,
 	compareSeries: React.PropTypes.array,
@@ -48,6 +50,7 @@ CandlestickSeries.defaultProps = {
 	className: "react-stockcharts-candlestick",
 	wickClassName: "react-stockcharts-candlestick-wick",
 	candleClassName: "react-stockcharts-candlestick-candle",
+	yAccessor: d => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
 	classNames: {
 		up: "up",
 		down: "down"
@@ -96,8 +99,6 @@ CandlestickSeries.getCandlesSVG = (props) => {
 	});
 	return candles;
 };
-
-CandlestickSeries.yAccessor = (d) => ({ open: d.open, high: d.high, low: d.low, close: d.close });
 
 CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { compareSeries, xAccessor, yAccessor } = props;
@@ -153,14 +154,14 @@ CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 };
 
 CandlestickSeries.getWickData = (props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData) => {
-	var isCompareSeries = compareSeries.length > 0;
+	// var isCompareSeries = false; // compareSeries.length > 0;
 
 	var { classNames, wickStroke } = props;
 	var wickData = plotData
 			.filter((d) => d.close !== undefined)
 			.map((d) => {
 				// console.log(yAccessor);
-				var ohlc = isCompareSeries ? yAccessor(d.compare) : yAccessor(d);
+				var ohlc = yAccessor(d);
 
 				var x1 = Math.round(xScale(xAccessor(d))),
 					y1 = yScale(ohlc.high),
@@ -182,18 +183,19 @@ CandlestickSeries.getWickData = (props, xAccessor, yAccessor, xScale, yScale, co
 };
 
 CandlestickSeries.getCandleData = (props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData) => {
-	var isCompareSeries = compareSeries.length > 0;
+	// var isCompareSeries = false; // compareSeries.length > 0;
 
 	var { classNames, fill, stroke, widthRatio } = props;
 
-	var width = xScale(xAccessor(plotData[plotData.length - 1]))
-		- xScale(xAccessor(plotData[0]));
+	// console.log(plotData);
+	var width = xScale(xAccessor(last(plotData)))
+		- xScale(xAccessor(first(plotData)));
 	var cw = (width / (plotData.length - 1)) * widthRatio;
 	var candleWidth = Math.round(cw); // Math.floor(cw) % 2 === 0 ? Math.floor(cw) : Math.round(cw);
 	var candles = plotData
 			.filter((d) => d.close !== undefined)
 			.map((d) => {
-				var ohlc = isCompareSeries ? yAccessor(d.compare) : yAccessor(d);
+				var ohlc = yAccessor(d);
 				var x = Math.round(xScale(xAccessor(d)))
 						- (candleWidth === 1 ? 0 : 0.5 * candleWidth),
 					y = yScale(Math.max(ohlc.open, ohlc.close)),

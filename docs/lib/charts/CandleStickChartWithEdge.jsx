@@ -8,6 +8,8 @@ import * as ReStock from "react-stockcharts";
 var { ChartCanvas, Chart, DataSeries, OverlaySeries,EventCapture } = ReStock;
 
 var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries } = ReStock.series;
+var { financeEODCalculator, intervalDWMCalculator } = ReStock.scale;
+
 var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 
@@ -23,10 +25,14 @@ class CandleStickChartWithEdge extends React.Component {
 
 		return (
 			<ChartCanvas width={width} height={400}
-				margin={{left: 90, right: 70, top:10, bottom: 30}} initialDisplay={300}
-				dataTransform={[ { transform: StockscaleTransformer } ]}
-				data={data} type={type}>
-				<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}>
+				margin={{left: 50, right: 50, top:10, bottom: 30}}
+				data={data} type={type}
+				dataPreProcessor={eodDiscontiniousScaleHelper}
+				calculator={[intervalDWMCalculator()]}
+				xAccessor={eodDiscontiniousScaleHelper.xAccessor()} xScale={eodDiscontiniousScaleHelper.scale()}
+				xExtents={eodDiscontiniousScaleHelper.extents(new Date(2012, 0, 1), new Date(2012, 6, 2))}>
+
+				<Chart id={1} yExtents={[d => d.high, d => d.low]}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<DataSeries id={0} yAccessor={CandlestickSeries.yAccessor} >

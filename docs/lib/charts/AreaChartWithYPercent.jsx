@@ -15,14 +15,14 @@ class AreaChartWithYPercent extends React.Component {
 		return (
 			<ChartCanvas width={width} height={400}
 				margin={{left: 50, right: 50, top:10, bottom: 30}}
-				data={data} type={type}>
-				<Chart id={0} xAccessor={(d) => d.date}>
+				data={data} type={type}
+				xAccessor={(d) => d.date} xScale={d3.time.scale()}
+				xExtents={[new Date(2011, 0, 1), new Date(2013, 0, 2)]}>
+				<Chart id={0} yExtents={d => d.close}>
 					<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 					<YAxis axisAt="left" orient="left" />
 					<YAxis axisAt="right" orient="right" percentScale={true} tickFormat={d3.format(".0%")}/>
-					<DataSeries id={0} yAccessor={(d) => d.close} stroke="#4682B4" fill="#4682B4">
-						<AreaSeries />
-					</DataSeries>
+					<AreaSeries yAccessor={(d) => d.close}/>
 				</Chart>
 			</ChartCanvas>
 		);

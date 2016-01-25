@@ -289,7 +289,13 @@ EventCapture.defaultProps = {
 EventCapture.contextTypes = {
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
-	chartData: React.PropTypes.array,
+	panInProgress: React.PropTypes.bool,
+	focus: React.PropTypes.bool.isRequired,
+	chartConfig: React.PropTypes.array,
+	xScale: React.PropTypes.func.isRequired,
+	xAccessor: React.PropTypes.func.isRequired,
+	deltaXY: React.PropTypes.arrayOf(Number),
+
 	onMouseMove: React.PropTypes.func,
 	onMouseEnter: React.PropTypes.func,
 	onMouseLeave: React.PropTypes.func,
@@ -298,10 +304,7 @@ EventCapture.contextTypes = {
 	onPanStart: React.PropTypes.func,
 	onPan: React.PropTypes.func,
 	onPanEnd: React.PropTypes.func,
-	panInProgress: React.PropTypes.bool,
-	focus: React.PropTypes.bool.isRequired,
 	onFocus: React.PropTypes.func,
-	deltaXY: React.PropTypes.arrayOf(Number),
 };
 
 export default EventCapture;

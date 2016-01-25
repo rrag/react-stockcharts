@@ -1,6 +1,6 @@
 "use strict";
 
-import stockScale from "../scale/polylineartimescale";
+// import stockScale from "../scale/polylineartimescale";
 import objectAssign from "object-assign";
 
 var defaultOptions = {

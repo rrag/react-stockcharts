@@ -17,13 +17,14 @@ class CandleStickChart extends React.Component {
 		return (
 			<ChartCanvas width={width} height={400}
 				margin={{left: 50, right: 50, top:10, bottom: 30}}
-				data={data.slice(0, 150)} type={type} >
-				<Chart id={1} xAccessor={(d) => d.date}>
+				data={data} type={type}
+				xAccessor={d => d.date} xScale={d3.time.scale()}
+				xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 1)]}>
+
+				<Chart id={1} yExtents={[d => d.high, d => d.low]}>
 					<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 					<YAxis axisAt="left" orient="left" ticks={5} />
-					<DataSeries id={0} yAccessor={CandlestickSeries.yAccessor} >
-						<CandlestickSeries />
-					</DataSeries>
+					<CandlestickSeries />
 				</Chart>
 			</ChartCanvas>
 		);

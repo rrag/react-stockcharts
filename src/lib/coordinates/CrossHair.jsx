@@ -111,7 +111,6 @@ CrossHair.helper = (props) => {
 };
 
 CrossHair.drawOnCanvasStatic = (ctx, props) => {
-	// console.log(props);
 	props = objectAssign({}, CrossHair.defaultProps, props);
 	var result = CrossHair.helper(props);
 	var { line, edges } = result;

@@ -39,12 +39,12 @@ class MouseCoordinates extends React.Component {
 		}
 	}
 	render() {
-		var { chartCanvasType, mouseXY, currentCharts, chartData, currentItems, show } = this.props;
+		var { chartCanvasType, mouseXY, currentCharts, chartConfig, currentItem, show } = this.props;
 		var { stroke, opacity, textStroke, textBGFill, textBGopacity, fontFamily, fontSize } = this.props;
 
 		if (chartCanvasType !== "svg") return null;
 
-		var pointer = MouseCoordinates.helper(this.props, show, mouseXY, currentCharts, chartData, currentItems);
+		var pointer = MouseCoordinates.helper(this.props, show, mouseXY, currentCharts, chartConfig, currentItem);
 
 		if (!pointer) return null;
 
@@ -58,15 +58,17 @@ class MouseCoordinates extends React.Component {
 
 MouseCoordinates.propTypes = {
 	xDisplayFormat: React.PropTypes.func.isRequired,
-	yDisplayFormat: React.PropTypes.func.isRequired,
 	type: React.PropTypes.oneOf(["crosshair"]).isRequired,
 
+	xScale: React.PropTypes.func.isRequired,
+	xAccessor: React.PropTypes.func.isRequired,
+	displayXAccessor: React.PropTypes.func.isRequired,
 	chartCanvasType: React.PropTypes.string,
 	getCanvasContexts: React.PropTypes.func,
 	mouseXY: React.PropTypes.array,
-	currentCharts: React.PropTypes.array,
-	chartData: React.PropTypes.array,
-	currentItems: React.PropTypes.array,
+	currentCharts: React.PropTypes.arrayOf(React.PropTypes.number),
+	chartConfig: React.PropTypes.array.isRequired,
+	currentItem: React.PropTypes.object.isRequired,
 	show: React.PropTypes.bool,
 	stroke: React.PropTypes.string,
 	opacity: React.PropTypes.number,
@@ -82,7 +84,6 @@ MouseCoordinates.defaultProps = {
 	snapX: true,
 	type: "crosshair",
 	xDisplayFormat: displayDateFormat,
-	yDisplayFormat: displayNumberFormat,
 	stroke: "#000000",
 	opacity: 0.2,
 	textStroke: "#ffffff",
@@ -100,15 +101,15 @@ MouseCoordinates.defaultProps = {
 };
 
 MouseCoordinates.drawOnCanvas = (canvasContext, props) => {
-	var { mouseXY, currentCharts, chartData, currentItems, show } = props;
+	var { mouseXY, currentCharts, chartConfig, currentItem, show } = props;
 
-	MouseCoordinates.drawOnCanvasStatic(props, canvasContext, show, mouseXY, currentCharts, chartData, currentItems);
+	// console.log(props.currentCharts);
+	MouseCoordinates.drawOnCanvasStatic(props, canvasContext, show, mouseXY, currentCharts, chartConfig, currentItem);
 };
-MouseCoordinates.drawOnCanvasStatic = (props, ctx, show, mouseXY, currentCharts, chartData, currentItems) => {
+MouseCoordinates.drawOnCanvasStatic = (props, ctx, show, mouseXY, currentCharts, chartConfig, currentItem) => {
 	var { margin } = props;
-	var pointer = MouseCoordinates.helper(props, show, mouseXY, currentCharts, chartData, currentItems);
+	var pointer = MouseCoordinates.helper(props, show, mouseXY, currentCharts, chartConfig, currentItem);
 
-	// console.log("HERE", show);
 	if (!pointer) return null;
 
 	var originX = 0.5 + margin.left;
@@ -123,53 +124,37 @@ MouseCoordinates.drawOnCanvasStatic = (props, ctx, show, mouseXY, currentCharts,
 	ctx.restore();
 };
 
-MouseCoordinates.helper = (props, show, mouseXY, currentCharts, chartData, currentItems) => {
+MouseCoordinates.helper = (props, show, mouseXY, currentCharts, chartConfig, currentItem) => {
 	if (!show) return;
-	var { mainChart, dateAccessor, height, width, snapX, xDisplayFormat } = props;
-	var edges = chartData
-		.filter((eachChartData) => currentCharts.indexOf(eachChartData.id) > -1)
-		.map((each) => {
-			var yDisplayFormat = each.config.compareSeries.length > 0
-				? (d) => (Math.round(d * 10000) / 100).toFixed(2) + "%"
-				: each.config.mouseCoordinates.format;
-			var mouseY = mouseXY[1] - each.config.origin[1];
-			var yValue = each.plot.scales.yScale.invert(mouseY);
+	var { displayXAccessor, xAccessor, xScale, height, width, snapX, xDisplayFormat } = props;
+
+	var edges = chartConfig
+		.filter(eachChartConfig => currentCharts.indexOf(eachChartConfig.id) > -1)
+		.filter(eachChartConfig => eachChartConfig.mouseCoordinates.at !== undefined)
+		.filter(eachChartConfig => eachChartConfig.mouseCoordinates.format !== undefined)
+		.map(eachChartConfig => {
+			var mouseY = mouseXY[1] - eachChartConfig.origin[1];
+			var yValue = eachChartConfig.yScale.invert(mouseY);
 			return {
-				id: each.id,
-				at: each.config.mouseCoordinates.at,
-				yValue: yValue,
-				yDisplayFormat: yDisplayFormat
+				id: eachChartConfig.id,
+				at: eachChartConfig.mouseCoordinates.at,
+				yValue,
+				yDisplayFormat: eachChartConfig.mouseCoordinates.format,
+				yDisplayValue: eachChartConfig.mouseCoordinates.format(yValue),
 			};
-		})
-		.filter((each) => each.at !== undefined)
-		.filter((each) => each.yDisplayFormat !== undefined)
-		.map(each => {
-			each.yDisplayValue = each.yDisplayFormat(each.yValue);
-			return each;
 		});
 
-	var singleChartData = chartData.filter((eachChartData) => eachChartData.id === mainChart)[0];
-	// console.log(props, show, mouseXY, currentCharts, chartData, currentItems);
 
-	// var yDisplayFormat = singleChartData.config.compareSeries.length > 0 ? (d) => (Math.round(d * 10000) / 100).toFixed(2) + "%" : this.props.yDisplayFormat;
+	var xValue = xAccessor(currentItem);
+	var displayValue = displayXAccessor(currentItem);
+	// console.log(show, edges, xValue);
 
-	var item = currentItems.filter((eachItem) => eachItem.id === mainChart)[0];// ChartDataUtil.getCurrentItemForChart(this.props, this.context);
-	if (item === undefined) return null;
-	item = item.data;
-	// console.log(singleChartData, item);
-	var xValue = singleChartData.config.xAccessor(item);
-
-	var xDisplayValue = dateAccessor === undefined
-		? xValue
-		: dateAccessor(item);
-
-	// var yValue = singleChartData.plot.scales.yScale.invert(mouseXY[1]);
-	if (xValue === undefined) return null;
-	var x = snapX ? Math.round(singleChartData.plot.scales.xScale(xValue)) : mouseXY[0];
+	var x = snapX ? Math.round(xScale(xValue)) : mouseXY[0];
 	var y = mouseXY[1];
+
 	var { stroke, opacity, textStroke, textBGFill, textBGopacity, fontFamily, fontSize } = props;
 
-	return { height, width, mouseXY: [x, y], xDisplayValue: xDisplayFormat(xDisplayValue), edges,
+	return { height, width, mouseXY: [x, y], xDisplayValue: xDisplayFormat(displayValue), edges,
 		stroke, opacity, textStroke, textBGFill, textBGopacity, fontFamily, fontSize };
 };
 
@@ -177,17 +162,18 @@ MouseCoordinates.helper = (props, show, mouseXY, currentCharts, chartData, curre
 export default pure(MouseCoordinates, {
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
-	mainChart: React.PropTypes.number.isRequired,
+	margin: React.PropTypes.object.isRequired,
 	show: React.PropTypes.bool,
 	mouseXY: React.PropTypes.array,
-	dateAccessor: React.PropTypes.func,
-	chartData: React.PropTypes.array.isRequired,
-	currentItems: React.PropTypes.array.isRequired,
-	currentCharts: React.PropTypes.array.isRequired,
+
+	xScale: React.PropTypes.func.isRequired,
+	xAccessor: React.PropTypes.func.isRequired,
+	chartCanvasType: React.PropTypes.string.isRequired,
+	chartConfig: React.PropTypes.array.isRequired,
+	currentItem: React.PropTypes.object.isRequired,
+	currentCharts: React.PropTypes.arrayOf(React.PropTypes.number),
+
 	getCanvasContexts: React.PropTypes.func,
-	margin: React.PropTypes.object.isRequired,
-	// secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
 	callbackForCanvasDraw: React.PropTypes.func.isRequired,
 	getAllCanvasDrawCallback: React.PropTypes.func,
-	chartCanvasType: React.PropTypes.string.isRequired,
 });

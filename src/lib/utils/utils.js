@@ -3,6 +3,7 @@
 import React from "react";
 import d3 from "d3";
 import get from "lodash.get"
+import isEqual from "lodash.isequal"
 
 export const overlayColors = d3.scale.category10();
 
@@ -122,7 +123,7 @@ export function getClosestItem(array, value, accessor) {
 						? array[lo]
 						: array[hi];
 	// console.log(array[lo], array[hi], closest, lo, hi);
-	return cloneMe(closest);
+	return closest;
 };
 
 export function getClosestItemIndex(array, value, accessor) {
@@ -140,25 +141,64 @@ export function getClosestItemIndex(array, value, accessor) {
 						? lo
 						: hi;
 
+	// console.log(value, accessor(array[closestIndex]));
+
 	return closestIndex;
 };
+
+export function clearCanvas(canvasList) {
+	// console.log("CLEARING...", canvasList.length)
+	canvasList.forEach(each => {
+		// console.log(each.canvas.id);
+		each.setTransform(1, 0, 0, 1, 0, 0);
+		each.clearRect(-1, -1, each.canvas.width + 2, each.canvas.height + 2);
+	});
+};
+
+export function calculate(dataPreProcessor, calculator, data) {
+	var result = dataPreProcessor(data);
+	calculator.forEach(eachCalculate => {
+		var each = eachCalculate();
+		if (each.dataPreProcessor)
+			each.dataPreProcessor(dataPreProcessor);
+
+		if (Array.isArray(data))
+			result = each(result);
+		else {
+			Object.keys(result).forEach(key => {
+				result[key] = each(result[key]);
+			})
+		}
+	});
+	return result;
+};
+function lte(value, compare) {
+	return value < compare || isEqual(value, compare)
+}
+
+function gte(value, compare) {
+	return value > compare || isEqual(value, compare)
+}
 
 export function getClosestItemIndexes(array, value, accessor) {
 	var lo = 0, hi = array.length - 1;
 	while (hi - lo > 1) {
 		var mid = Math.round((lo + hi) / 2);
-		if (accessor(array[mid]) <= value) {
+		if (lte(accessor(array[mid]), value)) {
 			lo = mid;
 		} else {
 			hi = mid;
 		}
 	}
-	if (accessor(array[lo]) === value) hi = lo;
-	// console.log(array[lo], array[hi], closestIndex, lo, hi);
-	return {
-		left: value > accessor(array[lo]) ? hi : lo,
-		right: value >= accessor(array[hi]) ? hi + 1 : hi
-	};
+	if (isEqual(accessor(array[lo]), value)) hi = lo;
+
+	// console.log(accessor(array[lo]), lo, value, hi, accessor(array[hi]));
+
+	// var left = value > accessor(array[lo]) ? lo : lo;
+	// var right = gte(value, accessor(array[hi])) ? Math.min(hi + 1, array.length - 1) : hi;
+
+	// console.log(value, accessor(array[left]), accessor(array[right]));
+	return { left: lo, right: hi };
 };
 
 export function pluck(array, key) {

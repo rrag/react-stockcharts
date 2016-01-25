@@ -9,10 +9,10 @@ import PureComponent from "../utils/PureComponent";
 class YAxis extends PureComponent {
 	render() {
 		var { axisAt, tickFormat, ticks, percentScale, tickValues } = this.props;
-		var { yScale, chartData } = this.context;
-		if (percentScale) yScale = yScale.copy().domain([0, 1]);
+		var { chartConfig } = this.context;
+		var yScale = (percentScale) ? chartConfig.yScale.copy().domain([0, 1]) : chartConfig.yScale;
 
-		tickValues = tickValues || chartData.config.yTicks;
+		tickValues = tickValues || chartConfig.yTicks;
 
 		var axisLocation;
 
@@ -21,9 +21,9 @@ class YAxis extends PureComponent {
 		else if (axisAt === "middle") axisLocation = (this.context.width) / 2;
 		else axisLocation = axisAt;
 
-		if (this.context.compareSeries.length > 0) {
+		/*if (this.context.compareSeries.length > 0) {
 			tickFormat = d3.format(".0%");
-		}
+		}*/
 
 		return (
 			<Axis {...this.props}
@@ -60,11 +60,9 @@ YAxis.defaultProps = {
 	ticks: 10,
 };
 YAxis.contextTypes = {
-	chartData: React.PropTypes.object.isRequired,
+	chartConfig: React.PropTypes.object.isRequired,
 	xScale: React.PropTypes.func.isRequired,
-	yScale: React.PropTypes.func.isRequired,
 	width: React.PropTypes.number.isRequired,
-	compareSeries: React.PropTypes.array.isRequired,
 };
 
 export default YAxis;

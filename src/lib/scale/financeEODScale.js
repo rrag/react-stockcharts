@@ -2,7 +2,7 @@
 
 import d3 from "d3";
 
-function financeTimeScale(drawableData, indexAccessor, backingLinearScale, dateAccessor = d => d.date) {
+export default function financeEODScale(indexAccessor, dateAccessor = d => d.date, drawableData = [0, 1], backingLinearScale = d3.scale.linear()) {
 
 	var timeScaleSteps = [
 		{ step: 864e5, f: function(d) { return dateAccessor(d) !== undefined && true; } },  // 1-day
@@ -113,7 +113,7 @@ function financeTimeScale(drawableData, indexAccessor, backingLinearScale, dateA
 		*/
 		var ticks = drawableData
 						.filter(timeScaleSteps[timeScaleStepsBisector(timeScaleSteps, target)].f)
-						.map(function(d) { return indexAccessor(d); })
+						.map(indexAccessor)
 						;
 		// return the index of all the ticks to be displayed,
 		// console.log(target, span, m, ticks);
@@ -131,13 +131,7 @@ function financeTimeScale(drawableData, indexAccessor, backingLinearScale, dateA
 		return scale;
 	};
 	scale.copy = function() {
-		return financeTimeScale(drawableData, indexAccessor, backingLinearScale.copy());
+		return financeEODScale(indexAccessor, dateAccessor, drawableData, backingLinearScale.copy());
 	};
 	return scale;
-}
-
-var defaultFinanceDateTimeScale = function(indexAccessor) {
-	return financeTimeScale([0, 1], indexAccessor, d3.scale.linear());
 };
-
-export default defaultFinanceDateTimeScale;

@@ -34,64 +34,48 @@ import identity from "./identity";
 
 export default function() {
 
-	var undefinedValue = d3.functor(undefined),
-		windowSize = d3.functor(10),
+	var accumulateTill = d3.functor(false),
 		accumulator = noop,
-		value = identity,
-		skipInitial = 0;
+		value = identity;
 
-	var slidingWindow = function(data) {
-		var size = windowSize.apply(this, arguments);
-		var windowData = data.slice(skipInitial, size + skipInitial).map(value);
-		// console.log(skipInitial, size, data.length, windowData.length);
-		return data.map(function(d, i) {
-			if (i < (skipInitial + size - 1)) {
-				return undefinedValue(d, i);
+	var accumulatingWindow = function(data) {
+		var accumulatedWindow = [];
+		var response = [];
+		var accumulatorIdx = 0;
+		for (var i = 0; i < data.length; i++) {
+			var d = data[i];
+			// console.log(d, accumulateTill(d));
+			if (accumulateTill(d)) {
+				if (accumulatedWindow.length > 0) response.push(accumulator(accumulatedWindow, i, accumulatorIdx++));
+				accumulatedWindow = [value(d)];
+			} else {
+				accumulatedWindow.push(value(d));
 			}
-			if (i >= (skipInitial + size)) {
-				// Treat windowData as FIFO rolling buffer
-				windowData.shift();
-				windowData.push(value(d, i));
-			}
-			return accumulator(windowData, i);
-		});
+		}
+		return response;
 	};
 
-	slidingWindow.undefinedValue = function(x) {
+	accumulatingWindow.accumulateTill = function(x) {
 		if (!arguments.length) {
-			return undefinedValue;
+			return accumulateTill;
 		}
-		undefinedValue = d3.functor(x);
-		return slidingWindow;
+		accumulateTill = d3.functor(x);
+		return accumulatingWindow;
 	};
-	slidingWindow.windowSize = function(x) {
-		if (!arguments.length) {
-			return windowSize;
-		}
-		windowSize = d3.functor(x);
-		return slidingWindow;
-	};
-	slidingWindow.accumulator = function(x) {
+	accumulatingWindow.accumulator = function(x) {
 		if (!arguments.length) {
 			return accumulator;
 		}
 		accumulator = x;
-		return slidingWindow;
+		return accumulatingWindow;
 	};
-	slidingWindow.skipInitial = function(x) {
-		if (!arguments.length) {
-			return skipInitial;
-		}
-		skipInitial = x;
-		return slidingWindow;
-	};
-	slidingWindow.value = function(x) {
+	accumulatingWindow.value = function(x) {
 		if (!arguments.length) {
 			return value;
 		}
 		value = x;
-		return slidingWindow;
+		return accumulatingWindow;
 	};
 
-	return slidingWindow;
+	return accumulatingWindow;
 }

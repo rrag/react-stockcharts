@@ -26,7 +26,6 @@
 1. remove dependency `object-assign` and add dependency `lodash.set`, `lodash.get`, `lodash.first`, `lodash.last`
 1. (Done) use `d3.nest` for optimizing canvas draws for candlestick, histogram and scatter chart
 1. (Done) Upgraded to use Babel 6 instead of 5
-1. Change `StraightLine` to take a prop of type which defaults to `horizontal`
 
 ## v0.5.x
 
@@ -39,6 +38,7 @@
 1. `EdgeCoordinate` to take `fill` property as function or string
 1. Add a playground to see live updates
 1. Programatic Buy & sell signals
+1. Change `StraightLine` to take a prop of type which defaults to `horizontal`
 
 #### New Chart types
 1. Max Drawdown

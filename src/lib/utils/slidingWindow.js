@@ -43,6 +43,7 @@ export default function() {
 	var slidingWindow = function(data) {
 		var size = windowSize.apply(this, arguments);
 		var windowData = data.slice(skipInitial, size + skipInitial).map(value);
+		var accumulatorIdx = 0;
 		// console.log(skipInitial, size, data.length, windowData.length);
 		return data.map(function(d, i) {
 			if (i < (skipInitial + size - 1)) {
@@ -53,7 +54,7 @@ export default function() {
 				windowData.shift();
 				windowData.push(value(d, i));
 			}
-			return accumulator(windowData, i);
+			return accumulator(windowData, i, accumulatorIdx++);
 		});
 	};
 

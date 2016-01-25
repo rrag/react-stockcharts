@@ -55,7 +55,7 @@ XAxis.defaultProps = {
 
 XAxis.contextTypes = {
 	xScale: React.PropTypes.func.isRequired,
-	yScale: React.PropTypes.func.isRequired,
+	chartConfig: React.PropTypes.object.isRequired,
 	height: React.PropTypes.number.isRequired,
 	width: React.PropTypes.number.isRequired,
 };

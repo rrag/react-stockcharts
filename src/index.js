@@ -11,6 +11,7 @@ import EventCapture from "./lib/EventCapture";
 
 // chart types & Series
 import * as series from "./lib/series";
+import * as scale from "./lib/scale";
 
 import * as coordinates from "./lib/coordinates";
 import * as indicator from "./lib/indicator";
@@ -36,6 +37,7 @@ export {
 	indicator,
 	transforms,
 	axes,
+	scale,
 	tooltip,
 	helper,
 	interactive,
