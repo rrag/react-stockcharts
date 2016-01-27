@@ -91,24 +91,17 @@ MouseCoordinates.defaultProps = {
 	textBGopacity: 1,
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 13,
-
-
-	// fill: "",
-	// opacity: 1,
-	// textFill: "white",
-		// var { fill, opacity, fontFamily, fontSize, textFill } = props;
-
 };
 
 MouseCoordinates.drawOnCanvas = (canvasContext, props) => {
-	var { mouseXY, currentCharts, chartConfig, currentItem, show } = props;
+	var { mouseXY, currentCharts, chartConfig, currentItem, xScale, show } = props;
 
 	// console.log(props.currentCharts);
-	MouseCoordinates.drawOnCanvasStatic(props, canvasContext, show, mouseXY, currentCharts, chartConfig, currentItem);
+	MouseCoordinates.drawOnCanvasStatic(props, canvasContext, show, xScale, mouseXY, currentCharts, chartConfig, currentItem);
 };
-MouseCoordinates.drawOnCanvasStatic = (props, ctx, show, mouseXY, currentCharts, chartConfig, currentItem) => {
+MouseCoordinates.drawOnCanvasStatic = (props, ctx, show, xScale, mouseXY, currentCharts, chartConfig, currentItem) => {
 	var { margin } = props;
-	var pointer = MouseCoordinates.helper(props, show, mouseXY, currentCharts, chartConfig, currentItem);
+	var pointer = MouseCoordinates.helper(props, show, xScale, mouseXY, currentCharts, chartConfig, currentItem);
 
 	if (!pointer) return null;
 
@@ -124,9 +117,9 @@ MouseCoordinates.drawOnCanvasStatic = (props, ctx, show, mouseXY, currentCharts,
 	ctx.restore();
 };
 
-MouseCoordinates.helper = (props, show, mouseXY, currentCharts, chartConfig, currentItem) => {
+MouseCoordinates.helper = (props, show, xScale, mouseXY, currentCharts, chartConfig, currentItem) => {
 	if (!show) return;
-	var { displayXAccessor, xAccessor, xScale, height, width, snapX, xDisplayFormat } = props;
+	var { displayXAccessor, xAccessor, height, width, snapX, xDisplayFormat } = props;
 
 	var edges = chartConfig
 		.filter(eachChartConfig => currentCharts.indexOf(eachChartConfig.id) > -1)

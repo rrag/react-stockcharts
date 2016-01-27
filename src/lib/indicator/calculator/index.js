@@ -1,5 +1,6 @@
-import slidingWindow from "./slidingWindow";
-import merge from "./merge";
+// import slidingWindow from "./slidingWindow";
+// import merge from "./merge";
+// import zipper from "./zipper";
 import ema from "./ema";
 import macd from "./macd";
 import bollingerband from "./bollingerband";
@@ -8,11 +9,11 @@ import sto from "./sto";
 import atr from "./atr";
 import forceIndex from "./forceIndex";
 import elderRay from "./elderRay";
-import zipper from "./zipper";
 
 export {
-	slidingWindow,
-	merge,
+	// slidingWindow,
+	// merge,
+	// zipper
 	ema,
 	macd,
 	bollingerband,
@@ -21,5 +22,4 @@ export {
 	atr,
 	forceIndex,
 	elderRay,
-	zipper
 };

@@ -79,8 +79,7 @@ class EventCapture extends React.Component {
 	handleMouseDown(e) {
 		var mouseEvent = e || d3.event;
 		var { mainChart, pan } = this.props;
-		var { onPanStart, focus, onFocus, chartData } = this.context;
-		var mainChartData = chartData.filter((each) => each.id === mainChart) [0];
+		var { onPanStart, focus, onFocus, xScale } = this.context;
 		if (this.mouseInteraction && pan && onPanStart) {
 			var mouseXY = mousePosition(mouseEvent);
 
@@ -94,7 +93,7 @@ class EventCapture extends React.Component {
 				.on(mousemove, this.handlePan)
 				.on(mouseup, this.handlePanEnd);
 
-			onPanStart(mainChartData.plot.scales.xScale.domain(), mouseXY, [dx, dy]);
+			onPanStart(xScale.domain(), mouseXY, [dx, dy]);
 		} else {
 			if (!focus && onFocus) onFocus(true);
 		}
@@ -107,14 +106,13 @@ class EventCapture extends React.Component {
 	handlePan() {
 		// console.log("handlePan")
 		var { mainChart, pan: panEnabled, onPan: panListener } = this.props;
-		var { deltaXY: dxdy, chartData, onPan } = this.context;
+		var { deltaXY: dxdy, xScale, onPan } = this.context;
 
 		var e = d3.event;
 		var newPos = [e.pageX - dxdy[0], e.pageY - dxdy[1]];
 		// console.log("moved from- ", startXY, " to ", newPos);
 		if (this.mouseInteraction && panEnabled && onPan) {
-			var mainChartData = chartData.filter((each) => each.id === mainChart) [0];
-			onPan(newPos, mainChartData.plot.scales.xScale.domain());
+			onPan(newPos, xScale.domain());
 			if (panListener) {
 				panListener(e);
 			}

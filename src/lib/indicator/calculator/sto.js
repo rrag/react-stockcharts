@@ -29,9 +29,9 @@ THE SOFTWARE.
 import d3 from "d3";
 import last from "lodash.last";
 
-import identity from "./identity";
-import slidingWindow from "./slidingWindow";
-import zipper from "./zipper";
+import identity from "../../utils/identity";
+import slidingWindow from "../../utils/slidingWindow";
+import zipper from "../../utils/zipper";
 
 import { isDefined } from "../../utils/utils";
 import { FullStochasticOscillator as defaultOptions } from "../defaultOptions";

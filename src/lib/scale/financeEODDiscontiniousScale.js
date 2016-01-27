@@ -2,7 +2,7 @@
 
 import d3 from "d3";
 
-export default function financeEODScale(indexAccessor, dateAccessor = d => d.date, drawableData = [0, 1], backingLinearScale = d3.scale.linear()) {
+export default function financeEODScale(indexAccessor = d => d.idx, dateAccessor = d => d.date, data = [0, 1], backingLinearScale = d3.scale.linear()) {
 
 	var timeScaleSteps = [
 		{ step: 864e5, f: function(d) { return dateAccessor(d) !== undefined && true; } },  // 1-day
@@ -55,13 +55,23 @@ export default function financeEODScale(indexAccessor, dateAccessor = d => d.dat
 	};
 	scale.data = function(x) {
 		if (!arguments.length) {
-			return drawableData;
+			return data;
 		} else {
-			drawableData = x;
-			// this.domain([drawableData.first().index, drawableData.last().index]);
-			this.domain([indexAccessor(drawableData[0]), indexAccessor(drawableData[drawableData.length - 1])]);
+			data = x;
+			// this.domain([data.first().index, data.last().index]);
+			this.domain([indexAccessor(data[0]), indexAccessor(data[data.length - 1])]);
 			return scale;
 		}
+	};
+	scale.indexAccessor = function(x) {
+		if (!arguments.length) return indexAccessor;
+		indexAccessor = x;
+		return scale;
+	};
+	scale.dateAccessor = function(x) {
+		if (!arguments.length) return dateAccessor;
+		dateAccessor = x;
+		return scale;
 	};
 	scale.domain = function(x) {
 		if (!arguments.length) return backingLinearScale.domain();
@@ -92,26 +102,26 @@ export default function financeEODScale(indexAccessor, dateAccessor = d => d.dat
 	};
 	scale.ticks = function(m) {
 		var start, end, count = 0;
-		drawableData.forEach(function(d) {
+		data.forEach(function(d) {
 			if (dateAccessor(d) !== undefined) {
 				if (start === undefined) start = d;
 				end = d;
 				count++;
 			}
 		});
-		m = (count / drawableData.length) * m;
+		m = (count / data.length) * m;
 		var span = (dateAccessor(end).getTime() - dateAccessor(start).getTime());
 		var target = span / m;
 		/*
-		console.log(dateAccessor(drawableData[drawableData.length - 1])
-			, drawableData[0]
+		console.log(dateAccessor(data[data.length - 1])
+			, data[0]
 			, span
 			, m
 			, target
 			, timeScaleStepsBisector(d3_time_scaleSteps, target)
 			);
 		*/
-		var ticks = drawableData
+		var ticks = data
 						.filter(timeScaleSteps[timeScaleStepsBisector(timeScaleSteps, target)].f)
 						.map(indexAccessor)
 						;
@@ -122,8 +132,8 @@ export default function financeEODScale(indexAccessor, dateAccessor = d => d.dat
 	scale.tickFormat = function(/* ticks */) {
 		return function(d) {
 			// for each index received from ticks() function derive the formatted output
-			var tickIndex = bisectByIndex(drawableData, d);
-			return formater(drawableData[tickIndex]);
+			var tickIndex = bisectByIndex(data, d);
+			return formater(data[tickIndex]);
 		};
 	};
 	scale.nice = function(m) {
@@ -131,7 +141,7 @@ export default function financeEODScale(indexAccessor, dateAccessor = d => d.dat
 		return scale;
 	};
 	scale.copy = function() {
-		return financeEODScale(indexAccessor, dateAccessor, drawableData, backingLinearScale.copy());
+		return financeEODScale(indexAccessor, dateAccessor, data, backingLinearScale.copy());
 	};
 	return scale;
 };

@@ -28,9 +28,9 @@ THE SOFTWARE.
 
 import d3 from "d3";
 
-import slidingWindow from "./slidingWindow";
+import slidingWindow from "../../utils/slidingWindow";
 import ema from "./ema";
-import zipper from "./zipper";
+import zipper from "../../utils/zipper";
 
 import { ElderRay as defaultOptions } from "../defaultOptions";
 import { isNotDefined, sourceFunctor } from "../../utils/utils";

@@ -1,28 +1,23 @@
 "use strict";
 
-import first from "lodash.first";
-import last from "lodash.last";
-import set from "lodash.set";
-import get from "lodash.get";
-
-import financeEODScale from "./financeEODScale";
 
 import { getClosestItemIndexes } from "../utils/utils";
-import identity from "../utils/identity";
 import slidingWindow from "../utils/slidingWindow";
-import accumulatingWindow from "../utils/accumulatingWindow";
-import zipper from "../utils/zipper";
 
-function dailyData(dateKey, indexKey, openKey, highKey, lowKey, closeKey, volumeKey) {
-	return slidingWindow()
+
+export default function() {
+	var dateAccessor = d => d.date;
+
+	function calculator(data) {
+		var eodScaleCalculator = slidingWindow()
 		.windowSize(2)
 		.undefinedValue((d, i) => {
 			var row = { ...d, startOfWeek: false, startOfMonth: false, startOfQuarter: false, startOfYear: false };
-			return set(row, indexKey, i);
+			return row;
 		})
 		.accumulator(([prev, now], i) => {
-			var prevDate = get(prev, dateKey);
-			var nowDate = get(now, dateKey);
+			var prevDate = dateAccessor(prev);
+			var nowDate = dateAccessor(now);
 
 			// According to ISO calendar
 			// Sunday = 0, Monday = 1, ... Saturday = 6
@@ -36,75 +31,19 @@ function dailyData(dateKey, indexKey, openKey, highKey, lowKey, closeKey, volume
 			var startOfYear = nowDate.getYear() !== prevDate.getYear();
 
 			var row = { ...now, startOfWeek, startOfMonth, startOfQuarter, startOfYear };
-			set(row, indexKey, i);
 			return row;
 		});
-}
-
-export default function() {
-	var dateKey = "date";
-	var indexKey = "idx";
-	var openKey = "open";
-	var highKey = "high";
-	var lowKey = "low";
-	var closeKey = "close";
-	var volumeKey = "volume";
-
-	function calculator(data) {
-
-		var newData = dailyData(dateKey, indexKey, openKey, highKey, lowKey, closeKey, volumeKey)(data);
+		var newData = eodScaleCalculator(data);
 		return newData;
 	}
-	calculator.dateKey = function(x) {
+	calculator.dateAccessor = function(x) {
 		if (!arguments.length) {
-			return dateKey;
+			return dateAccessor;
 		}
-		dateKey = x;
+		dateAccessor = x;
 		return calculator;
 	};
-	calculator.indexKey = function(x) {
-		if (!arguments.length) {
-			return indexKey;
-		}
-		indexKey = x;
-		return calculator;
-	};
-	calculator.openKey = function(x) {
-		if (!arguments.length) {
-			return openKey;
-		}
-		openKey = x;
-		return calculator;
-	};
-	calculator.highKey = function(x) {
-		if (!arguments.length) {
-			return highKey;
-		}
-		highKey = x;
-		return calculator;
-	};
-	calculator.lowKey = function(x) {
-		if (!arguments.length) {
-			return lowKey;
-		}
-		lowKey = x;
-		return calculator;
-	};
-	calculator.closeKey = function(x) {
-		if (!arguments.length) {
-			return closeKey;
-		}
-		closeKey = x;
-		return calculator;
-	};
-	calculator.volumeKey = function(x) {
-		if (!arguments.length) {
-			return volumeKey;
-		}
-		volumeKey = x;
-		return calculator;
-	};
-	calculator.xAccessor = function() {
+/*	calculator.xAccessor = function() {
 		return d => get(d, indexKey);
 	};
 	calculator.scale = function() {
@@ -120,5 +59,5 @@ export default function() {
 			return [start, end];
 		}
 	};
-	return calculator;
+*/	return calculator;
 }

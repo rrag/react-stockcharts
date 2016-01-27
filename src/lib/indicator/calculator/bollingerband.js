@@ -29,10 +29,10 @@ THE SOFTWARE.
 import last from "lodash.last";
 import d3 from "d3";
 
-import identity from "./identity";
-import slidingWindow from "./slidingWindow";
+import identity from "../../utils/identity";
+import slidingWindow from "../../utils/slidingWindow";
 import ema from "./ema";
-import zipper from "./zipper";
+import zipper from "../../utils/zipper";
 
 import { BollingerBand as defaultOptions } from "../defaultOptions";
 

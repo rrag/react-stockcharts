@@ -24,6 +24,10 @@ export function isNotDefined(d) {
 	return ! isDefined(d);
 }
 
+export function isArray(d) {
+	return isDefined(d) && typeof d === "object" && Array.isArray(d);
+}
+
 export function sourceFunctor(v) {
 	var type = typeof v;
 	if (type === "string" || type === "object" && Array.isArray(v)) return d => get(d, v);

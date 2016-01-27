@@ -31,7 +31,7 @@ import calculator from "./slidingWindow";
 import identity from "./identity";
 import zipper from "./zipper";
 
-import { isDefined, isNotDefined } from "../../utils/utils";
+import { isDefined, isNotDefined } from "./utils";
 
 // applies an algorithm to an array, merging the result back into
 // the source array using the given merge function.

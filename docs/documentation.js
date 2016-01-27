@@ -240,7 +240,7 @@ function renderPartialPage(data, dataFull, compareData) {
 	// OHLCChartWithElderImpulseIndicator
 	// CandleStickChartWithBrush
 	// CandleStickChartWith2DBrush
-	var Chart = require("lib/charts/CandleStickChartWithCHMousePointer").default;
+	var Chart = require("lib/charts/CandleStickChartWithZoomPan").default;
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	// data, dataFull, compareData

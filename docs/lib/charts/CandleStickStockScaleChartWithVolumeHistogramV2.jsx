@@ -7,7 +7,7 @@ import * as ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart, DataSeries } = ReStock;
 var { CandlestickSeries, HistogramSeries } = ReStock.series;
-var { financeEODCalculator, intervalDWMCalculator } = ReStock.scale;
+var { financeEODDiscontiniousScale } = ReStock.scale;
 
 var { StockscaleTransformer } = ReStock.transforms;
 var { XAxis, YAxis } = ReStock.axes;
@@ -17,16 +17,12 @@ var { fitWidth } = ReStock.helper;
 class CandleStickStockScaleChartWithVolumeHistogramV2 extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
-		var eodDiscontiniousScaleHelper = financeEODCalculator()
-
 		return (
 			<ChartCanvas width={width} height={400}
-				margin={{left: 50, right: 50, top:10, bottom: 30}}
-				data={data} type={type}
-				dataPreProcessor={eodDiscontiniousScaleHelper}
-				calculator={[intervalDWMCalculator]}
-				xAccessor={eodDiscontiniousScaleHelper.xAccessor()} xScale={eodDiscontiniousScaleHelper.scale()}
-				xExtents={eodDiscontiniousScaleHelper.extents(new Date(2012, 0, 1), new Date(2012, 6, 2))}>
+					margin={{left: 50, right: 50, top:10, bottom: 30}} type={type}
+					data={data}
+					xAccessor={d => d.date} discontinous xScale={financeEODDiscontiniousScale()}
+					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1} yExtents={[d => d.high, d => d.low]}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />

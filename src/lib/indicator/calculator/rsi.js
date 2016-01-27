@@ -29,8 +29,8 @@ THE SOFTWARE.
 import d3 from "d3";
 import last from "lodash.last";
 
-import identity from "./identity";
-import slidingWindow from "./slidingWindow";
+import identity from "../../utils/identity";
+import slidingWindow from "../../utils/slidingWindow";
 
 import { isDefined } from "../../utils/utils";
 import { RSI as defaultOptions } from "../defaultOptions";

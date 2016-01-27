@@ -8,7 +8,7 @@ import * as ReStock from "react-stockcharts";
 var { ChartCanvas, Chart, DataSeries, EventCapture } = ReStock;
 
 var { CandlestickSeries, HistogramSeries } = ReStock.series;
-var { financeEODCalculator, intervalDWMCalculator } = ReStock.scale;
+var { financeEODDiscontiniousScale } = ReStock.scale;
 
 var { MouseCoordinates } = ReStock.coordinates;
 var { TooltipContainer, OHLCTooltip } = ReStock.tooltip;
@@ -21,16 +21,14 @@ var { fitWidth } = ReStock.helper;
 class CandleStickChartWithCHMousePointer extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
-		var eodDiscontiniousScaleHelper = financeEODCalculator()
+
 
 		return (
 			<ChartCanvas width={width} height={400}
-					margin={{left: 70, right: 70, top:10, bottom: 30}} 
-					data={data} type={type}
-					dataPreProcessor={eodDiscontiniousScaleHelper}
-					calculator={[intervalDWMCalculator]}
-					xAccessor={eodDiscontiniousScaleHelper.xAccessor()} xScale={eodDiscontiniousScaleHelper.scale()}
-					xExtents={eodDiscontiniousScaleHelper.extents(new Date(2012, 0, 1), new Date(2012, 6, 2))}>
+					margin={{left: 70, right: 70, top:10, bottom: 30}} type={type}
+					data={data}
+					xAccessor={d => d.date} discontinous xScale={financeEODDiscontiniousScale()}
+					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1} yExtents={[d => d.high, d => d.low]}
 						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}>
 					<XAxis axisAt="bottom" orient="bottom"/>
@@ -42,8 +40,11 @@ class CandleStickChartWithCHMousePointer extends React.Component {
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 					<HistogramSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
-				<EventCapture mouseMove={true} mainChart={1}/>
 				<MouseCoordinates displayXAccessor={d => d.date} xDisplayFormat={d3.time.format("%Y-%m-%d")} />
+				<EventCapture mouseMove={true} mainChart={1}/>
+				<TooltipContainer>
+					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
+				</TooltipContainer>
 			</ChartCanvas>
 		);
 	}
@@ -51,9 +52,7 @@ class CandleStickChartWithCHMousePointer extends React.Component {
 
 /*
 
-				<TooltipContainer>
-					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
-				</TooltipContainer>
+
 */
 CandleStickChartWithCHMousePointer.propTypes = {
 	data: React.PropTypes.array.isRequired,

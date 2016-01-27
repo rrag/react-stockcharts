@@ -4,7 +4,7 @@ import React from "react";
 
 import wrap from "./wrap";
 
-import identity from "../indicator/calculator/identity";
+import identity from "../utils/identity";
 import { isDefined, isNotDefined, hexToRGBA } from "../utils/utils";
 
 class StackedHistogramSeries extends React.Component {
