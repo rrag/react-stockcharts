@@ -66,13 +66,13 @@ class EventHandler extends PureComponent {
 		};
 	}
 	componentWillMount() {
-		// console.log("EventHandler.componentWillMount");
-		var { props } = this;
-		var { data, interval, xExtentsCalculator, xScale, xAccessor, dimensions, children } = props;
+
+		var { data, derivedInterval, xExtentsCalculator, xScale, xAccessor, dimensions, children } = this.props;
 
 		var chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), data);
 
 		this.setState({
+			derivedInterval,
 			xScale,
 			plotData: data,
 			chartConfig,
@@ -303,16 +303,22 @@ class EventHandler extends PureComponent {
 	}
 	handleZoom(zoomDirection, mouseXY) {
 		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
-		var { data, mainChart, chartData, plotData, interval } = this.state;
+		var { plotData, interval, xScale: initialXScale, chartConfig: initialChartConfig, currentItem } = this.state;
+		var { xAccessor, dimensions: { width }, xExtentsCalculator } = this.props;
 
-		var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0],
+		var item = getCurrentItem(initialXScale, xAccessor, mouseXY, plotData),
+			leftX = initialXScale(xAccessor(item)),
+			rightX = leftX - width,
+			zoom = Math.pow(1 + Math.abs(zoomDirection) / 2, zoomDirection),
+			z = [leftX, rightX];
+
+		/* var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0],
 			item = getClosest(plotData, mouseXY, chart),
 			xScale = chart.plot.scales.xScale,
 			domain = xScale.domain(),
-			centerX = chart.config.xAccessor(item),
 			leftX = centerX - domain[0],
 			rightX = domain[1] - centerX,
-			zoom = Math.pow(1 + Math.abs(zoomDirection) / 2, zoomDirection),
+			
 			domainL = (getLongValue(centerX) - ( leftX * zoom)),
 			domainR = (getLongValue(centerX) + (rightX * zoom)),
 			domainRange = Math.abs(domain[1] - domain[0]),
@@ -320,7 +326,34 @@ class EventHandler extends PureComponent {
 			last = fullData[fullData.length - 1],
 			first = fullData[0];
 
-		domainL = Math.max(getLongValue(chart.config.xAccessor(first)) - Math.floor(domainRange / 3), domainL);
+		var domainRange = panStartDomain[1] - panStartDomain[0],
+			dx = mouseXY[0] - panOrigin[0];*/
+
+		var newDomain = initialXScale.range().map((x, i) => x - z[i] * zoomDirection).map(initialXScale.invert);
+
+
+		console.log(z, initialXScale.domain(), newDomain);
+		var { plotData, interval: updatedInterval, scale: updatedScale } = xExtentsCalculator
+			.width(width)
+			.interval(interval)(newDomain, xAccessor)
+
+		var currentItem = getCurrentItem(updatedScale, xAccessor, mouseXY, plotData);
+		var chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData);
+		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
+		this.clearBothCanvas();
+		this.clearInteractiveCanvas();
+
+		this.clearCanvasDrawCallbackList();
+		this.setState({
+			xScale: updatedScale,
+			plotData,
+			mouseXY,
+			currentCharts,
+			chartConfig,
+			currentItem,
+		});
+
+		/*domainL = Math.max(getLongValue(chart.config.xAccessor(first)) - Math.floor(domainRange / 3), domainL);
 		domainR = Math.min(getLongValue(chart.config.xAccessor(last)) + Math.floor(domainRange / 3), domainR);
 
 		var dataToPlot = getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.xAccessor);
@@ -346,7 +379,7 @@ class EventHandler extends PureComponent {
 			plotData: dataToPlot.data,
 			interval: dataToPlot.interval,
 			currentItems,
-		});
+		});*/
 	}
 
 	handlePanStart(panStartDomain, panOrigin, dxy) {
@@ -361,39 +394,26 @@ class EventHandler extends PureComponent {
 		this.panHappened = false;
 	}
 	panHelper(mouseXY) {
-		var { panStartDomain, panOrigin, xScale: initialXScale, dataForInterval, chartConfig: initialChartConfig } = this.state;
-		var { xAccessor, dimensions: { width } } = this.props;
+		var { panStartDomain, interval, panOrigin, xScale: initialXScale, chartConfig: initialChartConfig } = this.state;
+		var { xAccessor, dimensions: { width }, xExtentsCalculator } = this.props;
 
 		var domainRange = panStartDomain[1] - panStartDomain[0],
-			start = first(dataForInterval),
-			end = last(dataForInterval),
 			dx = mouseXY[0] - panOrigin[0];
 
-		// console.log("pan -- mouse move - ", mouseXY, " dragged by ", dx, " pixels");
+		var newDomain = initialXScale.range().map(x => x - dx).map(initialXScale.invert);
 
-		var domainStart = panStartDomain[0] - dx / width * domainRange;
+		var { plotData, interval: updatedInterval, scale: updatedScale } = xExtentsCalculator
+			.width(width)
+			.interval(interval)(newDomain, xAccessor)
 
-		// console.log(domainStart, panStartDomain, domainRange, xAccessor(start));
-		if (domainStart < xAccessor(start) - Math.floor(domainRange / 3)) {
-			domainStart = xAccessor(start) - Math.floor(domainRange / 3);
-		} else {
-			domainStart = Math.min(xAccessor(end)
-				+ Math.ceil(domainRange / 3), domainStart + domainRange) - domainRange;
-		}
-		var domainL = domainStart, domainR = domainStart + domainRange;
+		// console.log(newDomain);
 
-		var beginIndex = getClosestItemIndexes(dataForInterval, domainL, xAccessor).left;
-		var endIndex = getClosestItemIndexes(dataForInterval, domainR, xAccessor).right;
-
-		var plotData = dataForInterval.slice(beginIndex, endIndex);
-
-		var xScale = initialXScale.copy().domain([domainL, domainR]);
-		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
+		var currentItem = getCurrentItem(updatedScale, xAccessor, mouseXY, plotData);
 		var chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData);
 		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
 
 		return {
-			xScale,
+			xScale: updatedScale,
 			plotData,
 			mouseXY,
 			currentCharts,

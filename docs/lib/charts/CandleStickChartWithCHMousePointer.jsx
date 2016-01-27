@@ -22,7 +22,6 @@ class CandleStickChartWithCHMousePointer extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
 
-
 		return (
 			<ChartCanvas width={width} height={400}
 					margin={{left: 70, right: 70, top:10, bottom: 30}} type={type}

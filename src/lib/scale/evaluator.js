@@ -48,8 +48,8 @@ function extentsWrapper(data, inputXAccessor, realXAccessor, allowedIntervals, s
 		} else if (isDefined(interval) && allowedIntervals.indexOf(interval) > -1) {
 			// if interval is defined and allowedInterval is not defined, it is an error
 			let dataForInterval = data[interval];
-			let newLeftIndex = getClosestItemIndexes(dataForInterval, left, inputXAccessor).right;
-			let newRightIndex = getClosestItemIndexes(dataForInterval, right, inputXAccessor).left;
+			let newLeftIndex = getClosestItemIndexes(dataForInterval, left, xAccessor).right;
+			let newRightIndex = getClosestItemIndexes(dataForInterval, right, xAccessor).left;
 
 			let filteredData = dataForInterval.slice(newLeftIndex, newRightIndex);
 
@@ -61,13 +61,15 @@ function extentsWrapper(data, inputXAccessor, realXAccessor, allowedIntervals, s
 		} else if (isNotDefined(interval) && isNotDefined(allowedIntervals)) {
 			// interval is not defined and allowedInterval is not defined also.
 			let dataForInterval = data;
-			let newLeftIndex = getClosestItemIndexes(dataForInterval, left, inputXAccessor).right;
-			let newRightIndex = getClosestItemIndexes(dataForInterval, right, inputXAccessor).left;
+			let newLeftIndex = getClosestItemIndexes(dataForInterval, left, xAccessor).right;
+			let newRightIndex = getClosestItemIndexes(dataForInterval, right, xAccessor).left;
 
 			let filteredData = dataForInterval.slice(newLeftIndex, newRightIndex);
 
 			if (canShowTheseMany(width, filteredData.length)) {
-				domain = [realXAccessor(first(filteredData)), realXAccessor(last(filteredData))];
+				domain = realXAccessor == xAccessor
+					? [left, right]
+					: [realXAccessor(first(filteredData)), realXAccessor(last(filteredData))];
 				plotData = filteredData;
 				intervalToShow = interval;
 			}
@@ -77,8 +79,10 @@ function extentsWrapper(data, inputXAccessor, realXAccessor, allowedIntervals, s
 		if (isNotDefined(plotData)) throw new Error("Initial render and cannot display any data");
 		var updatedScale = (scale.isPolyLinear && scale.isPolyLinear() && scale.data)
 			? scale.copy().data(plotData)
-			: scale.copy().domain(domain);
-		return { plotData, interval: intervalToShow, domain, scale: updatedScale };
+			: scale.copy();
+
+		updatedScale.domain(domain);
+		return { plotData, interval: intervalToShow, scale: updatedScale };
 	}
 	domain.interval = function(x) {
 		if (!arguments.length) return interval;

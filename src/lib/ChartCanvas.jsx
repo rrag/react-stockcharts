@@ -85,7 +85,7 @@ class ChartCanvas extends React.Component {
 		var extent = d3.extent(xExtentsProp.map(d3.functor).map(each => each(rawData)));
 		// var e = d3.extent(rawData, xExtentsProp.map(d3.functor));
 
-		var { plotData, interval: updatedInterval, domain, scale: updatedScale } = initialDomainCalculator
+		var { plotData, interval: updatedInterval, scale: updatedScale } = initialDomainCalculator
 			.width(dimensions.width)
 			.interval(interval)(extent, inputXAccesor)
 			// .xExtents(xExtents)
@@ -112,7 +112,7 @@ class ChartCanvas extends React.Component {
 					</defs>
 					<g transform={`translate(${margin.left + 0.5}, ${margin.top + 0.5})`}>
 						<EventHandler ref="chartContainer"
-							data={plotData} interval={updatedInterval}
+							data={plotData} interval={interval} derivedInterval={updatedInterval}
 							xExtentsCalculator={domainCalculator} 
 							xScale={updatedScale} xAccessor={xAccessor}
 							dimensions={dimensions} type={type} margin={margin} canvasContexts={this.getCanvases}>
