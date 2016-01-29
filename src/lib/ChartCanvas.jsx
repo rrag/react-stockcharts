@@ -41,6 +41,11 @@ class ChartCanvas extends React.Component {
 			return this.refs.canvases.getCanvasContexts();
 		}
 	}
+	getChildContext() {
+		return {
+			displayXAccessor: this.props.xAccessor,
+		}
+	}
 	render() {
 		var dimensions = this.getDimensions(this.props);
 		var style = `<![CDATA[
@@ -59,7 +64,7 @@ class ChartCanvas extends React.Component {
 					]]>`;
 		var { data: rawData, calculator, interval, type, height, width, margin, className, zIndex } = this.props;
 		var { xExtents: xExtentsProp, xScale, intervalCalculator, allowedIntervals, calculator } = this.props;
-		var { xAccessor, map, dataEvaluator, indexPath, discontinous } = this.props;
+		var { xAccessor, map, dataEvaluator, indexAccessor, indexMutator, discontinous } = this.props;
 
 		if (isDefined(interval)
 			&& (isNotDefined(allowedIntervals)
@@ -70,22 +75,23 @@ class ChartCanvas extends React.Component {
 			.intervalCalculator(intervalCalculator)
 			.xAccessor(xAccessor)
 			.discontinous(discontinous)
-			.index(indexPath) // use this only when discontinous
+			.indexAccessor(indexAccessor)
+			.indexMutator(indexMutator)
 			.map(map)
 			.scale(xScale.range([0, dimensions.width])) // if discontinous then set dateAccessor and indexAccessor
 			.calculator(calculator); // if there is a discontinious xScale providing
 									 // calculator validate if the incoming scale is discontinous, 
 
-		var { xAccessor, inputXAccesor, initialDomainCalculator, domainCalculator} = evaluate(rawData);
+		var { xAccessor, inputXAccesor, domainCalculator } = evaluate(rawData);
 		// xAccessor - if discontinious return indexAccessor, else xAccessor
 		// inputXAccesor - send this down as context
 
-		// console.log(xAccessor, inputXAccesor, initialDomainCalculator, domainCalculator, updatedScale);
+		// console.log(xAccessor, inputXAccesor, domainCalculator, domainCalculator, updatedScale);
 		// in componentWillReceiveProps calculate plotData and interval only if this.props.xExtentsProp != nextProps.xExtentsProp
 		var extent = d3.extent(xExtentsProp.map(d3.functor).map(each => each(rawData)));
 		// var e = d3.extent(rawData, xExtentsProp.map(d3.functor));
 
-		var { plotData, interval: updatedInterval, scale: updatedScale } = initialDomainCalculator
+		var { plotData, interval: updatedInterval, scale: updatedScale } = domainCalculator
 			.width(dimensions.width)
 			.interval(interval)(extent, inputXAccesor)
 			// .xExtents(xExtents)
@@ -112,7 +118,7 @@ class ChartCanvas extends React.Component {
 					</defs>
 					<g transform={`translate(${margin.left + 0.5}, ${margin.top + 0.5})`}>
 						<EventHandler ref="chartContainer"
-							data={plotData} interval={interval} derivedInterval={updatedInterval}
+							data={plotData} interval={interval} showingInterval={updatedInterval}
 							xExtentsCalculator={domainCalculator} 
 							xScale={updatedScale} xAccessor={xAccessor}
 							dimensions={dimensions} type={type} margin={margin} canvasContexts={this.getCanvases}>
@@ -151,7 +157,8 @@ ChartCanvas.propTypes = {
 
 ChartCanvas.defaultProps = {
 	margin: { top: 20, right: 30, bottom: 30, left: 80 },
-	indexPath: "idx",
+	indexAccessor: d => d.idx,
+	indexMutator: (d, idx) => d.idx = idx,
 	map: identity,
 	type: "hybrid",
 	dataPreProcessor: identity,
@@ -164,6 +171,10 @@ ChartCanvas.defaultProps = {
 	discontinous: false,
 	// initialDisplay: 30
 };
+
+ChartCanvas.childContextTypes = {
+	displayXAccessor: React.PropTypes.func.isRequired,
+}
 
 ChartCanvas.ohlcv = d => ({date:d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume});
 

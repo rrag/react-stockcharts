@@ -34,25 +34,27 @@ import identity from "./identity";
 
 export default function() {
 
-	var undefinedValue = d3.functor(undefined),
-		windowSize = d3.functor(10),
+	var undefinedValue = undefined,
+		windowSize = 10,
 		accumulator = noop,
-		value = identity,
+		source = identity,
 		skipInitial = 0;
 
 	var slidingWindow = function(data) {
-		var size = windowSize.apply(this, arguments);
-		var windowData = data.slice(skipInitial, size + skipInitial).map(value);
+		var size = d3.functor(windowSize).apply(this, arguments);
+		var windowData = data.slice(skipInitial, size + skipInitial).map(source);
 		var accumulatorIdx = 0;
+		var undef = d3.functor(undefinedValue);
 		// console.log(skipInitial, size, data.length, windowData.length);
 		return data.map(function(d, i) {
+			// console.log(d, i);
 			if (i < (skipInitial + size - 1)) {
-				return undefinedValue(d, i);
+				return undef(d, i);
 			}
 			if (i >= (skipInitial + size)) {
 				// Treat windowData as FIFO rolling buffer
 				windowData.shift();
-				windowData.push(value(d, i));
+				windowData.push(source(d, i));
 			}
 			return accumulator(windowData, i, accumulatorIdx++);
 		});
@@ -62,14 +64,14 @@ export default function() {
 		if (!arguments.length) {
 			return undefinedValue;
 		}
-		undefinedValue = d3.functor(x);
+		undefinedValue = x;
 		return slidingWindow;
 	};
 	slidingWindow.windowSize = function(x) {
 		if (!arguments.length) {
 			return windowSize;
 		}
-		windowSize = d3.functor(x);
+		windowSize = x;
 		return slidingWindow;
 	};
 	slidingWindow.accumulator = function(x) {
@@ -86,11 +88,11 @@ export default function() {
 		skipInitial = x;
 		return slidingWindow;
 	};
-	slidingWindow.value = function(x) {
+	slidingWindow.source = function(x) {
 		if (!arguments.length) {
-			return value;
+			return source;
 		}
-		value = x;
+		source = x;
 		return slidingWindow;
 	};
 

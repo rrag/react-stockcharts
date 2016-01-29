@@ -3,6 +3,7 @@
 import React from "react";
 
 import pure from "../pure";
+import shallowEqual from "../utils/shallowEqual";
 
 class CurrentCoordinate extends React.Component {
 	componentDidMount() {
@@ -21,38 +22,34 @@ class CurrentCoordinate extends React.Component {
 	}
 	componentWillReceiveProps(nextProps) {
 		var draw = CurrentCoordinate.drawOnCanvasStatic.bind(null, nextProps);
+		var { id, chartId } = nextProps;
 
-		var { forChart, forCompareSeries, forDataSeries } = nextProps;
+		if (!shallowEqual(this.props, nextProps)) {
+			var temp = nextProps.getAllCanvasDrawCallback()
+				.filter(each => each.type === "currentcoordinate")
+				.filter(each => each.chartId === chartId)
+				.filter(each => each.id === id);
 
-		var temp = nextProps.getAllCanvasDrawCallback()
-			.filter(each => each.type === "currentcoordinate" && each.forChart === forChart && each.forDataSeries === forDataSeries)
-			.filter(each => each.forCompareSeries === forCompareSeries);
-
-		if (temp.length === 0) {
-			nextProps.callbackForCanvasDraw({
-				type: "currentcoordinate",
-				forChart,
-				forDataSeries,
-				forCompareSeries,
-				draw,
-			});
-		} else {
-			nextProps.callbackForCanvasDraw(temp[0], {
-				type: "currentcoordinate",
-				forChart,
-				forDataSeries,
-				forCompareSeries,
-				draw,
-			});
+			if (temp.length === 0) {
+				nextProps.callbackForCanvasDraw({
+					type: "currentcoordinate",
+					id, chartId, draw,
+				});
+			} else {
+				nextProps.callbackForCanvasDraw(temp[0], {
+					type: "currentcoordinate",
+					id, chartId, draw,
+				});
+			}
 		}
 	}
 	render() {
 		var { className } = this.props;
-		var { chartCanvasType, show, chartData, currentItems } = this.props;
+		var { chartCanvasType, show, chartConfig, currentItem, xScale } = this.props;
 
 		if (chartCanvasType !== "svg") return null;
 
-		var circle = CurrentCoordinate.helper(this.props, show, chartData, currentItems);
+		var circle = CurrentCoordinate.helper(this.props, show, xScale, chartConfig, currentItem);
 
 		if (!circle) return null;
 
@@ -63,18 +60,20 @@ class CurrentCoordinate extends React.Component {
 }
 
 CurrentCoordinate.propTypes = {
-	forChart: React.PropTypes.number.isRequired,
-	forDataSeries: React.PropTypes.number.isRequired,
-	forCompareSeries: React.PropTypes.number,
+	id: React.PropTypes.number.isRequired,
 	yAccessor: React.PropTypes.func,
 	r: React.PropTypes.number.isRequired,
 	className: React.PropTypes.string,
-
+	xAccessor: React.PropTypes.func.isRequired,
+	xScale: React.PropTypes.func.isRequired,
 	chartCanvasType: React.PropTypes.string,
 	getCanvasContexts: React.PropTypes.func,
 	show: React.PropTypes.bool,
-	chartData: React.PropTypes.array,
-	currentItems: React.PropTypes.array,
+	chartId: React.PropTypes.number.isRequired,
+
+	chartConfig: React.PropTypes.object.isRequired,
+	currentItem: React.PropTypes.object.isRequired,
+
 };
 
 CurrentCoordinate.defaultProps = {
@@ -83,14 +82,16 @@ CurrentCoordinate.defaultProps = {
 };
 
 CurrentCoordinate.drawOnCanvas = (canvasContext, props) => {
-	var { mouseXY, currentCharts, chartData, currentItems, show } = props;
+	var { mouseXY, chartConfig, currentItem, xScale, show } = props;
 
-	CurrentCoordinate.drawOnCanvasStatic(props, canvasContext, show, mouseXY, currentCharts, chartData, currentItems);
+	CurrentCoordinate.drawOnCanvasStatic(props, canvasContext, show, xScale, chartConfig, currentItem);
 };
 
-CurrentCoordinate.drawOnCanvasStatic = (props, ctx, show, mouseXY, currentCharts, chartData, currentItems) => {
+// mouseContext, show, xScale, mouseXY, currentCharts, chartConfig, currentItem
+
+CurrentCoordinate.drawOnCanvasStatic = (props, ctx, show, xScale, chartConfig, currentItem) => {
 	var { margin } = props;
-	var circle = CurrentCoordinate.helper(props, show, chartData, currentItems);
+	var circle = CurrentCoordinate.helper(props, xScale, show, chartConfig, currentItem);
 
 	if (!circle) return null;
 
@@ -110,60 +111,40 @@ CurrentCoordinate.drawOnCanvasStatic = (props, ctx, show, mouseXY, currentCharts
 	ctx.restore();
 };
 
-CurrentCoordinate.helper = (props, show, chartData, currentItems) => {
-	var { forChart, forCompareSeries, forDataSeries, r } = props;
+CurrentCoordinate.helper = (props, xScale, show, chartConfig, currentItem) => {
+	var { fill, xAccessor, yAccessor, r } = props;
 
-	var chartData = chartData.filter((each) => each.id === forChart)[0];
-	var currentItem = currentItems.filter((each) => each.id === forChart)[0];
-	var item = currentItem ? currentItem.data : undefined;
-	var fill = "black";
+	// console.log(show);
+	if (!show || currentItem === undefined) return null;
 
-	if (!show || item === undefined) return null;
-	var yAccessor;
-
-	if (forCompareSeries !== undefined) {
-		var compSeries = chartData.config.compareSeries
-			.filter((each) => each.id === forCompareSeries);
-
-		if (compSeries.length !== 1) {
-			console.warn("Unique compareSeries with id={%s} not found", forCompareSeries);
-			throw new Error("Unique compareSeries not found");
-		}
-		fill = compSeries[0].stroke;
-		yAccessor = compSeries[0].percentYAccessor;
-	} else if (forDataSeries !== undefined) {
-		var overlays = chartData.config.overlays
-			.filter((each) => each.id === forDataSeries);
-
-		if (overlays.length !== 1) {
-			console.warn("Unique DataSeries with id={%s} not found", forDataSeries);
-			throw new Error("Unique DataSeries not found");
-		}
-
-		fill = overlays[0].stroke;
-
-		yAccessor = overlays[0].yAccessor;
-	}
-
-	var xValue = chartData.config.xAccessor(item);
-	var yValue = yAccessor(item);
+	var xValue = xAccessor(currentItem);
+	var yValue = yAccessor(currentItem);
 
 	if (yValue === undefined) return null;
 
-	var x = Math.round(chartData.plot.scales.xScale(xValue)) + chartData.config.origin[0];
-	var y = Math.round(chartData.plot.scales.yScale(yValue)) + chartData.config.origin[1];
+	// console.log(chartConfig);
+	var x = Math.round(xScale(xValue)) + chartConfig.origin[0];
+	var y = Math.round(chartConfig.yScale(yValue)) + chartConfig.origin[1];
 
 	return { x, y, r, fill };
 };
 
 export default pure(CurrentCoordinate, {
 	show: React.PropTypes.bool.isRequired,
-	currentItems: React.PropTypes.array.isRequired,
-	chartData: React.PropTypes.array.isRequired,
+	// currentItems: React.PropTypes.array.isRequired,
+	// chartData: React.PropTypes.array.isRequired,
+
+	chartConfig: React.PropTypes.object.isRequired,
+	currentItem: React.PropTypes.object.isRequired,
+	xAccessor: React.PropTypes.func.isRequired,
+	xScale: React.PropTypes.func.isRequired,
+	mouseXY: React.PropTypes.array, // this is to avoid the flicker
+
+	chartId: React.PropTypes.number.isRequired,
 
 	getCanvasContexts: React.PropTypes.func,
 	margin: React.PropTypes.object.isRequired,
 	callbackForCanvasDraw: React.PropTypes.func.isRequired,
 	getAllCanvasDrawCallback: React.PropTypes.func,
 	chartCanvasType: React.PropTypes.string.isRequired,
-});
+}, ["mouseXY"]);

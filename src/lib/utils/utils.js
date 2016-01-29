@@ -2,8 +2,6 @@
 
 import React from "react";
 import d3 from "d3";
-import get from "lodash.get"
-import isEqual from "lodash.isequal"
 
 export const overlayColors = d3.scale.category10();
 
@@ -18,6 +16,17 @@ export function isReactVersion14() {
 
 export function isDefined(d) {
 	return d !== null && typeof d != "undefined";
+}
+
+export function head(array) {
+	return array ? array[0] : undefined;
+}
+
+export const first = head
+
+export function last(array) {
+	var length = array ? array.length : 0;
+	return length ? array[length - 1] : undefined;
 }
 
 export function isNotDefined(d) {
@@ -176,25 +185,20 @@ export function calculate(dataPreProcessor, calculator, data) {
 	});
 	return result;
 };
-function lte(value, compare) {
-	return value < compare || isEqual(value, compare)
-}
-
-function gte(value, compare) {
-	return value > compare || isEqual(value, compare)
-}
 
 export function getClosestItemIndexes(array, value, accessor) {
 	var lo = 0, hi = array.length - 1;
 	while (hi - lo > 1) {
 		var mid = Math.round((lo + hi) / 2);
-		if (lte(accessor(array[mid]), value)) {
+		if (accessor(array[mid]) < value) {
 			lo = mid;
 		} else {
 			hi = mid;
 		}
 	}
-	if (isEqual(accessor(array[lo]), value)) hi = lo;
+	// for Date object === does not work, so using the <= in combination with >=
+	// the same code works for both dates and numbers
+	if (accessor(array[lo]) >= value && accessor(array[lo]) <= value) hi = lo;
 
 	// console.log(accessor(array[lo]), lo, value, hi, accessor(array[hi]));
 
@@ -237,6 +241,9 @@ export function getter(obj, pluckKey) {
 	});
 	return value;
 };
+
+// export const get = getter;
+// export const set = setter;
 
 export function hexToRGBA(inputHex, opacity) {
 	var hex = inputHex.replace("#", "");

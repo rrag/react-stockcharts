@@ -25,11 +25,10 @@ THE SOFTWARE.
 */
 
 import d3 from "d3";
-import setter from "lodash.set"
 
-import calculator from "./slidingWindow";
 import identity from "./identity";
 import zipper from "./zipper";
+import noop from "./noop";
 
 import { isDefined, isNotDefined } from "./utils";
 
@@ -37,20 +36,18 @@ import { isDefined, isNotDefined } from "./utils";
 // the source array using the given merge function.
 export default function() {
 
-	var algorithm = calculator(),
-		mergePath = [],
-		clean = identity;
-
-	function merge(datum, indicator) {
-		if (isDefined(indicator) && isDefined(clean(indicator))) {
-			return setter(datum, mergePath, indicator);
-		}
-		return datum;
-	};
+	var algorithm = identity,
+		skipUndefined = true,
+		merge = noop;
 
 	function mergeCompute(data) {
 		var zip = zipper()
-			.combine(merge);
+			.combine((datum, indicator) => {
+				var result = (skipUndefined && isNotDefined(indicator))
+					? datum
+					: merge(datum, indicator);
+				return isNotDefined(result) ? datum : result
+			});
 
 		return zip(data, algorithm(data));
 	};
@@ -70,20 +67,11 @@ export default function() {
 		merge = x;
 		return mergeCompute;
 	};
-
-	mergeCompute.clean = function(x) {
+	mergeCompute.skipUndefined = function(x) {
 		if (!arguments.length) {
-			return clean;
+			return skipUndefined;
 		}
-		clean = x;
-		return mergeCompute;
-	};
-
-	mergeCompute.mergePath = function(x) {
-		if (!arguments.length) {
-			return mergePath;
-		}
-		mergePath = x;
+		skipUndefined = x;
 		return mergeCompute;
 	};
 

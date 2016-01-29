@@ -2,12 +2,10 @@
 
 import d3 from "d3";
 import objectAssign from "object-assign";
-import set from "lodash.set";
-import get from "lodash.get";
 
 import { zipper, slidingWindow, merge } from "./calculator";
 import { ElderImpulse as defaultOptions } from "./defaultOptions";
-import { sourceFunctor } from "../utils/utils";
+import { get, set, sourceFunctor } from "../utils/utils";
 
 function ElderImpulseIndicator(options, chartProps, dataSeriesProps) {
 

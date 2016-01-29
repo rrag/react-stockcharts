@@ -161,6 +161,7 @@ export default pure(MouseCoordinates, {
 
 	xScale: React.PropTypes.func.isRequired,
 	xAccessor: React.PropTypes.func.isRequired,
+	displayXAccessor: React.PropTypes.func.isRequired,
 	chartCanvasType: React.PropTypes.string.isRequired,
 	chartConfig: React.PropTypes.array.isRequired,
 	currentItem: React.PropTypes.object.isRequired,

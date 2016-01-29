@@ -12,7 +12,17 @@ import ElderImpulse from "./ElderImpulseIndicator";
 import Copy from "./CopyIndicator";
 import * as defaultOptions from "./defaultOptions";
 
+
+import ema from "./ema";
+import sma from "./sma";
+
+
 export {
+	ema,
+	sma,
+
+
+
 	MACD,
 	ATR,
 	EMA,

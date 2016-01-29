@@ -1,11 +1,9 @@
 "use strict";
 
 import React from "react";
-import last from "lodash.last";
-import first from "lodash.first";
 
 import wrap from "./wrap";
-import { hexToRGBA } from "../utils/utils";
+import { first, last, hexToRGBA } from "../utils/utils";
 
 class CandlestickSeries extends React.Component {
 	render() {

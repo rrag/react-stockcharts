@@ -1,7 +1,7 @@
 "use strict";
 
 /*
-https://github.com/ScottLogic/d3fc/blob/master/src/indicator/algorithm/calculator/stochasticOscillator.js
+https://github.com/ScottLogic/d3fc/blob/master/src/indicator/algorithm/calculator/relativeStrengthIndex.js
 
 The MIT License (MIT)
 
@@ -27,56 +27,60 @@ THE SOFTWARE.
 */
 
 import d3 from "d3";
-import last from "lodash.last";
 
 import identity from "../../utils/identity";
 import slidingWindow from "../../utils/slidingWindow";
-import zipper from "../../utils/zipper";
 
-import { isDefined } from "../../utils/utils";
-import { FullStochasticOscillator as defaultOptions } from "../defaultOptions";
+import { isDefined, last } from "../../utils/utils";
+import { RSI as defaultOptions } from "../defaultOptions";
 
 export default function() {
 
-	var { period: windowSize, K: kWindowSize, D: dWindowSize, ohlc: value } = defaultOptions;
-
-	var high = d => value(d).high,
-		low = d => value(d).low,
-		close = d => value(d).close;
+	var { period: windowSize } = defaultOptions;
+	var value = identity;
 
 	function calculator(data) {
-		var kWindow = slidingWindow()
+
+		var prevAvgGain, prevAvgLoss;
+		var rsiAlgorithm = slidingWindow()
 			.windowSize(windowSize)
-			.accumulator(values => {
+			.accumulator((values) => {
 
-				var highestHigh = d3.max(values, high);
-				var lowestLow = d3.min(values, low);
+				var avgGain = isDefined(prevAvgGain)
+					? (prevAvgGain * (windowSize - 1) + last(values).gain) / windowSize
+					: d3.mean(values, (each) => each.gain)
 
-				var currentClose = close(last(values));
-				var k = (currentClose - lowestLow) / (highestHigh - lowestLow) * 100
+				var avgLoss = isDefined(prevAvgLoss)
+					? (prevAvgLoss * (windowSize - 1) + last(values).loss) / windowSize
+					: d3.mean(values, (each) => each.loss)
 
-				return k;
+				var relativeStrength = avgGain / avgLoss;
+				var rsi = 100 - (100 / (1 + relativeStrength));
+
+				prevAvgGain = avgGain;
+				prevAvgLoss = avgLoss;
+
+				return rsi;
 			});
 
-		var kSmoothed = slidingWindow()
-			.skipInitial(windowSize - 1)
-			.windowSize(kWindowSize)
-			.accumulator(d3.mean);
+		var gainsAndLossesCalculator = slidingWindow()
+			.windowSize(2)
+			.undefinedValue(x => [0, 0])
+			.accumulator(tuple => {
+				var prev = tuple[0];
+				var now = tuple[1];
+				var change = value(now) - value(prev);
+				return {
+					gain: Math.max(change, 0),
+					loss: Math.abs(Math.min(change, 0)),
+				}
+			})
 
-		var dWindow = slidingWindow()
-			.skipInitial(windowSize -1 + kWindowSize - 1)
-			.windowSize(dWindowSize)
-			.accumulator(d3.mean);
+		var gainsAndLosses = gainsAndLossesCalculator(data);
 
-		var stoAlgorithm = zipper()
-			.combine((K, D) => ({ K, D }));
+		var rsiData = rsiAlgorithm(gainsAndLosses)
 
-		var kData = kSmoothed(kWindow(data));
-		var dData = dWindow(kData);
-
-		var newData = stoAlgorithm(kData, dData);
-
-		return newData;
+		return rsiData;
 	};
 
 	calculator.windowSize = function(x) {
@@ -84,20 +88,6 @@ export default function() {
 			return windowSize;
 		}
 		windowSize = x;
-		return calculator;
-	};
-	calculator.kWindowSize = function(x) {
-		if (!arguments.length) {
-			return kWindowSize;
-		}
-		kWindowSize = x;
-		return calculator;
-	};
-	calculator.dWindowSize = function(x) {
-		if (!arguments.length) {
-			return dWindowSize;
-		}
-		dWindowSize = x;
 		return calculator;
 	};
 	calculator.value = function(x) {

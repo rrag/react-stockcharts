@@ -2,8 +2,8 @@
 
 import React from "react";
 import d3 from "d3";
-import first from "lodash.first";
 
+import { first } from "../utils/utils";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 

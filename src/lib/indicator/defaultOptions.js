@@ -66,11 +66,11 @@ export const RSI = {
 };
 
 export const EMA = {
-	source: "close", // "high", "low", "open", "close"
+	source: d => d.close, // "high", "low", "open", "close"
 	period: 10,
 };
 
 export const SMA = {
-	source: "close", // "high", "low", "open", "close"
+	source: d => d.close, // "high", "low", "open", "close"
 	period: 10,
 };

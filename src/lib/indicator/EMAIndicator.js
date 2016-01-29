@@ -1,9 +1,8 @@
 "use strict";
 
 import objectAssign from "object-assign";
-import getter from "lodash.get"
 
-import { overlayColors } from "../utils/utils";
+import { get, overlayColors } from "../utils/utils";
 
 import { EMA as defaultOptions } from "./defaultOptions";
 import { merge, ema } from "./calculator";
@@ -20,7 +19,7 @@ function EMAIndicator(options, chartProps, dataSeriesProps) {
 
 	function indicator(data) {
 		var { period, source } = settings;
-		var value = (typeof source === "function") ? source : d => getter(d, source)
+		var value = (typeof source === "function") ? source : d => get(d, source)
 
 		// console.log(data[20], period, getter(data[20], source));
 		var emaAlgorithm = ema().windowSize(period).value(value);

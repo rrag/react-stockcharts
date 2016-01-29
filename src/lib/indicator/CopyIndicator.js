@@ -1,7 +1,6 @@
 "use strict";
 
 import objectAssign from "object-assign";
-import getter from "lodash.get"
 
 import { overlayColors, sourceFunctor } from "../utils/utils";
 

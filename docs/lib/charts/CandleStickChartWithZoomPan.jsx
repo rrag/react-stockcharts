@@ -17,17 +17,21 @@ var { StockscaleTransformer } = ReStock.transforms;
 var { XAxis, YAxis } = ReStock.axes;
 
 var { fitWidth } = ReStock.helper;
+/*
+					xAccessor={d => d.date} xScale={d3.time.scale()}
+					xAccessor={d => d.date} discontinous xScale={financeEODDiscontiniousScale()}
+					allowedIntervals={["D", "W"]}
 
-//					xAccessor={d => d.date} discontinous xScale={financeEODDiscontiniousScale()}
+*/
 class CandleStickChartWithZoomPan extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
-
 		return (
 			<ChartCanvas width={width} height={400}
 					margin={{left: 70, right: 70, top:10, bottom: 30}} type={type}
 					data={data}
-					xAccessor={d => d.date} xScale={d3.time.scale()}
+					xAccessor={d => d.date} discontinous xScale={financeEODDiscontiniousScale()}
+					allowedIntervals={["D", "W", "M"]}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1} yExtents={[d => d.high, d => d.low]}
 						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}>
@@ -40,7 +44,7 @@ class CandleStickChartWithZoomPan extends React.Component {
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 					<HistogramSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
-				<MouseCoordinates displayXAccessor={d => d.date} xDisplayFormat={d3.time.format("%Y-%m-%d")} />
+				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, 0]}/>

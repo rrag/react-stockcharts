@@ -8,7 +8,7 @@ function getDisplayName(Series) {
 	return name;
 }
 
-function pure(PureSeries, contextShape) {
+function pure(PureSeries, contextShape, ignorePropKeys = []) {
 	class PureCanvasSeries extends React.Component {
 		shouldComponentUpdate(nextProps, nextState, nextContext) {
 			return !shallowEqual(this.props, nextProps)
@@ -19,9 +19,16 @@ function pure(PureSeries, contextShape) {
 			return this.refs.pureSeries;
 		}
 		render() {
-			// console.log(PureSeries.defaultProps);
+			var ctx = {};
+			Object.keys(this.context)
+				.filter(key => ignorePropKeys.indexOf(key) === -1)
+				.forEach(key => {
+					ctx[key] = this.context[key];
+				})
+
+			// console.log(ctx);
 			return <PureSeries ref="pureSeries"
-				{...this.context}
+				{...ctx}
 				{...this.props} />;
 		}
 	};

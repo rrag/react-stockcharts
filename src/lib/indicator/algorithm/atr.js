@@ -1,10 +1,9 @@
 "use strict";
 
 import d3 from "d3";
-import last from "lodash.last";
 
 import slidingWindow from "../../utils/slidingWindow";
-import { isDefined } from "../../utils/utils";
+import { last, isDefined } from "../../utils/utils";
 
 export default function() {
 

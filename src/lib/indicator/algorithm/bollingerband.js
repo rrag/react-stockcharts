@@ -26,13 +26,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import last from "lodash.last";
 import d3 from "d3";
 
 import identity from "../../utils/identity";
 import slidingWindow from "../../utils/slidingWindow";
 import ema from "./ema";
 import zipper from "../../utils/zipper";
+import { last } from "../../utils/utils";
 
 import { BollingerBand as defaultOptions } from "../defaultOptions";
 

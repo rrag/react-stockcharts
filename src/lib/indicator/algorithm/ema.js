@@ -32,7 +32,7 @@ import { isDefined, isNotDefined } from "../../utils/utils";
 export default function() {
 
 	var windowSize = 9,
-		value = identity;
+		source = identity;
 
 	function calculator(data) {
 
@@ -42,7 +42,7 @@ export default function() {
 		var skip = 0;
 
 		return data.map(function(d, i) {
-			var v = value(d, i);
+			var v = source(d, i);
 			if (isNotDefined(previous) && isNotDefined(v)) {
 				skip++;
 				return undefined;
@@ -70,11 +70,11 @@ export default function() {
 		return calculator;
 	};
 
-	calculator.value = function(x) {
+	calculator.source = function(x) {
 		if (!arguments.length) {
-			return value;
+			return source;
 		}
-		value = x;
+		source = x;
 		return calculator;
 	};
 

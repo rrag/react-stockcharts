@@ -2,13 +2,11 @@
 
 import React from "react";
 import objectAssign from "object-assign";
-import first from "lodash.first";
-import last from "lodash.last";
 
 import PureComponent from "./utils/PureComponent";
 import Chart from "./Chart";
 
-import { isDefined, clearCanvas, calculate, getClosestItemIndex, getClosestItemIndexes } from "./utils/utils";
+import { first, last, isDefined, clearCanvas, calculate, getClosestItemIndex, getClosestItemIndexes } from "./utils/utils";
 import zipper from "./utils/zipper";
 import { getNewChartConfig, getChartConfigWithUpdatedYScales, getCurrentCharts, getCurrentItem } from "./utils/ChartDataUtil";
 import { getMainChart, getChartData, getChartDataConfig, getClosest, getDataToPlotForDomain, getChartPlotFor } from "./utils/ChartDataUtil";
@@ -67,12 +65,12 @@ class EventHandler extends PureComponent {
 	}
 	componentWillMount() {
 
-		var { data, derivedInterval, xExtentsCalculator, xScale, xAccessor, dimensions, children } = this.props;
+		var { data, showingInterval, xExtentsCalculator, xScale, xAccessor, dimensions, children } = this.props;
 
 		var chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), data);
 
 		this.setState({
-			derivedInterval,
+			showingInterval,
 			xScale,
 			plotData: data,
 			chartConfig,
@@ -190,6 +188,8 @@ class EventHandler extends PureComponent {
 		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
 
 		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
+		// optimization oportunity do not change currentItem if it is not the same as prev
+
 		// console.log(currentCharts, currentItem);
 
 		/*var interactiveState = inputType === "mouse"
@@ -205,20 +205,21 @@ class EventHandler extends PureComponent {
 				e);*/
 
 		var contexts = this.getCanvasContexts();
+		requestAnimationFrame(() => {
+			if (contexts && contexts.mouseCoord) {
+				clearCanvas([contexts.mouseCoord]);
+			}
+			// console.log(interactiveState === this.state.interactiveState);
+			// if (interactiveState !== this.state.interactiveState) this.clearInteractiveCanvas();
 
-		if (contexts && contexts.mouseCoord) {
-			clearCanvas([contexts.mouseCoord]);
-		}
-		// console.log(interactiveState === this.state.interactiveState);
-		// if (interactiveState !== this.state.interactiveState) this.clearInteractiveCanvas();
-
-		this.setState({
-			mouseXY,
-			currentItem,
-			show: true,
-			currentCharts,
-			// interactiveState,
-		});
+			this.setState({
+				mouseXY,
+				currentItem,
+				show: true,
+				currentCharts,
+				// interactiveState,
+			});
+		})
 	}
 
 	handleMouseLeave() {
@@ -303,38 +304,19 @@ class EventHandler extends PureComponent {
 	}
 	handleZoom(zoomDirection, mouseXY) {
 		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
-		var { plotData, interval, xScale: initialXScale, chartConfig: initialChartConfig, currentItem } = this.state;
-		var { xAccessor, dimensions: { width }, xExtentsCalculator } = this.props;
+		var { plotData, showingInterval, xScale: initialXScale, chartConfig: initialChartConfig, currentItem } = this.state;
+		var { xAccessor, interval, dimensions: { width }, xExtentsCalculator } = this.props;
 
 		var item = getCurrentItem(initialXScale, xAccessor, mouseXY, plotData),
-			leftX = initialXScale(xAccessor(item)),
-			rightX = leftX - width,
-			zoom = Math.pow(1 + Math.abs(zoomDirection) / 2, zoomDirection),
-			z = [leftX, rightX];
+			cx = initialXScale(xAccessor(item)),
+			c = zoomDirection > 0 ? 2 : 0.5,
+			newDomain = initialXScale.range().map(x => cx + (x - cx) * c).map(initialXScale.invert);
 
-		/* var chart = chartData.filter((eachChart) => eachChart.id === mainChart)[0],
-			item = getClosest(plotData, mouseXY, chart),
-			xScale = chart.plot.scales.xScale,
-			domain = xScale.domain(),
-			leftX = centerX - domain[0],
-			rightX = domain[1] - centerX,
-			
-			domainL = (getLongValue(centerX) - ( leftX * zoom)),
-			domainR = (getLongValue(centerX) + (rightX * zoom)),
-			domainRange = Math.abs(domain[1] - domain[0]),
-			fullData = data[interval],
-			last = fullData[fullData.length - 1],
-			first = fullData[0];
-
-		var domainRange = panStartDomain[1] - panStartDomain[0],
-			dx = mouseXY[0] - panOrigin[0];*/
-
-		var newDomain = initialXScale.range().map((x, i) => x - z[i] * zoomDirection).map(initialXScale.invert);
-
-
-		console.log(z, initialXScale.domain(), newDomain);
 		var { plotData, interval: updatedInterval, scale: updatedScale } = xExtentsCalculator
 			.width(width)
+			.currentInterval(showingInterval)
+			.currentDomain(initialXScale.domain())
+			.currentPlotData(plotData)
 			.interval(interval)(newDomain, xAccessor)
 
 		var currentItem = getCurrentItem(updatedScale, xAccessor, mouseXY, plotData);
@@ -343,43 +325,17 @@ class EventHandler extends PureComponent {
 		this.clearBothCanvas();
 		this.clearInteractiveCanvas();
 
+		// console.log(showingInterval, updatedInterval);
 		this.clearCanvasDrawCallbackList();
 		this.setState({
 			xScale: updatedScale,
+			showingInterval: updatedInterval,
 			plotData,
 			mouseXY,
 			currentCharts,
 			chartConfig,
 			currentItem,
-		});
-
-		/*domainL = Math.max(getLongValue(chart.config.xAccessor(first)) - Math.floor(domainRange / 3), domainL);
-		domainR = Math.min(getLongValue(chart.config.xAccessor(last)) + Math.floor(domainRange / 3), domainR);
-
-		var dataToPlot = getDataToPlotForDomain(domainL, domainR, data, chart.config.width, chart.config.xAccessor);
-		if (dataToPlot.data.length < 10) return;
-		var newChartData = chartData.map((eachChart) => {
-			var plot = getChartPlotFor(eachChart.config, eachChart.scaleType, dataToPlot.data, domainL, domainR);
-			return {
-				id: eachChart.id,
-				config: eachChart.config,
-				scaleType: eachChart.scaleType,
-				plot: plot
-			};
-		});
-
-		var currentItems = getCurrentItems(newChartData, mouseXY, dataToPlot.data);
-
-		this.clearBothCanvas();
-		this.clearInteractiveCanvas();
-
-		this.clearCanvasDrawCallbackList();
-		this.setState({
-			chartData: newChartData,
-			plotData: dataToPlot.data,
-			interval: dataToPlot.interval,
-			currentItems,
-		});*/
+		});/**/
 	}
 
 	handlePanStart(panStartDomain, panOrigin, dxy) {
@@ -394,7 +350,7 @@ class EventHandler extends PureComponent {
 		this.panHappened = false;
 	}
 	panHelper(mouseXY) {
-		var { panStartDomain, interval, panOrigin, xScale: initialXScale, chartConfig: initialChartConfig } = this.state;
+		var { panStartDomain, showingInterval, panOrigin, xScale: initialXScale, chartConfig: initialChartConfig } = this.state;
 		var { xAccessor, dimensions: { width }, xExtentsCalculator } = this.props;
 
 		var domainRange = panStartDomain[1] - panStartDomain[0],
@@ -404,7 +360,7 @@ class EventHandler extends PureComponent {
 
 		var { plotData, interval: updatedInterval, scale: updatedScale } = xExtentsCalculator
 			.width(width)
-			.interval(interval)(newDomain, xAccessor)
+			.interval(showingInterval)(newDomain, xAccessor)
 
 		// console.log(newDomain);
 
@@ -452,6 +408,8 @@ class EventHandler extends PureComponent {
 
 								if (each.type === "axis") {
 									each.draw(axesCanvasContext, eachChart, xScale, yScale);
+								} else if (each.type === "currentcoordinate") {
+									each.draw(mouseContext, show, xScale, eachChart, currentItem);
 								} else {
 									each.draw(axesCanvasContext, xScale, yScale, plotData);
 								}
@@ -467,12 +425,7 @@ class EventHandler extends PureComponent {
 					canvasDrawCallbackList
 						.filter(each => each.type === "mouse")
 						.forEach(each => each.draw(mouseContext, show,
-							xScale, mouseXY, currentCharts, chartConfig, currentItem));
-
-					canvasDrawCallbackList
-						.filter(each => each.type === "currentcoordinate")
-						.forEach(each => each.draw(mouseContext, show,
-							xScale, mouseXY, currentCharts, chartConfig, currentItem));
+							xScale, mouseXY, currentCharts, chartConfig, currentItem)); 
 
 				});
 			} else {
