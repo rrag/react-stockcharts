@@ -2,7 +2,7 @@
 
 export const BollingerBand = {
 	period: 20,
-	source: "close", // "high", "low", "open", "close"
+	source: d => d.close, // "high", "low", "open", "close"
 	multiplier: 2,
 	movingAverageType: "sma"
 };

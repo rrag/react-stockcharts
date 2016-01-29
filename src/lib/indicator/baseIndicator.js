@@ -1,10 +1,6 @@
 "use strict";
 
-import merge from "../utils/merge";
 import { overlayColors } from "../utils/utils";
-
-import { EMA as defaultOptions } from "./defaultOptions";
-import { ema } from "./calculator";
 
 var i = 0;
 

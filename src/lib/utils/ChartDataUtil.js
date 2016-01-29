@@ -7,7 +7,7 @@ import Chart from "../Chart";
 
 import { flattenData } from "./ScaleUtils";
 import { firstDefined, lastDefined } from "./OverlayUtils";
-import { isDefined, getClosestItem, getClosestItemIndexes, overlayColors, pluck, keysAsArray } from "./utils";
+import { isDefined, isArray, isObject, getClosestItem, getClosestItemIndexes, overlayColors, pluck, keysAsArray } from "./utils";
 import zipper from "./zipper";
 import merge from "./merge";
 import slidingWindow from "./slidingWindow";
@@ -36,6 +36,15 @@ export function getDimensions({width, height}, chartProps) {
 	var canvasContext = canvasContextList.length > 0 ? canvasContextList[0].context : undefined;
 	return canvasContext;
 }*/
+
+
+function values(func) {
+	return (d) => {
+		var obj = func(d);
+		return isObject(obj) ? Object.keys(obj).map(key => obj[key]) : obj;
+	}
+};
+
 export function getNewChartConfig(innerDimension, children) {
 
 	return React.Children.map(children, (each) => {
@@ -70,8 +79,9 @@ export function getCurrentCharts(chartConfig, mouseXY) {
 }
 export function getChartConfigWithUpdatedYScales(chartConfig, plotData) {
 	var yDomains = chartConfig
-		.map(({ yExtents }) => d3.extent(d3.merge(yExtents.map(eachExtent => d3.extent(plotData, eachExtent)))));
+		.map(({ yExtents }) => d3.extent(d3.merge(yExtents.map(eachExtent => d3.extent(plotData, values(eachExtent))))));
 
+	console.log(yDomains);
 	var combine = zipper()
 		.combine((config, domain) => {
 			var { padding: { top, bottom }, height, width, yScale } = config;

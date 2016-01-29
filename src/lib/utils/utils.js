@@ -33,6 +33,10 @@ export function isNotDefined(d) {
 	return ! isDefined(d);
 }
 
+export function isObject(d) {
+	return isDefined(d) && typeof d === "object" && !Array.isArray(d);
+}
+
 export function isArray(d) {
 	return isDefined(d) && typeof d === "object" && Array.isArray(d);
 }

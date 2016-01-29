@@ -1,5 +1,5 @@
 
-import MACD from "./MACDIndicator";
+/*import MACD from "./MACDIndicator";
 import ATR from "./ATRIndicator";
 import EMA from "./EMAIndicator";
 import SMA from "./SMAIndicator";
@@ -9,19 +9,21 @@ import FullStochasticOscillator from "./FullStochasticOscillator";
 import ForceIndex from "./ForceIndexIndicator";
 import ElderRay from "./ElderRayIndicator";
 import ElderImpulse from "./ElderImpulseIndicator";
-import Copy from "./CopyIndicator";
+import Copy from "./CopyIndicator";*/
 import * as defaultOptions from "./defaultOptions";
 
 
 import ema from "./ema";
 import sma from "./sma";
+import bollingerBand from "./bollingerBand";
 
 
 export {
 	ema,
 	sma,
+	bollingerBand,
 
-
+/*
 
 	MACD,
 	ATR,
@@ -33,6 +35,6 @@ export {
 	ForceIndex,
 	ElderRay,
 	ElderImpulse,
-	Copy,
+	Copy,*/
 	defaultOptions
 };

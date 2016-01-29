@@ -1,18 +1,18 @@
 
-import DummyTransformer from "./DummyTransformer";
+/*import DummyTransformer from "./DummyTransformer";
 import StockscaleTransformer from "./StockscaleTransformer";
 import HeikinAshiTransformer from "./HeikinAshiTransformer";
 import KagiTransformer from "./KagiTransformer";
 import RenkoTransformer from "./RenkoTransformer";
-import PointAndFigureTransformer from "./PointAndFigureTransformer";
+import PointAndFigureTransformer from "./PointAndFigureTransformer";*/
 import * as defaultOptions from "./defaultOptions";
 
 export {
-	DummyTransformer,
+	/*DummyTransformer,
 	StockscaleTransformer,
 	HeikinAshiTransformer,
 	KagiTransformer,
 	RenkoTransformer,
-	PointAndFigureTransformer,
+	PointAndFigureTransformer,*/
 	defaultOptions,
 };

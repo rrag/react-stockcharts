@@ -39,19 +39,20 @@ import { BollingerBand as defaultOptions } from "../defaultOptions";
 export default function() {
 
 	var { period: windowSize, multiplier, movingAverageType } = defaultOptions;
-	var value = identity;
+	var source = identity;
 
 	function calculator(data) {
 
 		var meanAlgorithm = movingAverageType === "ema"
-			? ema().windowSize(windowSize).value(value)
-			: slidingWindow().windowSize(windowSize).accumulator(d3.mean).value(value);
+			? ema().windowSize(windowSize).source(source)
+			: slidingWindow().windowSize(windowSize)
+				.accumulator(values => d3.mean(values)).source(source);
 
 		var bollingerBandAlgorithm = slidingWindow()
 			.windowSize(windowSize)
 			.accumulator((values) => {
 				var avg = last(values).mean;
-				var stdDev = d3.deviation(values, (each) => value(each.datum));
+				var stdDev = d3.deviation(values, (each) => source(each.datum));
 				return {
 					top: avg + multiplier * stdDev,
 					middle: avg,
@@ -90,11 +91,11 @@ export default function() {
 		return calculator;
 	};
 
-	calculator.value = function(x) {
+	calculator.source = function(x) {
 		if (!arguments.length) {
-			return value;
+			return source;
 		}
-		value = x;
+		source = x;
 		return calculator;
 	};
 
