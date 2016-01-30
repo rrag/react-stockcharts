@@ -8,9 +8,13 @@ import slidingWindow from "../utils/slidingWindow";
 import { SMA as defaultOptions } from "./defaultOptions";
 import baseIndicator from "./baseIndicator";
 
+const ALGORITHM_TYPE = "SMA";
+
 export default function() {
 
-	var base = baseIndicator();
+	var base = baseIndicator()
+		.type(ALGORITHM_TYPE)
+		.accessor(d => d.sma);
 
 	var underlyingAlgorithm = slidingWindow()
 		.windowSize(defaultOptions.period)
@@ -21,22 +25,18 @@ export default function() {
 		.algorithm(underlyingAlgorithm)
 		.merge((datum, indicator) => { datum.sma = indicator });
 
-	var movingAverage = function(data) {
-		if (!base.accessor()) throw new Error("set an accessor before calculating")
+	var indicator = function(data) {
+		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`)
 		var newData = mergedAlgorithm(data);
-		// console.log("HERE")
 		return newData;
 	};
 
-	d3.rebind(movingAverage, base, "accessor", "stroke", "fill", "echo");
-	d3.rebind(movingAverage, underlyingAlgorithm, "windowSize", "source", "undefinedValue", "skipInitial");
-	d3.rebind(movingAverage, mergedAlgorithm, "merge", "skipUndefined");
+	d3.rebind(indicator, base, "accessor", "stroke", "fill", "echo", "type");
+	d3.rebind(indicator, underlyingAlgorithm, "windowSize", "source", "undefinedValue", "skipInitial");
+	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
-	movingAverage.type = function() {
-		return "SMA"
-	}
-	movingAverage.tooltipLabel = function() {
+	indicator.tooltipLabel = function() {
 		return `SMA(${underlyingAlgorithm.windowSize()})`
 	}
-	return movingAverage;
+	return indicator;
 }

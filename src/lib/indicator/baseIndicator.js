@@ -6,7 +6,7 @@ var i = 0;
 
 export default function() {
 
-	var accessor, stroke = overlayColors(i++), fill = stroke, echo;
+	var accessor, stroke = overlayColors(i++), fill = stroke, echo, type;
 
 	function baseIndicator() {
 	}
@@ -29,6 +29,11 @@ export default function() {
 	baseIndicator.echo = function(x) {
 		if (!arguments.length) return echo;
 		echo = x;
+		return baseIndicator;
+	};
+	baseIndicator.type = function(x) {
+		if (!arguments.length) return type;
+		type = x;
 		return baseIndicator;
 	};
 	return baseIndicator;

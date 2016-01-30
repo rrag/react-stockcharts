@@ -53,7 +53,6 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 		var bb = bollingerBand()
 			.merge((d, c) => {d.bb = c})
 			.accessor(d => d.bb);
-// , sma20.accessor(), ema20.accessor(), ema50.accessor(), 
 		return (
 			<ChartCanvas width={width} height={400}
 					margin={{left: 70, right: 70, top:10, bottom: 30}} type={type}
@@ -61,7 +60,7 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 					xAccessor={d => d.date} discontinous xScale={financeEODDiscontiniousScale()}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1}
-						yExtents={[bb.accessor()]}
+						yExtents={[d => d.high, d => d.low, sma20.accessor(), ema20.accessor(), ema50.accessor(), bb.accessor()]}
 						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} 
 						padding={{ top: 10, bottom: 20 }}>
 					<XAxis axisAt="bottom" orient="bottom"/>
@@ -70,12 +69,21 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 					<LineSeries yAccessor={sma20.accessor()} stroke={sma20.stroke()}/>
 					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
 					<LineSeries yAccessor={ema50.accessor()} stroke={ema50.stroke()}/>
-					<BollingerSeries yAccessor={bb.accessor()} stroke={bb.stroke()} fill={bb.fill()}/>
+					<BollingerSeries yAccessor={bb.accessor()} />
 					<CurrentCoordinate id={0} yAccessor={sma20.accessor()} fill={sma20.stroke()} />
 					<CurrentCoordinate id={1} yAccessor={ema20.accessor()} fill={ema20.stroke()} />
 					<CurrentCoordinate id={2} yAccessor={ema50.accessor()} fill={ema50.stroke()} />
 				</Chart>
-
+				<Chart id={2}
+						yExtents={[d => d.volume, smaVolume50.accessor()]}
+						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
+						height={150} origin={(w, h) => [0, h - 150]}>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+					<HistogramSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "red"} />
+					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
+					<CurrentCoordinate id={0} yAccessor={smaVolume50.accessor()} fill={smaVolume50.stroke()} />
+					<CurrentCoordinate id={1} yAccessor={d => d.volume} fill="#9B0A47" />
+				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} defaultFocus={false} />
 				<TooltipContainer>
@@ -89,16 +97,7 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 };
 
 /*
-				<Chart id={2}
-						yExtents={[d => d.volume, smaVolume50.accessor()]}
-						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
-						height={150} origin={(w, h) => [0, h - 150]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-					<HistogramSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "red"} />
-					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
-					<CurrentCoordinate id={0} yAccessor={smaVolume50.accessor()} fill={smaVolume50.stroke()} />
-					<CurrentCoordinate id={1} yAccessor={d => d.volume} fill="#9B0A47" />
-				</Chart>
+
 */
 					//<BollingerBandTooltip forChart={1} origin={[-38, 60]} calculator={bb} />
 

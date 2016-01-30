@@ -8,11 +8,15 @@ import { BollingerBand as defaultOptions } from "./defaultOptions";
 import baseIndicator from "./baseIndicator";
 import { bollingerband } from "./algorithm";
 
-const ALGORITHM_TYPE = "Bollinger Band";
+const ALGORITHM_TYPE = "BollingerBand";
 
 export default function() {
 
-	var base = baseIndicator();
+	var base = baseIndicator()
+		.type(ALGORITHM_TYPE)
+		.accessor(d => d.bollingerBand)
+		.stroke(undefined)
+		.fill(undefined);
 
 	var underlyingAlgorithm = bollingerband()
 		.windowSize(defaultOptions.period)
@@ -26,12 +30,12 @@ export default function() {
 
 	var indicator = function(data) {
 		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`)
-		console.log("HERE");
+
 		var newData = mergedAlgorithm(data);
 		return newData;
 	};
 
-	d3.rebind(indicator, base, "accessor", "stroke", "fill", "echo");
+	d3.rebind(indicator, base, "accessor", "stroke", "fill", "echo", "type");
 	d3.rebind(indicator, underlyingAlgorithm, "windowSize", "movingAverageType", "multiplier", "source");
 	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 

@@ -78,7 +78,7 @@ class EventCapture extends React.Component {
 	}
 	handleMouseDown(e) {
 		var mouseEvent = e || d3.event;
-		var { mainChart, pan } = this.props;
+		var { pan } = this.props;
 		var { onPanStart, focus, onFocus, xScale } = this.context;
 		if (this.mouseInteraction && pan && onPanStart) {
 			var mouseXY = mousePosition(mouseEvent);
@@ -105,7 +105,7 @@ class EventCapture extends React.Component {
 	}
 	handlePan() {
 		// console.log("handlePan")
-		var { mainChart, pan: panEnabled, onPan: panListener } = this.props;
+		var { pan: panEnabled, onPan: panListener } = this.props;
 		var { deltaXY: dxdy, xScale, onPan } = this.context;
 
 		var e = d3.event;
@@ -262,7 +262,6 @@ class EventCapture extends React.Component {
 }
 
 EventCapture.propTypes = {
-	mainChart: React.PropTypes.number.isRequired,
 	mouseMove: React.PropTypes.bool.isRequired,
 	zoom: React.PropTypes.bool.isRequired,
 	zoomMultiplier: React.PropTypes.number.isRequired,

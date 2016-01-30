@@ -22,6 +22,42 @@ export function head(array) {
 	return array ? array[0] : undefined;
 }
 
+export function flattenDeep(array) {
+	var length = array ? array.length : 0;
+	return length ? baseFlatten(array, true) : [];
+}
+
+function baseFlatten(array, isDeep, accumulator) {
+	accumulator || (accumulator = []);
+
+	var index = -1,
+			length = array.length;
+
+	while (++index < length) {
+		var value = array[index];
+		if (isArray(value)) {
+			if (isDeep) {
+				// Recursively flatten arrays (susceptible to call stack limits).
+				baseFlatten(value, isDeep, accumulator);
+			} else {
+				arrayPush(accumulator, value);
+			}
+		} else {
+			accumulator[accumulator.length] = value;
+		}
+	}
+	return accumulator;
+}
+function arrayPush(array, values) {
+	var index = -1,
+		length = values.length,
+		offset = array.length;
+
+	while (++index < length) {
+		array[offset + index] = values[index];
+	}
+	return array;
+}
 export const first = head
 
 export function last(array) {
@@ -37,9 +73,7 @@ export function isObject(d) {
 	return isDefined(d) && typeof d === "object" && !Array.isArray(d);
 }
 
-export function isArray(d) {
-	return isDefined(d) && typeof d === "object" && Array.isArray(d);
-}
+export const isArray = Array.isArray;
 
 export function sourceFunctor(v) {
 	var type = typeof v;

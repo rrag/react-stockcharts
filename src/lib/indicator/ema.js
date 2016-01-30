@@ -6,9 +6,13 @@ import { EMA as defaultOptions } from "./defaultOptions";
 import { ema } from "./algorithm";
 import baseIndicator from "./baseIndicator";
 
+const ALGORITHM_TYPE = "EMA";
+
 export default function() {
 
-	var base = baseIndicator();
+	var base = baseIndicator()
+		.type(ALGORITHM_TYPE)
+		.accessor(d => d.ema);
 
 	var underlyingAlgorithm = ema()
 		.windowSize(defaultOptions.period)
@@ -18,21 +22,18 @@ export default function() {
 		.algorithm(underlyingAlgorithm)
 		.merge((datum, indicator) => { datum.ema = indicator });
 
-	var movingAverage = function(data) {
-		if (!base.accessor()) throw new Error("set an accessor before calculating")
+	var indicator = function(data) {
+		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`)
 		return mergedAlgorithm(data);
 	};
 
-	d3.rebind(movingAverage, base, "accessor", "stroke", "fill", "echo");
-	d3.rebind(movingAverage, underlyingAlgorithm, "windowSize", "source");
-	d3.rebind(movingAverage, mergedAlgorithm, "merge", "skipUndefined");
+	d3.rebind(indicator, base, "accessor", "stroke", "fill", "echo", "type");
+	d3.rebind(indicator, underlyingAlgorithm, "windowSize", "source");
+	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
-	movingAverage.type = function() {
-		return "EMA"
-	}
-	movingAverage.tooltipLabel = function() {
+	indicator.tooltipLabel = function() {
 		return `EMA(${underlyingAlgorithm.windowSize()})`
 	}
 
-	return movingAverage;
+	return indicator;
 }

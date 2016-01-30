@@ -43,7 +43,7 @@ function extentsWrapper(data, inputXAccessor, realXAccessor, allowedIntervals, s
 			let newLeft = inputXAccessor(dataForCurrentInterval[leftIndex]);
 			let newRight = inputXAccessor(dataForCurrentInterval[rightIndex]);
 
-			console.log([left, right], currentInterval, newLeft, newRight);
+			// console.log([left, right], currentInterval, newLeft, newRight);
 			for (let i = 0; i < allowedIntervals.length; i++) {
 				let eachInterval = allowedIntervals[i];
 				let filteredData = getFilteredResponse(data[eachInterval], left, right, xAccessor)
