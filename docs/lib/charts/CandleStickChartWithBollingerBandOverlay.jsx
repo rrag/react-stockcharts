@@ -90,6 +90,7 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
 					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 15]} 
 						calculators={[sma20, ema20, ema50]}/>
+					<BollingerBandTooltip forChart={1} origin={[-38, 60]} calculator={bb} />
 				</TooltipContainer>
 			</ChartCanvas>
 		);
@@ -97,9 +98,7 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 };
 
 /*
-
 */
-					//<BollingerBandTooltip forChart={1} origin={[-38, 60]} calculator={bb} />
 
 CandleStickChartWithBollingerBandOverlay.propTypes = {
 	data: React.PropTypes.array.isRequired,

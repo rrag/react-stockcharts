@@ -247,9 +247,14 @@ function renderPartialPage(data, dataFull, compareData) {
 	class ExamplesPage extends React.Component {
 		render() {
 			return (
-				<TypeChooser type="hybrid">
-					{(type) => <Chart data={data} type={type} />}
-				</TypeChooser>
+				<div>
+					<TypeChooser type="hybrid">
+						{(type) => <Chart data={data} type={type} />}
+					</TypeChooser>
+					<TypeChooser type="svg">
+						{(type) => <Chart data={data} type={type} />}
+					</TypeChooser>
+				</div>
 			)
 		}
 	};

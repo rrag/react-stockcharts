@@ -33,10 +33,10 @@ class Axis extends React.Component {
 		this.componentDidMount();
 	}
 	drawOnCanvas(ctx) {
-		var { chartData, margin, canvasOriginX, canvasOriginY } = this.context;
+		var { margin, canvasOriginX, canvasOriginY } = this.context;
 		var { scale } = this.props;
 
-		Axis.drawOnCanvasStatic(margin, this.props, [canvasOriginX, canvasOriginY], ctx, chartData, scale, scale);
+		Axis.drawOnCanvasStatic(margin, this.props, [canvasOriginX, canvasOriginY], ctx, scale, scale);
 	}
 
 	render() {
@@ -90,7 +90,6 @@ Axis.defaultProps = {
 Axis.contextTypes = {
 	getCanvasContexts: React.PropTypes.func,
 	chartCanvasType: React.PropTypes.string,
-	chartConfig: React.PropTypes.object.isRequired,
 	chartId: React.PropTypes.number.isRequired,
 	margin: React.PropTypes.object.isRequired,
 	canvasOriginX: React.PropTypes.number,
@@ -99,15 +98,15 @@ Axis.contextTypes = {
 	callbackForCanvasDraw: React.PropTypes.func.isRequired,
 };
 
-Axis.drawOnCanvasStatic = (margin, props, canvasOrigin, ctx, chartConfig, xScale, yScale) => {
+Axis.drawOnCanvasStatic = (margin, props, canvasOrigin, ctx, xScale, yScale) => {
 	var { transform, showDomain, showTicks } = props;
 	ctx.save();
 
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
 	ctx.translate(canvasOrigin[0] + transform[0], canvasOrigin[1] + transform[1]);
 
-	if (showDomain) AxisLine.drawOnCanvasStatic(props, ctx, chartConfig, xScale, yScale);
-	if (showTicks) AxisTicks.drawOnCanvasStatic(props, ctx, chartConfig, xScale, yScale);
+	if (showDomain) AxisLine.drawOnCanvasStatic(props, ctx, xScale, yScale);
+	if (showTicks) AxisTicks.drawOnCanvasStatic(props, ctx, xScale, yScale);
 
 	ctx.restore();
 };

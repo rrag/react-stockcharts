@@ -1,60 +1,43 @@
 "use strict";
 
 import React from "react";
+import d3 from "d3";
 
-import { displayNumberFormat } from "../utils/utils";
-import { getChartDataForChart, getCurrentItemForChart } from "../utils/ChartDataUtil";
-
+import { first } from "../utils/utils";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
 class BollingerBandTooltip extends React.Component {
 	render() {
-		var { onClick, forChart, forDataSeries } = this.props;
+		var { onClick, forChart, forDataSeries, displayFormat, calculator } = this.props;
 
-		var chartData = getChartDataForChart(this.props, this.context);
-		var item = getCurrentItemForChart(this.props, this.context);
+		var { chartConfig, currentItem, width, height } = this.context;
+		var config = first(chartConfig.filter(each => each.id === forChart));
+
 		var top, middle, bottom;
 		top = middle = bottom = "n/a";
+		var accessor = calculator.accessor();
 
-		var overlays = chartData.config.overlays
-			.filter(eachOverlay => forDataSeries === undefined ? true : forDataSeries === eachOverlay.id)
-			.filter(eachOverlay => eachOverlay.indicator !== undefined)
-			.filter(eachOverlay => eachOverlay.indicator.isBollingerBand && eachOverlay.indicator.isBollingerBand());
-
-		if (overlays.length > 1 || overlays.length === 0) {
-			console.error(`Could not find Exactly one DataSeries with BollingerBand indicator for Chart id=${ forChart }, either use
-				single BollingerBand indicator per chart
-				or use forDataSeries property to narrow down to single Series`);
-		}
-		var overlay = overlays[0];
-		var options = overlay.indicator.options();
-
-		var yAccessor = overlay.indicator.yAccessor();
-		var value = yAccessor(item);
-		var format = displayNumberFormat;
-
-		if (value !== undefined) {
-			top = format(value.top);
-			middle = format(value.middle);
-			bottom = format(value.bottom);
+		if (currentItem !== undefined
+				&& accessor(currentItem) !== undefined) {
+			var item = accessor(currentItem);
+			top = displayFormat(item.top);
+			middle = displayFormat(item.middle);
+			bottom = displayFormat(item.bottom);
 		}
 
-		var { origin } = chartData.config;
-		var relativeOrigin = typeof this.props.origin === "function"
-			? this.props.origin(this.context.width, this.context.height)
-			: this.props.origin;
-		var absoluteOrigin = [origin[0] + relativeOrigin[0], origin[1] + relativeOrigin[1]];
+		var { origin: originProp } = this.props;
+		var origin = d3.functor(originProp);
+		var [x, y] = origin(width, height);
+		var [ox, oy] = config.origin;
+		var tooltipLabel = d3.functor(calculator.tooltipLabel());
 
 		return (
-			<g transform={`translate(${ absoluteOrigin[0] }, ${ absoluteOrigin[1] })`}
-				className={this.props.className}
-				onClick={onClick}>
+			<g transform={`translate(${ ox + x }, ${ oy + y })`}
+					className={this.props.className} onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={this.props.fontFamily} fontSize={this.props.fontSize}>
-					<ToolTipTSpanLabel>
-						{`BB (${ options.period }, ${ options.source }, ${ options.multiplier }, ${ options.movingAverageType }): `}
-					</ToolTipTSpanLabel>
+					<ToolTipTSpanLabel>{tooltipLabel()}</ToolTipTSpanLabel>
 					<tspan>{`${ top }, ${ middle }, ${ bottom }`}</tspan>
 				</ToolTipText>
 			</g>
@@ -63,10 +46,11 @@ class BollingerBandTooltip extends React.Component {
 }
 
 BollingerBandTooltip.contextTypes = {
-	chartData: React.PropTypes.array.isRequired,
-	currentItems: React.PropTypes.array.isRequired,
+	chartConfig: React.PropTypes.array.isRequired,
+	currentItem: React.PropTypes.object.isRequired,
+	width: React.PropTypes.number.isRequired,
+	height: React.PropTypes.number.isRequired,
 };
-
 BollingerBandTooltip.propTypes = {
 	className: React.PropTypes.string,
 	forChart: React.PropTypes.number.isRequired,
@@ -79,11 +63,9 @@ BollingerBandTooltip.propTypes = {
 };
 
 BollingerBandTooltip.defaultProps = {
-	namespace: "ReStock.BollingerBandTooltip",
-	className: "react-stockcharts-moving-average-tooltip",
-	displayFormat: displayNumberFormat,
+	className: "react-stockcharts-bollingerband-tooltip",
+	displayFormat: d3.format(".2f"),
 	origin: [0, 10],
-	width: 65,
 };
 
 export default BollingerBandTooltip;

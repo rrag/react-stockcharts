@@ -49,7 +49,7 @@ class CurrentCoordinate extends React.Component {
 
 		if (chartCanvasType !== "svg") return null;
 
-		var circle = CurrentCoordinate.helper(this.props, show, xScale, chartConfig, currentItem);
+		var circle = CurrentCoordinate.helper(this.props, show, xScale, chartConfig.yScale, currentItem);
 
 		if (!circle) return null;
 
@@ -84,24 +84,22 @@ CurrentCoordinate.defaultProps = {
 CurrentCoordinate.drawOnCanvas = (canvasContext, props) => {
 	var { mouseXY, chartConfig, currentItem, xScale, show } = props;
 
-	CurrentCoordinate.drawOnCanvasStatic(props, canvasContext, show, xScale, chartConfig, currentItem);
+	CurrentCoordinate.drawOnCanvasStatic(props, canvasContext, show, xScale, chartConfig.yScale, currentItem);
 };
 
 // mouseContext, show, xScale, mouseXY, currentCharts, chartConfig, currentItem
 
-CurrentCoordinate.drawOnCanvasStatic = (props, ctx, show, xScale, chartConfig, currentItem) => {
-	var { margin } = props;
-	var circle = CurrentCoordinate.helper(props, xScale, show, chartConfig, currentItem);
+CurrentCoordinate.drawOnCanvasStatic = (props, ctx, show, xScale, yScale, currentItem) => {
+	var { margin, chartConfig, canvasOriginX, canvasOriginY } = props;
+
+	var circle = CurrentCoordinate.helper(props, show, xScale, yScale, currentItem);
 
 	if (!circle) return null;
-
-	var originX = 0.5 + margin.left;
-	var originY = 0.5 + margin.top;
 
 	ctx.save();
 
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
-	ctx.translate(originX, originY);
+	ctx.translate(canvasOriginX, canvasOriginY);
 
 	ctx.fillStyle = circle.fill;
 	ctx.beginPath();
@@ -111,7 +109,7 @@ CurrentCoordinate.drawOnCanvasStatic = (props, ctx, show, xScale, chartConfig, c
 	ctx.restore();
 };
 
-CurrentCoordinate.helper = (props, xScale, show, chartConfig, currentItem) => {
+CurrentCoordinate.helper = (props, show, xScale, yScale, currentItem) => {
 	var { fill, xAccessor, yAccessor, r } = props;
 
 	// console.log(show);
@@ -123,25 +121,23 @@ CurrentCoordinate.helper = (props, xScale, show, chartConfig, currentItem) => {
 	if (yValue === undefined) return null;
 
 	// console.log(chartConfig);
-	var x = Math.round(xScale(xValue)) + chartConfig.origin[0];
-	var y = Math.round(chartConfig.yScale(yValue)) + chartConfig.origin[1];
+	var x = Math.round(xScale(xValue));
+	var y = Math.round(yScale(yValue));
 
 	return { x, y, r, fill };
 };
 
 export default pure(CurrentCoordinate, {
 	show: React.PropTypes.bool.isRequired,
-	// currentItems: React.PropTypes.array.isRequired,
-	// chartData: React.PropTypes.array.isRequired,
+	currentItem: React.PropTypes.object.isRequired,
+	mouseXY: React.PropTypes.array, // this is to avoid the flicker
+	canvasOriginX: React.PropTypes.number,
+	canvasOriginY: React.PropTypes.number,
 
 	chartConfig: React.PropTypes.object.isRequired,
-	currentItem: React.PropTypes.object.isRequired,
 	xAccessor: React.PropTypes.func.isRequired,
 	xScale: React.PropTypes.func.isRequired,
-	mouseXY: React.PropTypes.array, // this is to avoid the flicker
-
 	chartId: React.PropTypes.number.isRequired,
-
 	getCanvasContexts: React.PropTypes.func,
 	margin: React.PropTypes.object.isRequired,
 	callbackForCanvasDraw: React.PropTypes.func.isRequired,

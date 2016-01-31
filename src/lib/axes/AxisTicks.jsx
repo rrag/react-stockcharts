@@ -52,7 +52,7 @@ Tick.propTypes = {
 	children: React.PropTypes.node.isRequired,
 };
 
-Tick.drawOnCanvasStatic = (tick, ctx, chartData, result) => {
+Tick.drawOnCanvasStatic = (tick, ctx, result) => {
 	var { scale, tickTransform, canvas_dy, x, y, x2, y2, format } = result;
 
 	var origin = tickTransform(scale, tick);
@@ -150,7 +150,7 @@ AxisTicks.helper = (props, scale) => {
 	return { ticks, scale, tickTransform, tickStroke, tickStrokeOpacity, dy, canvas_dy, x, y, x2, y2, textAnchor, fontSize, fontFamily, format };
 };
 
-AxisTicks.drawOnCanvasStatic = (props, ctx, chartData, xScale, yScale) => {
+AxisTicks.drawOnCanvasStatic = (props, ctx, xScale, yScale) => {
 	props = objectAssign({}, AxisTicks.defaultProps, props);
 
 	var { orient } = props;
@@ -168,7 +168,7 @@ AxisTicks.drawOnCanvasStatic = (props, ctx, chartData, xScale, yScale) => {
 	// ctx.textBaseline = 'middle';
 
 	result.ticks.forEach((tick) => {
-		Tick.drawOnCanvasStatic(tick, ctx, chartData, result);
+		Tick.drawOnCanvasStatic(tick, ctx, result);
 	});
 };
 

@@ -1,173 +1,169 @@
 "use strict";
 
-import React from "react";
+import React, { Component, PropTypes } from "react";
 import d3 from "d3";
 
 import EdgeCoordinate from "./EdgeCoordinate";
-import PureComponent from "../utils/PureComponent";
 
-import { displayNumberFormat } from "../utils/utils";
-import { getChartDataForChartNew } from "../utils/ChartDataUtil";
+import pure from "../pure";
+import { first, last, displayNumberFormat } from "../utils/utils";
+import shallowEqual from "../utils/shallowEqual";
 
-class EdgeIndicator extends PureComponent {
-	constructor(props, context) {
-		super(props, context);
-		this.drawOnCanvas = this.drawOnCanvas.bind(this);
-	}
+class EdgeIndicator extends Component {
 	componentDidMount() {
-		var { chartCanvasType, getCanvasContexts } = this.context;
+		var { chartCanvasType, getCanvasContexts } = this.props;
 
 		if (chartCanvasType !== "svg" && getCanvasContexts !== undefined) {
 			var contexts = getCanvasContexts();
-			if (contexts) this.drawOnCanvas(contexts.axes);
+			if (contexts)
+				EdgeIndicator.drawOnCanvas(this.props, contexts.axes);
 		}
 	}
 	componentDidUpdate() {
 		this.componentDidMount();
 	}
 	componentWillMount() {
-		this.componentWillReceiveProps(this.props, this.context);
+		this.componentWillReceiveProps(this.props);
 	}
-	componentWillReceiveProps(nextProps, nextContext) {
-		var { margin, width } = nextContext;
-		var draw = EdgeIndicator.drawOnCanvasStatic.bind(null, margin, nextProps, width);
+	componentWillReceiveProps(nextProps) {
+		var draw = EdgeIndicator.drawOnCanvasStatic.bind(null, nextProps);
 
-		nextContext.callbackForCanvasDraw({
-			type: "axis",
-			draw: draw,
-		});
-	}
-	drawOnCanvas(ctx) {
-		var { chartData, margin, width } = this.context;
-		EdgeIndicator.drawOnCanvasStatic(margin, this.props, width, ctx, chartData);
+		var { id, chartId } = nextProps;
+
+		// if (!shallowEqual(this.props, nextProps)) {
+			var temp = nextProps.getAllCanvasDrawCallback()
+				.filter(each => each.type === "edge")
+				.filter(each => each.chartId === chartId)
+				.filter(each => each.id === id);
+
+			if (temp.length === 0) {
+				nextProps.callbackForCanvasDraw({
+					type: "edge",
+					id, chartId, draw,
+				});
+			} else {
+				nextProps.callbackForCanvasDraw(temp[0], {
+					type: "edge",
+					id, chartId, draw,
+				});
+			}
+		// }
 	}
 	render() {
-		if (this.context.chartCanvasType !== "svg") return null;
+		var { xScale, chartConfig, plotData, chartCanvasType } = this.props;
 
-		var { width, chartData } = this.context;
-		var edge = EdgeIndicator.helper(this.props, width, chartData);
+		if (chartCanvasType !== "svg") return null;
+
+		var edge = EdgeIndicator.helper(this.props, xScale, chartConfig.yScale, plotData);
+
 
 		if (edge === undefined) return null;
 		return <EdgeCoordinate
-			type={edge.type}
 			className="react-stockcharts-edge-coordinate"
-			fill={edge.fill}
-			show={edge.show}
-			x1={edge.x1}
-			y1={edge.y1}
-			x2={edge.x2}
-			y2={edge.y2}
-			coordinate={edge.coordinate}
-			edgeAt={edge.edgeAt}
-			orient={edge.orient} />;
+				{...edge} />;
 	}
 }
 
-EdgeIndicator.contextTypes = {
-	width: React.PropTypes.number.isRequired,
-	chartData: React.PropTypes.array.isRequired,
-	getCanvasContexts: React.PropTypes.func,
-	chartCanvasType: React.PropTypes.string,
-	margin: React.PropTypes.object.isRequired,
-	// secretToSuperFastCanvasDraw: React.PropTypes.array.isRequired,
-	callbackForCanvasDraw: React.PropTypes.func.isRequired,
-};
-
 EdgeIndicator.propTypes = {
+	id: React.PropTypes.number.isRequired,
+	yAccessor: React.PropTypes.func,
+
 	type: React.PropTypes.oneOf(["horizontal"]).isRequired,
 	className: React.PropTypes.string,
-	fill: React.PropTypes.string,
-	defaultFill: React.PropTypes.string,
-	itemType: React.PropTypes.oneOf(["first", "last", "current"]).isRequired,
+	fill: React.PropTypes.oneOfType([
+		React.PropTypes.string,
+		React.PropTypes.func,
+	]).isRequired,
+	textFill: React.PropTypes.oneOfType([
+		React.PropTypes.string,
+		React.PropTypes.func,
+	]).isRequired,
+	itemType: React.PropTypes.oneOf(["first", "last"]).isRequired,
 	orient: React.PropTypes.oneOf(["left", "right"]),
 	edgeAt: React.PropTypes.oneOf(["left", "right"]),
-	forChart: React.PropTypes.number.isRequired,
-	forDataSeries: React.PropTypes.number.isRequired,
 	displayFormat: React.PropTypes.func.isRequired,
-
 };
 
 EdgeIndicator.defaultProps = {
 	type: "horizontal",
 	orient: "left",
 	edgeAt: "left",
-	displayFormat: displayNumberFormat,
+	textFill: "#FFFFFF",
+	displayFormat: d3.format(".2f"),
 	yAxisPad: 5,
-	namespace: "ReStock.EdgeIndicator",
-	defaultFill: "#0f0f0f",
+};
+EdgeIndicator.drawOnCanvas = (props, canvasContext) => {
+	var { chartConfig, xScale, plotData } = props;
+
+	EdgeIndicator.drawOnCanvasStatic(props, canvasContext, xScale, chartConfig.yScale, plotData);
 };
 
-EdgeIndicator.drawOnCanvasStatic = (margin, props, width, ctx, chartDataArray) => {
-	var edge = EdgeIndicator.helper(props, width, chartDataArray);
+EdgeIndicator.drawOnCanvasStatic = (props, ctx, xScale, yScale, plotData) => {
+	var { margin, canvasOriginX, canvasOriginY } = props;
+	var edge = EdgeIndicator.helper(props, xScale, yScale, plotData);
 
 	if (edge === undefined) return null;
 
-	var originX = margin.left;
-	var originY = margin.top;
 	ctx.save();
 
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
-	ctx.translate(originX, originY);
+	ctx.translate(canvasOriginX, canvasOriginY);
 
 	EdgeCoordinate.drawOnCanvasStatic(ctx, edge);
 	ctx.restore();
 };
 
-EdgeIndicator.helper = (props, width, chartData) => {
-	var { type: edgeType, displayFormat, forChart, forDataSeries, itemType, edgeAt, yAxisPad, orient, fill, defaultFill } = props;
+EdgeIndicator.helper = (props, xScale, yScale, plotData) => {
+	var { type: edgeType, displayFormat, itemType, edgeAt, yAxisPad, orient } = props;
+	var { yAccessor, xAccessor, fill, textFill } = props;
 
-	var currentChartData = getChartDataForChartNew(chartData, forChart);
 	// var currentItem = ChartDataUtil.getCurrentItemForChartNew(currentItems, forChart);
 	var edge = null, item, yAccessor;
 	// console.log(chartData.config.compareSeries.length);
-	var displayFormat = currentChartData.config.compareSeries.length > 0 ? d3.format(".0%") : displayFormat;
 
-	if (forDataSeries !== undefined
-			&& currentChartData.config.overlays.length > 0
-			&& currentChartData.plot.overlayValues.length > 0) {
+	var item = itemType === "first" ? first(plotData, yAccessor) : last(plotData, yAccessor)
 
-		var overlay = currentChartData.config.overlays
-			.filter((eachOverlay) => eachOverlay.id === forDataSeries);
-		var overlayValue = currentChartData.plot.overlayValues
-			.filter((eachOverlayValue) => eachOverlayValue.id === forDataSeries);
+	if (item !== undefined) {
+		var yValue = yAccessor(item),
+			xValue = xAccessor(item);
 
-		item = itemType === "first"
-			? overlayValue[0].first
-			: overlayValue[0].last;
+		var x1 = Math.round(xScale(xValue)),
+			y1 = Math.round(yScale(yValue));
 
-		yAccessor = overlay[0].yAccessor;
+		var [left, right] = xScale.range();
+		var edgeX = edgeAt === "left"
+				? left - yAxisPad
+				: right + yAxisPad;
 
-		if (item !== undefined) {
-			var yValue = yAccessor(item), xValue = currentChartData.config.xAccessor(item);
-			var x1 = Math.round(currentChartData.plot.scales.xScale(xValue)), y1 = Math.round(currentChartData.plot.scales.yScale(yValue));
-
-			var stroke = overlay[0].stroke || fill;
-			// console.log(forChart, forDataSeries, stroke, fill, defaultFill);
-			if (!stroke) console.error(`EdgeIndicator forChart=${forChart} forDataSeries=${forDataSeries} `
-				+ "is not a derived indicator, so a fill color is not auto assigned. Add a fill attribute to specify the color");
-
-			stroke = stroke || defaultFill;
-
-			var edgeX = edgeAt === "left"
-				? 0 - yAxisPad
-				: width + yAxisPad;
-
-			edge = {
-				type: edgeType,
-				fill: stroke,
-				show: true,
-				x1: x1 + currentChartData.config.origin[0],
-				y1: y1 + currentChartData.config.origin[1],
-				x2: edgeX + currentChartData.config.origin[0],
-				y2: y1 + currentChartData.config.origin[1],
-				coordinate: displayFormat(yValue),
-				edgeAt: edgeX,
-				orient: orient,
-				chartOrigin: currentChartData.config.origin,
-			};
-		}
+		edge = {
+			type: edgeType,
+			fill: d3.functor(fill)(item),
+			textFill: d3.functor(textFill)(item),
+			show: true,
+			x1,
+			y1,
+			x2: edgeX,
+			y2: y1,
+			coordinate: displayFormat(yValue),
+			edgeAt: edgeX,
+			orient,
+		};
 	}
 	return edge;
 };
 
-export default EdgeIndicator;
+export default pure(EdgeIndicator, {
+	// width: React.PropTypes.number.isRequired,
+	canvasOriginX: React.PropTypes.number,
+	canvasOriginY: React.PropTypes.number,
+	chartConfig: PropTypes.object.isRequired,
+	xAccessor: PropTypes.func.isRequired,
+	xScale: PropTypes.func.isRequired,
+	chartId: PropTypes.number.isRequired,
+	getCanvasContexts: PropTypes.func,
+	margin: PropTypes.object.isRequired,
+	callbackForCanvasDraw: PropTypes.func.isRequired,
+	getAllCanvasDrawCallback: PropTypes.func,
+	chartCanvasType: PropTypes.string.isRequired,
+	plotData: React.PropTypes.array.isRequired,
+});

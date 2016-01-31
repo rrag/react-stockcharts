@@ -29,16 +29,13 @@ class OHLCTooltip extends React.Component {
 			close = ohlcFormat(item.close);
 		}
 
-		var { origin } = config;
-		var tooltipOrigin = d3.functor(this.props.origin);
-		var relativeOrigin = tooltipOrigin(width, height);
-
-		// console.log(currentItem, accessor(currentItem));
-		var [x, y] = [origin[0] + relativeOrigin[0], origin[1] + relativeOrigin[1]];
+		var { origin: originProp } = this.props;
+		var origin = d3.functor(originProp);
+		var [x, y] = origin(width, height);
+		var [ox, oy] = config.origin;
 
 		return (
-			<g transform={`translate(${ x }, ${ y })`}
-				onClick={onClick}>
+			<g transform={`translate(${ ox + x }, ${ oy + y })`} onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={fontFamily} fontSize={fontSize}>
 					<ToolTipTSpanLabel key="label" x={0} dy="5">Date: </ToolTipTSpanLabel>

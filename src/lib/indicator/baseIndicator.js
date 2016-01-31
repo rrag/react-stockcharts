@@ -6,7 +6,7 @@ var i = 0;
 
 export default function() {
 
-	var accessor, stroke = overlayColors(i++), fill = stroke, echo, type;
+	var accessor, stroke = overlayColors(i++), fill = stroke, echo, type, tooltipLabel;
 
 	function baseIndicator() {
 	}
@@ -34,6 +34,11 @@ export default function() {
 	baseIndicator.type = function(x) {
 		if (!arguments.length) return type;
 		type = x;
+		return baseIndicator;
+	};
+	baseIndicator.tooltipLabel = function(x) {
+		if (!arguments.length) return tooltipLabel;
+		tooltipLabel = x;
 		return baseIndicator;
 	};
 	return baseIndicator;

@@ -31,12 +31,12 @@ export default function() {
 		return newData;
 	};
 
-	d3.rebind(indicator, base, "accessor", "stroke", "fill", "echo", "type");
+	base.tooltipLabel(`${ALGORITHM_TYPE}(${underlyingAlgorithm.windowSize()})`);
+
+	d3.rebind(indicator, base, "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
 	d3.rebind(indicator, underlyingAlgorithm, "windowSize", "source", "undefinedValue", "skipInitial");
 	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
-	indicator.tooltipLabel = function() {
-		return `SMA(${underlyingAlgorithm.windowSize()})`
-	}
+
 	return indicator;
 }

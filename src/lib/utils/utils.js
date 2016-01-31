@@ -18,9 +18,6 @@ export function isDefined(d) {
 	return d !== null && typeof d != "undefined";
 }
 
-export function head(array) {
-	return array ? array[0] : undefined;
-}
 
 export function flattenDeep(array) {
 	var length = array ? array.length : 0;
@@ -58,9 +55,30 @@ function arrayPush(array, values) {
 	}
 	return array;
 }
+
+export function head(array, accessor) {
+	if (accessor && array) {
+		var value;
+		for (var i = 0; i < array.length; i++) {
+			value = array[i];
+			if (isDefined(accessor(value))) break;
+		};
+		return value;
+	}
+	return array ? array[0] : undefined;
+}
+
 export const first = head
 
-export function last(array) {
+export function last(array, accessor) {
+	if (accessor && array) {
+		var value;
+		for (var i = array.length - 1; i >= 0; i--) {
+			value = array[i];
+			if (isDefined(accessor(value))) break;
+		};
+		return value;
+	}
 	var length = array ? array.length : 0;
 	return length ? array[length - 1] : undefined;
 }

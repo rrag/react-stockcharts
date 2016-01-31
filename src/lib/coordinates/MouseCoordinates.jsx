@@ -39,12 +39,12 @@ class MouseCoordinates extends React.Component {
 		}
 	}
 	render() {
-		var { chartCanvasType, mouseXY, currentCharts, chartConfig, currentItem, show } = this.props;
+		var { chartCanvasType, mouseXY, xScale, currentCharts, chartConfig, currentItem, show } = this.props;
 		var { stroke, opacity, textStroke, textBGFill, textBGopacity, fontFamily, fontSize } = this.props;
 
 		if (chartCanvasType !== "svg") return null;
 
-		var pointer = MouseCoordinates.helper(this.props, show, mouseXY, currentCharts, chartConfig, currentItem);
+		var pointer = MouseCoordinates.helper(this.props, show, xScale, mouseXY, currentCharts, chartConfig, currentItem);
 
 		if (!pointer) return null;
 

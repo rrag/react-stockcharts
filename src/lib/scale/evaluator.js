@@ -153,7 +153,7 @@ export default function() {
 
 		var mappedData = calculate(data.map(map));
 
-		console.log(mappedData[20]);
+		console.log(Array.isArray(mappedData) ? mappedData[20] : mappedData);
 
 		if (discontinous) {
 			calculator.unshift(values => values.map((d, i) => {

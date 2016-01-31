@@ -8,7 +8,7 @@ import * as ReStock from "react-stockcharts";
 var { ChartCanvas, Chart, DataSeries, OverlaySeries,EventCapture } = ReStock;
 
 var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries } = ReStock.series;
-var { financeEODCalculator, intervalDWMCalculator } = ReStock.scale;
+var { financeEODDiscontiniousScale } = ReStock.scale;
 
 var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
@@ -16,70 +16,94 @@ var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
 var { StockscaleTransformer } = ReStock.transforms;
 var { XAxis, YAxis } = ReStock.axes;
-var { EMA, SMA } = ReStock.indicator;
+var { ema, sma, bollingerBand } = ReStock.indicator;
 var { fitWidth } = ReStock.helper;
 
 class CandleStickChartWithEdge extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
 
+		var ema20 = ema()
+			.windowSize(20)
+			.merge((d, c) => {d.ema20 = c})
+			.accessor(d => d.ema20);
+
+		var sma20 = sma()
+			.windowSize(20)
+			.merge((d, c) => {d.sma20 = c})
+			.accessor(d => d.sma20);
+
+		var ema50 = ema()
+			.windowSize(50)
+			.merge((d, c) => {d.ema50 = c})
+			.accessor(d => d.ema50);
+
+		var smaVolume50 = sma()
+			.windowSize(50)
+			.source(d => d.volume)
+			.merge((d, c) => {d.smaVolume50 = c})
+			.accessor(d => d.smaVolume50);
+
 		return (
 			<ChartCanvas width={width} height={400}
-				margin={{left: 50, right: 50, top:10, bottom: 30}}
-				data={data} type={type}
-				dataPreProcessor={eodDiscontiniousScaleHelper}
-				calculator={[intervalDWMCalculator()]}
-				xAccessor={eodDiscontiniousScaleHelper.xAccessor()} xScale={eodDiscontiniousScaleHelper.scale()}
-				xExtents={eodDiscontiniousScaleHelper.extents(new Date(2012, 0, 1), new Date(2012, 6, 2))}>
-
-				<Chart id={1} yExtents={[d => d.high, d => d.low]}>
+					margin={{left: 80, right: 80, top:10, bottom: 30}} type={type}
+					data={data} calculator={[sma20, ema20, ema50, smaVolume50]}
+					xAccessor={d => d.date} discontinous xScale={financeEODDiscontiniousScale()}
+					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
+				<Chart id={1}
+						yExtents={[d => d.high, d => d.low, sma20.accessor(), ema20.accessor(), ema50.accessor()]}
+						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} 
+						padding={{ top: 10, bottom: 20 }}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
-					<DataSeries id={0} yAccessor={CandlestickSeries.yAccessor} >
-						<CandlestickSeries />
-					</DataSeries>
-					<DataSeries id={1} indicator={EMA} options={{ period: 20, source: "close" }}>
-						<LineSeries/>
-					</DataSeries>
-					<DataSeries id={2} indicator={EMA} options={{ period: 30 }} >
-						<LineSeries/>
-					</DataSeries>
-					<DataSeries id={3} indicator={SMA} options={{ period: 50 }} >
-						<LineSeries/>
-					</DataSeries>
+
+					<CandlestickSeries />
+					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
+					<LineSeries yAccessor={ema50.accessor()} stroke={ema50.stroke()}/>
+
+					<CurrentCoordinate id={1} yAccessor={ema20.accessor()} fill={ema20.stroke()} />
+					<CurrentCoordinate id={2} yAccessor={ema50.accessor()} fill={ema50.stroke()} />
+
+					<EdgeIndicator id={0} itemType="last" orient="right" edgeAt="right"
+						yAccessor={ema20.accessor()} fill={ema20.fill()}/>
+					<EdgeIndicator id={1} itemType="last" orient="right" edgeAt="right"
+						yAccessor={ema50.accessor()} fill={ema50.fill()}/>
+					<EdgeIndicator id={2} itemType="last" orient="right" edgeAt="right"
+						yAccessor={d => d.close} fill={d => d.close > d.open ? "#00FF00" : "#FF0000"}/>
+					<EdgeIndicator id={3} itemType="first" orient="left" edgeAt="left"
+						yAccessor={ema20.accessor()} fill={ema20.fill()}/>
+					<EdgeIndicator id={4} itemType="first" orient="left" edgeAt="left"
+						yAccessor={ema50.accessor()} fill={ema50.fill()}/>
+					<EdgeIndicator id={5} itemType="first" orient="left" edgeAt="left"
+						yAccessor={d => d.close} fill={d => d.close > d.open ? "#00FF00" : "#FF0000"}/>
 				</Chart>
-				<CurrentCoordinate forChart={1} forDataSeries={1} />
-				<CurrentCoordinate forChart={1} forDataSeries={2} />
-				<CurrentCoordinate forChart={1} forDataSeries={3} />
-				<Chart id={2} yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
+				<Chart id={2}
+						yExtents={[d => d.volume, smaVolume50.accessor()]}
+						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 						height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-					<DataSeries id={0} yAccessor={(d) => d.volume} >
-						<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
-					</DataSeries>
-					<DataSeries id={1} indicator={SMA} options={{ period: 10, source:"volume" }} >
-						<AreaSeries/>
-					</DataSeries>
+
+					<HistogramSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "red"} />
+					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
+
+					<CurrentCoordinate id={0} yAccessor={smaVolume50.accessor()} fill={smaVolume50.stroke()} />
+					<CurrentCoordinate id={1} yAccessor={d => d.volume} fill="#9B0A47" />
+
+					<EdgeIndicator id={0} itemType="first" orient="left" edgeAt="left"
+						yAccessor={d => d.volume} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
+					<EdgeIndicator id={1} itemType="last" orient="right" edgeAt="right"
+						yAccessor={d => d.volume} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
+					<EdgeIndicator id={2} itemType="first" orient="left" edgeAt="left"
+						yAccessor={smaVolume50.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume50.fill()}/>
+					<EdgeIndicator id={3} itemType="last" orient="right" edgeAt="right"
+						yAccessor={smaVolume50.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume50.fill()}/>
 				</Chart>
-				<CurrentCoordinate forChart={2} forDataSeries={0} />
-				<CurrentCoordinate forChart={2} forDataSeries={1}/>
-				<EdgeContainer>
-					<EdgeIndicator itemType="last" orient="right" edgeAt="right" forChart={1} forDataSeries={1} />
-					<EdgeIndicator itemType="last" orient="right" edgeAt="right" forChart={1} forDataSeries={2} />
-					<EdgeIndicator itemType="last" orient="right" edgeAt="right" forChart={1} forDataSeries={3} />
-					<EdgeIndicator itemType="first" orient="left" edgeAt="left" forChart={1} forDataSeries={1} />
-					<EdgeIndicator itemType="first" orient="left" edgeAt="left" forChart={1} forDataSeries={2} />
-					<EdgeIndicator itemType="first" orient="left" edgeAt="left" forChart={1} forDataSeries={3} />
-					<EdgeIndicator itemType="first" orient="left" edgeAt="left" forChart={2} forDataSeries={0} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
-					<EdgeIndicator itemType="last" orient="right" edgeAt="right" forChart={2} forDataSeries={0} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
-					<EdgeIndicator itemType="first" orient="left" edgeAt="left" forChart={2} forDataSeries={1} displayFormat={d3.format(".4s")} />
-					<EdgeIndicator itemType="last" orient="right" edgeAt="right" forChart={2} forDataSeries={1} displayFormat={d3.format(".4s")} />
-				</EdgeContainer>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
+				<EventCapture mouseMove={true} zoom={true} pan={true} defaultFocus={false} />
 				<TooltipContainer>
-					<OHLCTooltip forChart={1} origin={[-50, 0]}/>
-					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-48, 15]} />
+					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
+					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 15]} 
+						calculators={[sma20, ema20, ema50]}/>
 				</TooltipContainer>
 			</ChartCanvas>
 		);

@@ -65,7 +65,7 @@ AxisLine.defaultProps = {
 	opacity: 1,
 };
 
-AxisLine.drawOnCanvasStatic = (props, ctx, chartData, xScale, yScale) => {
+AxisLine.drawOnCanvasStatic = (props, ctx, xScale, yScale) => {
 	props = objectAssign({}, AxisLine.defaultProps, props);
 
 	var { orient, outerTickSize, stroke, strokeWidth, opacity } = props;

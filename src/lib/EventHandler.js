@@ -343,6 +343,7 @@ class EventHandler extends PureComponent {
 		this.setState({
 			panInProgress: true,
 			panStartDomain: panStartDomain,
+			panStartXScale: this.state.xScale,
 			panOrigin: panOrigin,
 			focus: true,
 			deltaXY: dxy
@@ -350,7 +351,7 @@ class EventHandler extends PureComponent {
 		this.panHappened = false;
 	}
 	panHelper(mouseXY) {
-		var { panStartDomain, showingInterval, panOrigin, xScale: initialXScale, chartConfig: initialChartConfig } = this.state;
+		var { panStartDomain, showingInterval, panOrigin, panStartXScale: initialXScale, chartConfig: initialChartConfig } = this.state;
 		var { xAccessor, dimensions: { width }, xExtentsCalculator } = this.props;
 
 		var domainRange = panStartDomain[1] - panStartDomain[0],
@@ -407,9 +408,9 @@ class EventHandler extends PureComponent {
 								var { yScale } = eachChart;
 
 								if (each.type === "axis") {
-									each.draw(axesCanvasContext, eachChart, xScale, yScale);
+									each.draw(axesCanvasContext, xScale, yScale);
 								} else if (each.type === "currentcoordinate") {
-									each.draw(mouseContext, show, xScale, eachChart, currentItem);
+									each.draw(mouseContext, show, xScale, yScale, currentItem);
 								} else {
 									each.draw(axesCanvasContext, xScale, yScale, plotData);
 								}
@@ -469,6 +470,7 @@ class EventHandler extends PureComponent {
 			show: this.state.show,
 			panInProgress: false,
 			panStartDomain: null,
+			panStartXScale: null,
 			interactiveState,
 		});
 	}
