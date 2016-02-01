@@ -16,12 +16,14 @@ import * as defaultOptions from "./defaultOptions";
 import ema from "./ema";
 import sma from "./sma";
 import bollingerBand from "./bollingerBand";
+import haikinAshi from "./haikinAshi";
 
 
 export {
 	ema,
 	sma,
 	bollingerBand,
+	haikinAshi,
 
 /*
 

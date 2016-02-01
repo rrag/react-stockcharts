@@ -6,23 +6,28 @@ var i = 0;
 
 export default function() {
 
-	var accessor, stroke = overlayColors(i++), fill = stroke, echo, type, tooltipLabel;
+	var id = i++, accessor, stroke, fill, echo, type, tooltipLabel;
 
 	function baseIndicator() {
 	}
 
+	baseIndicator.id = function(x) {
+		if (!arguments.length) return id;
+		id = x;
+		return baseIndicator;
+	};
 	baseIndicator.accessor = function(x) {
 		if (!arguments.length) return accessor;
 		accessor = x;
 		return baseIndicator;
 	};
 	baseIndicator.stroke = function(x) {
-		if (!arguments.length) return stroke;
+		if (!arguments.length) return !stroke ? stroke = overlayColors(id) : stroke;
 		stroke = x;
 		return baseIndicator;
 	};
 	baseIndicator.fill = function(x) {
-		if (!arguments.length) return fill;
+		if (!arguments.length) return !fill ? fill = overlayColors(id) : fill;
 		fill = x;
 		return baseIndicator;
 	};

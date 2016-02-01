@@ -21,7 +21,7 @@ class CandleStickChart extends React.Component {
 				xAccessor={d => d.date} xScale={d3.time.scale()}
 				xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 1)]}>
 
-				<Chart id={1} yExtents={[d => d.high, d => d.low]}>
+				<Chart id={1} yExtents={d => [d.high, d.low]}>
 					<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 					<YAxis axisAt="left" orient="left" ticks={5} />
 					<CandlestickSeries />

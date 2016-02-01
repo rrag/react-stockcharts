@@ -39,7 +39,7 @@ export default function() {
 	base.tooltipLabel(`BB (${underlyingAlgorithm.windowSize()}, ${underlyingAlgorithm.multiplier()}`
 		+ `, ${underlyingAlgorithm.movingAverageType()}): `);
 
-	d3.rebind(indicator, base, "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
+	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
 	d3.rebind(indicator, underlyingAlgorithm, "windowSize", "movingAverageType", "multiplier", "source");
 	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 

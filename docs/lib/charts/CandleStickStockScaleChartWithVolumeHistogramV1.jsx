@@ -25,7 +25,7 @@ class CandleStickStockScaleChartWithVolumeHistogramV1 extends React.Component {
 					xAccessor={d => d.date} discontinous xScale={financeEODDiscontiniousScale()}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 
-				<Chart id={1} yExtents={[d => d.high, d => d.low]}>
+				<Chart id={1} yExtents={d => [d.high, d.low]}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<CandlestickSeries />

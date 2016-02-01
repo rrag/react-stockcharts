@@ -2,8 +2,9 @@
 // import merge from "./merge";
 // import zipper from "./zipper";
 import ema from "./ema";
-import macd from "./macd";
 import bollingerband from "./bollingerband";
+import haikinAshi from "./haikinAshi";
+import macd from "./macd";
 import rsi from "./rsi";
 import sto from "./sto";
 import atr from "./atr";
@@ -15,8 +16,9 @@ export {
 	// merge,
 	// zipper
 	ema,
-	macd,
 	bollingerband,
+	haikinAshi,
+	macd,
 	rsi,
 	sto,
 	atr,

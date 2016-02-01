@@ -116,7 +116,7 @@ class ChartCanvas extends React.Component {
 	}
 	componentWillReceiveProps(nextProps) {
 		var reset = shouldResetChart(this.props, nextProps)
-		console.log("shouldResetChart =", reset);
+		// console.log("shouldResetChart =", reset);
 		var { xExtents: xExtentsProp, calculator } = nextProps;
 		var { xAccessor, map, dataEvaluator, indexAccessor, indexMutator } = nextProps;
 
@@ -133,6 +133,8 @@ class ChartCanvas extends React.Component {
 			// data did not change but calculator changed, so update only the fullData to state
 			var { fullData } = calculateState(nextProps);
 			this.setState({ fullData });
+		} else {
+			console.log("may be width/height changed, but that does not matter");
 		}
 	}
 	render() {

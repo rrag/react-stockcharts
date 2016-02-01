@@ -28,7 +28,7 @@ class CandleStickChartWithCHMousePointer extends React.Component {
 					data={data}
 					xAccessor={d => d.date} discontinous xScale={financeEODDiscontiniousScale()}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
-				<Chart id={1} yExtents={[d => d.high, d => d.low]}
+				<Chart id={1} yExtents={[d => [d.high, d.low]]}
 						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
