@@ -28,8 +28,8 @@ function getDomain(left, right, width, filteredData, predicate, currentDomain, c
 	return currentDomain;
 }
 
-function extentsWrapper(data, inputXAccessor, realXAccessor, allowedIntervals, scale, canShowTheseMany) {
-	var inputXAccessor, interval, width, currentInterval, currentDomain, currentPlotData;
+function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShowTheseMany) {
+	var data, inputXAccessor, interval, width, currentInterval, currentDomain, currentPlotData, scale;
 
 	function domain([left, right], xAccessor) {
 		var plotData = currentPlotData, intervalToShow = currentInterval, domain;
@@ -87,14 +87,19 @@ function extentsWrapper(data, inputXAccessor, realXAccessor, allowedIntervals, s
 			// console.log(currentInterval, currentDomain, currentPlotData)
 			throw new Error("Initial render and cannot display any data");
 		}
+		// console.log(scale.range());
 		var updatedScale = (scale.isPolyLinear && scale.isPolyLinear() && scale.data)
 			? scale.copy().data(plotData)
 			: scale.copy();
 
 		updatedScale.domain(domain);
-		// console.log(intervalToShow, inputXAccessor(first(plotData)), inputXAccessor(last(plotData)));
 		return { plotData, interval: intervalToShow, scale: updatedScale };
 	}
+	domain.data = function(x) {
+		if (!arguments.length) return data;
+		data = x;
+		return domain;
+	};
 	domain.interval = function(x) {
 		if (!arguments.length) return interval;
 		interval = x;
@@ -118,6 +123,11 @@ function extentsWrapper(data, inputXAccessor, realXAccessor, allowedIntervals, s
 	domain.currentPlotData = function(x) {
 		if (!arguments.length) return currentPlotData;
 		currentPlotData = x;
+		return domain;
+	};
+	domain.scale = function(x) {
+		if (!arguments.length) return scale;
+		scale = x;
 		return domain;
 	};
 	return domain;
@@ -153,7 +163,6 @@ export default function() {
 
 		var mappedData = calculate(data.map(map));
 
-		console.log(Array.isArray(mappedData) ? mappedData[20] : mappedData);
 
 		if (discontinous) {
 			calculator.unshift(values => values.map((d, i) => {
@@ -178,9 +187,10 @@ export default function() {
 
 		// console.log(mappedData);
 		return {
+			fullData: mappedData,
 			xAccessor: realXAccessor,
 			inputXAccesor: xAccessor,
-			domainCalculator: extentsWrapper(mappedData, xAccessor, realXAccessor, allowedIntervals, xScale, canShowTheseMany),
+			domainCalculator: extentsWrapper(xAccessor, realXAccessor, allowedIntervals, canShowTheseMany),
 		}
 	}
 	evaluate.allowedIntervals = function(x) {

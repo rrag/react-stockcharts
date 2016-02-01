@@ -109,6 +109,9 @@ export default function financeEODScale(indexAccessor = d => d.idx, dateAccessor
 				count++;
 			}
 		});
+		// var start = head(data);
+		// var end = last(data);
+		// console.log(data);
 		m = (count / data.length) * m;
 		var span = (dateAccessor(end).getTime() - dateAccessor(start).getTime());
 		var target = span / m;

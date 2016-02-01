@@ -19,36 +19,37 @@ var { XAxis, YAxis } = ReStock.axes;
 var { ema, sma, bollingerBand } = ReStock.indicator;
 var { fitWidth } = ReStock.helper;
 
+var ema20 = ema()
+	.windowSize(20)
+	.merge((d, c) => {d.ema20 = c})
+	.accessor(d => d.ema20);
+
+var sma20 = sma()
+	.windowSize(20)
+	.merge((d, c) => {d.sma20 = c})
+	.accessor(d => d.sma20);
+
+var ema50 = ema()
+	.windowSize(50)
+	.merge((d, c) => {d.ema50 = c})
+	.accessor(d => d.ema50);
+
+var smaVolume50 = sma()
+	.windowSize(50)
+	.source(d => d.volume)
+	.merge((d, c) => {d.smaVolume50 = c})
+	.accessor(d => d.smaVolume50);
+
+var xScale = financeEODDiscontiniousScale();
 class CandleStickChartWithEdge extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
-
-		var ema20 = ema()
-			.windowSize(20)
-			.merge((d, c) => {d.ema20 = c})
-			.accessor(d => d.ema20);
-
-		var sma20 = sma()
-			.windowSize(20)
-			.merge((d, c) => {d.sma20 = c})
-			.accessor(d => d.sma20);
-
-		var ema50 = ema()
-			.windowSize(50)
-			.merge((d, c) => {d.ema50 = c})
-			.accessor(d => d.ema50);
-
-		var smaVolume50 = sma()
-			.windowSize(50)
-			.source(d => d.volume)
-			.merge((d, c) => {d.smaVolume50 = c})
-			.accessor(d => d.smaVolume50);
 
 		return (
 			<ChartCanvas width={width} height={400}
 					margin={{left: 80, right: 80, top:10, bottom: 30}} type={type}
 					data={data} calculator={[sma20, ema20, ema50, smaVolume50]}
-					xAccessor={d => d.date} discontinous xScale={financeEODDiscontiniousScale()}
+					xAccessor={d => d.date} discontinous xScale={xScale}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1}
 						yExtents={[d => d.high, d => d.low, sma20.accessor(), ema20.accessor(), ema50.accessor()]}

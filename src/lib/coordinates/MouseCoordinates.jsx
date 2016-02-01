@@ -118,8 +118,10 @@ MouseCoordinates.drawOnCanvasStatic = (props, ctx, show, xScale, mouseXY, curren
 };
 
 MouseCoordinates.helper = (props, show, xScale, mouseXY, currentCharts, chartConfig, currentItem) => {
-	if (!show) return;
 	var { displayXAccessor, xAccessor, height, width, snapX, xDisplayFormat } = props;
+	var displayValue = displayXAccessor(currentItem);
+
+	if (!show || !displayValue) return;
 
 	var edges = chartConfig
 		.filter(eachChartConfig => currentCharts.indexOf(eachChartConfig.id) > -1)
@@ -139,7 +141,6 @@ MouseCoordinates.helper = (props, show, xScale, mouseXY, currentCharts, chartCon
 
 
 	var xValue = xAccessor(currentItem);
-	var displayValue = displayXAccessor(currentItem);
 	// console.log(show, edges, xValue);
 
 	var x = snapX ? Math.round(xScale(xValue)) : mouseXY[0];

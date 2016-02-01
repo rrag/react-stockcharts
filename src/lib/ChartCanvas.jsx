@@ -5,10 +5,70 @@ import d3 from "d3";
 
 import identity from "./utils/identity";
 import { isDefined, isNotDefined } from "./utils/utils";
+// import shallowEqual from "fbjs/lib/shallowEqual";
+import shallowEqual from "./utils/shallowEqual";
 import EventHandler from "./EventHandler";
 import CanvasContainer from "./CanvasContainer";
 import eodIntervalCalculator from "./scale/eodIntervalCalculator";
 import evaluator from "./scale/evaluator";
+
+function shouldResetChart(thisProps, nextProps) {
+	var candidates = ["data", "interval", "discontinous", "intervalCalculator", "allowedIntervals",
+		"xScale", /*"xAccessor",*/ "map", "dataEvaluator", "indexAccessor", "indexMutator"];
+	return !candidates.every(key => {
+		var result = shallowEqual(thisProps[key], nextProps[key])
+		// console.log(key, result);
+		return result;
+	});
+}
+
+function getDimensions(props) {
+	return {
+		height: props.height - props.margin.top - props.margin.bottom,
+		width: props.width - props.margin.left - props.margin.right,
+	};
+}
+
+function calculateState(props) {
+	var { data, calculator, interval } = props;
+	var { xExtents: xExtentsProp, xScale, intervalCalculator, allowedIntervals } = props;
+	var { xAccessor, map, dataEvaluator, indexAccessor, indexMutator, discontinous } = props;
+
+	var dimensions = getDimensions(props);
+
+	if (isDefined(interval)
+		&& (isNotDefined(allowedIntervals)
+			|| allowedIntervals.indexOf(interval) > -1)) throw new Error("interval has to be part of allowedInterval");
+
+	var evaluate = dataEvaluator()
+		.allowedIntervals(allowedIntervals)
+		.intervalCalculator(intervalCalculator)
+		.xAccessor(xAccessor)
+		.discontinous(discontinous)
+		.indexAccessor(indexAccessor)
+		.indexMutator(indexMutator)
+		.map(map)
+		.scale(xScale)
+		.calculator(calculator.slice());
+
+	var { xAccessor: realXAccessor, inputXAccesor, domainCalculator: xExtentsCalculator, fullData } = evaluate(data);
+	// xAccessor - if discontinious return indexAccessor, else xAccessor
+	// inputXAccesor - send this down as context
+
+	// console.log(xAccessor, inputXAccesor, domainCalculator, domainCalculator, updatedScale);
+	// in componentWillReceiveProps calculate plotData and interval only if this.props.xExtentsProp != nextProps.xExtentsProp
+	var extent = d3.extent(xExtentsProp.map(d3.functor).map(each => each(data)));
+
+	var { plotData, interval: showingInterval, scale: updatedScale } = xExtentsCalculator
+		.width(dimensions.width)
+		.scale(xScale)
+		.data(fullData)
+		.interval(interval)(extent, inputXAccesor);
+
+	return {
+		fullData, plotData, showingInterval, xExtentsCalculator, xScale: updatedScale, xAccessor: realXAccessor
+	};
+}
 
 class ChartCanvas extends React.Component {
 	constructor() {
@@ -18,12 +78,7 @@ class ChartCanvas extends React.Component {
 		this.getDataInfo = this.getDataInfo.bind(this);
 		this.getCanvases = this.getCanvases.bind(this);
 	}
-	getDimensions(props) {
-		return {
-			height: props.height - props.margin.top - props.margin.bottom,
-			width: props.width - props.margin.left - props.margin.right,
-		};
-	}
+
 	pushData(array) {
 		this.refs.chartContainer.pushData(array);
 	}
@@ -46,8 +101,41 @@ class ChartCanvas extends React.Component {
 			displayXAccessor: this.props.xAccessor,
 		}
 	}
+
+	componentWillMount() {
+		// console.log(plotData, updatedInterval, domain);
+		// in EventHandler in componentWillReceiveProps if this.props.plotData !== nextProps.plotData then update state
+		/*if (xAccessor !== realXAccessor) {
+			var { left } = getClosestItemIndexes(data, startDate, xAccessor);
+			var { endRight } = getClosestItemIndexes(data, endDate, xAccessor);
+			var start = realXAccessor(left);
+			var end = realXAccessor(right);
+		}*/
+
+		this.setState(calculateState(this.props));
+	}
+	componentWillReceiveProps(nextProps) {
+		var reset = shouldResetChart(this.props, nextProps)
+		console.log("shouldResetChart =", reset);
+		var { xExtents: xExtentsProp, calculator } = nextProps;
+		var { xAccessor, map, dataEvaluator, indexAccessor, indexMutator } = nextProps;
+
+		if (reset) {
+			console.log("RESET CHART");
+			this.setState(calculateState(nextProps));
+		} else if (!shallowEqual(this.props.xExtents, nextProps.xExtents)) {
+			console.log("xExtents changed");
+			// since the xExtents changed update fullData, plotData, xExtentsCalculator to state
+			var { fullData, plotData, xExtentsCalculator } = calculateState(nextProps);
+			this.setState({ fullData, plotData, xExtentsCalculator });
+		} else if (!shallowEqual(this.props.calculator, nextProps.calculator)) {
+			console.log("calculator changed");
+			// data did not change but calculator changed, so update only the fullData to state
+			var { fullData } = calculateState(nextProps);
+			this.setState({ fullData });
+		}
+	}
 	render() {
-		var dimensions = this.getDimensions(this.props);
 		var style = `<![CDATA[
 						.react-stockcharts-grabbing-cursor {
 							cursor: grabbing;
@@ -62,52 +150,17 @@ class ChartCanvas extends React.Component {
 							cursor: pointer;
 						}
 					]]>`;
-		var { data: rawData, calculator, interval, type, height, width, margin, className, zIndex } = this.props;
-		var { xExtents: xExtentsProp, xScale, intervalCalculator, allowedIntervals, calculator } = this.props;
-		var { xAccessor, map, dataEvaluator, indexAccessor, indexMutator, discontinous } = this.props;
 
-		if (isDefined(interval)
-			&& (isNotDefined(allowedIntervals)
-				|| allowedIntervals.indexOf(interval) > -1)) throw new Error("interval has to be part of allowedInterval");
+		var { interval, type, height, width, margin, className, zIndex } = this.props;
+		var { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor } = this.state;
 
-		var evaluate = dataEvaluator()
-			.allowedIntervals(allowedIntervals)
-			.intervalCalculator(intervalCalculator)
-			.xAccessor(xAccessor)
-			.discontinous(discontinous)
-			.indexAccessor(indexAccessor)
-			.indexMutator(indexMutator)
-			.map(map)
-			.scale(xScale.range([0, dimensions.width])) // if discontinous then set dateAccessor and indexAccessor
-			.calculator(calculator); // if there is a discontinious xScale providing
-									 // calculator validate if the incoming scale is discontinous, 
-
-		var { xAccessor, inputXAccesor, domainCalculator } = evaluate(rawData);
-		// xAccessor - if discontinious return indexAccessor, else xAccessor
-		// inputXAccesor - send this down as context
-
-		// console.log(xAccessor, inputXAccesor, domainCalculator, domainCalculator, updatedScale);
-		// in componentWillReceiveProps calculate plotData and interval only if this.props.xExtentsProp != nextProps.xExtentsProp
-		var extent = d3.extent(xExtentsProp.map(d3.functor).map(each => each(rawData)));
-		// var e = d3.extent(rawData, xExtentsProp.map(d3.functor));
-
-		var { plotData, interval: updatedInterval, scale: updatedScale } = domainCalculator
-			.width(dimensions.width)
-			.interval(interval)(extent, inputXAccesor)
-			// .xExtents(xExtents)
-
-		// console.log(plotData, updatedInterval, domain);
-		// in EventHandler in componentWillReceiveProps if this.props.plotData !== nextProps.plotData then update state
-		/*if (xAccessor !== realXAccessor) {
-			var { left } = getClosestItemIndexes(data, startDate, xAccessor);
-			var { endRight } = getClosestItemIndexes(data, endDate, xAccessor);
-			var start = realXAccessor(left);
-			var end = realXAccessor(right);
-		}*/
-
+		// console.log(data);
+		var dimensions = getDimensions(this.props);
+		var props = { interval, type, margin };
+		var stateProps = { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor};
 		return (
 			<div style={{ position: "relative", height: height, width: width }} className={className} >
-				<CanvasContainer ref="canvases" width={width} height={height} type={this.props.type} zIndex={zIndex}/>
+				<CanvasContainer ref="canvases" width={width} height={height} type={type} zIndex={zIndex}/>
 				<svg width={width} height={height} style={{ position: "absolute", zIndex: (zIndex + 5) }}>
 					<style type="text/css" dangerouslySetInnerHTML={{ __html: style }}>
 					</style>
@@ -118,10 +171,10 @@ class ChartCanvas extends React.Component {
 					</defs>
 					<g transform={`translate(${margin.left + 0.5}, ${margin.top + 0.5})`}>
 						<EventHandler ref="chartContainer"
-							data={plotData} interval={interval} showingInterval={updatedInterval}
-							xExtentsCalculator={domainCalculator} 
-							xScale={updatedScale} xAccessor={xAccessor}
-							dimensions={dimensions} type={type} margin={margin} canvasContexts={this.getCanvases}>
+							{...props}
+							{...stateProps}
+							dimensions={dimensions}
+							canvasContexts={this.getCanvases}>
 							{this.props.children}
 						</EventHandler>
 					</g>
@@ -130,6 +183,15 @@ class ChartCanvas extends React.Component {
 		);
 	}
 }
+
+/*
+							interval={interval} type={type} margin={margin} 
+							data={plotData} showingInterval={updatedInterval}
+							xExtentsCalculator={domainCalculator} 
+							xScale={updatedScale} xAccessor={xAccessor}
+							dimensions={dimensions}
+
+*/
 
 ChartCanvas.propTypes = {
 	width: React.PropTypes.number.isRequired,

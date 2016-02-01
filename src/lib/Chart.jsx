@@ -68,6 +68,7 @@ Chart.contextTypes = {
 	interactiveState: React.PropTypes.array.isRequired,
 	currentItem: React.PropTypes.object.isRequired,
 	mouseXY: React.PropTypes.array,
+	show: React.PropTypes.bool,
 	// adding here even when this is not used by Chart, refer to https://github.com/facebook/react/issues/2517
 };
 
