@@ -55,9 +55,8 @@ RenkoSeries.defaultProps = {
 		down: "#E60000",
 		partial: "#4682B4",
 	},
+	yAccessor: d => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
 };
-
-RenkoSeries.yAccessor = (d) => ({ open: d.open, high: d.high, low: d.low, close: d.close });
 
 RenkoSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { xAccessor, yAccessor } = props;

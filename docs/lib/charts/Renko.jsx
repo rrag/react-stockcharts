@@ -7,15 +7,18 @@ import * as ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart, DataSeries, OverlaySeries, EventCapture } = ReStock;
 var { HistogramSeries, LineSeries, AreaSeries, RenkoSeries } = ReStock.series;
+var { financeEODDiscontiniousScale } = ReStock.scale;
+
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 
-var { StockscaleTransformer, RenkoTransformer } = ReStock.transforms;
 var { TooltipContainer, OHLCTooltip, MACDTooltip } = ReStock.tooltip;
 var { XAxis, YAxis } = ReStock.axes;
-var { SMA } = ReStock.indicator;
+var { renko } = ReStock.indicator;
 
 var { fitWidth } = ReStock.helper;
+
+var xScale = financeEODDiscontiniousScale();
 
 class Renko extends React.Component {
 	getChartCanvas() {
@@ -23,31 +26,33 @@ class Renko extends React.Component {
 	}
 	render() {
 		var { data, type, width } = this.props;
+		var renkoCalculator = renko();
+
 		return (
 			<ChartCanvas ref="chartCanvas" width={width} height={400}
-				margin={{left: 90, right: 70, top:10, bottom: 30}} initialDisplay={30}
-				dataTransform={[ { transform: StockscaleTransformer }, { transform: RenkoTransformer } ]}
-				data={data} type={type}>
-				<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}>
+					margin={{left: 80, right: 80, top:10, bottom: 30}} type={type}
+					data={data} calculator={[renkoCalculator]}
+					xAccessor={d => d.date} discontinous xScale={xScale}
+					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
+				<Chart id={1}
+						yExtents={d => [d.high, d.low]}
+						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} 
+						padding={{ top: 10, bottom: 20 }}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
-					<DataSeries id={0} yAccessor={RenkoSeries.yAccessor} >
-						<RenkoSeries />
-					</DataSeries>
+					<RenkoSeries />
 				</Chart>
-				<Chart id={2} height={150} origin={(w, h) => [0, h - 150]}>
+				<Chart id={2}
+						yExtents={d => d.volume}
+						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
+						height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-					<DataSeries id={0} yAccessor={(d) => d.volume} >
-						<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
-					</DataSeries>
-					<DataSeries id={1} indicator={SMA} options={{ period: 10, source:"volume" }} >
-						<AreaSeries/>
-					</DataSeries>
+					<HistogramSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
+				<EventCapture mouseMove={true} zoom={true} pan={true} defaultFocus={false} />
 				<TooltipContainer>
-					<OHLCTooltip forChart={1} origin={[-50, 0]}/>
+					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
 				</TooltipContainer>
 			</ChartCanvas>
 		);

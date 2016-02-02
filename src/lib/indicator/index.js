@@ -19,6 +19,7 @@ import bollingerBand from "./bollingerBand";
 import haikinAshi from "./haikinAshi";
 import kagi from "./kagi";
 import pointAndFigure from "./pointAndFigure";
+import renko from "./renko";
 
 export {
 	ema,
@@ -27,6 +28,7 @@ export {
 	haikinAshi,
 	kagi,
 	pointAndFigure,
+	renko,
 
 /*
 

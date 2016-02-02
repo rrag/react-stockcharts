@@ -6,6 +6,7 @@ import bollingerband from "./bollingerband";
 import haikinAshi from "./haikinAshi";
 import kagi from "./kagi";
 import pointAndFigure from "./pointAndFigure";
+import renko from "./renko";
 
 import macd from "./macd";
 import rsi from "./rsi";
@@ -23,6 +24,7 @@ export {
 	haikinAshi,
 	kagi,
 	pointAndFigure,
+	renko,
 
 	macd,
 	rsi,
