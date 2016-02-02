@@ -219,7 +219,7 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithBollingerBandOverlay
 	// CandleStickChartWithEdge
 	// HaikinAshi
-	// Kagi - TODO
+	// Kagi
 	// PointAndFigure - TODO
 	// Renko - TODO
 	// CandleStickChartWithEdge  - Lots of data -> data={dataFull}/>
@@ -240,7 +240,7 @@ function renderPartialPage(data, dataFull, compareData) {
 	// OHLCChartWithElderImpulseIndicator
 	// CandleStickChartWithBrush
 	// CandleStickChartWith2DBrush
-	var Chart = require("lib/charts/Kagi").default;
+	var Chart = require("lib/charts/PointAndFigure").default;
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	// data, dataFull, compareData

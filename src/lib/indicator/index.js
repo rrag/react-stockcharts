@@ -18,7 +18,7 @@ import sma from "./sma";
 import bollingerBand from "./bollingerBand";
 import haikinAshi from "./haikinAshi";
 import kagi from "./kagi";
-
+import pointAndFigure from "./pointAndFigure";
 
 export {
 	ema,
@@ -26,6 +26,7 @@ export {
 	bollingerBand,
 	haikinAshi,
 	kagi,
+	pointAndFigure,
 
 /*
 

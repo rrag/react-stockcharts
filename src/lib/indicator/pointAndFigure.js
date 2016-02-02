@@ -2,17 +2,17 @@
 
 import merge from "../utils/merge";
 
-import { kagi } from "./algorithm";
+import { pointAndFigure } from "./algorithm";
 import baseIndicator from "./baseIndicator";
 
-const ALGORITHM_TYPE = "Kagi";
+const ALGORITHM_TYPE = "PointAndFigure";
 
 export default function() {
 
 	var base = baseIndicator()
 		.type(ALGORITHM_TYPE);
 
-	var underlyingAlgorithm = kagi();
+	var underlyingAlgorithm = pointAndFigure();
 
 	var indicator = function(data) {
 		return underlyingAlgorithm(data);
@@ -21,7 +21,8 @@ export default function() {
 	base.tooltipLabel(`${ALGORITHM_TYPE}`);
 
 	d3.rebind(indicator, base, "id"/*, "accessor"*/, "stroke", "fill", "echo", "type", "tooltipLabel");
-	d3.rebind(indicator, underlyingAlgorithm, "dateAccessor", "dateMutator", "indexMutator");
+	d3.rebind(indicator, underlyingAlgorithm, "dateAccessor", "dateMutator", "indexMutator", "indexAccessor");
+	d3.rebind(indicator, underlyingAlgorithm, "reversal", "boxSize", "source");
 	// d3.rebind(indicator, mergedAlgorithm, "merge"/*, "skipUndefined"*/);
 
 	return indicator;

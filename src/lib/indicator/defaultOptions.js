@@ -95,5 +95,9 @@ export const Renko = {
 export const PointAndFigure = {
 	boxSize: 0.5,
 	reversal: 3,
-	source: "hi/lo", // "close", "hi/lo"
+	source: d => ({ high: d.high, low: d.low }), // "close", "hi/lo"
+	dateAccessor: d => d.date,
+	dateMutator: (d, date) => { d.date = date },
+	indexMutator: (d, idx) => { d.idx = idx },
+	indexAccessor: d => d.idx,
 };
