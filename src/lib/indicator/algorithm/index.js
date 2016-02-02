@@ -4,6 +4,8 @@
 import ema from "./ema";
 import bollingerband from "./bollingerband";
 import haikinAshi from "./haikinAshi";
+import kagi from "./kagi";
+
 import macd from "./macd";
 import rsi from "./rsi";
 import sto from "./sto";
@@ -18,6 +20,8 @@ export {
 	ema,
 	bollingerband,
 	haikinAshi,
+	kagi,
+
 	macd,
 	rsi,
 	sto,

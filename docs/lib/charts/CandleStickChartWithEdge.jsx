@@ -14,7 +14,6 @@ var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
-var { StockscaleTransformer } = ReStock.transforms;
 var { XAxis, YAxis } = ReStock.axes;
 var { ema, sma } = ReStock.indicator;
 var { fitWidth } = ReStock.helper;
@@ -98,7 +97,7 @@ class CandleStickChartWithEdge extends React.Component {
 						height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 
-					<HistogramSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "red"} />
+					<HistogramSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
 
 					<CurrentCoordinate id={0} yAccessor={smaVolume50.accessor()} fill={smaVolume50.stroke()} />

@@ -219,11 +219,11 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithBollingerBandOverlay
 	// CandleStickChartWithEdge
 	// HaikinAshi
-	// Kagi
-	// PointAndFigure
-	// Renko
+	// Kagi - TODO
+	// PointAndFigure - TODO
+	// Renko - TODO
 	// CandleStickChartWithEdge  - Lots of data -> data={dataFull}/>
-	// CandleStickChartWithCompare
+	// CandleStickChartWithCompare - TODO
 	// CandleStickChartWithMACDIndicator
 	// CandleStickChartWithRSIIndicator
 	// CandleStickChartWithFullStochasticsIndicator
@@ -240,7 +240,7 @@ function renderPartialPage(data, dataFull, compareData) {
 	// OHLCChartWithElderImpulseIndicator
 	// CandleStickChartWithBrush
 	// CandleStickChartWith2DBrush
-	var Chart = require("lib/charts/HaikinAshi").default;
+	var Chart = require("lib/charts/Kagi").default;
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	// data, dataFull, compareData

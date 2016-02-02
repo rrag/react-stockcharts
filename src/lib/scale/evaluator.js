@@ -170,6 +170,7 @@ export default function() {
 				return d;
 			}));
 		}
+		// console.log(mappedData);
 
 		calculator.forEach(each => {
 			var newData;

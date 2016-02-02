@@ -14,12 +14,7 @@ export default function() {
 		.type(ALGORITHM_TYPE)
 		.accessor(d => d.ha);
 
-	var underlyingAlgorithm = haikinAshi()
-		.source(d => {
-			var e = base.accessor()(d);
-			console.log(e);
-			return e ? e : d;
-		});
+	var underlyingAlgorithm = haikinAshi();
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)

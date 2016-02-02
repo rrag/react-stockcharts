@@ -8,13 +8,13 @@ import { last, isDefined } from "../../utils/utils";
 export default function() {
 
 	var windowSize = 9,
-		value = d => ({ open: d.open, high: d.high, low: d.low, close: d.close });
+		source = d => ({ open: d.open, high: d.high, low: d.low, close: d.close });
 
 	function atr(data) {
 
 		var trueRangeAlgorithm = slidingWindow()
 			.windowSize(2)
-			.value(value)
+			.source(source)
 			.undefinedValue(d => d.high - d.low) // the first TR value is simply the High minus the Low
 			.accumulator(values => {
 				var prev = values[0];
@@ -52,11 +52,11 @@ export default function() {
 		return atr;
 	};
 
-	atr.value = function(x) {
+	atr.source = function(x) {
 		if (!arguments.length) {
-			return value;
+			return source;
 		}
-		value = x;
+		source = x;
 		return atr;
 	};
 

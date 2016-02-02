@@ -74,3 +74,26 @@ export const SMA = {
 	source: d => d.close, // "high", "low", "open", "close"
 	period: 10,
 };
+
+export const Kagi = {
+	reversalType: "ATR", // "ATR", "FIXED"
+	period: 14,
+	reversal: 2,
+	source: d => d.close, // "high", "low", "open", "close"
+	dateAccessor: d => d.date,
+	dateMutator: (d, date) => { d.date = date },
+	indexMutator: (d, idx) => { d.idx = idx },
+};
+
+export const Renko = {
+	reversalType: "ATR", // "ATR", "FIXED"
+	period: 14,
+	fixedBrickSize: 2,
+	source: "hi/lo", // "close", "hi/lo"
+};
+
+export const PointAndFigure = {
+	boxSize: 0.5,
+	reversal: 3,
+	source: "hi/lo", // "close", "hi/lo"
+};
