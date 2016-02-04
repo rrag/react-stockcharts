@@ -36,16 +36,16 @@ import { MACD as defaultOptions } from "../defaultOptions";
 export default function() {
 
 	var { fast, slow, signal } = defaultOptions;
-	var value = identity;
+	var source = identity;
 
 	function calculator(data) {
 
 		var fastEMA = ema()
 			.windowSize(fast)
-			.value(value);
+			.source(source);
 		var slowEMA = ema()
 			.windowSize(slow)
-			.value(value);
+			.source(source);
 		var signalEMA = ema()
 			.windowSize(signal);
 
@@ -63,18 +63,9 @@ export default function() {
 				signalLine: signal,
 				histogram: (isDefined(macd) && isDefined(signal)) ? macd - signal : undefined,
 			}));
-
 		var macd = zip(macdLine, signalLine);
 
 		return macd;
-	};
-
-	calculator.windowSize = function(x) {
-		if (!arguments.length) {
-			return windowSize;
-		}
-		windowSize = x;
-		return calculator;
 	};
 
 	calculator.fast = function(x) {
@@ -101,11 +92,11 @@ export default function() {
 		return calculator;
 	};
 
-	calculator.value = function(x) {
+	calculator.source = function(x) {
 		if (!arguments.length) {
-			return value;
+			return source;
 		}
-		value = x;
+		source = x;
 		return calculator;
 	};
 

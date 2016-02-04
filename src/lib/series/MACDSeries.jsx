@@ -32,27 +32,26 @@ class MACDSeries extends React.Component {
 		return yScale(0);
 	}
 	render() {
-		var { className, indicator, xScale, yScale, xAccessor, plotData, type, opacity, histogramStroke } = this.props;
-		var options = indicator.options();
-
+		var { className, xScale, yScale, xAccessor, plotData, type, opacity, histogramStroke, stroke, fill } = this.props;
+		// console.log(this.props.yAccessor)
 		return (
 			<g className={className}>
 				<Line
 					xScale={xScale} yScale={yScale}
 					xAccessor={xAccessor} yAccessor={this.yAccessorForMACDLine}
 					plotData={plotData}
-					stroke={options.stroke.MACDLine} fill="none"
+					stroke={stroke.MACDLine} fill="none"
 					type={type} />
 				<Line
 					xScale={xScale} yScale={yScale}
 					xAccessor={xAccessor} yAccessor={this.yAccessorForSignalLine}
 					plotData={plotData}
-					stroke={options.stroke.signalLine} fill="none"
+					stroke={stroke.signalLine} fill="none"
 					type={type} />
 				<HistogramSeries
 					baseAt={this.yAccessorForHistogramBase}
 					className="macd-histogram"
-					stroke={histogramStroke} fill={options.fill.histogram} opacity={opacity}
+					stroke={histogramStroke} fill={fill.histogram} opacity={opacity}
 					yAccessor={this.yAccessorForHistogram} />
 				{MACDSeries.getHorizontalLine(this.props)}
 			</g>
@@ -88,7 +87,6 @@ MACDSeries.propTypes = {
 	type: React.PropTypes.string,
 	opacity: React.PropTypes.number,
 	histogramStroke: React.PropTypes.bool,
-	indicator: React.PropTypes.func.isRequired,
 };
 
 MACDSeries.defaultProps = {

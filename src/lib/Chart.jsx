@@ -20,11 +20,12 @@ class Chart extends PureComponent {
 		var { id: chartId } = this.props
 		var chartConfig = this.context.chartConfig.filter((each) => each.id === chartId)[0];
 
+		var { width, height } = chartConfig;
 		var canvasOriginX = 0.5 + chartConfig.origin[0] + this.context.margin.left;
 		var canvasOriginY = 0.5 + chartConfig.origin[1] + this.context.margin.top;
 
 		// console.log(chartConfig.config.compareSeries);
-		return { chartId, chartConfig, canvasOriginX, canvasOriginY };
+		return { chartId, chartConfig, canvasOriginX, canvasOriginY, width, height};
 	}
 	render() {
 		var { origin } = this.context.chartConfig.filter((each) => each.id === this.props.id)[0];
@@ -42,6 +43,11 @@ Chart.propTypes = {
 		React.PropTypes.func
 	]).isRequired,
 	id: React.PropTypes.number.isRequired,
+	yExtents: React.PropTypes.oneOfType([
+		React.PropTypes.arrayOf(React.PropTypes.func),
+		React.PropTypes.arrayOf(React.PropTypes.number),
+		React.PropTypes.func
+	]).isRequired,
 	yScale: React.PropTypes.func.isRequired,
 	yMousePointerDisplayLocation: React.PropTypes.oneOf(["left", "right"]),
 	yMousePointerDisplayFormat: React.PropTypes.func,
@@ -73,6 +79,8 @@ Chart.contextTypes = {
 };
 
 Chart.childContextTypes = {
+	height: React.PropTypes.number,
+	width: React.PropTypes.number,
 	chartConfig: React.PropTypes.object.isRequired,
 	canvasOriginX: React.PropTypes.number,
 	canvasOriginY: React.PropTypes.number,

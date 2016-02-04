@@ -48,6 +48,7 @@ class Axis extends React.Component {
 		var ticks = this.props.showTicks
 			? <AxisTicks {...this.props} />
 			: null;
+
 		var className = "";
 		if (this.props.className) className = this.props.defaultClassName.concat(this.props.className);
 		return (

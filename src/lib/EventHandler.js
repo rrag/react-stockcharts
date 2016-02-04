@@ -67,7 +67,8 @@ class EventHandler extends PureComponent {
 	componentWillMount() {
 
 		var { plotData, fullData, showingInterval, xExtentsCalculator, xScale, xAccessor, dimensions, children } = this.props;
-		console.log(Array.isArray(fullData) ? fullData[20] : fullData);
+
+		console.log(Array.isArray(fullData) ? fullData[60] : fullData);
 
 		var chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData);
 

@@ -25,8 +25,8 @@ export {
 	kagi,
 	pointAndFigure,
 	renko,
-
 	macd,
+
 	rsi,
 	sto,
 	atr,

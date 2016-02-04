@@ -20,6 +20,7 @@ import haikinAshi from "./haikinAshi";
 import kagi from "./kagi";
 import pointAndFigure from "./pointAndFigure";
 import renko from "./renko";
+import macd from "./macd";
 
 export {
 	ema,
@@ -29,6 +30,7 @@ export {
 	kagi,
 	pointAndFigure,
 	renko,
+	macd,
 
 /*
 

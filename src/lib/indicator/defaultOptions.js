@@ -35,7 +35,7 @@ export const MACD = {
 	fast: 12,
 	slow: 26,
 	signal: 9,
-	source: "close", // "high", "low", "open", "close"
+	source: d => d.close, // "high", "low", "open", "close"
 	fill: {
 		histogram: "#4682B4"
 	},
