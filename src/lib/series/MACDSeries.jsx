@@ -17,22 +17,27 @@ class MACDSeries extends React.Component {
 		this.yAccessorForHistogramBase = this.yAccessorForHistogramBase.bind(this);
 	}
 	yAccessorForMACDLine(d) {
-		var { yAccessor } = this.props;
+		var { calculator } = this.props;
+		var yAccessor = calculator.accessor();
 		return yAccessor(d) && yAccessor(d).MACDLine;
 	}
 	yAccessorForSignalLine(d) {
-		var { yAccessor } = this.props;
+		var { calculator } = this.props;
+		var yAccessor = calculator.accessor();
 		return yAccessor(d) && yAccessor(d).signalLine;
 	}
 	yAccessorForHistogram(d) {
-		var { yAccessor } = this.props;
+		var { calculator } = this.props;
+		var yAccessor = calculator.accessor();
 		return yAccessor(d) && yAccessor(d).histogram;
 	}
 	yAccessorForHistogramBase(xScale, yScale/* , d */) {
 		return yScale(0);
 	}
 	render() {
-		var { className, xScale, yScale, xAccessor, plotData, type, opacity, histogramStroke, stroke, fill } = this.props;
+		var { className, xScale, yScale, xAccessor, plotData, type, opacity, histogramStroke, calculator } = this.props;
+		var stroke = calculator.stroke();
+		var fill = calculator.fill();
 		// console.log(this.props.yAccessor)
 		return (
 			<g className={className}>
@@ -82,7 +87,7 @@ MACDSeries.propTypes = {
 	xScale: React.PropTypes.func,
 	yScale: React.PropTypes.func,
 	xAccessor: React.PropTypes.func,
-	yAccessor: React.PropTypes.func,
+	calculator: React.PropTypes.func.isRequired,
 	plotData: React.PropTypes.array,
 	type: React.PropTypes.string,
 	opacity: React.PropTypes.number,

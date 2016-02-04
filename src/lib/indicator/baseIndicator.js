@@ -6,7 +6,7 @@ var i = 0;
 
 export default function() {
 
-	var id = i++, accessor, stroke, fill, echo, type, tooltipLabel;
+	var id = i++, accessor, stroke, fill, echo, type, tooltipLabel, domain, tickValues;
 
 	function baseIndicator() {
 	}
@@ -44,6 +44,16 @@ export default function() {
 	baseIndicator.tooltipLabel = function(x) {
 		if (!arguments.length) return tooltipLabel;
 		tooltipLabel = x;
+		return baseIndicator;
+	};
+	baseIndicator.domain = function(x) {
+		if (!arguments.length) return domain;
+		domain = x;
+		return baseIndicator;
+	};
+	baseIndicator.tickValues = function(x) {
+		if (!arguments.length) return tickValues;
+		tickValues = x;
 		return baseIndicator;
 	};
 	return baseIndicator;

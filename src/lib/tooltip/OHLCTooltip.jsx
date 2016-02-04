@@ -74,7 +74,6 @@ OHLCTooltip.propTypes = {
 };
 
 OHLCTooltip.defaultProps = {
-	namespace: "ReStock.OHLCTooltip",
 	accessor: (d) => { return { date: d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume }; },
 	xDisplayFormat: d3.time.format("%Y-%m-%d"),
 	volumeFormat: d3.format(".4s"),

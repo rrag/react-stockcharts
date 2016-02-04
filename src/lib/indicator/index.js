@@ -21,6 +21,8 @@ import kagi from "./kagi";
 import pointAndFigure from "./pointAndFigure";
 import renko from "./renko";
 import macd from "./macd";
+import rsi from "./rsi";
+import atr from "./atr";
 
 export {
 	ema,
@@ -31,9 +33,10 @@ export {
 	pointAndFigure,
 	renko,
 	macd,
+	rsi,
+	atr,
 
 /*
-
 	MACD,
 	ATR,
 	EMA,

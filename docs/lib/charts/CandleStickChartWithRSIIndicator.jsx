@@ -8,92 +8,111 @@ import * as ReStock from "react-stockcharts";
 var { ChartCanvas, Chart, DataSeries, OverlaySeries, EventCapture } = ReStock;
 
 var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, RSISeries } = ReStock.series;
+var { financeEODDiscontiniousScale } = ReStock.scale;
+
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, SingleValueTooltip, RSITooltip } = ReStock.tooltip;
-var { StockscaleTransformer } = ReStock.transforms;
 
 var { XAxis, YAxis } = ReStock.axes;
-var { ATR, EMA, SMA, RSI } = ReStock.indicator;
+var { rsi, atr, ema, sma } = ReStock.indicator;
 
 var { fitWidth } = ReStock.helper;
+
+var xScale = financeEODDiscontiniousScale();
 
 class CandleStickChartWithRSIIndicator extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
+		var ema26 = ema()
+			.id(0)
+			.windowSize(26)
+			.merge((d, c) => {d.ema26 = c})
+			.accessor(d => d.ema26);
+
+		var ema12 = ema()
+			.id(1)
+			.windowSize(12)
+			.merge((d, c) => {d.ema12 = c})
+			.accessor(d => d.ema12);
+
+		var smaVolume50 = sma()
+			.id(3)
+			.windowSize(10)
+			.source(d => d.volume)
+			.merge((d, c) => {d.smaVolume50 = c})
+			.accessor(d => d.smaVolume50);
+
+		var rsiCalculator = rsi()
+			.windowSize(14)
+			.merge((d, c) => {d.rsi = c})
+			.accessor(d => d.rsi);
+
+		var atr14 = atr()
+			.windowSize(14)
+			.merge((d, c) => {d.atr14 = c})
+			.accessor(d => d.atr14);
 
 		return (
-			<ChartCanvas width={width} height={550}
-				margin={{left: 70, right: 70, top:20, bottom: 30}} initialDisplay={200} 
-				dataTransform={[ { transform: StockscaleTransformer } ]}
-				data={data} type={type}>
-				<Chart id={1} yMousePointerDisplayLocation="right" height={300}
-						yMousePointerDisplayFormat={d3.format(".2f")} padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
+			<ChartCanvas width={width} height={600}
+					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
+					data={data} calculator={[ema26, ema12, smaVolume50, rsiCalculator, atr14]}
+					xAccessor={d => d.date} discontinous xScale={xScale}
+					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
+				<Chart id={1} height={300}
+						yExtents={[d => [d.high, d.low], ema26.accessor(), ema12.accessor()]}
+						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} 
+						padding={{ top: 10, bottom: 20 }}>
+					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right" orient="right" ticks={5} />
-					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
-					<DataSeries id={0} yAccessor={CandlestickSeries.yAccessor} >
-						<CandlestickSeries />
-					</DataSeries>
-					<DataSeries id={1} indicator={EMA} options={{ period: 26 }} >
-						<LineSeries />
-					</DataSeries>
-					<DataSeries id={2} indicator={EMA} options={{ period: 12 }} >
-						<LineSeries />
-					</DataSeries>
+
+					<CandlestickSeries />
+					<LineSeries yAccessor={ema26.accessor()} stroke={ema26.stroke()}/>
+					<LineSeries yAccessor={ema12.accessor()} stroke={ema12.stroke()}/>
+
+					<CurrentCoordinate id={1} yAccessor={ema26.accessor()} fill={ema26.stroke()} />
+					<CurrentCoordinate id={2} yAccessor={ema12.accessor()} fill={ema12.stroke()} />
+
+					<EdgeIndicator id={2} itemType="last" orient="right" edgeAt="right"
+						yAccessor={d => d.close} fill={d => d.close > d.open ? "#00FF00" : "#FF0000"}/>
 				</Chart>
-				<CurrentCoordinate forChart={1} forDataSeries={1} />
-				<CurrentCoordinate forChart={1} forDataSeries={2} />
-				<Chart id={2} yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
-						height={150} origin={(w, h) => [0, h - 350]} >
+				<Chart id={2}
+						yExtents={[d => d.volume, smaVolume50.accessor()]}
+						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
+						height={150} origin={(w, h) => [0, h - 400]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-					<DataSeries id={0} yAccessor={(d) => d.volume} >
-						<HistogramSeries
-							fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"}
-							opacity={0.5} />
-					</DataSeries>
-					<DataSeries id={1} indicator={SMA} options={{ period: 10, source:"volume" }} stroke="#4682B4" fill="#4682B4" >
-						<AreaSeries opacity={0.5} />
-					</DataSeries>
+					<HistogramSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
+					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
 				</Chart>
-				<CurrentCoordinate forChart={2} forDataSeries={0} />
-				<CurrentCoordinate forChart={2} forDataSeries={1}/>
-				<EdgeContainer>
-					<EdgeIndicator itemType="last" orient="right"
-						edgeAt="right" forChart={1} forDataSeries={1} />
-					<EdgeIndicator itemType="last" orient="right"
-						edgeAt="right" forChart={1} forDataSeries={2} />
-					<EdgeIndicator itemType="first" orient="left"
-						edgeAt="left" forChart={1} forDataSeries={1} />
-					<EdgeIndicator itemType="first" orient="left"
-						edgeAt="left" forChart={1} forDataSeries={2} />
-				</EdgeContainer>
-				<Chart id={3} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
-						height={100} origin={(w, h) => [0, h - 200]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
+				<Chart id={3} 
+						yExtents={rsiCalculator.domain()}
+						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
+						height={125} origin={(w, h) => [0, h - 250]} >
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
-					<YAxis axisAt="right" orient="right" ticks={4} />
-					<DataSeries id={0} indicator={RSI} options={{ period: 14 }} >
-						<RSISeries />
-					</DataSeries>
+					<YAxis axisAt="right" orient="right" ticks={2} tickValues={rsiCalculator.tickValues()}/>
+					<RSISeries calculator={rsiCalculator} />
 				</Chart>
-				<Chart id={8} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
-						height={100} origin={(w, h) => [0, h - 100]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
+				<Chart id={8}
+						yExtents={atr14.accessor()}
+						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
+						height={125} origin={(w, h) => [0, h - 125]} padding={{ top: 10, bottom: 10 }} >
 					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="right" orient="right" ticks={2}/>
-					<DataSeries id={0} indicator={ATR} options={{ period: 14 }} >
-						<LineSeries />
-					</DataSeries>
+					<LineSeries yAccessor={atr14.accessor()} stroke={atr14.stroke()}/>
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
+				<EventCapture mouseMove={true} zoom={true} pan={true} defaultFocus={false} />
 				<TooltipContainer>
-					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
-					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 5]} />
-					<RSITooltip forChart={3} origin={[-38, 15]}/>
-					<SingleValueTooltip forChart={8} forSeries={0}
-						yLabel={indicator => `ATR (${ indicator.options().period })`}
+					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
+					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 15]}
+						calculators={[ema26, ema12]}/>
+					<RSITooltip forChart={3} origin={[-38, 15]} calculator={rsiCalculator}/>
+					<SingleValueTooltip forChart={8}
+						yAccessor={atr14.accessor()}
+						yLabel={`ATR (${atr14.windowSize()})`}
 						yDisplayFormat={d3.format(".2f")}
-						/* valueStroke="green" - optional prop */
+						/* valueStroke={atr14.stroke()} - optional prop */
 						/* labelStroke="#4682B4" - optional prop */
 						origin={[-40, 15]}/>
 				</TooltipContainer>
@@ -101,6 +120,7 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 		);
 	}
 };
+
 
 CandleStickChartWithRSIIndicator.propTypes = {
 	data: React.PropTypes.array.isRequired,

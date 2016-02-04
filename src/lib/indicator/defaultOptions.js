@@ -9,6 +9,7 @@ export const BollingerBand = {
 
 export const ATR = {
 	period: 14,
+	source: d => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
 }
 
 export const ForceIndex = {
@@ -60,7 +61,7 @@ export const FullStochasticOscillator = {
 
 export const RSI = {
 	period: 14,
-	source: "close", // "high", "low", "open", "close"
+	source: d => d.close, // "high", "low", "open", "close"
 	overSold: 70,
 	overBought: 30,
 };

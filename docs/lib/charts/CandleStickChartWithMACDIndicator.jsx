@@ -92,8 +92,7 @@ class CandleStickChartWithMACDIndicator extends React.Component {
 						height={150} origin={(w, h) => [0, h - 150]} padding={{ top: 10, bottom: 10 }} >
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={2} />
-					<MACDSeries yAccessor={macdCalculator.accessor()}
-						stroke={macdCalculator.stroke()} fill={macdCalculator.fill()}/>
+					<MACDSeries calculator={macdCalculator} />
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} defaultFocus={false} />

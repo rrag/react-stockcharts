@@ -37,7 +37,7 @@ import { RSI as defaultOptions } from "../defaultOptions";
 export default function() {
 
 	var { period: windowSize } = defaultOptions;
-	var value = identity;
+	var source = identity;
 
 	function calculator(data) {
 
@@ -69,7 +69,7 @@ export default function() {
 			.accumulator(tuple => {
 				var prev = tuple[0];
 				var now = tuple[1];
-				var change = value(now) - value(prev);
+				var change = source(now) - source(prev);
 				return {
 					gain: Math.max(change, 0),
 					loss: Math.abs(Math.min(change, 0)),
@@ -90,11 +90,11 @@ export default function() {
 		windowSize = x;
 		return calculator;
 	};
-	calculator.value = function(x) {
+	calculator.source = function(x) {
 		if (!arguments.length) {
-			return value;
+			return source;
 		}
-		value = x;
+		source = x;
 		return calculator;
 	};
 

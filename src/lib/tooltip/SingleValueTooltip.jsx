@@ -2,55 +2,38 @@
 
 import React from "react";
 
-import { getChartDataForChart, getCurrentItemForChart } from "../utils/ChartDataUtil";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
+import { first, isDefined } from "../utils/utils";
+import identity from "../utils/identity";
+import noop from "../utils/noop";
 
 class SingleValueTooltip extends React.Component {
 	render() {
-		var { fontFamily, fontSize, forSeries } = this.props;
-		var { xDisplayFormat, yDisplayFormat, xLabel, yLabel, labelStroke, valueStroke } = this.props;
 
-		var xDisplayValue = "n/a";
-		var yDisplayValue = "n/a";
+		var { forChart, onClick, fontFamily, fontSize, labelStroke, valueStroke, displayFormat } = this.props;
+		var { xDisplayFormat, yDisplayFormat, xLabel, yLabel, xAccessor, yAccessor } = this.props;
 
-		var chartData = getChartDataForChart(this.props, this.context);
-		var item = getCurrentItemForChart(this.props, this.context);
+		var { chartConfig, currentItem, width, height } = this.context;
 
-		/* var xAccessor;
-		if (chartData.plot.scales.xScale.isPolyLinear()) {
-			xAccessor = stockScaleXAccessr;
-		} */
+		var config = first(chartConfig.filter(each => each.id === forChart));
 
-		var { overlays } = chartData.config;
-		var { yAccessor, stroke, indicator } = overlays.filter(each => each.id === forSeries)[0];
+		var xDisplayValue = isDefined(xAccessor(currentItem)) ? xDisplayFormat(xAccessor(currentItem)) : "n/a";
+		var yDisplayValue = isDefined(yAccessor(currentItem)) ? yDisplayFormat(yAccessor(currentItem)) : "n/a";
 
-		var yl = (typeof yLabel === "function")
-			? yLabel(indicator)
-			: yLabel;
-
-		var xAccessor = this.props.xAccessor; /* || xAccessor || chartData.config.xAccessor */
-		var finalyAccessor = this.props.yAccessor || yAccessor;
-
-		if (item !== undefined && finalyAccessor(item) !== undefined) {
-			xDisplayValue = xDisplayFormat ? xDisplayFormat(xAccessor(item)) : xDisplayValue;
-			yDisplayValue = yDisplayFormat(finalyAccessor(item));
-		}
-
-		var { origin } = chartData.config;
-		var relativeOrigin = typeof this.props.origin === "function"
-			? this.props.origin(this.context.width, this.context.height)
-			: this.props.origin;
-		var absoluteOrigin = [origin[0] + relativeOrigin[0], origin[1] + relativeOrigin[1]];
+		var { origin: originProp } = this.props;
+		var origin = d3.functor(originProp);
+		var [x, y] = origin(width, height);
+		var [ox, oy] = config.origin;
 
 		return (
-			<g transform={`translate(${ absoluteOrigin[0] }, ${ absoluteOrigin[1] })`}>
+			<g transform={`translate(${ ox + x }, ${ oy + y })`} onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={fontFamily} fontSize={fontSize}>
-					{ xLabel ? <ToolTipTSpanLabel x={0} dy="5" fill={labelStroke}>{xLabel + ": "}</ToolTipTSpanLabel> : null}
-					{ xLabel ? <tspan fill={valueStroke || stroke} >{xDisplayValue}</tspan> : null}
-					<ToolTipTSpanLabel fill={labelStroke}>{` ${ yl }: `}</ToolTipTSpanLabel>
-					<tspan fill={valueStroke || stroke} >{yDisplayValue}</tspan>
+					{ xLabel ? <ToolTipTSpanLabel x={0} dy="5" fill={labelStroke}>{`${xLabel}: `}</ToolTipTSpanLabel> : null}
+					{ xLabel ? <tspan fill={valueStroke}>{`${xDisplayValue} `}</tspan> : null}
+					<ToolTipTSpanLabel fill={labelStroke}>{`${yLabel}: `}</ToolTipTSpanLabel>
+					<tspan fill={valueStroke} >{yDisplayValue}</tspan>
 				</ToolTipText>
 			</g>
 		);
@@ -58,16 +41,14 @@ class SingleValueTooltip extends React.Component {
 }
 
 SingleValueTooltip.contextTypes = {
-	chartData: React.PropTypes.array.isRequired,
-	currentItems: React.PropTypes.array.isRequired,
+	chartConfig: React.PropTypes.array.isRequired,
+	currentItem: React.PropTypes.object.isRequired,
 	width: React.PropTypes.number.isRequired,
 	height: React.PropTypes.number.isRequired,
-	dataTransform: React.PropTypes.array,
 };
 
 SingleValueTooltip.propTypes = {
 	forChart: React.PropTypes.number.isRequired,
-	forSeries: React.PropTypes.number.isRequired,
 	xDisplayFormat: React.PropTypes.func,
 	yDisplayFormat: React.PropTypes.func.isRequired,
 	xLabel: React.PropTypes.string,
@@ -91,8 +72,9 @@ SingleValueTooltip.propTypes = {
 SingleValueTooltip.defaultProps = {
 	origin: [0, 0],
 	labelStroke: "#4682B4",
-	yDisplayFormat: d => d,
-	xAccessor: d => d.date,
+	valueStroke: "#000000",
+	yDisplayFormat: d3.format(".2f"),
+	xAccessor: noop,
 };
 
 export default SingleValueTooltip;

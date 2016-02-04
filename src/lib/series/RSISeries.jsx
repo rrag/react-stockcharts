@@ -7,8 +7,12 @@ import wrap from "./wrap";
 
 class RSISeries extends React.Component {
 	render() {
-		let { className, indicator, xScale, yScale, xAccessor, yAccessor, plotData, stroke, type } = this.props;
-		var options = indicator.options();
+		var { className, xScale, yScale, xAccessor, calculator, plotData, stroke, type } = this.props;
+		var yAccessor = calculator.accessor();
+		var overSold = calculator.overSold();
+		var middle = calculator.middle();
+		var overBought = calculator.overBought();
+
 		return (
 			<g className={className}>
 				<Line
@@ -18,9 +22,9 @@ class RSISeries extends React.Component {
 					plotData={plotData}
 					stroke={stroke.line} fill="none"
 					type={type} />
-				{RSISeries.getHorizontalLine(this.props, options.overSold, stroke.top)}
-				{RSISeries.getHorizontalLine(this.props, 50, stroke.middle)}
-				{RSISeries.getHorizontalLine(this.props, options.overBought, stroke.bottom)}
+				{RSISeries.getHorizontalLine(this.props, overSold, stroke.top)}
+				{RSISeries.getHorizontalLine(this.props, middle, stroke.middle)}
+				{RSISeries.getHorizontalLine(this.props, overBought, stroke.bottom)}
 			</g>
 		);
 	}
@@ -56,9 +60,9 @@ RSISeries.defaultProps = {
 	className: "react-stockcharts-rsi-series",
 	stroke: {
 		line: "#000000",
-		top: "brown",
-		middle: "black",
-		bottom: "brown"
+		top: "#964B00",
+		middle: "#000000",
+		bottom: "#964B00"
 	}
 };
 
