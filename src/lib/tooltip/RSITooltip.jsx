@@ -9,7 +9,6 @@ import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 class RSITooltip extends React.Component {
 	render() {
 
-
 		var { forChart, onClick, fontFamily, fontSize, calculator, displayFormat } = this.props;
 		var { chartConfig, currentItem, width, height } = this.context;
 
@@ -56,7 +55,6 @@ RSITooltip.propTypes = {
 };
 
 RSITooltip.defaultProps = {
-	namespace: "ReStock.RSITooltip",
 	displayFormat: d3.format(".2f"),
 	origin: [0, 0]
 };

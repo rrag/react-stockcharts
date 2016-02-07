@@ -46,7 +46,6 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 			.merge((d, c) => {d.ema50 = c})
 			.accessor(d => d.ema50);
 
-
 		var slowSTO = stochasticOscilator()
 			.windowSize(14)
 			.kWindowSize(1)
