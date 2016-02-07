@@ -18,6 +18,23 @@ export function isDefined(d) {
 	return d !== null && typeof d != "undefined";
 }
 
+export function rebind(target, source, mappings) {
+	if (typeof(mappings) !== 'object') {
+		return d3.rebind.apply(d3, arguments);
+	}
+	Object.keys(mappings)
+		.forEach(function(targetName) {
+			var method = source[mappings[targetName]];
+			if (typeof method !== 'function') {
+				throw new Error('The method ' + mappings[targetName] + ' does not exist on the source object');
+			}
+			target[targetName] = function() {
+				var value = method.apply(source, arguments);
+				return value === source ? target : value;
+			};
+		});
+	return target;
+}
 
 export function flattenDeep(array) {
 	var length = array ? array.length : 0;

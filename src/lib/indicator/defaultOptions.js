@@ -50,12 +50,13 @@ export const FullStochasticOscillator = {
 	period: 12,
 	K: 3,
 	D: 3,
-	ohlc: (d) => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
+	source: (d) => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
 	stroke: {
 		D: "#17becf",
 		K: "#ff7f0e",
 	},
 	overSold: 80,
+	middle: 50,
 	overBought: 20,
 };
 
@@ -63,6 +64,7 @@ export const RSI = {
 	period: 14,
 	source: d => d.close, // "high", "low", "open", "close"
 	overSold: 70,
+	middle: 50,
 	overBought: 30,
 };
 

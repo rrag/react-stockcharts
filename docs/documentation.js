@@ -218,29 +218,29 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithMA
 	// CandleStickChartWithBollingerBandOverlay
 	// CandleStickChartWithEdge
+	// CandleStickChartWithCompare - TODO
+	// CandleStickChartWithEdge  - Lots of data -> data={dataFull}/>
+	// CandleStickChartWithUpdatingData - TODO
+	// KagiWithUpdatingData - TODO
+	// RenkoWithUpdatingData - TODO
+	// PointAndFigureWithUpdatingData - TODO
+	// CandleStickChartWithMACDIndicator
+	// CandleStickChartWithRSIIndicator
+	// CandleStickChartWithFullStochasticsIndicator - TODO (2/10)
+	// CandleStickChartWithForceIndexIndicator - TODO (2/10)
+	// OHLCChartWithElderRayIndicator - TODO (2/10)
+	// OHLCChartWithElderImpulseIndicator - TODO (2/10)
+	// CandleStickChartWithInteractiveIndicator - TODO (2/10)
+	// CandleStickChartWithFibonacciInteractiveIndicator - TODO (2/10)
+	// AreaChartWithZoomPan - TODO (2/10)
+	// AreaChartWithPointsAndEdge - TODO (2/10)
+	// CandleStickChartWithBrush - TODO
+	// CandleStickChartWith2DBrush - TODO
 	// HaikinAshi
 	// Kagi
 	// PointAndFigure
 	// Renko
-	// CandleStickChartWithEdge  - Lots of data -> data={dataFull}/>
-	// CandleStickChartWithCompare - TODO
-	// CandleStickChartWithMACDIndicator
-	// CandleStickChartWithRSIIndicator
-	// CandleStickChartWithFullStochasticsIndicator
-	// CandleStickChartWithUpdatingData
-	// KagiWithUpdatingData
-	// RenkoWithUpdatingData
-	// PointAndFigureWithUpdatingData
-	// CandleStickChartWithInteractiveIndicator
-	// CandleStickChartWithFibonacciInteractiveIndicator
-	// AreaChartWithZoomPan
-	// AreaChartWithPointsAndEdge
-	// CandleStickChartWithForceIndexIndicator
-	// OHLCChartWithElderRayIndicator
-	// OHLCChartWithElderImpulseIndicator
-	// CandleStickChartWithBrush
-	// CandleStickChartWith2DBrush
-	var Chart = require("lib/charts/CandleStickChartWithRSIIndicator").default;
+	var Chart = require("lib/charts/CandleStickChartWithFullStochasticsIndicator").default;
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	// data, dataFull, compareData

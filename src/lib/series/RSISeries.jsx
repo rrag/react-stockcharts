@@ -46,11 +46,10 @@ RSISeries.getHorizontalLine = (props, yValue, stroke) => {
 RSISeries.propTypes = {
 	className: React.PropTypes.string,
 
-	indicator: React.PropTypes.func,
+	calculator: React.PropTypes.func.isRequired,
 	xScale: React.PropTypes.func,
 	yScale: React.PropTypes.func,
 	xAccessor: React.PropTypes.func,
-	yAccessor: React.PropTypes.func,
 	plotData: React.PropTypes.array,
 	stroke: React.PropTypes.object,
 	type: React.PropTypes.string,

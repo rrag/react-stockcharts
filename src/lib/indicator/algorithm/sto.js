@@ -37,11 +37,11 @@ import { FullStochasticOscillator as defaultOptions } from "../defaultOptions";
 
 export default function() {
 
-	var { period: windowSize, K: kWindowSize, D: dWindowSize, ohlc: value } = defaultOptions;
+	var { period: windowSize, K: kWindowSize, D: dWindowSize, source } = defaultOptions;
 
-	var high = d => value(d).high,
-		low = d => value(d).low,
-		close = d => value(d).close;
+	var high = d => source(d).high,
+		low = d => source(d).low,
+		close = d => source(d).close;
 
 	function calculator(data) {
 		var kWindow = slidingWindow()
@@ -60,12 +60,12 @@ export default function() {
 		var kSmoothed = slidingWindow()
 			.skipInitial(windowSize - 1)
 			.windowSize(kWindowSize)
-			.accumulator(d3.mean);
+			.accumulator(values => d3.mean(values));
 
 		var dWindow = slidingWindow()
 			.skipInitial(windowSize -1 + kWindowSize - 1)
 			.windowSize(dWindowSize)
-			.accumulator(d3.mean);
+			.accumulator(values => d3.mean(values));
 
 		var stoAlgorithm = zipper()
 			.combine((K, D) => ({ K, D }));
@@ -99,11 +99,11 @@ export default function() {
 		dWindowSize = x;
 		return calculator;
 	};
-	calculator.value = function(x) {
+	calculator.source = function(x) {
 		if (!arguments.length) {
-			return value;
+			return source;
 		}
-		value = x;
+		source = x;
 		return calculator;
 	};
 

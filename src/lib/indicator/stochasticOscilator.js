@@ -3,33 +3,38 @@
 import d3 from "d3";
 
 import merge from "../utils/merge";
-import { rsi } from "./algorithm";
+import { rebind } from "../utils/utils";
+import { sto } from "./algorithm";
 
 import baseIndicator from "./baseIndicator";
-import { RSI as defaultOptions } from "./defaultOptions";
+import { FullStochasticOscillator as defaultOptions } from "./defaultOptions";
 
 const ALGORITHM_TYPE = "RSI";
 
 export default function() {
-	var { overSold, middle, overBought } = defaultOptions;
+	var { K, D, source, period, overSold, overBought, middle, stroke } = defaultOptions;
 
 	var base = baseIndicator()
 		.type(ALGORITHM_TYPE)
-		.accessor(d => d.rsi);
+		.stroke(stroke)
+		.accessor(d => d.sto);
 
-	var underlyingAlgorithm = rsi()
-		.windowSize(defaultOptions.period)
-		.source(defaultOptions.source);
+	var underlyingAlgorithm = sto()
+		.windowSize(period)
+		.kWindowSize(K)
+		.dWindowSize(D)
+		.source(source);
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
-		.merge((datum, indicator) => { datum.rsi = indicator });
+		.merge((datum, indicator) => { datum.sto = indicator });
 
 	var indicator = function(data) {
 		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`)
 		return mergedAlgorithm(data);
 	};
-	base.tooltipLabel(`${ALGORITHM_TYPE} (${underlyingAlgorithm.windowSize()}): `);
+	base.tooltipLabel(`${ALGORITHM_TYPE} (${underlyingAlgorithm.windowSize()}`
+			+ `, ${underlyingAlgorithm.kWindowSize()}, ${underlyingAlgorithm.dWindowSize()}): `);
 
 	base.domain([0, 100]);
 	base.tickValues([overSold, middle, overBought]);
@@ -54,7 +59,7 @@ export default function() {
 	};
 
 	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel", "domain", "tickValues");
-	d3.rebind(indicator, underlyingAlgorithm, "source", "windowSize");
+	d3.rebind(indicator, underlyingAlgorithm, "source", "windowSize", "kWindowSize", "dWindowSize");
 	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;

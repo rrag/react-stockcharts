@@ -23,6 +23,7 @@ import renko from "./renko";
 import macd from "./macd";
 import rsi from "./rsi";
 import atr from "./atr";
+import stochasticOscilator from "./stochasticOscilator";
 
 export {
 	ema,
@@ -35,6 +36,7 @@ export {
 	macd,
 	rsi,
 	atr,
+	stochasticOscilator,
 
 /*
 	MACD,

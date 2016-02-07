@@ -14,35 +14,35 @@ class StochasticSeries extends React.Component {
 		this.yAccessorForK = this.yAccessorForK.bind(this);
 	}
 	yAccessorForD(d) {
-		var { yAccessor } = this.props;
+		var { calculator } = this.props;
+		var yAccessor = calculator.accessor();
 		return yAccessor(d) && yAccessor(d).D;
 	}
 	yAccessorForK(d) {
-		var { yAccessor } = this.props;
+		var { calculator } = this.props;
+		var yAccessor = calculator.accessor();
 		return yAccessor(d) && yAccessor(d).K;
 	}
 	render() {
-		var { props } = this;
-		var { className, indicator, xScale, yScale, xAccessor, plotData, stroke, type } = props;
-		var options = indicator.options();
-
+		var { className, calculator, xScale, yScale, xAccessor, plotData, stroke, type } = this.props;
+		var seriesStroke = calculator.stroke();
 		return (
 			<g className={className}>
 				<Line
 					xScale={xScale} yScale={yScale}
 					xAccessor={xAccessor} yAccessor={this.yAccessorForD}
 					plotData={plotData}
-					stroke={options.stroke.D} fill="none"
+					stroke={seriesStroke.D} fill="none"
 					type={type} />
 				<Line
 					xScale={xScale} yScale={yScale}
 					xAccessor={xAccessor} yAccessor={this.yAccessorForK}
 					plotData={plotData}
-					stroke={options.stroke.K} fill="none"
+					stroke={seriesStroke.K} fill="none"
 					type={type} />
-				{StochasticSeries.getHorizontalLine(props, options.overSold, stroke.top)}
-				{StochasticSeries.getHorizontalLine(props, 50, stroke.middle)}
-				{StochasticSeries.getHorizontalLine(props, options.overBought, stroke.bottom)}
+				{StochasticSeries.getHorizontalLine(this.props, calculator.overSold(), stroke.top)}
+				{StochasticSeries.getHorizontalLine(this.props, calculator.middle(), stroke.middle)}
+				{StochasticSeries.getHorizontalLine(this.props, calculator.overBought(), stroke.bottom)}
 			</g>
 		);
 	}
@@ -64,10 +64,10 @@ StochasticSeries.getHorizontalLine = (props, yValue, stroke) => {
 
 StochasticSeries.propTypes = {
 	className: React.PropTypes.string,
+	calculator: React.PropTypes.func.isRequired,
 	xScale: React.PropTypes.func,
 	yScale: React.PropTypes.func,
 	xAccessor: React.PropTypes.func,
-	yAccessor: React.PropTypes.func,
 	plotData: React.PropTypes.array,
 	stroke: React.PropTypes.object,
 	type: React.PropTypes.string,
