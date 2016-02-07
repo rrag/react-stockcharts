@@ -24,6 +24,7 @@ import macd from "./macd";
 import rsi from "./rsi";
 import atr from "./atr";
 import stochasticOscilator from "./stochasticOscilator";
+import forceIndex from "./forceIndex";
 
 export {
 	ema,
@@ -37,6 +38,7 @@ export {
 	rsi,
 	atr,
 	stochasticOscilator,
+	forceIndex,
 
 /*
 	MACD,

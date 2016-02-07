@@ -13,7 +13,7 @@ export const ATR = {
 }
 
 export const ForceIndex = {
-	source: "close", // "high", "low", "open", "close"
+	close: d => d.close, // "high", "low", "open", "close"
 	volume: d => d.volume
 }
 

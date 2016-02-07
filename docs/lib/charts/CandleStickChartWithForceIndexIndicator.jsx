@@ -8,6 +8,8 @@ import * as ReStock from "react-stockcharts";
 var { ChartCanvas, Chart, DataSeries, OverlaySeries, EventCapture } = ReStock;
 
 var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, RSISeries, StraightLine } = ReStock.series;
+var { financeEODDiscontiniousScale } = ReStock.scale;
+
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 
@@ -15,82 +17,97 @@ var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, SingleValueTooltip, R
 var { StockscaleTransformer } = ReStock.transforms;
 
 var { XAxis, YAxis } = ReStock.axes;
-var { ATR, EMA, SMA, RSI, ForceIndex } = ReStock.indicator;
+//console.log(ReStock.indicator);
+var { forceIndex, ema } = ReStock.indicator;
 
 var { fitWidth } = ReStock.helper;
+
+var xScale = financeEODDiscontiniousScale();
 
 class CandleStickChartWithForceIndexIndicator extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
 
+		var fi = forceIndex()
+			.merge((d, c) => {d.fi = c})
+			.accessor(d => d.fi);
+
+		var fiEMA13 = ema()
+			.id(1)
+			.windowSize(13)
+			.source(d => d.fi)
+			.merge((d, c) => {d.fiEMA13 = c})
+			.accessor(d => d.fiEMA13);
+
 		return (
 			<ChartCanvas width={width} height={550}
-				margin={{left: 70, right: 70, top:20, bottom: 30}} initialDisplay={200} 
-				dataTransform={[ { transform: StockscaleTransformer } ]}
-				data={data} type={type}>
-				<Chart id={1} yMousePointerDisplayLocation="right" height={300}
-						yMousePointerDisplayFormat={d3.format(".2f")} padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
+					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
+					data={data} calculator={[fi, fiEMA13]}
+					xAccessor={d => d.date} discontinous xScale={xScale}
+					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
+				<Chart id={1}  height={300}
+						yExtents={d => [d.high, d.low]}
+						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
+						padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
-					<DataSeries id={0} yAccessor={CandlestickSeries.yAccessor} >
-						<CandlestickSeries />
-					</DataSeries>
-					<DataSeries id={1} indicator={EMA} options={{ period: 26 }} >
-						<LineSeries />
-					</DataSeries>
-					<DataSeries id={2} indicator={EMA} options={{ period: 12 }} >
-						<LineSeries />
-					</DataSeries>
+					<CandlestickSeries />
+
+					<EdgeIndicator id={2} itemType="last" orient="right" edgeAt="right"
+						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
+
 				</Chart>
-				<CurrentCoordinate forChart={1} forDataSeries={1} />
-				<CurrentCoordinate forChart={1} forDataSeries={2} />
-				<Chart id={2} yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
-						height={150} origin={(w, h) => [0, h - 350]} >
+				<Chart id={2} height={150} 
+						yExtents={d => d.volume}
+						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
+						origin={(w, h) => [0, h - 350]} >
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-					<DataSeries id={0} yAccessor={(d) => d.volume} >
-						<HistogramSeries
-							fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"}
-							opacity={0.5} />
-					</DataSeries>
-					<DataSeries id={1} indicator={SMA} options={{ period: 10, source:"volume" }} stroke="#4682B4" fill="#4682B4" >
-						<AreaSeries opacity={0.5} />
-					</DataSeries>
+					<HistogramSeries
+						yAccessor={d => d.volume} 
+						fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"}
+						opacity={0.5} />
 				</Chart>
-				<CurrentCoordinate forChart={2} forDataSeries={0} />
-				<CurrentCoordinate forChart={2} forDataSeries={1}/>
-				<EdgeContainer>
-					<EdgeIndicator itemType="last" orient="right"
-						edgeAt="right" forChart={1} forDataSeries={1} />
-					<EdgeIndicator itemType="last" orient="right"
-						edgeAt="right" forChart={1} forDataSeries={2} />
-					<EdgeIndicator itemType="first" orient="left"
-						edgeAt="left" forChart={1} forDataSeries={1} />
-					<EdgeIndicator itemType="first" orient="left"
-						edgeAt="left" forChart={1} forDataSeries={2} />
-				</EdgeContainer>
-				<Chart id={3} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".4s")}
-						height={100} origin={(w, h) => [0, h - 200]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
+				<Chart id={3} height={100}
+						yExtents={fi.accessor()}
+						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".4s")}
+						origin={(w, h) => [0, h - 200]}
+						padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={d3.format("s")}/>
-					<DataSeries id={0} indicator={ForceIndex} >
-						<AreaSeries baseAt={scale => scale(0)} />
-						<StraightLine yValue={0} />
-					</DataSeries>
+					<AreaSeries baseAt={scale => scale(0)} yAccessor={fi.accessor()} />
+					<StraightLine yValue={0} />
 				</Chart>
-				<Chart id={4} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".4s")}
-						height={100} origin={(w, h) => [0, h - 100]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
+				<Chart id={4} height={100}
+						yExtents={fiEMA13.accessor()}
+						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".4s")}
+						origin={(w, h) => [0, h - 100]}
+						padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
 					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={d3.format("s")}/>
-					<DataSeries id={0} indicator={EMA} options={{ period: 13, source: [ "chart_3", "overlay_0" ], stroke: "#000000" }} >
-						<AreaSeries baseAt={scale => scale(0)} stroke="steelblue" />
-						<StraightLine yValue={0} />
-					</DataSeries>
+					<AreaSeries baseAt={scale => scale(0)} yAccessor={fiEMA13.accessor()} />
+					<StraightLine yValue={0} />
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
-					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 5]} />
+					<SingleValueTooltip forChart={3}
+						yAccessor={fi.accessor()}
+						yLabel="ForceIndex (1)"
+						yDisplayFormat={d3.format(".4s")}
+						origin={[-40, 15]}/>
+					<SingleValueTooltip forChart={4}
+						yAccessor={fiEMA13.accessor()}
+						yLabel={`ForceIndex (${fiEMA13.windowSize()})`}
+						yDisplayFormat={d3.format(".4s")}
+						origin={[-40, 15]}/>
+				</TooltipContainer>
+			</ChartCanvas>
+		);
+	}
+};
+
+/*
 					<SingleValueTooltip forChart={3} forSeries={0}
 						yLabel={indicator => `ForceIndex (1)`}
 						yDisplayFormat={d3.format(".4s")}
@@ -99,11 +116,8 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 						yLabel={indicator => `ForceIndex (${ indicator.options().period })`}
 						yDisplayFormat={d3.format(".4s")}
 						origin={[-40, 15]}/>
-				</TooltipContainer>
-			</ChartCanvas>
-		);
-	}
-};
+
+*/
 
 CandleStickChartWithForceIndexIndicator.propTypes = {
 	data: React.PropTypes.array.isRequired,

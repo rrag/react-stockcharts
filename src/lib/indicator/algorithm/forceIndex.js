@@ -9,8 +9,7 @@ import { ForceIndex as defaultOptions } from "../defaultOptions";
 
 export default function() {
 
-	var { volume } = defaultOptions;
-	var close = d => d.close;
+	var { close, volume } = defaultOptions;
 
 	function calculator(data) {
 

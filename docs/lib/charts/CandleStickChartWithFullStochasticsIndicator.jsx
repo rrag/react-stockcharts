@@ -84,7 +84,7 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 					<CurrentCoordinate id={2} yAccessor={ema50.accessor()} fill={ema50.stroke()} />
 
 					<EdgeIndicator id={2} itemType="last" orient="right" edgeAt="right"
-						yAccessor={d => d.close} fill={d => d.close > d.open ? "#00FF00" : "#FF0000"}/>
+						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 				</Chart>
 				<Chart id={2}
 						yExtents={d => d.volume}

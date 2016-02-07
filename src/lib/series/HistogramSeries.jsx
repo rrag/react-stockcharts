@@ -32,7 +32,7 @@ HistogramSeries.propTypes = {
 		React.PropTypes.func, React.PropTypes.string
 	]).isRequired,
 	xAccessor: React.PropTypes.func,
-	yAccessor: React.PropTypes.func,
+	yAccessor: React.PropTypes.func.isRequired,
 	yAccessorNarrow: React.PropTypes.func,
 	xScale: React.PropTypes.func,
 	yScale: React.PropTypes.func,

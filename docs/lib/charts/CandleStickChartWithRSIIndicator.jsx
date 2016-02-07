@@ -75,12 +75,12 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 					<CurrentCoordinate id={2} yAccessor={ema12.accessor()} fill={ema12.stroke()} />
 
 					<EdgeIndicator id={2} itemType="last" orient="right" edgeAt="right"
-						yAccessor={d => d.close} fill={d => d.close > d.open ? "#00FF00" : "#FF0000"}/>
+						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 				</Chart>
-				<Chart id={2}
+				<Chart id={2} height={150} 
 						yExtents={[d => d.volume, smaVolume50.accessor()]}
 						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
-						height={150} origin={(w, h) => [0, h - 400]}>
+						origin={(w, h) => [0, h - 400]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 					<HistogramSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>

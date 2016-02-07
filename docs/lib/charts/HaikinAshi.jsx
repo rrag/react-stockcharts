@@ -70,13 +70,13 @@ class HaikinAshi extends React.Component {
 					<EdgeIndicator id={1} itemType="last" orient="right" edgeAt="right"
 						yAccessor={ema50.accessor()} fill={ema50.fill()}/>
 					<EdgeIndicator id={2} itemType="last" orient="right" edgeAt="right"
-						yAccessor={d => d.close} fill={d => d.close > d.open ? "#00FF00" : "#FF0000"}/>
+						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 					<EdgeIndicator id={3} itemType="first" orient="left" edgeAt="left"
 						yAccessor={ema20.accessor()} fill={ema20.fill()}/>
 					<EdgeIndicator id={4} itemType="first" orient="left" edgeAt="left"
 						yAccessor={ema50.accessor()} fill={ema50.fill()}/>
 					<EdgeIndicator id={5} itemType="first" orient="left" edgeAt="left"
-						yAccessor={d => d.close} fill={d => d.close > d.open ? "#00FF00" : "#FF0000"}/>
+						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 				</Chart>
 				<Chart id={2}
 						yExtents={[d => d.volume, smaVolume50.accessor()]}
