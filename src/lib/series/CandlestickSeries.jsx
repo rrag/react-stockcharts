@@ -23,11 +23,11 @@ CandlestickSeries.propTypes = {
 	className: React.PropTypes.string,
 	wickClassName: React.PropTypes.string,
 	candleClassName: React.PropTypes.string,
-	classNames: React.PropTypes.shape({
-		up: React.PropTypes.string,
-		down: React.PropTypes.string
-	}),
 	widthRatio: React.PropTypes.number.isRequired,
+	classNames: React.PropTypes.oneOfType([
+		React.PropTypes.func,
+		React.PropTypes.string
+	]).isRequired,
 	fill: React.PropTypes.oneOfType([
 		React.PropTypes.func,
 		React.PropTypes.string
@@ -53,10 +53,7 @@ CandlestickSeries.defaultProps = {
 	wickClassName: "react-stockcharts-candlestick-wick",
 	candleClassName: "react-stockcharts-candlestick-candle",
 	yAccessor: d => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
-	classNames: {
-		up: "up",
-		down: "down"
-	},
+	classNames: d => d.close > d.open ? "up" : "down",
 	widthRatio: 0.5,
 	wickStroke: "#000000",
 	// wickStroke: d => d.close > d.open ? "#6BA583" : "#FF0000",
@@ -173,8 +170,9 @@ CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 CandlestickSeries.getWickData = (props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData) => {
 	// var isCompareSeries = false; // compareSeries.length > 0;
 
-	var { classNames, wickStroke: wickStrokeProp } = props;
+	var { classNames: classNameProp, wickStroke: wickStrokeProp } = props;
 	var wickStroke = d3.functor(wickStrokeProp);
+	var className = d3.functor(classNameProp);
 	var wickData = plotData
 			.filter((d) => d.close !== undefined)
 			.map((d) => {
@@ -184,15 +182,14 @@ CandlestickSeries.getWickData = (props, xAccessor, yAccessor, xScale, yScale, co
 				var x1 = Math.round(xScale(xAccessor(d))),
 					y1 = yScale(ohlc.high),
 					x2 = x1,
-					y2 = yScale(ohlc.low),
-					className = (ohlc.open <= ohlc.close) ? classNames.up : classNames.down;
+					y2 = yScale(ohlc.low);
 
 				return {
 					x1: x1,
 					y1: y1,
 					x2: x2,
 					y2: y2,
-					className: className,
+					className: className(ohlc),
 					direction: (ohlc.close - ohlc.open),
 					stroke: wickStroke(ohlc),
 				};

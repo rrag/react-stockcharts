@@ -8,98 +8,115 @@ import * as ReStock from "react-stockcharts";
 var { ChartCanvas, Chart, DataSeries, OverlaySeries, EventCapture } = ReStock;
 
 var { OHLCSeries, HistogramSeries, LineSeries, AreaSeries, ElderRaySeries, StraightLine } = ReStock.series;
+var { financeEODDiscontiniousScale } = ReStock.scale;
+
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, SingleValueTooltip, RSITooltip } = ReStock.tooltip;
-var { StockscaleTransformer } = ReStock.transforms;
 
 var { XAxis, YAxis } = ReStock.axes;
-var { Copy, EMA, SMA, ElderRay } = ReStock.indicator;
+var { elderRay, changeCalculator } = ReStock.indicator;
 
 var { fitWidth } = ReStock.helper;
+
+var xScale = financeEODDiscontiniousScale();
 
 class OHLCChartWithElderRayIndicator extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
 
+		var elder = elderRay();
+		var change = changeCalculator();
+
 		return (
 			<ChartCanvas width={width} height={650}
-				margin={{left: 70, right: 70, top:20, bottom: 30}} initialDisplay={200} 
-				dataTransform={[ { transform: StockscaleTransformer } ]}
-				data={data} type={type}>
-				<Chart id={1} yMousePointerDisplayLocation="right" height={300}
-						yMousePointerDisplayFormat={d3.format(".2f")} padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
+					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
+					data={data} calculator={[change, elder]}
+					xAccessor={d => d.date} discontinous xScale={xScale}
+					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
+				<Chart id={1} height={300} 
+						yExtents={d => [d.high, d.low]}
+						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
+						padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
-					<DataSeries id={0} yAccessor={OHLCSeries.yAccessor} >
-						<OHLCSeries />
-					</DataSeries>
-					<DataSeries id={1} indicator={EMA} options={{ period: 26 }} >
-						<LineSeries />
-					</DataSeries>
-					<DataSeries id={2} indicator={EMA} options={{ period: 12 }} >
-						<LineSeries />
-					</DataSeries>
+					<OHLCSeries />
+					<EdgeIndicator id={2} itemType="last" orient="right" edgeAt="right"
+						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 				</Chart>
-				<CurrentCoordinate forChart={1} forDataSeries={1} />
-				<CurrentCoordinate forChart={1} forDataSeries={2} />
-				<Chart id={2} yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
-						height={150} origin={(w, h) => [0, h - 450]} >
+				<Chart id={2} height={150} 
+						yExtents={d => d.volume}
+						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
+						origin={(w, h) => [0, h - 450]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-					<DataSeries id={0} yAccessor={(d) => d.volume} >
-						<HistogramSeries
-							fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"}
-							opacity={0.5} />
-					</DataSeries>
+					<HistogramSeries yAccessor={d => d.volume}
+						fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}
+						opacity={0.4}/>
 				</Chart>
-				<CurrentCoordinate forChart={2} forDataSeries={0} />
-				<EdgeContainer>
-					<EdgeIndicator itemType="last" orient="right"
-						edgeAt="right" forChart={1} forDataSeries={1} />
-					<EdgeIndicator itemType="last" orient="right"
-						edgeAt="right" forChart={1} forDataSeries={2} />
-					<EdgeIndicator itemType="first" orient="left"
-						edgeAt="left" forChart={1} forDataSeries={1} />
-					<EdgeIndicator itemType="first" orient="left"
-						edgeAt="left" forChart={1} forDataSeries={2} />
-				</EdgeContainer>
-				<Chart id={3} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
-						height={100} origin={(w, h) => [0, h - 300]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
+				<Chart id={3} height={100}
+						yExtents={[0, elder.accessor()]}
+						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
+						origin={(w, h) => [0, h - 300]}
+						padding={{ top: 10, bottom: 10 }} >
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={d3.format("s")}/>
-					<DataSeries id={0} indicator={ElderRay} >
-						<ElderRaySeries />
-					</DataSeries>
+					<ElderRaySeries calculator={elder} />
 				</Chart>
-				<Chart id={4} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
-						height={100} origin={(w, h) => [0, h - 200]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
+				<Chart id={4} height={100}
+						yExtents={[0, d => elder.accessor()(d) && elder.accessor()(d).bullPower]}
+						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
+						origin={(w, h) => [0, h - 200]}
+						padding={{ top: 10, bottom: 10 }} >
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={d3.format(".2f")}/>
-					<DataSeries id={0} indicator={Copy} options={{ source: [ "chart_3", "overlay_0", "bullPower" ], period:13 }} >
-						<HistogramSeries
-							baseAt={(xScale, yScale, d) => yScale(0)}
-							fill="#6BA583" />
-						<StraightLine yValue={0} />
-					</DataSeries>
+					<HistogramSeries
+						yAccessor={d => elder.accessor()(d) && elder.accessor()(d).bullPower}
+						baseAt={(xScale, yScale, d) => yScale(0)}
+						fill="#6BA583" />
+					<StraightLine yValue={0} />
 				</Chart>
-				<Chart id={5} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
-						height={100} origin={(w, h) => [0, h - 100]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
+				<Chart id={5} height={100}
+						yExtents={[0, d => elder.accessor()(d) && elder.accessor()(d).bearPower]}
+						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
+						origin={(w, h) => [0, h - 100]}
+						padding={{ top: 10, bottom: 10 }} >
 					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={d3.format(".2f")}/>
-					<DataSeries id={0} indicator={Copy} options={{ source: [ "chart_3", "overlay_0", "bearPower" ], period:13 }} >
-						<HistogramSeries
-							baseAt={(xScale, yScale, d) => yScale(0)}
-							fill="#FF0000"
-							opacity={0.5} />
-						<StraightLine yValue={0} />
-					</DataSeries>
+					<HistogramSeries
+						yAccessor={d => elder.accessor()(d) && elder.accessor()(d).bearPower}
+						baseAt={(xScale, yScale, d) => yScale(0)}
+						fill="#FF0000" />
+					<StraightLine yValue={0} />
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
-					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 5]} />
+					<SingleValueTooltip forChart={3}
+						yAccessor={elder.accessor()}
+						yLabel="Elder Ray"
+						yDisplayFormat={d => `${d3.format(".2f")(d.bullPower)}, ${d3.format(".2f")(d.bearPower)}`}
+						origin={[-40, 15]}/>
+					<SingleValueTooltip forChart={4}
+						yAccessor={d => elder.accessor()(d) && elder.accessor()(d).bullPower}
+						yLabel="Elder Ray - Bull power"
+						yDisplayFormat={d3.format(".2f")}
+						origin={[-40, 15]}/>
+					<SingleValueTooltip forChart={5}
+						yAccessor={d => elder.accessor()(d) && elder.accessor()(d).bearPower}
+						yLabel="Elder Ray - Bear power"
+						yDisplayFormat={d3.format(".2f")}
+						origin={[-40, 15]}/>
+				</TooltipContainer>
+			</ChartCanvas>
+		);
+	}
+};
+
+/*
+
+
 					<SingleValueTooltip forChart={3} forSeries={0}
 						yLabel="Elder Ray"
 						yDisplayFormat={d => `${d3.format(".2f")(d.bullPower)}, ${d3.format(".2f")(d.bearPower)}`}
@@ -112,11 +129,10 @@ class OHLCChartWithElderRayIndicator extends React.Component {
 						yLabel={indicator => `Elder Ray - Bear power (${ indicator.options().period })`}
 						yDisplayFormat={d3.format(".2f")}
 						origin={[-40, 15]}/>
-				</TooltipContainer>
-			</ChartCanvas>
-		);
-	}
-};
+
+
+*/
+
 
 OHLCChartWithElderRayIndicator.propTypes = {
 	data: React.PropTypes.array.isRequired,

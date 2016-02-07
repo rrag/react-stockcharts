@@ -19,9 +19,9 @@ export const ForceIndex = {
 
 export const ElderRay = {
 	period: 13,
-	source: "close", // "high", "low", "open", "close"
-	movingAverageType: "ema",
-	ohlc: (d) => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
+	source: d => d.close, // "high", "low", "open", "close"
+	movingAverageType: "sma",
+	ohlc: d => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
 }
 
 export const ElderImpulse = {

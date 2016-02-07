@@ -19,29 +19,35 @@ class ElderRaySeries extends React.Component {
 		this.yAccessorForHistogramBase = this.yAccessorForHistogramBase.bind(this);
 	}
 	yAccessorTop(d) {
-		var { yAccessor } = this.props;
+		var { calculator } = this.props;
+		var yAccessor = calculator.accessor();
 		return yAccessor(d) && Math.max(yAccessor(d).bullPower, 0);
 	}
 	yAccessorBullTop(d) {
-		var { yAccessor } = this.props;
+		var { calculator } = this.props;
+		var yAccessor = calculator.accessor();
 		return yAccessor(d) && (yAccessor(d).bullPower > 0 ? yAccessor(d).bullPower : undefined);
 	}
 	yAccessorBearTop(d) {
-		var { yAccessor } = this.props;
+		var { calculator } = this.props;
+		var yAccessor = calculator.accessor();
 		return yAccessor(d) && (yAccessor(d).bearPower > 0 ? yAccessor(d).bearPower : undefined);
 	}
 	yAccessorBullBottom(d) {
-		var { yAccessor } = this.props;
+		var { calculator } = this.props;
+		var yAccessor = calculator.accessor();
 		return yAccessor(d) && (yAccessor(d).bullPower < 0 ? 0 : undefined);
 	}
 	yAccessorBearBottom(d) {
-		var { yAccessor } = this.props;
+		var { calculator } = this.props;
+		var yAccessor = calculator.accessor();
 		return yAccessor(d) && (yAccessor(d).bullPower < 0
 				|| yAccessor(d).bullPower * yAccessor(d).bearPower < 0
 			? Math.min(0, yAccessor(d).bullPower) : undefined)
 	}
 	yAccessorForHistogramBase(xScale, yScale, d) {
-		var { yAccessor } = this.props;
+		var { calculator } = this.props;
+		var yAccessor = calculator.accessor();
 		var y = yAccessor(d) ? yAccessor(d).bearPower : 0
 		return yScale(Math.min(y, 0));
 	}
@@ -49,8 +55,7 @@ class ElderRaySeries extends React.Component {
 		return yAccessorNumber % 2 === 0 ? "#6BA583" : "#FF0000";
 	}
 	render() {
-		var { className, indicator, xScale, yScale, xAccessor, plotData, type, opacity, histogramStroke } = this.props;
-		var options = indicator.options();
+		var { className, calculator, xScale, yScale, xAccessor, plotData, type, opacity, histogramStroke } = this.props;
 
 		return (
 			<g className={className}>
@@ -76,12 +81,11 @@ ElderRaySeries.propTypes = {
 	xScale: React.PropTypes.func,
 	yScale: React.PropTypes.func,
 	xAccessor: React.PropTypes.func,
-	yAccessor: React.PropTypes.func,
+	calculator: React.PropTypes.func.isRequired,
 	plotData: React.PropTypes.array,
 	type: React.PropTypes.string,
 	opacity: React.PropTypes.number,
 	histogramStroke: React.PropTypes.bool,
-	indicator: React.PropTypes.func.isRequired,
 };
 
 ElderRaySeries.defaultProps = {

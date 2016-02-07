@@ -33,18 +33,18 @@ import ema from "./ema";
 import zipper from "../../utils/zipper";
 
 import { ElderRay as defaultOptions } from "../defaultOptions";
-import { isNotDefined, sourceFunctor } from "../../utils/utils";
+import { isDefined, isNotDefined, sourceFunctor } from "../../utils/utils";
 
 export default function() {
 
 	var { period: windowSize, source, movingAverageType, ohlc } = defaultOptions;
-	var value = sourceFunctor(source);
+	var source = sourceFunctor(source);
 
 	function calculator(data) {
 
 		var meanAlgorithm = movingAverageType === "ema"
-			? ema().windowSize(windowSize).value(value)
-			: slidingWindow().windowSize(windowSize).accumulator(d3.mean).value(value);
+			? ema().windowSize(windowSize).source(source)
+			: slidingWindow().windowSize(windowSize).accumulator(values => d3.mean(values)).source(source);
 
 		var zip = zipper()
 			.combine((datum, mean) => {
@@ -81,11 +81,11 @@ export default function() {
 		return calculator;
 	};
 
-	calculator.value = function(x) {
+	calculator.source = function(x) {
 		if (!arguments.length) {
-			return value;
+			return source;
 		}
-		value = x;
+		source = x;
 		return calculator;
 	};
 

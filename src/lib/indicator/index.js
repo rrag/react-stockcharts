@@ -25,6 +25,8 @@ import rsi from "./rsi";
 import atr from "./atr";
 import stochasticOscilator from "./stochasticOscilator";
 import forceIndex from "./forceIndex";
+import elderRay from "./elderRay";
+import changeCalculator from "./changeCalculator";
 
 export {
 	ema,
@@ -39,6 +41,8 @@ export {
 	atr,
 	stochasticOscilator,
 	forceIndex,
+	elderRay,
+	changeCalculator,
 
 /*
 	MACD,

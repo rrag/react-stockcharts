@@ -8,9 +8,9 @@ import { isDefined, isNotDefined, hexToRGBA } from "../utils/utils";
 class OHLCSeries extends React.Component {
 	render() {
 		var { className, wickClassName, candleClassName } = this.props;
-		var { xAccessor, yAccessor, xScale, yScale, compareSeries, plotData } = this.props;
+		var { xAccessor, yAccessor, xScale, yScale, plotData } = this.props;
 
-		var barData = OHLCSeries.getOHLCBars(this.props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
+		var barData = OHLCSeries.getOHLCBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
 
 		var { barWidth, strokeWidth, bars } = barData;
 
@@ -24,46 +24,33 @@ class OHLCSeries extends React.Component {
 
 OHLCSeries.propTypes = {
 	className: React.PropTypes.string,
-	classNames: React.PropTypes.shape({
-		up: React.PropTypes.string,
-		down: React.PropTypes.string
-	}),
-	stroke: React.PropTypes.shape({
-		up: React.PropTypes.string,
-		down: React.PropTypes.string
-	}),
-	firstBarstroke: React.PropTypes.string,
+	classNames: React.PropTypes.oneOfType([
+		React.PropTypes.func,
+		React.PropTypes.string
+	]).isRequired,
+	stroke: React.PropTypes.oneOfType([
+		React.PropTypes.func,
+		React.PropTypes.string
+	]).isRequired,
 	xAccessor: React.PropTypes.func,
-	yAccessor: React.PropTypes.func,
+	yAccessor: React.PropTypes.func.isRequired,
 	xScale: React.PropTypes.func,
 	yScale: React.PropTypes.func,
-	changeAccessor: React.PropTypes.func,
-	compareSeries: React.PropTypes.array,
 	plotData: React.PropTypes.array,
 };
 
 OHLCSeries.defaultProps = {
 	className: "react-stockcharts-ohlc",
-	classNames: {
-		up: "up",
-		down: "down"
-	},
-	stroke: {
-		up: "#6BA583",
-		down: "#FF0000"
-	},
-	firstBarClassName: "firstbar",
-	firstBarstroke: "#000000",
-	changeAccessor: d => d.change,
+	yAccessor: (d) => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
+	classNames: d => isDefined(d.absoluteChange) ? (d.absoluteChange > 0 ? "up" : "down") : "firstbar",
+	stroke: d => isDefined(d.absoluteChange) ? (d.absoluteChange > 0 ? "#6BA583" : "#FF0000") : "#000000",
 	opacity: 1,
 };
 
-OHLCSeries.yAccessor = (d) => ({ open: d.open, high: d.high, low: d.low, close: d.close });
-
 OHLCSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { compareSeries, xAccessor, yAccessor, indicator } = props;
+	var { xAccessor, yAccessor, indicator } = props;
 
-	var barData = OHLCSeries.getOHLCBars(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
+	var barData = OHLCSeries.getOHLCBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
 
 	var { barWidth, strokeWidth, bars } = barData;
 
@@ -92,17 +79,11 @@ OHLCSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	});
 };
 
-OHLCSeries.getOHLCBars = (props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData) => {
-	var isCompareSeries = compareSeries.length > 0;
+OHLCSeries.getOHLCBars = (props, xAccessor, yAccessor, xScale, yScale, plotData) => {
+	var { indicator, changeAccessor, classNames: classNamesProp, stroke: strokeProp, firstBarClassName, firstBarStroke } = props;
 
-	var { indicator, changeAccessor, classNames, stroke: barStroke, firstBarClassName, firstBarStroke } = props;
-
-	var { up: upStroke, down: downStroke } = barStroke;
-	if (isDefined(indicator) && isDefined(indicator.strokeProvider)) {
-		upStroke = downStroke = indicator.strokeProvider();
-	}
-	upStroke = d3.functor(upStroke);
-	downStroke = d3.functor(downStroke);
+	var strokeFunc = d3.functor(strokeProp);
+	var classNameFunc = d3.functor(classNamesProp);
 
 	var width = xScale(xAccessor(plotData[plotData.length - 1]))
 		- xScale(xAccessor(plotData[0]));
@@ -113,10 +94,7 @@ OHLCSeries.getOHLCBars = (props, xAccessor, yAccessor, xScale, yScale, compareSe
 	var bars = plotData
 			.filter((d) => d.close !== undefined)
 			.map((d) => {
-				var ohlc = isCompareSeries ? yAccessor(d.compare) : yAccessor(d),
-					change = changeAccessor(d),
-					first = isNotDefined(change),
-					up = !first && change.absolute >= 0,
+				var ohlc = yAccessor(d),
 					x = Math.round(xScale(xAccessor(d))),
 					y1 = yScale(ohlc.high),
 					y2 = yScale(ohlc.low),
@@ -126,11 +104,9 @@ OHLCSeries.getOHLCBars = (props, xAccessor, yAccessor, xScale, yScale, compareSe
 					closeX1 = x - strokeWidth / 2,
 					closeX2 = x + barWidth,
 					closeY = yScale(ohlc.close),
-					className = up ? classNames.up : classNames.down,
-					stroke = up ? upStroke(d) : downStroke(d);
+					className = classNameFunc(d),
+					stroke = strokeFunc(d);
 
-				className = first ? firstBarClassName : className;
-				stroke = first ? firstBarStroke : stroke;
 				return { x, y1, y2, openX1, openX2, openY, closeX1, closeX2, closeY, stroke, className };
 			});
 	return { barWidth, strokeWidth, bars };

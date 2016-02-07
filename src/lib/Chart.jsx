@@ -44,8 +44,7 @@ Chart.propTypes = {
 	]).isRequired,
 	id: React.PropTypes.number.isRequired,
 	yExtents: React.PropTypes.oneOfType([
-		React.PropTypes.arrayOf(React.PropTypes.func),
-		React.PropTypes.arrayOf(React.PropTypes.number),
+		React.PropTypes.array,
 		React.PropTypes.func
 	]).isRequired,
 	yScale: React.PropTypes.func.isRequired,
