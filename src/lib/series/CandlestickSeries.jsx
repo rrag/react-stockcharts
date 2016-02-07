@@ -28,14 +28,18 @@ CandlestickSeries.propTypes = {
 		down: React.PropTypes.string
 	}),
 	widthRatio: React.PropTypes.number.isRequired,
-	stroke: React.PropTypes.shape({
-		up: React.PropTypes.string,
-		down: React.PropTypes.string
-	}),
-	fill: React.PropTypes.shape({
-		up: React.PropTypes.string,
-		down: React.PropTypes.string
-	}),
+	fill: React.PropTypes.oneOfType([
+		React.PropTypes.func,
+		React.PropTypes.string
+	]).isRequired,
+	stroke: React.PropTypes.oneOfType([
+		React.PropTypes.func,
+		React.PropTypes.string
+	]).isRequired,
+	wickStroke: React.PropTypes.oneOfType([
+		React.PropTypes.func,
+		React.PropTypes.string
+	]).isRequired,
 	xAccessor: React.PropTypes.func,
 	yAccessor: React.PropTypes.func.isRequired,
 	xScale: React.PropTypes.func,
@@ -54,18 +58,12 @@ CandlestickSeries.defaultProps = {
 		down: "down"
 	},
 	widthRatio: 0.5,
-	stroke: {
-		up: "none",
-		down: "none"
-	},
-	wickStroke: {
-		up: "#000000", // "#6BA583"
-		down: "#000000" // "red"
-	},
-	fill: {
-		up: "#6BA583",
-		down: "#FF0000"
-	},
+	wickStroke: "#000000",
+	// wickStroke: d => d.close > d.open ? "#6BA583" : "#FF0000",
+	fill: d => d.close > d.open ? "#6BA583" : "#FF0000",
+	// stroke: d => d.close > d.open ? "#6BA583" : "#FF0000",
+	// stroke: "#000000",
+	stroke: "none",
 	opacity: 1,
 };
 
@@ -87,13 +85,28 @@ CandlestickSeries.getWicksSVG = (props) => {
 };
 CandlestickSeries.getCandlesSVG = (props) => {
 
-	var { xAccessor, yAccessor, xScale, yScale, compareSeries, plotData } = props;
+	var { xAccessor, yAccessor, xScale, yScale, compareSeries, plotData, opacity } = props;
 
 	var candleData = CandlestickSeries.getCandleData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
 	var candles = candleData.map((d, idx) => {
-		if (d.width < 0) return <line className={d.className} key={idx} x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height} stroke={d.fill} />;
-		else if (d.height === 0) return <line key={idx} x1={d.x} y1={d.y} x2={d.x + d.width} y2={d.y + d.height} stroke={d.fill} />;
-		return <rect  className={d.className} key={idx} x={d.x} y={d.y} width={d.width} height={d.height} fill={d.fill} stroke={d.stroke} />;
+		if (d.width < 0)
+			return (
+				<line className={d.className} key={idx}
+					x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height}
+					stroke={d.fill} />
+			);
+		else if (d.height === 0)
+			return (
+				<line key={idx} 
+					x1={d.x} y1={d.y} x2={d.x + d.width} y2={d.y + d.height}
+					stroke={d.fill} />
+			);
+		return (
+			<rect key={idx} className={d.className}
+				fillOpacity={opacity}
+				x={d.x} y={d.y} width={d.width} height={d.height}
+				fill={d.fill} stroke={d.stroke} />
+		);
 	});
 	return candles;
 };
@@ -121,32 +134,38 @@ CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var candleData = CandlestickSeries.getCandleData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
 
 	var candleNest = d3.nest()
+		.key(d => d.stroke)
 		.key(d => d.fill)
 		.entries(candleData);
 
 	candleNest.forEach(outer => {
-		var { key, values } = outer;
-		ctx.fillStyle = hexToRGBA(key, opacity);
+		var { key: strokeKey, values: strokeValues } = outer;
+		if (strokeKey !== "none") ctx.strokeStyle = strokeKey;
+		strokeValues.forEach(inner => {
+			var { key, values } = inner;
+			ctx.fillStyle = hexToRGBA(key, opacity);
 
-		values.forEach(d => {
-			if (d.width < 0) {
-				// <line className={d.className} key={idx} x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height}/>
-				ctx.beginPath();
-				ctx.moveTo(d.x, d.y);
-				ctx.lineTo(d.x, d.y + d.height);
-				ctx.stroke();
-			} else if (d.height === 0) {
-				// <line key={idx} x1={d.x} y1={d.y} x2={d.x + d.width} y2={d.y + d.height} />
-				ctx.beginPath();
-				ctx.moveTo(d.x, d.y);
-				ctx.lineTo(d.x + d.width, d.y + d.height);
-				ctx.stroke();
-			} else {
-				ctx.beginPath();
-				ctx.rect(d.x, d.y, d.width, d.height);
-				ctx.closePath();
-				ctx.fill();
-			}
+			values.forEach(d => {
+				if (d.width < 0) {
+					// <line className={d.className} key={idx} x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height}/>
+					ctx.beginPath();
+					ctx.moveTo(d.x, d.y);
+					ctx.lineTo(d.x, d.y + d.height);
+					ctx.stroke();
+				} else if (d.height === 0) {
+					// <line key={idx} x1={d.x} y1={d.y} x2={d.x + d.width} y2={d.y + d.height} />
+					ctx.beginPath();
+					ctx.moveTo(d.x, d.y);
+					ctx.lineTo(d.x + d.width, d.y + d.height);
+					ctx.stroke();
+				} else {
+					ctx.beginPath();
+					ctx.rect(d.x, d.y, d.width, d.height);
+					ctx.closePath();
+					ctx.fill();
+					if (strokeKey !== "none") ctx.stroke();
+				}
+			})
 		})
 	});
 };
@@ -154,7 +173,8 @@ CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 CandlestickSeries.getWickData = (props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData) => {
 	// var isCompareSeries = false; // compareSeries.length > 0;
 
-	var { classNames, wickStroke } = props;
+	var { classNames, wickStroke: wickStrokeProp } = props;
+	var wickStroke = d3.functor(wickStrokeProp);
 	var wickData = plotData
 			.filter((d) => d.close !== undefined)
 			.map((d) => {
@@ -174,7 +194,7 @@ CandlestickSeries.getWickData = (props, xAccessor, yAccessor, xScale, yScale, co
 					y2: y2,
 					className: className,
 					direction: (ohlc.close - ohlc.open),
-					stroke: (ohlc.open <= ohlc.close) ? wickStroke.up : wickStroke.down,
+					stroke: wickStroke(ohlc),
 				};
 			});
 	return wickData;
@@ -183,8 +203,9 @@ CandlestickSeries.getWickData = (props, xAccessor, yAccessor, xScale, yScale, co
 CandlestickSeries.getCandleData = (props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData) => {
 	// var isCompareSeries = false; // compareSeries.length > 0;
 
-	var { classNames, fill, stroke, widthRatio } = props;
-
+	var { classNames, fill: fillProp, stroke: strokeProp, widthRatio } = props;
+	var fill = d3.functor(fillProp);
+	var stroke = d3.functor(strokeProp);
 	// console.log(plotData);
 	var width = xScale(xAccessor(last(plotData)))
 		- xScale(xAccessor(first(plotData)));
@@ -206,8 +227,8 @@ CandlestickSeries.getCandleData = (props, xAccessor, yAccessor, xScale, yScale, 
 					height: height,
 					width: candleWidth,
 					className: className,
-					fill: (ohlc.open <= ohlc.close) ? fill.up : fill.down,
-					stroke: (ohlc.open <= ohlc.close) ? stroke.up : stroke.down,
+					fill: fill(ohlc),
+					stroke: stroke(ohlc),
 					direction: (ohlc.close - ohlc.open),
 				};
 			});
