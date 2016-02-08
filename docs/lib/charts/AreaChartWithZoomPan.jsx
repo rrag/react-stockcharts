@@ -8,14 +8,17 @@ import * as ReStock from "react-stockcharts";
 var { ChartCanvas, Chart, DataSeries, OverlaySeries,EventCapture } = ReStock;
 
 var { AreaSeries, HistogramSeries, LineSeries, AreaSeries } = ReStock.series;
+var { financeEODDiscontiniousScale } = ReStock.scale;
+
 var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 
 var { TooltipContainer, SingleValueTooltip, MovingAverageTooltip } = ReStock.tooltip;
-var { StockscaleTransformer } = ReStock.transforms;
 var { XAxis, YAxis } = ReStock.axes;
-var { EMA, SMA } = ReStock.indicator;
 var { fitWidth } = ReStock.helper;
+
+
+var xScale = financeEODDiscontiniousScale();
 
 class AreaChartWithEdge extends React.Component {
 	render() {
@@ -23,39 +26,40 @@ class AreaChartWithEdge extends React.Component {
 
 		return (
 			<ChartCanvas width={width} height={400}
-				margin={{left: 90, right: 70, top:10, bottom: 30}} initialDisplay={300}
-				dataTransform={[ { transform: StockscaleTransformer } ]}
-				data={data} type={type}>
-				<Chart id={1} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}>
+					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
+					data={data}
+					xAccessor={d => d.date} discontinous xScale={xScale}
+					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
+				<Chart id={1}
+						yExtents={d => [d.high, d.low]}
+						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} >
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
-					<DataSeries id={0} yAccessor={AreaSeries.yAccessor} stroke="#76C444" fill="#C7F3AB">
-						<AreaSeries />
-					</DataSeries>
+					<AreaSeries yAccessor={d => d.close}/>
 				</Chart>
-				<Chart id={2} yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
+				<Chart id={2}
+						yExtents={d => d.volume}
+						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 						height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-					<DataSeries id={0} yAccessor={(d) => d.volume} >
-						<HistogramSeries
-							stroke
-							fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"}
-							opacity={0.4}
-							widthRatio={1} />
-					</DataSeries>
+					<HistogramSeries yAccessor={d => d.volume}
+						stroke fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"}
+						opacity={0.4}
+						widthRatio={1} />
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 				<TooltipContainer>
-					<SingleValueTooltip forChart={1} forSeries={0}
+					<SingleValueTooltip forChart={1}
 						xLabel="Date" /* xLabel is optional, absense will not show the x value */ yLabel="C"
+						yAccessor={d => d.close}
 						xDisplayFormat={d3.time.format("%Y-%m-%d")} yDisplayFormat={d3.format(".2f")}
 						/* valueStroke="green" - optional prop */
 						/* labelStroke="#4682B4" - optional prop */
-						origin={[-50, 0]}/>
-					<SingleValueTooltip forChart={1} forSeries={0}
+						origin={[-40, 0]}/>
+					<SingleValueTooltip forChart={1}
 						yLabel="Volume" yAccessor={(d) => d.volume}
-						origin={[-50, 20]}/>
+						origin={[-40, 20]}/>
 				</TooltipContainer>
 			</ChartCanvas>
 		);

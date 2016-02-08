@@ -8,14 +8,14 @@ import { hexToRGBA } from "../utils/utils";
 
 class ScatterSeries extends React.Component {
 	render() {
-		var { className, fill, stroke, marker, markerProps, xScale, yScale, plotData } = this.props;
+		var { className, fill, stroke, marker, markerProvider, markerProps, xScale, yScale, plotData } = this.props;
 		var m = d3.functor(marker);
 
 		var points = ScatterSeries.helper(this.props, xScale, yScale, plotData);
 
 		return <g className={className}>
 			{points.map((point, idx) => {
-				var Marker = m(point.datum);
+				var { marker: Marker } = point;
 				return <Marker key={idx} {...markerProps} point={point} />
 			})}
 		</g>;
@@ -25,12 +25,12 @@ class ScatterSeries extends React.Component {
 ScatterSeries.propTypes = {
 	className: React.PropTypes.string,
 	xAccessor: React.PropTypes.func,
-	yAccessor: React.PropTypes.func,
+	yAccessor: React.PropTypes.func.isRequired,
 	xScale: React.PropTypes.func,
 	yScale: React.PropTypes.func,
-	compareSeries: React.PropTypes.array,
 	plotData: React.PropTypes.array,
 	marker: React.PropTypes.func,
+	markerProvider: React.PropTypes.func,
 };
 
 ScatterSeries.defaultProps = {
@@ -40,26 +40,34 @@ ScatterSeries.defaultProps = {
 ScatterSeries.yAccessor = d => d.close;
 
 ScatterSeries.helper = (props, xScale, yScale, plotData) => {
-	var { xAccessor, yAccessor, compareSeries, marker: Marker, markerProps } = props;
+	var { xAccessor, yAccessor, marker: Marker, markerProvider, markerProps } = props;
 
-	var isCompareSeries = compareSeries.length > 0;
-	var mProps = { ...Marker.defaultProps, markerProps };
+	if (!(markerProvider || Marker)) throw new Error("required prop, either marker or markerProvider missing");
 
-	var fill = d3.functor(mProps.fill)
-	var stroke = d3.functor(mProps.stroke)
 
-	return plotData.map(d => ({
+	return plotData.map(d => {
+
+		if (markerProvider) Marker = markerProvider(d);
+
+		var mProps = { ...Marker.defaultProps, markerProps };
+
+		var fill = d3.functor(mProps.fill)
+		var stroke = d3.functor(mProps.stroke)
+
+		return {
 			x: xScale(xAccessor(d)),
-			y: yScale(isCompareSeries ? yAccessor(d.compare) : yAccessor(d)),
+			y: yScale(yAccessor(d)),
 			fill: hexToRGBA(fill(d), mProps.opacity),
 			stroke: stroke(d),
 			datum: d,
-		}));
+			marker: Marker,
+		}
+	});
 };
 
 ScatterSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 
-	var { stroke, fill, opacity, marker, markerProps } = props;
+	var { stroke, fill, opacity, markerProps } = props;
 
 	var points = ScatterSeries.helper(props, xScale, yScale, plotData);
 
@@ -81,6 +89,7 @@ ScatterSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 			ctx.strokeStyle = strokeKey;
 
 			strokeValues.forEach(point => {
+				var { marker } = point;
 				marker.drawOnCanvasWithNoStateChange({ ...marker.defaultProps, ...markerProps }, point, ctx)
 			})
 		})

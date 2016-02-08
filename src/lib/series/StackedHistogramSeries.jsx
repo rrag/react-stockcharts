@@ -151,7 +151,7 @@ StackedHistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, p
 					} 
 					if (isNotDefined(yValue)) return undefined;
 
-					var x = Math.round(xScale(xAccessor(d)) - offset);
+					var x = Math.round(xScale(xAccessor(d))) - offset;
 					return {
 						barWidth: barWidth,
 						x: x,

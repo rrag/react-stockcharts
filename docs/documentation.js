@@ -229,18 +229,18 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithFullStochasticsIndicator
 	// CandleStickChartWithForceIndexIndicator
 	// OHLCChartWithElderRayIndicator
-	// OHLCChartWithElderImpulseIndicator - TODO (2/10)
+	// OHLCChartWithElderImpulseIndicator
 	// CandleStickChartWithInteractiveIndicator - TODO (2/10)
 	// CandleStickChartWithFibonacciInteractiveIndicator - TODO (2/10)
-	// AreaChartWithZoomPan - TODO (2/10)
-	// AreaChartWithPointsAndEdge - TODO (2/10)
+	// AreaChartWithZoomPan
+	// AreaChartWithPointsAndEdge
 	// CandleStickChartWithBrush - TODO
 	// CandleStickChartWith2DBrush - TODO
 	// HaikinAshi
 	// Kagi
 	// PointAndFigure
 	// Renko
-	var Chart = require("lib/charts/OHLCChartWithElderImpulseIndicator").default;
+	var Chart = require("lib/charts/AreaChartWithPointsAndEdge").default;
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	// data, dataFull, compareData
