@@ -105,6 +105,7 @@ MovingAverageTooltip.propTypes = {
 	fontFamily: React.PropTypes.string,
 	fontSize: React.PropTypes.number,
 	width: React.PropTypes.number,
+	calculators: React.PropTypes.array.isRequired,
 	forDataSeries: React.PropTypes.arrayOf(React.PropTypes.number),
 };
 

@@ -208,12 +208,12 @@ CandlestickSeries.getCandleData = (props, xAccessor, yAccessor, xScale, yScale, 
 		- xScale(xAccessor(first(plotData)));
 	var cw = (width / (plotData.length - 1)) * widthRatio;
 	var candleWidth = Math.round(cw); // Math.floor(cw) % 2 === 0 ? Math.floor(cw) : Math.round(cw);
+	var offset = (candleWidth === 1 ? 0 : 0.5 * candleWidth);
 	var candles = plotData
 			.filter((d) => d.close !== undefined)
 			.map((d) => {
 				var ohlc = yAccessor(d);
-				var x = Math.round(xScale(xAccessor(d)))
-						- (candleWidth === 1 ? 0 : 0.5 * candleWidth),
+				var x = Math.round(xScale(xAccessor(d))) - offset,
 					y = yScale(Math.max(ohlc.open, ohlc.close)),
 					height = Math.abs(yScale(ohlc.open) - yScale(ohlc.close)),
 					className = (ohlc.open <= ohlc.close) ? classNames.up : classNames.down;

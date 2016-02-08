@@ -59,7 +59,6 @@ Chart.propTypes = {
 
 Chart.defaultProps = {
 	id: 0,
-	// namespace: "ReStock.Chart",
 	origin: [0, 0],
 	padding: { top: 0, bottom: 0 },
 	yScale: d3.scale.linear(),

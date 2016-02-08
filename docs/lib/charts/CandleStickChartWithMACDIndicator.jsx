@@ -78,18 +78,18 @@ class CandleStickChartWithMACDIndicator extends React.Component {
 					<EdgeIndicator id={2} itemType="last" orient="right" edgeAt="right"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 				</Chart>
-				<Chart id={2}
+				<Chart id={2} height={150}
 						yExtents={[d => d.volume, smaVolume50.accessor()]}
 						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
-						height={150} origin={(w, h) => [0, h - 300]}>
+						origin={(w, h) => [0, h - 300]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 					<HistogramSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
 				</Chart>
-				<Chart id={3} 
+				<Chart id={3} height={150}
 						yExtents={macdCalculator.accessor()}
 						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
-						height={150} origin={(w, h) => [0, h - 150]} padding={{ top: 10, bottom: 10 }} >
+						origin={(w, h) => [0, h - 150]} padding={{ top: 10, bottom: 10 }} >
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={2} />
 					<MACDSeries calculator={macdCalculator} />

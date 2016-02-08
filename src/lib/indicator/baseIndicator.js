@@ -42,7 +42,10 @@ export default function() {
 		return baseIndicator;
 	};
 	baseIndicator.tooltipLabel = function(x) {
-		if (!arguments.length) return tooltipLabel;
+		if (!arguments.length) {
+			if (typeof tooltipLabel === "function") return tooltipLabel();
+			return tooltipLabel;
+		}
 		tooltipLabel = x;
 		return baseIndicator;
 	};

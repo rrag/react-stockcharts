@@ -26,7 +26,8 @@ import atr from "./atr";
 import stochasticOscilator from "./stochasticOscilator";
 import forceIndex from "./forceIndex";
 import elderRay from "./elderRay";
-import changeCalculator from "./changeCalculator";
+import change from "./change";
+import elderImpulse from "./elderImpulse";
 
 export {
 	ema,
@@ -42,7 +43,8 @@ export {
 	stochasticOscilator,
 	forceIndex,
 	elderRay,
-	changeCalculator,
+	change,
+	elderImpulse,
 
 /*
 	MACD,

@@ -138,7 +138,9 @@ StackedHistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, p
 
 	var width = xScale(xAccessor(plotData[plotData.length - 1]))
 		- xScale(xAccessor(plotData[0]));
-	var barWidth = (width / (plotData.length - 1) * widthRatio);
+	var bw = (width / (plotData.length - 1) * widthRatio);
+	var barWidth = Math.round(bw);
+	var offset = (barWidth === 1 ? 0 : 0.5 * barWidth);
 
 	var bars = plotData
 			.map(d => {
@@ -149,7 +151,7 @@ StackedHistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, p
 					} 
 					if (isNotDefined(yValue)) return undefined;
 
-					var x = Math.round(xScale(xAccessor(d)) - (Math.round(barWidth) === 1 ? 0 : 0.5 * barWidth));
+					var x = Math.round(xScale(xAccessor(d)) - offset);
 					return {
 						barWidth: barWidth,
 						x: x,

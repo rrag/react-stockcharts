@@ -228,7 +228,7 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithRSIIndicator
 	// CandleStickChartWithFullStochasticsIndicator
 	// CandleStickChartWithForceIndexIndicator
-	// OHLCChartWithElderRayIndicator - TODO (2/10)
+	// OHLCChartWithElderRayIndicator
 	// OHLCChartWithElderImpulseIndicator - TODO (2/10)
 	// CandleStickChartWithInteractiveIndicator - TODO (2/10)
 	// CandleStickChartWithFibonacciInteractiveIndicator - TODO (2/10)
@@ -240,7 +240,7 @@ function renderPartialPage(data, dataFull, compareData) {
 	// Kagi
 	// PointAndFigure
 	// Renko
-	var Chart = require("lib/charts/OHLCChartWithElderRayIndicator").default;
+	var Chart = require("lib/charts/OHLCChartWithElderImpulseIndicator").default;
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	// data, dataFull, compareData

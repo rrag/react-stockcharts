@@ -106,7 +106,7 @@ OHLCSeries.getOHLCBars = (props, xAccessor, yAccessor, xScale, yScale, plotData)
 					closeY = yScale(ohlc.close),
 					className = classNameFunc(d),
 					stroke = strokeFunc(d);
-
+				// console.log(d);
 				return { x, y1, y2, openX1, openX2, openY, closeX1, closeX2, closeY, stroke, className };
 			});
 	return { barWidth, strokeWidth, bars };

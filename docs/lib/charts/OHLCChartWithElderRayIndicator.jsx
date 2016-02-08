@@ -16,7 +16,7 @@ var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, SingleValueTooltip, RSITooltip } = ReStock.tooltip;
 
 var { XAxis, YAxis } = ReStock.axes;
-var { elderRay, changeCalculator } = ReStock.indicator;
+var { elderRay, change } = ReStock.indicator;
 
 var { fitWidth } = ReStock.helper;
 
@@ -27,12 +27,12 @@ class OHLCChartWithElderRayIndicator extends React.Component {
 		var { data, type, width } = this.props;
 
 		var elder = elderRay();
-		var change = changeCalculator();
+		var changeCalculator = change();
 
 		return (
 			<ChartCanvas width={width} height={650}
 					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
-					data={data} calculator={[change, elder]}
+					data={data} calculator={[changeCalculator, elder]}
 					xAccessor={d => d.date} discontinous xScale={xScale}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1} height={300} 
@@ -113,26 +113,6 @@ class OHLCChartWithElderRayIndicator extends React.Component {
 		);
 	}
 };
-
-/*
-
-
-					<SingleValueTooltip forChart={3} forSeries={0}
-						yLabel="Elder Ray"
-						yDisplayFormat={d => `${d3.format(".2f")(d.bullPower)}, ${d3.format(".2f")(d.bearPower)}`}
-						origin={[-40, 15]}/>
-					<SingleValueTooltip forChart={4} forSeries={0}
-						yLabel={indicator => `Elder Ray - Bull power (${ indicator.options().period })`}
-						yDisplayFormat={d3.format(".2f")}
-						origin={[-40, 15]}/>
-					<SingleValueTooltip forChart={5} forSeries={0}
-						yLabel={indicator => `Elder Ray - Bear power (${ indicator.options().period })`}
-						yDisplayFormat={d3.format(".2f")}
-						origin={[-40, 15]}/>
-
-
-*/
-
 
 OHLCChartWithElderRayIndicator.propTypes = {
 	data: React.PropTypes.array.isRequired,
