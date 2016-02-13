@@ -66,9 +66,11 @@ class EventHandler extends PureComponent {
 	}
 	componentWillMount() {
 
-		var { plotData, fullData, showingInterval, xExtentsCalculator, xScale, xAccessor, dimensions, children } = this.props;
+		var { plotData, fullData, showingInterval, xExtentsCalculator } = this.props;
+		var { xScale, xAccessor, dimensions, children, postCalculator } = this.props;
 
 		console.log(Array.isArray(fullData) ? fullData[60] : fullData);
+		plotData = postCalculator(plotData);
 
 		var chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData);
 
@@ -82,7 +84,8 @@ class EventHandler extends PureComponent {
 	}
 	componentWillReceiveProps(nextProps) {
 
-		var { plotData, fullData, showingInterval, xExtentsCalculator, xScale, xAccessor, dimensions, children } = nextProps;
+		var { plotData, fullData, showingInterval, xExtentsCalculator } = nextProps;
+		var { xScale, xAccessor, dimensions, children, postCalculator } = this.props;
 		this.clearBothCanvas(nextProps);
 		this.clearInteractiveCanvas(nextProps);
 		this.clearCanvasDrawCallbackList();
@@ -94,6 +97,7 @@ class EventHandler extends PureComponent {
 		// else update the fullData from props and xScale from state with range updated to state
 
 		if (reset) {
+			plotData = postCalculator(plotData);
 			var chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData);
 
 			this.setState({
@@ -335,7 +339,7 @@ class EventHandler extends PureComponent {
 	handleZoom(zoomDirection, mouseXY) {
 		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
 		var { plotData, fullData, showingInterval, xScale: initialXScale, chartConfig: initialChartConfig, currentItem } = this.state;
-		var { xAccessor, interval, dimensions: { width }, xExtentsCalculator } = this.props;
+		var { xAccessor, interval, dimensions: { width }, xExtentsCalculator, postCalculator } = this.props;
 
 		var item = getCurrentItem(initialXScale, xAccessor, mouseXY, plotData),
 			cx = initialXScale(xAccessor(item)),
@@ -351,6 +355,7 @@ class EventHandler extends PureComponent {
 			.currentPlotData(plotData)
 			.interval(interval)(newDomain, xAccessor)
 
+		plotData = postCalculator(plotData);
 		var currentItem = getCurrentItem(updatedScale, xAccessor, mouseXY, plotData);
 		var chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData);
 		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
@@ -385,7 +390,7 @@ class EventHandler extends PureComponent {
 	panHelper(mouseXY) {
 		var { panStartXScale: initialXScale, chartConfig: initialChartConfig } = this.state;
 		var { panStartDomain, showingInterval, fullData, panOrigin } = this.state;
-		var { xAccessor, dimensions: { width }, xExtentsCalculator } = this.props;
+		var { xAccessor, dimensions: { width }, xExtentsCalculator, postCalculator } = this.props;
 
 		var domainRange = panStartDomain[1] - panStartDomain[0],
 			dx = mouseXY[0] - panOrigin[0];
@@ -400,7 +405,7 @@ class EventHandler extends PureComponent {
 			.interval(showingInterval)(newDomain, xAccessor)
 
 		// console.log(newDomain);
-
+		plotData = postCalculator(plotData);
 		var currentItem = getCurrentItem(updatedScale, xAccessor, mouseXY, plotData);
 		var chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData);
 		var currentCharts = getCurrentCharts(chartConfig, mouseXY);

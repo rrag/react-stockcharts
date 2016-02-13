@@ -14,6 +14,7 @@ import sto from "./sto";
 import atr from "./atr";
 import forceIndex from "./forceIndex";
 import elderRay from "./elderRay";
+import compare from "./compare";
 
 export {
 	// slidingWindow,
@@ -32,4 +33,5 @@ export {
 	atr,
 	forceIndex,
 	elderRay,
+	compare,
 };

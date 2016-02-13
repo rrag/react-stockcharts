@@ -28,6 +28,7 @@ import forceIndex from "./forceIndex";
 import elderRay from "./elderRay";
 import change from "./change";
 import elderImpulse from "./elderImpulse";
+import compare from "./compare";
 
 export {
 	ema,
@@ -45,6 +46,7 @@ export {
 	elderRay,
 	change,
 	elderImpulse,
+	compare,
 
 /*
 	MACD,

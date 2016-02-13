@@ -75,6 +75,7 @@ SingleValueTooltip.defaultProps = {
 	valueStroke: "#000000",
 	yDisplayFormat: d3.format(".2f"),
 	xAccessor: noop,
+	yAccessor: identity,
 };
 
 export default SingleValueTooltip;

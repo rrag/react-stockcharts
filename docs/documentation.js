@@ -240,7 +240,7 @@ function renderPartialPage(data, dataFull, compareData) {
 	// Kagi
 	// PointAndFigure
 	// Renko
-	var Chart = require("lib/charts/AreaChartWithPointsAndEdge").default;
+	var Chart = require("lib/charts/CandleStickChartWithCompare").default;
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	// data, dataFull, compareData
@@ -249,10 +249,10 @@ function renderPartialPage(data, dataFull, compareData) {
 			return (
 				<div>
 					<TypeChooser type="hybrid">
-						{(type) => <Chart data={data} type={type} />}
+						{(type) => <Chart data={compareData} type={type} />}
 					</TypeChooser>
 					<TypeChooser type="svg">
-						{(type) => <Chart data={data} type={type} />}
+						{(type) => <Chart data={compareData} type={type} />}
 					</TypeChooser>
 				</div>
 			)

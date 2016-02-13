@@ -153,12 +153,12 @@ class ChartCanvas extends React.Component {
 						}
 					]]>`;
 
-		var { interval, type, height, width, margin, className, zIndex } = this.props;
+		var { interval, type, height, width, margin, className, zIndex, postCalculator } = this.props;
 		var { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor } = this.state;
 
 		// console.log(data);
 		var dimensions = getDimensions(this.props);
-		var props = { interval, type, margin };
+		var props = { interval, type, margin, postCalculator };
 		var stateProps = { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor};
 		return (
 			<div style={{ position: "relative", height: height, width: width }} className={className} >
@@ -210,13 +210,14 @@ ChartCanvas.propTypes = {
 		React.PropTypes.arrayOf(React.PropTypes.func),
 		React.PropTypes.arrayOf(React.PropTypes.number),
 		React.PropTypes.arrayOf(React.PropTypes.instanceOf(Date)),
-		// React.PropTypes.func,
+		React.PropTypes.func,
 	]),
 	xScale: React.PropTypes.func.isRequired,
 	className: React.PropTypes.string,
 	zIndex: React.PropTypes.number,
 	children: React.PropTypes.node.isRequired,
 	discontinous: React.PropTypes.bool.isRequired,
+	postCalculator: React.PropTypes.func.isRequired,
 };
 
 ChartCanvas.defaultProps = {
@@ -233,6 +234,7 @@ ChartCanvas.defaultProps = {
 	intervalCalculator: eodIntervalCalculator,
 	dataEvaluator: evaluator,
 	discontinous: false,
+	postCalculator: identity,
 	// initialDisplay: 30
 };
 
