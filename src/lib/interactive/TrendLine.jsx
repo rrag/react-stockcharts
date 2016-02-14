@@ -4,7 +4,7 @@ import React from "react";
 import objectAssign from "object-assign";
 
 import makeInteractive from "./makeInteractive";
-import { hexToRGBA } from "../utils/utils.js";
+import { head, last, hexToRGBA } from "../utils/utils.js";
 
 function getYValue(values, currentValue) {
 	var diff = values
@@ -27,10 +27,10 @@ class TrendLine extends React.Component {
 			return objectAssign({}, interactive, { trends: trends.slice(0, trends.length - 1) });
 		}
 	}
-	onMousemove(chartId, xAccessor, interactive, { mouseXY, currentItem, currentCharts, chartData }, e) {
+	onMousemove(chartId, xAccessor, interactive, { mouseXY, currentItem, currentCharts, chartConfig }, e) {
 		var { enabled, snapTo, snap, shouldDisableSnap } = this.props;
 		if (enabled) {
-			var { yScale } = chartData.plot.scales;
+			var { yScale } = chartConfig;
 
 			var yValue = (snap && !shouldDisableSnap(e))
 				? getYValue(snapTo(currentItem), yScale.invert(mouseXY[1]))
@@ -50,13 +50,13 @@ class TrendLine extends React.Component {
 		}
 		return interactive;
 	}
-	onClick(chartId, xAccessor, interactive, { mouseXY, currentItem, currentChartstriggerCallback, chartData }, e) {
+	onClick(chartId, xAccessor, interactive, { mouseXY, currentItem, currentChartstriggerCallback, chartConfig }, e) {
 		var { enabled, snapTo, snap, shouldDisableSnap } = this.props;
 
 		if (enabled) {
 			var { start, trends } = interactive;
 
-			var { yScale } = chartData.plot.scales;
+			var { yScale } = chartConfig;
 
 			var yValue = (snap && !shouldDisableSnap(e))
 				? getYValue(snapTo(currentItem), yScale.invert(mouseXY[1]))
@@ -76,17 +76,17 @@ class TrendLine extends React.Component {
 		return interactive;
 	}
 	render() {
-		var { chartCanvasType, chartData, plotData, xAccessor, interactive, enabled } = this.props;
+		var { xScale, chartCanvasType, chartConfig, plotData, xAccessor, interactive, enabled, show } = this.props;
 
 		if (chartCanvasType !== "svg") return null;
 
-		var { xScale, yScale } = chartData.plot.scales;
+		var { yScale } = chartConfig;
 		var { currentPos } = interactive;
 
 		var { currentPositionStroke, currentPositionStrokeWidth, currentPositionOpacity, currentPositionRadius } = this.props;
-		var { stroke, opacity } = this.props;
+		var { stroke, opacity, lineType } = this.props;
 
-		var circle = (currentPos && enabled)
+		var circle = (currentPos && enabled && show)
 			? <circle cx={xScale(currentPos[0])} cy={yScale(currentPos[1])}
 				stroke={currentPositionStroke}
 				opacity={currentPositionOpacity}
@@ -95,7 +95,7 @@ class TrendLine extends React.Component {
 				r={currentPositionRadius} />
 			: null;
 
-		var lines = TrendLine.helper(plotData, xAccessor, interactive, chartData);
+		var lines = TrendLine.helper(plotData, lineType, xAccessor, interactive);
 		return (
 			<g>
 				{circle}
@@ -107,21 +107,21 @@ class TrendLine extends React.Component {
 		);
 	}
 }
-TrendLine.drawOnCanvas = (context,
-		props,
+TrendLine.drawOnCanvas = (props,
 		interactive,
 		ctx,
-		{ plotData, chartData }) => {
+		{ show, xScale, plotData, chartConfig }) => {
 
 	var { currentPos } = interactive;
 
-	var { xAccessor } = context;
-	var lines = TrendLine.helper(plotData, xAccessor, interactive, chartData);
+	var { lineType, xAccessor } = props;
+	var lines = TrendLine.helper(plotData, lineType, xAccessor, interactive);
 
-	var { xScale, yScale } = chartData.plot.scales;
+	var { yScale } = chartConfig;
+	// console.error(show);
 
 	var { enabled, currentPositionStroke, currentPositionStrokeWidth, currentPositionOpacity, currentPositionRadius } = props;
-	if (currentPos && enabled) {
+	if (currentPos && enabled && show) {
 		ctx.strokeStyle = hexToRGBA(currentPositionStroke, currentPositionOpacity);
 		ctx.lineWidth = currentPositionStrokeWidth;
 		ctx.beginPath();
@@ -140,7 +140,7 @@ TrendLine.drawOnCanvas = (context,
 	});
 };
 
-TrendLine.helper = (plotData, xAccessor, interactive /* , chartData */) => {
+TrendLine.helper = (plotData, lineType, xAccessor, interactive/* , chartConfig */) => {
 	var { currentPos, start, trends } = interactive;
 	var temp = trends;
 	if (start && currentPos) {
@@ -148,12 +148,12 @@ TrendLine.helper = (plotData, xAccessor, interactive /* , chartData */) => {
 	}
 	var lines = temp
 		.filter(each => each.start[0] !== each.end[0])
-		.map((each) => generateLine(each.start, each.end, xAccessor, plotData));
+		.map((each) => generateLine(lineType, each.start, each.end, xAccessor, plotData));
 
 	return lines;
 };
 
-function generateLine(start, end, xAccessor, plotData) {
+function generateLine(lineType, start, end, xAccessor, plotData) {
 	/* if (end[0] - start[0] === 0) {
 		// vertical line
 		throw new Error("Trendline cannot be a vertical line")
@@ -161,10 +161,17 @@ function generateLine(start, end, xAccessor, plotData) {
 	var m /* slope */ = (end[1] - start[1]) / (end[0] - start[0]);
 	var b /* y intercept */ = -1 * m * end[0] + end[1];
 	// y = m * x + b
-	var x1 = xAccessor(plotData[0]);
+	var x1 = lineType === "XLINE"
+		? xAccessor(plotData[0])
+		: start[0]; // RAY or LINE start is the same
+
 	var y1 = m * x1 + b;
 
-	var x2 = xAccessor(plotData[plotData.length - 1]);
+	var x2 = lineType === "XLINE"
+		? xAccessor(last(plotData))
+		: lineType === "RAY"
+			? end[0] > start[0] ? xAccessor(last(plotData)) : xAccessor(head(plotData))
+			: end[0];
 	var y2 = m * x2 + b;
 	return { x1, y1, x2, y2 };
 }
@@ -175,7 +182,7 @@ TrendLine.propTypes = {
 	snapTo: React.PropTypes.func,
 	shouldDisableSnap: React.PropTypes.func.isRequired,
 	chartCanvasType: React.PropTypes.string,
-	chartData: React.PropTypes.object,
+	chartConfig: React.PropTypes.object,
 	plotData: React.PropTypes.array,
 	xAccessor: React.PropTypes.func,
 	interactive: React.PropTypes.object,
@@ -185,10 +192,16 @@ TrendLine.propTypes = {
 	currentPositionRadius: React.PropTypes.number,
 	stroke: React.PropTypes.string,
 	opacity: React.PropTypes.number,
+	lineType: React.PropTypes.oneOf([
+		"XLINE", // extends from -Infinity to +Infinity
+		"RAY", // extends to +/-Infinity in one direction
+		"LINE", // extends between the set bounds
+	]),
 };
 
 TrendLine.defaultProps = {
 	stroke: "#000000",
+	lineType: "XLINE",
 	opacity: 0.7,
 	shouldDisableSnap: (e) => (e.button === 2 || e.shiftKey),
 	currentPositionStroke: "#000000",

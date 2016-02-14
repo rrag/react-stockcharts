@@ -2,7 +2,6 @@ import AreaSeries from "./AreaSeries";
 import ScatterSeries from "./ScatterSeries";
 import CircleMarker from "./CircleMarker";
 import LineSeries from "./LineSeries";
-import CompareSeries from "./CompareSeries";
 import CandlestickSeries from "./CandlestickSeries";
 import OHLCSeries from "./OHLCSeries";
 import HistogramSeries from "./HistogramSeries";
@@ -28,7 +27,6 @@ export {
 	CircleMarker,
 	AreaSeries,
 	LineSeries,
-	CompareSeries,
 	CandlestickSeries,
 	OHLCSeries,
 	HistogramSeries,

@@ -2,7 +2,6 @@ import MACDTooltip from "./MACDTooltip";
 import TooltipContainer from "./TooltipContainer";
 import OHLCTooltip from "./OHLCTooltip";
 import SingleValueTooltip from "./SingleValueTooltip";
-import CompareTooltip from "./CompareTooltip";
 import MovingAverageTooltip from "./MovingAverageTooltip";
 import BollingerBandTooltip from "./BollingerBandTooltip";
 import RSITooltip from "./RSITooltip";
@@ -13,7 +12,6 @@ export {
 	TooltipContainer,
 	OHLCTooltip,
 	SingleValueTooltip,
-	CompareTooltip,
 	MovingAverageTooltip,
 	BollingerBandTooltip,
 	RSITooltip,

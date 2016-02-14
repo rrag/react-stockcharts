@@ -85,7 +85,7 @@ class EventHandler extends PureComponent {
 	componentWillReceiveProps(nextProps) {
 
 		var { plotData, fullData, showingInterval, xExtentsCalculator } = nextProps;
-		var { xScale, xAccessor, dimensions, children, postCalculator } = this.props;
+		var { xScale, xAccessor, dimensions, children, postCalculator } = nextProps;
 		this.clearBothCanvas(nextProps);
 		this.clearInteractiveCanvas(nextProps);
 		this.clearCanvasDrawCallbackList();
@@ -228,22 +228,23 @@ class EventHandler extends PureComponent {
 
 		// console.log(currentCharts, currentItem);
 
-		/*var interactiveState = inputType === "mouse"
+		var interactiveState = inputType === "mouse"
 			? this.triggerCallback(
 				"mousemove",
-				objectAssign({}, this.state, { currentItems, currentCharts }),
+				objectAssign({}, this.state, { currentItem, currentCharts }),
 				this.state.interactiveState,
 				e)
 			: this.triggerCallback(
 				"touch",
-				objectAssign({}, this.state, { currentItems, currentCharts }),
+				objectAssign({}, this.state, { currentItem, currentCharts }),
 				this.state.interactiveState,
-				e);*/
+				e);
 
 		var contexts = this.getCanvasContexts();
-		requestAnimationFrame(() => {
+		// requestAnimationFrame(() => {
 			if (contexts && contexts.mouseCoord) {
 				clearCanvas([contexts.mouseCoord]);
+				this.clearInteractiveCanvas();
 			}
 			// console.log(interactiveState === this.state.interactiveState);
 			// if (interactiveState !== this.state.interactiveState) this.clearInteractiveCanvas();
@@ -252,13 +253,15 @@ class EventHandler extends PureComponent {
 				mouseXY,
 				currentItem,
 				currentCharts,
-				// interactiveState,
+				interactiveState,
 			});
-		})
+		// })
 	}
 
 	handleMouseLeave() {
 		var contexts = this.getCanvasContexts();
+
+		this.clearInteractiveCanvas();
 
 		if (contexts && contexts.mouseCoord) {
 			clearCanvas([contexts.mouseCoord]);
@@ -452,7 +455,7 @@ class EventHandler extends PureComponent {
 									each.draw(axesCanvasContext, xScale, yScale);
 								} else if (each.type === "currentcoordinate") {
 									each.draw(mouseContext, show, xScale, yScale, currentItem);
-								} else {
+								} else if (each.type !== "interactive") {
 									each.draw(axesCanvasContext, xScale, yScale, plotData);
 								}
 							});
@@ -475,17 +478,16 @@ class EventHandler extends PureComponent {
 			}
 		}
 	}
-	drawInteractive({ plotData, chartData }) {
+	drawInteractive({ plotData, chartConfig, xScale }) {
 		var { interactive } = this.getCanvasContexts();
 
-		// console.log(interactive);
 		this.canvasDrawCallbackList
 			.filter(each => each.type === "interactive")
 			.forEach(each => {
-				chartData
+				chartConfig
 					.filter(eachChart => eachChart.id === each.chartId)
 					.forEach(eachChart => {
-						each.draw(interactive, { plotData,  chartData: eachChart });
+						each.draw(interactive, { xScale, plotData,  chartConfig: eachChart });
 						// console.log("DRAW");
 					});
 			});
@@ -495,6 +497,7 @@ class EventHandler extends PureComponent {
 	}
 	handlePanEnd(mousePosition, e) {
 		var state = this.panHelper(mousePosition);
+		console.log(this.canvasDrawCallbackList.map(d => d.type));
 
 		this.clearCanvasDrawCallbackList();
 
@@ -516,28 +519,20 @@ class EventHandler extends PureComponent {
 		});
 	}
 	triggerCallback(eventType, state, interactiveState, event) {
-		var { plotData, mouseXY, currentCharts, chartData, currentItems } = state;
+		var { plotData, mouseXY, currentCharts, xScale, chartConfig, currentItem } = state;
 		var callbackList = this.subscriptions.filter(each => each.eventType === eventType);
 		var delta = callbackList.map(each => {
 			// console.log(each);
-			var singleChartData = chartData.filter(eachItem => eachItem.id === each.forChart)[0];
-			var singleCurrentItem = currentItems.filter(eachItem => eachItem.id === each.forChart)[0];
+			var singleChartConfig = chartConfig.filter(eachItem => eachItem.id === each.forChart)[0];
 			return {
 				callback: each.callback,
 				forChart: each.forChart,
-				plotData,
-				mouseXY,
-				currentCharts,
-				currentItem: singleCurrentItem.data,
-				chartData: singleChartData
+				chartConfig: singleChartConfig
 			};
 		})
-		.filter(each => each.currentCharts.indexOf(each.forChart) >= -1)
-		.map(each => each.callback({
-			plotData: each.plotData,
-			mouseXY: each.mouseXY,
-			chartData: each.chartData,
-			currentItem: each.currentItem,
+		.filter(each => currentCharts.indexOf(each.forChart) >= -1)
+		.map(({callback, chartConfig}) => callback({
+			plotData, mouseXY, xScale, chartConfig, currentItem, xScale
 		}, event));
 
 		// console.log(delta.length);

@@ -33,6 +33,8 @@ function wrap(WrappedSeries) {
 			this.componentWillReceiveProps(this.props);
 		}
 		componentWillReceiveProps(nextProps) {
+			// console.log("HERE1");
+
 			var callback = WrappedSeries.drawOnCanvas;
 			if (callback) {
 				var { canvasOriginX, canvasOriginY, height, width, compareSeries,

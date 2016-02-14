@@ -21,6 +21,8 @@ class CurrentCoordinate extends React.Component {
 		this.componentWillReceiveProps(this.props);
 	}
 	componentWillReceiveProps(nextProps) {
+		// console.log("HERE111");
+
 		var draw = CurrentCoordinate.drawOnCanvasStatic.bind(null, nextProps);
 		var { id, chartId } = nextProps;
 
@@ -130,11 +132,11 @@ CurrentCoordinate.helper = (props, show, xScale, yScale, currentItem) => {
 export default pure(CurrentCoordinate, {
 	show: React.PropTypes.bool.isRequired,
 	currentItem: React.PropTypes.object.isRequired,
+	chartConfig: React.PropTypes.object.isRequired,
 	mouseXY: React.PropTypes.array, // this is to avoid the flicker
 	canvasOriginX: React.PropTypes.number,
 	canvasOriginY: React.PropTypes.number,
 
-	chartConfig: React.PropTypes.object.isRequired,
 	xAccessor: React.PropTypes.func.isRequired,
 	xScale: React.PropTypes.func.isRequired,
 	chartId: React.PropTypes.number.isRequired,

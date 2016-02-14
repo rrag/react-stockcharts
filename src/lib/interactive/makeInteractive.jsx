@@ -3,6 +3,8 @@
 import React from "react";
 import objectAssign from "object-assign";
 
+import pure from "../pure";
+
 function getDisplayName(Series) {
 	var name = Series.displayName || Series.name || "Series";
 	return name;
@@ -15,15 +17,15 @@ function capitalizeFirst(str) {
 export default function makeInteractive(InteractiveComponent, subscription = [], initialState, reDrawOnPan = true) {
 
 	class InteractiveComponentWrapper extends React.Component {
-		constructor(props, context) {
-			super(props, context);
+		constructor(props) {
+			super(props);
 			this.subscription = this.subscription.bind(this);
-			var { subscribe, chartId } = context;
+			var { subscribe, chartId } = props;
 
 			this.subscriptionIds = subscription.map(each => subscribe(chartId, each, this.subscription.bind(this, each)));
 		}
-		getInteractiveState(props, context) {
-			var { interactiveState } = context;
+		getInteractiveState(props) {
+			var { interactiveState } = props;
 			var state = interactiveState.filter(each => each.id === props.id);
 			var response = { interactive: initialState };
 			if (state.length > 0) {
@@ -34,9 +36,9 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 		}
 		subscription(event, arg, e) {
 			// console.log("HIJOHJ");
-			var { chartId, xAccessor } = this.context;
+			var { chartId, xAccessor } = this.props;
 			var { shouldRemoveLastIndicator, enabled } = this.props;
-			var { interactive } = this.getInteractiveState(this.props, this.context);
+			var { interactive } = this.getInteractiveState(this.props);
 
 			var interactiveState = interactive;
 			if (event === "click" && shouldRemoveLastIndicator(e)) {
@@ -68,39 +70,40 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 			var callback = InteractiveComponent.drawOnCanvas;
 
 			if (callback) {
-				var { getCanvasContexts, chartCanvasType, plotData, chartData } = this.context;
+				var { getCanvasContexts, chartCanvasType, plotData, chartConfig, xScale, show } = this.props;
 				if (chartCanvasType !== "svg") {
 
 					var contexts = getCanvasContexts();
 					var { defaultProps } = InteractiveComponent;
 					var props = objectAssign({}, defaultProps, this.props);
-					var { interactive } = this.getInteractiveState(this.props, this.context);
+					var { interactive } = this.getInteractiveState(this.props);
 
 					// console.log(interactive);
 					if (contexts) {
 						InteractiveComponentWrapper.drawOnCanvas(callback,
-							this.context, props, interactive,
-							contexts.interactive, { plotData, chartData });
+							props, interactive,
+							contexts.interactive, { show, xScale, plotData, chartConfig });
 					}
 				}
 			}
 		}
 		componentWillMount() {
-			this.componentWillReceiveProps(this.props, this.context);
+			// this.componentWillReceiveProps(this.props, this.context);
 		}
-		componentWillReceiveProps(nextProps, nextContext) {
+		componentWillReceiveProps(nextProps) {
 			// var nextContext = this.context;
 			// var nextProps = this.props;
 
-			var { chartId, getAllCanvasDrawCallback, callbackForCanvasDraw } = nextContext;
+			// console.log("HERE");
+			var { chartId, getAllCanvasDrawCallback, callbackForCanvasDraw } = nextProps;
 			var callback = InteractiveComponent.drawOnCanvas;
 
 			if (reDrawOnPan && callback) {
 				var { defaultProps } = InteractiveComponent;
 				var props = objectAssign({}, defaultProps, nextProps);
 
-				var draw = InteractiveComponentWrapper.drawOnCanvas.bind(null, callback, nextContext,
-					props, this.getInteractiveState(nextProps, nextContext).interactive);
+				var draw = InteractiveComponentWrapper.drawOnCanvas.bind(null, callback,
+					props, this.getInteractiveState(nextProps).interactive);
 
 				var temp = getAllCanvasDrawCallback()
 					.filter(each => each.type === "interactive")
@@ -125,23 +128,23 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 			}
 		}
 		componentWillUnmount() {
-			var { unsubscribe } = this.context;
+			var { unsubscribe } = this.props;
 			this.subscriptionIds.forEach((each) => {
 				unsubscribe(each);
 			});
 		}
 		render() {
-			var { interactive } = this.getInteractiveState(this.props, this.context);
+			var { interactive } = this.getInteractiveState(this.props);
 
-			return <InteractiveComponent ref="interactive" {...this.context} {...this.props} interactive={interactive} />;
+			return <InteractiveComponent ref="interactive" {...this.props} interactive={interactive} />;
 		}
 	}
 
 	InteractiveComponentWrapper.displayName = getDisplayName(InteractiveComponent);
 
-	InteractiveComponentWrapper.drawOnCanvas = (callback, context, props, interactiveState, ctx, chartContext) => {
-		// console.log(context, props, interactiveState);
-		var { canvasOriginX, canvasOriginY, width, height } = context;
+	InteractiveComponentWrapper.drawOnCanvas = (callback, props, interactiveState, ctx, chartContext) => {
+		// console.log( props, interactiveState);
+		var { canvasOriginX, canvasOriginY, width, height } = props;
 
 		ctx.save();
 
@@ -153,7 +156,7 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 		ctx.clip();
 
 		if (callback) {
-			callback(context, props, interactiveState, ctx, chartContext);
+			callback(props, interactiveState, ctx, chartContext);
 		}
 
 		ctx.restore();
@@ -168,7 +171,8 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 	InteractiveComponentWrapper.defaultProps = {
 		shouldRemoveLastIndicator: (e) => (e.button === 2 && e.ctrlKey),
 	};
-	InteractiveComponentWrapper.contextTypes = {
+
+	return pure(InteractiveComponentWrapper, {
 		chartId: React.PropTypes.number.isRequired,
 		interactiveState: React.PropTypes.array.isRequired,
 		getCanvasContexts: React.PropTypes.func,
@@ -179,14 +183,15 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 		unsubscribe: React.PropTypes.func.isRequired,
 		plotData: React.PropTypes.array.isRequired,
 		xAccessor: React.PropTypes.func.isRequired,
-		chartData: React.PropTypes.object.isRequired,
+		xScale: React.PropTypes.func.isRequired,
+		chartConfig: React.PropTypes.object.isRequired,
+		currentItem: React.PropTypes.object.isRequired,
 		canvasOriginX: React.PropTypes.number,
 		canvasOriginY: React.PropTypes.number,
 		height: React.PropTypes.number.isRequired,
 		width: React.PropTypes.number.isRequired,
-	};
-
-	return InteractiveComponentWrapper;
+		show: React.PropTypes.bool.isRequired,
+	});
 }
 
 export default makeInteractive;
