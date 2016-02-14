@@ -4,7 +4,8 @@ import React from "react";
 import objectAssign from "object-assign";
 
 import makeInteractive from "./makeInteractive";
-import { head, last, hexToRGBA } from "../utils/utils.js";
+import { head, last, hexToRGBA } from "../utils/utils";
+import noop from "../utils/noop";
 
 function getYValue(values, currentValue) {
 	var diff = values
@@ -19,13 +20,19 @@ class TrendLine extends React.Component {
 		this.onMousemove = this.onMousemove.bind(this);
 		this.onClick = this.onClick.bind(this);
 	}
-	removeIndicator(chartId, xAccessor, interactive) {
+	removeLast(interactive) {
+		var { trends, start } = interactive;
+		if (!start && trends.length > 0) {
+			return objectAssign({}, interactive, { trends: trends.slice(0, trends.length - 1) });
+		}
+		return interactive;
+	}
+	terminate(interactive) {
 		var { trends, start } = interactive;
 		if (start) {
 			return objectAssign({}, interactive, { start: null });
-		} else {
-			return objectAssign({}, interactive, { trends: trends.slice(0, trends.length - 1) });
 		}
+		return interactive;
 	}
 	onMousemove(chartId, xAccessor, interactive, { mouseXY, currentItem, currentCharts, chartConfig }, e) {
 		var { enabled, snapTo, snap, shouldDisableSnap } = this.props;
@@ -37,21 +44,14 @@ class TrendLine extends React.Component {
 				: yScale.invert(mouseXY[1]);
 			var xValue = xAccessor(currentItem);
 
-			if (interactive.start) {
-				return objectAssign({}, interactive, {
-					tempEnd: [xValue, yValue],
-					currentPos: [xValue, yValue],
-				});
-			} else {
-				return objectAssign({}, interactive, {
-					currentPos: [xValue, yValue],
-				});
-			}
+			return objectAssign({}, interactive, {
+				currentPos: [xValue, yValue],
+			});
 		}
 		return interactive;
 	}
 	onClick(chartId, xAccessor, interactive, { mouseXY, currentItem, currentChartstriggerCallback, chartConfig }, e) {
-		var { enabled, snapTo, snap, shouldDisableSnap } = this.props;
+		var { onStart, onComplete, enabled, snapTo, snap, shouldDisableSnap } = this.props;
 
 		if (enabled) {
 			var { start, trends } = interactive;
@@ -63,14 +63,18 @@ class TrendLine extends React.Component {
 				: yScale.invert(mouseXY[1]);
 			var xValue = xAccessor(currentItem);
 			if (start) {
-				return objectAssign({}, interactive, {
+				onComplete({ currentItem, point: [xValue, yValue] }, e);
+				return {
+					...interactive,
 					start: null,
 					trends: trends.concat({ start, end: [xValue, yValue] }),
-				});
+				};
 			} else if (e.button === 0) {
-				return objectAssign({}, interactive, {
+				onStart({ currentItem, point: [xValue, yValue] }, e);
+				return {
+					...interactive,
 					start: [xValue, yValue],
-				});
+				};
 			}
 		}
 		return interactive;
@@ -84,7 +88,7 @@ class TrendLine extends React.Component {
 		var { currentPos } = interactive;
 
 		var { currentPositionStroke, currentPositionStrokeWidth, currentPositionOpacity, currentPositionRadius } = this.props;
-		var { stroke, opacity, lineType } = this.props;
+		var { stroke, opacity, type } = this.props;
 
 		var circle = (currentPos && enabled && show)
 			? <circle cx={xScale(currentPos[0])} cy={yScale(currentPos[1])}
@@ -95,7 +99,7 @@ class TrendLine extends React.Component {
 				r={currentPositionRadius} />
 			: null;
 
-		var lines = TrendLine.helper(plotData, lineType, xAccessor, interactive);
+		var lines = TrendLine.helper(plotData, type, xAccessor, interactive);
 		return (
 			<g>
 				{circle}
@@ -114,8 +118,8 @@ TrendLine.drawOnCanvas = (props,
 
 	var { currentPos } = interactive;
 
-	var { lineType, xAccessor } = props;
-	var lines = TrendLine.helper(plotData, lineType, xAccessor, interactive);
+	var { type, xAccessor } = props;
+	var lines = TrendLine.helper(plotData, type, xAccessor, interactive);
 
 	var { yScale } = chartConfig;
 	// console.error(show);
@@ -140,7 +144,7 @@ TrendLine.drawOnCanvas = (props,
 	});
 };
 
-TrendLine.helper = (plotData, lineType, xAccessor, interactive/* , chartConfig */) => {
+TrendLine.helper = (plotData, type, xAccessor, interactive/* , chartConfig */) => {
 	var { currentPos, start, trends } = interactive;
 	var temp = trends;
 	if (start && currentPos) {
@@ -148,12 +152,12 @@ TrendLine.helper = (plotData, lineType, xAccessor, interactive/* , chartConfig *
 	}
 	var lines = temp
 		.filter(each => each.start[0] !== each.end[0])
-		.map((each) => generateLine(lineType, each.start, each.end, xAccessor, plotData));
+		.map((each) => generateLine(type, each.start, each.end, xAccessor, plotData));
 
 	return lines;
 };
 
-function generateLine(lineType, start, end, xAccessor, plotData) {
+function generateLine(type, start, end, xAccessor, plotData) {
 	/* if (end[0] - start[0] === 0) {
 		// vertical line
 		throw new Error("Trendline cannot be a vertical line")
@@ -161,15 +165,15 @@ function generateLine(lineType, start, end, xAccessor, plotData) {
 	var m /* slope */ = (end[1] - start[1]) / (end[0] - start[0]);
 	var b /* y intercept */ = -1 * m * end[0] + end[1];
 	// y = m * x + b
-	var x1 = lineType === "XLINE"
+	var x1 = type === "XLINE"
 		? xAccessor(plotData[0])
 		: start[0]; // RAY or LINE start is the same
 
 	var y1 = m * x1 + b;
 
-	var x2 = lineType === "XLINE"
+	var x2 = type === "XLINE"
 		? xAccessor(last(plotData))
-		: lineType === "RAY"
+		: type === "RAY"
 			? end[0] > start[0] ? xAccessor(last(plotData)) : xAccessor(head(plotData))
 			: end[0];
 	var y2 = m * x2 + b;
@@ -185,6 +189,8 @@ TrendLine.propTypes = {
 	chartConfig: React.PropTypes.object,
 	plotData: React.PropTypes.array,
 	xAccessor: React.PropTypes.func,
+	onStart: React.PropTypes.func.isRequired,
+	onComplete: React.PropTypes.func.isRequired,
 	interactive: React.PropTypes.object,
 	currentPositionStroke: React.PropTypes.string,
 	currentPositionStrokeWidth: React.PropTypes.number,
@@ -192,7 +198,7 @@ TrendLine.propTypes = {
 	currentPositionRadius: React.PropTypes.number,
 	stroke: React.PropTypes.string,
 	opacity: React.PropTypes.number,
-	lineType: React.PropTypes.oneOf([
+	type: React.PropTypes.oneOf([
 		"XLINE", // extends from -Infinity to +Infinity
 		"RAY", // extends to +/-Infinity in one direction
 		"LINE", // extends between the set bounds
@@ -201,8 +207,10 @@ TrendLine.propTypes = {
 
 TrendLine.defaultProps = {
 	stroke: "#000000",
-	lineType: "XLINE",
+	type: "XLINE",
 	opacity: 0.7,
+	onStart: noop,
+	onComplete: noop,
 	shouldDisableSnap: (e) => (e.button === 2 || e.shiftKey),
 	currentPositionStroke: "#000000",
 	currentPositionOpacity: 1,

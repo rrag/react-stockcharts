@@ -50,6 +50,7 @@ class EventHandler extends PureComponent {
 		this.subscribe = this.subscribe.bind(this);
 		this.unsubscribe = this.unsubscribe.bind(this);
 		this.pinchCoordinates = this.pinchCoordinates.bind(this);
+		this.setInteractiveState = this.setInteractiveState.bind(this);
 
 		this.subscriptions = [];
 		this.canvasDrawCallbackList = [];
@@ -152,6 +153,7 @@ class EventHandler extends PureComponent {
 			getAllCanvasDrawCallback: this.getAllCanvasDrawCallback,
 			subscribe: this.subscribe,
 			unsubscribe: this.unsubscribe,
+			setInteractiveState: this.setInteractiveState,
 			getCanvasContexts: this.getCanvasContexts,
 			onMouseMove: this.handleMouseMove,
 			onMouseEnter: this.handleMouseEnter,
@@ -518,6 +520,13 @@ class EventHandler extends PureComponent {
 			interactiveState,
 		});
 	}
+	setInteractiveState(interactiveState) {
+		this.clearInteractiveCanvas();
+
+		this.setState({
+			interactiveState,
+		});
+	}
 	triggerCallback(eventType, state, interactiveState, event) {
 		var { plotData, mouseXY, currentCharts, xScale, chartConfig, currentItem } = state;
 		var callbackList = this.subscriptions.filter(each => each.eventType === eventType);
@@ -609,6 +618,7 @@ EventHandler.childContextTypes = {
 
 	subscribe: React.PropTypes.func,
 	unsubscribe: React.PropTypes.func,
+	setInteractiveState: React.PropTypes.func,
 	callbackForCanvasDraw: React.PropTypes.func,
 	getAllCanvasDrawCallback: React.PropTypes.func,
 	getCanvasContexts: React.PropTypes.func,

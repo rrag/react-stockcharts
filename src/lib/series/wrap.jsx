@@ -48,6 +48,7 @@ function wrap(WrappedSeries) {
 
 				nextProps.callbackForCanvasDraw({
 					chartId: chartId,
+					type: "series",
 					// seriesId: seriesId,
 					draw: draw,
 				});

@@ -20,6 +20,7 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 		constructor(props) {
 			super(props);
 			this.subscription = this.subscription.bind(this);
+			this.updateInteractiveState = this.updateInteractiveState.bind(this);
 			var { subscribe, chartId } = props;
 
 			this.subscriptionIds = subscription.map(each => subscribe(chartId, each, this.subscription.bind(this, each)));
@@ -34,33 +35,49 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 			// console.log(interactiveState, response.interactive, this.props.id);
 			return response;
 		}
+		updateInteractiveState(interactive) {
+			var { setInteractiveState, interactiveState, id } = this.props;
+
+			var newInteractive = interactiveState
+				.map(each => each.id == id
+					? { id, interactive}
+					: each);
+
+			setInteractiveState(newInteractive);
+		}
+		removeLast() {
+			var { interactive } = this.getInteractiveState(this.props);
+
+			if (this.refs.interactive.removeLast) {
+				var newInteractive = this.refs.interactive.removeLast(interactive);
+				this.updateInteractiveState(newInteractive);
+			}
+		}
+		terminate() {
+			var { interactive } = this.getInteractiveState(this.props);
+
+			if (this.refs.interactive.terminate) {
+				var newInteractive = this.refs.interactive.terminate(interactive);
+				this.updateInteractiveState(newInteractive);
+			}
+		}
 		subscription(event, arg, e) {
 			// console.log("HIJOHJ");
 			var { chartId, xAccessor } = this.props;
-			var { shouldRemoveLastIndicator, enabled } = this.props;
+			var { enabled } = this.props;
 			var { interactive } = this.getInteractiveState(this.props);
 
 			var interactiveState = interactive;
-			if (event === "click" && shouldRemoveLastIndicator(e)) {
-				if (enabled && this.refs.interactive.removeIndicator) {
-					interactiveState = this.refs.interactive.removeIndicator(chartId, xAccessor, interactive, arg, e);
-				}
-				return {
-					id: this.props.id,
-					interactive: interactiveState,
-				};
-			} else {
-				var handler = this.refs.interactive[`on${ capitalizeFirst(event) }`];
-				if (enabled) {
-					interactiveState = handler(chartId, xAccessor, interactive, arg, e);
-				}
-
-				if (interactiveState === interactive) return false;
-				return {
-					id: this.props.id,
-					interactive: interactiveState,
-				};
+			var handler = this.refs.interactive[`on${ capitalizeFirst(event) }`];
+			if (enabled) {
+				interactiveState = handler(chartId, xAccessor, interactive, arg, e);
 			}
+
+			if (interactiveState === interactive) return false;
+			return {
+				id: this.props.id,
+				interactive: interactiveState,
+			};
 		}
 		componentDidMount() {
 			this.componentDidUpdate();
@@ -88,7 +105,7 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 			}
 		}
 		componentWillMount() {
-			// this.componentWillReceiveProps(this.props, this.context);
+			this.componentWillReceiveProps(this.props, this.context);
 		}
 		componentWillReceiveProps(nextProps) {
 			// var nextContext = this.context;
@@ -164,12 +181,7 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 
 	InteractiveComponentWrapper.propTypes = {
 		id: React.PropTypes.number.isRequired,
-		shouldRemoveLastIndicator: React.PropTypes.func.isRequired,
 		enabled: React.PropTypes.bool.isRequired,
-	};
-
-	InteractiveComponentWrapper.defaultProps = {
-		shouldRemoveLastIndicator: (e) => (e.button === 2 && e.ctrlKey),
 	};
 
 	return pure(InteractiveComponentWrapper, {
@@ -180,6 +192,7 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 		getAllCanvasDrawCallback: React.PropTypes.func,
 		chartCanvasType: React.PropTypes.string.isRequired,
 		subscribe: React.PropTypes.func.isRequired,
+		setInteractiveState: React.PropTypes.func.isRequired,
 		unsubscribe: React.PropTypes.func.isRequired,
 		plotData: React.PropTypes.array.isRequired,
 		xAccessor: React.PropTypes.func.isRequired,

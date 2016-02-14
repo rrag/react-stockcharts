@@ -25,8 +25,31 @@ var { TrendLine } = ReStock.interactive;
 var xScale = financeEODDiscontiniousScale();
 
 class CandlestickChart extends React.Component {
+	constructor(props) {
+		super(props);
+		this.onKeyPress = this.onKeyPress.bind(this);
+	}
+	componentDidMount() {
+		document.addEventListener("keyup", this.onKeyPress);
+	}
+	componentWillUnmount() {
+		if (interval) clearInterval(interval);
+		document.removeEventListener("keyup", this.onKeyPress);
+	}
 	getChartCanvas() {
 		return this.refs.chartCanvas;
+	}
+	onKeyPress(e) {
+		var keyCode = e.which;
+		console.log(keyCode);
+		switch (keyCode) {
+			case 46: { // DEL
+				this.refs.trend.getWrappedPureComponent().removeLast();
+			}
+			case 27: { // ESC
+				this.refs.trend.getWrappedPureComponent().terminate();
+			}
+		}
 	}
 	render() {
 		var { data, type, width } = this.props;
@@ -73,9 +96,12 @@ class CandlestickChart extends React.Component {
 					<LineSeries yAccessor={ema26.accessor()} stroke={ema26.stroke()}/>
 					<LineSeries yAccessor={ema12.accessor()} stroke={ema12.stroke()}/>
 
-					<TrendLine id={0} enabled={true}
-						lineType="LINE"
-						snap={true} snapTo={d => [d.open, d.high, d.low, d.close]} />
+					<TrendLine ref="trend"
+						id={0} enabled={true}
+						type="LINE"
+						onStart={e => console.log("Start Event:", e)}
+						onComplete={e => console.log("Complete Event:", e)}
+						snap={true} snapTo={d => [d.high, d.low]} />
 
 					<CurrentCoordinate id={1} yAccessor={ema26.accessor()} fill={ema26.stroke()} />
 					<CurrentCoordinate id={2} yAccessor={ema12.accessor()} fill={ema12.stroke()} />
