@@ -3,7 +3,7 @@
 import React from "react";
 import objectAssign from "object-assign";
 import makeInteractive from "./makeInteractive";
-import { hexToRGBA } from "../utils/utils.js";
+import { head, last, hexToRGBA } from "../utils/utils.js";
 
 class FibonacciRetracement extends React.Component {
 	constructor(props) {
@@ -11,18 +11,24 @@ class FibonacciRetracement extends React.Component {
 		this.onMousemove = this.onMousemove.bind(this);
 		this.onClick = this.onClick.bind(this);
 	}
-	removeIndicator(chartId, xAccessor, interactive) {
-		var { start, retracements } = interactive;
-		if (start) {
-			return objectAssign({}, interactive, { start: null, tempEnd: null });
-		} else {
+	removeLast(interactive) {
+		var { retracements, start } = interactive;
+		if (!start && retracements.length > 0) {
 			return objectAssign({}, interactive, { retracements: retracements.slice(0, retracements.length - 1) });
 		}
+		return interactive;
 	}
-	onMousemove(chartId, xAccessor, interactive, { mouseXY, currentItem, /* currentCharts, */chartData } /* , e */) {
+	terminate(interactive) {
+		var { retracements, start } = interactive;
+		if (start) {
+			return objectAssign({}, interactive, { start: null });
+		}
+		return interactive;
+	}
+	onMousemove(chartId, xAccessor, interactive, { mouseXY, currentItem, /* currentCharts, */chartConfig } /* , e */) {
 		var { enabled } = this.props;
 		if (enabled) {
-			var { yScale } = chartData.plot.scales;
+			var { yScale } = chartConfig;
 
 			var yValue = yScale.invert(mouseXY[1]);
 			var xValue = xAccessor(currentItem);
@@ -35,23 +41,25 @@ class FibonacciRetracement extends React.Component {
 		}
 		return interactive;
 	}
-	onClick(chartId, xAccessor, interactive, { mouseXY, currentItem, currentChartstriggerCallback, chartData }, e) {
-		var { enabled } = this.props;
+	onClick(chartId, xAccessor, interactive, { mouseXY, currentItem, currentChartstriggerCallback, chartConfig }, e) {
+		var { enabled, onStart, onComplete } = this.props;
 		if (enabled) {
 			var { start, retracements } = interactive;
 
-			var { yScale } = chartData.plot.scales;
+			var { yScale } = chartConfig;
 
 			var yValue = yScale.invert(mouseXY[1]);
 			var xValue = xAccessor(currentItem);
 
 			if (start) {
+				onComplete({ currentItem, point: [xValue, yValue] }, e);
 				return objectAssign({}, interactive, {
 					start: null,
 					tempEnd: null,
 					retracements: retracements.concat({ start, end: [xValue, yValue] }),
 				});
 			} else if (e.button === 0) {
+				onStart({ currentItem, point: [xValue, yValue] }, e);
 				return objectAssign({}, interactive, {
 					start: [xValue, yValue],
 					tempEnd: null,
@@ -61,13 +69,13 @@ class FibonacciRetracement extends React.Component {
 		return interactive;
 	}
 	render() {
-		var { chartCanvasType, chartData, plotData, xAccessor, interactive, width } = this.props;
-		var { stroke, opacity, fontFamily, fontSize, fontStroke } = this.props;
+		var { chartCanvasType, chartConfig, plotData, xScale, xAccessor, interactive, width } = this.props;
+		var { stroke, opacity, fontFamily, fontSize, fontStroke, type } = this.props;
 
 		if (chartCanvasType !== "svg") return null;
 
-		var { yScale } = chartData.plot.scales;
-		var retracements = FibonacciRetracement.helper(plotData, xAccessor, interactive, chartData);
+		var { yScale } = chartConfig;
+		var retracements = FibonacciRetracement.helper(plotData, type, xAccessor, interactive, chartConfig);
 
 		return (
 			<g>
@@ -79,9 +87,10 @@ class FibonacciRetracement extends React.Component {
 
 							return (<g key={i}>
 								<line
-									x1={0} y1={yScale(line.y)} x2={width} y2={yScale(line.y)}
+									x1={xScale(line.x1)} y1={yScale(line.y)}
+									x2={xScale(line.x2)} y2={yScale(line.y)}
 									stroke={stroke} opacity={opacity} />
-								<text x={10} y={yScale(line.y) + dir * 4}
+								<text x={xScale(Math.min(line.x1, line.x2)) + 10} y={yScale(line.y) + dir * 4}
 									fontFamily={fontFamily} fontSize={fontSize} fill={fontStroke}>{text}</text>
 							</g>);
 						})}
@@ -92,16 +101,15 @@ class FibonacciRetracement extends React.Component {
 	}
 }
 
-FibonacciRetracement.drawOnCanvas = (context,
-		props,
+FibonacciRetracement.drawOnCanvas = (props,
 		interactive,
 		ctx,
-		{ plotData, chartData }) => {
+		{ xScale, plotData, chartConfig }) => {
 
-	var { xAccessor, width } = context;
-	var { yScale } = chartData.plot.scales;
-	var { fontSize, fontFamily, fontStroke } = props;
-	var lines = FibonacciRetracement.helper(plotData, xAccessor, interactive, chartData);
+	var { xAccessor, width } = props;
+	var { yScale } = chartConfig;
+	var { fontSize, fontFamily, fontStroke, type } = props;
+	var lines = FibonacciRetracement.helper(plotData, type, xAccessor, interactive, chartConfig);
 
 	ctx.strokeStyle = hexToRGBA(props.stroke, props.opacity);
 	ctx.font = `${ fontSize }px ${ fontFamily }`;
@@ -112,18 +120,18 @@ FibonacciRetracement.drawOnCanvas = (context,
 
 		retracements.forEach((each) => {
 			ctx.beginPath();
-			ctx.moveTo(0, yScale(each.y));
-			ctx.lineTo(width, yScale(each.y));
+			ctx.moveTo(xScale(each.x1), yScale(each.y));
+			ctx.lineTo(xScale(each.x2), yScale(each.y));
 
 			var text = `${ each.y.toFixed(2) } (${ each.percent.toFixed(2) }%)`;
-			ctx.fillText(text, 10, yScale(each.y) + dir * 4);
+			ctx.fillText(text, xScale(Math.min(each.x1, each.x2)) + 10, yScale(each.y) + dir * 4);
 
 			ctx.stroke();
 		});
 	});
 };
 
-FibonacciRetracement.helper = (plotData, xAccessor, interactive/* , chartData */) => {
+FibonacciRetracement.helper = (plotData, type, xAccessor, interactive/* , chartConfig */) => {
 	var { retracements, start, tempEnd } = interactive;
 
 	var temp = retracements;
@@ -132,15 +140,20 @@ FibonacciRetracement.helper = (plotData, xAccessor, interactive/* , chartData */
 		temp = temp.concat({ start, end: tempEnd });
 	}
 	var lines = temp
-		.map((each) => generateLine(each.start, each.end, xAccessor, plotData));
+		.map((each) => generateLine(type, each.start, each.end, xAccessor, plotData));
 
 	return lines;
 };
 
-function generateLine(start, end/* , xAccessor, plotData */) {
+function generateLine(type, start, end, xAccessor, plotData) {
 	var dy = end[1] - start[1];
 	return [100, 61.8, 50, 38.2, 23.6, 0]
-		.map(each => ({ percent: each, y: (end[1] - (each / 100) * dy) }));
+		.map(each => ({
+			percent: each,
+			x1: type === "EXTEND" ? xAccessor(head(plotData)) : start[0],
+			x2: type === "EXTEND" ? xAccessor(last(plotData)) : end[0],
+			y: (end[1] - (each / 100) * dy) 
+		}));
 }
 
 FibonacciRetracement.propTypes = {
@@ -150,7 +163,7 @@ FibonacciRetracement.propTypes = {
 	fontFamily: React.PropTypes.string.isRequired,
 	fontSize: React.PropTypes.number.isRequired,
 	chartCanvasType: React.PropTypes.string,
-	chartData: React.PropTypes.object,
+	chartConfig: React.PropTypes.object,
 	plotData: React.PropTypes.array,
 	xAccessor: React.PropTypes.func,
 	interactive: React.PropTypes.object,
@@ -158,6 +171,10 @@ FibonacciRetracement.propTypes = {
 	stroke: React.PropTypes.string,
 	opacity: React.PropTypes.number,
 	fontStroke: React.PropTypes.string,
+	type: React.PropTypes.oneOf([
+		"EXTEND", // extends from -Infinity to +Infinity
+		"BOUND", // extends between the set bounds
+	]),
 };
 
 FibonacciRetracement.defaultProps = {
@@ -168,6 +185,8 @@ FibonacciRetracement.defaultProps = {
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 10,
 	fontStroke: "#000000",
+	type: "EXTEND",
+
 };
 
 export default makeInteractive(FibonacciRetracement, ["click", "mousemove"], { retracements: [] });
