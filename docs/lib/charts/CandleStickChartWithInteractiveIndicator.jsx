@@ -29,15 +29,14 @@ class CandlestickChart extends React.Component {
 		super(props);
 		this.onKeyPress = this.onKeyPress.bind(this);
 	}
+	getChartCanvas() {
+		return this.refs.chartCanvas;
+	}
 	componentDidMount() {
 		document.addEventListener("keyup", this.onKeyPress);
 	}
 	componentWillUnmount() {
-		if (interval) clearInterval(interval);
 		document.removeEventListener("keyup", this.onKeyPress);
-	}
-	getChartCanvas() {
-		return this.refs.chartCanvas;
 	}
 	onKeyPress(e) {
 		var keyCode = e.which;

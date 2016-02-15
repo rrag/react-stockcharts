@@ -8,7 +8,7 @@ class ClickCallback extends React.Component {
 		super(props);
 		this.onClick = this.onClick.bind(this);
 	}
-	onClick(chartId, xAccessor, interactive, { mouseXY, currentItem, chartData }/* , e */) {
+	onClick({ chartId, xAccessor }, interactive, { mouseXY, currentItem, chartData }/* , e */) {
 		var { onClick } = this.props;
 
 		var { yScale } = chartData.plot.scales;

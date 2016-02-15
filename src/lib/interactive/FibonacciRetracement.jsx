@@ -25,7 +25,7 @@ class FibonacciRetracement extends React.Component {
 		}
 		return interactive;
 	}
-	onMousemove(chartId, xAccessor, interactive, { mouseXY, currentItem, /* currentCharts, */chartConfig } /* , e */) {
+	onMousemove({ chartId, xAccessor }, interactive, { mouseXY, currentItem, chartConfig } /* , e */) {
 		var { enabled } = this.props;
 		if (enabled) {
 			var { yScale } = chartConfig;
@@ -34,14 +34,12 @@ class FibonacciRetracement extends React.Component {
 			var xValue = xAccessor(currentItem);
 
 			if (interactive.start) {
-				return objectAssign({}, interactive, {
-					tempEnd: [xValue, yValue],
-				});
+				return { interactive: { ...interactive, tempEnd: [xValue, yValue], } };
 			}
 		}
-		return interactive;
+		return { interactive };
 	}
-	onClick(chartId, xAccessor, interactive, { mouseXY, currentItem, currentChartstriggerCallback, chartConfig }, e) {
+	onClick({ chartId, xAccessor }, interactive, { mouseXY, currentItem, currentChartstriggerCallback, chartConfig }, e) {
 		var { enabled, onStart, onComplete } = this.props;
 		if (enabled) {
 			var { start, retracements } = interactive;
@@ -52,21 +50,27 @@ class FibonacciRetracement extends React.Component {
 			var xValue = xAccessor(currentItem);
 
 			if (start) {
-				onComplete({ currentItem, point: [xValue, yValue] }, e);
-				return objectAssign({}, interactive, {
-					start: null,
-					tempEnd: null,
-					retracements: retracements.concat({ start, end: [xValue, yValue] }),
-				});
+				return {
+					interactive: {
+						...interactive,
+						start: null,
+						tempEnd: null,
+						retracements: retracements.concat({ start, end: [xValue, yValue] }),
+					},
+					callback: onComplete.bind(null, { currentItem, point: [xValue, yValue] }, e),
+				};
 			} else if (e.button === 0) {
-				onStart({ currentItem, point: [xValue, yValue] }, e);
-				return objectAssign({}, interactive, {
-					start: [xValue, yValue],
-					tempEnd: null,
-				});
+				return {
+					interactive: {
+						...interactive,
+						start: [xValue, yValue],
+						tempEnd: null,
+					},
+					callback: onStart.bind(null, { currentItem, point: [xValue, yValue] }, e),
+				};
 			}
 		}
-		return interactive;
+		return { interactive };
 	}
 	render() {
 		var { chartCanvasType, chartConfig, plotData, xScale, xAccessor, interactive, width } = this.props;

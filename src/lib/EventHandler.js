@@ -97,8 +97,10 @@ class EventHandler extends PureComponent {
 		// if plotData changed - reset the whole chart
 		// else update the fullData from props and xScale from state with range updated to state
 
+		console.log("reset: ", reset);
 		if (reset) {
 			plotData = postCalculator(plotData);
+
 			var chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData);
 
 			this.setState({
@@ -230,7 +232,7 @@ class EventHandler extends PureComponent {
 
 		// console.log(currentCharts, currentItem);
 
-		var interactiveState = inputType === "mouse"
+		var { interactiveState, callbackList } = inputType === "mouse"
 			? this.triggerCallback(
 				"mousemove",
 				objectAssign({}, this.state, { currentItem, currentCharts }),
@@ -243,21 +245,19 @@ class EventHandler extends PureComponent {
 				e);
 
 		var contexts = this.getCanvasContexts();
-		// requestAnimationFrame(() => {
-			if (contexts && contexts.mouseCoord) {
-				clearCanvas([contexts.mouseCoord]);
-				this.clearInteractiveCanvas();
-			}
-			// console.log(interactiveState === this.state.interactiveState);
-			// if (interactiveState !== this.state.interactiveState) this.clearInteractiveCanvas();
+		if (contexts && contexts.mouseCoord) {
+			clearCanvas([contexts.mouseCoord]);
+			this.clearInteractiveCanvas();
+		}
+		// console.log(interactiveState === this.state.interactiveState);
+		// if (interactiveState !== this.state.interactiveState) this.clearInteractiveCanvas();
 
-			this.setState({
-				mouseXY,
-				currentItem,
-				currentCharts,
-				interactiveState,
-			});
-		// })
+		this.setState({
+			mouseXY,
+			currentItem,
+			currentCharts,
+			interactiveState,
+		});
 	}
 
 	handleMouseLeave() {
@@ -499,11 +499,11 @@ class EventHandler extends PureComponent {
 	}
 	handlePanEnd(mousePosition, e) {
 		var state = this.panHelper(mousePosition);
-		console.log(this.canvasDrawCallbackList.map(d => d.type));
+		// console.log(this.canvasDrawCallbackList.map(d => d.type));
 
 		this.clearCanvasDrawCallbackList();
 
-		var interactiveState = this.panHappened
+		var { interactiveState, callbackList } = this.panHappened
 			? this.triggerCallback("panend", state, this.state.interactiveState, e)
 			: this.triggerCallback("click", state, this.state.interactiveState, e);
 
@@ -518,6 +518,8 @@ class EventHandler extends PureComponent {
 			panStartDomain: null,
 			panStartXScale: null,
 			interactiveState,
+		}, () => {
+			if (!!callbackList) callbackList.forEach(callback => callback());
 		});
 	}
 	setInteractiveState(interactiveState) {
@@ -528,10 +530,9 @@ class EventHandler extends PureComponent {
 		});
 	}
 	triggerCallback(eventType, state, interactiveState, event) {
-		var { plotData, mouseXY, currentCharts, xScale, chartConfig, currentItem } = state;
-		var callbackList = this.subscriptions.filter(each => each.eventType === eventType);
-		var delta = callbackList.map(each => {
-			// console.log(each);
+		var { currentCharts, chartConfig } = state;
+		var subscribers = this.subscriptions.filter(each => each.eventType === eventType);
+		var delta = subscribers.map(each => {
 			var singleChartConfig = chartConfig.filter(eachItem => eachItem.id === each.forChart)[0];
 			return {
 				callback: each.callback,
@@ -540,27 +541,28 @@ class EventHandler extends PureComponent {
 			};
 		})
 		.filter(each => currentCharts.indexOf(each.forChart) >= -1)
-		.map(({callback, chartConfig}) => callback({
-			plotData, mouseXY, xScale, chartConfig, currentItem, xScale
-		}, event));
+		.map(({callback, chartConfig}) => callback({ ...state, chartConfig }, event))
+		.filter(each => each !== false);
 
-		// console.log(delta.length);
-		if (delta.length === 0) return interactiveState;
+		// console.log(delta);
+		if (delta.length === 0) return { interactiveState };
 
 		var i = 0, j = 0, added = false;
 		var newInteractiveState = interactiveState.slice(0);
+		var callbackList = [];
 		for (i = 0; i < delta.length; i++) {
 			var each = delta[i];
 			for (j = 0; j < newInteractiveState.length; j++) {
 				if (each.id === newInteractiveState[j].id) {
-					newInteractiveState[j] = each;
+					newInteractiveState[j] = { id: each.id, interactive: each.interactive };
+					if (each.callback) callbackList.push(each.callback);
 					added = true;
 				}
 			}
 			if (!added) newInteractiveState.push(each);
 			added = false;
 		}
-		return newInteractiveState;
+		return { interactiveState: newInteractiveState, callbackList };
 	}
 	handleFocus(focus) {
 		// console.log(focus);interactive

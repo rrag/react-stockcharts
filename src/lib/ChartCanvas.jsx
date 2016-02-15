@@ -126,8 +126,8 @@ class ChartCanvas extends React.Component {
 		} else if (!shallowEqual(this.props.xExtents, nextProps.xExtents)) {
 			console.log("xExtents changed");
 			// since the xExtents changed update fullData, plotData, xExtentsCalculator to state
-			var { fullData, plotData, xExtentsCalculator } = calculateState(nextProps);
-			this.setState({ fullData, plotData, xExtentsCalculator });
+			var { fullData, plotData, xExtentsCalculator, xScale } = calculateState(nextProps);
+			this.setState({ fullData, plotData, xExtentsCalculator, xScale });
 		} else if (!shallowEqual(this.props.calculator, nextProps.calculator)) {
 			console.log("calculator changed");
 			// data did not change but calculator changed, so update only the fullData to state

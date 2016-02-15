@@ -263,7 +263,7 @@ export function getClosestItemIndexes(array, value, accessor) {
 	var lo = 0, hi = array.length - 1;
 	while (hi - lo > 1) {
 		var mid = Math.round((lo + hi) / 2);
-		if (accessor(array[mid]) < value) {
+		if (accessor(array[mid]) <= value) {
 			lo = mid;
 		} else {
 			hi = mid;
@@ -273,7 +273,8 @@ export function getClosestItemIndexes(array, value, accessor) {
 	// the same code works for both dates and numbers
 	if (accessor(array[lo]) >= value && accessor(array[lo]) <= value) hi = lo;
 
-	// console.log(accessor(array[lo]), lo, value, hi, accessor(array[hi]));
+	// console.log(accessor(array[lo]), lo, value, accessor(array[lo]) >= value);
+	// console.log(value, hi, accessor(array[hi]), accessor(array[lo]) <= value);
 
 	// var left = value > accessor(array[lo]) ? lo : lo;
 	// var right = gte(value, accessor(array[hi])) ? Math.min(hi + 1, array.length - 1) : hi;

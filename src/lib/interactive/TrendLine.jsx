@@ -34,7 +34,7 @@ class TrendLine extends React.Component {
 		}
 		return interactive;
 	}
-	onMousemove(chartId, xAccessor, interactive, { mouseXY, currentItem, currentCharts, chartConfig }, e) {
+	onMousemove({ chartId, xAccessor }, interactive, { mouseXY, currentItem, currentCharts, chartConfig }, e) {
 		var { enabled, snapTo, snap, shouldDisableSnap } = this.props;
 		if (enabled) {
 			var { yScale } = chartConfig;
@@ -44,13 +44,11 @@ class TrendLine extends React.Component {
 				: yScale.invert(mouseXY[1]);
 			var xValue = xAccessor(currentItem);
 
-			return objectAssign({}, interactive, {
-				currentPos: [xValue, yValue],
-			});
+			return { interactive: { ...interactive, currentPos: [xValue, yValue], } }
 		}
-		return interactive;
+		return { interactive };
 	}
-	onClick(chartId, xAccessor, interactive, { mouseXY, currentItem, currentChartstriggerCallback, chartConfig }, e) {
+	onClick({ chartId, xAccessor }, interactive, { mouseXY, currentItem, currentChartstriggerCallback, chartConfig }, e) {
 		var { onStart, onComplete, enabled, snapTo, snap, shouldDisableSnap } = this.props;
 
 		if (enabled) {
@@ -63,21 +61,22 @@ class TrendLine extends React.Component {
 				: yScale.invert(mouseXY[1]);
 			var xValue = xAccessor(currentItem);
 			if (start) {
-				onComplete({ currentItem, point: [xValue, yValue] }, e);
 				return {
-					...interactive,
-					start: null,
-					trends: trends.concat({ start, end: [xValue, yValue] }),
+					interactive: {
+						...interactive,
+						start: null,
+						trends: trends.concat({ start, end: [xValue, yValue] }),
+					},
+					callback: onComplete.bind(null, { currentItem, point: [xValue, yValue] }, e),
 				};
 			} else if (e.button === 0) {
-				onStart({ currentItem, point: [xValue, yValue] }, e);
 				return {
-					...interactive,
-					start: [xValue, yValue],
+					interactive: { ...interactive, start: [xValue, yValue], },
+					callback: onStart.bind(null, { currentItem, point: [xValue, yValue] }, e),
 				};
 			}
 		}
-		return interactive;
+		return { interactive };
 	}
 	render() {
 		var { xScale, chartCanvasType, chartConfig, plotData, xAccessor, interactive, enabled, show } = this.props;

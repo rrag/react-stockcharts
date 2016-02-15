@@ -231,16 +231,16 @@ function renderPartialPage(data, dataFull, compareData) {
 	// OHLCChartWithElderRayIndicator
 	// OHLCChartWithElderImpulseIndicator
 	// CandleStickChartWithInteractiveIndicator
-	// CandleStickChartWithFibonacciInteractiveIndicator - TODO (2/10)
+	// CandleStickChartWithFibonacciInteractiveIndicator
+	// CandleStickChartWithBrush - TODO
+	// CandleStickChartWithClickHandlerCallback - TODO
 	// AreaChartWithZoomPan
 	// AreaChartWithPointsAndEdge
-	// CandleStickChartWithBrush - TODO
-	// CandleStickChartWith2DBrush - TODO
 	// HaikinAshi
 	// Kagi
 	// PointAndFigure
 	// Renko
-	var Chart = require("lib/charts/CandleStickChartWithFibonacciInteractiveIndicator").default;
+	var Chart = require("lib/charts/CandleStickChartWithBrush").default;
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	// data, dataFull, compareData

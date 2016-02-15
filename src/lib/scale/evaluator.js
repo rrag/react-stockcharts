@@ -7,10 +7,10 @@ import accumulatingWindow from "../utils/accumulatingWindow";
 import zipper from "../utils/zipper";
 
 function getFilteredResponse(dataForInterval, left, right, xAccessor) {
-	let newLeftIndex = getClosestItemIndexes(dataForInterval, left, xAccessor).right;
-	let newRightIndex = getClosestItemIndexes(dataForInterval, right, xAccessor).left;
+	var newLeftIndex = getClosestItemIndexes(dataForInterval, left, xAccessor).right;
+	var newRightIndex = getClosestItemIndexes(dataForInterval, right, xAccessor).left;
 
-	let filteredData = dataForInterval.slice(newLeftIndex, newRightIndex + 1);
+	var filteredData = dataForInterval.slice(newLeftIndex, newRightIndex + 1);
 
 	return filteredData;
 }
@@ -43,7 +43,6 @@ function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShow
 			let newLeft = inputXAccessor(dataForCurrentInterval[leftIndex]);
 			let newRight = inputXAccessor(dataForCurrentInterval[rightIndex]);
 
-			// console.log([left, right], currentInterval, newLeft, newRight);
 			for (let i = 0; i < allowedIntervals.length; i++) {
 				let eachInterval = allowedIntervals[i];
 				let filteredData = getFilteredResponse(data[eachInterval], left, right, xAccessor)
@@ -135,7 +134,7 @@ function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShow
 
 function canShowTheseManyPeriods(width, arrayLength) {
 	var threshold = 0.75; // number of datapoints per 1 px
-	return arrayLength < width * threshold && arrayLength > 5;
+	return arrayLength < width * threshold && arrayLength > 1;
 }
 
 export default function() {

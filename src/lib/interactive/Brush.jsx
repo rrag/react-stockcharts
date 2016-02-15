@@ -5,7 +5,8 @@ import objectAssign from "object-assign";
 
 import makeInteractive from "./makeInteractive";
 
-import { hexToRGBA, isDefined } from "../utils/utils.js";
+import { hexToRGBA, isDefined } from "../utils/utils";
+import noop from "../utils/noop";
 
 class Brush extends React.Component {
 	constructor(props) {
@@ -13,48 +14,60 @@ class Brush extends React.Component {
 		this.onMousemove = this.onMousemove.bind(this);
 		this.onClick = this.onClick.bind(this);
 	}
-	onMousemove(chartId, xAccessor, interactive, { currentItem, chartData, mouseXY } /* , e */) {
+	terminate(interactive) {
+		return {
+			x1: null, y1: null,
+			x2: null, y2: null,
+			startItem: null,
+			startClick: null,
+		};
+	}
+	onMousemove({ chartId, xAccessor }, interactive, { currentItem, chartConfig, mouseXY } /* , e */) {
 		var { enabled } = this.props;
 		var { x1, y1 } = interactive;
 
 		if (enabled && isDefined(x1) && isDefined(y1)) {
-			var yScale = chartData.plot.scales.yScale;
+			var { yScale } = chartConfig;
 
 			var x2 = xAccessor(currentItem);
 			var y2 = yScale.invert(mouseXY[1]);
 
-			return { ...interactive, x2, y2 };
+			return { interactive: { ...interactive, x2, y2 } };
 		}
-		return interactive;
+		return { interactive };
 	}
-	onClick(chartId, xAccessor, interactive, { mouseXY, currentItem, currentChartstriggerCallback, chartData }, e) {
-		var { enabled, onBrush, type } = this.props;
+	onClick(props, interactive, state, e) {
+		var { displayXAccessor, chartId, xAccessor } = props;
+		var { mouseXY, currentItem, currentChartstriggerCallback, chartConfig } = state;
+		var { enabled, onStart, onBrush, type } = this.props;
 
 		if (enabled) {
 			var { x1, y1, startItem, startClick } = interactive;
-			var yScale = chartData.plot.scales.yScale;
+			var { yScale } = chartConfig;
 
 			var xValue = xAccessor(currentItem);
 			var yValue = yScale.invert(mouseXY[1]);
 
-			if (x1) {
-				setTimeout(() => {
-					if (type === "1D")
-						onBrush([x1, xValue], [startItem, currentItem]);
-					else 
-						onBrush({ x1, y1, x2: xValue, y2: yValue },
-							[interactive.startItem, currentItem],
-							[startClick, mouseXY]);
-				}, 20);
+			if (!!x1) {
+				var callback = onBrush.bind(null, {
+						x1: displayXAccessor(interactive.startItem),
+						y1,
+						x2: displayXAccessor(currentItem),
+						y2: yValue
+					}, [interactive.startItem, currentItem], [startClick, mouseXY], e);
+
 				var brushCoords =  objectAssign({}, interactive, {
 					x1: null, y1: null,
 					x2: null, y2: null,
 					startItem: null,
 					startClick: null,
 				});
-				return brushCoords;
+				return { interactive: brushCoords, callback };
 			} else if (e.button === 0) {
-				return objectAssign({}, interactive, {
+
+				var callback = onStart.bind(null, { currentItem, point: [xValue, yValue] }, e);
+
+				var brushCoords =  objectAssign({}, interactive, {
 					x1: xValue,
 					y1: yValue,
 					startItem: currentItem,
@@ -62,40 +75,37 @@ class Brush extends React.Component {
 					x2: null,
 					y2: null,
 				});
+				return { interactive: brushCoords, callback };
 			}
 		}
-		return interactive;
+		return { interactive };
 	}
 	render() {
-		var { chartCanvasType, chartData, plotData, xAccessor, interactive, enabled } = this.props;
+		var { chartCanvasType, chartConfig, plotData, xScale, xAccessor, interactive, enabled } = this.props;
 		var { type, fill, stroke, opacity } = this.props;
 
 		if (chartCanvasType !== "svg") return null;
 
-		var { startX, tempEndX } = interactive;
+		var { x1, y1, x2, y2 } = interactive;
 
-		if (enabled && startX && tempEndX) {
-			var brush = [startX, tempEndX];
-			var brush = Brush.helper(type, plotData, xAccessor, chartData, brush);
+		if (enabled && !!x1 && !!y1 && !!x2 && !!y2) {
+			var brush = Brush.helper(type, plotData, xScale, xAccessor, chartConfig, { x1, y1, x2, y2 });
 			return <rect {...brush} fill={fill} stroke={stroke} fillOpacity={opacity} />;
 		}
 		return null;
 	}
 }
 
-Brush.drawOnCanvas = (context,
-		props,
+Brush.drawOnCanvas = (props,
 		interactive,
 		ctx,
-		{ plotData, chartData }) => {
+		{ xScale, plotData, chartConfig }) => {
 
 	var { x1, y1, x2, y2 } = interactive;
-	var { enabled, stroke, opacity, fill, type } = props;
+	var { xAccessor, enabled, stroke, opacity, fill, type } = props;
 
-	// console.log("DRAWING", enabled, interactive);
 	if (enabled && x1 && x2) {
-		var { xAccessor } = context;
-		var rect = Brush.helper(type, plotData, xAccessor, chartData, { x1, y1, x2, y2 });
+		var rect = Brush.helper(type, plotData, xScale, xAccessor, chartConfig, { x1, y1, x2, y2 });
 
 		ctx.strokeStyle = stroke;
 		ctx.fillStyle = hexToRGBA(fill, opacity);
@@ -106,22 +116,22 @@ Brush.drawOnCanvas = (context,
 	}
 };
 
-Brush.helper = (type, plotData, xAccessor, chartData, { x1, y1, x2, y2 }) => {
-	var { xScale, yScale } = chartData.plot.scales;
+Brush.helper = (type, plotData, xScale, xAccessor, chartConfig, { x1, y1, x2, y2 }) => {
+	var { yScale } = chartConfig;
 
 	var left = Math.min(x1, x2);
 	var right = Math.max(x1, x2);
 
-	var top = Math.min(y1, y2);
-	var bottom = Math.max(y1, y2);
+	var top = Math.max(y1, y2);
+	var bottom = Math.min(y1, y2);
 
 	var x = xScale(left);
 	var width = xScale(right) - xScale(left);
 
 	var y = type === "1D" ? 0 : yScale(top);
-	var height = type === "1D" ? chartData.config.height : yScale(bottom) - yScale(top);
+	var height = type === "1D" ? chartConfig.height : yScale(bottom) - yScale(top);
 
-	// console.log(chartData);
+	// console.log(chartConfig);
 	return {
 		x,
 		y,
@@ -136,7 +146,7 @@ Brush.propTypes = {
 
 	type: React.PropTypes.oneOf(["1D", "2D"]),
 	chartCanvasType: React.PropTypes.string,
-	chartData: React.PropTypes.object,
+	chartConfig: React.PropTypes.object,
 	plotData: React.PropTypes.array,
 	xAccessor: React.PropTypes.func,
 	interactive: React.PropTypes.object,
@@ -150,7 +160,8 @@ Brush.defaultProps = {
 	stroke: "#000000",
 	opacity: 0.3,
 	fill: "#3h3h3h",
-	onBrush: e => { console.log(e); },
+	onBrush: noop,
+	onStart: noop,
 };
 
 export default makeInteractive(Brush, ["click", "mousemove"], {} );

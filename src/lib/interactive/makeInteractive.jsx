@@ -27,6 +27,7 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 		}
 		getInteractiveState(props) {
 			var { interactiveState } = props;
+			// console.log(interactiveState);
 			var state = interactiveState.filter(each => each.id === props.id);
 			var response = { interactive: initialState };
 			if (state.length > 0) {
@@ -62,21 +63,20 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 			}
 		}
 		subscription(event, arg, e) {
-			// console.log("HIJOHJ");
-			var { chartId, xAccessor } = this.props;
+			var { chartId, xAccessor, displayXAccessor, id } = this.props;
 			var { enabled } = this.props;
+
 			var { interactive } = this.getInteractiveState(this.props);
 
-			var interactiveState = interactive;
+			var interactiveState = { interactive };
 			var handler = this.refs.interactive[`on${ capitalizeFirst(event) }`];
 			if (enabled) {
-				interactiveState = handler(chartId, xAccessor, interactive, arg, e);
+				interactiveState = handler({ chartId, xAccessor, displayXAccessor }, interactive, arg, e);
 			}
-
-			if (interactiveState === interactive) return false;
+			if (interactiveState.interactive === interactive) return false;
 			return {
 				id: this.props.id,
-				interactive: interactiveState,
+				...interactiveState,
 			};
 		}
 		componentDidMount() {
@@ -111,7 +111,7 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 			// var nextContext = this.context;
 			// var nextProps = this.props;
 
-			// console.log("HERE");
+			// console.log("HERE", nextProps.interactiveState);
 			var { chartId, getAllCanvasDrawCallback, callbackForCanvasDraw } = nextProps;
 			var callback = InteractiveComponent.drawOnCanvas;
 
@@ -204,6 +204,7 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 		height: React.PropTypes.number.isRequired,
 		width: React.PropTypes.number.isRequired,
 		show: React.PropTypes.bool.isRequired,
+		displayXAccessor: React.PropTypes.func.isRequired,
 	});
 }
 
