@@ -4,7 +4,7 @@ import React from "react";
 import d3 from "d3";
 
 import identity from "./utils/identity";
-import { isDefined, isNotDefined } from "./utils/utils";
+import { last, isDefined, isNotDefined } from "./utils/utils";
 // import shallowEqual from "fbjs/lib/shallowEqual";
 import shallowEqual from "./utils/shallowEqual";
 import EventHandler from "./EventHandler";
@@ -13,8 +13,10 @@ import eodIntervalCalculator from "./scale/eodIntervalCalculator";
 import evaluator from "./scale/evaluator";
 
 function shouldResetChart(thisProps, nextProps) {
-	var candidates = ["data", "interval", "discontinous", "intervalCalculator", "allowedIntervals",
-		"xScale", /*"xAccessor",*/ "map", "dataEvaluator", "indexAccessor", "indexMutator"];
+	var candidates = ["seriesName"/*, "data" */, "interval", "discontinous",
+		"intervalCalculator", "allowedIntervals",
+		"xScale", /*"xAccessor",*/ "map", "dataEvaluator",
+		"indexAccessor", "indexMutator"];
 	return !candidates.every(key => {
 		var result = shallowEqual(thisProps[key], nextProps[key])
 		// console.log(key, result);
@@ -57,7 +59,9 @@ function calculateState(props) {
 
 	// console.log(xAccessor, inputXAccesor, domainCalculator, domainCalculator, updatedScale);
 	// in componentWillReceiveProps calculate plotData and interval only if this.props.xExtentsProp != nextProps.xExtentsProp
-	var extent = d3.extent(xExtentsProp.map(d3.functor).map(each => each(data)));
+	var extent = d3.extent(xExtentsProp.map(d3.functor).map(each => each(data, inputXAccesor)));
+
+	// console.log(xExtentsProp, extent);
 
 	var { plotData, interval: showingInterval, scale: updatedScale } = xExtentsCalculator
 		.width(dimensions.width)
@@ -66,7 +70,13 @@ function calculateState(props) {
 		.interval(interval)(extent, inputXAccesor);
 
 	return {
-		fullData, plotData, showingInterval, xExtentsCalculator, xScale: updatedScale, xAccessor: realXAccessor
+		fullData,
+		plotData,
+		showingInterval,
+		xExtentsCalculator,
+		xScale: updatedScale,
+		xAccessor: realXAccessor,
+		dataAltered: false,
 	};
 }
 
@@ -111,7 +121,6 @@ class ChartCanvas extends React.Component {
 			var start = realXAccessor(left);
 			var end = realXAccessor(right);
 		}*/
-
 		this.setState(calculateState(this.props));
 	}
 	componentWillReceiveProps(nextProps) {
@@ -127,12 +136,18 @@ class ChartCanvas extends React.Component {
 			console.log("xExtents changed");
 			// since the xExtents changed update fullData, plotData, xExtentsCalculator to state
 			var { fullData, plotData, xExtentsCalculator, xScale } = calculateState(nextProps);
-			this.setState({ fullData, plotData, xExtentsCalculator, xScale });
+			this.setState({ fullData, plotData, xExtentsCalculator, xScale, dataAltered: false });
+		} else if (this.props.data !== nextProps.data) {
+			// data is changed but seriesName did not
+			// this means there are more points pushed/removed or existing points are altered
+			// console.log("data changed");
+			var { fullData } = calculateState(nextProps);
+			this.setState({ fullData, dataAltered: true });
 		} else if (!shallowEqual(this.props.calculator, nextProps.calculator)) {
 			console.log("calculator changed");
 			// data did not change but calculator changed, so update only the fullData to state
 			var { fullData } = calculateState(nextProps);
-			this.setState({ fullData });
+			this.setState({ fullData, dataAltered: false });
 		} else {
 			console.log("may be width/height changed, but that does not matter");
 		}
@@ -153,13 +168,13 @@ class ChartCanvas extends React.Component {
 						}
 					]]>`;
 
-		var { interval, type, height, width, margin, className, zIndex, postCalculator } = this.props;
-		var { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor } = this.state;
+		var { interval, data, type, height, width, margin, className, zIndex, postCalculator } = this.props;
+		var { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor, dataAltered } = this.state;
 
 		// console.log(data);
 		var dimensions = getDimensions(this.props);
 		var props = { interval, type, margin, postCalculator };
-		var stateProps = { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor};
+		var stateProps = { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor, dataAltered };
 		return (
 			<div style={{ position: "relative", height: height, width: width }} className={className} >
 				<CanvasContainer ref="canvases" width={width} height={height} type={type} zIndex={zIndex}/>
@@ -175,6 +190,7 @@ class ChartCanvas extends React.Component {
 						<EventHandler ref="chartContainer"
 							{...props}
 							{...stateProps}
+							lastItem={last(data)}
 							dimensions={dimensions}
 							canvasContexts={this.getCanvases}>
 							{this.props.children}
@@ -214,6 +230,7 @@ ChartCanvas.propTypes = {
 	]),
 	xScale: React.PropTypes.func.isRequired,
 	className: React.PropTypes.string,
+	seriesName: React.PropTypes.string.isRequired,
 	zIndex: React.PropTypes.number,
 	children: React.PropTypes.node.isRequired,
 	discontinous: React.PropTypes.bool.isRequired,

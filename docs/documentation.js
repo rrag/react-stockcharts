@@ -232,15 +232,15 @@ function renderPartialPage(data, dataFull, compareData) {
 	// OHLCChartWithElderImpulseIndicator
 	// CandleStickChartWithInteractiveIndicator
 	// CandleStickChartWithFibonacciInteractiveIndicator
-	// CandleStickChartWithBrush - TODO
-	// CandleStickChartWithClickHandlerCallback - TODO
+	// CandleStickChartWithBrush
+	// CandleStickChartWithClickHandlerCallback
 	// AreaChartWithZoomPan
 	// AreaChartWithPointsAndEdge
 	// HaikinAshi
 	// Kagi
 	// PointAndFigure
 	// Renko
-	var Chart = require("lib/charts/CandleStickChartWithBrush").default;
+	var Chart = require("lib/charts/CandleStickChartWithUpdatingData").default; // CandleStickChartWithUpdatingData, CandleStickChartWithMACDIndicator
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	// data, dataFull, compareData
@@ -251,12 +251,12 @@ function renderPartialPage(data, dataFull, compareData) {
 					<TypeChooser type="hybrid">
 						{(type) => <Chart data={data} type={type} />}
 					</TypeChooser>
-					<TypeChooser type="svg">
-						{(type) => <Chart data={data} type={type} />}
-					</TypeChooser>
 				</div>
 			)
 		}
 	};
+/*					<TypeChooser type="svg">
+						{(type) => <Chart data={data} type={type} />}
+					</TypeChooser>*/
 	ReactDOM.render(<ExamplesPage />, document.getElementById("chart-goes-here"));
 }

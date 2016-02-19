@@ -95,9 +95,7 @@ export function getChartConfigWithUpdatedYScales(chartConfig, plotData) {
 	var updatedChartConfig = combine(chartConfig, yDomains)
 	return updatedChartConfig;
 };
-export function getDataForInterval(data, ) {
 
-}
 export function getCurrentItem(xScale, xAccessor, mouseXY, plotData) {
 	var xValue = xScale.invert(mouseXY[0]);
 	// console.log(xValue, xAccessor);

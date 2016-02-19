@@ -24,7 +24,6 @@ class Chart extends PureComponent {
 		var canvasOriginX = 0.5 + chartConfig.origin[0] + this.context.margin.left;
 		var canvasOriginY = 0.5 + chartConfig.origin[1] + this.context.margin.top;
 
-		// console.log(chartConfig.config.compareSeries);
 		return { chartId, chartConfig, canvasOriginX, canvasOriginY, width, height};
 	}
 	render() {

@@ -73,7 +73,7 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 			if (enabled) {
 				interactiveState = handler({ chartId, xAccessor, displayXAccessor }, interactive, arg, e);
 			}
-			if (interactiveState.interactive === interactive) return false;
+			// if (interactiveState.interactive === interactive) return false;
 			return {
 				id: this.props.id,
 				...interactiveState,

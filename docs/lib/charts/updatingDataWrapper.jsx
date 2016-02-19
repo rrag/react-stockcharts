@@ -8,7 +8,8 @@ function getDisplayName(ChartComponent) {
 }
 
 export default function updatingDataWrapper(ChartComponent) {
-	var interval, length = 130, rawData;
+	var interval;
+	const LENGTH = 130;
 	var func;
 	var speed = 1000;
 
@@ -16,59 +17,62 @@ export default function updatingDataWrapper(ChartComponent) {
 		constructor(props) {
 			super(props);
 			this.state = {
-				data: this.props.data.slice(0, length),
+				length: LENGTH,
+				data: this.props.data.slice(0, LENGTH),
 			}
 			this.onKeyPress = this.onKeyPress.bind(this);
 		}
 		componentDidMount() {
-			document.addEventListener("keypress", this.onKeyPress);
+			document.addEventListener("keyup", this.onKeyPress);
 		}
 		componentWillUnmount() {
 			if (interval) clearInterval(interval);
-			document.removeEventListener("keypress", this.onKeyPress);
+			document.removeEventListener("keyup", this.onKeyPress);
 		}
 		onKeyPress(e) {
 			var keyCode = e.which;
+			console.log(keyCode);
 			switch (keyCode) {
 				case 50: {
 					// 2 (50) - Start alter data
 					func = () => {
-						var exceptLast = rawData.slice(0, rawData.length - 1);
-						var last = rawData[rawData.length - 1];
-
-						last = {
-							...last,
-							close: (Math.random() * (last.high - last.low)) + last.close
+						if (this.state.length < this.props.data.length) {
+							this.setState({
+								length: this.state.length + 1,
+								data: this.props.data.slice(0, this.state.length + 1),
+							})
 						}
-
-						this.refs.component.getWrappedInstance().getChartCanvas().alterData(exceptLast.concat(last));
 					};
 					break;
 				}
+				case 80:
+					// P (80)
 				case 49: {
 					// 1 (49) - Start Push data
 					func = () => {
-						var pushMe = this.props.data.slice(length, length + 1);
-						rawData = rawData.concat(pushMe);
-						this.refs.component.getWrappedInstance().getChartCanvas().pushData(pushMe);
-						length ++;
-						if (this.props.data.length === length) clearInterval(interval);
+						if (this.state.length < this.props.data.length) {
+							this.setState({
+								length: this.state.length + 1,
+								data: this.props.data.slice(0, this.state.length + 1),
+							})
+						}
 					};
 					break;
 				}
-				case 48: {
-					// 0 (48) - Clear interval
+				case 27: {
+					// ESC (27) - Clear interval
 					func = null;
 					if (interval) clearInterval(interval);
 					break;
 				}
-				case 43: {
-					// + (43) - increase the speed
-					speed = Math.max(speed / 2, 100);
+				case 107: {
+					// + (107) - increase the speed
+					speed = Math.max(speed / 2, 50);
 					break;
 				}
-				case 45: {
-					// - (45) - reduce the speed
+				case 109:
+				case 189: {
+					// - (189, 109) - reduce the speed
 					var delta = Math.min(speed, 1000);
 					speed = speed + delta;
 					break;
@@ -82,9 +86,9 @@ export default function updatingDataWrapper(ChartComponent) {
 		}
 		render() {
 			var { type } = this.props;
-			rawData = this.state.data;
-			console.log(rawData.length);
-			return <ChartComponent ref="component" data={rawData} type={type}/>;
+			var { data } = this.state;
+
+			return <ChartComponent ref="component" data={data} type={type}/>;
 		}
 	}
 	UpdatingComponentHOC.defaultProps = {

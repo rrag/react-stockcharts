@@ -56,11 +56,11 @@ class CandleStickChartWithMACDIndicator extends React.Component {
 			.accessor(d => d.smaVolume50);
 
 		return (
-			<ChartCanvas width={width} height={600}
+			<ChartCanvas ref="chartCanvas" width={width} height={600}
 					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
+					seriesName="MSFT"
 					data={data} calculator={[ema26, ema12, smaVolume50, macdCalculator]}
-					xAccessor={d => d.date} discontinous xScale={xScale}
-					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
+					xAccessor={d => d.date} discontinous xScale={xScale}>
 				<Chart id={1} height={400}
 						yExtents={[d => [d.high, d.low], ema26.accessor(), ema12.accessor()]}
 						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} 
@@ -103,11 +103,10 @@ class CandleStickChartWithMACDIndicator extends React.Component {
 					<MACDTooltip forChart={3} origin={[-38, 15]} calculator={macdCalculator}/>
 				</TooltipContainer>
 			</ChartCanvas>
-
-
 		);
 	}
 };
+
 CandleStickChartWithMACDIndicator.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
@@ -117,6 +116,7 @@ CandleStickChartWithMACDIndicator.propTypes = {
 CandleStickChartWithMACDIndicator.defaultProps = {
 	type: "svg",
 };
+
 CandleStickChartWithMACDIndicator = fitWidth(CandleStickChartWithMACDIndicator);
 
 export default CandleStickChartWithMACDIndicator;

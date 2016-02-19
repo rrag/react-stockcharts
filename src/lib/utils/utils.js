@@ -194,7 +194,7 @@ export function getValue(d) {
 	return d;
 }
 
-export function getClosestItem(array, value, accessor) {
+export function getClosestItemIndexes(array, value, accessor, log) {
 	var lo = 0, hi = array.length - 1;
 	while (hi - lo > 1) {
 		var mid = Math.round((lo + hi) / 2);
@@ -204,33 +204,42 @@ export function getClosestItem(array, value, accessor) {
 			hi = mid;
 		}
 	}
-	if (accessor(array[lo]) === value) hi = lo;
-	var closest = (Math.abs(accessor(array[lo]) - value) < Math.abs(accessor(array[hi]) - value))
-						? array[lo]
-						: array[hi];
-	// console.log(array[lo], array[hi], closest, lo, hi);
+	// for Date object === does not work, so using the <= in combination with >=
+	// the same code works for both dates and numbers
+	if (accessor(array[lo]) >= value && accessor(array[lo]) <= value) hi = lo;
+	if (accessor(array[hi]) >= value && accessor(array[hi]) <= value) lo = hi;
+
+	if (accessor(array[lo]) < value && accessor(array[hi]) < value) lo = hi;
+	if (accessor(array[lo]) > value && accessor(array[hi]) > value) hi = lo;
+
+	if (log) {
+		// console.log(lo, accessor(array[lo]), value, accessor(array[hi]), hi);
+		// console.log(accessor(array[lo]), lo, value, accessor(array[lo]) >= value);
+		// console.log(value, hi, accessor(array[hi]), accessor(array[lo]) <= value);
+	}
+	// var left = value > accessor(array[lo]) ? lo : lo;
+	// var right = gte(value, accessor(array[hi])) ? Math.min(hi + 1, array.length - 1) : hi;
+
+	// console.log(value, accessor(array[left]), accessor(array[right]));
+	return { left: lo, right: hi };
+};
+
+export function getClosestItem(array, value, accessor, log) {
+	var { left, right } = getClosestItemIndexes(array, value, accessor, log);
+
+	if (left === right) {
+		return array[left];
+	}
+
+	var closest = (Math.abs(accessor(array[left]) - value) < Math.abs(accessor(array[right]) - value))
+						? array[left]
+						: array[right];
+	if (log) {
+		console.log(array[left], array[right], closest, left, right);
+	}
 	return closest;
 };
 
-export function getClosestItemIndex(array, value, accessor) {
-	var lo = 0, hi = array.length - 1;
-	while (hi - lo > 1) {
-		var mid = Math.round((lo + hi) / 2);
-		if (accessor(array[mid]) <= value) {
-			lo = mid;
-		} else {
-			hi = mid;
-		}
-	}
-	if (accessor(array[lo]) === value) hi = lo;
-	var closestIndex = (Math.abs(accessor(array[lo]) - value) < Math.abs(accessor(array[hi]) - value))
-						? lo
-						: hi;
-
-	// console.log(value, accessor(array[closestIndex]));
-
-	return closestIndex;
-};
 
 export function clearCanvas(canvasList) {
 	// console.log("CLEARING...", canvasList.length)
@@ -259,29 +268,6 @@ export function calculate(dataPreProcessor, calculator, data) {
 	return result;
 };
 
-export function getClosestItemIndexes(array, value, accessor) {
-	var lo = 0, hi = array.length - 1;
-	while (hi - lo > 1) {
-		var mid = Math.round((lo + hi) / 2);
-		if (accessor(array[mid]) <= value) {
-			lo = mid;
-		} else {
-			hi = mid;
-		}
-	}
-	// for Date object === does not work, so using the <= in combination with >=
-	// the same code works for both dates and numbers
-	if (accessor(array[lo]) >= value && accessor(array[lo]) <= value) hi = lo;
-
-	// console.log(accessor(array[lo]), lo, value, accessor(array[lo]) >= value);
-	// console.log(value, hi, accessor(array[hi]), accessor(array[lo]) <= value);
-
-	// var left = value > accessor(array[lo]) ? lo : lo;
-	// var right = gte(value, accessor(array[hi])) ? Math.min(hi + 1, array.length - 1) : hi;
-
-	// console.log(value, accessor(array[left]), accessor(array[right]));
-	return { left: lo, right: hi };
-};
 
 export function pluck(array, key) {
 	return array.map((each) => getter(each, key));

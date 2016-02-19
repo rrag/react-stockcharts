@@ -2,31 +2,32 @@
 
 import React from "react";
 import makeInteractive from "./makeInteractive";
+import noop from "../utils/noop";
 
 class ClickCallback extends React.Component {
 	constructor(props) {
 		super(props);
 		this.onClick = this.onClick.bind(this);
 	}
-	onClick({ chartId, xAccessor }, interactive, { mouseXY, currentItem, chartData }/* , e */) {
-		var { onClick } = this.props;
+	onClick({ chartId, xAccessor }, interactive, { mouseXY, currentItem, chartConfig }/* , e */) {
+		var { onClick, displayXAccessor } = this.props;
 
-		var { yScale } = chartData.plot.scales;
+		var { yScale } = chartConfig;
 
 		var yValue = yScale.invert(mouseXY[1]);
-		var xValue = xAccessor(currentItem);
+		var xValue = displayXAccessor(currentItem);
 		onClick({
 			xy: [xValue, yValue],
 			mouseXY,
 			currentItem
 		});
-		return interactive; // returning the same input to indicate that the state of the chart is not changing
+		return { interactive }; // returning the same input to indicate that the state of the chart is not changing
 	}
 	render() {
 		return null;
 	}
 }
-ClickCallback.drawOnCanvas = () => {};
+ClickCallback.drawOnCanvas = noop;
 
 ClickCallback.propTypes = {
 	onClick: React.PropTypes.func.isRequired,

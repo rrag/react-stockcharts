@@ -11,6 +11,7 @@ function getFilteredResponse(dataForInterval, left, right, xAccessor) {
 	var newRightIndex = getClosestItemIndexes(dataForInterval, right, xAccessor).left;
 
 	var filteredData = dataForInterval.slice(newLeftIndex, newRightIndex + 1);
+	// console.log(right, newRightIndex, dataForInterval.length);
 
 	return filteredData;
 }
@@ -23,7 +24,7 @@ function getDomain(left, right, width, filteredData, predicate, currentDomain, c
 		return domain;
 	}
 	if (process.env.NODE_ENV !== "production") {
-		console.warn(`Trying to show ${filteredData.length} items in a width of ${width}px. This is either too much or too few points`);
+		console.error(`Trying to show ${filteredData.length} items in a width of ${width}px. This is either too much or too few points`);
 	}
 	return currentDomain;
 }
@@ -57,6 +58,10 @@ function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShow
 					break;
 				}
 			}
+			if (isNotDefined(plotData) && showMax(width) < dataForCurrentInterval.length) {
+				plotData = dataForCurrentInterval.slice(dataForCurrentInterval.length - showMax(width))
+				domain = [realXAccessor(first(plotData)), realXAccessor(last(plotData))];
+			}
 		} else if (isDefined(interval) && allowedIntervals.indexOf(interval) > -1) {
 			// if interval is defined and allowedInterval is not defined, it is an error
 			let filteredData = getFilteredResponse(data[interval], left, right, xAccessor)
@@ -69,16 +74,26 @@ function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShow
 				plotData = filteredData;
 				intervalToShow = interval;
 			}
+			if (isNotDefined(plotData) && showMax(width) < data[interval].length) {
+				plotData = data[interval].slice(data[interval].length - showMax(width))
+				domain = [realXAccessor(first(plotData)), realXAccessor(last(plotData))];
+			}
 		} else if (isNotDefined(interval) && isNotDefined(allowedIntervals)) {
 			// interval is not defined and allowedInterval is not defined also.
 			let filteredData = getFilteredResponse(data, left, right, xAccessor)
+			// console.log(last(filteredData), last(data), right);
 			domain = getDomain(left, right, width, filteredData,
 				realXAccessor == xAccessor, currentDomain,
 				canShowTheseMany, realXAccessor);
 
+			// console.log("HERE", left, right, last(data), last(filteredData));
 			if (domain !== currentDomain) {
 				plotData = filteredData;
 				intervalToShow = null;
+			}
+			if (isNotDefined(plotData) && showMax(width) < data.length) {
+				plotData = data.slice(data.length - showMax(width))
+				domain = [realXAccessor(first(plotData)), realXAccessor(last(plotData))];
 			}
 		}
 
@@ -86,11 +101,11 @@ function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShow
 			// console.log(currentInterval, currentDomain, currentPlotData)
 			throw new Error("Initial render and cannot display any data");
 		}
-		// console.log(scale.range());
 		var updatedScale = (scale.isPolyLinear && scale.isPolyLinear() && scale.data)
 			? scale.copy().data(plotData)
 			: scale.copy();
 
+		// console.log(domain);
 		updatedScale.domain(domain);
 		return { plotData, interval: intervalToShow, scale: updatedScale };
 	}
@@ -136,6 +151,12 @@ function canShowTheseManyPeriods(width, arrayLength) {
 	var threshold = 0.75; // number of datapoints per 1 px
 	return arrayLength < width * threshold && arrayLength > 1;
 }
+
+function showMax(width) {
+	var threshold = 0.75; // number of datapoints per 1 px
+	return Math.floor(width * threshold);
+}
+
 
 export default function() {
 
