@@ -62,9 +62,6 @@ class CandlestickChart extends React.Component {
 			yExtents: [d => [d.high, d.low], ema26.accessor(), ema12.accessor()],
 		}
 	}
-	getChartCanvas() {
-		return this.refs.chartCanvas;
-	}
 	componentDidMount() {
 		document.addEventListener("keyup", this.onKeyPress);
 	}
@@ -99,6 +96,7 @@ class CandlestickChart extends React.Component {
 		return (
 			<ChartCanvas width={width} height={600}
 					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
+					seriesName="MSFT"
 					data={data} calculator={[ema26, ema12, smaVolume50, macdCalculator]}
 					xAccessor={d => d.date} discontinous xScale={xScale}
 					xExtents={this.state.xExtents}>
@@ -122,7 +120,7 @@ class CandlestickChart extends React.Component {
 						onStart={e => console.log("Start Event:", e)}
 						onBrush={this.handleBrush}/>
 
-					<EdgeIndicator id={2} itemType="last" orient="right" edgeAt="right"
+					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 				</Chart>
 				<Chart id={2} height={150}

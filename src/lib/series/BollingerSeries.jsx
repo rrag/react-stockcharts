@@ -16,24 +16,31 @@ class BollingerSeries extends React.Component {
 		this.yAccessorForScalledBottom = this.yAccessorForScalledBottom.bind(this);
 	}
 	yAccessorForTop(d) {
-		var { yAccessor } = this.props;
+		var { calculator } = this.props;
+		var yAccessor = calculator.accessor();
 		return yAccessor(d) && yAccessor(d).top;
 	}
 	yAccessorForMiddle(d) {
-		var { yAccessor } = this.props;
+		var { calculator } = this.props;
+		var yAccessor = calculator.accessor();
 		return yAccessor(d) && yAccessor(d).middle;
 	}
 	yAccessorForBottom(d) {
-		var { yAccessor } = this.props;
+		var { calculator } = this.props;
+		var yAccessor = calculator.accessor();
 		return yAccessor(d) && yAccessor(d).bottom;
 	}
 	yAccessorForScalledBottom(scale, d) {
-		var { yAccessor } = this.props;
+		var { calculator } = this.props;
+		var yAccessor = calculator.accessor();
 		return scale(yAccessor(d) && yAccessor(d).bottom);
 	}
 	render() {
 		var { xScale, yScale, xAccessor, plotData, type } = this.props;
-		var { stroke, areaClassName, className, fill, opacity } = this.props;
+		var { calculator, areaClassName, className, opacity } = this.props;
+
+		var stroke = calculator.stroke();
+		var fill = calculator.fill();
 
 		return (
 			<g className={className}>
@@ -70,14 +77,12 @@ class BollingerSeries extends React.Component {
 
 BollingerSeries.propTypes = {
 	xAccessor: React.PropTypes.func,
-	yAccessor: React.PropTypes.func,
+	calculator: React.PropTypes.func.isRequired,
 	xScale: React.PropTypes.func,
 	yScale: React.PropTypes.func,
 	plotData: React.PropTypes.array,
-	stroke: React.PropTypes.object,
 	className: React.PropTypes.string,
 	areaClassName: React.PropTypes.string,
-	fill: React.PropTypes.string,
 	opacity: React.PropTypes.number,
 	type: React.PropTypes.string,
 };
@@ -85,12 +90,6 @@ BollingerSeries.propTypes = {
 BollingerSeries.defaultProps = {
 	className: "react-stockcharts-bollinger-band-series",
 	areaClassName: "react-stockcharts-bollinger-band-series-area",
-	stroke: {
-		top: "brown",
-		middle: "black",
-		bottom: "brown",
-	},
-	fill: "#4682B4",
 	opacity: 0.2
 };
 

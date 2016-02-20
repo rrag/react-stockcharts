@@ -130,26 +130,27 @@ class ChartCanvas extends React.Component {
 		var { xAccessor, map, dataEvaluator, indexAccessor, indexMutator } = nextProps;
 
 		if (reset) {
-			console.log("RESET CHART");
+			if (process.env.NODE_ENV !== "production") console.log("RESET CHART");
 			this.setState(calculateState(nextProps));
 		} else if (!shallowEqual(this.props.xExtents, nextProps.xExtents)) {
-			console.log("xExtents changed");
+			if (process.env.NODE_ENV !== "production") console.log("xExtents changed");
 			// since the xExtents changed update fullData, plotData, xExtentsCalculator to state
 			var { fullData, plotData, xExtentsCalculator, xScale } = calculateState(nextProps);
 			this.setState({ fullData, plotData, xExtentsCalculator, xScale, dataAltered: false });
 		} else if (this.props.data !== nextProps.data) {
-			// data is changed but seriesName did not
+			if (process.env.NODE_ENV !== "production") console.log("data is changed but seriesName did not");
 			// this means there are more points pushed/removed or existing points are altered
 			// console.log("data changed");
 			var { fullData } = calculateState(nextProps);
 			this.setState({ fullData, dataAltered: true });
 		} else if (!shallowEqual(this.props.calculator, nextProps.calculator)) {
-			console.log("calculator changed");
+			if (process.env.NODE_ENV !== "production") console.log("calculator changed");
 			// data did not change but calculator changed, so update only the fullData to state
 			var { fullData } = calculateState(nextProps);
 			this.setState({ fullData, dataAltered: false });
 		} else {
-			console.log("may be width/height changed, but that does not matter");
+			if (process.env.NODE_ENV !== "production") 
+				console.log("Trivial change, may be width/height or type changed, but that does not matter");
 		}
 	}
 	render() {

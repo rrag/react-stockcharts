@@ -76,9 +76,9 @@ StochasticSeries.propTypes = {
 StochasticSeries.defaultProps = {
 	className: "react-stockcharts-stochastic-series",
 	stroke: {
-		top: "brown",
-		middle: "black",
-		bottom: "brown"
+		top: "#964B00",
+		middle: "#000000",
+		bottom: "#964B00"
 	}
 };
 

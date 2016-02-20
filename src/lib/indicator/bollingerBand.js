@@ -15,8 +15,12 @@ export default function() {
 	var base = baseIndicator()
 		.type(ALGORITHM_TYPE)
 		.accessor(d => d.bollingerBand)
-		.stroke(undefined)
-		.fill(undefined);
+		.stroke({
+			top: "brown",
+			middle: "black",
+			bottom: "brown",
+		})
+		.fill("#4682B4");
 
 	var underlyingAlgorithm = bollingerband()
 		.windowSize(defaultOptions.period)

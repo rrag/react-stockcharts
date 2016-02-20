@@ -17,20 +17,18 @@ var { StockscaleTransformer } = ReStock.transforms;
 var { XAxis, YAxis } = ReStock.axes;
 
 var { fitWidth } = ReStock.helper;
-/*
-					xAccessor={d => d.date} xScale={d3.time.scale()}
-					xAccessor={d => d.date} discontinous xScale={financeEODDiscontiniousScale()}
-					allowedIntervals={["D", "W"]}
 
-*/
+var xScale = financeEODDiscontiniousScale();
+
 class CandleStickChartWithZoomPan extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
 		return (
 			<ChartCanvas width={width} height={400}
 					margin={{left: 70, right: 70, top:10, bottom: 30}} type={type}
+					seriesName="MSFT"
 					data={data}
-					xAccessor={d => d.date} discontinous xScale={financeEODDiscontiniousScale()}
+					xAccessor={d => d.date} discontinous xScale={xScale}
 					allowedIntervals={["D", "W", "M"]}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1} yExtents={[d => [d.high, d.low]]}

@@ -28,26 +28,12 @@ class EdgeIndicator extends Component {
 	componentWillReceiveProps(nextProps) {
 		var draw = EdgeIndicator.drawOnCanvasStatic.bind(null, nextProps);
 
-		var { id, chartId } = nextProps;
+		var { chartId } = nextProps;
 
-		// if (!shallowEqual(this.props, nextProps)) {
-			var temp = nextProps.getAllCanvasDrawCallback()
-				.filter(each => each.type === "edge")
-				.filter(each => each.chartId === chartId)
-				.filter(each => each.id === id);
-
-			if (temp.length === 0) {
-				nextProps.callbackForCanvasDraw({
-					type: "edge",
-					id, chartId, draw,
-				});
-			} else {
-				nextProps.callbackForCanvasDraw(temp[0], {
-					type: "edge",
-					id, chartId, draw,
-				});
-			}
-		// }
+		nextProps.callbackForCanvasDraw({
+			type: "edge",
+			chartId, draw,
+		});
 	}
 	render() {
 		var { xScale, chartConfig, plotData, chartCanvasType } = this.props;
@@ -65,7 +51,6 @@ class EdgeIndicator extends Component {
 }
 
 EdgeIndicator.propTypes = {
-	id: React.PropTypes.number.isRequired,
 	yAccessor: React.PropTypes.func,
 
 	type: React.PropTypes.oneOf(["horizontal"]).isRequired,

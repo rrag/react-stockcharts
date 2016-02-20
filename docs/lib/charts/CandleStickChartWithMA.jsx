@@ -53,6 +53,7 @@ class CandleStickChartWithMA extends React.Component {
 		return (
 			<ChartCanvas width={width} height={400}
 					margin={{left: 70, right: 70, top:10, bottom: 30}} type={type}
+					seriesName="MSFT"
 					data={data} calculator={[sma20, ema20, ema50, smaVolume50]}
 					xAccessor={d => d.date} discontinous xScale={financeEODDiscontiniousScale()}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>

@@ -56,12 +56,17 @@ function wrap(WrappedSeries) {
 		}
 		render() {
 			var callback = WrappedSeries.drawOnCanvas;
-			var { chartCanvasType, chartConfig } = this.props;
+			var { clip, chartCanvasType, chartConfig } = this.props;
 
 			if (chartCanvasType !== "svg" && callback !== undefined) return null;
+			var style = clip ? { "clipPath": "url(#chart-area-clip)" } : null;
 
-			return <WrappedSeries ref="wrappedSeries"
-				{...this.props} yScale={chartConfig.yScale} />;
+			return (
+				<g style={style}>
+					<WrappedSeries ref="wrappedSeries"
+						{...this.props} yScale={chartConfig.yScale} />
+				</g>
+			);
 		}
 	};
 
@@ -85,9 +90,11 @@ function wrap(WrappedSeries) {
 		ctx.setTransform(1, 0, 0, 1, 0, 0);
 		ctx.translate(canvasOrigin[0], canvasOrigin[1]);
 
-		ctx.beginPath();
-		ctx.rect(-1, -1, width + 1, height + 1);
-		ctx.clip();
+		if (props.clip) {
+			ctx.beginPath();
+			ctx.rect(-1, -1, width + 1, height + 1);
+			ctx.clip();
+		}
 
 		// console.log(canvasOrigin, width, height);
 
@@ -100,19 +107,15 @@ function wrap(WrappedSeries) {
 		ctx.restore();
 	};
 
-	/* Object.keys(WrappedSeries)
-		.filter((key) => key !== "propTypes")
-		.filter(key => key !== "defaultProps")
-		.filter(key => key !== "displayName")
-		.filter(key => key !== "contextTypes")
-		.filter(key => key !== "childContextTypes")
-		.forEach(key => BaseCanvasSeries[key] = WrappedSeries[key]);*/
-
-	BaseCanvasSeries.defaultProps = WrappedSeries.defaultProps;
+	BaseCanvasSeries.defaultProps = {
+		...WrappedSeries.defaultProps,
+		clip: true,
+	}
 
 	BaseCanvasSeries.propTypes = {
 		getCanvasContexts: React.PropTypes.func,
 		chartCanvasType: React.PropTypes.string,
+		clip: React.PropTypes.bool.isRequired,
 	};
 
 	// console.log(Object.keys(BaseCanvasSeries))

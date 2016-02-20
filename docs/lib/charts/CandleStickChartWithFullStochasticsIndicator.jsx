@@ -66,6 +66,7 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 		return (
 			<ChartCanvas width={width} height={750}
 					margin={margin} type={type}
+					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50, slowSTO, fastSTO, fullSTO]}
 					xAccessor={d => d.date} discontinous xScale={xScale}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
@@ -83,7 +84,7 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 					<CurrentCoordinate id={1} yAccessor={ema20.accessor()} fill={ema20.stroke()} />
 					<CurrentCoordinate id={2} yAccessor={ema50.accessor()} fill={ema50.stroke()} />
 
-					<EdgeIndicator id={2} itemType="last" orient="right" edgeAt="right"
+					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 				</Chart>
 				<Chart id={2}

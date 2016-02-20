@@ -56,6 +56,7 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 		return (
 			<ChartCanvas width={width} height={400}
 					margin={{left: 70, right: 70, top:10, bottom: 30}} type={type}
+					seriesName="MSFT"
 					data={data} calculator={[sma20, ema20, ema50, smaVolume50, bb]}
 					xAccessor={d => d.date} discontinous xScale={financeEODDiscontiniousScale()}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
@@ -69,7 +70,7 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 					<LineSeries yAccessor={sma20.accessor()} stroke={sma20.stroke()}/>
 					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
 					<LineSeries yAccessor={ema50.accessor()} stroke={ema50.stroke()}/>
-					<BollingerSeries yAccessor={bb.accessor()} />
+					<BollingerSeries calculator={bb} />
 					<CurrentCoordinate id={0} yAccessor={sma20.accessor()} fill={sma20.stroke()} />
 					<CurrentCoordinate id={1} yAccessor={ema20.accessor()} fill={ema20.stroke()} />
 					<CurrentCoordinate id={2} yAccessor={ema50.accessor()} fill={ema50.stroke()} />

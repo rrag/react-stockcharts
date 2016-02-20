@@ -122,7 +122,7 @@ class EventHandler extends React.Component {
 		var newState;
 		if (reset) {
 			if (process.env.NODE_ENV !== "production") {
-				console.log("CHART RESET");
+				console.log("DATA VIEW PORT CHANGED - CHART RESET");
 			}
 
 			plotData = postCalculator(plotData);

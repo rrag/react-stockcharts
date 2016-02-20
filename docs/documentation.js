@@ -115,7 +115,7 @@ function renderPage(data, dataFull, compareData) {
 			if (selectedPage.length > 0) {
 				this.setState({
 					selectedPage: selectedPage[0]
-				});
+				}, _ => window.scrollTo(0, 0));
 			}
 		}
 		componentDidMount() {
@@ -145,8 +145,8 @@ function renderPage(data, dataFull, compareData) {
 d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
 	d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 		d3.tsv("data/comparison.tsv", (err3, compareData) => {
-			// renderPage(MSFT, MSFTFull, compareData);
-			renderPartialPage(MSFT, MSFTFull, compareData);
+			renderPage(MSFT, MSFTFull, compareData);
+			// renderPartialPage(MSFT, MSFTFull, compareData);
 		});
 	});
 });
@@ -220,10 +220,10 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithEdge
 	// CandleStickChartWithCompare
 	// CandleStickChartWithEdge  - Lots of data -> data={dataFull}/>
-	// CandleStickChartWithUpdatingData - TODO
-	// KagiWithUpdatingData - TODO
-	// RenkoWithUpdatingData - TODO
-	// PointAndFigureWithUpdatingData - TODO
+	// CandleStickChartWithUpdatingData
+	// KagiWithUpdatingData
+	// RenkoWithUpdatingData
+	// PointAndFigureWithUpdatingData
 	// CandleStickChartWithMACDIndicator
 	// CandleStickChartWithRSIIndicator
 	// CandleStickChartWithFullStochasticsIndicator
@@ -234,13 +234,14 @@ function renderPartialPage(data, dataFull, compareData) {
 	// CandleStickChartWithFibonacciInteractiveIndicator
 	// CandleStickChartWithBrush
 	// CandleStickChartWithClickHandlerCallback
+	// CandleStickChartWithDarkTheme
 	// AreaChartWithZoomPan
 	// AreaChartWithPointsAndEdge
 	// HaikinAshi
 	// Kagi
 	// PointAndFigure
 	// Renko
-	var Chart = require("lib/charts/CandleStickChartWithUpdatingData").default; // CandleStickChartWithUpdatingData, CandleStickChartWithMACDIndicator
+	var Chart = require("lib/charts/CandleStickChartWithDarkTheme").default;
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	// data, dataFull, compareData
@@ -251,12 +252,12 @@ function renderPartialPage(data, dataFull, compareData) {
 					<TypeChooser type="hybrid">
 						{(type) => <Chart data={data} type={type} />}
 					</TypeChooser>
+					<TypeChooser type="svg">
+						{(type) => <Chart data={data} type={type} />}
+					</TypeChooser>
 				</div>
 			)
 		}
 	};
-/*					<TypeChooser type="svg">
-						{(type) => <Chart data={data} type={type} />}
-					</TypeChooser>*/
 	ReactDOM.render(<ExamplesPage />, document.getElementById("chart-goes-here"));
 }

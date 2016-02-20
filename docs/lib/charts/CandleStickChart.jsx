@@ -16,10 +16,11 @@ class CandleStickChart extends React.Component {
 		var { type, width, data } = this.props;
 		return (
 			<ChartCanvas width={width} height={400}
-				margin={{left: 50, right: 50, top:10, bottom: 30}}
-				data={data} type={type}
-				xAccessor={d => d.date} xScale={d3.time.scale()}
-				xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 1)]}>
+					margin={{left: 50, right: 50, top:10, bottom: 30}} type={type}
+					seriesName="MSFT"
+					data={data}
+					xAccessor={d => d.date} xScale={d3.time.scale()}
+					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 1)]}>
 
 				<Chart id={1} yExtents={d => [d.high, d.low]}>
 					<XAxis axisAt="bottom" orient="bottom" ticks={6}/>

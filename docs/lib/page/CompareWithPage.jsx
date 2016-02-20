@@ -1,9 +1,13 @@
 'use strict';
 
 import React from "react";
+import { helper } from "react-stockcharts";
+
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
+
+var { TypeChooser } = helper;
 
 import CandleStickChartWithCompare from "lib/charts/CandleStickChartWithCompare";
 
@@ -16,7 +20,9 @@ var CompareWithPage = React.createClass({
 			<ContentSection title={CompareWithPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<CandleStickChartWithCompare data={this.props.compareData} type="svg" />
+						<TypeChooser ref="container">
+							{(type) => (<CandleStickChartWithCompare data={this.props.compareData} type={type} />)}
+						</TypeChooser>
 					</Section>
 				</Row>
 				<Row>

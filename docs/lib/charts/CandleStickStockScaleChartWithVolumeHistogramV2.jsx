@@ -20,6 +20,7 @@ class CandleStickStockScaleChartWithVolumeHistogramV2 extends React.Component {
 		return (
 			<ChartCanvas width={width} height={400}
 					margin={{left: 50, right: 50, top:10, bottom: 30}} type={type}
+					seriesName="MSFT"
 					data={data}
 					xAccessor={d => d.date} discontinous xScale={financeEODDiscontiniousScale()}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>

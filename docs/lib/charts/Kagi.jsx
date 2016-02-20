@@ -27,11 +27,11 @@ class Kagi extends React.Component {
 		var { data, type, width } = this.props;
 		var kagiCalculator = kagi();
 		return (
-			<ChartCanvas width={width} height={400}
+			<ChartCanvas ref="chartCanvas" width={width} height={400}
 					margin={{left: 80, right: 80, top:10, bottom: 30}} type={type}
+					seriesName="MSFT"
 					data={data} calculator={[kagiCalculator]}
-					xAccessor={d => d.date} discontinous xScale={xScale}
-					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
+					xAccessor={d => d.date} discontinous xScale={xScale}>
 				<Chart id={1}
 						yExtents={d => [d.high, d.low]}
 						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} 
@@ -45,7 +45,11 @@ class Kagi extends React.Component {
 						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 						height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-					<HistogramSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
+					<HistogramSeries
+							yAccessor={d => d.volume}
+							stroke
+							fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} 
+							opacity={0.5} />
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} defaultFocus={false} />

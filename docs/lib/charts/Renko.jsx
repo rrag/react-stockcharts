@@ -31,9 +31,9 @@ class Renko extends React.Component {
 		return (
 			<ChartCanvas ref="chartCanvas" width={width} height={400}
 					margin={{left: 80, right: 80, top:10, bottom: 30}} type={type}
+					seriesName="MSFT"
 					data={data} calculator={[renkoCalculator]}
-					xAccessor={d => d.date} discontinous xScale={xScale}
-					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
+					xAccessor={d => d.date} discontinous xScale={xScale}>
 				<Chart id={1}
 						yExtents={d => [d.high, d.low]}
 						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} 

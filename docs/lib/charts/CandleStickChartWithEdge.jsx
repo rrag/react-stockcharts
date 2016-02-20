@@ -33,11 +33,13 @@ class CandleStickChartWithEdge extends React.Component {
 
 		/* 
 			Q. Why does the rule of xScale not apply for these calculators?
-			A. Because changing only the calculator array is not considered as a chart reset
-			   updating the calculators will result in the recalculation of these, but the
-			   domain of the chart is retained. To avoid recalculation of the calculators
-			   move them out of render, either outside of the react component
-			   or in the componentWillMount and set them in the state (recommended)
+			A. Because changing only the calculator array is not considered as a trigger to
+			   reset the chart. Updating the calculators will result in the recalculation
+			   of these, but the domain of the chart is retained.
+			   To avoid recalculation of the calculators either
+			   1. move them out of render, either outside of the react component
+			   or
+			   2. in the componentWillMount and set them in the state (recommended)
 		*/
 		var ema20 = ema()
 			.id(0)
@@ -61,6 +63,7 @@ class CandleStickChartWithEdge extends React.Component {
 		return (
 			<ChartCanvas width={width} height={400}
 					margin={{left: 80, right: 80, top:10, bottom: 30}} type={type}
+					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50, smaVolume50]}
 					xAccessor={d => d.date} discontinous xScale={xScale}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
@@ -78,17 +81,17 @@ class CandleStickChartWithEdge extends React.Component {
 					<CurrentCoordinate id={1} yAccessor={ema20.accessor()} fill={ema20.stroke()} />
 					<CurrentCoordinate id={2} yAccessor={ema50.accessor()} fill={ema50.stroke()} />
 
-					<EdgeIndicator id={0} itemType="last" orient="right" edgeAt="right"
+					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={ema20.accessor()} fill={ema20.fill()}/>
-					<EdgeIndicator id={1} itemType="last" orient="right" edgeAt="right"
+					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={ema50.accessor()} fill={ema50.fill()}/>
-					<EdgeIndicator id={2} itemType="last" orient="right" edgeAt="right"
+					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
-					<EdgeIndicator id={3} itemType="first" orient="left" edgeAt="left"
+					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
 						yAccessor={ema20.accessor()} fill={ema20.fill()}/>
-					<EdgeIndicator id={4} itemType="first" orient="left" edgeAt="left"
+					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
 						yAccessor={ema50.accessor()} fill={ema50.fill()}/>
-					<EdgeIndicator id={5} itemType="first" orient="left" edgeAt="left"
+					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 				</Chart>
 				<Chart id={2}
@@ -103,13 +106,13 @@ class CandleStickChartWithEdge extends React.Component {
 					<CurrentCoordinate id={0} yAccessor={smaVolume50.accessor()} fill={smaVolume50.stroke()} />
 					<CurrentCoordinate id={1} yAccessor={d => d.volume} fill="#9B0A47" />
 
-					<EdgeIndicator id={0} itemType="first" orient="left" edgeAt="left"
+					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
 						yAccessor={d => d.volume} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
-					<EdgeIndicator id={1} itemType="last" orient="right" edgeAt="right"
+					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={d => d.volume} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
-					<EdgeIndicator id={2} itemType="first" orient="left" edgeAt="left"
+					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
 						yAccessor={smaVolume50.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume50.fill()}/>
-					<EdgeIndicator id={3} itemType="last" orient="right" edgeAt="right"
+					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={smaVolume50.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume50.fill()}/>
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />

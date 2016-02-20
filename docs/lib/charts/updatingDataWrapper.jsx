@@ -8,10 +8,7 @@ function getDisplayName(ChartComponent) {
 }
 
 export default function updatingDataWrapper(ChartComponent) {
-	var interval;
 	const LENGTH = 130;
-	var func;
-	var speed = 1000;
 
 	class UpdatingComponentHOC extends React.Component {
 		constructor(props) {
@@ -20,13 +17,14 @@ export default function updatingDataWrapper(ChartComponent) {
 				length: LENGTH,
 				data: this.props.data.slice(0, LENGTH),
 			}
+			this.speed = 1000;
 			this.onKeyPress = this.onKeyPress.bind(this);
 		}
 		componentDidMount() {
 			document.addEventListener("keyup", this.onKeyPress);
 		}
 		componentWillUnmount() {
-			if (interval) clearInterval(interval);
+			if (this.interval) clearInterval(this.interval);
 			document.removeEventListener("keyup", this.onKeyPress);
 		}
 		onKeyPress(e) {
@@ -35,7 +33,7 @@ export default function updatingDataWrapper(ChartComponent) {
 			switch (keyCode) {
 				case 50: {
 					// 2 (50) - Start alter data
-					func = () => {
+					this.func = () => {
 						if (this.state.length < this.props.data.length) {
 							this.setState({
 								length: this.state.length + 1,
@@ -49,7 +47,7 @@ export default function updatingDataWrapper(ChartComponent) {
 					// P (80)
 				case 49: {
 					// 1 (49) - Start Push data
-					func = () => {
+					this.func = () => {
 						if (this.state.length < this.props.data.length) {
 							this.setState({
 								length: this.state.length + 1,
@@ -61,27 +59,27 @@ export default function updatingDataWrapper(ChartComponent) {
 				}
 				case 27: {
 					// ESC (27) - Clear interval
-					func = null;
-					if (interval) clearInterval(interval);
+					this.func = null;
+					if (this.interval) clearInterval(this.interval);
 					break;
 				}
 				case 107: {
-					// + (107) - increase the speed
-					speed = Math.max(speed / 2, 50);
+					// + (107) - increase the this.speed
+					this.speed = Math.max(this.speed / 2, 50);
 					break;
 				}
 				case 109:
 				case 189: {
-					// - (189, 109) - reduce the speed
-					var delta = Math.min(speed, 1000);
-					speed = speed + delta;
+					// - (189, 109) - reduce the this.speed
+					var delta = Math.min(this.speed, 1000);
+					this.speed = this.speed + delta;
 					break;
 				}
 			}
-			if (func) {
-				if (interval) clearInterval(interval);
-				console.log("speed  = ", speed);
-				interval = setInterval(func, speed);
+			if (this.func) {
+				if (this.interval) clearInterval(this.interval);
+				console.log("this.speed  = ", this.speed);
+				this.interval = setInterval(this.func, this.speed);
 			}
 		}
 		render() {

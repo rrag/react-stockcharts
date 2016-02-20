@@ -75,7 +75,7 @@ class CandleStickChartWithMACDIndicator extends React.Component {
 					<CurrentCoordinate id={1} yAccessor={ema26.accessor()} fill={ema26.stroke()} />
 					<CurrentCoordinate id={2} yAccessor={ema12.accessor()} fill={ema12.stroke()} />
 
-					<EdgeIndicator id={2} itemType="last" orient="right" edgeAt="right"
+					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 				</Chart>
 				<Chart id={2} height={150}

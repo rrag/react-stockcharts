@@ -8,16 +8,17 @@ import * as ReStock from "../../../src/";
 var { ChartCanvas, Chart, DataSeries, OverlaySeries, EventCapture } = ReStock;
 
 var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, StochasticSeries, BollingerSeries } = ReStock.series;
+var { financeEODDiscontiniousScale } = ReStock.scale;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 
-var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, StochasticTooltip, BollingerBandTooltip } = ReStock.tooltip;
-var { StockscaleTransformer } = ReStock.transforms;
+var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, BollingerBandTooltip, StochasticTooltip } = ReStock.tooltip;
 
 var { XAxis, YAxis } = ReStock.axes;
-var { MACD, EMA, SMA, FullStochasticOscillator, BollingerBand } = ReStock.indicator;
-
+var { stochasticOscilator, ema, bollingerBand } = ReStock.indicator;
 var { fitWidth } = ReStock.helper;
+
+var xScale = financeEODDiscontiniousScale();
 
 class CandleStickChartWithDarkTheme extends React.Component {
 	render() {
@@ -30,91 +31,129 @@ class CandleStickChartWithDarkTheme extends React.Component {
 		var gridWidth = width - margin.left - margin.right;
 
 		var showGrid = true;
-		var yGrid = showGrid ? { innerTickSize: -1 * gridWidth, tickStrokeOpacity: 0.1 } : {};
-		var xGrid = showGrid ? { innerTickSize: -1 * gridHeight, tickStrokeOpacity: 0.1 } : {};
+		var yGrid = showGrid ? { innerTickSize: -1 * gridWidth, tickStrokeOpacity: 0.2 } : {};
+		var xGrid = showGrid ? { innerTickSize: -1 * gridHeight, tickStrokeOpacity: 0.2 } : {};
+
+		var ema20 = ema()
+			.id(0)
+			.windowSize(20)
+			.merge((d, c) => {d.ema20 = c})
+			.accessor(d => d.ema20);
+
+		var ema50 = ema()
+			.id(2)
+			.windowSize(50)
+			.merge((d, c) => {d.ema50 = c})
+			.accessor(d => d.ema50);
+
+		var slowSTO = stochasticOscilator()
+			.windowSize(14)
+			.kWindowSize(1)
+			.stroke({ D: "#ea2bff", K: "#74d400", top: "#37a600", middle: "#b8ab00", bottom: "#37a600" })
+			.merge((d, c) => {d.slowSTO = c})
+			.accessor(d => d.slowSTO);
+		var fastSTO = stochasticOscilator()
+			.windowSize(14)
+			.kWindowSize(3)
+			.stroke({ D: "#ea2bff", K: "#74d400", top: "#37a600", middle: "#b8ab00", bottom: "#37a600" })
+			.merge((d, c) => {d.fastSTO = c})
+			.accessor(d => d.fastSTO);
+		var fullSTO = stochasticOscilator()
+			.windowSize(14)
+			.kWindowSize(3)
+			.dWindowSize(4)
+			.stroke({ D: "#ea2bff", K: "#74d400" })
+			.merge((d, c) => {d.fullSTO = c})
+			.accessor(d => d.fullSTO);
+
+		var bb = bollingerBand()
+			.stroke({ top: "#964B00", middle: "#8c9900", bottom: "#964B00" })
+			.fill("#adffaf");
 
 		return (
 			<ChartCanvas width={width} height={750}
-				margin={margin} initialDisplay={200} 
-				dataTransform={[ { transform: StockscaleTransformer } ]}
-				data={data} type={type}>
+					margin={margin} type={type}
+					seriesName="MSFT"
+					data={data} calculator={[ema20, ema50, slowSTO, fastSTO, fullSTO, bb]}
+					xAccessor={d => d.date} discontinous xScale={xScale}
+					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1} yMousePointerDisplayLocation="right" height={325}
-						yMousePointerDisplayFormat={d3.format(".2f")} padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
-					<YAxis axisAt="right" orient="right" ticks={5} {...yGrid} tickStroke="#FFFFFF" stroke="#FFFFFF" />
-					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} stroke="#FFFFFF" opacity={0.5}/>
-					<DataSeries id={0} yAccessor={CandlestickSeries.yAccessor} >
-						<CandlestickSeries wickStroke={{ up: "#6BA583", down: "#db0000" }} fill={{ up: "#6BA583", down: "#db0000" }}/>
-					</DataSeries>
-					<DataSeries id={1} indicator={EMA} options={{ period: 26 }} >
-						<LineSeries/>
-					</DataSeries>
-					<DataSeries id={2} indicator={EMA} options={{ period: 12 }} >
-						<LineSeries/>
-					</DataSeries>
-					<DataSeries id={3} indicator={BollingerBand} options={{ period: 20, multiplier: 2, }}>
-						<BollingerSeries fill="#adffaf" opacity={0.1} stroke={{ top: "brown", middle: "#8c9900", bottom: "brown" }} />
-					</DataSeries>
+						yExtents={d => [d.high, d.low]}
+						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} 
+						padding={{ top: 10, bottom: 20 }}>
+					<YAxis axisAt="right" orient="right" ticks={5} {...yGrid}
+							tickStroke="#FFFFFF" stroke="#FFFFFF"/>
+					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0}
+							stroke="#FFFFFF" opacity={0.5}/>
+					<CandlestickSeries
+							wickStroke={d => d.close > d.open ? "#6BA583" : "#DB0000"}
+							fill={d => d.close > d.open ? "#6BA583" : "#DB0000"} />
+
+					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
+					<LineSeries yAccessor={ema50.accessor()} stroke={ema50.stroke()}/>
+
+					<BollingerSeries calculator={bb} />
+
+					<CurrentCoordinate id={1} yAccessor={ema20.accessor()} fill={ema20.stroke()} />
+					<CurrentCoordinate id={2} yAccessor={ema50.accessor()} fill={ema50.stroke()} />
+
+					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
+						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#DB0000"}/>
 				</Chart>
-				<CurrentCoordinate forChart={1} forDataSeries={1} />
-				<CurrentCoordinate forChart={1} forDataSeries={2} />
-				<Chart id={2} yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
+				<Chart id={2}
+						yExtents={d => d.volume}
+						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 						height={100} origin={(w, h) => [0, h - 475]} >
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")} tickStroke="#FFFFFF" />
-					<DataSeries id={0} yAccessor={(d) => d.volume} >
-						<HistogramSeries fill={(d) => d.close > d.open ? "#6BA583" : "#db0000"} />
-					</DataSeries>
-					<DataSeries id={1} indicator={SMA} options={{ period: 10, source:"volume" }} stroke="#4682B4" fill="#4682B4">
-						<AreaSeries opacity={0.5} />
-					</DataSeries>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}
+							tickStroke="#FFFFFF"/>
+					<HistogramSeries
+							yAccessor={d => d.volume}
+							fill={d => d.close > d.open ? "#6BA583" : "#DB0000"} />
 				</Chart>
-				<CurrentCoordinate forChart={2} forDataSeries={0} />
-				<CurrentCoordinate forChart={2} forDataSeries={1} />
-				<EdgeContainer>
-					<EdgeIndicator itemType="last" orient="right"
-						edgeAt="right" forChart={1} forDataSeries={1} />
-					<EdgeIndicator itemType="last" orient="right"
-						edgeAt="right" forChart={1} forDataSeries={2} />
-					<EdgeIndicator itemType="first" orient="left"
-						edgeAt="left" forChart={1} forDataSeries={1} />
-					<EdgeIndicator itemType="first" orient="left"
-						edgeAt="left" forChart={1} forDataSeries={2} />
-				</EdgeContainer>
-				<Chart id={3} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
-						height={125} origin={(w, h) => [0, h - 375]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
-					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0}  stroke="#FFFFFF" opacity={0.5}/>
-					<YAxis axisAt="right" orient="right" ticks={2} tickStroke="#FFFFFF" />
-					<DataSeries id={1} indicator={FullStochasticOscillator}
-						options={{ period: 14, K: 1, D: 3, stroke: { D: "#ea2bff", K: "#74d400" } }} >
-						<StochasticSeries stroke={{ top: "#37a600", middle: "#b8ab00", bottom: "#37a600" }} />
-					</DataSeries>
+				<Chart id={3}
+						yExtents={slowSTO.domain()}
+						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
+						height={125} origin={(w, h) => [0, h - 375]} padding={{ top: 10, bottom: 10 }} >
+					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0}
+							stroke="#FFFFFF" opacity={0.5} />
+					<YAxis axisAt="right" orient="right" ticks={2} tickValues={slowSTO.tickValues()}
+							tickStroke="#FFFFFF"/>
+					<StochasticSeries calculator={slowSTO}
+							stroke={{ top: "#37a600", middle: "#b8ab00", bottom: "#37a600" }}/>
 				</Chart>
-				<Chart id={4} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
-						height={125} origin={(w, h) => [0, h - 250]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
-					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} stroke="#FFFFFF" opacity={0.5} />
-					<YAxis axisAt="right" orient="right" ticks={2} tickStroke="#FFFFFF" />
-					<DataSeries id={1} indicator={FullStochasticOscillator}
-						options={{ period: 14, K: 3, D: 3, stroke: { D: "#ea2bff", K: "#74d400" } }} >
-						<StochasticSeries stroke={{ top: "#37a600", middle: "#b8ab00", bottom: "#37a600" }} />
-					</DataSeries>
+				<Chart id={4}
+						yExtents={fastSTO.domain()}
+						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
+						height={125} origin={(w, h) => [0, h - 250]} padding={{ top: 10, bottom: 10 }} >
+					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0}
+							stroke="#FFFFFF" opacity={0.5} />
+					<YAxis axisAt="right" orient="right" ticks={2}/>
+					<YAxis axisAt="right" orient="right" ticks={2} tickValues={fastSTO.tickValues()}
+							tickStroke="#FFFFFF"/>
+					<StochasticSeries calculator={fastSTO}
+							stroke={{ top: "#37a600", middle: "#b8ab00", bottom: "#37a600" }}/>
 				</Chart>
-				<Chart id={5} yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
-						height={125} origin={(w, h) => [0, h - 125]} padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
-					<XAxis axisAt="bottom" orient="bottom" tickStroke="#FFFFFF" stroke="#FFFFFF" {...xGrid} />
-					<YAxis axisAt="right" orient="right" ticks={2} tickStroke="#FFFFFF" />
-					<DataSeries id={1} indicator={FullStochasticOscillator}
-						options={{ period: 14, K: 3, D: 3, stroke: { D: "#ea2bff", K: "#74d400" } }} >
-						<StochasticSeries stroke={{ top: "#37a600", middle: "#b8ab00", bottom: "#37a600" }} />
-					</DataSeries>
+				<Chart id={5}
+						yExtents={fullSTO.domain()}
+						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
+						height={125} origin={(w, h) => [0, h - 125]} padding={{ top: 10, bottom: 10 }} >
+					<XAxis axisAt="bottom" orient="bottom" {...xGrid}
+							tickStroke="#FFFFFF" stroke="#FFFFFF" />
+					<YAxis axisAt="right" orient="right" ticks={2} tickValues={fullSTO.tickValues()}
+							tickStroke="#FFFFFF"/>
+					<StochasticSeries calculator={fullSTO}
+							stroke={{ top: "#37a600", middle: "#b8ab00", bottom: "#37a600" }}/>
 				</Chart>
-				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} stroke="#FFFFFF" opacity={0.4}/>
+				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 				<TooltipContainer>
-					<OHLCTooltip forChart={1} origin={[-50, -10]}/>
-					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-48, 5]} />
-					<BollingerBandTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-50, 55]} />
-					<StochasticTooltip forChart={3} origin={[-38, 15]}>Fast STO</StochasticTooltip>
-					<StochasticTooltip forChart={4} origin={[-38, 15]}>Slow STO</StochasticTooltip>
-					<StochasticTooltip forChart={5} origin={[-38, 15]}>Full STO</StochasticTooltip>
+					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
+					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 10]} 
+						calculators={[ema20, ema50]}/>
+					<BollingerBandTooltip forChart={1} origin={[-38, 60]} calculator={bb} />
+					<StochasticTooltip forChart={3} calculator={slowSTO} origin={[-38, 15]}>Fast STO</StochasticTooltip>
+					<StochasticTooltip forChart={4} calculator={fastSTO} origin={[-38, 15]}>Slow STO</StochasticTooltip>
+					<StochasticTooltip forChart={5} calculator={fullSTO} origin={[-38, 15]}>Full STO</StochasticTooltip>
 				</TooltipContainer>
 			</ChartCanvas>
 		);

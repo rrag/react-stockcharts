@@ -32,6 +32,7 @@ class OHLCChartWithElderRayIndicator extends React.Component {
 		return (
 			<ChartCanvas width={width} height={650}
 					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
+					seriesName="MSFT"
 					data={data} calculator={[changeCalculator, elder]}
 					xAccessor={d => d.date} discontinous xScale={xScale}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
@@ -42,7 +43,7 @@ class OHLCChartWithElderRayIndicator extends React.Component {
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<OHLCSeries />
-					<EdgeIndicator id={2} itemType="last" orient="right" edgeAt="right"
+					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 				</Chart>
 				<Chart id={2} height={150} 

@@ -44,6 +44,7 @@ class CandleStickChartWithCompare extends React.Component {
 		return (
 			<ChartCanvas width={width} height={400}
 					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
+					seriesName="MSFT"
 					data={data} calculator={[smaVolume50]} postCalculator={compareCalculator}
 					xAccessor={d => d.date} discontinous xScale={xScale}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
@@ -57,7 +58,15 @@ class CandleStickChartWithCompare extends React.Component {
 					<LineSeries yAccessor={d => d.compare.AAPLClose} stroke="#ff7f0e" />
 					<LineSeries yAccessor={d => d.compare.SP500Close} stroke="#2ca02c"/>
 
-					<EdgeIndicator id={2} itemType="last" orient="right" edgeAt="right"
+					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
+						yAccessor={d => d.compare.AAPLClose} fill="#ff7f0e"
+						displayFormat={d3.format(".0%")} />
+
+					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
+						yAccessor={d => d.compare.SP500Close} fill="#2ca02c"
+						displayFormat={d3.format(".0%")} />
+
+					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={d => d.compare.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}
 						displayFormat={d3.format(".0%")} />
 				</Chart>
