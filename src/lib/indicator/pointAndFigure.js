@@ -18,8 +18,6 @@ export default function() {
 		return underlyingAlgorithm(data);
 	};
 
-	base.tooltipLabel(`${ALGORITHM_TYPE}`);
-
 	d3.rebind(indicator, base, "id"/*, "accessor"*/, "stroke", "fill", "echo", "type", "tooltipLabel");
 	d3.rebind(indicator, underlyingAlgorithm, "dateAccessor", "dateMutator", "indexMutator", "indexAccessor");
 	d3.rebind(indicator, underlyingAlgorithm, "reversal", "boxSize", "source");

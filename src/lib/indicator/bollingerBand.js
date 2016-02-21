@@ -39,8 +39,7 @@ export default function() {
 		return newData;
 	};
 
-	//`BB (${ options.period }, ${ options.source }, ${ options.multiplier }, ${ options.movingAverageType })
-	base.tooltipLabel(`BB (${underlyingAlgorithm.windowSize()}, ${underlyingAlgorithm.multiplier()}`
+	base.tooltipLabel(_ => `BB (${underlyingAlgorithm.windowSize()}, ${underlyingAlgorithm.multiplier()}`
 		+ `, ${underlyingAlgorithm.movingAverageType()}): `);
 
 	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");

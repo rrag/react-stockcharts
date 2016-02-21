@@ -29,9 +29,7 @@ export default function() {
 		return mergedAlgorithm(data);
 	};
 
-	base.tooltipLabel(`${ALGORITHM_TYPE}: `);
-
-	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
+	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type");
 	d3.rebind(indicator, underlyingAlgorithm, "close", "volume");
 	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 

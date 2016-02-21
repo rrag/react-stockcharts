@@ -24,9 +24,8 @@ export default function() {
 		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`)
 		return mergedAlgorithm(data);
 	};
-	base.tooltipLabel(`${ALGORITHM_TYPE}`);
 
-	d3.rebind(indicator, base, /*"id", */"accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
+	d3.rebind(indicator, base, /*"id", */"accessor", "stroke", "fill", "echo", "type");
 	// d3.rebind(indicator, underlyingAlgorithm, "windowSize", "source");
 	d3.rebind(indicator, mergedAlgorithm, "merge"/*, "skipUndefined"*/);
 
