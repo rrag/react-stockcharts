@@ -141,11 +141,10 @@ class EventCapture extends React.Component {
 	handleTouchStart(e) {
 		this.mouseInteraction = false;
 
-		var { mainChart, pan: panEnabled } = this.props;
+		var { pan: panEnabled } = this.props;
 		var { deltaXY: dxdy } = this.context;
 
-		var { onPanStart, onMouseMove, chartData, onPanEnd, panInProgress } = this.context;
-		var mainChartData = chartData.filter((each) => each.id === mainChart) [0];
+		var { onPanStart, onMouseMove, xScale, chartConfig, onPanEnd, panInProgress } = this.context;
 
 		if (e.touches.length === 1) {
 			var touch = getTouchProps(e.touches[0]);
@@ -156,7 +155,7 @@ class EventCapture extends React.Component {
 				var dx = touch.pageX - touchXY[0],
 					dy = touch.pageY - touchXY[1];
 
-				onPanStart(mainChartData.plot.scales.xScale.domain(), touchXY, [dx, dy]);
+				onPanStart(xScale.domain(), touchXY, [dx, dy]);
 			}
 		} else if (e.touches.length === 2) {
 			// pinch zoom begin
@@ -179,17 +178,16 @@ class EventCapture extends React.Component {
 		// this.context.onMouseMove(newPos, e);
 	}
 	handleTouchMove(e) {
-		var { mainChart, pan: panEnabled, onPan: panListener, zoom: zoomEnabled } = this.props;
-		var { deltaXY: dxdy, chartData, onPan, onPinchZoom, focus, panInProgress } = this.context;
+		var { pan: panEnabled, onPan: panListener, zoom: zoomEnabled } = this.props;
+		var { deltaXY: dxdy, xScale, chartConfig, onPan, onPinchZoom, focus, panInProgress } = this.context;
 
-		var mainChartData = chartData.filter((each) => each.id === mainChart) [0];
 		if (e.touches.length === 1) {
 			// pan
 			var touch = this.lastTouch = getTouchProps(e.touches[0]);
 
 			var newPos = [touch.pageX - dxdy[0], touch.pageY - dxdy[1]];
 			if (panInProgress && panEnabled && onPan) {
-				onPan(newPos, mainChartData.plot.scales.xScale.domain());
+				onPan(newPos, xScale.domain());
 				if (panListener) {
 					panListener(e);
 				}
@@ -207,14 +205,14 @@ class EventCapture extends React.Component {
 					this.initialPinch = {
 						touch1Pos,
 						touch2Pos,
-						range: mainChartData.plot.scales.xScale.range(),
-						mainChartData,
+						xScale,
+						range: xScale.range(),
 					};
 				} else if (this.initialPinch && !panInProgress) {
 					onPinchZoom(this.initialPinch, {
 						touch1Pos,
 						touch2Pos,
-						mainChartData,
+						xScale,
 					});
 				}
 			}

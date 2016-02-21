@@ -31,16 +31,11 @@ function getDimensions(props) {
 	};
 }
 
-function calculateState(props) {
-	var { data, calculator, interval } = props;
-	var { xExtents: xExtentsProp, xScale, intervalCalculator, allowedIntervals } = props;
+function calculateFullData(props) {
+	var { data, calculator } = props;
+	var { xScale, intervalCalculator, allowedIntervals } = props;
 	var { xAccessor, map, dataEvaluator, indexAccessor, indexMutator, discontinous } = props;
 
-	var dimensions = getDimensions(props);
-
-	if (isDefined(interval)
-		&& (isNotDefined(allowedIntervals)
-			|| allowedIntervals.indexOf(interval) > -1)) throw new Error("interval has to be part of allowedInterval");
 
 	var evaluate = dataEvaluator()
 		.allowedIntervals(allowedIntervals)
@@ -53,7 +48,28 @@ function calculateState(props) {
 		.scale(xScale)
 		.calculator(calculator.slice());
 
-	var { xAccessor: realXAccessor, inputXAccesor, domainCalculator: xExtentsCalculator, fullData } = evaluate(data);
+	var { xAccessor, domainCalculator: xExtentsCalculator, fullData } = evaluate(data);
+
+	return {
+		xAccessor,
+		xExtentsCalculator,
+		fullData,
+	}
+}
+
+function calculateState(props) {
+
+	var { data, interval, allowedIntervals } = props;
+	var { xAccessor: inputXAccesor, xExtents: xExtentsProp, xScale } = props;
+
+	if (isDefined(interval)
+		&& (isNotDefined(allowedIntervals)
+			|| allowedIntervals.indexOf(interval) > -1)) throw new Error("interval has to be part of allowedInterval");
+
+
+	var { xAccessor, xExtentsCalculator, fullData } = calculateFullData(props);
+
+	var dimensions = getDimensions(props);
 	// xAccessor - if discontinious return indexAccessor, else xAccessor
 	// inputXAccesor - send this down as context
 
@@ -75,7 +91,7 @@ function calculateState(props) {
 		showingInterval,
 		xExtentsCalculator,
 		xScale: updatedScale,
-		xAccessor: realXAccessor,
+		xAccessor,
 		dataAltered: false,
 	};
 }
@@ -83,17 +99,8 @@ function calculateState(props) {
 class ChartCanvas extends React.Component {
 	constructor() {
 		super();
-		this.pushData = this.pushData.bind(this);
-		this.alterData = this.alterData.bind(this);
 		this.getDataInfo = this.getDataInfo.bind(this);
 		this.getCanvases = this.getCanvases.bind(this);
-	}
-
-	pushData(array) {
-		this.refs.chartContainer.pushData(array);
-	}
-	alterData(array) {
-		this.refs.chartContainer.alterData(array);
 	}
 	getDataInfo() {
 		return this.refs.chartContainer.getDataInfo();
@@ -111,16 +118,7 @@ class ChartCanvas extends React.Component {
 			displayXAccessor: this.props.xAccessor,
 		}
 	}
-
 	componentWillMount() {
-		// console.log(plotData, updatedInterval, domain);
-		// in EventHandler in componentWillReceiveProps if this.props.plotData !== nextProps.plotData then update state
-		/*if (xAccessor !== realXAccessor) {
-			var { left } = getClosestItemIndexes(data, startDate, xAccessor);
-			var { endRight } = getClosestItemIndexes(data, endDate, xAccessor);
-			var start = realXAccessor(left);
-			var end = realXAccessor(right);
-		}*/
 		this.setState(calculateState(this.props));
 	}
 	componentWillReceiveProps(nextProps) {
@@ -141,12 +139,12 @@ class ChartCanvas extends React.Component {
 			if (process.env.NODE_ENV !== "production") console.log("data is changed but seriesName did not");
 			// this means there are more points pushed/removed or existing points are altered
 			// console.log("data changed");
-			var { fullData } = calculateState(nextProps);
+			var { fullData } = calculateFullData(nextProps);
 			this.setState({ fullData, dataAltered: true });
 		} else if (!shallowEqual(this.props.calculator, nextProps.calculator)) {
 			if (process.env.NODE_ENV !== "production") console.log("calculator changed");
 			// data did not change but calculator changed, so update only the fullData to state
-			var { fullData } = calculateState(nextProps);
+			var { fullData } = calculateFullData(nextProps);
 			this.setState({ fullData, dataAltered: false });
 		} else {
 			if (process.env.NODE_ENV !== "production") 

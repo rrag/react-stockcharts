@@ -9,7 +9,7 @@ config.devtool = "cheap-module-eval-source-map";
 
 config.devServer = {
 	contentBase: path.join(__dirname, "docs"),
-	host: "localhost", // "10.0.0.106", "localhost",
+	host: "10.0.0.106", // "10.0.0.106", "localhost",
 	port: 8090,
 };
 

@@ -1,17 +1,14 @@
 "use strict";
 
 import React from "react";
-import objectAssign from "object-assign";
 
-import PureComponent from "./utils/PureComponent";
 import Chart from "./Chart";
 
-import { first, last, isDefined, clearCanvas, calculate, getClosestItemIndexes } from "./utils/utils";
+import { first, last, isDefined, clearCanvas, calculate, getClosestItemIndexes, getClosestItem } from "./utils/utils";
 import zipper from "./utils/zipper";
 import shallowEqual from "./utils/shallowEqual";
+
 import { getNewChartConfig, getChartConfigWithUpdatedYScales, getCurrentCharts, getCurrentItem } from "./utils/ChartDataUtil";
-import { getMainChart, getChartData, getChartDataConfig, getClosest, getDataToPlotForDomain, getChartPlotFor } from "./utils/ChartDataUtil";
-import { DummyTransformer } from "./transforms";
 
 var subscriptionCount = 0;
 
@@ -151,8 +148,9 @@ class EventHandler extends React.Component {
 				var plotData = getDataBetween(fullData, showingInterval, xAccessor, start, end)
 			} else {
 				// get plotData between [xAccessor(l) - (end - start), xAccessor(l)] and DO change the domain
-				var newEnd = xAccessor(l);
-				var newStart = newEnd - (end - start);
+				var dx = updatedXScale(xAccessor(l)) - updatedXScale.range()[1];
+				var [newStart, newEnd] = updatedXScale.range().map(x => x + dx).map(updatedXScale.invert);
+
 				var plotData = getDataBetween(fullData, showingInterval, xAccessor, newStart, newEnd);
 
 				if (updatedXScale.isPolyLinear && updatedXScale.isPolyLinear() && updatedXScale.data) {
@@ -195,8 +193,10 @@ class EventHandler extends React.Component {
 	}
 	shouldComponentUpdate(nextProps, nextState) {
 		return !(this.state.receivedProps < nextState.receivedProps
+					&& this.props.type == "hybrid"
 					&& this.state.panInProgress)
 				&& !(this.state.panInProgress
+					&& this.props.type == "hybrid"
 					&& this.state.show !== nextState.show
 					&& this.state.receivedPropsOnPanStart < nextState.receivedProps
 					&& this.state.receivedProps === nextState.receivedProps);
@@ -313,20 +313,17 @@ class EventHandler extends React.Component {
 		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
 
 		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
-		// console.log(currentItem);
 		// optimization oportunity do not change currentItem if it is not the same as prev
-
-		// console.log(currentCharts, currentItem);
 
 		var { interactiveState, callbackList } = inputType === "mouse"
 			? this.triggerCallback(
 				"mousemove",
-				objectAssign({}, this.state, { currentItem, currentCharts }),
+				{ ...this.state, currentItem, currentCharts },
 				this.state.interactiveState,
 				e)
 			: this.triggerCallback(
 				"touch",
-				objectAssign({}, this.state, { currentItem, currentCharts }),
+				{ ...this.state, currentItem, currentCharts },
 				this.state.interactiveState,
 				e);
 
@@ -361,52 +358,58 @@ class EventHandler extends React.Component {
 	pinchCoordinates(pinch) {
 		var { plotData } = this.state;
 
-		var { mainChartData, touch1Pos, touch2Pos } = pinch;
+		var { xAccessor } = this.props;
+		var { touch1Pos, touch2Pos, xScale } = pinch;
 
-		var firstX = getLongValue(mainChartData.config.xAccessor(getClosest(plotData, touch1Pos, mainChartData)));
-		var secondX = getLongValue(mainChartData.config.xAccessor(getClosest(plotData, touch2Pos, mainChartData)));
-		var pinchCoordinate = firstX < secondX ? {
-			left: firstX,
-			right: secondX,
-			leftxy: touch1Pos,
-			rightxy: touch2Pos,
-		} : {
-			left: secondX,
-			right: firstX,
-			leftxy: touch2Pos,
-			rightxy: touch1Pos,
+		// var firstX = xAccessor(getCurrentItem(xScale, xAccessor, touch1Pos, plotData));
+		// var secondX = xAccessor(getCurrentItem(xScale, xAccessor, touch2Pos, plotData));
+
+		return {
+			topLeft: [Math.min(touch1Pos[0], touch2Pos[0]), Math.min(touch1Pos[1], touch2Pos[1])],
+			bottomRight: [Math.max(touch1Pos[0], touch2Pos[0]), Math.max(touch1Pos[1], touch2Pos[1])]
 		};
-		return pinchCoordinate;
 	}
 	handlePinchZoom(initialPinch, finalPinch) {
-		var { data, chartData } = this.state;
-		var { range } = initialPinch;
-		var { mainChartData } = finalPinch;
+		var { xScale: initialPinchXScale } = initialPinch;
 
-		var initial = this.pinchCoordinates(initialPinch);
-		var final = this.pinchCoordinates(finalPinch);
+		var { plotData, showingInterval, xScale: initialXScale, chartConfig: initialChartConfig, currentItem } = this.state;
+		var { xAccessor, fullData, interval, dimensions: { width }, xExtentsCalculator, postCalculator } = this.props;
 
-		var left = ((final.leftxy[0] - range[0]) / (final.rightxy[0] - final.leftxy[0])) * (initial.right - initial.left);
-		var right = ((range[1] - final.rightxy[0]) / (final.rightxy[0] - final.leftxy[0])) * (initial.right - initial.left);
+		var { topLeft: iTL, bottomRight: iBR } = this.pinchCoordinates(initialPinch);
+		var { topLeft: fTL, bottomRight: fBR } = this.pinchCoordinates(finalPinch);
 
-		var domainL = initial.left - left;
-		var domainR = initial.right + right;
+		var [s, e] = initialPinchXScale.range();
 
-		var { width, xAccessor } = mainChartData.config;
+		// var fR1 = e - fTL[0];
+		// var fR2 = e - fBR[0];
+		// var iR1 = e - iTL[0];
+		// var iR2 = e - iBR[0];
 
-		var dataToPlot = getDataToPlotForDomain(domainL, domainR, data, width, xAccessor);
+		var xDash = Math.round(-(iBR[0] * fTL[0] - iTL[0] * fBR[0]) / (iTL[0] - iBR[0]));
+		var yDash = Math.round(e + ((e - iBR[0]) * (e - fTL[0]) - (e - iTL[0]) * (e - fBR[0])) / ((e - iTL[0]) - (e - iBR[0])));
 
-		if (dataToPlot.data.length < 10) return;
 
-		var newChartData = chartData.map((eachChart) => {
-			var plot = getChartPlotFor(eachChart.config, eachChart.scaleType, dataToPlot.data, domainL, domainR);
-			return {
-				id: eachChart.id,
-				config: eachChart.config,
-				scaleType: eachChart.scaleType,
-				plot: plot
-			};
-		});
+		var x = Math.round(-xDash * iTL[0] / (-xDash + fTL[0]));
+		var y = Math.round(e - (yDash - e) * (e - iTL[0]) / (yDash + (e - fTL[0])));
+
+		// document.getElementById("debug_here").innerHTML = `**${[s, e]} to ${[xDash, yDash]} to ${[x, y]}`;
+		// var left = ((final.leftxy[0] - range[0]) / (final.rightxy[0] - final.leftxy[0])) * (initial.right - initial.left);
+		// var right = ((range[1] - final.rightxy[0]) / (final.rightxy[0] - final.leftxy[0])) * (initial.right - initial.left);
+
+		var newDomain = [x, y].map(initialPinchXScale.invert);
+		// var domainR = initial.right + right;
+
+		var { plotData, interval: updatedInterval, scale: updatedScale } = xExtentsCalculator
+			.data(fullData)
+			.width(width)
+			.scale(initialXScale)
+			.currentInterval(showingInterval)
+			.currentDomain(initialXScale.domain())
+			.currentPlotData(plotData)
+			.interval(interval)(newDomain, xAccessor)
+		plotData = postCalculator(plotData);
+
+		var chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData);
 
 		requestAnimationFrame(() => {
 			this.clearBothCanvas();
@@ -414,15 +417,15 @@ class EventHandler extends React.Component {
 
 			this.clearCanvasDrawCallbackList();
 			this.setState({
-				chartData: newChartData,
-				plotData: dataToPlot.data,
-				interval: dataToPlot.interval,
+				chartConfig,
+				xScale: updatedScale,
+				plotData,
+				showingInterval: updatedInterval,
 			});
 		});
 
 		// document.getElementById("debug_here").innerHTML = `${panInProgress}`;
 
-		// document.getElementById("debug_here").innerHTML = `${final.rightxy[0] - final.leftxy[0]} -> ${initial.right - initial.left}`;
 		// document.getElementById("debug_here").innerHTML = `${initial.left} - ${initial.right} to ${final.left} - ${final.right}`;
 		// document.getElementById("debug_here").innerHTML = `${id[1] - id[0]} = ${initial.left - id[0]} + ${initial.right - initial.left} + ${id[1] - initial.right}`;
 		// document.getElementById("debug_here").innerHTML = `${range[1] - range[0]}, ${i1[0]}, ${i2[0]}`;
@@ -655,10 +658,6 @@ class EventHandler extends React.Component {
 		);
 	}
 }
-
-EventHandler.defaultProps = {
-	defaultDataTransform: [{ transform: DummyTransformer }],
-};
 
 EventHandler.childContextTypes = {
 	plotData: React.PropTypes.array,

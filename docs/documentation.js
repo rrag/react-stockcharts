@@ -145,8 +145,8 @@ function renderPage(data, dataFull, compareData) {
 d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
 	d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 		d3.tsv("data/comparison.tsv", (err3, compareData) => {
-			renderPage(MSFT, MSFTFull, compareData);
-			// renderPartialPage(MSFT, MSFTFull, compareData);
+			// renderPage(MSFT, MSFTFull, compareData);
+			renderPartialPage(MSFT, MSFTFull, compareData);
 		});
 	});
 });
@@ -241,7 +241,7 @@ function renderPartialPage(data, dataFull, compareData) {
 	// Kagi
 	// PointAndFigure
 	// Renko
-	var Chart = require("lib/charts/CandleStickChartWithDarkTheme").default;
+	var Chart = require("lib/charts/CandleStickChartWithFullStochasticsIndicator").default;
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	// data, dataFull, compareData
@@ -252,12 +252,15 @@ function renderPartialPage(data, dataFull, compareData) {
 					<TypeChooser type="hybrid">
 						{(type) => <Chart data={data} type={type} />}
 					</TypeChooser>
-					<TypeChooser type="svg">
-						{(type) => <Chart data={data} type={type} />}
-					</TypeChooser>
 				</div>
 			)
 		}
 	};
+
+	/*
+					<TypeChooser type="svg">
+						{(type) => <Chart data={data} type={type} />}
+					</TypeChooser>
+	*/
 	ReactDOM.render(<ExamplesPage />, document.getElementById("chart-goes-here"));
 }

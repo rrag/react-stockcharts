@@ -210,7 +210,7 @@ export default function() {
 		return {
 			fullData: mappedData,
 			xAccessor: realXAccessor,
-			inputXAccesor: xAccessor,
+			// inputXAccesor: xAccessor,
 			domainCalculator: extentsWrapper(xAccessor, realXAccessor, allowedIntervals, canShowTheseMany),
 		}
 	}
