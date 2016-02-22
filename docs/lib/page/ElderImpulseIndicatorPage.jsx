@@ -13,7 +13,7 @@ var { TypeChooser } = helper;
 
 var ElderImpulseIndicatorPage = React.createClass({
 	statics: {
-		title: "Indicators - Elder Impulse"
+		title: "Elder Impulse"
 	},
 	render() {
 		return (

@@ -13,7 +13,7 @@ var { TypeChooser } = helper;
 
 var ForceIndexIndicatorPage = React.createClass({
 	statics: {
-		title: "Indicators - ForceIndex"
+		title: "ForceIndex"
 	},
 	render() {
 		return (

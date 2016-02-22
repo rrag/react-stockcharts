@@ -13,7 +13,7 @@ var { TypeChooser } = helper;
 
 var RSIIndicatorPage = React.createClass({
 	statics: {
-		title: "Indicators - RSI"
+		title: "RSI"
 	},
 	render() {
 		return (

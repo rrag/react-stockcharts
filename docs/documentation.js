@@ -16,43 +16,88 @@ import MainContainer from "lib/main-container";
 import MenuGroup from "lib/menu-group";
 import MenuItem from "lib/MenuItem";
 
-var pages = [
-	require("lib/page/GettingStartedPage").default,
-	require("lib/page/QuickStartExamplesPage").default,
-	require("lib/page/OverviewPage").default,
-	require("lib/page/AreaChartPage").default,
-	require("lib/page/CandleStickChartPage").default,
-	require("lib/page/VolumeHistogramPage").default,
-	require("lib/page/MousePointerPage").default,
-	require("lib/page/ZoomAndPanPage").default,
-	require("lib/page/SvgVsCanvas").default,
-	require("lib/page/MAOverlayPage").default,
-	require("lib/page/BollingerBandOverlayPage").default,
-	require("lib/page/EdgeCoordinatesPage").default,
-	require("lib/page/CompareWithPage").default,
-	require("lib/page/LotsOfDataPage").default,
-	require("lib/page/UpdatingDataPage").default,
-	require("lib/page/MACDIndicatorPage").default,
-	require("lib/page/RSIIndicatorPage").default,
-	require("lib/page/StochasticIndicatorPage").default,
-	require("lib/page/ForceIndexIndicatorPage").default,
-	require("lib/page/ElderRayIndicatorPage").default,
-	require("lib/page/ElderImpulseIndicatorPage").default,
-	require("lib/page/TrendLineInteractiveIndicatorPage").default,
-	require("lib/page/FibonacciInteractiveIndicatorPage").default,
-	require("lib/page/ClickHandlerCallbackPage").default,
-	require("lib/page/BrushSupportPage").default,
-	require("lib/page/HeikinAshiPage").default,
-	require("lib/page/KagiPage").default,
-	require("lib/page/PointAndFigurePage").default,
-	require("lib/page/RenkoPage").default,
-	require("lib/page/CreatingCustomIndicatorPage").default,
-	require("lib/page/CreatingCustomChartSeriesPage").default,
-	require("lib/page/MiscChartsPage").default,
-	require("lib/page/DarkThemePage").default,
-	require("lib/page/ChangeLogPage").default,
-	require("lib/page/ComingSoonPage").default,
+var DOCUMENTATION = {
+	head: "Documentation",
+	pages: [
+		require("lib/page/GettingStartedPage").default,
+		require("lib/page/QuickStartExamplesPage").default,
+		require("lib/page/OverviewPage").default,
+		require("lib/page/SvgVsCanvas").default,
+		require("lib/page/LotsOfDataPage").default,
+		require("lib/page/ChangeLogPage").default,
+		require("lib/page/ComingSoonPage").default,
+	]
+};
+
+var CHART_TYPES = {
+	head: "Chart types",
+	pages: [
+		require("lib/page/AreaChartPage").default,
+		require("lib/page/CandleStickChartPage").default,
+		require("lib/page/VolumeHistogramPage").default,
+		require("lib/page/MiscChartsPage").default,
+		require("lib/page/HeikinAshiPage").default,
+		require("lib/page/KagiPage").default,
+		require("lib/page/PointAndFigurePage").default,
+		require("lib/page/RenkoPage").default,
+	]
+};
+
+var CHART_FEATURES = {
+	head: "Chart features",
+	pages: [
+		require("lib/page/MousePointerPage").default,
+		require("lib/page/ZoomAndPanPage").default,
+		require("lib/page/EdgeCoordinatesPage").default,
+		require("lib/page/UpdatingDataPage").default,
+		require("lib/page/DarkThemePage").default,
+	]
+}
+
+var INDICATORS = {
+	head: "Indicators",
+	pages: [
+		require("lib/page/MAOverlayPage").default,
+		require("lib/page/BollingerBandOverlayPage").default,
+		require("lib/page/CompareWithPage").default,
+		require("lib/page/MACDIndicatorPage").default,
+		require("lib/page/RSIIndicatorPage").default,
+		require("lib/page/StochasticIndicatorPage").default,
+		require("lib/page/ForceIndexIndicatorPage").default,
+		require("lib/page/ElderRayIndicatorPage").default,
+		require("lib/page/ElderImpulseIndicatorPage").default,
+	]
+}
+
+var INTERACTIVE = {
+	head: "Interactive",
+	pages: [
+		require("lib/page/TrendLineInteractiveIndicatorPage").default,
+		require("lib/page/FibonacciInteractiveIndicatorPage").default,
+		require("lib/page/ClickHandlerCallbackPage").default,
+		require("lib/page/BrushSupportPage").default,
+	]
+}
+
+
+var CUSTOMIZATION = {
+	head: "Customization",
+	pages: [
+		require("lib/page/CreatingCustomIndicatorPage").default,
+		require("lib/page/CreatingCustomChartSeriesPage").default,
+	]
+}
+
+var ALL_PAGES = [
+	DOCUMENTATION,
+	CHART_TYPES,
+	CHART_FEATURES,
+	INDICATORS,
+	INTERACTIVE,
+	CUSTOMIZATION,
 ];
+
+var pages = d3.merge(ALL_PAGES.map(_ => _.pages))
 
 function compressString(string) {
 	string = string.replace(/\s+/g, "_");
@@ -128,9 +173,14 @@ function renderPage(data, dataFull, compareData) {
 					<Nav />
 					<MainContainer>
 						<Sidebar>
-							<MenuGroup>
-								{pages.map((eachPage, idx) => <MenuItem key={idx} current={eachPage === this.state.selectedPage} title={eachPage.title} anchor={compressString(eachPage.title)} />)}
-							</MenuGroup>
+							{ALL_PAGES.map((eachGroup, i) => 
+								<div key={i}>
+									<h4>{eachGroup.head}</h4>
+									<MenuGroup>
+										{eachGroup.pages.map((eachPage, idx) => <MenuItem key={idx} current={eachPage === this.state.selectedPage} title={eachPage.title} anchor={compressString(eachPage.title)} />)}
+									</MenuGroup>
+								</div>
+							)}
 						</Sidebar>
 						<Page someData={data} lotsOfData={dataFull} compareData={compareData} />
 					</MainContainer>

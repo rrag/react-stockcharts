@@ -97,7 +97,7 @@ class EventHandler extends Component {
 	componentWillMount() {
 
 		var { plotData, fullData, showingInterval, xExtentsCalculator } = this.props;
-		var { xScale, xAccessor, dimensions, children, postCalculator } = this.props;
+		var { xScale, xAccessor, dimensions, children, postCalculator, padding } = this.props;
 
 		// console.log(Array.isArray(fullData) ? fullData[60] : fullData);
 		plotData = postCalculator(plotData);
@@ -107,14 +107,14 @@ class EventHandler extends Component {
 
 		this.setState({
 			showingInterval,
-			xScale: xScale.range([0, dimensions.width]),
+			xScale: xScale.range([padding.left, dimensions.width - padding.right]),
 			plotData,
 			chartConfig,
 		});
 	}
 	componentWillReceiveProps(nextProps) {
 
-		var { plotData, fullData, showingInterval, xExtentsCalculator } = nextProps;
+		var { plotData, fullData, showingInterval, xExtentsCalculator, padding } = nextProps;
 		var { xScale, xAccessor, dimensions, children, postCalculator, dataAltered } = nextProps;
 
 		var reset = !shallowEqual(this.props.plotData, nextProps.plotData);
@@ -137,7 +137,7 @@ class EventHandler extends Component {
 
 			newState = {
 				showingInterval,
-				xScale: xScale.range([0, dimensions.width]),
+				xScale: xScale.range([padding.left, dimensions.width - padding.right]),
 				plotData,
 				chartConfig,
 			};
@@ -148,7 +148,7 @@ class EventHandler extends Component {
 				console.log("DATA CHANGED AND LAST ITEM VISIBLE");
 			}
 			// if last item was visible, then shift
-			var updatedXScale = this.state.xScale.copy().range([0, dimensions.width])
+			var updatedXScale = this.state.xScale.copy().range([padding.left, dimensions.width - padding.right]);
 
 			var [start, end] = this.state.xScale.domain();
 			var l = last(isDefined(showingInterval) ? fullData[showingInterval] : fullData);
@@ -183,7 +183,7 @@ class EventHandler extends Component {
 				getNewChartConfig(dimensions, children), this.state.plotData);
 
 			newState = {
-				xScale: this.state.xScale.copy().range([0, dimensions.width]),
+				xScale: this.state.xScale.copy().range([padding.left, dimensions.width - padding.right]),
 				chartConfig,
 			};
 		}

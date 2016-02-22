@@ -12,7 +12,7 @@ var TypeChooser = helper.TypeChooser;
 
 var BollingerBandOverlayPage = React.createClass({
 	statics: {
-		title: 'Overlays - Bollinger Band'
+		title: 'Bollinger Band'
 	},
 	render() {
 		return (

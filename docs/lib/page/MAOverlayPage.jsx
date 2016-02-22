@@ -9,7 +9,7 @@ import CandleStickChartWithMA from "lib/charts/CandleStickChartWithMA";
 
 var MAOverlayPage = React.createClass({
 	statics: {
-		title: 'Overlays - Moving Average'
+		title: 'Moving Average'
 	},
 	render() {
 		return (

@@ -13,7 +13,7 @@ var { TypeChooser, SaveChartAsImage } = helper;
 
 var StochasticIndicatorPage = React.createClass({
 	statics: {
-		title: "Indicators - Stochastic Oscillator"
+		title: "Stochastic Oscillator"
 	},
 	saveChartAsImage(e) {
 		var container = React.findDOMNode(this.refs.container);

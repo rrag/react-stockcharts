@@ -13,7 +13,7 @@ var { TypeChooser } = helper;
 
 var ElderRayIndicatorPage = React.createClass({
 	statics: {
-		title: "Indicators - ElderRay"
+		title: "ElderRay"
 	},
 	render() {
 		return (

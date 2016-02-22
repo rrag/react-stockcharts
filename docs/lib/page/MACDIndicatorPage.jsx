@@ -13,7 +13,7 @@ var { TypeChooser } = helper;
 
 var MACDIndicatorPage = React.createClass({
 	statics: {
-		title: "Indicators - MACD"
+		title: "MACD"
 	},
 	render() {
 		return (
