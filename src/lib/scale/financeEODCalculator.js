@@ -1,9 +1,6 @@
 "use strict";
 
-
-import { getClosestItemIndexes } from "../utils/utils";
-import slidingWindow from "../utils/slidingWindow";
-
+import { slidingWindow, getClosestItemIndexes } from "../utils";
 
 export default function() {
 	var dateAccessor = d => d.date;

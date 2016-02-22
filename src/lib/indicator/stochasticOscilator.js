@@ -2,8 +2,7 @@
 
 import d3 from "d3";
 
-import merge from "../utils/merge";
-import { rebind } from "../utils/utils";
+import { rebind, merge } from "../utils";
 import { sto } from "./algorithm";
 
 import baseIndicator from "./baseIndicator";

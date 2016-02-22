@@ -3,7 +3,7 @@
 import React from "react";
 
 import wrap from "./wrap";
-import { isDefined, isNotDefined, hexToRGBA } from "../utils/utils";
+import { isDefined, isNotDefined, hexToRGBA } from "../utils";
 
 class OHLCSeries extends React.Component {
 	render() {

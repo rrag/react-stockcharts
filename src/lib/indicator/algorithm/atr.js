@@ -2,8 +2,7 @@
 
 import d3 from "d3";
 
-import slidingWindow from "../../utils/slidingWindow";
-import { last, isDefined } from "../../utils/utils";
+import { slidingWindow, last, isDefined } from "../../utils";
 
 export default function() {
 

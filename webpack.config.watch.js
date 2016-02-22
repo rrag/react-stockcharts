@@ -9,9 +9,11 @@ config.devtool = "cheap-module-eval-source-map";
 
 config.devServer = {
 	contentBase: path.join(__dirname, "docs"),
-	host: "10.0.0.106", // "10.0.0.106", "localhost",
+	host: "localhost", // "10.0.0.106", "localhost",
 	port: 8090,
 };
+
+// config.plugins = config.plugins.slice(0, config.plugins.length - 3);
 
 config.output.publicPath = `http://${config.devServer.host}:${config.devServer.port}/${config.output.publicPath}`;
 

@@ -4,9 +4,17 @@ import React from "react";
 
 import Chart from "./Chart";
 
-import { first, last, isDefined, clearCanvas, calculate, getClosestItemIndexes, getClosestItem } from "./utils/utils";
-import zipper from "./utils/zipper";
-import shallowEqual from "./utils/shallowEqual";
+import {
+	first,
+	last,
+	isDefined,
+	clearCanvas,
+	calculate,
+	getClosestItemIndexes,
+	getClosestItem,
+	zipper,
+	shallowEqual,
+} from "./utils";
 
 import { getNewChartConfig, getChartConfigWithUpdatedYScales, getCurrentCharts, getCurrentItem } from "./utils/ChartDataUtil";
 

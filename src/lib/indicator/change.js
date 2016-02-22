@@ -2,8 +2,7 @@
 
 import d3 from "d3";
 
-import merge from "../utils/merge";
-import slidingWindow from "../utils/slidingWindow";
+import { merge, slidingWindow } from "../utils";
 
 import baseIndicator from "./baseIndicator";
 import { ElderRay as defaultOptions } from "./defaultOptions";

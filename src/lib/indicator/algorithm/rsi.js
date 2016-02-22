@@ -28,10 +28,7 @@ THE SOFTWARE.
 
 import d3 from "d3";
 
-import identity from "../../utils/identity";
-import slidingWindow from "../../utils/slidingWindow";
-
-import { isDefined, last } from "../../utils/utils";
+import { isDefined, last, identity, slidingWindow } from "../../utils";
 import { RSI as defaultOptions } from "../defaultOptions";
 
 export default function() {

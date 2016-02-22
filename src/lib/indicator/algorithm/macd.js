@@ -26,11 +26,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import identity from "../../utils/identity";
 import ema from "./ema";
-import zipper from "../../utils/zipper";
 
-import { isDefined, isNotDefined } from "../../utils/utils";
+import { isDefined, isNotDefined, identity, zipper } from "../../utils";
 import { MACD as defaultOptions } from "../defaultOptions";
 
 export default function() {

@@ -1,7 +1,6 @@
 "use strict";
 
-import identity from "../../utils/identity";
-import mappedSlidingWindow from "../../utils/mappedSlidingWindow";
+import { mappedSlidingWindow, identity } from "../../utils";
 
 export default function() {
 

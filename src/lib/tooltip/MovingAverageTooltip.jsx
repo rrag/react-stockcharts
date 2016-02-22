@@ -1,12 +1,13 @@
 "use strict";
 
 import React from "react";
+import d3 from "d3";
 import objectAssign from "object-assign";
 
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
-import { displayNumberFormat, first } from "../utils/utils";
+import { first } from "../utils";
 import { getChartDataForChart, getCurrentItemForChart } from "../utils/ChartDataUtil";
 
 class SingleMAToolTip extends React.Component {
@@ -112,7 +113,7 @@ MovingAverageTooltip.propTypes = {
 MovingAverageTooltip.defaultProps = {
 	namespace: "ReStock.MovingAverageTooltip",
 	className: "react-stockcharts-moving-average-tooltip",
-	displayFormat: displayNumberFormat,
+	displayFormat: d3.format(".2f"),
 	origin: [0, 10],
 	width: 65,
 };

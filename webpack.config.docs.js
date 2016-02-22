@@ -35,10 +35,11 @@ myConfig.remarkable = {
 
 var CommonsChunkPlugin = require("webpack/lib/optimize/CommonsChunkPlugin");
 
-myConfig.plugins.push(new CommonsChunkPlugin({
-	name: "react-stockcharts-docs-core",
-	minChunks: Infinity
-}));
+myConfig.plugins = myConfig.plugins.concat(new CommonsChunkPlugin({
+		name: "react-stockcharts-docs-core",
+		minChunks: Infinity
+	})
+);
 
 myConfig.resolve.alias = { "react-stockcharts": path.join(__dirname, "src") }
 myConfig.resolve.root = [__dirname, path.join(__dirname, "docs")];

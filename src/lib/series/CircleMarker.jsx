@@ -3,7 +3,7 @@
 import React from "react";
 import d3 from "d3";
 
-import { hexToRGBA } from "../utils/utils";
+import { hexToRGBA } from "../utils";
 
 function Circle(props) {
 	var { className, stroke, opacity, fill, point, r } = props;

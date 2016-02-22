@@ -4,8 +4,7 @@ import React from "react";
 import objectAssign from "object-assign";
 
 import makeInteractive from "./makeInteractive";
-import { head, last, hexToRGBA } from "../utils/utils";
-import noop from "../utils/noop";
+import { head, last, hexToRGBA, noop } from "../utils";
 
 function getYValue(values, currentValue) {
 	var diff = values

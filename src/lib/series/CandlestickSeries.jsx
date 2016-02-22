@@ -3,7 +3,7 @@
 import React from "react";
 
 import wrap from "./wrap";
-import { first, last, hexToRGBA } from "../utils/utils";
+import { first, last, hexToRGBA } from "../utils";
 
 class CandlestickSeries extends React.Component {
 	render() {

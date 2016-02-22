@@ -4,9 +4,7 @@ import React from "react";
 
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
-import { first, isDefined } from "../utils/utils";
-import identity from "../utils/identity";
-import noop from "../utils/noop";
+import { first, isDefined, identity, noop } from "../utils";
 
 class SingleValueTooltip extends React.Component {
 	render() {

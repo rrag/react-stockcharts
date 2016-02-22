@@ -3,7 +3,7 @@
 import React from "react";
 
 import wrap from "./wrap";
-import { hexToRGBA } from "../utils/utils";
+import { hexToRGBA } from "../utils";
 
 class StraightLine extends React.Component {
 	render() {

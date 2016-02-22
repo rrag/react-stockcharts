@@ -40,10 +40,10 @@ class CandlestickChart extends React.Component {
 		console.log(keyCode);
 		switch (keyCode) {
 			case 46: { // DEL
-				this.refs.trend.getWrappedPureComponent().removeLast();
+				this.refs.trend.getWrappedComponent().removeLast();
 			}
 			case 27: { // ESC
-				this.refs.trend.getWrappedPureComponent().terminate();
+				this.refs.trend.getWrappedComponent().terminate();
 			}
 		}
 	}

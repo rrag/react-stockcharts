@@ -2,9 +2,7 @@
 
 import d3 from "d3";
 
-import merge from "../utils/merge";
-import { isDefined, isNotDefined } from "../utils/utils";
-import slidingWindow from "../utils/slidingWindow";
+import { isDefined, isNotDefined, merge, slidingWindow } from "../utils";
 
 import { ElderImpulse as defaultOptions } from "./defaultOptions";
 import baseIndicator from "./baseIndicator";

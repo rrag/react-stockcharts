@@ -3,7 +3,7 @@
 import React from "react";
 import d3 from "d3";
 
-import { mousePosition, touchPosition } from "./utils/utils";
+import { mousePosition, touchPosition } from "./utils";
 
 var mousemove = "mousemove.pan", mouseup = "mouseup.pan";
 

@@ -1,8 +1,6 @@
 "use strict";
 
-import identity from "../../utils/identity";
-import zipper from "../../utils/zipper";
-import merge from "../../utils/merge";
+import { identity, zipper, merge } from "../../utils";
 
 import atr from "./atr";
 

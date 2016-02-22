@@ -30,7 +30,7 @@ import identity from "./identity";
 import zipper from "./zipper";
 import noop from "./noop";
 
-import { isDefined, isNotDefined } from "./utils";
+import { isDefined, isNotDefined } from "./index";
 
 // applies an algorithm to an array, merging the result back into
 // the source array using the given merge function.

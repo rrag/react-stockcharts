@@ -3,7 +3,7 @@
 import React from "react";
 
 import pure from "../pure";
-import shallowEqual from "../utils/shallowEqual";
+import { shallowEqual } from "../utils";
 
 class CurrentCoordinate extends React.Component {
 	componentDidMount() {

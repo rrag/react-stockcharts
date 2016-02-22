@@ -3,7 +3,7 @@
 import React from "react";
 import objectAssign from "object-assign";
 
-import { hexToRGBA } from "../utils/utils";
+import { hexToRGBA } from "../utils";
 
 function d3_scaleExtent(domain) {
 	var start = domain[0], stop = domain[domain.length - 1];

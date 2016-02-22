@@ -1,6 +1,6 @@
 "use strict";
 
-import { first } from "../../utils/utils";
+import { first } from "../../utils";
 
 export default function() {
 	var base = d => d.close;

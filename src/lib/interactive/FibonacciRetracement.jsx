@@ -3,7 +3,7 @@
 import React from "react";
 import objectAssign from "object-assign";
 import makeInteractive from "./makeInteractive";
-import { head, last, hexToRGBA } from "../utils/utils.js";
+import { head, last, hexToRGBA } from "../utils";
 
 class FibonacciRetracement extends React.Component {
 	constructor(props) {

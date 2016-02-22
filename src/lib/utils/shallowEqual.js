@@ -34,7 +34,7 @@ function isEqual(val1, val2) {
 		: val1 === val2;
 }
 
-function shallowEqual(a, b) {
+export default function shallowEqual(a, b) {
 	if (!a && !b) { return true; }
 	if (!a && b || a && !b) { return false; }
 
@@ -51,5 +51,3 @@ function shallowEqual(a, b) {
 	}
 	return numKeysA === numKeysB;
 };
-
-export default shallowEqual;

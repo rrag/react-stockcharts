@@ -1,6 +1,6 @@
 "use strict";
 
-import merge from "../utils/merge";
+import { merge } from "../utils";
 
 import { EMA as defaultOptions } from "./defaultOptions";
 import { ema } from "./algorithm";

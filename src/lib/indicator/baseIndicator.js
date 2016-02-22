@@ -1,6 +1,6 @@
 "use strict";
 
-import { overlayColors } from "../utils/utils";
+import { overlayColors } from "../utils";
 
 var i = 0;
 

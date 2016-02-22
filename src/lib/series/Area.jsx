@@ -4,7 +4,7 @@ import React from "react";
 import d3 from "d3";
 
 import wrap from "./wrap";
-import { hexToRGBA } from "../utils/utils";
+import { hexToRGBA } from "../utils";
 
 class Area extends React.Component {
 	render() {

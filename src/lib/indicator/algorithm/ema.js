@@ -26,8 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import identity from "../../utils/identity";
-import { isDefined, isNotDefined } from "../../utils/utils";
+import { identity, isDefined, isNotDefined } from "../../utils";
 
 export default function() {
 

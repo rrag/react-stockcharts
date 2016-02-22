@@ -5,8 +5,7 @@ import objectAssign from "object-assign";
 
 import makeInteractive from "./makeInteractive";
 
-import { hexToRGBA, isDefined } from "../utils/utils";
-import noop from "../utils/noop";
+import { hexToRGBA, isDefined, noop } from "../utils";
 
 class Brush extends React.Component {
 	constructor(props) {

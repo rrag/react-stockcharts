@@ -1,6 +1,6 @@
 "use strict";
 
-import merge from "../utils/merge";
+import { merge } from "../utils";
 
 import { pointAndFigure } from "./algorithm";
 import baseIndicator from "./baseIndicator";

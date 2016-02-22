@@ -41,10 +41,10 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 		// console.log(keyCode);
 		switch (keyCode) {
 			case 46: { // DEL
-				this.refs.fib.getWrappedPureComponent().removeLast();
+				this.refs.fib.getWrappedComponent().removeLast();
 			}
 			case 27: { // ESC
-				this.refs.fib.getWrappedPureComponent().terminate();
+				this.refs.fib.getWrappedComponent().terminate();
 			}
 		}
 	}

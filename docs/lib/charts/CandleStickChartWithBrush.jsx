@@ -73,7 +73,7 @@ class CandlestickChart extends React.Component {
 		console.log(keyCode);
 		switch (keyCode) {
 			case 27: { // ESC
-				this.refs.brush.getWrappedPureComponent().terminate();
+				this.refs.brush.getWrappedComponent().terminate();
 			}
 		}
 	}

@@ -5,7 +5,6 @@ import d3 from "d3";
 import objectAssign from "object-assign";
 
 import PureComponent from "./utils/PureComponent";
-import { isReactVersion13 } from "./utils/utils";
 import { getChartOrigin } from "./utils/ChartDataUtil";
 
 class Chart extends PureComponent {

@@ -5,7 +5,7 @@ import React from "react";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
-import { first } from "../utils/utils";
+import { first } from "../utils";
 
 
 class MACDTooltip extends React.Component {

@@ -28,17 +28,15 @@ THE SOFTWARE.
 
 import d3 from "d3";
 
-import slidingWindow from "../../utils/slidingWindow";
 import ema from "./ema";
-import zipper from "../../utils/zipper";
 
 import { ElderRay as defaultOptions } from "../defaultOptions";
-import { isDefined, isNotDefined, sourceFunctor } from "../../utils/utils";
+import { isDefined, isNotDefined, sourceFunctor, zipper, slidingWindow } from "../../utils";
 
 export default function() {
 
 	var { period: windowSize, source, movingAverageType, ohlc } = defaultOptions;
-	var source = sourceFunctor(source);
+	var source = d3.functor(source);
 
 	function calculator(data) {
 

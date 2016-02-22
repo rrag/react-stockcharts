@@ -1,7 +1,7 @@
 "use strict";
 
 import React from "react";
-import shallowEqual from "./utils/shallowEqual";
+import { shallowEqual } from "./utils";
 
 function getDisplayName(Series) {
 	var name = Series.displayName || Series.name || "Series";
@@ -15,7 +15,7 @@ function pure(PureSeries, contextShape, ignorePropKeys = []) {
 				|| !shallowEqual(this.state, nextState)
 				|| !shallowEqual(this.context, nextContext);
 		}
-		getWrappedPureComponent() {
+		getWrappedComponent() {
 			return this.refs.pureSeries;
 		}
 		render() {

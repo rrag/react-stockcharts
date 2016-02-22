@@ -2,7 +2,7 @@
 
 import d3 from "d3";
 
-import merge from "../utils/merge";
+import { merge } from "../utils";
 import { rsi } from "./algorithm";
 
 import baseIndicator from "./baseIndicator";

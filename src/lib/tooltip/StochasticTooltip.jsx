@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import { first } from "../utils/utils";
+import { first } from "../utils";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 

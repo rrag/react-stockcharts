@@ -2,7 +2,7 @@
 
 import React from "react";
 import makeInteractive from "./makeInteractive";
-import noop from "../utils/noop";
+import { noop } from "../utils";
 
 class ClickCallback extends React.Component {
 	constructor(props) {

@@ -3,10 +3,8 @@
 import React from "react";
 import d3 from "d3";
 
-import identity from "./utils/identity";
-import { last, isDefined, isNotDefined } from "./utils/utils";
-// import shallowEqual from "fbjs/lib/shallowEqual";
-import shallowEqual from "./utils/shallowEqual";
+import { shallowEqual, identity, last, isDefined, isNotDefined } from "./utils";
+
 import EventHandler from "./EventHandler";
 import CanvasContainer from "./CanvasContainer";
 import eodIntervalCalculator from "./scale/eodIntervalCalculator";

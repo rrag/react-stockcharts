@@ -2,16 +2,18 @@
 
 import React from "react";
 import d3 from "d3";
+import flattenDeep from "lodash.flattendeep"
 
 import Chart from "../Chart";
 
-import { flattenData } from "./ScaleUtils";
-import { firstDefined, lastDefined } from "./OverlayUtils";
-import { isDefined, isArray, isObject, flattenDeep, getClosestItem, getClosestItemIndexes, overlayColors, pluck, keysAsArray } from "./utils";
-import zipper from "./zipper";
-import merge from "./merge";
-import slidingWindow from "./slidingWindow";
-
+import {
+	isObject,
+	getClosestItem,
+	getClosestItemIndexes,
+	zipper,
+	merge,
+	slidingWindow,
+} from "./index";
 
 export function getChartOrigin(origin, contextWidth, contextHeight) {
 	var originCoordinates = typeof origin === "function"
@@ -19,6 +21,7 @@ export function getChartOrigin(origin, contextWidth, contextHeight) {
 		: origin;
 	return originCoordinates;
 };
+
 export function getDimensions({width, height}, chartProps) {
 
 	var chartWidth = (chartProps.width || width);
@@ -31,12 +34,6 @@ export function getDimensions({width, height}, chartProps) {
 		height: chartHeight
 	};
 };
-/*export getCurrentCanvasContext(canvasList, chartId) {
-	var canvasContextList = canvasList.filter((each) => parseInt(each.id, 10) === chartId);
-	var canvasContext = canvasContextList.length > 0 ? canvasContextList[0].context : undefined;
-	return canvasContext;
-}*/
-
 
 function values(func) {
 	return (d) => {
@@ -82,8 +79,8 @@ export function getChartConfigWithUpdatedYScales(chartConfig, plotData) {
 		.map(({ yExtents }) => 
 			yExtents.map(eachExtent => 
 				plotData.map(values(eachExtent))))
-		.map(values => flattenDeep(values))
-		.map(values => d3.extent(values));
+		.map(_ => flattenDeep(_))
+		.map(_ => d3.extent(_));
 
 	var combine = zipper()
 		.combine((config, domain) => {

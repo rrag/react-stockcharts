@@ -11,6 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "d3": "^3.5.14",
+    "lodash.flattendeep": "^4.1.0",
     "react": "^0.14.6",
     "react-dom": "^0.14.6",
     "save-svg-as-png": "1.0.2"

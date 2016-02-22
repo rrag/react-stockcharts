@@ -3,7 +3,7 @@
 // common components
 import ChartCanvas from "./lib/ChartCanvas";
 import Chart from "./lib/Chart";
-import DataSeries from "./lib/DataSeries";
+
 import BackgroundText from "./lib/BackgroundText";
 
 // interaction components
@@ -22,14 +22,13 @@ import * as tooltip from "./lib/tooltip";
 import * as helper from "./lib/helper";
 
 import * as interactive from "./lib/interactive";
-import * as Utils from "./lib/utils/utils";
+import * as Utils from "./lib/utils";
 
 const version = "0.3.1";
 
 export {
 	ChartCanvas,
 	Chart,
-	DataSeries,
 	EventCapture,
 	BackgroundText,
 	series,

@@ -1,10 +1,18 @@
 "use strict";
 
-import { first, last, getClosestItemIndexes, isDefined, isNotDefined, isArray } from "../utils/utils";
+import {
+	first,
+	last,
+	getClosestItemIndexes,
+	isDefined,
+	isNotDefined,
+	isArray,
+	slidingWindow,
+	accumulatingWindow,
+	zipper,
+} from "../utils";
+
 import eodIntervalCalculator from "./eodIntervalCalculator";
-import slidingWindow from "../utils/slidingWindow";
-import accumulatingWindow from "../utils/accumulatingWindow";
-import zipper from "../utils/zipper";
 
 function getFilteredResponse(dataForInterval, left, right, xAccessor) {
 	var newLeftIndex = getClosestItemIndexes(dataForInterval, left, xAccessor).right;

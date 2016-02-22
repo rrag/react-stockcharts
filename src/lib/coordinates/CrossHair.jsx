@@ -5,7 +5,7 @@ import objectAssign from "object-assign";
 
 import EdgeCoordinate from "./EdgeCoordinate";
 
-import { hexToRGBA } from "../utils/utils";
+import { hexToRGBA } from "../utils";
 
 class CrossHair extends React.Component {
 	shouldComponentUpdate(nextProps) {

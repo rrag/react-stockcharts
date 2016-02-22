@@ -6,8 +6,7 @@ import d3 from "d3";
 import EdgeCoordinate from "./EdgeCoordinate";
 
 import pure from "../pure";
-import { first, last, displayNumberFormat } from "../utils/utils";
-import shallowEqual from "../utils/shallowEqual";
+import { first, last, shallowEqual } from "../utils";
 
 class EdgeIndicator extends Component {
 	componentDidMount() {
