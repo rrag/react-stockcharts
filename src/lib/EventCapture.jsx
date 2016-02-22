@@ -1,6 +1,6 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
 import { mousePosition, touchPosition } from "./utils";
@@ -24,7 +24,7 @@ function getTouchProps(touch) {
 
 
 
-class EventCapture extends React.Component {
+class EventCapture extends Component {
 	constructor(props) {
 		super(props);
 		this.handleEnter = this.handleEnter.bind(this);
@@ -260,15 +260,15 @@ class EventCapture extends React.Component {
 }
 
 EventCapture.propTypes = {
-	mouseMove: React.PropTypes.bool.isRequired,
-	zoom: React.PropTypes.bool.isRequired,
-	zoomMultiplier: React.PropTypes.number.isRequired,
-	pan: React.PropTypes.bool.isRequired,
-	panSpeedMultiplier: React.PropTypes.number.isRequired,
-	defaultFocus: React.PropTypes.bool.isRequired,
+	mouseMove: PropTypes.bool.isRequired,
+	zoom: PropTypes.bool.isRequired,
+	zoomMultiplier: PropTypes.number.isRequired,
+	pan: PropTypes.bool.isRequired,
+	panSpeedMultiplier: PropTypes.number.isRequired,
+	defaultFocus: PropTypes.bool.isRequired,
 
-	onZoom: React.PropTypes.func,
-	onPan: React.PropTypes.func,
+	onZoom: PropTypes.func,
+	onPan: PropTypes.func,
 };
 
 EventCapture.defaultProps = {
@@ -281,24 +281,24 @@ EventCapture.defaultProps = {
 };
 
 EventCapture.contextTypes = {
-	width: React.PropTypes.number.isRequired,
-	height: React.PropTypes.number.isRequired,
-	panInProgress: React.PropTypes.bool,
-	focus: React.PropTypes.bool.isRequired,
-	chartConfig: React.PropTypes.array,
-	xScale: React.PropTypes.func.isRequired,
-	xAccessor: React.PropTypes.func.isRequired,
-	deltaXY: React.PropTypes.arrayOf(Number),
+	width: PropTypes.number.isRequired,
+	height: PropTypes.number.isRequired,
+	panInProgress: PropTypes.bool,
+	focus: PropTypes.bool.isRequired,
+	chartConfig: PropTypes.array,
+	xScale: PropTypes.func.isRequired,
+	xAccessor: PropTypes.func.isRequired,
+	deltaXY: PropTypes.arrayOf(Number),
 
-	onMouseMove: React.PropTypes.func,
-	onMouseEnter: React.PropTypes.func,
-	onMouseLeave: React.PropTypes.func,
-	onZoom: React.PropTypes.func,
-	onPinchZoom: React.PropTypes.func,
-	onPanStart: React.PropTypes.func,
-	onPan: React.PropTypes.func,
-	onPanEnd: React.PropTypes.func,
-	onFocus: React.PropTypes.func,
+	onMouseMove: PropTypes.func,
+	onMouseEnter: PropTypes.func,
+	onMouseLeave: PropTypes.func,
+	onZoom: PropTypes.func,
+	onPinchZoom: PropTypes.func,
+	onPanStart: PropTypes.func,
+	onPan: PropTypes.func,
+	onPanEnd: PropTypes.func,
+	onFocus: PropTypes.func,
 };
 
 export default EventCapture;

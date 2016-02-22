@@ -1,6 +1,6 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes } from "react";
 import d3 from "d3";
 
 import Axis from "./Axis";
@@ -35,22 +35,22 @@ class YAxis extends PureComponent {
 }
 
 YAxis.propTypes = {
-	axisAt: React.PropTypes.oneOfType([
-		React.PropTypes.oneOf(["left", "right", "middle"]),
-		React.PropTypes.number
+	axisAt: PropTypes.oneOfType([
+		PropTypes.oneOf(["left", "right", "middle"]),
+		PropTypes.number
 	]).isRequired,
-	orient: React.PropTypes.oneOf(["left", "right"]).isRequired,
-	innerTickSize: React.PropTypes.number,
-	outerTickSize: React.PropTypes.number,
-	tickFormat: React.PropTypes.func,
-	tickPadding: React.PropTypes.number,
-	tickSize: React.PropTypes.number,
-	ticks: React.PropTypes.number,
-	tickValues: React.PropTypes.array,
-	percentScale: React.PropTypes.bool,
-	showTicks: React.PropTypes.bool,
-	showDomain: React.PropTypes.bool,
-	className: React.PropTypes.string,
+	orient: PropTypes.oneOf(["left", "right"]).isRequired,
+	innerTickSize: PropTypes.number,
+	outerTickSize: PropTypes.number,
+	tickFormat: PropTypes.func,
+	tickPadding: PropTypes.number,
+	tickSize: PropTypes.number,
+	ticks: PropTypes.number,
+	tickValues: PropTypes.array,
+	percentScale: PropTypes.bool,
+	showTicks: PropTypes.bool,
+	showDomain: PropTypes.bool,
+	className: PropTypes.string,
 };
 YAxis.defaultProps = {
 	showGrid: false,
@@ -59,9 +59,9 @@ YAxis.defaultProps = {
 	ticks: 10,
 };
 YAxis.contextTypes = {
-	chartConfig: React.PropTypes.object.isRequired,
-	xScale: React.PropTypes.func.isRequired,
-	width: React.PropTypes.number.isRequired,
+	chartConfig: PropTypes.object.isRequired,
+	xScale: PropTypes.func.isRequired,
+	width: PropTypes.number.isRequired,
 };
 
 export default YAxis;

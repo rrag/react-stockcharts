@@ -1,6 +1,6 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
 import pure from "../pure";
@@ -8,7 +8,7 @@ import CrossHair from "./CrossHair";
 
 import { isDefined } from "../utils";
 
-class MouseCoordinates extends React.Component {
+class MouseCoordinates extends Component {
 	componentDidMount() {
 		var { chartCanvasType, getCanvasContexts } = this.props;
 
@@ -58,26 +58,26 @@ class MouseCoordinates extends React.Component {
 }
 
 MouseCoordinates.propTypes = {
-	xDisplayFormat: React.PropTypes.func.isRequired,
-	type: React.PropTypes.oneOf(["crosshair"]).isRequired,
+	xDisplayFormat: PropTypes.func.isRequired,
+	type: PropTypes.oneOf(["crosshair"]).isRequired,
 
-	xScale: React.PropTypes.func.isRequired,
-	xAccessor: React.PropTypes.func.isRequired,
-	displayXAccessor: React.PropTypes.func.isRequired,
-	chartCanvasType: React.PropTypes.string,
-	getCanvasContexts: React.PropTypes.func,
-	mouseXY: React.PropTypes.array,
-	currentCharts: React.PropTypes.arrayOf(React.PropTypes.number),
-	chartConfig: React.PropTypes.array.isRequired,
-	currentItem: React.PropTypes.object.isRequired,
-	show: React.PropTypes.bool,
-	stroke: React.PropTypes.string,
-	opacity: React.PropTypes.number,
-	textStroke: React.PropTypes.string,
-	textBGFill: React.PropTypes.string,
-	textBGopacity: React.PropTypes.number,
-	fontFamily: React.PropTypes.string,
-	fontSize: React.PropTypes.number,
+	xScale: PropTypes.func.isRequired,
+	xAccessor: PropTypes.func.isRequired,
+	displayXAccessor: PropTypes.func.isRequired,
+	chartCanvasType: PropTypes.string,
+	getCanvasContexts: PropTypes.func,
+	mouseXY: PropTypes.array,
+	currentCharts: PropTypes.arrayOf(PropTypes.number),
+	chartConfig: PropTypes.array.isRequired,
+	currentItem: PropTypes.object.isRequired,
+	show: PropTypes.bool,
+	stroke: PropTypes.string,
+	opacity: PropTypes.number,
+	textStroke: PropTypes.string,
+	textBGFill: PropTypes.string,
+	textBGopacity: PropTypes.number,
+	fontFamily: PropTypes.string,
+	fontSize: PropTypes.number,
 };
 
 MouseCoordinates.defaultProps = {
@@ -155,21 +155,21 @@ MouseCoordinates.helper = (props, show, xScale, mouseXY, currentCharts, chartCon
 
 // export default MouseCoordinates;
 export default pure(MouseCoordinates, {
-	width: React.PropTypes.number.isRequired,
-	height: React.PropTypes.number.isRequired,
-	margin: React.PropTypes.object.isRequired,
-	show: React.PropTypes.bool,
-	mouseXY: React.PropTypes.array,
+	width: PropTypes.number.isRequired,
+	height: PropTypes.number.isRequired,
+	margin: PropTypes.object.isRequired,
+	show: PropTypes.bool,
+	mouseXY: PropTypes.array,
 
-	xScale: React.PropTypes.func.isRequired,
-	xAccessor: React.PropTypes.func.isRequired,
-	displayXAccessor: React.PropTypes.func.isRequired,
-	chartCanvasType: React.PropTypes.string.isRequired,
-	chartConfig: React.PropTypes.array.isRequired,
-	currentItem: React.PropTypes.object.isRequired,
-	currentCharts: React.PropTypes.arrayOf(React.PropTypes.number),
+	xScale: PropTypes.func.isRequired,
+	xAccessor: PropTypes.func.isRequired,
+	displayXAccessor: PropTypes.func.isRequired,
+	chartCanvasType: PropTypes.string.isRequired,
+	chartConfig: PropTypes.array.isRequired,
+	currentItem: PropTypes.object.isRequired,
+	currentCharts: PropTypes.arrayOf(PropTypes.number),
 
-	getCanvasContexts: React.PropTypes.func,
-	callbackForCanvasDraw: React.PropTypes.func.isRequired,
-	getAllCanvasDrawCallback: React.PropTypes.func,
+	getCanvasContexts: PropTypes.func,
+	callbackForCanvasDraw: PropTypes.func.isRequired,
+	getAllCanvasDrawCallback: PropTypes.func,
 });

@@ -144,7 +144,7 @@ class CandleStickChartWithDarkTheme extends React.Component {
 					<StochasticSeries calculator={fullSTO}
 							stroke={{ top: "#37a600", middle: "#b8ab00", bottom: "#37a600" }}/>
 				</Chart>
-				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
+				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} stroke="#FFFFFF" opacity={0.4} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, -10]}/>

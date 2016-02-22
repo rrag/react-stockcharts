@@ -1,6 +1,6 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 
 import HistogramSeries from "./HistogramSeries";
 import Line from "./Line";
@@ -8,7 +8,7 @@ import StraightLine from "./StraightLine";
 
 import wrap from "./wrap";
 
-class MACDSeries extends React.Component {
+class MACDSeries extends Component {
 	constructor(props) {
 		super(props);
 		this.yAccessorForMACDLine = this.yAccessorForMACDLine.bind(this);
@@ -79,19 +79,19 @@ MACDSeries.getHorizontalLine = (props) => {
 };
 
 /*MACDSeries.childContextTypes = {
-	yAccessor: React.PropTypes.func.isRequired,
+	yAccessor: PropTypes.func.isRequired,
 };
 */
 MACDSeries.propTypes = {
-	className: React.PropTypes.string,
-	xScale: React.PropTypes.func,
-	yScale: React.PropTypes.func,
-	xAccessor: React.PropTypes.func,
-	calculator: React.PropTypes.func.isRequired,
-	plotData: React.PropTypes.array,
-	type: React.PropTypes.string,
-	opacity: React.PropTypes.number,
-	histogramStroke: React.PropTypes.bool,
+	className: PropTypes.string,
+	xScale: PropTypes.func,
+	yScale: PropTypes.func,
+	xAccessor: PropTypes.func,
+	calculator: PropTypes.func.isRequired,
+	plotData: PropTypes.array,
+	type: PropTypes.string,
+	opacity: PropTypes.number,
+	histogramStroke: PropTypes.bool,
 };
 
 MACDSeries.defaultProps = {

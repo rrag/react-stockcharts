@@ -1,6 +1,6 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 
 import HistogramSeries from "./HistogramSeries";
 import StackedHistogramSeries from "./StackedHistogramSeries";
@@ -8,7 +8,7 @@ import StraightLine from "./StraightLine";
 
 import wrap from "./wrap";
 
-class ElderRaySeries extends React.Component {
+class ElderRaySeries extends Component {
 	constructor(props) {
 		super(props);
 		this.yAccessorTop = this.yAccessorTop.bind(this);
@@ -77,15 +77,15 @@ class ElderRaySeries extends React.Component {
 */
 
 ElderRaySeries.propTypes = {
-	className: React.PropTypes.string,
-	xScale: React.PropTypes.func,
-	yScale: React.PropTypes.func,
-	xAccessor: React.PropTypes.func,
-	calculator: React.PropTypes.func.isRequired,
-	plotData: React.PropTypes.array,
-	type: React.PropTypes.string,
-	opacity: React.PropTypes.number,
-	histogramStroke: React.PropTypes.bool,
+	className: PropTypes.string,
+	xScale: PropTypes.func,
+	yScale: PropTypes.func,
+	xAccessor: PropTypes.func,
+	calculator: PropTypes.func.isRequired,
+	plotData: PropTypes.array,
+	type: PropTypes.string,
+	opacity: PropTypes.number,
+	histogramStroke: PropTypes.bool,
 };
 
 ElderRaySeries.defaultProps = {

@@ -1,11 +1,11 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 
 import wrap from "./wrap";
 import { hexToRGBA } from "../utils";
 
-class StraightLine extends React.Component {
+class StraightLine extends Component {
 	render() {
 		var { props } = this;
 		var { stroke, className, opacity } = props;
@@ -24,13 +24,13 @@ class StraightLine extends React.Component {
 }
 
 StraightLine.propTypes = {
-	className: React.PropTypes.string,
-	xScale: React.PropTypes.func.isRequired,
-	yScale: React.PropTypes.func.isRequired,
-	xAccessor: React.PropTypes.func.isRequired,
-	stroke: React.PropTypes.string,
-	opacity: React.PropTypes.number.isRequired,
-	yValue: React.PropTypes.number.isRequired,
+	className: PropTypes.string,
+	xScale: PropTypes.func.isRequired,
+	yScale: PropTypes.func.isRequired,
+	xAccessor: PropTypes.func.isRequired,
+	stroke: PropTypes.string,
+	opacity: PropTypes.number.isRequired,
+	yValue: PropTypes.number.isRequired,
 };
 
 StraightLine.defaultProps = {

@@ -1,7 +1,6 @@
 "use strict";
 
-import React from "react";
-import objectAssign from "object-assign";
+import React, { PropTypes, Component } from "react";
 
 import pure from "../pure";
 
@@ -16,7 +15,7 @@ function capitalizeFirst(str) {
 
 export default function makeInteractive(InteractiveComponent, subscription = [], initialState, reDrawOnPan = true) {
 
-	class InteractiveComponentWrapper extends React.Component {
+	class InteractiveComponentWrapper extends Component {
 		constructor(props) {
 			super(props);
 			this.subscription = this.subscription.bind(this);
@@ -84,15 +83,16 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 		}
 		componentDidUpdate() {
 			// console.log("Update");
+
 			var callback = InteractiveComponent.drawOnCanvas;
 
 			if (callback) {
 				var { getCanvasContexts, chartCanvasType, plotData, chartConfig, xScale, show } = this.props;
 				if (chartCanvasType !== "svg") {
 
-					var contexts = getCanvasContexts();
 					var { defaultProps } = InteractiveComponent;
-					var props = objectAssign({}, defaultProps, this.props);
+					var props = { ...defaultProps, ...this.props };
+					var contexts = getCanvasContexts();
 					var { interactive } = this.getInteractiveState(this.props);
 
 					// console.log(interactive);
@@ -116,8 +116,8 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 			var callback = InteractiveComponent.drawOnCanvas;
 
 			if (reDrawOnPan && callback) {
-				var { defaultProps } = InteractiveComponent;
-				var props = objectAssign({}, defaultProps, nextProps);
+				// var { defaultProps } = ;
+				var props = { ...InteractiveComponent.defaultProps, ...nextProps };
 
 				var draw = InteractiveComponentWrapper.drawOnCanvas.bind(null, callback,
 					props, this.getInteractiveState(nextProps).interactive);
@@ -180,31 +180,31 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 	};
 
 	InteractiveComponentWrapper.propTypes = {
-		id: React.PropTypes.number.isRequired,
-		enabled: React.PropTypes.bool.isRequired,
+		id: PropTypes.number.isRequired,
+		enabled: PropTypes.bool.isRequired,
 	};
 
 	return pure(InteractiveComponentWrapper, {
-		chartId: React.PropTypes.number.isRequired,
-		interactiveState: React.PropTypes.array.isRequired,
-		getCanvasContexts: React.PropTypes.func,
-		callbackForCanvasDraw: React.PropTypes.func.isRequired,
-		getAllCanvasDrawCallback: React.PropTypes.func,
-		chartCanvasType: React.PropTypes.string.isRequired,
-		subscribe: React.PropTypes.func.isRequired,
-		setInteractiveState: React.PropTypes.func.isRequired,
-		unsubscribe: React.PropTypes.func.isRequired,
-		plotData: React.PropTypes.array.isRequired,
-		xAccessor: React.PropTypes.func.isRequired,
-		xScale: React.PropTypes.func.isRequired,
-		chartConfig: React.PropTypes.object.isRequired,
-		currentItem: React.PropTypes.object.isRequired,
-		canvasOriginX: React.PropTypes.number,
-		canvasOriginY: React.PropTypes.number,
-		height: React.PropTypes.number.isRequired,
-		width: React.PropTypes.number.isRequired,
-		show: React.PropTypes.bool.isRequired,
-		displayXAccessor: React.PropTypes.func.isRequired,
+		chartId: PropTypes.number.isRequired,
+		interactiveState: PropTypes.array.isRequired,
+		getCanvasContexts: PropTypes.func,
+		callbackForCanvasDraw: PropTypes.func.isRequired,
+		getAllCanvasDrawCallback: PropTypes.func,
+		chartCanvasType: PropTypes.string.isRequired,
+		subscribe: PropTypes.func.isRequired,
+		setInteractiveState: PropTypes.func.isRequired,
+		unsubscribe: PropTypes.func.isRequired,
+		plotData: PropTypes.array.isRequired,
+		xAccessor: PropTypes.func.isRequired,
+		xScale: PropTypes.func.isRequired,
+		chartConfig: PropTypes.object.isRequired,
+		currentItem: PropTypes.object.isRequired,
+		canvasOriginX: PropTypes.number,
+		canvasOriginY: PropTypes.number,
+		height: PropTypes.number.isRequired,
+		width: PropTypes.number.isRequired,
+		show: PropTypes.bool.isRequired,
+		displayXAccessor: PropTypes.func.isRequired,
 	});
 }
 

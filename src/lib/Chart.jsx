@@ -1,8 +1,7 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes } from "react";
 import d3 from "d3";
-import objectAssign from "object-assign";
 
 import PureComponent from "./utils/PureComponent";
 import { getChartOrigin } from "./utils/ChartDataUtil";
@@ -34,23 +33,23 @@ class Chart extends PureComponent {
 }
 
 Chart.propTypes = {
-	height: React.PropTypes.number,
-	width: React.PropTypes.number,
-	origin: React.PropTypes.oneOfType([
-		React.PropTypes.array,
-		React.PropTypes.func
+	height: PropTypes.number,
+	width: PropTypes.number,
+	origin: PropTypes.oneOfType([
+		PropTypes.array,
+		PropTypes.func
 	]).isRequired,
-	id: React.PropTypes.number.isRequired,
-	yExtents: React.PropTypes.oneOfType([
-		React.PropTypes.array,
-		React.PropTypes.func
+	id: PropTypes.number.isRequired,
+	yExtents: PropTypes.oneOfType([
+		PropTypes.array,
+		PropTypes.func
 	]).isRequired,
-	yScale: React.PropTypes.func.isRequired,
-	yMousePointerDisplayLocation: React.PropTypes.oneOf(["left", "right"]),
-	yMousePointerDisplayFormat: React.PropTypes.func,
-	padding: React.PropTypes.shape({
-		top: React.PropTypes.number,
-		bottom: React.PropTypes.number,
+	yScale: PropTypes.func.isRequired,
+	yMousePointerDisplayLocation: PropTypes.oneOf(["left", "right"]),
+	yMousePointerDisplayFormat: PropTypes.func,
+	padding: PropTypes.shape({
+		top: PropTypes.number,
+		bottom: PropTypes.number,
 	}).isRequired,
 
 };
@@ -63,24 +62,24 @@ Chart.defaultProps = {
 };
 
 Chart.contextTypes = {
-	width: React.PropTypes.number.isRequired,
-	height: React.PropTypes.number.isRequired,
-	chartConfig: React.PropTypes.array,
-	margin: React.PropTypes.object.isRequired,
-	interactiveState: React.PropTypes.array.isRequired,
-	currentItem: React.PropTypes.object.isRequired,
-	mouseXY: React.PropTypes.array,
-	show: React.PropTypes.bool,
+	width: PropTypes.number.isRequired,
+	height: PropTypes.number.isRequired,
+	chartConfig: PropTypes.array,
+	margin: PropTypes.object.isRequired,
+	interactiveState: PropTypes.array.isRequired,
+	currentItem: PropTypes.object.isRequired,
+	mouseXY: PropTypes.array,
+	show: PropTypes.bool,
 	// adding here even when this is not used by Chart, refer to https://github.com/facebook/react/issues/2517
 };
 
 Chart.childContextTypes = {
-	height: React.PropTypes.number,
-	width: React.PropTypes.number,
-	chartConfig: React.PropTypes.object.isRequired,
-	canvasOriginX: React.PropTypes.number,
-	canvasOriginY: React.PropTypes.number,
-	chartId: React.PropTypes.number.isRequired,
+	height: PropTypes.number,
+	width: PropTypes.number,
+	chartConfig: PropTypes.object.isRequired,
+	canvasOriginX: PropTypes.number,
+	canvasOriginY: PropTypes.number,
+	chartId: PropTypes.number.isRequired,
 };
 
 export default Chart;

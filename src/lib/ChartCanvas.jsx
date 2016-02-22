@@ -1,6 +1,6 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
 import { shallowEqual, identity, last, isDefined, isNotDefined } from "./utils";
@@ -94,7 +94,7 @@ function calculateState(props) {
 	};
 }
 
-class ChartCanvas extends React.Component {
+class ChartCanvas extends Component {
 	constructor() {
 		super();
 		this.getDataInfo = this.getDataInfo.bind(this);
@@ -165,12 +165,12 @@ class ChartCanvas extends React.Component {
 						}
 					]]>`;
 
-		var { interval, data, type, height, width, margin, className, zIndex, postCalculator } = this.props;
+		var { interval, data, type, height, width, margin, className, zIndex, postCalculator, padding } = this.props;
 		var { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor, dataAltered } = this.state;
 
 		// console.log(data);
 		var dimensions = getDimensions(this.props);
-		var props = { interval, type, margin, postCalculator };
+		var props = { padding, interval, type, margin, postCalculator };
 		var stateProps = { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor, dataAltered };
 		return (
 			<div style={{ position: "relative", height: height, width: width }} className={className} >
@@ -209,29 +209,33 @@ class ChartCanvas extends React.Component {
 */
 
 ChartCanvas.propTypes = {
-	width: React.PropTypes.number.isRequired,
-	height: React.PropTypes.number.isRequired,
-	margin: React.PropTypes.object,
-	interval: React.PropTypes.oneOf(["D", "W", "M"]), // ,"m1", "m5", "m15", "W", "M"
-	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
-	data: React.PropTypes.array.isRequired,
-	initialDisplay: React.PropTypes.number,
-	dataPreProcessor: React.PropTypes.func.isRequired,
-	calculator: React.PropTypes.arrayOf(React.PropTypes.func).isRequired,
-	xAccessor: React.PropTypes.func.isRequired,
-	xExtents: React.PropTypes.oneOfType([
-		React.PropTypes.arrayOf(React.PropTypes.func),
-		React.PropTypes.arrayOf(React.PropTypes.number),
-		React.PropTypes.arrayOf(React.PropTypes.instanceOf(Date)),
-		React.PropTypes.func,
+	width: PropTypes.number.isRequired,
+	height: PropTypes.number.isRequired,
+	margin: PropTypes.object,
+	interval: PropTypes.oneOf(["D", "W", "M"]), // ,"m1", "m5", "m15", "W", "M"
+	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	data: PropTypes.array.isRequired,
+	initialDisplay: PropTypes.number,
+	dataPreProcessor: PropTypes.func.isRequired,
+	calculator: PropTypes.arrayOf(PropTypes.func).isRequired,
+	xAccessor: PropTypes.func.isRequired,
+	xExtents: PropTypes.oneOfType([
+		PropTypes.arrayOf(PropTypes.func),
+		PropTypes.arrayOf(PropTypes.number),
+		PropTypes.arrayOf(PropTypes.instanceOf(Date)),
+		PropTypes.func,
 	]),
-	xScale: React.PropTypes.func.isRequired,
-	className: React.PropTypes.string,
-	seriesName: React.PropTypes.string.isRequired,
-	zIndex: React.PropTypes.number,
-	children: React.PropTypes.node.isRequired,
-	discontinous: React.PropTypes.bool.isRequired,
-	postCalculator: React.PropTypes.func.isRequired,
+	xScale: PropTypes.func.isRequired,
+	className: PropTypes.string,
+	seriesName: PropTypes.string.isRequired,
+	zIndex: PropTypes.number,
+	children: PropTypes.node.isRequired,
+	discontinous: PropTypes.bool.isRequired,
+	postCalculator: PropTypes.func.isRequired,
+	padding: PropTypes.shape({
+		left: PropTypes.number,
+		right: PropTypes.number,
+	}).isRequired,
 };
 
 ChartCanvas.defaultProps = {
@@ -249,11 +253,12 @@ ChartCanvas.defaultProps = {
 	dataEvaluator: evaluator,
 	discontinous: false,
 	postCalculator: identity,
+	padding: { left: 0, right: 0 },
 	// initialDisplay: 30
 };
 
 ChartCanvas.childContextTypes = {
-	displayXAccessor: React.PropTypes.func.isRequired,
+	displayXAccessor: PropTypes.func.isRequired,
 }
 
 ChartCanvas.ohlcv = d => ({date:d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume});

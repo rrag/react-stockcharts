@@ -1,8 +1,8 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 
-class ToolTipText extends React.Component {
+class ToolTipText extends Component {
 	render() {
 		return <text
 			fontFamily={this.props.fontFamily}
@@ -13,9 +13,9 @@ class ToolTipText extends React.Component {
 }
 
 ToolTipText.propTypes = {
-	fontFamily: React.PropTypes.string.isRequired,
-	fontSize: React.PropTypes.number.isRequired,
-	children: React.PropTypes.node.isRequired,
+	fontFamily: PropTypes.string.isRequired,
+	fontSize: PropTypes.number.isRequired,
+	children: PropTypes.node.isRequired,
 };
 
 ToolTipText.defaultProps = {

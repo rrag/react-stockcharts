@@ -1,6 +1,6 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 import { shallowEqual } from "./utils";
 
 function getDisplayName(Series) {
@@ -9,7 +9,7 @@ function getDisplayName(Series) {
 }
 
 function pure(PureSeries, contextShape, ignorePropKeys = []) {
-	class PureCanvasSeries extends React.Component {
+	class PureCanvasSeries extends Component {
 		shouldComponentUpdate(nextProps, nextState, nextContext) {
 			return !shallowEqual(this.props, nextProps)
 				|| !shallowEqual(this.state, nextState)

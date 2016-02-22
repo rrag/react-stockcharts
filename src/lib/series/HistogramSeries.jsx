@@ -1,13 +1,13 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 
 import StackedHistogramSeries from "./StackedHistogramSeries";
 import wrap from "./wrap";
 
 import { identity, hexToRGBA } from "../utils";
 
-class HistogramSeries extends React.Component {
+class HistogramSeries extends Component {
 	render() {
 		var { yAccessor, yAccessorNarrow } = this.props;
 		return <StackedHistogramSeries {...this.props} yAccessor={[yAccessor]} yAccessorNarrow={[yAccessorNarrow]}/>;
@@ -15,27 +15,27 @@ class HistogramSeries extends React.Component {
 }
 
 HistogramSeries.propTypes = {
-	baseAt: React.PropTypes.oneOfType([
-		React.PropTypes.oneOf(["top", "bottom", "middle"]),
-		React.PropTypes.number,
-		React.PropTypes.func,
+	baseAt: PropTypes.oneOfType([
+		PropTypes.oneOf(["top", "bottom", "middle"]),
+		PropTypes.number,
+		PropTypes.func,
 	]).isRequired,
-	direction: React.PropTypes.oneOf(["up", "down"]).isRequired,
-	stroke: React.PropTypes.bool.isRequired,
-	widthRatio: React.PropTypes.number.isRequired,
-	opacity: React.PropTypes.number.isRequired,
-	fill: React.PropTypes.oneOfType([
-		React.PropTypes.func, React.PropTypes.string
+	direction: PropTypes.oneOf(["up", "down"]).isRequired,
+	stroke: PropTypes.bool.isRequired,
+	widthRatio: PropTypes.number.isRequired,
+	opacity: PropTypes.number.isRequired,
+	fill: PropTypes.oneOfType([
+		PropTypes.func, PropTypes.string
 	]).isRequired,
-	className: React.PropTypes.oneOfType([
-		React.PropTypes.func, React.PropTypes.string
+	className: PropTypes.oneOfType([
+		PropTypes.func, PropTypes.string
 	]).isRequired,
-	xAccessor: React.PropTypes.func,
-	yAccessor: React.PropTypes.func.isRequired,
-	yAccessorNarrow: React.PropTypes.func,
-	xScale: React.PropTypes.func,
-	yScale: React.PropTypes.func,
-	plotData: React.PropTypes.array,
+	xAccessor: PropTypes.func,
+	yAccessor: PropTypes.func.isRequired,
+	yAccessorNarrow: PropTypes.func,
+	xScale: PropTypes.func,
+	yScale: PropTypes.func,
+	plotData: PropTypes.array,
 };
 
 HistogramSeries.defaultProps = {

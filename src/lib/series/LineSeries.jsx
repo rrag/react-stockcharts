@@ -1,11 +1,11 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 import Line from "./Line";
 
 import wrap from "./wrap";
 
-class LineSeries extends React.Component {
+class LineSeries extends Component {
 	render() {
 		var { props } = this;
 		let { className, xScale, yScale, xAccessor, yAccessor, plotData, stroke, type } = props;
@@ -22,7 +22,7 @@ class LineSeries extends React.Component {
 }
 
 LineSeries.propTypes = {
-	className: React.PropTypes.string,
+	className: PropTypes.string,
 };
 
 LineSeries.defaultProps = {

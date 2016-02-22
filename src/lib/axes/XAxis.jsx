@@ -1,6 +1,6 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes } from "react";
 import Axis from "./Axis";
 import PureComponent from "../utils/PureComponent";
 
@@ -30,20 +30,20 @@ class XAxis extends PureComponent {
 }
 
 XAxis.propTypes = {
-	axisAt: React.PropTypes.oneOfType([
-		React.PropTypes.oneOf(["top", "bottom", "middle"]),
-		React.PropTypes.number
+	axisAt: PropTypes.oneOfType([
+		PropTypes.oneOf(["top", "bottom", "middle"]),
+		PropTypes.number
 	]).isRequired,
-	orient: React.PropTypes.oneOf(["top", "bottom"]).isRequired,
-	innerTickSize: React.PropTypes.number,
-	outerTickSize: React.PropTypes.number,
-	tickFormat: React.PropTypes.func,
-	tickPadding: React.PropTypes.number,
-	tickSize: React.PropTypes.number,
-	ticks: React.PropTypes.number,
-	tickValues: React.PropTypes.array,
-	showTicks: React.PropTypes.bool,
-	className: React.PropTypes.string,
+	orient: PropTypes.oneOf(["top", "bottom"]).isRequired,
+	innerTickSize: PropTypes.number,
+	outerTickSize: PropTypes.number,
+	tickFormat: PropTypes.func,
+	tickPadding: PropTypes.number,
+	tickSize: PropTypes.number,
+	ticks: PropTypes.number,
+	tickValues: PropTypes.array,
+	showTicks: PropTypes.bool,
+	className: PropTypes.string,
 };
 XAxis.defaultProps = {
 	showGrid: false,
@@ -53,10 +53,10 @@ XAxis.defaultProps = {
 };
 
 XAxis.contextTypes = {
-	xScale: React.PropTypes.func.isRequired,
-	chartConfig: React.PropTypes.object.isRequired,
-	height: React.PropTypes.number.isRequired,
-	width: React.PropTypes.number.isRequired,
+	xScale: PropTypes.func.isRequired,
+	chartConfig: PropTypes.object.isRequired,
+	height: PropTypes.number.isRequired,
+	width: PropTypes.number.isRequired,
 };
 
 export default XAxis;

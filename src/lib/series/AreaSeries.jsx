@@ -1,13 +1,13 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 
 import Line from "./Line";
 import Area from "./Area";
 
 import wrap from "./wrap";
 
-class AreaSeries extends React.Component {
+class AreaSeries extends Component {
 	render() {
 		var { props } = this;
 		var { className, xScale, yScale, xAccessor, yAccessor, plotData, type, stroke, fill, baseAt } = props;
@@ -35,10 +35,10 @@ class AreaSeries extends React.Component {
 }
 
 AreaSeries.propTypes = {
-	stroke: React.PropTypes.string,
-	fill: React.PropTypes.string.isRequired,
-	opacity: React.PropTypes.number.isRequired,
-	className: React.PropTypes.string,
+	stroke: PropTypes.string,
+	fill: PropTypes.string.isRequired,
+	opacity: PropTypes.number.isRequired,
+	className: PropTypes.string,
 };
 
 AreaSeries.defaultProps = {

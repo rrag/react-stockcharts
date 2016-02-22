@@ -1,9 +1,8 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes } from "react";
 
 import PureComponent from "../utils/PureComponent";
-import objectAssign from "object-assign";
 
 class TooltipContainer extends PureComponent {
 	render() {
@@ -16,8 +15,8 @@ class TooltipContainer extends PureComponent {
 }
 
 TooltipContainer.contextTypes = {
-	chartConfig: React.PropTypes.array.isRequired,
-	currentItem: React.PropTypes.object.isRequired,
+	chartConfig: PropTypes.array.isRequired,
+	currentItem: PropTypes.object.isRequired,
 };
 
 export default TooltipContainer;

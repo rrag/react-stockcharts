@@ -1,6 +1,6 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 
 import Chart from "./Chart";
 
@@ -60,7 +60,7 @@ function isLastItemVisible(fullData, plotData) {
 	return visible;
 }
 
-class EventHandler extends React.Component {
+class EventHandler extends Component {
 	constructor(props, context) {
 		super(props, context);
 		this.handleMouseMove = this.handleMouseMove.bind(this);
@@ -188,7 +188,7 @@ class EventHandler extends React.Component {
 			};
 		}
 
-		if (!!newState) {
+		if (isDefined(newState)) {
 			if (!this.state.panInProgress) {
 				this.clearBothCanvas(nextProps);
 				this.clearInteractiveCanvas(nextProps);
@@ -609,8 +609,8 @@ class EventHandler extends React.Component {
 			panInProgress: false,
 			panStartXScale: null,
 			interactiveState,
-		}, () => {
-			if (!!callbackList) callbackList.forEach(callback => callback());
+		}, _ => {
+			if (isDefined(callbackList)) callbackList.forEach(callback => callback());
 		});
 	}
 	setInteractiveState(interactiveState) {
@@ -669,60 +669,60 @@ class EventHandler extends React.Component {
 }
 
 EventHandler.childContextTypes = {
-	plotData: React.PropTypes.array,
-	chartConfig: React.PropTypes.arrayOf(
-		React.PropTypes.shape({
-			id: React.PropTypes.number.isRequired,
-			origin: React.PropTypes.arrayOf(React.PropTypes.number).isRequired,
-			padding: React.PropTypes.shape({
-				top: React.PropTypes.number,
-				bottom: React.PropTypes.number,
+	plotData: PropTypes.array,
+	chartConfig: PropTypes.arrayOf(
+		PropTypes.shape({
+			id: PropTypes.number.isRequired,
+			origin: PropTypes.arrayOf(PropTypes.number).isRequired,
+			padding: PropTypes.shape({
+				top: PropTypes.number,
+				bottom: PropTypes.number,
 			}),
-			yExtents: React.PropTypes.arrayOf(React.PropTypes.func).isRequired,
-			yScale: React.PropTypes.func.isRequired,
-			mouseCoordinates: React.PropTypes.shape({
-				at: React.PropTypes.string,
-				format: React.PropTypes.func
+			yExtents: PropTypes.arrayOf(PropTypes.func).isRequired,
+			yScale: PropTypes.func.isRequired,
+			mouseCoordinates: PropTypes.shape({
+				at: PropTypes.string,
+				format: PropTypes.func
 			}),
-			width: React.PropTypes.number.isRequired,
-			height: React.PropTypes.number.isRequired,
+			width: PropTypes.number.isRequired,
+			height: PropTypes.number.isRequired,
 		})
 	).isRequired,
-	xScale: React.PropTypes.func.isRequired,
-	xAccessor: React.PropTypes.func.isRequired,
-	currentItem: React.PropTypes.object,
-	show: React.PropTypes.bool,
-	mouseXY: React.PropTypes.array,
-	interval: React.PropTypes.string,
-	currentCharts: React.PropTypes.array,
-	mainChart: React.PropTypes.number,
-	width: React.PropTypes.number.isRequired,
-	height: React.PropTypes.number.isRequired,
-	chartCanvasType: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
-	dateAccessor: React.PropTypes.func,
+	xScale: PropTypes.func.isRequired,
+	xAccessor: PropTypes.func.isRequired,
+	currentItem: PropTypes.object,
+	show: PropTypes.bool,
+	mouseXY: PropTypes.array,
+	interval: PropTypes.string,
+	currentCharts: PropTypes.array,
+	mainChart: PropTypes.number,
+	width: PropTypes.number.isRequired,
+	height: PropTypes.number.isRequired,
+	chartCanvasType: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	dateAccessor: PropTypes.func,
 
-	margin: React.PropTypes.object.isRequired,
-	dataTransform: React.PropTypes.array,
-	interactiveState: React.PropTypes.array.isRequired,
+	margin: PropTypes.object.isRequired,
+	dataTransform: PropTypes.array,
+	interactiveState: PropTypes.array.isRequired,
 
-	subscribe: React.PropTypes.func,
-	unsubscribe: React.PropTypes.func,
-	setInteractiveState: React.PropTypes.func,
-	callbackForCanvasDraw: React.PropTypes.func,
-	getAllCanvasDrawCallback: React.PropTypes.func,
-	getCanvasContexts: React.PropTypes.func,
-	onMouseMove: React.PropTypes.func,
-	onMouseEnter: React.PropTypes.func,
-	onMouseLeave: React.PropTypes.func,
-	onZoom: React.PropTypes.func,
-	onPinchZoom: React.PropTypes.func,
-	onPanStart: React.PropTypes.func,
-	onPan: React.PropTypes.func,
-	onPanEnd: React.PropTypes.func,
-	panInProgress: React.PropTypes.bool.isRequired,
-	focus: React.PropTypes.bool.isRequired,
-	onFocus: React.PropTypes.func,
-	deltaXY: React.PropTypes.arrayOf(Number),
+	subscribe: PropTypes.func,
+	unsubscribe: PropTypes.func,
+	setInteractiveState: PropTypes.func,
+	callbackForCanvasDraw: PropTypes.func,
+	getAllCanvasDrawCallback: PropTypes.func,
+	getCanvasContexts: PropTypes.func,
+	onMouseMove: PropTypes.func,
+	onMouseEnter: PropTypes.func,
+	onMouseLeave: PropTypes.func,
+	onZoom: PropTypes.func,
+	onPinchZoom: PropTypes.func,
+	onPanStart: PropTypes.func,
+	onPan: PropTypes.func,
+	onPanEnd: PropTypes.func,
+	panInProgress: PropTypes.bool.isRequired,
+	focus: PropTypes.bool.isRequired,
+	onFocus: PropTypes.func,
+	deltaXY: PropTypes.arrayOf(Number),
 };
 
 export default EventHandler;

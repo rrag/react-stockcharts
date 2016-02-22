@@ -1,13 +1,13 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
 import { first, isDefined } from "../utils";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
-class OHLCTooltip extends React.Component {
+class OHLCTooltip extends Component {
 	render() {
 		var { forChart, onClick, xDisplayFormat, fontFamily, fontSize, accessor, volumeFormat, ohlcFormat } = this.props;
 
@@ -54,25 +54,25 @@ class OHLCTooltip extends React.Component {
 }
 
 OHLCTooltip.contextTypes = {
-	chartConfig: React.PropTypes.array.isRequired,
-	currentItem: React.PropTypes.object.isRequired,
-	width: React.PropTypes.number.isRequired,
-	height: React.PropTypes.number.isRequired,
+	chartConfig: PropTypes.array.isRequired,
+	currentItem: PropTypes.object.isRequired,
+	width: PropTypes.number.isRequired,
+	height: PropTypes.number.isRequired,
 };
 
 OHLCTooltip.propTypes = {
-	forChart: React.PropTypes.number.isRequired,
-	accessor: React.PropTypes.func.isRequired,
-	xDisplayFormat: React.PropTypes.func.isRequired,
-	ohlcFormat: React.PropTypes.func.isRequired,
-	origin: React.PropTypes.oneOfType([
-		React.PropTypes.array,
-		React.PropTypes.func
+	forChart: PropTypes.number.isRequired,
+	accessor: PropTypes.func.isRequired,
+	xDisplayFormat: PropTypes.func.isRequired,
+	ohlcFormat: PropTypes.func.isRequired,
+	origin: PropTypes.oneOfType([
+		PropTypes.array,
+		PropTypes.func
 	]).isRequired,
-	fontFamily: React.PropTypes.string,
-	fontSize: React.PropTypes.number,
-	onClick: React.PropTypes.func,
-	volumeFormat: React.PropTypes.func,
+	fontFamily: PropTypes.string,
+	fontSize: PropTypes.number,
+	onClick: PropTypes.func,
+	volumeFormat: PropTypes.func,
 };
 
 OHLCTooltip.defaultProps = {

@@ -1,11 +1,11 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 import wrap from "./wrap";
 
 import { isDefined, isNotDefined } from "../utils";
 
-class RenkoSeries extends React.Component {
+class RenkoSeries extends Component {
 	render() {
 		var { props } = this;
 		var { plotData, xScale, xAccessor, yScale, yAccessor } = props;
@@ -29,17 +29,17 @@ class RenkoSeries extends React.Component {
 }
 
 RenkoSeries.propTypes = {
-	classNames: React.PropTypes.shape({
-		up: React.PropTypes.string,
-		down: React.PropTypes.string
+	classNames: PropTypes.shape({
+		up: PropTypes.string,
+		down: PropTypes.string
 	}),
-	stroke: React.PropTypes.shape({
-		up: React.PropTypes.string,
-		down: React.PropTypes.string
+	stroke: PropTypes.shape({
+		up: PropTypes.string,
+		down: PropTypes.string
 	}),
-	fill: React.PropTypes.shape({
-		up: React.PropTypes.string,
-		down: React.PropTypes.string
+	fill: PropTypes.shape({
+		up: PropTypes.string,
+		down: PropTypes.string
 	}),
 };
 

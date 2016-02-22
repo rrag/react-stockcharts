@@ -1,8 +1,7 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 import d3 from "d3";
-import objectAssign from "object-assign";
 
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
@@ -10,14 +9,14 @@ import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 import { first } from "../utils";
 import { getChartDataForChart, getCurrentItemForChart } from "../utils/ChartDataUtil";
 
-class SingleMAToolTip extends React.Component {
+class SingleMAToolTip extends Component {
 	constructor(props) {
 		super(props);
 		this.handleClick = this.handleClick.bind(this);
 	}
 	handleClick(e) {
 		var { onClick, forChart, options } = this.props;
-		onClick(objectAssign({ chartId: forChart }, options), e);
+		onClick({ chartId: forChart, ...options }, e);
 	}
 	render() {
 		var translate = "translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")";
@@ -38,18 +37,18 @@ class SingleMAToolTip extends React.Component {
 }
 
 SingleMAToolTip.propTypes = {
-	origin: React.PropTypes.array.isRequired,
-	color: React.PropTypes.string.isRequired,
-	displayName: React.PropTypes.string.isRequired,
-	value: React.PropTypes.string.isRequired,
-	onClick: React.PropTypes.func,
-	fontFamily: React.PropTypes.string,
-	fontSize: React.PropTypes.number,
-	forChart: React.PropTypes.number.isRequired,
-	options: React.PropTypes.object.isRequired,
+	origin: PropTypes.array.isRequired,
+	color: PropTypes.string.isRequired,
+	displayName: PropTypes.string.isRequired,
+	value: PropTypes.string.isRequired,
+	onClick: PropTypes.func,
+	fontFamily: PropTypes.string,
+	fontSize: PropTypes.number,
+	forChart: PropTypes.number.isRequired,
+	options: PropTypes.object.isRequired,
 };
 
-class MovingAverageTooltip extends React.Component {
+class MovingAverageTooltip extends Component {
 	render() {
 		var { chartConfig, currentItem, width, height } = this.context;
 
@@ -91,23 +90,23 @@ class MovingAverageTooltip extends React.Component {
 }
 
 MovingAverageTooltip.contextTypes = {
-	chartConfig: React.PropTypes.array.isRequired,
-	currentItem: React.PropTypes.object.isRequired,
-	width: React.PropTypes.number.isRequired,
-	height: React.PropTypes.number.isRequired,
+	chartConfig: PropTypes.array.isRequired,
+	currentItem: PropTypes.object.isRequired,
+	width: PropTypes.number.isRequired,
+	height: PropTypes.number.isRequired,
 };
 
 MovingAverageTooltip.propTypes = {
-	className: React.PropTypes.string,
-	forChart: React.PropTypes.number.isRequired,
-	displayFormat: React.PropTypes.func.isRequired,
-	origin: React.PropTypes.array.isRequired,
-	onClick: React.PropTypes.func,
-	fontFamily: React.PropTypes.string,
-	fontSize: React.PropTypes.number,
-	width: React.PropTypes.number,
-	calculators: React.PropTypes.array.isRequired,
-	forDataSeries: React.PropTypes.arrayOf(React.PropTypes.number),
+	className: PropTypes.string,
+	forChart: PropTypes.number.isRequired,
+	displayFormat: PropTypes.func.isRequired,
+	origin: PropTypes.array.isRequired,
+	onClick: PropTypes.func,
+	fontFamily: PropTypes.string,
+	fontSize: PropTypes.number,
+	width: PropTypes.number,
+	calculators: PropTypes.array.isRequired,
+	forDataSeries: PropTypes.arrayOf(PropTypes.number),
 };
 
 MovingAverageTooltip.defaultProps = {

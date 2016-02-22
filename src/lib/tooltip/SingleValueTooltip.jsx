@@ -1,12 +1,12 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 import { first, isDefined, identity, noop } from "../utils";
 
-class SingleValueTooltip extends React.Component {
+class SingleValueTooltip extends Component {
 	render() {
 
 		var { forChart, onClick, fontFamily, fontSize, labelStroke, valueStroke, displayFormat } = this.props;
@@ -39,32 +39,32 @@ class SingleValueTooltip extends React.Component {
 }
 
 SingleValueTooltip.contextTypes = {
-	chartConfig: React.PropTypes.array.isRequired,
-	currentItem: React.PropTypes.object.isRequired,
-	width: React.PropTypes.number.isRequired,
-	height: React.PropTypes.number.isRequired,
+	chartConfig: PropTypes.array.isRequired,
+	currentItem: PropTypes.object.isRequired,
+	width: PropTypes.number.isRequired,
+	height: PropTypes.number.isRequired,
 };
 
 SingleValueTooltip.propTypes = {
-	forChart: React.PropTypes.number.isRequired,
-	xDisplayFormat: React.PropTypes.func,
-	yDisplayFormat: React.PropTypes.func.isRequired,
-	xLabel: React.PropTypes.string,
-	yLabel: React.PropTypes.oneOfType([
-		React.PropTypes.string,
-		React.PropTypes.func
+	forChart: PropTypes.number.isRequired,
+	xDisplayFormat: PropTypes.func,
+	yDisplayFormat: PropTypes.func.isRequired,
+	xLabel: PropTypes.string,
+	yLabel: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.func
 	]).isRequired,
-	labelStroke: React.PropTypes.string.isRequired,
-	valueStroke: React.PropTypes.string,
-	origin: React.PropTypes.oneOfType([
-		React.PropTypes.array,
-		React.PropTypes.func
+	labelStroke: PropTypes.string.isRequired,
+	valueStroke: PropTypes.string,
+	origin: PropTypes.oneOfType([
+		PropTypes.array,
+		PropTypes.func
 	]).isRequired,
-	fontFamily: React.PropTypes.string,
-	fontSize: React.PropTypes.number,
-	onClick: React.PropTypes.func,
-	xAccessor: React.PropTypes.func,
-	yAccessor: React.PropTypes.func,
+	fontFamily: PropTypes.string,
+	fontSize: PropTypes.number,
+	onClick: PropTypes.func,
+	xAccessor: PropTypes.func,
+	yAccessor: PropTypes.func,
 };
 
 SingleValueTooltip.defaultProps = {

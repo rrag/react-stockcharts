@@ -1,13 +1,12 @@
 "use strict";
 
-import React from "react";
-import objectAssign from "object-assign";
+import React, { PropTypes, Component } from "react";
 
 import makeInteractive from "./makeInteractive";
 
 import { hexToRGBA, isDefined, noop } from "../utils";
 
-class Brush extends React.Component {
+class Brush extends Component {
 	constructor(props) {
 		super(props);
 		this.onMousemove = this.onMousemove.bind(this);
@@ -47,7 +46,7 @@ class Brush extends React.Component {
 			var xValue = xAccessor(currentItem);
 			var yValue = yScale.invert(mouseXY[1]);
 
-			if (!!x1) {
+			if (isDefined(x1)) {
 				var callback = onBrush.bind(null, {
 						x1: displayXAccessor(interactive.startItem),
 						y1,
@@ -55,25 +54,27 @@ class Brush extends React.Component {
 						y2: yValue
 					}, [interactive.startItem, currentItem], [startClick, mouseXY], e);
 
-				var brushCoords =  objectAssign({}, interactive, {
+				var brushCoords =  {
+					...interactive,
 					x1: null, y1: null,
 					x2: null, y2: null,
 					startItem: null,
 					startClick: null,
-				});
+				};
 				return { interactive: brushCoords, callback };
 			} else if (e.button === 0) {
 
 				var callback = onStart.bind(null, { currentItem, point: [xValue, yValue] }, e);
 
-				var brushCoords =  objectAssign({}, interactive, {
+				var brushCoords =  {
+					...interactive,
 					x1: xValue,
 					y1: yValue,
 					startItem: currentItem,
 					startClick: mouseXY,
 					x2: null,
 					y2: null,
-				});
+				};
 				return { interactive: brushCoords, callback };
 			}
 		}
@@ -87,7 +88,7 @@ class Brush extends React.Component {
 
 		var { x1, y1, x2, y2 } = interactive;
 
-		if (enabled && !!x1 && !!y1 && !!x2 && !!y2) {
+		if (enabled && isDefined(x1) && isDefined(y1) && isDefined(x2) && isDefined(y2)) {
 			var brush = Brush.helper(type, plotData, xScale, xAccessor, chartConfig, { x1, y1, x2, y2 });
 			return <rect {...brush} fill={fill} stroke={stroke} fillOpacity={opacity} />;
 		}
@@ -140,18 +141,18 @@ Brush.helper = (type, plotData, xScale, xAccessor, chartConfig, { x1, y1, x2, y2
 };
 
 Brush.propTypes = {
-	enabled: React.PropTypes.bool.isRequired,
-	onBrush: React.PropTypes.func.isRequired,
+	enabled: PropTypes.bool.isRequired,
+	onBrush: PropTypes.func.isRequired,
 
-	type: React.PropTypes.oneOf(["1D", "2D"]),
-	chartCanvasType: React.PropTypes.string,
-	chartConfig: React.PropTypes.object,
-	plotData: React.PropTypes.array,
-	xAccessor: React.PropTypes.func,
-	interactive: React.PropTypes.object,
-	stroke: React.PropTypes.string,
-	fill: React.PropTypes.string,
-	opacity: React.PropTypes.number,
+	type: PropTypes.oneOf(["1D", "2D"]),
+	chartCanvasType: PropTypes.string,
+	chartConfig: PropTypes.object,
+	plotData: PropTypes.array,
+	xAccessor: PropTypes.func,
+	interactive: PropTypes.object,
+	stroke: PropTypes.string,
+	fill: PropTypes.string,
+	opacity: PropTypes.number,
 };
 
 Brush.defaultProps = {

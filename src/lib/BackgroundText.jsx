@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PropTypes } from "react";
 import PureComponent from "./utils/PureComponent";
 
 import { hexToRGBA, isDefined } from "./utils";
@@ -50,10 +50,10 @@ BackgroundText.drawOnCanvas = (ctx, props, { interval }, getText) => {
 };
 
 BackgroundText.propTypes = {
-	x: React.PropTypes.number.isRequired,
-	y: React.PropTypes.number.isRequired,
-	fontFamily: React.PropTypes.string,
-	fontSize: React.PropTypes.number.isRequired,
+	x: PropTypes.number.isRequired,
+	y: PropTypes.number.isRequired,
+	fontFamily: PropTypes.string,
+	fontSize: PropTypes.number.isRequired,
 };
 
 BackgroundText.defaultProps = {
@@ -67,9 +67,9 @@ BackgroundText.defaultProps = {
 };
 
 BackgroundText.contextTypes = {
-	interval: React.PropTypes.string.isRequired,
-	getCanvasContexts: React.PropTypes.func,
-	chartCanvasType: React.PropTypes.string,
+	interval: PropTypes.string.isRequired,
+	getCanvasContexts: PropTypes.func,
+	chartCanvasType: PropTypes.string,
 };
 
 export default BackgroundText;

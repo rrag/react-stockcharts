@@ -1,13 +1,13 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
 import wrap from "./wrap";
 
 import { isDefined, isNotDefined } from "../utils"
 
-class Line extends React.Component {
+class Line extends Component {
 	render() {
 		var { stroke, fill, className } = this.props;
 
@@ -17,14 +17,14 @@ class Line extends React.Component {
 }
 
 Line.propTypes = {
-	className: React.PropTypes.string,
-	xScale: React.PropTypes.func.isRequired,
-	yScale: React.PropTypes.func.isRequired,
-	xAccessor: React.PropTypes.func.isRequired,
-	yAccessor: React.PropTypes.func.isRequired,
-	plotData: React.PropTypes.array.isRequired,
-	stroke: React.PropTypes.string,
-	fill: React.PropTypes.string,
+	className: PropTypes.string,
+	xScale: PropTypes.func.isRequired,
+	yScale: PropTypes.func.isRequired,
+	xAccessor: PropTypes.func.isRequired,
+	yAccessor: PropTypes.func.isRequired,
+	plotData: PropTypes.array.isRequired,
+	stroke: PropTypes.string,
+	fill: PropTypes.string,
 };
 
 Line.defaultProps = {

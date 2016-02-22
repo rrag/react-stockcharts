@@ -1,11 +1,10 @@
 "use strict";
 
-import React from "react";
-import objectAssign from "object-assign";
+import React, { PropTypes, Component } from "react";
 import makeInteractive from "./makeInteractive";
 import { head, last, hexToRGBA } from "../utils";
 
-class FibonacciRetracement extends React.Component {
+class FibonacciRetracement extends Component {
 	constructor(props) {
 		super(props);
 		this.onMousemove = this.onMousemove.bind(this);
@@ -14,14 +13,14 @@ class FibonacciRetracement extends React.Component {
 	removeLast(interactive) {
 		var { retracements, start } = interactive;
 		if (!start && retracements.length > 0) {
-			return objectAssign({}, interactive, { retracements: retracements.slice(0, retracements.length - 1) });
+			return { ...interactive, retracements: retracements.slice(0, retracements.length - 1) };
 		}
 		return interactive;
 	}
 	terminate(interactive) {
 		var { retracements, start } = interactive;
 		if (start) {
-			return objectAssign({}, interactive, { start: null });
+			return { ...interactive, start: null };
 		}
 		return interactive;
 	}
@@ -161,21 +160,21 @@ function generateLine(type, start, end, xAccessor, plotData) {
 }
 
 FibonacciRetracement.propTypes = {
-	snap: React.PropTypes.bool.isRequired,
-	enabled: React.PropTypes.bool.isRequired,
-	snapTo: React.PropTypes.func,
-	fontFamily: React.PropTypes.string.isRequired,
-	fontSize: React.PropTypes.number.isRequired,
-	chartCanvasType: React.PropTypes.string,
-	chartConfig: React.PropTypes.object,
-	plotData: React.PropTypes.array,
-	xAccessor: React.PropTypes.func,
-	interactive: React.PropTypes.object,
-	width: React.PropTypes.number,
-	stroke: React.PropTypes.string,
-	opacity: React.PropTypes.number,
-	fontStroke: React.PropTypes.string,
-	type: React.PropTypes.oneOf([
+	snap: PropTypes.bool.isRequired,
+	enabled: PropTypes.bool.isRequired,
+	snapTo: PropTypes.func,
+	fontFamily: PropTypes.string.isRequired,
+	fontSize: PropTypes.number.isRequired,
+	chartCanvasType: PropTypes.string,
+	chartConfig: PropTypes.object,
+	plotData: PropTypes.array,
+	xAccessor: PropTypes.func,
+	interactive: PropTypes.object,
+	width: PropTypes.number,
+	stroke: PropTypes.string,
+	opacity: PropTypes.number,
+	fontStroke: PropTypes.string,
+	type: PropTypes.oneOf([
 		"EXTEND", // extends from -Infinity to +Infinity
 		"BOUND", // extends between the set bounds
 	]),

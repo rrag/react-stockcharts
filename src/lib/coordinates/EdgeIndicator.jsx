@@ -50,22 +50,22 @@ class EdgeIndicator extends Component {
 }
 
 EdgeIndicator.propTypes = {
-	yAccessor: React.PropTypes.func,
+	yAccessor: PropTypes.func,
 
-	type: React.PropTypes.oneOf(["horizontal"]).isRequired,
-	className: React.PropTypes.string,
-	fill: React.PropTypes.oneOfType([
-		React.PropTypes.string,
-		React.PropTypes.func,
+	type: PropTypes.oneOf(["horizontal"]).isRequired,
+	className: PropTypes.string,
+	fill: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.func,
 	]).isRequired,
-	textFill: React.PropTypes.oneOfType([
-		React.PropTypes.string,
-		React.PropTypes.func,
+	textFill: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.func,
 	]).isRequired,
-	itemType: React.PropTypes.oneOf(["first", "last"]).isRequired,
-	orient: React.PropTypes.oneOf(["left", "right"]),
-	edgeAt: React.PropTypes.oneOf(["left", "right"]),
-	displayFormat: React.PropTypes.func.isRequired,
+	itemType: PropTypes.oneOf(["first", "last"]).isRequired,
+	orient: PropTypes.oneOf(["left", "right"]),
+	edgeAt: PropTypes.oneOf(["left", "right"]),
+	displayFormat: PropTypes.func.isRequired,
 };
 
 EdgeIndicator.defaultProps = {
@@ -137,9 +137,9 @@ EdgeIndicator.helper = (props, xScale, yScale, plotData) => {
 };
 
 export default pure(EdgeIndicator, {
-	// width: React.PropTypes.number.isRequired,
-	canvasOriginX: React.PropTypes.number,
-	canvasOriginY: React.PropTypes.number,
+	// width: PropTypes.number.isRequired,
+	canvasOriginX: PropTypes.number,
+	canvasOriginY: PropTypes.number,
 	chartConfig: PropTypes.object.isRequired,
 	xAccessor: PropTypes.func.isRequired,
 	xScale: PropTypes.func.isRequired,
@@ -149,5 +149,5 @@ export default pure(EdgeIndicator, {
 	callbackForCanvasDraw: PropTypes.func.isRequired,
 	getAllCanvasDrawCallback: PropTypes.func,
 	chartCanvasType: PropTypes.string.isRequired,
-	plotData: React.PropTypes.array.isRequired,
+	plotData: PropTypes.array.isRequired,
 });

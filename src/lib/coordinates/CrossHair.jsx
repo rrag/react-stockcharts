@@ -1,13 +1,12 @@
 "use strict";
 
-import React from "react";
-import objectAssign from "object-assign";
+import React, { PropTypes, Component } from "react";
 
 import EdgeCoordinate from "./EdgeCoordinate";
 
 import { hexToRGBA, isDefined } from "../utils";
 
-class CrossHair extends React.Component {
+class CrossHair extends Component {
 	shouldComponentUpdate(nextProps) {
 		return nextProps.mouseXY !== this.props.mouseXY;
 	}
@@ -34,12 +33,12 @@ class CrossHair extends React.Component {
 }
 
 CrossHair.propTypes = {
-	yAxisPad: React.PropTypes.number.isRequired,
-	height: React.PropTypes.number.isRequired,
-	width: React.PropTypes.number.isRequired,
-	mouseXY: React.PropTypes.array.isRequired,
-	xDisplayValue: React.PropTypes.string.isRequired,
-	edges: React.PropTypes.array.isRequired
+	yAxisPad: PropTypes.number.isRequired,
+	height: PropTypes.number.isRequired,
+	width: PropTypes.number.isRequired,
+	mouseXY: PropTypes.array.isRequired,
+	xDisplayValue: PropTypes.string.isRequired,
+	edges: PropTypes.array.isRequired
 };
 
 CrossHair.defaultProps = {
@@ -110,7 +109,7 @@ CrossHair.helper = (props) => {
 };
 
 CrossHair.drawOnCanvasStatic = (ctx, props) => {
-	props = objectAssign({}, CrossHair.defaultProps, props);
+	props = { ...CrossHair.defaultProps, ...props };
 	var result = CrossHair.helper(props);
 	var { line, edges } = result;
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import ReactDOM from "react-dom";
 
 function getDisplayName(Series) {
@@ -6,8 +6,8 @@ function getDisplayName(Series) {
 	return name;
 }
 
-export default function fitWidth(Component, withRef = true) {
-	class ResponsiveComponent extends React.Component {
+export default function fitWidth(WrappedComponent, withRef = true) {
+	class ResponsiveComponent extends Component {
 		constructor(props) {
 			super(props);
 			this.handleWindowResize = this.handleWindowResize.bind(this);
@@ -38,14 +38,14 @@ export default function fitWidth(Component, withRef = true) {
 			var ref = withRef ? { ref: "component" } : {};
 
 			if (this.state && this.state.width) {
-				return <Component width={this.state.width} {...this.props} {...ref} />;
+				return <WrappedComponent width={this.state.width} {...this.props} {...ref} />;
 			} else {
 				return <div />;
 			}
 		}
 	}
 
-	ResponsiveComponent.displayName = `fitWidth(${ getDisplayName(Component) })`;
+	ResponsiveComponent.displayName = `fitWidth(${ getDisplayName(WrappedComponent) })`;
 
 	return ResponsiveComponent;
 }

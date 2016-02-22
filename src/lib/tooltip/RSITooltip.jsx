@@ -1,12 +1,12 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 
 import { first, isDefined } from "../utils";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
-class RSITooltip extends React.Component {
+class RSITooltip extends Component {
 	render() {
 
 		var { forChart, onClick, fontFamily, fontSize, calculator, displayFormat } = this.props;
@@ -36,22 +36,22 @@ class RSITooltip extends React.Component {
 }
 
 RSITooltip.contextTypes = {
-	chartConfig: React.PropTypes.array.isRequired,
-	currentItem: React.PropTypes.object.isRequired,
-	width: React.PropTypes.number.isRequired,
-	height: React.PropTypes.number.isRequired,
+	chartConfig: PropTypes.array.isRequired,
+	currentItem: PropTypes.object.isRequired,
+	width: PropTypes.number.isRequired,
+	height: PropTypes.number.isRequired,
 };
 
 RSITooltip.propTypes = {
-	forChart: React.PropTypes.number.isRequired,
-	origin: React.PropTypes.oneOfType([
-		React.PropTypes.array,
-		React.PropTypes.func
+	forChart: PropTypes.number.isRequired,
+	origin: PropTypes.oneOfType([
+		PropTypes.array,
+		PropTypes.func
 	]).isRequired,
-	fontFamily: React.PropTypes.string,
-	fontSize: React.PropTypes.number,
-	onClick: React.PropTypes.func,
-	calculator: React.PropTypes.func.isRequired,
+	fontFamily: PropTypes.string,
+	fontSize: PropTypes.number,
+	onClick: PropTypes.func,
+	calculator: PropTypes.func.isRequired,
 };
 
 RSITooltip.defaultProps = {

@@ -1,12 +1,12 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 
 import { first } from "../utils";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
-class StochasticTooltip extends React.Component {
+class StochasticTooltip extends Component {
 	render() {
 		var { forChart, onClick, fontFamily, fontSize, calculator, displayFormat, children } = this.props;
 		var { chartConfig, currentItem, width, height } = this.context;
@@ -43,23 +43,23 @@ class StochasticTooltip extends React.Component {
 }
 
 StochasticTooltip.contextTypes = {
-	chartConfig: React.PropTypes.array.isRequired,
-	currentItem: React.PropTypes.object.isRequired,
-	width: React.PropTypes.number.isRequired,
-	height: React.PropTypes.number.isRequired,
+	chartConfig: PropTypes.array.isRequired,
+	currentItem: PropTypes.object.isRequired,
+	width: PropTypes.number.isRequired,
+	height: PropTypes.number.isRequired,
 };
 
 StochasticTooltip.propTypes = {
-	forChart: React.PropTypes.number.isRequired,
-	origin: React.PropTypes.oneOfType([
-		React.PropTypes.array,
-		React.PropTypes.func
+	forChart: PropTypes.number.isRequired,
+	origin: PropTypes.oneOfType([
+		PropTypes.array,
+		PropTypes.func
 	]).isRequired,
-	fontFamily: React.PropTypes.string,
-	fontSize: React.PropTypes.number,
-	onClick: React.PropTypes.func,
-	calculator: React.PropTypes.func.isRequired,
-	children: React.PropTypes.node.isRequired,
+	fontFamily: PropTypes.string,
+	fontSize: PropTypes.number,
+	onClick: PropTypes.func,
+	calculator: PropTypes.func.isRequired,
+	children: PropTypes.node.isRequired,
 };
 
 StochasticTooltip.defaultProps = {

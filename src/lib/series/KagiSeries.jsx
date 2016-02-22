@@ -1,13 +1,13 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
 import wrap from "./wrap";
 
 import { isDefined, isNotDefined } from "../utils";
 
-class KagiSeries extends React.Component {
+class KagiSeries extends Component {
 	render() {
 		var { props } = this;
 		var { className, stroke, fill, strokeWidth } = props;

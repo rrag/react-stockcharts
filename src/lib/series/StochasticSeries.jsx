@@ -1,13 +1,13 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 
 import wrap from "./wrap";
 
 import Line from "./Line";
 import StraightLine from "./StraightLine";
 
-class StochasticSeries extends React.Component {
+class StochasticSeries extends Component {
 	constructor(props) {
 		super(props);
 		this.yAccessorForD = this.yAccessorForD.bind(this);
@@ -63,14 +63,14 @@ StochasticSeries.getHorizontalLine = (props, yValue, stroke) => {
 };
 
 StochasticSeries.propTypes = {
-	className: React.PropTypes.string,
-	calculator: React.PropTypes.func.isRequired,
-	xScale: React.PropTypes.func,
-	yScale: React.PropTypes.func,
-	xAccessor: React.PropTypes.func,
-	plotData: React.PropTypes.array,
-	stroke: React.PropTypes.object,
-	type: React.PropTypes.string,
+	className: PropTypes.string,
+	calculator: PropTypes.func.isRequired,
+	xScale: PropTypes.func,
+	yScale: PropTypes.func,
+	xAccessor: PropTypes.func,
+	plotData: PropTypes.array,
+	stroke: PropTypes.object,
+	type: PropTypes.string,
 };
 
 StochasticSeries.defaultProps = {

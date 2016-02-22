@@ -1,13 +1,13 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 
 import Line from "./Line";
 import Area from "./Area";
 
 import wrap from "./wrap";
 
-class BollingerSeries extends React.Component {
+class BollingerSeries extends Component {
 	constructor(props) {
 		super(props);
 		this.yAccessorForTop = this.yAccessorForTop.bind(this);
@@ -76,15 +76,15 @@ class BollingerSeries extends React.Component {
 }
 
 BollingerSeries.propTypes = {
-	xAccessor: React.PropTypes.func,
-	calculator: React.PropTypes.func.isRequired,
-	xScale: React.PropTypes.func,
-	yScale: React.PropTypes.func,
-	plotData: React.PropTypes.array,
-	className: React.PropTypes.string,
-	areaClassName: React.PropTypes.string,
-	opacity: React.PropTypes.number,
-	type: React.PropTypes.string,
+	xAccessor: PropTypes.func,
+	calculator: PropTypes.func.isRequired,
+	xScale: PropTypes.func,
+	yScale: PropTypes.func,
+	plotData: PropTypes.array,
+	className: PropTypes.string,
+	areaClassName: PropTypes.string,
+	opacity: PropTypes.number,
+	type: PropTypes.string,
 };
 
 BollingerSeries.defaultProps = {

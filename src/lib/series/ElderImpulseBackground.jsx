@@ -1,10 +1,10 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 
 import wrap from "./wrap";
 
-class ElderImpulseBackground extends React.Component {
+class ElderImpulseBackground extends Component {
 	render() {
 		var { className, indicator, xScale, yScale, xAccessor, plotData, type, opacity, histogramStroke } = this.props;
 		var options = indicator.options();
@@ -17,16 +17,16 @@ class ElderImpulseBackground extends React.Component {
 }
 
 ElderImpulseBackground.propTypes = {
-	className: React.PropTypes.string,
-	xScale: React.PropTypes.func,
-	yScale: React.PropTypes.func,
-	xAccessor: React.PropTypes.func,
-	yAccessor: React.PropTypes.func,
-	plotData: React.PropTypes.array,
-	type: React.PropTypes.string,
-	opacity: React.PropTypes.number,
-	histogramStroke: React.PropTypes.bool,
-	indicator: React.PropTypes.func.isRequired,
+	className: PropTypes.string,
+	xScale: PropTypes.func,
+	yScale: PropTypes.func,
+	xAccessor: PropTypes.func,
+	yAccessor: PropTypes.func,
+	plotData: PropTypes.array,
+	type: PropTypes.string,
+	opacity: PropTypes.number,
+	histogramStroke: PropTypes.bool,
+	indicator: PropTypes.func.isRequired,
 };
 
 ElderImpulseBackground.defaultProps = {

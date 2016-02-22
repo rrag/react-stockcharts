@@ -1,6 +1,6 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
@@ -8,7 +8,7 @@ import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 import { first } from "../utils";
 
 
-class MACDTooltip extends React.Component {
+class MACDTooltip extends Component {
 	render() {
 
 		var { forChart, onClick, fontFamily, fontSize, calculator, displayFormat } = this.props;
@@ -48,22 +48,22 @@ class MACDTooltip extends React.Component {
 }
 
 MACDTooltip.contextTypes = {
-	chartConfig: React.PropTypes.array.isRequired,
-	currentItem: React.PropTypes.object.isRequired,
-	width: React.PropTypes.number.isRequired,
-	height: React.PropTypes.number.isRequired,
+	chartConfig: PropTypes.array.isRequired,
+	currentItem: PropTypes.object.isRequired,
+	width: PropTypes.number.isRequired,
+	height: PropTypes.number.isRequired,
 };
 
 MACDTooltip.propTypes = {
-	forChart: React.PropTypes.number.isRequired,
-	origin: React.PropTypes.oneOfType([
-		React.PropTypes.array,
-		React.PropTypes.func
+	forChart: PropTypes.number.isRequired,
+	origin: PropTypes.oneOfType([
+		PropTypes.array,
+		PropTypes.func
 	]).isRequired,
-	fontFamily: React.PropTypes.string,
-	fontSize: React.PropTypes.number,
-	calculator: React.PropTypes.func.isRequired,
-	onClick: React.PropTypes.func,
+	fontFamily: PropTypes.string,
+	fontSize: PropTypes.number,
+	calculator: PropTypes.func.isRequired,
+	onClick: PropTypes.func,
 };
 
 MACDTooltip.defaultProps = {

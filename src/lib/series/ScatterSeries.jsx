@@ -1,12 +1,12 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
 import wrap from "./wrap";
 import { hexToRGBA } from "../utils";
 
-class ScatterSeries extends React.Component {
+class ScatterSeries extends Component {
 	render() {
 		var { className, fill, stroke, marker, markerProvider, markerProps, xScale, yScale, plotData } = this.props;
 		var m = d3.functor(marker);
@@ -23,14 +23,14 @@ class ScatterSeries extends React.Component {
 }
 
 ScatterSeries.propTypes = {
-	className: React.PropTypes.string,
-	xAccessor: React.PropTypes.func,
-	yAccessor: React.PropTypes.func.isRequired,
-	xScale: React.PropTypes.func,
-	yScale: React.PropTypes.func,
-	plotData: React.PropTypes.array,
-	marker: React.PropTypes.func,
-	markerProvider: React.PropTypes.func,
+	className: PropTypes.string,
+	xAccessor: PropTypes.func,
+	yAccessor: PropTypes.func.isRequired,
+	xScale: PropTypes.func,
+	yScale: PropTypes.func,
+	plotData: PropTypes.array,
+	marker: PropTypes.func,
+	markerProvider: PropTypes.func,
 };
 
 ScatterSeries.defaultProps = {

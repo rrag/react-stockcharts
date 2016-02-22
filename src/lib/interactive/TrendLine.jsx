@@ -1,7 +1,6 @@
 "use strict";
 
-import React from "react";
-import objectAssign from "object-assign";
+import React, { PropTypes, Component } from "react";
 
 import makeInteractive from "./makeInteractive";
 import { head, last, hexToRGBA, noop } from "../utils";
@@ -13,7 +12,7 @@ function getYValue(values, currentValue) {
 	return currentValue + diff;
 }
 
-class TrendLine extends React.Component {
+class TrendLine extends Component {
 	constructor(props) {
 		super(props);
 		this.onMousemove = this.onMousemove.bind(this);
@@ -22,14 +21,14 @@ class TrendLine extends React.Component {
 	removeLast(interactive) {
 		var { trends, start } = interactive;
 		if (!start && trends.length > 0) {
-			return objectAssign({}, interactive, { trends: trends.slice(0, trends.length - 1) });
+			return { ...interactive, trends: trends.slice(0, trends.length - 1) };
 		}
 		return interactive;
 	}
 	terminate(interactive) {
 		var { trends, start } = interactive;
 		if (start) {
-			return objectAssign({}, interactive, { start: null });
+			return { ...interactive, start: null };
 		}
 		return interactive;
 	}
@@ -179,24 +178,24 @@ function generateLine(type, start, end, xAccessor, plotData) {
 }
 
 TrendLine.propTypes = {
-	snap: React.PropTypes.bool.isRequired,
-	enabled: React.PropTypes.bool.isRequired,
-	snapTo: React.PropTypes.func,
-	shouldDisableSnap: React.PropTypes.func.isRequired,
-	chartCanvasType: React.PropTypes.string,
-	chartConfig: React.PropTypes.object,
-	plotData: React.PropTypes.array,
-	xAccessor: React.PropTypes.func,
-	onStart: React.PropTypes.func.isRequired,
-	onComplete: React.PropTypes.func.isRequired,
-	interactive: React.PropTypes.object,
-	currentPositionStroke: React.PropTypes.string,
-	currentPositionStrokeWidth: React.PropTypes.number,
-	currentPositionOpacity: React.PropTypes.number,
-	currentPositionRadius: React.PropTypes.number,
-	stroke: React.PropTypes.string,
-	opacity: React.PropTypes.number,
-	type: React.PropTypes.oneOf([
+	snap: PropTypes.bool.isRequired,
+	enabled: PropTypes.bool.isRequired,
+	snapTo: PropTypes.func,
+	shouldDisableSnap: PropTypes.func.isRequired,
+	chartCanvasType: PropTypes.string,
+	chartConfig: PropTypes.object,
+	plotData: PropTypes.array,
+	xAccessor: PropTypes.func,
+	onStart: PropTypes.func.isRequired,
+	onComplete: PropTypes.func.isRequired,
+	interactive: PropTypes.object,
+	currentPositionStroke: PropTypes.string,
+	currentPositionStrokeWidth: PropTypes.number,
+	currentPositionOpacity: PropTypes.number,
+	currentPositionRadius: PropTypes.number,
+	stroke: PropTypes.string,
+	opacity: PropTypes.number,
+	type: PropTypes.oneOf([
 		"XLINE", // extends from -Infinity to +Infinity
 		"RAY", // extends to +/-Infinity in one direction
 		"LINE", // extends between the set bounds

@@ -1,11 +1,11 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 
 import pure from "../pure";
 import { shallowEqual, isDefined, isNotDefined } from "../utils";
 
-class CurrentCoordinate extends React.Component {
+class CurrentCoordinate extends Component {
 	componentDidMount() {
 		var { chartCanvasType, getCanvasContexts } = this.props;
 
@@ -62,19 +62,19 @@ class CurrentCoordinate extends React.Component {
 }
 
 CurrentCoordinate.propTypes = {
-	id: React.PropTypes.number.isRequired,
-	yAccessor: React.PropTypes.func,
-	r: React.PropTypes.number.isRequired,
-	className: React.PropTypes.string,
-	xAccessor: React.PropTypes.func.isRequired,
-	xScale: React.PropTypes.func.isRequired,
-	chartCanvasType: React.PropTypes.string,
-	getCanvasContexts: React.PropTypes.func,
-	show: React.PropTypes.bool,
-	chartId: React.PropTypes.number.isRequired,
+	id: PropTypes.number.isRequired,
+	yAccessor: PropTypes.func,
+	r: PropTypes.number.isRequired,
+	className: PropTypes.string,
+	xAccessor: PropTypes.func.isRequired,
+	xScale: PropTypes.func.isRequired,
+	chartCanvasType: PropTypes.string,
+	getCanvasContexts: PropTypes.func,
+	show: PropTypes.bool,
+	chartId: PropTypes.number.isRequired,
 
-	chartConfig: React.PropTypes.object.isRequired,
-	currentItem: React.PropTypes.object.isRequired,
+	chartConfig: PropTypes.object.isRequired,
+	currentItem: PropTypes.object.isRequired,
 
 };
 
@@ -130,19 +130,19 @@ CurrentCoordinate.helper = (props, show, xScale, yScale, currentItem) => {
 };
 
 export default pure(CurrentCoordinate, {
-	show: React.PropTypes.bool.isRequired,
-	currentItem: React.PropTypes.object.isRequired,
-	chartConfig: React.PropTypes.object.isRequired,
-	mouseXY: React.PropTypes.array, // this is to avoid the flicker
-	canvasOriginX: React.PropTypes.number,
-	canvasOriginY: React.PropTypes.number,
+	show: PropTypes.bool.isRequired,
+	currentItem: PropTypes.object.isRequired,
+	chartConfig: PropTypes.object.isRequired,
+	mouseXY: PropTypes.array, // this is to avoid the flicker
+	canvasOriginX: PropTypes.number,
+	canvasOriginY: PropTypes.number,
 
-	xAccessor: React.PropTypes.func.isRequired,
-	xScale: React.PropTypes.func.isRequired,
-	chartId: React.PropTypes.number.isRequired,
-	getCanvasContexts: React.PropTypes.func,
-	margin: React.PropTypes.object.isRequired,
-	callbackForCanvasDraw: React.PropTypes.func.isRequired,
-	getAllCanvasDrawCallback: React.PropTypes.func,
-	chartCanvasType: React.PropTypes.string.isRequired,
+	xAccessor: PropTypes.func.isRequired,
+	xScale: PropTypes.func.isRequired,
+	chartId: PropTypes.number.isRequired,
+	getCanvasContexts: PropTypes.func,
+	margin: PropTypes.object.isRequired,
+	callbackForCanvasDraw: PropTypes.func.isRequired,
+	getAllCanvasDrawCallback: PropTypes.func,
+	chartCanvasType: PropTypes.string.isRequired,
 }, ["mouseXY"]);

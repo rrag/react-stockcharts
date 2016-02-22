@@ -1,15 +1,15 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 
-class ToolTipTSpanLabel extends React.Component {
+class ToolTipTSpanLabel extends Component {
 	render() {
 		return <tspan className="react-stockcharts-tooltip-label" fill="#4682B4" {...this.props}>{this.props.children}</tspan>;
 	}
 }
 
 ToolTipTSpanLabel.propTypes = {
-	children: React.PropTypes.node.isRequired,
+	children: PropTypes.node.isRequired,
 };
 
 export default ToolTipTSpanLabel;

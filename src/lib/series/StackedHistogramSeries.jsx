@@ -1,12 +1,12 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 
 import wrap from "./wrap";
 
 import { identity, isDefined, isNotDefined, hexToRGBA } from "../utils";
 
-class StackedHistogramSeries extends React.Component {
+class StackedHistogramSeries extends Component {
 	render() {
 		var { props } = this;
 		return <g className="histogram">
@@ -16,27 +16,27 @@ class StackedHistogramSeries extends React.Component {
 }
 
 StackedHistogramSeries.propTypes = {
-	baseAt: React.PropTypes.oneOfType([
-		React.PropTypes.oneOf(["top", "bottom", "middle"]),
-		React.PropTypes.number,
-		React.PropTypes.func,
+	baseAt: PropTypes.oneOfType([
+		PropTypes.oneOf(["top", "bottom", "middle"]),
+		PropTypes.number,
+		PropTypes.func,
 	]).isRequired,
-	direction: React.PropTypes.oneOf(["up", "down"]).isRequired,
-	stroke: React.PropTypes.bool.isRequired,
-	widthRatio: React.PropTypes.number.isRequired,
-	opacity: React.PropTypes.number.isRequired,
-	fill: React.PropTypes.oneOfType([
-		React.PropTypes.func, React.PropTypes.string
+	direction: PropTypes.oneOf(["up", "down"]).isRequired,
+	stroke: PropTypes.bool.isRequired,
+	widthRatio: PropTypes.number.isRequired,
+	opacity: PropTypes.number.isRequired,
+	fill: PropTypes.oneOfType([
+		PropTypes.func, PropTypes.string
 	]).isRequired,
-	className: React.PropTypes.oneOfType([
-		React.PropTypes.func, React.PropTypes.string
+	className: PropTypes.oneOfType([
+		PropTypes.func, PropTypes.string
 	]).isRequired,
-	xAccessor: React.PropTypes.func,
-	yAccessor: React.PropTypes.arrayOf(React.PropTypes.func),
-	yAccessorNarrow: React.PropTypes.arrayOf(React.PropTypes.func),
-	xScale: React.PropTypes.func,
-	yScale: React.PropTypes.func,
-	plotData: React.PropTypes.array,
+	xAccessor: PropTypes.func,
+	yAccessor: PropTypes.arrayOf(PropTypes.func),
+	yAccessorNarrow: PropTypes.arrayOf(PropTypes.func),
+	xScale: PropTypes.func,
+	yScale: PropTypes.func,
+	plotData: PropTypes.array,
 };
 
 StackedHistogramSeries.defaultProps = {

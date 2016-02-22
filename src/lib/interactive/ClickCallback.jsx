@@ -1,10 +1,10 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 import makeInteractive from "./makeInteractive";
 import { noop } from "../utils";
 
-class ClickCallback extends React.Component {
+class ClickCallback extends Component {
 	constructor(props) {
 		super(props);
 		this.onClick = this.onClick.bind(this);
@@ -30,7 +30,7 @@ class ClickCallback extends React.Component {
 ClickCallback.drawOnCanvas = noop;
 
 ClickCallback.propTypes = {
-	onClick: React.PropTypes.func.isRequired,
+	onClick: PropTypes.func.isRequired,
 };
 
 ClickCallback.defaultProps = {

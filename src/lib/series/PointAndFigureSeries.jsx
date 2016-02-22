@@ -1,11 +1,11 @@
 "use strict";
 
-import React from "react";
+import React, { Component } from "react";
 import wrap from "./wrap";
 
 import { isDefined, isNotDefined } from "../utils";
 
-class PointAndFigureSeries extends React.Component {
+class PointAndFigureSeries extends Component {
 	render() {
 		var { props } = this;
 		var { xScale, xAccessor, yScale, yAccessor, plotData } = props;

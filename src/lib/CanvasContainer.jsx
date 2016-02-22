@@ -1,8 +1,8 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 
-class CanvasContainer extends React.Component {
+class CanvasContainer extends Component {
 	getCanvasContexts() {
 
 		var {
@@ -40,10 +40,10 @@ class CanvasContainer extends React.Component {
 }
 
 CanvasContainer.propTypes = {
-	width: React.PropTypes.number.isRequired,
-	height: React.PropTypes.number.isRequired,
-	type: React.PropTypes.string.isRequired,
-	zIndex: React.PropTypes.number,
+	width: PropTypes.number.isRequired,
+	height: PropTypes.number.isRequired,
+	type: PropTypes.string.isRequired,
+	zIndex: PropTypes.number,
 };
 
 export default CanvasContainer;

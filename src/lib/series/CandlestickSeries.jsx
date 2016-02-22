@@ -1,11 +1,11 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 
 import wrap from "./wrap";
 import { first, last, hexToRGBA, isDefined } from "../utils";
 
-class CandlestickSeries extends React.Component {
+class CandlestickSeries extends Component {
 	render() {
 		var { className, wickClassName, candleClassName } = this.props;
 		return <g className={className}>
@@ -20,32 +20,32 @@ class CandlestickSeries extends React.Component {
 }
 
 CandlestickSeries.propTypes = {
-	className: React.PropTypes.string,
-	wickClassName: React.PropTypes.string,
-	candleClassName: React.PropTypes.string,
-	widthRatio: React.PropTypes.number.isRequired,
-	classNames: React.PropTypes.oneOfType([
-		React.PropTypes.func,
-		React.PropTypes.string
+	className: PropTypes.string,
+	wickClassName: PropTypes.string,
+	candleClassName: PropTypes.string,
+	widthRatio: PropTypes.number.isRequired,
+	classNames: PropTypes.oneOfType([
+		PropTypes.func,
+		PropTypes.string
 	]).isRequired,
-	fill: React.PropTypes.oneOfType([
-		React.PropTypes.func,
-		React.PropTypes.string
+	fill: PropTypes.oneOfType([
+		PropTypes.func,
+		PropTypes.string
 	]).isRequired,
-	stroke: React.PropTypes.oneOfType([
-		React.PropTypes.func,
-		React.PropTypes.string
+	stroke: PropTypes.oneOfType([
+		PropTypes.func,
+		PropTypes.string
 	]).isRequired,
-	wickStroke: React.PropTypes.oneOfType([
-		React.PropTypes.func,
-		React.PropTypes.string
+	wickStroke: PropTypes.oneOfType([
+		PropTypes.func,
+		PropTypes.string
 	]).isRequired,
-	xAccessor: React.PropTypes.func,
-	yAccessor: React.PropTypes.func.isRequired,
-	xScale: React.PropTypes.func,
-	yScale: React.PropTypes.func,
-	compareSeries: React.PropTypes.array,
-	plotData: React.PropTypes.array,
+	xAccessor: PropTypes.func,
+	yAccessor: PropTypes.func.isRequired,
+	xScale: PropTypes.func,
+	yScale: PropTypes.func,
+	compareSeries: PropTypes.array,
+	plotData: PropTypes.array,
 };
 
 CandlestickSeries.defaultProps = {

@@ -1,11 +1,10 @@
 "use strict";
 
-import React from "react";
-import objectAssign from "object-assign";
+import React, { PropTypes, Component } from "react";
 
 import { hexToRGBA, isDefined } from "../utils";
 
-class EdgeCoordinate extends React.Component {
+class EdgeCoordinate extends Component {
 
 	render() {
 		var { className } = this.props;
@@ -45,20 +44,20 @@ class EdgeCoordinate extends React.Component {
 }
 
 EdgeCoordinate.propTypes = {
-	className: React.PropTypes.string,
-	type: React.PropTypes.oneOf(["vertical", "horizontal"]).isRequired,
-	coordinate: React.PropTypes.any.isRequired,
-	x1: React.PropTypes.number.isRequired,
-	y1: React.PropTypes.number.isRequired,
-	x2: React.PropTypes.number.isRequired,
-	y2: React.PropTypes.number.isRequired,
-	orient: React.PropTypes.oneOf(["bottom", "top", "left", "right"]),
-	rectWidth: React.PropTypes.number,
-	hideLine: React.PropTypes.bool,
-	fill: React.PropTypes.string,
-	opacity: React.PropTypes.number,
-	fontFamily: React.PropTypes.string.isRequired,
-	fontSize: React.PropTypes.number.isRequired,
+	className: PropTypes.string,
+	type: PropTypes.oneOf(["vertical", "horizontal"]).isRequired,
+	coordinate: PropTypes.any.isRequired,
+	x1: PropTypes.number.isRequired,
+	y1: PropTypes.number.isRequired,
+	x2: PropTypes.number.isRequired,
+	y2: PropTypes.number.isRequired,
+	orient: PropTypes.oneOf(["bottom", "top", "left", "right"]),
+	rectWidth: PropTypes.number,
+	hideLine: PropTypes.bool,
+	fill: PropTypes.string,
+	opacity: PropTypes.number,
+	fontFamily: PropTypes.string.isRequired,
+	fontSize: PropTypes.number.isRequired,
 };
 
 EdgeCoordinate.defaultProps = {
@@ -117,7 +116,7 @@ EdgeCoordinate.helper = (props) => {
 };
 
 EdgeCoordinate.drawOnCanvasStatic = (ctx, props) => {
-	props = objectAssign({}, EdgeCoordinate.defaultProps, props);
+	props = { ...EdgeCoordinate.defaultProps, ...props };
 
 	var edge = EdgeCoordinate.helper(props);
 

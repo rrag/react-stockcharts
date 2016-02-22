@@ -1,11 +1,11 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 
 import wrap from "./wrap";
 import { isDefined, isNotDefined, hexToRGBA } from "../utils";
 
-class OHLCSeries extends React.Component {
+class OHLCSeries extends Component {
 	render() {
 		var { className, wickClassName, candleClassName } = this.props;
 		var { xAccessor, yAccessor, xScale, yScale, plotData } = this.props;
@@ -23,20 +23,20 @@ class OHLCSeries extends React.Component {
 }
 
 OHLCSeries.propTypes = {
-	className: React.PropTypes.string,
-	classNames: React.PropTypes.oneOfType([
-		React.PropTypes.func,
-		React.PropTypes.string
+	className: PropTypes.string,
+	classNames: PropTypes.oneOfType([
+		PropTypes.func,
+		PropTypes.string
 	]).isRequired,
-	stroke: React.PropTypes.oneOfType([
-		React.PropTypes.func,
-		React.PropTypes.string
+	stroke: PropTypes.oneOfType([
+		PropTypes.func,
+		PropTypes.string
 	]).isRequired,
-	xAccessor: React.PropTypes.func,
-	yAccessor: React.PropTypes.func.isRequired,
-	xScale: React.PropTypes.func,
-	yScale: React.PropTypes.func,
-	plotData: React.PropTypes.array,
+	xAccessor: PropTypes.func,
+	yAccessor: PropTypes.func.isRequired,
+	xScale: PropTypes.func,
+	yScale: PropTypes.func,
+	plotData: PropTypes.array,
 };
 
 OHLCSeries.defaultProps = {

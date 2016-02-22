@@ -1,13 +1,13 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
 import { first, isDefined } from "../utils";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
-class BollingerBandTooltip extends React.Component {
+class BollingerBandTooltip extends Component {
 	render() {
 		var { onClick, forChart, forDataSeries, displayFormat, calculator } = this.props;
 
@@ -46,20 +46,20 @@ class BollingerBandTooltip extends React.Component {
 }
 
 BollingerBandTooltip.contextTypes = {
-	chartConfig: React.PropTypes.array.isRequired,
-	currentItem: React.PropTypes.object.isRequired,
-	width: React.PropTypes.number.isRequired,
-	height: React.PropTypes.number.isRequired,
+	chartConfig: PropTypes.array.isRequired,
+	currentItem: PropTypes.object.isRequired,
+	width: PropTypes.number.isRequired,
+	height: PropTypes.number.isRequired,
 };
 BollingerBandTooltip.propTypes = {
-	className: React.PropTypes.string,
-	forChart: React.PropTypes.number.isRequired,
-	displayFormat: React.PropTypes.func.isRequired,
-	origin: React.PropTypes.array.isRequired,
-	onClick: React.PropTypes.func,
-	fontFamily: React.PropTypes.string,
-	fontSize: React.PropTypes.number,
-	forDataSeries: React.PropTypes.number,
+	className: PropTypes.string,
+	forChart: PropTypes.number.isRequired,
+	displayFormat: PropTypes.func.isRequired,
+	origin: PropTypes.array.isRequired,
+	onClick: PropTypes.func,
+	fontFamily: PropTypes.string,
+	fontSize: PropTypes.number,
+	forDataSeries: PropTypes.number,
 };
 
 BollingerBandTooltip.defaultProps = {

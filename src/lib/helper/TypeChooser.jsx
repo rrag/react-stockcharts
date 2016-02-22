@@ -1,8 +1,8 @@
 "use strict";
 
-import React from "react";
+import React, { PropTypes, Component } from "react";
 
-class TypeChooser extends React.Component {
+class TypeChooser extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -31,8 +31,8 @@ class TypeChooser extends React.Component {
 }
 
 TypeChooser.propTypes = {
-	type: React.PropTypes.oneOf(["svg", "hybrid"]),
-	children: React.PropTypes.func.isRequired,
+	type: PropTypes.oneOf(["svg", "hybrid"]),
+	children: PropTypes.func.isRequired,
 };
 
 TypeChooser.defaultProps = {
