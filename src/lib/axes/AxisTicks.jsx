@@ -3,7 +3,7 @@
 import React from "react";
 import objectAssign from "object-assign";
 
-import { hexToRGBA } from "../utils";
+import { hexToRGBA, isNotDefined } from "../utils";
 
 function d3_identity(d) {
 	return d;
@@ -111,13 +111,13 @@ AxisTicks.helper = (props, scale) => {
 	var { orient, innerTickSize, tickFormat, tickPadding, fontSize, fontFamily } = props;
 	var { ticks: tickArguments, tickValues, tickStroke, tickStrokeOpacity } = props;
 
-	var ticks = tickValues === undefined
+	var ticks = isNotDefined(tickValues)
 		? (scale.ticks
 			? scale.ticks.apply(scale, tickArguments)
 			: scale.domain())
 		: tickValues;
 
-	var format = tickFormat === undefined
+	var format = isNotDefined(tickFormat)
 		? (scale.tickFormat
 			? scale.tickFormat.apply(scale, tickArguments)
 			: d3_identity)

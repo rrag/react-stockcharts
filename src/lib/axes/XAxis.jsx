@@ -46,7 +46,6 @@ XAxis.propTypes = {
 	className: React.PropTypes.string,
 };
 XAxis.defaultProps = {
-	namespace: "ReStock.XAxis",
 	showGrid: false,
 	showTicks: true,
 	className: "react-stockcharts-x-axis",

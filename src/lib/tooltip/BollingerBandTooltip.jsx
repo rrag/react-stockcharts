@@ -3,7 +3,7 @@
 import React from "react";
 import d3 from "d3";
 
-import { first } from "../utils";
+import { first, isDefined } from "../utils";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
@@ -18,8 +18,8 @@ class BollingerBandTooltip extends React.Component {
 		top = middle = bottom = "n/a";
 		var accessor = calculator.accessor();
 
-		if (currentItem !== undefined
-				&& accessor(currentItem) !== undefined) {
+		if (isDefined(currentItem)
+				&& isDefined(accessor(currentItem))) {
 			var item = accessor(currentItem);
 			top = displayFormat(item.top);
 			middle = displayFormat(item.middle);

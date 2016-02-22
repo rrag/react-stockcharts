@@ -5,6 +5,8 @@ import d3 from "d3";
 
 import wrap from "./wrap";
 
+import { isDefined, isNotDefined } from "../utils"
+
 class Line extends React.Component {
 	render() {
 		var { stroke, fill, className } = this.props;
@@ -35,9 +37,9 @@ Line.getPath = (props) => {
 	var { plotData, xScale, yScale, xAccessor, yAccessor } = props;
 
 	var dataSeries = d3.svg.line()
-		.defined((d) =>(yAccessor(d) !== undefined))
-		.x((d) => xScale(xAccessor(d)))
-		.y((d) => yScale(yAccessor(d)));
+		.defined(d => isDefined(yAccessor(d)))
+		.x(d => xScale(xAccessor(d)))
+		.y(d => yScale(yAccessor(d)));
 	return dataSeries(plotData);
 };
 
@@ -49,7 +51,7 @@ Line.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 
 	var begin = true;
 	plotData.forEach((d) => {
-		if (yAccessor(d) === undefined) {
+		if (isNotDefined(yAccessor(d))) {
 			ctx.stroke();
 			ctx.beginPath();
 			begin = true;

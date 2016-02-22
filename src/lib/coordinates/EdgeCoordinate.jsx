@@ -3,7 +3,7 @@
 import React from "react";
 import objectAssign from "object-assign";
 
-import { hexToRGBA } from "../utils";
+import { hexToRGBA, isDefined } from "../utils";
 
 class EdgeCoordinate extends React.Component {
 
@@ -14,13 +14,13 @@ class EdgeCoordinate extends React.Component {
 		if (edge === null) return null;
 		var line, coordinateBase, coordinate;
 
-		if (edge.line !== undefined) {
+		if (isDefined(edge.line)) {
 			line = <line
 				className="react-stockcharts-cross-hair" opacity={edge.line.opacity} stroke={edge.line.stroke}
 				x1={edge.line.x1} y1={edge.line.y1}
 				x2={edge.line.x2} y2={edge.line.y2} />;
 		}
-		if (edge.coordinateBase !== undefined) {
+		if (isDefined(edge.coordinateBase)) {
 			coordinateBase = <rect key={1} className="react-stockchart-text-background"
 				x={edge.coordinateBase.edgeXRect}
 				y={edge.coordinateBase.edgeYRect}
@@ -62,7 +62,6 @@ EdgeCoordinate.propTypes = {
 };
 
 EdgeCoordinate.defaultProps = {
-	namespace: "ReStock.EdgeCoordinate",
 	className: "react-stockcharts-edgecoordinate",
 	orient: "left",
 	hideLine: false,
@@ -101,7 +100,7 @@ EdgeCoordinate.helper = (props) => {
 		edgeYText = (orient === "bottom") ? edgeAt + (rectHeight / 2) : edgeAt - (rectHeight / 2);
 	}
 	var coordinateBase, coordinate, textAnchor = "middle";
-	if (displayCoordinate !== undefined) {
+	if (isDefined(displayCoordinate)) {
 		coordinateBase = {
 			edgeXRect, edgeYRect, rectHeight, rectWidth, fill, opacity
 		};
@@ -124,7 +123,7 @@ EdgeCoordinate.drawOnCanvasStatic = (ctx, props) => {
 
 	if (edge === null) return;
 
-	if (edge.coordinateBase !== undefined) {
+	if (isDefined(edge.coordinateBase)) {
 		ctx.fillStyle = hexToRGBA(edge.coordinateBase.fill, edge.coordinateBase.opacity);
 
 		ctx.beginPath();
@@ -138,7 +137,7 @@ EdgeCoordinate.drawOnCanvasStatic = (ctx, props) => {
 
 		ctx.fillText(edge.coordinate.displayCoordinate, edge.coordinate.edgeXText, edge.coordinate.edgeYText);
 	}
-	if (edge.line !== undefined) {
+	if (isDefined(edge.line)) {
 		ctx.strokeStyle = hexToRGBA(edge.line.stroke, edge.line.opacity);
 
 		ctx.beginPath();

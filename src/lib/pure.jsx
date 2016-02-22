@@ -41,7 +41,6 @@ function pure(PureSeries, contextShape, ignorePropKeys = []) {
 
 	if (PureSeries.defaultProps) {
 		Object.keys(PureSeries.defaultProps)
-			.filter(key => key === "namespace")
 			.forEach(key => {
 				defaultProps[key] = PureSeries.defaultProps[key];
 			});

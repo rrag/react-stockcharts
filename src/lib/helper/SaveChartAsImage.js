@@ -4,9 +4,6 @@ var saveAsPng = require("save-svg-as-png");
 
 var SaveChartAsImage = {
 	save(doc, container, background, cb) {
-		if (saveAsPng === undefined) {
-			throw new Error("dependency save-svg-as-png is not installed, execute npm install -S save-svg-as-png");
-		}
 		saveAsPng.svgAsDataUri(container.getElementsByTagName("svg")[0], {}, function(uri) {
 			var image = new Image();
 			image.onload = function() {
@@ -15,14 +12,14 @@ var SaveChartAsImage = {
 				canvas.height = image.height;
 				var context = canvas.getContext("2d");
 
-				if (background !== undefined) {
+				if (isDefined(background)) {
 					context.fillStyle = background;
 					context.fillRect(0, 0, canvas.width, canvas.height);
 				}
 				var canvasList = container.getElementsByTagName("canvas");
 				for (var i = 0; i < canvasList.length; i++) {
 					var each = canvasList[i];
-					if (each !== undefined) {
+					if (isDefined(each)) {
 						var parent = each.parentNode.parentNode.getBoundingClientRect();
 						var rect = each.getBoundingClientRect();
 						context.drawImage(each, rect.left - parent.left, rect.top - parent.top);

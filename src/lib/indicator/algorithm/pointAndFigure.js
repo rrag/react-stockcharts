@@ -1,6 +1,6 @@
 "use strict";
 
-import { identity, zipper, merge } from "../../utils";
+import { identity, zipper, merge, isNotDefined } from "../../utils";
 
 import atr from "./atr";
 
@@ -30,14 +30,13 @@ function updateColumns(columnData, dateAccessor, dateMutator) {
 		d.startOfWeek = false;
 
 		d.boxes.forEach(function(eachBox) {
-			if (d.open === undefined) d.open = eachBox.open;
+			if (isNotDefined(d.open)) d.open = eachBox.open;
 			d.close = eachBox.close;
 			d.high = Math.max(d.open, d.close);
 			d.low = Math.min(d.open, d.close);
 
-			if (d.fromDate === undefined) d.fromDate = eachBox.fromDate;
-			if (d.date === undefined) d.date = eachBox.date;
-			// if (d.displayDate === undefined) d.displayDate = eachBox.displayDate;
+			if (isNotDefined(d.fromDate)) d.fromDate = eachBox.fromDate;
+			if (isNotDefined(d.date)) d.date = eachBox.date;
 			d.toDate = eachBox.toDate;
 
 			if (eachBox.startOfYear) {

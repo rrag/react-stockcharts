@@ -6,13 +6,13 @@ import d3 from "d3";
 import pure from "../pure";
 import CrossHair from "./CrossHair";
 
-import { displayDateFormat } from "../utils";
+import { isDefined } from "../utils";
 
 class MouseCoordinates extends React.Component {
 	componentDidMount() {
 		var { chartCanvasType, getCanvasContexts } = this.props;
 
-		if (chartCanvasType !== "svg" && getCanvasContexts !== undefined) {
+		if (chartCanvasType !== "svg" && isDefined(getCanvasContexts)) {
 			var contexts = getCanvasContexts();
 			if (contexts) MouseCoordinates.drawOnCanvas(contexts.mouseCoord, this.props);
 		}
@@ -126,8 +126,8 @@ MouseCoordinates.helper = (props, show, xScale, mouseXY, currentCharts, chartCon
 
 	var edges = chartConfig
 		.filter(eachChartConfig => currentCharts.indexOf(eachChartConfig.id) > -1)
-		.filter(eachChartConfig => eachChartConfig.mouseCoordinates.at !== undefined)
-		.filter(eachChartConfig => eachChartConfig.mouseCoordinates.format !== undefined)
+		.filter(eachChartConfig => isDefined(eachChartConfig.mouseCoordinates.at))
+		.filter(eachChartConfig => isDefined(eachChartConfig.mouseCoordinates.format))
 		.map(eachChartConfig => {
 			var mouseY = mouseXY[1] - eachChartConfig.origin[1];
 			var yValue = eachChartConfig.yScale.invert(mouseY);

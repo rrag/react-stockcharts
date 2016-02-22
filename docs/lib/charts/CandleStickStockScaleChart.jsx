@@ -10,7 +10,6 @@ var { ChartCanvas, Chart, DataSeries } = ReStock;
 var { CandlestickSeries } = ReStock.series;
 var { financeEODDiscontiniousScale } = ReStock.scale;
 var { XAxis, YAxis } = ReStock.axes;
-var { StockscaleTransformer } = ReStock.transforms;
 
 var { fitWidth } = ReStock.helper;
 

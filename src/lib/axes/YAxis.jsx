@@ -53,7 +53,6 @@ YAxis.propTypes = {
 	className: React.PropTypes.string,
 };
 YAxis.defaultProps = {
-	namespace: "ReStock.YAxis",
 	showGrid: false,
 	showDomain: false,
 	className: "react-stockcharts-y-axis",

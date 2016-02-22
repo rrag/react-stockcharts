@@ -3,13 +3,13 @@
 import React from "react";
 
 import pure from "../pure";
-import { shallowEqual } from "../utils";
+import { shallowEqual, isDefined, isNotDefined } from "../utils";
 
 class CurrentCoordinate extends React.Component {
 	componentDidMount() {
 		var { chartCanvasType, getCanvasContexts } = this.props;
 
-		if (chartCanvasType !== "svg" && getCanvasContexts !== undefined) {
+		if (chartCanvasType !== "svg" && isDefined(getCanvasContexts)) {
 			var contexts = getCanvasContexts();
 			if (contexts) CurrentCoordinate.drawOnCanvas(contexts.mouseCoord, this.props);
 		}
@@ -115,12 +115,12 @@ CurrentCoordinate.helper = (props, show, xScale, yScale, currentItem) => {
 	var { fill, xAccessor, yAccessor, r } = props;
 
 	// console.log(show);
-	if (!show || currentItem === undefined) return null;
+	if (!show || isNotDefined(currentItem)) return null;
 
 	var xValue = xAccessor(currentItem);
 	var yValue = yAccessor(currentItem);
 
-	if (yValue === undefined) return null;
+	if (isNotDefined(yValue)) return null;
 
 	// console.log(chartConfig);
 	var x = Math.round(xScale(xValue));

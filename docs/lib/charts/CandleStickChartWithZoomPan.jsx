@@ -12,7 +12,6 @@ var { financeEODDiscontiniousScale } = ReStock.scale;
 var { MouseCoordinates } = ReStock.coordinates;
 
 var { TooltipContainer, OHLCTooltip } = ReStock.tooltip;
-var { StockscaleTransformer } = ReStock.transforms;
 
 var { XAxis, YAxis } = ReStock.axes;
 

@@ -272,7 +272,6 @@ EventCapture.propTypes = {
 };
 
 EventCapture.defaultProps = {
-	namespace: "ReStock.EventCapture",
 	mouseMove: false,
 	zoom: false,
 	zoomMultiplier: 1,

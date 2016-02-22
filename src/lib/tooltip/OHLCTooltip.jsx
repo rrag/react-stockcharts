@@ -3,7 +3,7 @@
 import React from "react";
 import d3 from "d3";
 
-import { first } from "../utils";
+import { first, isDefined } from "../utils";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
@@ -18,7 +18,9 @@ class OHLCTooltip extends React.Component {
 		var { chartConfig, currentItem, width, height } = this.context;
 		var config = first(chartConfig.filter(each => each.id === forChart));
 
-		if (currentItem !== undefined && accessor(currentItem) !== undefined && accessor(currentItem).close !== undefined) {
+		if (isDefined(currentItem)
+				&& isDefined(accessor(currentItem))
+				&& isDefined(accessor(currentItem).close)) {
 			var item = accessor(currentItem);
 			volume = volumeFormat(item.volume);
 

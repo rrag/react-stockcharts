@@ -13,6 +13,7 @@ import {
 	zipper,
 	merge,
 	slidingWindow,
+	isDefined,
 } from "./index";
 
 export function getChartOrigin(origin, contextWidth, contextHeight) {
@@ -63,7 +64,7 @@ export function getNewChartConfig(innerDimension, children) {
 			};
 		}
 		return undefined;
-	}).filter(each => each !== undefined);
+	}).filter(each => isDefined(each));
 };
 export function getCurrentCharts(chartConfig, mouseXY) {
 	var currentCharts = chartConfig.filter(eachConfig => {

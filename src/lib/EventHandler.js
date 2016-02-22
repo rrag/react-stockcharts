@@ -8,6 +8,7 @@ import {
 	first,
 	last,
 	isDefined,
+	isNotDefined,
 	clearCanvas,
 	calculate,
 	getClosestItemIndexes,
@@ -557,7 +558,7 @@ class EventHandler extends React.Component {
 				});
 				this.drawInteractive(state);
 				canvasDrawCallbackList
-					.filter(each => each.chartId === undefined)
+					.filter(each => isNotDefined(each.chartId))
 					.filter(each => each.type === "axis")
 					.forEach(each => each.draw(axesCanvasContext, chartConfig));
 

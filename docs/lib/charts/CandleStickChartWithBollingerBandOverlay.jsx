@@ -13,7 +13,6 @@ var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, BollingerBandTooltip } = ReStock.tooltip;
-var { StockscaleTransformer } = ReStock.transforms;
 var { XAxis, YAxis } = ReStock.axes;
 var { ema, sma, bollingerBand } = ReStock.indicator;
 var { fitWidth } = ReStock.helper;

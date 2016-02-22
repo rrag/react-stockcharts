@@ -160,7 +160,7 @@ StackedHistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, p
 						fill: getFill(d, i),
 						i,
 					};
-				}).filter(yValue => yValue !== undefined);
+				}).filter(yValue => isDefined(yValue));
 
 				var b = getBase(xScale, yScale, d);
 				var h;

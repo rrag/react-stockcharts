@@ -3,7 +3,7 @@
 import React from "react";
 
 import wrap from "./wrap";
-import { first, last, hexToRGBA } from "../utils";
+import { first, last, hexToRGBA, isDefined } from "../utils";
 
 class CandlestickSeries extends React.Component {
 	render() {
@@ -174,8 +174,8 @@ CandlestickSeries.getWickData = (props, xAccessor, yAccessor, xScale, yScale, co
 	var wickStroke = d3.functor(wickStrokeProp);
 	var className = d3.functor(classNameProp);
 	var wickData = plotData
-			.filter((d) => d.close !== undefined)
-			.map((d) => {
+			.filter(d => isDefined(d.close))
+			.map(d => {
 				// console.log(yAccessor);
 				var ohlc = yAccessor(d);
 
@@ -210,8 +210,8 @@ CandlestickSeries.getCandleData = (props, xAccessor, yAccessor, xScale, yScale, 
 	var candleWidth = Math.round(cw); // Math.floor(cw) % 2 === 0 ? Math.floor(cw) : Math.round(cw);
 	var offset = (candleWidth === 1 ? 0 : 0.5 * candleWidth);
 	var candles = plotData
-			.filter((d) => d.close !== undefined)
-			.map((d) => {
+			.filter(d => isDefined(d.close))
+			.map(d => {
 				var ohlc = yAccessor(d);
 				var x = Math.round(xScale(xAccessor(d))) - offset,
 					y = yScale(Math.max(ohlc.open, ohlc.close)),

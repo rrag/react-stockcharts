@@ -5,6 +5,8 @@ import d3 from "d3";
 
 import wrap from "./wrap";
 
+import { isDefined, isNotDefined } from "../utils";
+
 class KagiSeries extends React.Component {
 	render() {
 		var { props } = this;
@@ -61,7 +63,7 @@ KagiSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 				ctx.moveTo(x, y);
 				begin = false;
 			} else {
-				if (prevX !== undefined) {
+				if (isDefined(prevX)) {
 					ctx.lineTo(prevX, y);
 				}
 				ctx.lineTo(x, y);
@@ -100,14 +102,14 @@ KagiSeries.helper = (plotData, xAccessor) => {
 	for (let i = 0; i < plotData.length; i++) {
 		d = plotData[i];
 
-		if (d.close === undefined) continue;
-		if (kagi.type === undefined) kagi.type = d.startAs;
-		if (kagi.plot === undefined) kagi.plot = [];
+		if (isNotDefined(d.close)) continue;
+		if (isNotDefined(kagi.type)) kagi.type = d.startAs;
+		if (isNotDefined(kagi.plot)) kagi.plot = [];
 
 		idx = xAccessor(d);
 		kagi.plot.push([idx, d.open]);
 
-		if (d.changeTo !== undefined) {
+		if (isDefined(d.changeTo)) {
 			kagi.plot.push([idx, d.changePoint]);
 			kagi.added = true;
 			kagiLine.push(kagi);

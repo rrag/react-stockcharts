@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import { first } from "../utils";
+import { first, isDefined } from "../utils";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
@@ -16,7 +16,7 @@ class RSITooltip extends React.Component {
 		var config = first(chartConfig.filter(each => each.id === forChart));
 		var rsi = yAccessor(currentItem);
 
-		var value = (rsi !== undefined && displayFormat(rsi)) || "n/a";
+		var value = (isDefined(rsi) && displayFormat(rsi)) || "n/a";
 
 		var { origin: originProp } = this.props;
 		var origin = d3.functor(originProp);

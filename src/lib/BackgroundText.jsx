@@ -1,11 +1,11 @@
 import React from "react";
 import PureComponent from "./utils/PureComponent";
 
-import { hexToRGBA } from "./utils";
+import { hexToRGBA, isDefined } from "./utils";
 
 class BackgroundText extends PureComponent {
 	componentDidMount() {
-		if (this.context.chartCanvasType !== "svg" && this.context.getCanvasContexts !== undefined) {
+		if (this.context.chartCanvasType !== "svg" && isDefined(this.context.getCanvasContexts)) {
 			var contexts = this.context.getCanvasContexts();
 			if (contexts) BackgroundText.drawOnCanvas(contexts.bg, this.props, this.context, this.props.children);
 		}

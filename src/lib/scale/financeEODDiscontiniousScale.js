@@ -2,11 +2,13 @@
 
 import d3 from "d3";
 
+import { isDefined, isNotDefined } from "../utils"
+
 export default function financeEODScale(indexAccessor = d => d.idx, dateAccessor = d => d.date, data = [0, 1], backingLinearScale = d3.scale.linear()) {
 
 	var timeScaleSteps = [
-		{ step: 864e5, f: function(d) { return dateAccessor(d) !== undefined && true; } },  // 1-day
-		{ step: 1728e5, f: function(d, i) { return dateAccessor(d) !== undefined && (i % 2 === 0); } }, // 2-day
+		{ step: 864e5, f: function(d) { return isDefined(dateAccessor(d)) && true; } },  // 1-day
+		{ step: 1728e5, f: function(d, i) { return isDefined(dateAccessor(d)) && (i % 2 === 0); } }, // 2-day
 		{ step: 8380e5, f: function(d, i, arr) {
 			if (d.startOfMonth) return true;
 			var list = [];
@@ -25,7 +27,7 @@ export default function financeEODScale(indexAccessor = d => d.idx, dateAccessor
 		{ step: 3525e6, f: function(d) {return d.startOfMonth; } },  // 1-month
 		{ step: 7776e6, f: function(d) {return d.startOfQuarter; } },  // 3-month
 		{ step: 31536e6, f: function(d) {return d.startOfYear; } },  // 1-year
-		{ step: 91536e15, f: function(d) {return dateAccessor(d) !== undefined && (d.startOfYear && dateAccessor(d).getFullYear() % 2 === 0); } }  // 2-year
+		{ step: 91536e15, f: function(d) {return isDefined(dateAccessor(d)) && (d.startOfYear && dateAccessor(d).getFullYear() % 2 === 0); } }  // 2-year
 	];
 	var timeScaleStepsBisector = d3.bisector(function(d) { return d.step; }).left;
 	var bisectByIndex = d3.bisector(function(d) { return indexAccessor(d); }).left;
@@ -40,7 +42,7 @@ export default function financeEODScale(indexAccessor = d => d.idx, dateAccessor
 		var i = 0, format = tickFormat[i];
 		while (!format[1](d)) format = tickFormat[++i];
 		var tickDisplay = format[0](dateAccessor(d));
-		// console.log(tickDisplay);
+		// console.log(t;ickDisplay);
 		return tickDisplay;
 	}
 
@@ -103,8 +105,8 @@ export default function financeEODScale(indexAccessor = d => d.idx, dateAccessor
 	scale.ticks = function(m) {
 		var start, end, count = 0;
 		data.forEach(function(d) {
-			if (dateAccessor(d) !== undefined) {
-				if (start === undefined) start = d;
+			if (isDefined(dateAccessor(d))) {
+				if (isNotDefined(start)) start = d;
 				end = d;
 				count++;
 			}

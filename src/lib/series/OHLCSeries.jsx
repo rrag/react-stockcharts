@@ -92,8 +92,8 @@ OHLCSeries.getOHLCBars = (props, xAccessor, yAccessor, xScale, yScale, plotData)
 	var strokeWidth = Math.min(barWidth, 6);
 
 	var bars = plotData
-			.filter((d) => d.close !== undefined)
-			.map((d) => {
+			.filter(d => isDefined(d.close))
+			.map(d => {
 				var ohlc = yAccessor(d),
 					x = Math.round(xScale(xAccessor(d))),
 					y1 = yScale(ohlc.high),

@@ -3,6 +3,8 @@
 import React from "react";
 import wrap from "./wrap";
 
+import { isDefined, isNotDefined } from "../utils";
+
 class PointAndFigureSeries extends React.Component {
 	render() {
 		var { props } = this;
@@ -104,8 +106,8 @@ PointAndFigureSeries.getColumns = (xScale, xAccessor, yScale, yAccessor, plotDat
 	var columnWidth = (width / (plotData.length - 1));
 
 	var anyBox, j = 0;
-	while (anyBox === undefined) {
-		if (plotData[j].close !== undefined) {
+	while (isNotDefined(anyBox)) {
+		if (isDefined(plotData[j].close)) {
 			anyBox = plotData[j].boxes[0];
 		}
 		j++;
@@ -114,8 +116,8 @@ PointAndFigureSeries.getColumns = (xScale, xAccessor, yScale, yAccessor, plotDat
 	var boxHeight = Math.abs(yScale(anyBox.open) - yScale(anyBox.close));
 
 	var columns = plotData
-			.filter((d) => d.close !== undefined)
-			.map((d) => {
+			.filter(d => isDefined(d.close))
+			.map(d => {
 				var boxes = d.boxes.map((box) => ({
 					columnWidth: columnWidth,
 					boxHeight: boxHeight,

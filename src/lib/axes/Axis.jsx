@@ -5,6 +5,8 @@ import React from "react";
 import AxisTicks from "./AxisTicks";
 import AxisLine from "./AxisLine";
 
+import { isDefined } from "../utils";
+
 class Axis extends React.Component {
 	constructor(props) {
 		super(props);
@@ -24,7 +26,7 @@ class Axis extends React.Component {
 		});
 	}
 	componentDidMount() {
-		if (this.context.chartCanvasType !== "svg" && this.context.getCanvasContexts !== undefined) {
+		if (this.context.chartCanvasType !== "svg" && isDefined(this.context.getCanvasContexts)) {
 			var contexts = this.context.getCanvasContexts();
 			if (contexts) this.drawOnCanvas(contexts.axes);
 		}

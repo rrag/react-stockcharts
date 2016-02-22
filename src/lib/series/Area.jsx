@@ -4,14 +4,14 @@ import React from "react";
 import d3 from "d3";
 
 import wrap from "./wrap";
-import { hexToRGBA } from "../utils";
+import { hexToRGBA, isDefined, isNotDefined } from "../utils";
 
 class Area extends React.Component {
 	render() {
 		var { props } = this;
 		var { stroke, fill, className, opacity } = props;
 
-		className = className.concat((stroke !== undefined) ? "" : " line-stroke");
+		className = className.concat(isDefined(stroke) ? "" : " line-stroke");
 		return (
 			<path d={Area.getArea(props)} stroke={stroke} fill={fill} className={className} opacity={opacity} />
 		);
@@ -41,10 +41,10 @@ Area.defaultProps = {
 Area.getArea = (props) => {
 	var { plotData, xScale, yScale, xAccessor, yAccessor, base } = props;
 	var height = yScale.range()[0];
-	var newBase = d3.functor( base === undefined ? height - 1: base );
+	var newBase = d3.functor( isNotDefined(base) ? height - 1: base );
 
 	var areaSeries = d3.svg.area()
-		.defined((d) => yAccessor(d) !== undefined)
+		.defined((d) => isDefined(yAccessor(d)))
 		.x((d) => xScale(xAccessor(d)))
 		.y0(newBase.bind(null, yScale))
 		.y1((d) => yScale(yAccessor(d)));
@@ -57,14 +57,14 @@ Area.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { xAccessor, yAccessor, fill, stroke, opacity, base } = props;
 	var begin = true;
 	var height = yScale.range()[0];
-	var newBase = d3.functor( base === undefined ? height - 1 : base);
+	var newBase = d3.functor( isNotDefined(base) ? height - 1 : base);
 
 	ctx.fillStyle = hexToRGBA(fill, opacity);
 	ctx.strokeStyle = stroke;
 	// ctx.globalAlpha = opacity;
 
 	plotData.forEach((d) => {
-		if (yAccessor(d) !== undefined) {
+		if (isDefined(yAccessor(d))) {
 			if (begin) {
 				ctx.beginPath();
 				begin = false;
@@ -79,9 +79,9 @@ Area.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var last = plotData[plotData.length - 1];
 	ctx.lineTo(xScale(xAccessor(last)), newBase(yScale, last));
 
-	if (base !== undefined) {
+	if (isDefined(base)) {
 		plotData.slice().reverse().forEach((d) => {
-			if (yAccessor(d) !== undefined) {
+			if (isDefined(yAccessor(d))) {
 				ctx.lineTo(xScale(xAccessor(d)), newBase(yScale, d));
 			}
 		});

@@ -6,13 +6,13 @@ import d3 from "d3";
 import EdgeCoordinate from "./EdgeCoordinate";
 
 import pure from "../pure";
-import { first, last, shallowEqual } from "../utils";
+import { first, last, shallowEqual, isDefined, isNotDefined } from "../utils";
 
 class EdgeIndicator extends Component {
 	componentDidMount() {
 		var { chartCanvasType, getCanvasContexts } = this.props;
 
-		if (chartCanvasType !== "svg" && getCanvasContexts !== undefined) {
+		if (chartCanvasType !== "svg" && isDefined(getCanvasContexts)) {
 			var contexts = getCanvasContexts();
 			if (contexts)
 				EdgeIndicator.drawOnCanvas(this.props, contexts.axes);
@@ -42,7 +42,7 @@ class EdgeIndicator extends Component {
 		var edge = EdgeIndicator.helper(this.props, xScale, chartConfig.yScale, plotData);
 
 
-		if (edge === undefined) return null;
+		if (isNotDefined(edge)) return null;
 		return <EdgeCoordinate
 			className="react-stockcharts-edge-coordinate"
 				{...edge} />;
@@ -86,7 +86,7 @@ EdgeIndicator.drawOnCanvasStatic = (props, ctx, xScale, yScale, plotData) => {
 	var { margin, canvasOriginX, canvasOriginY } = props;
 	var edge = EdgeIndicator.helper(props, xScale, yScale, plotData);
 
-	if (edge === undefined) return null;
+	if (isNotDefined(edge)) return null;
 
 	ctx.save();
 
@@ -107,7 +107,7 @@ EdgeIndicator.helper = (props, xScale, yScale, plotData) => {
 
 	var item = itemType === "first" ? first(plotData, yAccessor) : last(plotData, yAccessor)
 
-	if (item !== undefined) {
+	if (isDefined(item)) {
 		var yValue = yAccessor(item),
 			xValue = xAccessor(item);
 

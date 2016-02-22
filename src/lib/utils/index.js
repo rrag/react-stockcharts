@@ -84,10 +84,6 @@ export function getClosestItem(array, value, accessor, log) {
 
 export const overlayColors = d3.scale.category10();
 
-export function isDefined(d) {
-	return d !== null && typeof d != "undefined";
-}
-
 export function rebind(target, source, mappings) {
 	if (typeof(mappings) !== 'object') {
 		return d3.rebind.apply(d3, arguments);
@@ -133,8 +129,12 @@ export function last(array, accessor) {
 	return length ? array[length - 1] : undefined;
 }
 
+export function isDefined(d) {
+	return d !== null && typeof d != "undefined";
+}
+
 export function isNotDefined(d) {
-	return ! isDefined(d);
+	return !isDefined(d);
 }
 
 export function isObject(d) {

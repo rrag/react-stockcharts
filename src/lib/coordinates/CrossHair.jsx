@@ -5,7 +5,7 @@ import objectAssign from "object-assign";
 
 import EdgeCoordinate from "./EdgeCoordinate";
 
-import { hexToRGBA } from "../utils";
+import { hexToRGBA, isDefined } from "../utils";
 
 class CrossHair extends React.Component {
 	shouldComponentUpdate(nextProps) {
@@ -14,7 +14,7 @@ class CrossHair extends React.Component {
 	render() {
 		var result = CrossHair.helper(this.props);
 		var { line, edges } = result;
-		var svgLine = line !== undefined
+		var svgLine = isDefined(line)
 			? <line className="react-stockcharts-cross-hair" opacity={line.opacity} stroke={line.stroke}
 					x1={line.x1} y1={line.y1}
 					x2={line.x2} y2={line.y2} />
@@ -43,7 +43,6 @@ CrossHair.propTypes = {
 };
 
 CrossHair.defaultProps = {
-	namespace: "ReStock.CrossHair",
 	yAxisPad: 5
 };
 

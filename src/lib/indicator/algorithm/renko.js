@@ -1,6 +1,6 @@
 "use strict";
 
-import { identity, zipper, merge } from "../../utils";
+import { identity, zipper, merge, isNotDefined } from "../../utils";
 
 import atr from "./atr";
 
@@ -34,7 +34,7 @@ export default function() {
 		var brick = {}, direction = 0;
 
 		rawData.forEach( function(d) {
-			if (brick.from === undefined) {
+			if (isNotDefined(brick.from)) {
 				brick.high = d.high;
 				brick.low = d.low;
 				brick.startOfYear = d.startOfYear;

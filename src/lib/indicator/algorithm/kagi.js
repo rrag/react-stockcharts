@@ -1,6 +1,6 @@
 "use strict";
 
-import { identity, zipper, merge } from "../../utils";
+import { identity, zipper, merge, isNotDefined } from "../../utils";
 
 import atr from "./atr";
 
@@ -34,7 +34,7 @@ export default function() {
 		var line = {};
 
 		data.forEach(function(d) {
-			if (line.from === undefined) {
+			if (isNotDefined(line.from)) {
 				indexMutator(line, index++);
 				dateMutator(line, dateAccessor(d));
 				line.from = dateAccessor(d);
@@ -122,21 +122,21 @@ export default function() {
 				var nextChangePoint, nextChangeTo;
 				if (direction < 0 /* if direction so far has been -ve*/) {
 					// compare with line.close becomes prevTrough
-					if (prevPeak === undefined) prevPeak = line.open;
+					if (isNotDefined(prevPeak)) prevPeak = line.open;
 					prevTrough = line.close;
 					if (source(d) > prevPeak) {
 						nextChangePoint = prevPeak;
 						nextChangeTo = "yang";
 					}
 				} else {
-					if (prevTrough === undefined) prevTrough = line.open;
+					if (isNotDefined(prevTrough)) prevTrough = line.open;
 					prevPeak = line.close;
 					if (source(d) < prevTrough) {
 						nextChangePoint = prevTrough;
 						nextChangeTo = "yin";
 					}
 				}
-				if (line.startAs === undefined) {
+				if (isNotDefined(line.startAs)) {
 					line.startAs = direction > 0 ? "yang" : "yin";
 				}
 

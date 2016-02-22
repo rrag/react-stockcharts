@@ -4,6 +4,7 @@ import React from "react";
 import objectAssign from "object-assign";
 
 import pure from "../pure";
+import { isDefined } from "../utils"
 
 function getDisplayName(Series) {
 	var name = Series.displayName || Series.name || "Series";
@@ -18,7 +19,7 @@ function wrap(WrappedSeries) {
 				var { chartCanvasType } = this.context;
 				var { getCanvasContexts } = this.props;
 
-				if (chartCanvasType !== "svg" && getCanvasContexts !== undefined) {
+				if (chartCanvasType !== "svg" && isDefined(getCanvasContexts)) {
 					var contexts = getCanvasContexts();
 					var { defaultProps } = WrappedSeries;
 					var props = objectAssign({}, defaultProps, this.props);
@@ -58,7 +59,7 @@ function wrap(WrappedSeries) {
 			var callback = WrappedSeries.drawOnCanvas;
 			var { clip, chartCanvasType, chartConfig } = this.props;
 
-			if (chartCanvasType !== "svg" && callback !== undefined) return null;
+			if (chartCanvasType !== "svg" && isDefined(callback)) return null;
 			var style = clip ? { "clipPath": "url(#chart-area-clip)" } : null;
 
 			return (
