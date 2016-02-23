@@ -48,7 +48,7 @@ export default function() {
 				var lowestLow = d3.min(values, low);
 
 				var currentClose = close(last(values));
-				var k = (currentClose - lowestLow) / (highestHigh - lowestLow) * 100
+				var k = (currentClose - lowestLow) / (highestHigh - lowestLow) * 100;
 
 				return k;
 			});
@@ -59,7 +59,7 @@ export default function() {
 			.accumulator(values => d3.mean(values));
 
 		var dWindow = slidingWindow()
-			.skipInitial(windowSize -1 + kWindowSize - 1)
+			.skipInitial(windowSize - 1 + kWindowSize - 1)
 			.windowSize(dWindowSize)
 			.accumulator(values => d3.mean(values));
 

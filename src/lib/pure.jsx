@@ -24,7 +24,7 @@ function pure(PureSeries, contextShape, ignorePropKeys = []) {
 				.filter(key => ignorePropKeys.indexOf(key) === -1)
 				.forEach(key => {
 					ctx[key] = this.context[key];
-				})
+				});
 
 			// console.log(ctx);
 			return <PureSeries ref="pureSeries"

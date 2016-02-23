@@ -2,7 +2,7 @@
 
 import d3 from "d3";
 
-import { isDefined, isNotDefined } from "../utils"
+import { isDefined, isNotDefined } from "../utils";
 
 export default function financeEODScale(indexAccessor = d => d.idx, dateAccessor = d => d.date, data = [0, 1], backingLinearScale = d3.scale.linear()) {
 

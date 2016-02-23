@@ -22,14 +22,14 @@ export default function() {
 		.fast(defaultOptions.fast)
 		.slow(defaultOptions.slow)
 		.signal(defaultOptions.signal)
-		.source(defaultOptions.source)
+		.source(defaultOptions.source);
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
-		.merge((datum, indicator) => { datum.macd = indicator });
+		.merge((datum, indicator) => { datum.macd = indicator; });
 
 	var indicator = function(data) {
-		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`)
+		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
 		return mergedAlgorithm(data);
 	};
 

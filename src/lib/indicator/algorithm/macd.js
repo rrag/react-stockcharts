@@ -48,7 +48,7 @@ export default function() {
 			.windowSize(signal);
 
 		var macdLineCalculator = zipper()
-			.combine((fastEMA, slowEMA) => (isDefined(fastEMA) && isDefined(slowEMA)) ? fastEMA - slowEMA : undefined)
+			.combine((fastEMA, slowEMA) => (isDefined(fastEMA) && isDefined(slowEMA)) ? fastEMA - slowEMA : undefined);
 
 		var macdLine = macdLineCalculator(fastEMA(data), slowEMA(data));
 

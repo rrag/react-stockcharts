@@ -44,7 +44,7 @@ export default function() {
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
-		.merge((datum, indicator) => { datum.elderImpulse = indicator });
+		.merge((datum, indicator) => { datum.elderImpulse = indicator; });
 
 	var indicator = function(data) {
 		var newData = mergedAlgorithm(data);

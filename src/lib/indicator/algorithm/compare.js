@@ -5,7 +5,7 @@ import { first } from "../../utils";
 export default function() {
 	var base = d => d.close;
 	var mainKeys = [];
-	var compareKeys = []; 
+	var compareKeys = [];
 
 	function calculator(data) {
 		var f = first(data);
@@ -21,7 +21,7 @@ export default function() {
 				result[key] = (d[key] - f[key]) / f[key];
 			});
 			return result;
-		})
+		});
 		// console.log(compareData[20]);
 		return compareData;
 	};

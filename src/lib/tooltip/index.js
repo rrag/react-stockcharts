@@ -16,4 +16,4 @@ export {
 	BollingerBandTooltip,
 	RSITooltip,
 	StochasticTooltip,
-}
+};

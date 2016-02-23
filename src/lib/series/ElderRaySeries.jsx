@@ -43,12 +43,12 @@ class ElderRaySeries extends Component {
 		var yAccessor = calculator.accessor();
 		return yAccessor(d) && (yAccessor(d).bullPower < 0
 				|| yAccessor(d).bullPower * yAccessor(d).bearPower < 0
-			? Math.min(0, yAccessor(d).bullPower) : undefined)
+			? Math.min(0, yAccessor(d).bullPower) : undefined);
 	}
 	yAccessorForHistogramBase(xScale, yScale, d) {
 		var { calculator } = this.props;
 		var yAccessor = calculator.accessor();
-		var y = yAccessor(d) ? yAccessor(d).bearPower : 0
+		var y = yAccessor(d) ? yAccessor(d).bearPower : 0;
 		return yScale(Math.min(y, 0));
 	}
 	fillForEachBar(d, yAccessorNumber) {

@@ -56,5 +56,5 @@ export default function() {
 			return [start, end];
 		}
 	};
-*/	return calculator;
+*/		return calculator;
 }

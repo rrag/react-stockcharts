@@ -16,7 +16,7 @@ class ScatterSeries extends Component {
 		return <g className={className}>
 			{points.map((point, idx) => {
 				var { marker: Marker } = point;
-				return <Marker key={idx} {...markerProps} point={point} />
+				return <Marker key={idx} {...markerProps} point={point} />;
 			})}
 		</g>;
 	}
@@ -51,8 +51,8 @@ ScatterSeries.helper = (props, xScale, yScale, plotData) => {
 
 		var mProps = { ...Marker.defaultProps, markerProps };
 
-		var fill = d3.functor(mProps.fill)
-		var stroke = d3.functor(mProps.stroke)
+		var fill = d3.functor(mProps.fill);
+		var stroke = d3.functor(mProps.stroke);
 
 		return {
 			x: xScale(xAccessor(d)),
@@ -61,7 +61,7 @@ ScatterSeries.helper = (props, xScale, yScale, plotData) => {
 			stroke: stroke(d),
 			datum: d,
 			marker: Marker,
-		}
+		};
 	});
 };
 
@@ -79,7 +79,7 @@ ScatterSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	nest.forEach(fillGroup => {
 		var { key: fillKey, values: fillValues } = fillGroup;
 
-		if (fillKey !== "none") { 
+		if (fillKey !== "none") {
 			ctx.fillStyle = fillKey;
 		}
 
@@ -90,9 +90,9 @@ ScatterSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 
 			strokeValues.forEach(point => {
 				var { marker } = point;
-				marker.drawOnCanvasWithNoStateChange({ ...marker.defaultProps, ...markerProps }, point, ctx)
-			})
-		})
+				marker.drawOnCanvasWithNoStateChange({ ...marker.defaultProps, ...markerProps }, point, ctx);
+			});
+		});
 	});
 };
 

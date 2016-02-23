@@ -94,7 +94,7 @@ CandlestickSeries.getCandlesSVG = (props) => {
 			);
 		else if (d.height === 0)
 			return (
-				<line key={idx} 
+				<line key={idx}
 					x1={d.x} y1={d.y} x2={d.x + d.width} y2={d.y + d.height}
 					stroke={d.fill} />
 			);
@@ -125,7 +125,7 @@ CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 			ctx.moveTo(d.x1, d.y1);
 			ctx.lineTo(d.x2, d.y2);
 			ctx.stroke();
-		})
+		});
 	});
 
 	var candleData = CandlestickSeries.getCandleData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
@@ -162,8 +162,8 @@ CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 					ctx.fill();
 					if (strokeKey !== "none") ctx.stroke();
 				}
-			})
-		})
+			});
+		});
 	});
 };
 

@@ -21,7 +21,7 @@ export default function() {
 		.accumulator(([prev, curr]) => {
 			var absoluteChange = prev - curr;
 			var percentChange = absoluteChange * 100 / prev;
-			return { absoluteChange, percentChange }
+			return { absoluteChange, percentChange };
 		});
 
 	var mergedAlgorithm = merge()
@@ -32,7 +32,7 @@ export default function() {
 		});
 
 	var indicator = function(data) {
-		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`)
+		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
 		return mergedAlgorithm(data);
 	};
 

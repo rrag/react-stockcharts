@@ -113,7 +113,7 @@ export function head(array, accessor) {
 	return array ? array[0] : undefined;
 }
 
-export const first = head
+export const first = head;
 
 export function last(array, accessor) {
 	if (accessor && array) {

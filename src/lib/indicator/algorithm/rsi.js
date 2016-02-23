@@ -45,11 +45,11 @@ export default function() {
 
 				var avgGain = isDefined(prevAvgGain)
 					? (prevAvgGain * (windowSize - 1) + last(values).gain) / windowSize
-					: d3.mean(values, (each) => each.gain)
+					: d3.mean(values, (each) => each.gain);
 
 				var avgLoss = isDefined(prevAvgLoss)
 					? (prevAvgLoss * (windowSize - 1) + last(values).loss) / windowSize
-					: d3.mean(values, (each) => each.loss)
+					: d3.mean(values, (each) => each.loss);
 
 				var relativeStrength = avgGain / avgLoss;
 				var rsi = 100 - (100 / (1 + relativeStrength));
@@ -70,12 +70,12 @@ export default function() {
 				return {
 					gain: Math.max(change, 0),
 					loss: Math.abs(Math.min(change, 0)),
-				}
-			})
+				};
+			});
 
 		var gainsAndLosses = gainsAndLossesCalculator(data);
 
-		var rsiData = rsiAlgorithm(gainsAndLosses)
+		var rsiData = rsiAlgorithm(gainsAndLosses);
 
 		return rsiData;
 	};

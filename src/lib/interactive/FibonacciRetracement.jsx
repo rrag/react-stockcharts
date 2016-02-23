@@ -155,7 +155,7 @@ function generateLine(type, start, end, xAccessor, plotData) {
 			percent: each,
 			x1: type === "EXTEND" ? xAccessor(head(plotData)) : start[0],
 			x2: type === "EXTEND" ? xAccessor(last(plotData)) : end[0],
-			y: (end[1] - (each / 100) * dy) 
+			y: (end[1] - (each / 100) * dy)
 		}));
 }
 

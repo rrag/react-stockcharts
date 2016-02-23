@@ -31,7 +31,7 @@ function getDataOfLength(fullData, showingInterval, length) {
 function keysChanged(prev, curr) {
 	if (Object.keys(prev).length === Object.keys(curr).length) {
 		return Object.keys(prev)
-			.map(key => ({key, result: prev[key] === curr[key]}))
+			.map(key => ({ key, result: prev[key] === curr[key] }))
 			.filter(each => !each.result)
 			.map(each => each.key);
 	}
@@ -154,7 +154,7 @@ class EventHandler extends Component {
 			var l = last(isDefined(showingInterval) ? fullData[showingInterval] : fullData);
 			if (end >= xAccessor(l)) {
 				// get plotData between [start, end] and do not change the domain
-				var plotData = getDataBetween(fullData, showingInterval, xAccessor, start, end)
+				var plotData = getDataBetween(fullData, showingInterval, xAccessor, start, end);
 			} else {
 				// get plotData between [xAccessor(l) - (end - start), xAccessor(l)] and DO change the domain
 				var dx = updatedXScale(xAccessor(l)) - updatedXScale.range()[1];
@@ -202,10 +202,10 @@ class EventHandler extends Component {
 	}
 	shouldComponentUpdate(nextProps, nextState) {
 		return !(this.state.receivedProps < nextState.receivedProps
-					&& this.props.type == "hybrid"
+					&& this.props.type === "hybrid"
 					&& this.state.panInProgress)
 				&& !(this.state.panInProgress
-					&& this.props.type == "hybrid"
+					&& this.props.type === "hybrid"
 					&& this.state.show !== nextState.show
 					&& this.state.receivedPropsOnPanStart < nextState.receivedProps
 					&& this.state.receivedProps === nextState.receivedProps);
@@ -415,7 +415,7 @@ class EventHandler extends Component {
 			.currentInterval(showingInterval)
 			.currentDomain(initialXScale.domain())
 			.currentPlotData(plotData)
-			.interval(interval)(newDomain, xAccessor)
+			.interval(interval)(newDomain, xAccessor);
 		plotData = postCalculator(plotData);
 
 		var chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData);
@@ -456,7 +456,7 @@ class EventHandler extends Component {
 			.currentInterval(showingInterval)
 			.currentDomain(initialXScale.domain())
 			.currentPlotData(plotData)
-			.interval(interval)(newDomain, xAccessor)
+			.interval(interval)(newDomain, xAccessor);
 
 		plotData = postCalculator(plotData);
 		var currentItem = getCurrentItem(updatedScale, xAccessor, mouseXY, plotData);
@@ -505,7 +505,7 @@ class EventHandler extends Component {
 			.data(fullData)
 			.width(width)
 			.scale(initialXScale)
-			.interval(showingInterval)(newDomain, xAccessor)
+			.interval(showingInterval)(newDomain, xAccessor);
 
 		plotData = postCalculator(plotData);
 		// console.log(last(plotData));
@@ -565,7 +565,7 @@ class EventHandler extends Component {
 				canvasDrawCallbackList
 					.filter(each => each.type === "mouse")
 					.forEach(each => each.draw(mouseContext, show,
-						xScale, mouseXY, currentCharts, chartConfig, currentItem)); 
+						xScale, mouseXY, currentCharts, chartConfig, currentItem));
 
 			});
 		} else {
@@ -632,7 +632,7 @@ class EventHandler extends Component {
 			};
 		})
 		.filter(each => currentCharts.indexOf(each.forChart) >= -1)
-		.map(({callback, chartConfig}) => callback({ ...state, chartConfig }, event))
+		.map(({ callback, chartConfig }) => callback({ ...state, chartConfig }, event))
 		.filter(each => each !== false);
 
 		// console.log(delta);

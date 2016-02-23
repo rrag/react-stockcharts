@@ -16,7 +16,7 @@ class OHLCSeries extends Component {
 
 		return <g className={className}>
 			{bars.map((d, idx) => <path key={idx}
-				className={d.className} stroke={d.stroke} strokeWidth={strokeWidth} 
+				className={d.className} stroke={d.stroke} strokeWidth={strokeWidth}
 				d={`M${d.openX1} ${d.openY} L${d.openX2} ${d.openY} M${d.x} ${d.y1} L${d.x} ${d.y2} M${d.closeX1} ${d.closeY} L${d.closeX2} ${d.closeY}`}/>)}
 		</g>;
 	}
@@ -75,7 +75,7 @@ OHLCSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 			ctx.lineTo(d.closeX2, d.closeY);
 
 			ctx.stroke();
-		})
+		});
 	});
 };
 

@@ -15,14 +15,14 @@ class Chart extends PureComponent {
 		return chartConfig.yScale.copy();
 	}
 	getChildContext() {
-		var { id: chartId } = this.props
+		var { id: chartId } = this.props;
 		var chartConfig = this.context.chartConfig.filter((each) => each.id === chartId)[0];
 
 		var { width, height } = chartConfig;
 		var canvasOriginX = 0.5 + chartConfig.origin[0] + this.context.margin.left;
 		var canvasOriginY = 0.5 + chartConfig.origin[1] + this.context.margin.top;
 
-		return { chartId, chartConfig, canvasOriginX, canvasOriginY, width, height};
+		return { chartId, chartConfig, canvasOriginX, canvasOriginY, width, height };
 	}
 	render() {
 		var { origin } = this.context.chartConfig.filter((each) => each.id === this.props.id)[0];

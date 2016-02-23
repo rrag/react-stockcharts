@@ -9,9 +9,9 @@ export default function() {
 	function calculator(data) {
 		var algorithm = mappedSlidingWindow()
 			.windowSize(2)
-			.undefinedValue(({open, high, low, close}) => {
+			.undefinedValue(({ open, high, low, close }) => {
 				close = (open + high + low + close) / 4;
-				return {open, high, low, close};
+				return { open, high, low, close };
 			})
 			.accumulator(([prev, now]) => {
 				// console.log(prev, now);

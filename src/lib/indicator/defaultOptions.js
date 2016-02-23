@@ -10,19 +10,19 @@ export const BollingerBand = {
 export const ATR = {
 	period: 14,
 	source: d => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
-}
+};
 
 export const ForceIndex = {
 	close: d => d.close, // "high", "low", "open", "close"
 	volume: d => d.volume
-}
+};
 
 export const ElderRay = {
 	period: 13,
 	source: d => d.close, // "high", "low", "open", "close"
 	movingAverageType: "sma",
 	ohlc: d => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
-}
+};
 
 export const ElderImpulse = {
 	stroke: {
@@ -30,7 +30,7 @@ export const ElderImpulse = {
 		down: "#FF0000",
 		neutral: "#0000FF",
 	}
-}
+};
 
 export const MACD = {
 	fast: 12,
@@ -84,8 +84,8 @@ export const Kagi = {
 	reversal: 2,
 	source: d => d.close, // "high", "low", "open", "close"
 	dateAccessor: d => d.date,
-	dateMutator: (d, date) => { d.date = date },
-	indexMutator: (d, idx) => { d.idx = idx },
+	dateMutator: (d, date) => { d.date = date; },
+	indexMutator: (d, idx) => { d.idx = idx; },
 };
 
 export const Renko = {
@@ -94,8 +94,8 @@ export const Renko = {
 	fixedBrickSize: 2,
 	source: d => ({ high: d.high, low: d.low }), // "close", "hi/lo"
 	dateAccessor: d => d.date,
-	dateMutator: (d, date) => { d.date = date },
-	indexMutator: (d, idx) => { d.idx = idx },
+	dateMutator: (d, date) => { d.date = date; },
+	indexMutator: (d, idx) => { d.idx = idx; },
 	indexAccessor: d => d.idx,
 };
 
@@ -104,7 +104,7 @@ export const PointAndFigure = {
 	reversal: 3,
 	source: d => ({ high: d.high, low: d.low }), // "close", "hi/lo"
 	dateAccessor: d => d.date,
-	dateMutator: (d, date) => { d.date = date },
-	indexMutator: (d, idx) => { d.idx = idx },
+	dateMutator: (d, date) => { d.date = date; },
+	indexMutator: (d, idx) => { d.idx = idx; },
 	indexAccessor: d => d.idx,
 };

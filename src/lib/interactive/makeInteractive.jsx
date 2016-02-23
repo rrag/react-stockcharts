@@ -39,8 +39,8 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 			var { setInteractiveState, interactiveState, id } = this.props;
 
 			var newInteractive = interactiveState
-				.map(each => each.id == id
-					? { id, interactive}
+				.map(each => each.id === id
+					? { id, interactive }
 					: each);
 
 			setInteractiveState(newInteractive);

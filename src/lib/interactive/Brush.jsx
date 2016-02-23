@@ -48,11 +48,11 @@ class Brush extends Component {
 
 			if (isDefined(x1)) {
 				var callback = onBrush.bind(null, {
-						x1: displayXAccessor(interactive.startItem),
-						y1,
-						x2: displayXAccessor(currentItem),
-						y2: yValue
-					}, [interactive.startItem, currentItem], [startClick, mouseXY], e);
+					x1: displayXAccessor(interactive.startItem),
+					y1,
+					x2: displayXAccessor(currentItem),
+					y2: yValue
+				}, [interactive.startItem, currentItem], [startClick, mouseXY], e);
 
 				var brushCoords =  {
 					...interactive,

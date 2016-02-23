@@ -16,7 +16,7 @@ function shouldResetChart(thisProps, nextProps) {
 		"xScale", /*"xAccessor",*/ "map", "dataEvaluator",
 		"indexAccessor", "indexMutator"];
 	return !candidates.every(key => {
-		var result = shallowEqual(thisProps[key], nextProps[key])
+		var result = shallowEqual(thisProps[key], nextProps[key]);
 		// console.log(key, result);
 		return result;
 	});
@@ -52,7 +52,7 @@ function calculateFullData(props) {
 		xAccessor,
 		xExtentsCalculator,
 		fullData,
-	}
+	};
 }
 
 function calculateState(props) {
@@ -114,13 +114,13 @@ class ChartCanvas extends Component {
 	getChildContext() {
 		return {
 			displayXAccessor: this.props.xAccessor,
-		}
+		};
 	}
 	componentWillMount() {
 		this.setState(calculateState(this.props));
 	}
 	componentWillReceiveProps(nextProps) {
-		var reset = shouldResetChart(this.props, nextProps)
+		var reset = shouldResetChart(this.props, nextProps);
 		// console.log("shouldResetChart =", reset);
 		var { xExtents: xExtentsProp, calculator } = nextProps;
 		var { xAccessor, map, dataEvaluator, indexAccessor, indexMutator } = nextProps;
@@ -145,7 +145,7 @@ class ChartCanvas extends Component {
 			var { fullData } = calculateFullData(nextProps);
 			this.setState({ fullData, dataAltered: false });
 		} else {
-			if (process.env.NODE_ENV !== "production") 
+			if (process.env.NODE_ENV !== "production")
 				console.log("Trivial change, may be width/height or type changed, but that does not matter");
 		}
 	}
@@ -200,9 +200,9 @@ class ChartCanvas extends Component {
 }
 
 /*
-							interval={interval} type={type} margin={margin} 
+							interval={interval} type={type} margin={margin}
 							data={plotData} showingInterval={updatedInterval}
-							xExtentsCalculator={domainCalculator} 
+							xExtentsCalculator={domainCalculator}
 							xScale={updatedScale} xAccessor={xAccessor}
 							dimensions={dimensions}
 
@@ -259,8 +259,8 @@ ChartCanvas.defaultProps = {
 
 ChartCanvas.childContextTypes = {
 	displayXAccessor: PropTypes.func.isRequired,
-}
+};
 
-ChartCanvas.ohlcv = d => ({date:d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume});
+ChartCanvas.ohlcv = d => ({ date:d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume });
 
 export default ChartCanvas;

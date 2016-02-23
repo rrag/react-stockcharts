@@ -37,12 +37,12 @@ Circle.drawOnCanvas = (props, point, ctx) => {
 
 	ctx.strokeStyle = stroke;
 
-	if (fill !== "none") { 
+	if (fill !== "none") {
 		ctx.fillStyle = hexToRGBA(fill, opacity);
 	}
 
-	Circle.drawOnCanvasWithNoStateChange(props, point, ctx)
-}
+	Circle.drawOnCanvasWithNoStateChange(props, point, ctx);
+};
 
 
 Circle.drawOnCanvasWithNoStateChange = (props, point, ctx) => {
@@ -55,6 +55,6 @@ Circle.drawOnCanvasWithNoStateChange = (props, point, ctx) => {
 	ctx.arc(point.x, point.y, radius, 0, 2 * Math.PI, false);
 	ctx.stroke();
 	ctx.fill();
-}
+};
 
 export default Circle;

@@ -41,7 +41,7 @@ Area.defaultProps = {
 Area.getArea = (props) => {
 	var { plotData, xScale, yScale, xAccessor, yAccessor, base } = props;
 	var height = yScale.range()[0];
-	var newBase = d3.functor( isNotDefined(base) ? height - 1: base );
+	var newBase = d3.functor( isNotDefined(base) ? height - 1 : base );
 
 	var areaSeries = d3.svg.area()
 		.defined((d) => isDefined(yAccessor(d)))

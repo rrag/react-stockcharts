@@ -42,7 +42,7 @@ class TrendLine extends Component {
 				: yScale.invert(mouseXY[1]);
 			var xValue = xAccessor(currentItem);
 
-			return { interactive: { ...interactive, currentPos: [xValue, yValue], } }
+			return { interactive: { ...interactive, currentPos: [xValue, yValue], } };
 		}
 		return { interactive };
 	}

@@ -22,10 +22,10 @@ export default function() {
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
-		.merge((datum, indicator) => { datum.compare = indicator });
+		.merge((datum, indicator) => { datum.compare = indicator; });
 
 	var indicator = function(data) {
-		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`)
+		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
 		return mergedAlgorithm(data);
 	};
 

@@ -5,7 +5,7 @@ import d3 from "d3";
 
 import wrap from "./wrap";
 
-import { isDefined, isNotDefined } from "../utils"
+import { isDefined, isNotDefined } from "../utils";
 
 class Line extends Component {
 	render() {

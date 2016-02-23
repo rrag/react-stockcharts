@@ -91,8 +91,8 @@ StackedHistogramSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => 
 				if (stroke) ctx.stroke();
 			}
 
-		})
-	})
+		});
+	});
 };
 
 StackedHistogramSeries.getBarsSVG = (props) => {
@@ -147,7 +147,7 @@ StackedHistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, p
 					var yValue = eachYAccessor(d);
 					if (isDefined(yAccessorNarrow) && isDefined(yAccessorNarrow[i])) {
 						yValue = yAccessorNarrow[i](eachYAccessor(d));
-					} 
+					}
 					if (isNotDefined(yValue)) return undefined;
 
 					var x = Math.round(xScale(xAccessor(d))) - offset;
@@ -165,7 +165,7 @@ StackedHistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, p
 				var b = getBase(xScale, yScale, d);
 				var h;
 				for (var i = innerBars.length - 1; i >= 0; i--) {
-					h = b - innerBars[i].y
+					h = b - innerBars[i].y;
 					if (h < 0) {
 						innerBars[i].y = b;
 						h = -1 * h;

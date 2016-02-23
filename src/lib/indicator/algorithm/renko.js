@@ -16,11 +16,11 @@ export default function() {
 
 		if (reversalType === "ATR") {
 			// calculateATR(rawData, period);
-			var atrAlgorithm = atr().windowSize(windowSize)
+			var atrAlgorithm = atr().windowSize(windowSize);
 
 			var atrCalculator = merge()
 				.algorithm(atrAlgorithm)
-				.merge((d, c) => { d["atr" + windowSize] = c; } )
+				.merge((d, c) => { d["atr" + windowSize] = c; } );
 
 			atrCalculator(rawData);
 			brickSize = d => d["atr" + windowSize];

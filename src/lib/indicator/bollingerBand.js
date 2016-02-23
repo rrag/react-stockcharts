@@ -30,10 +30,10 @@ export default function() {
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
-		.merge((datum, indicator) => { datum.bollingerBand = indicator });
+		.merge((datum, indicator) => { datum.bollingerBand = indicator; });
 
 	var indicator = function(data) {
-		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`)
+		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
 
 		var newData = mergedAlgorithm(data);
 		return newData;

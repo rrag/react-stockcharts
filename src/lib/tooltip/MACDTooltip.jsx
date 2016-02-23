@@ -17,7 +17,7 @@ class MACDTooltip extends Component {
 		var yAccessor = calculator.accessor();
 		var config = first(chartConfig.filter(each => each.id === forChart));
 
-		var macd = yAccessor(currentItem)
+		var macd = yAccessor(currentItem);
 
 		var MACDLine = (macd && macd.MACDLine && displayFormat(macd.MACDLine)) || "n/a";
 		var signalLine = (macd && macd.signalLine && displayFormat(macd.signalLine)) || "n/a";

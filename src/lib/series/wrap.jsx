@@ -3,7 +3,7 @@
 import React, { PropTypes, Component } from "react";
 
 import pure from "../pure";
-import { isDefined } from "../utils"
+import { isDefined } from "../utils";
 
 function getDisplayName(Series) {
 	var name = Series.displayName || Series.name || "Series";
@@ -108,7 +108,7 @@ function wrap(WrappedSeries) {
 	BaseCanvasSeries.defaultProps = {
 		...WrappedSeries.defaultProps,
 		clip: true,
-	}
+	};
 
 	BaseCanvasSeries.propTypes = {
 		getCanvasContexts: PropTypes.func,

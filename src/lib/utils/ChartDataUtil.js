@@ -2,7 +2,7 @@
 
 import React from "react";
 import d3 from "d3";
-import flattenDeep from "lodash.flattendeep"
+import flattenDeep from "lodash.flattendeep";
 
 import Chart from "../Chart";
 
@@ -23,7 +23,7 @@ export function getChartOrigin(origin, contextWidth, contextHeight) {
 	return originCoordinates;
 };
 
-export function getDimensions({width, height}, chartProps) {
+export function getDimensions({ width, height }, chartProps) {
 
 	var chartWidth = (chartProps.width || width);
 	var chartHeight = (chartProps.height || height);
@@ -40,7 +40,7 @@ function values(func) {
 	return (d) => {
 		var obj = func(d);
 		return isObject(obj) ? Object.keys(obj).map(key => obj[key]) : obj;
-	}
+	};
 };
 
 export function getNewChartConfig(innerDimension, children) {
@@ -49,7 +49,7 @@ export function getNewChartConfig(innerDimension, children) {
 		if (each.type === Chart) {
 			var { id, origin, padding, yExtents: yExtentsProp, yScale } = each.props;
 			var { width, height, availableWidth, availableHeight } = getDimensions(innerDimension, each.props);
-			var { yMousePointerDisplayLocation: at, yMousePointerDisplayFormat: format } = each.props
+			var { yMousePointerDisplayLocation: at, yMousePointerDisplayFormat: format } = each.props;
 			var mouseCoordinates = { at, format };
 			var yExtents = (Array.isArray(yExtentsProp) ? yExtentsProp : [yExtentsProp]).map(d3.functor);
 			return {
@@ -77,8 +77,8 @@ export function getCurrentCharts(chartConfig, mouseXY) {
 }
 export function getChartConfigWithUpdatedYScales(chartConfig, plotData) {
 	var yDomains = chartConfig
-		.map(({ yExtents }) => 
-			yExtents.map(eachExtent => 
+		.map(({ yExtents }) =>
+			yExtents.map(eachExtent =>
 				plotData.map(values(eachExtent))))
 		.map(_ => flattenDeep(_))
 		.map(_ => d3.extent(_));
@@ -88,9 +88,9 @@ export function getChartConfigWithUpdatedYScales(chartConfig, plotData) {
 			var { padding: { top, bottom }, height, width, yScale } = config;
 			// console.log(height, width);
 			return { ...config, yScale: yScale.copy().domain(domain).range([height - top, bottom]) };
-		})
+		});
 
-	var updatedChartConfig = combine(chartConfig, yDomains)
+	var updatedChartConfig = combine(chartConfig, yDomains);
 	return updatedChartConfig;
 };
 

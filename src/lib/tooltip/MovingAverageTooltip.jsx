@@ -72,7 +72,7 @@ class MovingAverageTooltip extends Component {
 							period: each.windowSize(),
 							source: each.source(),
 							echo: each.echo()
-						}
+						};
 						var yDisplayValue = yValue ? displayFormat(yValue) : "n/a";
 						return <SingleMAToolTip
 							key={idx}
