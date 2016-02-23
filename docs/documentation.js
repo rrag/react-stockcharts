@@ -66,7 +66,7 @@ var INDICATORS = {
 		require("lib/page/ForceIndexIndicatorPage").default,
 		require("lib/page/ElderRayIndicatorPage").default,
 		require("lib/page/ElderImpulseIndicatorPage").default,
-	]
+	] 
 }
 
 var INTERACTIVE = {
@@ -78,7 +78,6 @@ var INTERACTIVE = {
 		require("lib/page/BrushSupportPage").default,
 	]
 }
-
 
 var CUSTOMIZATION = {
 	head: "Customization",

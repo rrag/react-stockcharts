@@ -7,12 +7,14 @@ import d3 from "d3";
 import identity from "./identity";
 
 export default function zipper() {
-	var combine = identity
+	var combine = identity;
 
 	function zip() {
-		if (!(n = arguments.length)) return [];
-		for (var i = -1, m = d3.min(arguments, d3_zipLength), zips = new Array(m); ++i < m; ) {
-			for (var j = -1, n, zip = zips[i] = new Array(n); ++j < n; ) {
+		var n = arguments.length;
+		if (!n) return [];
+		var i, m = d3.min(arguments, d3_zipLength), zips = new Array(m);
+		for (i = -1; ++i < m; ) {
+			for (var j = -1, zip = zips[i] = new Array(n); ++j < n; ) {
 				zip[j] = arguments[j][i];
 			}
 			zips[i] = combine.apply(this, zips[i]);
@@ -28,6 +30,6 @@ export default function zipper() {
 		}
 		combine = x;
 		return zip;
-	}
+	};
 	return zip;
 };

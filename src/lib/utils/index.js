@@ -1,6 +1,6 @@
 "use strict";
 
-import React from "react";
+
 import d3 from "d3";
 
 import zipper from "./zipper";
@@ -23,7 +23,7 @@ export {
 	zipper,
 };
 
-export function getClosestItemIndexes2(array, value, accessor, log) {
+export function getClosestItemIndexes2(array, value, accessor) {
 	var left = d3.bisector(accessor).left(array, value);
 	left = Math.max(left - 1, 0);
 	var right = Math.min(left + 1, array.length - 1);
@@ -31,7 +31,6 @@ export function getClosestItemIndexes2(array, value, accessor, log) {
 	var item = accessor(array[left]);
 	if (item >= value && item <= value) right = left;
 
-	console.log(left, right);
 	return { left, right };
 };
 
@@ -85,14 +84,14 @@ export function getClosestItem(array, value, accessor, log) {
 export const overlayColors = d3.scale.category10();
 
 export function rebind(target, source, mappings) {
-	if (typeof(mappings) !== 'object') {
+	if (typeof(mappings) !== "object") {
 		return d3.rebind.apply(d3, arguments);
 	}
 	Object.keys(mappings)
 		.forEach(function(targetName) {
 			var method = source[mappings[targetName]];
-			if (typeof method !== 'function') {
-				throw new Error('The method ' + mappings[targetName] + ' does not exist on the source object');
+			if (typeof method !== "function") {
+				throw new Error(`The method ${mappings[targetName]} does not exist on the source object`);
 			}
 			target[targetName] = function() {
 				var value = method.apply(source, arguments);

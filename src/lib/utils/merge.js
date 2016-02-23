@@ -24,13 +24,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import d3 from "d3";
-
 import identity from "./identity";
 import zipper from "./zipper";
 import noop from "./noop";
 
-import { isDefined, isNotDefined } from "./index";
+import { isNotDefined } from "./index";
 
 // applies an algorithm to an array, merging the result back into
 // the source array using the given merge function.
@@ -46,7 +44,7 @@ export default function() {
 				var result = (skipUndefined && isNotDefined(indicator))
 					? datum
 					: merge(datum, indicator);
-				return isNotDefined(result) ? datum : result
+				return isNotDefined(result) ? datum : result;
 			});
 
 		return zip(data, algorithm(data));

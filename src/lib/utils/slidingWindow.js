@@ -28,7 +28,7 @@ THE SOFTWARE.
 
 */
 
-import d3 from 'd3';
+import d3 from "d3";
 import noop from "./noop";
 import identity from "./identity";
 

@@ -13,7 +13,7 @@ import CandleStickChartWithFibonacciInteractiveIndicator from "lib/charts/Candle
 
 var FibonacciInteractiveIndicatorPage = React.createClass({
 	statics: {
-		title: "Interactive Indicators - Fibonacci Retracement"
+		title: "Fibonacci Retracement"
 	},
 	render() {
 		return (

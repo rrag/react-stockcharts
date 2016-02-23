@@ -1,6 +1,6 @@
 "use strict";
 
-import React, { Component } from "react";
+import { Component } from "react";
 import shallowEqual from "./shallowEqual";
 
 class PureComponent extends Component {

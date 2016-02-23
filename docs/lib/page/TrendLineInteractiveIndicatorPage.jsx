@@ -13,7 +13,7 @@ var { TypeChooser, SaveChartAsImage } = helper;
 
 var TrendLineInteractiveIndicatorPage = React.createClass({
 	statics: {
-		title: "Interactive Indicators - Trendline"
+		title: "Trendline"
 	},
 	saveChartAsImage(e) {
 		var container = React.findDOMNode(this.refs.container);
