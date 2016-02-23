@@ -1,12 +1,12 @@
 "use strict";
 
+import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
 import { first } from "../utils";
-
 
 class MACDTooltip extends Component {
 	render() {
@@ -31,7 +31,7 @@ class MACDTooltip extends Component {
 		return (
 			<g transform={`translate(${ ox + x }, ${ oy + y })`} onClick={onClick}>
 				<ToolTipText x={0} y={0}
-					fontFamily={this.props.fontFamily} fontSize={this.props.fontSize}>
+					fontFamily={fontFamily} fontSize={fontSize}>
 					<ToolTipTSpanLabel>MACD (</ToolTipTSpanLabel>
 						<tspan fill={calculator.stroke().MACDLine}>{calculator.slow()}</tspan>
 						<ToolTipTSpanLabel>, </ToolTipTSpanLabel>
@@ -63,6 +63,7 @@ MACDTooltip.propTypes = {
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
 	calculator: PropTypes.func.isRequired,
+	displayFormat: PropTypes.func.isRequired,
 	onClick: PropTypes.func,
 };
 

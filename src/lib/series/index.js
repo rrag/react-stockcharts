@@ -14,7 +14,7 @@ import RSISeries from "./RSISeries";
 import StochasticSeries from "./StochasticSeries";
 import ElderRaySeries from "./ElderRaySeries";
 
-import ElderImpulseBackground from "./ElderImpulseBackground";
+// import ElderImpulseBackground from "./ElderImpulseBackground";
 
 import Area from "./Area";
 import Line from "./Line";
@@ -38,7 +38,6 @@ export {
 	RSISeries,
 	StochasticSeries,
 	ElderRaySeries,
-	ElderImpulseBackground,
 	Area,
 	Line,
 	StraightLine,

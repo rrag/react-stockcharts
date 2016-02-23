@@ -9,10 +9,7 @@ import Chart from "../Chart";
 import {
 	isObject,
 	getClosestItem,
-	getClosestItemIndexes,
 	zipper,
-	merge,
-	slidingWindow,
 	isDefined,
 } from "./index";
 
@@ -85,8 +82,7 @@ export function getChartConfigWithUpdatedYScales(chartConfig, plotData) {
 
 	var combine = zipper()
 		.combine((config, domain) => {
-			var { padding: { top, bottom }, height, width, yScale } = config;
-			// console.log(height, width);
+			var { padding: { top, bottom }, height, yScale } = config;
 			return { ...config, yScale: yScale.copy().domain(domain).range([height - top, bottom]) };
 		});
 

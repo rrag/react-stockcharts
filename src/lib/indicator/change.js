@@ -5,7 +5,6 @@ import d3 from "d3";
 import { merge, slidingWindow } from "../utils";
 
 import baseIndicator from "./baseIndicator";
-import { ElderRay as defaultOptions } from "./defaultOptions";
 
 const ALGORITHM_TYPE = "Change";
 

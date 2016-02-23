@@ -6,7 +6,6 @@ import { merge } from "../utils";
 import { compare } from "./algorithm";
 
 import baseIndicator from "./baseIndicator";
-import { ForceIndex as defaultOptions } from "./defaultOptions";
 
 const ALGORITHM_TYPE = "Compare";
 

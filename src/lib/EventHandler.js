@@ -2,41 +2,18 @@
 
 import React, { PropTypes, Component } from "react";
 
-import Chart from "./Chart";
-
 import {
-	first,
 	last,
 	isDefined,
 	isNotDefined,
 	clearCanvas,
-	calculate,
 	getClosestItemIndexes,
-	getClosestItem,
-	zipper,
 	shallowEqual,
 } from "./utils";
 
 import { getNewChartConfig, getChartConfigWithUpdatedYScales, getCurrentCharts, getCurrentItem } from "./utils/ChartDataUtil";
 
 var subscriptionCount = 0;
-
-function getDataOfLength(fullData, showingInterval, length) {
-	if (isDefined(showingInterval)) {
-		return fullData[showingInterval].slice(fullData[showingInterval].length - length);
-	}
-	return fullData.slice(fullData.length - length);
-}
-
-function keysChanged(prev, curr) {
-	if (Object.keys(prev).length === Object.keys(curr).length) {
-		return Object.keys(prev)
-			.map(key => ({ key, result: prev[key] === curr[key] }))
-			.filter(each => !each.result)
-			.map(each => each.key);
-	}
-	return "oops";
-}
 
 function getDataBetween(fullData, showingInterval, xAccessor, left, right) {
 	var dataForInterval = Array.isArray(fullData) ? fullData : fullData[showingInterval];
@@ -501,7 +478,7 @@ class EventHandler extends Component {
 		// console.log(initialXScale.range());
 		var newDomain = initialXScale.range().map(x => x - dx).map(initialXScale.invert);
 
-		var { plotData, interval: updatedInterval, scale: updatedScale } = xExtentsCalculator
+		var { plotData, /* interval: updatedInterval,*/scale: updatedScale } = xExtentsCalculator
 			.data(fullData)
 			.width(width)
 			.scale(initialXScale)
@@ -522,7 +499,7 @@ class EventHandler extends Component {
 			currentItem,
 		};
 	}
-	handlePan(mousePosition, startDomain) {
+	handlePan(mousePosition/* , startDomain*/) {
 		this.panHappened = true;
 		var state = this.panHelper(mousePosition);
 
@@ -609,7 +586,7 @@ class EventHandler extends Component {
 			panInProgress: false,
 			panStartXScale: null,
 			interactiveState,
-		}, _ => {
+		}, () => {
 			if (isDefined(callbackList)) callbackList.forEach(callback => callback());
 		});
 	}
@@ -667,6 +644,19 @@ class EventHandler extends Component {
 		);
 	}
 }
+EventHandler.propTypes = {
+	children: PropTypes.node.isRequired,
+	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	xAccessor: PropTypes.func.isRequired,
+	fullData: PropTypes.oneOfType([
+		PropTypes.array,
+		PropTypes.object,
+	]).isRequired,
+	interval: PropTypes.string,
+	dimensions: PropTypes.object,
+	xExtentsCalculator: PropTypes.func.isRequired,
+	postCalculator: PropTypes.func.isRequired,
+};
 
 EventHandler.childContextTypes = {
 	plotData: PropTypes.array,

@@ -1,6 +1,6 @@
 "use strict";
 
-import React, { PropTypes, Component } from "react";
+import React, { Component } from "react";
 import { shallowEqual } from "./utils";
 
 function getDisplayName(Series) {

@@ -1,6 +1,7 @@
 "use strict";
 
-var saveAsPng = require("save-svg-as-png");
+import saveAsPng from "save-svg-as-png";
+import { isDefined } from "../utils";
 
 var SaveChartAsImage = {
 	save(doc, container, background, cb) {

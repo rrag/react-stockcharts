@@ -12,7 +12,7 @@ class Brush extends Component {
 		this.onMousemove = this.onMousemove.bind(this);
 		this.onClick = this.onClick.bind(this);
 	}
-	terminate(interactive) {
+	terminate() {
 		return {
 			x1: null, y1: null,
 			x2: null, y2: null,
@@ -35,9 +35,9 @@ class Brush extends Component {
 		return { interactive };
 	}
 	onClick(props, interactive, state, e) {
-		var { displayXAccessor, chartId, xAccessor } = props;
-		var { mouseXY, currentItem, currentChartstriggerCallback, chartConfig } = state;
-		var { enabled, onStart, onBrush, type } = this.props;
+		var { displayXAccessor, xAccessor } = props;
+		var { mouseXY, currentItem, chartConfig } = state;
+		var { enabled, onStart, onBrush } = this.props;
 
 		if (enabled) {
 			var { x1, y1, startItem, startClick } = interactive;
@@ -47,26 +47,26 @@ class Brush extends Component {
 			var yValue = yScale.invert(mouseXY[1]);
 
 			if (isDefined(x1)) {
-				var callback = onBrush.bind(null, {
-					x1: displayXAccessor(interactive.startItem),
+				var onCompleteCallback = onBrush.bind(null, {
+					x1: displayXAccessor(startItem),
 					y1,
 					x2: displayXAccessor(currentItem),
 					y2: yValue
-				}, [interactive.startItem, currentItem], [startClick, mouseXY], e);
+				}, [startItem, currentItem], [startClick, mouseXY], e);
 
-				var brushCoords =  {
+				var onCompleteBrushCoords =  {
 					...interactive,
 					x1: null, y1: null,
 					x2: null, y2: null,
 					startItem: null,
 					startClick: null,
 				};
-				return { interactive: brushCoords, callback };
+				return { interactive: onCompleteBrushCoords, callback: onCompleteCallback };
 			} else if (e.button === 0) {
 
-				var callback = onStart.bind(null, { currentItem, point: [xValue, yValue] }, e);
+				var onStartCallback = onStart.bind(null, { currentItem, point: [xValue, yValue] }, e);
 
-				var brushCoords =  {
+				let onStartBrushCoords =  {
 					...interactive,
 					x1: xValue,
 					y1: yValue,
@@ -75,7 +75,7 @@ class Brush extends Component {
 					x2: null,
 					y2: null,
 				};
-				return { interactive: brushCoords, callback };
+				return { interactive: onStartBrushCoords, callback: onStartCallback };
 			}
 		}
 		return { interactive };
@@ -142,6 +142,7 @@ Brush.helper = (type, plotData, xScale, xAccessor, chartConfig, { x1, y1, x2, y2
 
 Brush.propTypes = {
 	enabled: PropTypes.bool.isRequired,
+	onStart: PropTypes.func.isRequired,
 	onBrush: PropTypes.func.isRequired,
 
 	type: PropTypes.oneOf(["1D", "2D"]),
@@ -149,6 +150,7 @@ Brush.propTypes = {
 	chartConfig: PropTypes.object,
 	plotData: PropTypes.array,
 	xAccessor: PropTypes.func,
+	xScale: PropTypes.func,
 	interactive: PropTypes.object,
 	stroke: PropTypes.string,
 	fill: PropTypes.string,

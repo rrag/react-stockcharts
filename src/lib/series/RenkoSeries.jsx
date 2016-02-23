@@ -3,7 +3,7 @@
 import React, { PropTypes, Component } from "react";
 import wrap from "./wrap";
 
-import { isDefined, isNotDefined } from "../utils";
+import { isDefined } from "../utils";
 
 class RenkoSeries extends Component {
 	render() {

@@ -1,18 +1,19 @@
 "use strict";
 
+import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 
 import wrap from "./wrap";
-import { isDefined, isNotDefined, hexToRGBA } from "../utils";
+import { isDefined } from "../utils";
 
 class OHLCSeries extends Component {
 	render() {
-		var { className, wickClassName, candleClassName } = this.props;
+		var { className } = this.props;
 		var { xAccessor, yAccessor, xScale, yScale, plotData } = this.props;
 
 		var barData = OHLCSeries.getOHLCBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
 
-		var { barWidth, strokeWidth, bars } = barData;
+		var { strokeWidth, bars } = barData;
 
 		return <g className={className}>
 			{bars.map((d, idx) => <path key={idx}
@@ -48,11 +49,11 @@ OHLCSeries.defaultProps = {
 };
 
 OHLCSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { xAccessor, yAccessor, indicator } = props;
+	var { xAccessor, yAccessor } = props;
 
 	var barData = OHLCSeries.getOHLCBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
 
-	var { barWidth, strokeWidth, bars } = barData;
+	var { strokeWidth, bars } = barData;
 
 	var wickNest = d3.nest()
 		.key(d => d.stroke)
@@ -80,7 +81,7 @@ OHLCSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 };
 
 OHLCSeries.getOHLCBars = (props, xAccessor, yAccessor, xScale, yScale, plotData) => {
-	var { indicator, changeAccessor, classNames: classNamesProp, stroke: strokeProp, firstBarClassName, firstBarStroke } = props;
+	var { classNames: classNamesProp, stroke: strokeProp } = props;
 
 	var strokeFunc = d3.functor(strokeProp);
 	var classNameFunc = d3.functor(classNamesProp);

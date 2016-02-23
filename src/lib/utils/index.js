@@ -142,12 +142,6 @@ export function isObject(d) {
 
 export const isArray = Array.isArray;
 
-export function sourceFunctor(v) {
-	var type = typeof v;
-	if (type === "string" || type === "object" && Array.isArray(v)) return d => get(d, v);
-	return d3.functor(v);
-}
-
 export function touchPosition(touch, e) {
 	var container = e.target,
 		rect = container.getBoundingClientRect(),

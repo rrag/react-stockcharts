@@ -1,7 +1,8 @@
 "use strict";
 
-import { identity, zipper, merge, isNotDefined } from "../../utils";
+import d3 from "d3";
 
+import { merge, isNotDefined } from "../../utils";
 import atr from "./atr";
 
 import { Kagi as defaultOptions } from "../defaultOptions";

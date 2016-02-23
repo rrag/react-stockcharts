@@ -9,7 +9,7 @@ import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
 class BollingerBandTooltip extends Component {
 	render() {
-		var { onClick, forChart, forDataSeries, displayFormat, calculator } = this.props;
+		var { onClick, forChart, displayFormat, calculator } = this.props;
 
 		var { chartConfig, currentItem, width, height } = this.context;
 		var config = first(chartConfig.filter(each => each.id === forChart));
@@ -54,6 +54,7 @@ BollingerBandTooltip.contextTypes = {
 BollingerBandTooltip.propTypes = {
 	className: PropTypes.string,
 	forChart: PropTypes.number.isRequired,
+	calculator: PropTypes.func.isRequired,
 	displayFormat: PropTypes.func.isRequired,
 	origin: PropTypes.array.isRequired,
 	onClick: PropTypes.func,

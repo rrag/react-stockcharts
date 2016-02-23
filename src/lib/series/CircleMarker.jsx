@@ -1,7 +1,7 @@
 "use strict";
 
-import React, { PropTypes } from "react";
 import d3 from "d3";
+import React, { PropTypes } from "react";
 
 import { hexToRGBA } from "../utils";
 
@@ -17,6 +17,11 @@ Circle.propTypes = {
 	stroke: PropTypes.string,
 	fill: PropTypes.string.isRequired,
 	opacity: PropTypes.number.isRequired,
+	point: PropTypes.shape({
+		x: PropTypes.number.isRequired,
+		y: PropTypes.number.isRequired,
+		datum: PropTypes.object.isRequired,
+	}).isRequired,
 	className: PropTypes.string,
 	r: PropTypes.oneOfType([
 		PropTypes.number,

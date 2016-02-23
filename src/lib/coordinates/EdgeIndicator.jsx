@@ -6,7 +6,7 @@ import d3 from "d3";
 import EdgeCoordinate from "./EdgeCoordinate";
 
 import pure from "../pure";
-import { first, last, shallowEqual, isDefined, isNotDefined } from "../utils";
+import { first, last, isDefined, isNotDefined } from "../utils";
 
 class EdgeIndicator extends Component {
 	componentDidMount() {
@@ -76,14 +76,14 @@ EdgeIndicator.defaultProps = {
 	displayFormat: d3.format(".2f"),
 	yAxisPad: 5,
 };
+
 EdgeIndicator.drawOnCanvas = (props, canvasContext) => {
 	var { chartConfig, xScale, plotData } = props;
-
 	EdgeIndicator.drawOnCanvasStatic(props, canvasContext, xScale, chartConfig.yScale, plotData);
 };
 
 EdgeIndicator.drawOnCanvasStatic = (props, ctx, xScale, yScale, plotData) => {
-	var { margin, canvasOriginX, canvasOriginY } = props;
+	var { canvasOriginX, canvasOriginY } = props;
 	var edge = EdgeIndicator.helper(props, xScale, yScale, plotData);
 
 	if (isNotDefined(edge)) return null;
@@ -135,6 +135,22 @@ EdgeIndicator.helper = (props, xScale, yScale, plotData) => {
 	}
 	return edge;
 };
+
+EdgeIndicator.propTypes = {
+	canvasOriginX: PropTypes.number,
+	canvasOriginY: PropTypes.number,
+	chartConfig: PropTypes.object.isRequired,
+	xAccessor: PropTypes.func.isRequired,
+	xScale: PropTypes.func.isRequired,
+	chartId: PropTypes.number.isRequired,
+	getCanvasContexts: PropTypes.func,
+	margin: PropTypes.object.isRequired,
+	callbackForCanvasDraw: PropTypes.func.isRequired,
+	getAllCanvasDrawCallback: PropTypes.func,
+	chartCanvasType: PropTypes.string.isRequired,
+	plotData: PropTypes.array.isRequired,
+};
+
 
 export default pure(EdgeIndicator, {
 	// width: PropTypes.number.isRequired,

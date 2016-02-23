@@ -62,7 +62,7 @@ export default function() {
 
 		var gainsAndLossesCalculator = slidingWindow()
 			.windowSize(2)
-			.undefinedValue(x => [0, 0])
+			.undefinedValue(() => [0, 0])
 			.accumulator(tuple => {
 				var prev = tuple[0];
 				var now = tuple[1];

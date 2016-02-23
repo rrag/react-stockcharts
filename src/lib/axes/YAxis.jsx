@@ -1,7 +1,6 @@
 "use strict";
 
 import React, { PropTypes } from "react";
-import d3 from "d3";
 
 import Axis from "./Axis";
 import PureComponent from "../utils/PureComponent";
@@ -20,10 +19,6 @@ class YAxis extends PureComponent {
 		else if (axisAt === "right") axisLocation = this.context.width;
 		else if (axisAt === "middle") axisLocation = (this.context.width) / 2;
 		else axisLocation = axisAt;
-
-		/*if (this.context.compareSeries.length > 0) {
-			tickFormat = d3.format(".0%");
-		}*/
 
 		return (
 			<Axis {...this.props}

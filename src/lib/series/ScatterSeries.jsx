@@ -8,9 +8,7 @@ import { hexToRGBA } from "../utils";
 
 class ScatterSeries extends Component {
 	render() {
-		var { className, fill, stroke, marker, markerProvider, markerProps, xScale, yScale, plotData } = this.props;
-		var m = d3.functor(marker);
-
+		var { className, markerProps, xScale, yScale, plotData } = this.props;
 		var points = ScatterSeries.helper(this.props, xScale, yScale, plotData);
 
 		return <g className={className}>
@@ -31,6 +29,7 @@ ScatterSeries.propTypes = {
 	plotData: PropTypes.array,
 	marker: PropTypes.func,
 	markerProvider: PropTypes.func,
+	markerProps: PropTypes.object,
 };
 
 ScatterSeries.defaultProps = {
@@ -43,7 +42,6 @@ ScatterSeries.helper = (props, xScale, yScale, plotData) => {
 	var { xAccessor, yAccessor, marker: Marker, markerProvider, markerProps } = props;
 
 	if (!(markerProvider || Marker)) throw new Error("required prop, either marker or markerProvider missing");
-
 
 	return plotData.map(d => {
 
@@ -67,7 +65,7 @@ ScatterSeries.helper = (props, xScale, yScale, plotData) => {
 
 ScatterSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 
-	var { stroke, fill, opacity, markerProps } = props;
+	var { markerProps } = props;
 
 	var points = ScatterSeries.helper(props, xScale, yScale, plotData);
 

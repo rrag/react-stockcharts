@@ -1,7 +1,7 @@
 "use strict";
 
 import financeEODCalculator from "./financeEODCalculator";
-import { first, last, get, set, isArray, isNotDefined, accumulatingWindow } from "../utils";
+import { first, last, isArray, isNotDefined, accumulatingWindow } from "../utils";
 
 function accumulator(predicate) {
 	return accumulatingWindow()

@@ -7,9 +7,6 @@ import {
 	isDefined,
 	isNotDefined,
 	isArray,
-	slidingWindow,
-	accumulatingWindow,
-	zipper,
 } from "../utils";
 
 import eodIntervalCalculator from "./eodIntervalCalculator";
@@ -54,9 +51,9 @@ function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShow
 
 			for (let i = 0; i < allowedIntervals.length; i++) {
 				let eachInterval = allowedIntervals[i];
-				let filteredData = getFilteredResponse(data[eachInterval], left, right, xAccessor);
+				let filteredData = getFilteredResponse(data[eachInterval], newLeft, newRight, xAccessor);
 
-				domain = getDomain(left, right, width, filteredData,
+				domain = getDomain(newLeft, newRight, width, filteredData,
 					realXAccessor === xAccessor && currentInterval === eachInterval, currentDomain,
 					canShowTheseMany, realXAccessor);
 
@@ -265,11 +262,6 @@ export default function() {
 	evaluate.calculator = function(x) {
 		if (!arguments.length) return calculator;
 		calculator = x;
-		return evaluate;
-	};
-	evaluate.foobar = function(x) {
-		if (!arguments.length) return foobar;
-		foobar = x;
 		return evaluate;
 	};
 

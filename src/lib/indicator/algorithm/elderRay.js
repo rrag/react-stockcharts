@@ -31,7 +31,7 @@ import d3 from "d3";
 import ema from "./ema";
 
 import { ElderRay as defaultOptions } from "../defaultOptions";
-import { isDefined, isNotDefined, sourceFunctor, zipper, slidingWindow } from "../../utils";
+import { isDefined, zipper, slidingWindow } from "../../utils";
 
 export default function() {
 

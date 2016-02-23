@@ -1,10 +1,11 @@
 "use strict";
 
+import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 
 import wrap from "./wrap";
 
-import { identity, isDefined, isNotDefined, hexToRGBA } from "../utils";
+import { isDefined, isNotDefined, hexToRGBA } from "../utils";
 
 class StackedHistogramSeries extends Component {
 	render() {

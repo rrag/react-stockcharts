@@ -7,7 +7,6 @@ import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
 import { first } from "../utils";
-import { getChartDataForChart, getCurrentItemForChart } from "../utils/ChartDataUtil";
 
 class SingleMAToolTip extends Component {
 	constructor(props) {
@@ -52,8 +51,6 @@ class MovingAverageTooltip extends Component {
 	render() {
 		var { chartConfig, currentItem, width, height } = this.context;
 
-		// var chartData = getChartDataForChart(this.props, this.context);
-		// var item = getCurrentItemForChart(this.props, this.context);
 		var { className, onClick, forChart, width, fontFamily, fontSize, origin: originProp, calculators, displayFormat } = this.props;
 
 		var config = first(chartConfig.filter(each => each.id === forChart));

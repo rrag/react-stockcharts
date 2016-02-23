@@ -84,7 +84,7 @@ CurrentCoordinate.defaultProps = {
 };
 
 CurrentCoordinate.drawOnCanvas = (canvasContext, props) => {
-	var { mouseXY, chartConfig, currentItem, xScale, show } = props;
+	var { chartConfig, currentItem, xScale, show } = props;
 
 	CurrentCoordinate.drawOnCanvasStatic(props, canvasContext, show, xScale, chartConfig.yScale, currentItem);
 };
@@ -92,7 +92,7 @@ CurrentCoordinate.drawOnCanvas = (canvasContext, props) => {
 // mouseContext, show, xScale, mouseXY, currentCharts, chartConfig, currentItem
 
 CurrentCoordinate.drawOnCanvasStatic = (props, ctx, show, xScale, yScale, currentItem) => {
-	var { margin, chartConfig, canvasOriginX, canvasOriginY } = props;
+	var { canvasOriginX, canvasOriginY } = props;
 
 	var circle = CurrentCoordinate.helper(props, show, xScale, yScale, currentItem);
 

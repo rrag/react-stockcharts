@@ -9,9 +9,8 @@ import { isDefined, isNotDefined } from "../utils";
 
 class KagiSeries extends Component {
 	render() {
-		var { props } = this;
-		var { className, stroke, fill, strokeWidth } = props;
-		var { xAccessor, xScale, yScale, plotData } = props;
+		var { className, stroke, fill, strokeWidth } = this.props;
+		var { xAccessor, xScale, yScale, plotData } = this.props;
 
 		var paths = KagiSeries.helper(plotData, xAccessor).map((each, i) => {
 			var dataSeries = d3.svg.line()
@@ -28,6 +27,16 @@ class KagiSeries extends Component {
 		);
 	}
 }
+KagiSeries.propTypes = {
+	className: PropTypes.string,
+	stroke: PropTypes.string,
+	fill: PropTypes.string,
+	strokeWidth: PropTypes.number.isRequired,
+	xAccessor: PropTypes.func,
+	xScale: PropTypes.func,
+	yScale: PropTypes.func,
+	plotData: PropTypes.array,
+};
 
 KagiSeries.defaultProps = {
 	className: "react-stockcharts-kagi",

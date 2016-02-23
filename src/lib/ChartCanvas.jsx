@@ -11,9 +11,9 @@ import eodIntervalCalculator from "./scale/eodIntervalCalculator";
 import evaluator from "./scale/evaluator";
 
 function shouldResetChart(thisProps, nextProps) {
-	var candidates = ["seriesName"/*, "data" */, "interval", "discontinous",
+	var candidates = ["seriesName", /* "data",*/"interval", "discontinous",
 		"intervalCalculator", "allowedIntervals",
-		"xScale", /*"xAccessor",*/ "map", "dataEvaluator",
+		"xScale", /* "xAccessor",*/"map", "dataEvaluator",
 		"indexAccessor", "indexMutator"];
 	return !candidates.every(key => {
 		var result = shallowEqual(thisProps[key], nextProps[key]);
@@ -33,7 +33,6 @@ function calculateFullData(props) {
 	var { data, calculator } = props;
 	var { xScale, intervalCalculator, allowedIntervals } = props;
 	var { xAccessor, map, dataEvaluator, indexAccessor, indexMutator, discontinous } = props;
-
 
 	var evaluate = dataEvaluator()
 		.allowedIntervals(allowedIntervals)
@@ -103,9 +102,6 @@ class ChartCanvas extends Component {
 	getDataInfo() {
 		return this.refs.chartContainer.getDataInfo();
 	}
-	/*setViewRange(start, end) {
-		this.refs.chartContainer.setViewRange(start, end);
-	}*/
 	getCanvases() {
 		if (this.refs && this.refs.canvases) {
 			return this.refs.canvases.getCanvasContexts();
@@ -122,8 +118,6 @@ class ChartCanvas extends Component {
 	componentWillReceiveProps(nextProps) {
 		var reset = shouldResetChart(this.props, nextProps);
 		// console.log("shouldResetChart =", reset);
-		var { xExtents: xExtentsProp, calculator } = nextProps;
-		var { xAccessor, map, dataEvaluator, indexAccessor, indexMutator } = nextProps;
 
 		if (reset) {
 			if (process.env.NODE_ENV !== "production") console.log("RESET CHART");
@@ -131,18 +125,18 @@ class ChartCanvas extends Component {
 		} else if (!shallowEqual(this.props.xExtents, nextProps.xExtents)) {
 			if (process.env.NODE_ENV !== "production") console.log("xExtents changed");
 			// since the xExtents changed update fullData, plotData, xExtentsCalculator to state
-			var { fullData, plotData, xExtentsCalculator, xScale } = calculateState(nextProps);
+			let { fullData, plotData, xExtentsCalculator, xScale } = calculateState(nextProps);
 			this.setState({ fullData, plotData, xExtentsCalculator, xScale, dataAltered: false });
 		} else if (this.props.data !== nextProps.data) {
 			if (process.env.NODE_ENV !== "production") console.log("data is changed but seriesName did not");
 			// this means there are more points pushed/removed or existing points are altered
 			// console.log("data changed");
-			var { fullData } = calculateFullData(nextProps);
+			let { fullData } = calculateFullData(nextProps);
 			this.setState({ fullData, dataAltered: true });
 		} else if (!shallowEqual(this.props.calculator, nextProps.calculator)) {
 			if (process.env.NODE_ENV !== "production") console.log("calculator changed");
 			// data did not change but calculator changed, so update only the fullData to state
-			var { fullData } = calculateFullData(nextProps);
+			let { fullData } = calculateFullData(nextProps);
 			this.setState({ fullData, dataAltered: false });
 		} else {
 			if (process.env.NODE_ENV !== "production")
@@ -216,7 +210,6 @@ ChartCanvas.propTypes = {
 	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 	data: PropTypes.array.isRequired,
 	initialDisplay: PropTypes.number,
-	dataPreProcessor: PropTypes.func.isRequired,
 	calculator: PropTypes.arrayOf(PropTypes.func).isRequired,
 	xAccessor: PropTypes.func.isRequired,
 	xExtents: PropTypes.oneOfType([
@@ -244,7 +237,6 @@ ChartCanvas.defaultProps = {
 	indexMutator: (d, idx) => d.idx = idx,
 	map: identity,
 	type: "hybrid",
-	dataPreProcessor: identity,
 	calculator: [],
 	className: "react-stockchart",
 	zIndex: 1,
@@ -261,6 +253,6 @@ ChartCanvas.childContextTypes = {
 	displayXAccessor: PropTypes.func.isRequired,
 };
 
-ChartCanvas.ohlcv = d => ({ date:d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume });
+ChartCanvas.ohlcv = d => ({ date: d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume });
 
 export default ChartCanvas;

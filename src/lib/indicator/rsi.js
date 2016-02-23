@@ -29,7 +29,7 @@ export default function() {
 		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
 		return mergedAlgorithm(data);
 	};
-	base.tooltipLabel(_ => `${ALGORITHM_TYPE} (${underlyingAlgorithm.windowSize()}): `);
+	base.tooltipLabel(() => `${ALGORITHM_TYPE} (${underlyingAlgorithm.windowSize()}): `);
 
 	base.domain([0, 100]);
 	base.tickValues([overSold, middle, overBought]);

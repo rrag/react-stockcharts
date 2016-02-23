@@ -1,6 +1,6 @@
 "use strict";
 
-import { isDefined, isNotDefined, identity, slidingWindow, zipper } from "../../utils";
+import { slidingWindow } from "../../utils";
 import { ForceIndex as defaultOptions } from "../defaultOptions";
 
 export default function() {

@@ -144,7 +144,7 @@ class EventCapture extends Component {
 		var { pan: panEnabled } = this.props;
 		var { deltaXY: dxdy } = this.context;
 
-		var { onPanStart, onMouseMove, xScale, chartConfig, onPanEnd, panInProgress } = this.context;
+		var { onPanStart, onMouseMove, xScale, onPanEnd, panInProgress } = this.context;
 
 		if (e.touches.length === 1) {
 			var touch = getTouchProps(e.touches[0]);
@@ -179,7 +179,7 @@ class EventCapture extends Component {
 	}
 	handleTouchMove(e) {
 		var { pan: panEnabled, onPan: panListener, zoom: zoomEnabled } = this.props;
-		var { deltaXY: dxdy, xScale, chartConfig, onPan, onPinchZoom, focus, panInProgress } = this.context;
+		var { deltaXY: dxdy, xScale, onPan, onPinchZoom, focus, panInProgress } = this.context;
 
 		if (e.touches.length === 1) {
 			// pan

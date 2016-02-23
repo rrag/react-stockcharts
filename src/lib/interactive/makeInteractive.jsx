@@ -62,7 +62,7 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 			}
 		}
 		subscription(event, arg, e) {
-			var { chartId, xAccessor, displayXAccessor, id } = this.props;
+			var { chartId, xAccessor, displayXAccessor } = this.props;
 			var { enabled } = this.props;
 
 			var { interactive } = this.getInteractiveState(this.props);
@@ -182,6 +182,29 @@ export default function makeInteractive(InteractiveComponent, subscription = [],
 	InteractiveComponentWrapper.propTypes = {
 		id: PropTypes.number.isRequired,
 		enabled: PropTypes.bool.isRequired,
+
+		/* comes from pure converted from context to prop - START */
+		chartId: PropTypes.number.isRequired,
+		interactiveState: PropTypes.array.isRequired,
+		getCanvasContexts: PropTypes.func,
+		callbackForCanvasDraw: PropTypes.func.isRequired,
+		getAllCanvasDrawCallback: PropTypes.func,
+		chartCanvasType: PropTypes.string.isRequired,
+		subscribe: PropTypes.func.isRequired,
+		setInteractiveState: PropTypes.func.isRequired,
+		unsubscribe: PropTypes.func.isRequired,
+		plotData: PropTypes.array.isRequired,
+		xAccessor: PropTypes.func.isRequired,
+		xScale: PropTypes.func.isRequired,
+		chartConfig: PropTypes.object.isRequired,
+		currentItem: PropTypes.object.isRequired,
+		canvasOriginX: PropTypes.number,
+		canvasOriginY: PropTypes.number,
+		height: PropTypes.number.isRequired,
+		width: PropTypes.number.isRequired,
+		show: PropTypes.bool.isRequired,
+		displayXAccessor: PropTypes.func.isRequired,
+		/* comes from pure converted from context to prop - END */
 	};
 
 	return pure(InteractiveComponentWrapper, {

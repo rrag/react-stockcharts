@@ -26,7 +26,7 @@ class TrendLine extends Component {
 		return interactive;
 	}
 	terminate(interactive) {
-		var { trends, start } = interactive;
+		var { start } = interactive;
 		if (start) {
 			return { ...interactive, start: null };
 		}
@@ -179,12 +179,14 @@ function generateLine(type, start, end, xAccessor, plotData) {
 
 TrendLine.propTypes = {
 	snap: PropTypes.bool.isRequired,
+	show: PropTypes.bool,
 	enabled: PropTypes.bool.isRequired,
 	snapTo: PropTypes.func,
 	shouldDisableSnap: PropTypes.func.isRequired,
 	chartCanvasType: PropTypes.string,
 	chartConfig: PropTypes.object,
 	plotData: PropTypes.array,
+	xScale: PropTypes.func,
 	xAccessor: PropTypes.func,
 	onStart: PropTypes.func.isRequired,
 	onComplete: PropTypes.func.isRequired,
@@ -208,7 +210,7 @@ TrendLine.defaultProps = {
 	opacity: 0.7,
 	onStart: noop,
 	onComplete: noop,
-	shouldDisableSnap: (e) => (e.button === 2 || e.shiftKey),
+	shouldDisableSnap: e => (e.button === 2 || e.shiftKey),
 	currentPositionStroke: "#000000",
 	currentPositionOpacity: 1,
 	currentPositionStrokeWidth: 3,

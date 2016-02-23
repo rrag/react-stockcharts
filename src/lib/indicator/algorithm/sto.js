@@ -28,7 +28,7 @@ THE SOFTWARE.
 
 import d3 from "d3";
 
-import { last, isDefined, identity, slidingWindow, zipper } from "../../utils";
+import { last, slidingWindow, zipper } from "../../utils";
 import { FullStochasticOscillator as defaultOptions } from "../defaultOptions";
 
 export default function() {

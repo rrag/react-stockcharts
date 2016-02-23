@@ -1,5 +1,6 @@
 "use strict";
 
+import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 
 import { first, isDefined } from "../utils";
@@ -52,6 +53,7 @@ RSITooltip.propTypes = {
 	fontSize: PropTypes.number,
 	onClick: PropTypes.func,
 	calculator: PropTypes.func.isRequired,
+	displayFormat: PropTypes.func.isRequired,
 };
 
 RSITooltip.defaultProps = {

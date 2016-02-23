@@ -1,10 +1,11 @@
 "use strict";
 
-import { merge } from "../utils";
+import d3 from "d3";
 
-import { EMA as defaultOptions } from "./defaultOptions";
 import { haikinAshi } from "./algorithm";
 import baseIndicator from "./baseIndicator";
+
+import { merge } from "../utils";
 
 const ALGORITHM_TYPE = "HaikinAshi";
 
@@ -25,9 +26,9 @@ export default function() {
 		return mergedAlgorithm(data);
 	};
 
-	d3.rebind(indicator, base, /*"id", */"accessor", "stroke", "fill", "echo", "type");
+	d3.rebind(indicator, base, "accessor", "stroke", "fill", "echo", "type");
 	// d3.rebind(indicator, underlyingAlgorithm, "windowSize", "source");
-	d3.rebind(indicator, mergedAlgorithm, "merge"/*, "skipUndefined"*/);
+	d3.rebind(indicator, mergedAlgorithm, "merge");
 
 	return indicator;
 }

@@ -1,6 +1,6 @@
 "use strict";
 
-import { slidingWindow, getClosestItemIndexes } from "../utils";
+import { slidingWindow } from "../utils";
 
 export default function() {
 	var dateAccessor = d => d.date;
@@ -8,11 +8,11 @@ export default function() {
 	function calculator(data) {
 		var eodScaleCalculator = slidingWindow()
 		.windowSize(2)
-		.undefinedValue((d, i) => {
+		.undefinedValue(d => {
 			var row = { ...d, startOfWeek: false, startOfMonth: false, startOfQuarter: false, startOfYear: false };
 			return row;
 		})
-		.accumulator(([prev, now], i) => {
+		.accumulator(([prev, now]) => {
 			var prevDate = dateAccessor(prev);
 			var nowDate = dateAccessor(now);
 
@@ -40,21 +40,5 @@ export default function() {
 		dateAccessor = x;
 		return calculator;
 	};
-/*	calculator.xAccessor = function() {
-		return d => get(d, indexKey);
-	};
-	calculator.scale = function() {
-		return financeEODScale(d => get(d, indexKey), d => get(d, dateKey));
-	};
-	calculator.extents = function(startDate, endDate) {
-		return (data) => {
-			var { left: startLeft, right: startRight } = getClosestItemIndexes(data, startDate, d => get(d, dateKey));
-			var { left: endLeft, right: endRight } = getClosestItemIndexes(data, endDate, d => get(d, dateKey));
-			var start = (get(data[startLeft], indexKey) + get(data[startRight], indexKey)) / 2;
-			var end = (get(data[endLeft], indexKey) + get(data[endRight], indexKey)) / 2;
-			// console.log(start, end);
-			return [start, end];
-		}
-	};
-*/		return calculator;
+	return calculator;
 }

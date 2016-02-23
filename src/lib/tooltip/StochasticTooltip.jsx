@@ -1,5 +1,6 @@
 "use strict";
 
+import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 
 import { first } from "../utils";
@@ -27,7 +28,7 @@ class StochasticTooltip extends Component {
 
 		return (
 			<g transform={`translate(${ ox + x }, ${ oy + y })`} onClick={onClick}>
-				<ToolTipText x={0} y={0} fontFamily={this.props.fontFamily} fontSize={this.props.fontSize}>
+				<ToolTipText x={0} y={0} fontFamily={fontFamily} fontSize={fontSize}>
 					<ToolTipTSpanLabel>{`${ label } %K(`}</ToolTipTSpanLabel>
 					<tspan fill={stroke.K}>{`${ calculator.windowSize() }, ${ calculator.kWindowSize() }`}</tspan>
 					<ToolTipTSpanLabel>): </ToolTipTSpanLabel>
@@ -59,6 +60,7 @@ StochasticTooltip.propTypes = {
 	fontSize: PropTypes.number,
 	onClick: PropTypes.func,
 	calculator: PropTypes.func.isRequired,
+	displayFormat: PropTypes.func.isRequired,
 	children: PropTypes.node.isRequired,
 };
 

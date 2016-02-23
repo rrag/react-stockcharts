@@ -2,7 +2,6 @@
 
 import React, { PropTypes, Component } from "react";
 
-import HistogramSeries from "./HistogramSeries";
 import StackedHistogramSeries from "./StackedHistogramSeries";
 import StraightLine from "./StraightLine";
 
@@ -55,7 +54,7 @@ class ElderRaySeries extends Component {
 		return yAccessorNumber % 2 === 0 ? "#6BA583" : "#FF0000";
 	}
 	render() {
-		var { className, calculator, xScale, yScale, xAccessor, plotData, type, opacity, histogramStroke } = this.props;
+		var { className, xScale, yScale, plotData, opacity } = this.props;
 
 		return (
 			<g className={className}>

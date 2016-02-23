@@ -1,5 +1,6 @@
 "use strict";
 
+import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 
 import ToolTipText from "./ToolTipText";
@@ -9,7 +10,7 @@ import { first, isDefined, identity, noop } from "../utils";
 class SingleValueTooltip extends Component {
 	render() {
 
-		var { forChart, onClick, fontFamily, fontSize, labelStroke, valueStroke, displayFormat } = this.props;
+		var { forChart, onClick, fontFamily, fontSize, labelStroke, valueStroke } = this.props;
 		var { xDisplayFormat, yDisplayFormat, xLabel, yLabel, xAccessor, yAccessor } = this.props;
 
 		var { chartConfig, currentItem, width, height } = this.context;

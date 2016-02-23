@@ -1,9 +1,6 @@
 "use strict";
 
-import { identity, zipper, merge, isNotDefined } from "../../utils";
-
-import atr from "./atr";
-
+import { isNotDefined } from "../../utils";
 import { PointAndFigure as defaultOptions } from "../defaultOptions";
 
 function createBox(d, dateAccessor, dateMutator) {
@@ -218,11 +215,6 @@ export default function() {
 	calculator.source = function(x) {
 		if (!arguments.length) return source;
 		source = x;
-		return calculator;
-	};
-	calculator.reversalType = function(x) {
-		if (!arguments.length) return reversalType;
-		reversalType = x;
 		return calculator;
 	};
 	calculator.dateMutator = function(x) {

@@ -29,7 +29,7 @@ export default function() {
 		return mergedAlgorithm(data);
 	};
 
-	base.tooltipLabel(_ => `${ALGORITHM_TYPE}(${underlyingAlgorithm.windowSize()})`);
+	base.tooltipLabel(() => `${ALGORITHM_TYPE}(${underlyingAlgorithm.windowSize()})`);
 
 	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
 	d3.rebind(indicator, underlyingAlgorithm, "source", "windowSize");

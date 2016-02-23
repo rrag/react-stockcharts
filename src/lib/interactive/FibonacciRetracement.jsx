@@ -18,7 +18,7 @@ class FibonacciRetracement extends Component {
 		return interactive;
 	}
 	terminate(interactive) {
-		var { retracements, start } = interactive;
+		var { start } = interactive;
 		if (start) {
 			return { ...interactive, start: null };
 		}
@@ -72,7 +72,7 @@ class FibonacciRetracement extends Component {
 		return { interactive };
 	}
 	render() {
-		var { chartCanvasType, chartConfig, plotData, xScale, xAccessor, interactive, width } = this.props;
+		var { chartCanvasType, chartConfig, plotData, xScale, xAccessor, interactive } = this.props;
 		var { stroke, opacity, fontFamily, fontSize, fontStroke, type } = this.props;
 
 		if (chartCanvasType !== "svg") return null;
@@ -109,7 +109,7 @@ FibonacciRetracement.drawOnCanvas = (props,
 		ctx,
 		{ xScale, plotData, chartConfig }) => {
 
-	var { xAccessor, width } = props;
+	var { xAccessor } = props;
 	var { yScale } = chartConfig;
 	var { fontSize, fontFamily, fontStroke, type } = props;
 	var lines = FibonacciRetracement.helper(plotData, type, xAccessor, interactive, chartConfig);
@@ -169,15 +169,18 @@ FibonacciRetracement.propTypes = {
 	chartConfig: PropTypes.object,
 	plotData: PropTypes.array,
 	xAccessor: PropTypes.func,
+	xScale: PropTypes.func,
 	interactive: PropTypes.object,
 	width: PropTypes.number,
 	stroke: PropTypes.string,
 	opacity: PropTypes.number,
 	fontStroke: PropTypes.string,
+	onStart: PropTypes.func,
+	onComplete: PropTypes.func,
 	type: PropTypes.oneOf([
 		"EXTEND", // extends from -Infinity to +Infinity
 		"BOUND", // extends between the set bounds
-	]),
+	]).isRequired,
 };
 
 FibonacciRetracement.defaultProps = {

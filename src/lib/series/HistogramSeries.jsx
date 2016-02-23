@@ -5,7 +5,7 @@ import React, { PropTypes, Component } from "react";
 import StackedHistogramSeries from "./StackedHistogramSeries";
 import wrap from "./wrap";
 
-import { identity, hexToRGBA } from "../utils";
+import { identity } from "../utils";
 
 class HistogramSeries extends Component {
 	render() {

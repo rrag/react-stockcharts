@@ -4,10 +4,10 @@ import React, { PropTypes } from "react";
 import d3 from "d3";
 
 import PureComponent from "./utils/PureComponent";
-import { getChartOrigin } from "./utils/ChartDataUtil";
 
 class Chart extends PureComponent {
-	constuctor(props) {
+	constuctor(props, context) {
+		super(props, context);
 		this.yScale = this.yScale.bind(this);
 	}
 	yScale() {

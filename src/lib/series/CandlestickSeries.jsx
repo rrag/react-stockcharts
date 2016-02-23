@@ -1,5 +1,6 @@
 "use strict";
 
+import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 
 import wrap from "./wrap";
@@ -44,7 +45,6 @@ CandlestickSeries.propTypes = {
 	yAccessor: PropTypes.func.isRequired,
 	xScale: PropTypes.func,
 	yScale: PropTypes.func,
-	compareSeries: PropTypes.array,
 	plotData: PropTypes.array,
 };
 
@@ -67,11 +67,11 @@ CandlestickSeries.defaultProps = {
 CandlestickSeries.getWicksSVG = (props) => {
 
 	/* eslint-disable react/prop-types */
-	var { xAccessor, yAccessor, xScale, yScale, compareSeries, plotData } = props;
+	var { xAccessor, yAccessor, xScale, yScale, plotData } = props;
 	/* eslint-disable react/prop-types */
 
 
-	var wickData = CandlestickSeries.getWickData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
+	var wickData = CandlestickSeries.getWickData(props, xAccessor, yAccessor, xScale, yScale, plotData);
 	var wicks = wickData
 		.map((d, idx) => <line key={idx}
 			className={d.className} stroke={d.stroke} style={{ shapeRendering: "crispEdges" }}
@@ -82,9 +82,9 @@ CandlestickSeries.getWicksSVG = (props) => {
 };
 CandlestickSeries.getCandlesSVG = (props) => {
 
-	var { xAccessor, yAccessor, xScale, yScale, compareSeries, plotData, opacity } = props;
+	var { xAccessor, yAccessor, xScale, yScale, plotData, opacity } = props;
 
-	var candleData = CandlestickSeries.getCandleData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
+	var candleData = CandlestickSeries.getCandleData(props, xAccessor, yAccessor, xScale, yScale, plotData);
 	var candles = candleData.map((d, idx) => {
 		if (d.width < 0)
 			return (
@@ -109,9 +109,8 @@ CandlestickSeries.getCandlesSVG = (props) => {
 };
 
 CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { compareSeries, xAccessor, yAccessor } = props;
-	var { wickStroke, fill, opacity } = props;
-	var wickData = CandlestickSeries.getWickData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
+	var { xAccessor, yAccessor, opacity } = props;
+	var wickData = CandlestickSeries.getWickData(props, xAccessor, yAccessor, xScale, yScale, plotData);
 
 	var wickNest = d3.nest()
 		.key(d => d.stroke)
@@ -128,7 +127,7 @@ CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 		});
 	});
 
-	var candleData = CandlestickSeries.getCandleData(props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData);
+	var candleData = CandlestickSeries.getCandleData(props, xAccessor, yAccessor, xScale, yScale, plotData);
 
 	var candleNest = d3.nest()
 		.key(d => d.stroke)
@@ -167,8 +166,7 @@ CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	});
 };
 
-CandlestickSeries.getWickData = (props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData) => {
-	// var isCompareSeries = false; // compareSeries.length > 0;
+CandlestickSeries.getWickData = (props, xAccessor, yAccessor, xScale, yScale, plotData) => {
 
 	var { classNames: classNameProp, wickStroke: wickStrokeProp } = props;
 	var wickStroke = d3.functor(wickStrokeProp);
@@ -197,9 +195,7 @@ CandlestickSeries.getWickData = (props, xAccessor, yAccessor, xScale, yScale, co
 	return wickData;
 };
 
-CandlestickSeries.getCandleData = (props, xAccessor, yAccessor, xScale, yScale, compareSeries, plotData) => {
-	// var isCompareSeries = false; // compareSeries.length > 0;
-
+CandlestickSeries.getCandleData = (props, xAccessor, yAccessor, xScale, yScale, plotData) => {
 	var { classNames, fill: fillProp, stroke: strokeProp, widthRatio } = props;
 	var fill = d3.functor(fillProp);
 	var stroke = d3.functor(strokeProp);

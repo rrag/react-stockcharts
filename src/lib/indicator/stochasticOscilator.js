@@ -2,7 +2,7 @@
 
 import d3 from "d3";
 
-import { rebind, merge } from "../utils";
+import { merge } from "../utils";
 import { sto } from "./algorithm";
 
 import baseIndicator from "./baseIndicator";
@@ -32,7 +32,7 @@ export default function() {
 		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
 		return mergedAlgorithm(data);
 	};
-	base.tooltipLabel(_ => `${ALGORITHM_TYPE} (${underlyingAlgorithm.windowSize()}`
+	base.tooltipLabel(() => `${ALGORITHM_TYPE} (${underlyingAlgorithm.windowSize()}`
 			+ `, ${underlyingAlgorithm.kWindowSize()}, ${underlyingAlgorithm.dWindowSize()}): `);
 
 	base.domain([0, 100]);

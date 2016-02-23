@@ -28,7 +28,7 @@ THE SOFTWARE.
 
 import ema from "./ema";
 
-import { isDefined, isNotDefined, identity, zipper } from "../../utils";
+import { isDefined, identity, zipper } from "../../utils";
 import { MACD as defaultOptions } from "../defaultOptions";
 
 export default function() {

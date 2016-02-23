@@ -16,9 +16,9 @@ export default function() {
 		.type(ALGORITHM_TYPE)
 		.accessor(d => d.bollingerBand)
 		.stroke({
-			top: "brown",
-			middle: "black",
-			bottom: "brown",
+			top: "#964B00",
+			middle: "#000000",
+			bottom: "#964B00",
 		})
 		.fill("#4682B4");
 
@@ -39,7 +39,7 @@ export default function() {
 		return newData;
 	};
 
-	base.tooltipLabel(_ => `BB (${underlyingAlgorithm.windowSize()}, ${underlyingAlgorithm.multiplier()}`
+	base.tooltipLabel(() => `BB (${underlyingAlgorithm.windowSize()}, ${underlyingAlgorithm.multiplier()}`
 		+ `, ${underlyingAlgorithm.movingAverageType()}): `);
 
 	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
