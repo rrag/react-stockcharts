@@ -6,7 +6,7 @@ import d3 from "d3";
 import PureComponent from "./utils/PureComponent";
 
 class Chart extends PureComponent {
-	constuctor(props, context) {
+	constructor(props, context) {
 		super(props, context);
 		this.yScale = this.yScale.bind(this);
 	}

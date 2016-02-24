@@ -65,8 +65,9 @@ class CandleStickChartWithEdge extends React.Component {
 					margin={{left: 80, right: 80, top:10, bottom: 30}} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50, smaVolume50]}
+					allowedIntervals={["D", "W", "M"]}
 					xAccessor={d => d.date} discontinous xScale={xScale}
-					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
+					xExtents={[new Date(2015, 0, 1), new Date(2015, 5, 8)]}>
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
 						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} 

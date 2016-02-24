@@ -43,18 +43,23 @@ function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShow
 		if (isNotDefined(interval) && isArray(allowedIntervals)) {
 			let dataForCurrentInterval = data[currentInterval || allowedIntervals[0]];
 
-			let leftIndex = getClosestItemIndexes(dataForCurrentInterval, left, xAccessor).right;
-			let rightIndex = getClosestItemIndexes(dataForCurrentInterval, right, xAccessor).left;
+			var leftIndex = getClosestItemIndexes(dataForCurrentInterval, left, xAccessor).right;
+			var rightIndex = getClosestItemIndexes(dataForCurrentInterval, right, xAccessor).left;
 
-			let newLeft = inputXAccessor(dataForCurrentInterval[leftIndex]);
-			let newRight = inputXAccessor(dataForCurrentInterval[rightIndex]);
+			var newLeft = inputXAccessor(dataForCurrentInterval[leftIndex]);
+			var newRight = inputXAccessor(dataForCurrentInterval[rightIndex]);
 
 			for (let i = 0; i < allowedIntervals.length; i++) {
 				let eachInterval = allowedIntervals[i];
-				let filteredData = getFilteredResponse(data[eachInterval], newLeft, newRight, xAccessor);
 
-				domain = getDomain(newLeft, newRight, width, filteredData,
-					realXAccessor === xAccessor && currentInterval === eachInterval, currentDomain,
+				var tempLeft = currentInterval === eachInterval ? left : newLeft;
+				var tempRight = currentInterval === eachInterval ? right : newRight;
+				var tempAccessor = currentInterval === eachInterval ? xAccessor : inputXAccessor;
+
+				let filteredData =  getFilteredResponse(data[eachInterval], tempLeft, tempRight, tempAccessor);
+
+				domain = getDomain(tempLeft, tempRight, width, filteredData,
+					currentInterval === eachInterval, currentDomain,
 					canShowTheseMany, realXAccessor);
 
 				if (domain !== currentDomain) {

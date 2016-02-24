@@ -33,8 +33,12 @@ var CHART_TYPES = {
 	head: "Chart types",
 	pages: [
 		require("lib/page/AreaChartPage").default,
+		// TODO add line chart
+		// TODO add scatter chart
+		// TODO add scatter chart - bubble
 		require("lib/page/CandleStickChartPage").default,
 		require("lib/page/VolumeHistogramPage").default,
+		// TODO add OHLC chart
 		require("lib/page/MiscChartsPage").default,
 		require("lib/page/HeikinAshiPage").default,
 		require("lib/page/KagiPage").default,

@@ -31,7 +31,7 @@ function isLastItemVisible(fullData, plotData) {
 		return last(plotData) === last(fullData);
 	}
 	var visible = false;
-	for (key in fullData) {
+	for (let key in fullData) {
 		visible = visible || last(fullData[key]) === last(plotData);
 	}
 	return visible;
@@ -73,8 +73,8 @@ class EventHandler extends Component {
 	}
 	componentWillMount() {
 
-		var { plotData, fullData, showingInterval, xExtentsCalculator } = this.props;
-		var { xScale, xAccessor, dimensions, children, postCalculator, padding } = this.props;
+		var { plotData, showingInterval } = this.props;
+		var { xScale, dimensions, children, postCalculator, padding } = this.props;
 
 		// console.log(Array.isArray(fullData) ? fullData[60] : fullData);
 		plotData = postCalculator(plotData);
@@ -91,7 +91,7 @@ class EventHandler extends Component {
 	}
 	componentWillReceiveProps(nextProps) {
 
-		var { plotData, fullData, showingInterval, xExtentsCalculator, padding } = nextProps;
+		var { plotData, fullData, showingInterval, padding } = nextProps;
 		var { xScale, xAccessor, dimensions, children, postCalculator, dataAltered } = nextProps;
 
 		var reset = !shallowEqual(this.props.plotData, nextProps.plotData);
@@ -110,7 +110,7 @@ class EventHandler extends Component {
 
 			plotData = postCalculator(plotData);
 
-			var chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData);
+			let chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData);
 
 			newState = {
 				showingInterval,
@@ -131,13 +131,13 @@ class EventHandler extends Component {
 			var l = last(isDefined(showingInterval) ? fullData[showingInterval] : fullData);
 			if (end >= xAccessor(l)) {
 				// get plotData between [start, end] and do not change the domain
-				var plotData = getDataBetween(fullData, showingInterval, xAccessor, start, end);
+				plotData = getDataBetween(fullData, showingInterval, xAccessor, start, end);
 			} else {
 				// get plotData between [xAccessor(l) - (end - start), xAccessor(l)] and DO change the domain
 				var dx = updatedXScale(xAccessor(l)) - updatedXScale.range()[1];
 				var [newStart, newEnd] = updatedXScale.range().map(x => x + dx).map(updatedXScale.invert);
 
-				var plotData = getDataBetween(fullData, showingInterval, xAccessor, newStart, newEnd);
+				plotData = getDataBetween(fullData, showingInterval, xAccessor, newStart, newEnd);
 
 				if (updatedXScale.isPolyLinear && updatedXScale.isPolyLinear() && updatedXScale.data) {
 					updatedXScale.data(plotData);
@@ -146,7 +146,7 @@ class EventHandler extends Component {
 				}
 			}
 			// plotData = getDataOfLength(fullData, showingInterval, plotData.length)
-			var chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData);
+			let chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData);
 
 			newState = {
 				xScale: updatedXScale,
@@ -156,7 +156,7 @@ class EventHandler extends Component {
 		} else {
 			// console.log("TRIVIAL CHANGE");
 			// this.state.plotData or plotData
-			var chartConfig = getChartConfigWithUpdatedYScales(
+			let chartConfig = getChartConfigWithUpdatedYScales(
 				getNewChartConfig(dimensions, children), this.state.plotData);
 
 			newState = {
@@ -281,7 +281,7 @@ class EventHandler extends Component {
 	handleMouseEnter() {
 		// if type === svg remove state.canvases
 		// if type !== svg get canvases and set in state if state.canvases is not present already
-		/*var { type, canvasContexts } = this.props;
+		/* var { type, canvasContexts } = this.props;
 		var { canvases } = this.state;
 		if (type === "svg") {
 			canvases = null;
@@ -301,7 +301,7 @@ class EventHandler extends Component {
 		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
 		// optimization oportunity do not change currentItem if it is not the same as prev
 
-		var { interactiveState, callbackList } = inputType === "mouse"
+		var { interactiveState/* , callbackList*/ } = inputType === "mouse"
 			? this.triggerCallback(
 				"mousemove",
 				{ ...this.state, currentItem, currentCharts },
@@ -342,13 +342,7 @@ class EventHandler extends Component {
 		});
 	}
 	pinchCoordinates(pinch) {
-		var { plotData } = this.state;
-
-		var { xAccessor } = this.props;
-		var { touch1Pos, touch2Pos, xScale } = pinch;
-
-		// var firstX = xAccessor(getCurrentItem(xScale, xAccessor, touch1Pos, plotData));
-		// var secondX = xAccessor(getCurrentItem(xScale, xAccessor, touch2Pos, plotData));
+		var { touch1Pos, touch2Pos } = pinch;
 
 		return {
 			topLeft: [Math.min(touch1Pos[0], touch2Pos[0]), Math.min(touch1Pos[1], touch2Pos[1])],
@@ -358,13 +352,13 @@ class EventHandler extends Component {
 	handlePinchZoom(initialPinch, finalPinch) {
 		var { xScale: initialPinchXScale } = initialPinch;
 
-		var { plotData, showingInterval, xScale: initialXScale, chartConfig: initialChartConfig, currentItem } = this.state;
+		var { plotData, showingInterval, xScale: initialXScale, chartConfig: initialChartConfig } = this.state;
 		var { xAccessor, fullData, interval, dimensions: { width }, xExtentsCalculator, postCalculator } = this.props;
 
 		var { topLeft: iTL, bottomRight: iBR } = this.pinchCoordinates(initialPinch);
 		var { topLeft: fTL, bottomRight: fBR } = this.pinchCoordinates(finalPinch);
 
-		var [s, e] = initialPinchXScale.range();
+		var e = initialPinchXScale.range()[1];
 
 		// var fR1 = e - fTL[0];
 		// var fR2 = e - fBR[0];
@@ -482,6 +476,9 @@ class EventHandler extends Component {
 			.data(fullData)
 			.width(width)
 			.scale(initialXScale)
+			.currentInterval(showingInterval)
+			.currentDomain(this.hackyWayToStopPanBeyondBounds__domain)
+			.currentPlotData(this.hackyWayToStopPanBeyondBounds__plotData)
 			.interval(showingInterval)(newDomain, xAccessor);
 
 		plotData = postCalculator(plotData);
@@ -502,6 +499,9 @@ class EventHandler extends Component {
 	handlePan(mousePosition/* , startDomain*/) {
 		this.panHappened = true;
 		var state = this.panHelper(mousePosition);
+
+		this.hackyWayToStopPanBeyondBounds__plotData = state.plotData;
+		this.hackyWayToStopPanBeyondBounds__domain = state.xScale.domain();
 
 		if (this.props.type !== "svg") {
 			var { axes: axesCanvasContext, mouseCoord: mouseContext } = this.getCanvasContexts();
@@ -569,6 +569,8 @@ class EventHandler extends Component {
 	handlePanEnd(mousePosition, e) {
 		var state = this.panHelper(mousePosition);
 		// console.log(this.canvasDrawCallbackList.map(d => d.type));
+		this.hackyWayToStopPanBeyondBounds__plotData = null;
+		this.hackyWayToStopPanBeyondBounds__domain = null;
 
 		this.clearCanvasDrawCallbackList();
 
@@ -648,6 +650,7 @@ EventHandler.propTypes = {
 	children: PropTypes.node.isRequired,
 	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 	xAccessor: PropTypes.func.isRequired,
+	xScale: PropTypes.func.isRequired,
 	fullData: PropTypes.oneOfType([
 		PropTypes.array,
 		PropTypes.object,
@@ -656,6 +659,11 @@ EventHandler.propTypes = {
 	dimensions: PropTypes.object,
 	xExtentsCalculator: PropTypes.func.isRequired,
 	postCalculator: PropTypes.func.isRequired,
+	canvasContexts: PropTypes.func.isRequired,
+	margin: PropTypes.object.isRequired,
+	plotData: PropTypes.array,
+	padding: PropTypes.object,
+	showingInterval: PropTypes.string,
 };
 
 EventHandler.childContextTypes = {

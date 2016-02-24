@@ -122,7 +122,7 @@ function wrap(WrappedSeries) {
 
 	BaseCanvasSeries.propTypes = {
 		getCanvasContexts: PropTypes.func,
-		chartConfig: PropTypes.func,
+		chartConfig: PropTypes.object,
 		chartCanvasType: PropTypes.string,
 		clip: PropTypes.bool.isRequired,
 	};
