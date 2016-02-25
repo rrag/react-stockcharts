@@ -1,7 +1,7 @@
 'use strict';
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import ReStock from "react-stockcharts";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -9,15 +9,15 @@ import Section from "lib/section";
 
 import CandleStickChartWithZoomPan from "lib/charts/CandleStickChartWithZoomPan";
 
-var { TypeChooser } = helper;
+var { helper: { TypeChooser } } = ReStock;
 
-var ZoomAndPanPage = React.createClass({
+var SvgVsCanvasPage = React.createClass({
 	statics: {
 		title: 'Svg vs Canvas'
 	},
 	render() {
 		return (
-			<ContentSection title={ZoomAndPanPage.title}>
+			<ContentSection title={SvgVsCanvasPage.title}>
 				<Row>
 					<Section colSpan={2}>
 						<aside dangerouslySetInnerHTML={{__html: require('md/SVG-VS-CANVAS')}}></aside>
@@ -35,4 +35,4 @@ var ZoomAndPanPage = React.createClass({
 	}
 });
 
-export default ZoomAndPanPage;
+export default SvgVsCanvasPage;

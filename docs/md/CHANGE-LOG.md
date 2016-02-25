@@ -3,28 +3,32 @@
 #### Breaking Changes
 
 1. Drop support for React `0.13.x` and make `0.14.3` the default dependency
-1. Upgraded to use Babel 6 instead of 5, and this caused some breaking changes, due to a faulty implementation of es6 modules.
+1. Major changes to API.
+    - `DataSeries` is gone
+    - all `indicator`s and `dataTransform`s are now gone, and are replaced by `calculator`
+    - `setViewRange`, `pushData`, `alterData` were methods you could invoke from the ref of `ChartCanvas`. These are now gone, in favor of react style props for setting them
+    - `ChartCanvas` now takes (among other things)
+        - `xExtents` - indicates the domain of the x axis
+        - `calculators` - indicates the calculators to be calculated on the data
 
-    Before - In `v0.3.x`
-    ```js
-    import ReStock from "react-stockchart";
-    ```
-    After - In `v0.4.x`
-    ```js
-    import * as ReStock from "react-stockchart";
-    ```
-1. `calculate` is removed from all indicators
+    For a summary of changes, refer to [this issue](https://github.com/rrag/react-stockcharts/issues/48#issuecomment-174184639). Compare the examples [before (`0.3`)](https://github.com/rrag/react-stockcharts/tree/2af0c6e763ae960d40eb6c5406b4fe0ec8da2ac2/docs/lib/charts) and [after(`0.4`](https://github.com/rrag/react-stockcharts/tree/8386c424821907512b8e135a8a7fded3e5e09c83/docs/lib/charts)
+
+1. All the `calculator`s, are written d3 style. (inspired by [d3fc](https://github.com/ScottLogic/d3fc))
+1. `CompareSeries` is gone in favor of a calculator in its place. Refer to the examples for usage
 
 #### New Features
 
 1. Implement touch support, pan and pinch zoom
+1. New Chart types Scatter, OHLC
+1. New indicators - Elder impulse, Elder Ray, Force Index, ATR
+1. Updated `TrendLine`, `FibonacciRetracement`, `Brush` to take `type` prop
+1. Change `StraightLine` to take a prop of type which defaults to `horizontal`
 
-#### Changes
+#### Internal Changes
 
 1. Inspired by [d3fc](https://github.com/ScottLogic/d3fc) change some of the internals
-1. add dependency `lodash.set`, `lodash.get`, `lodash.first`, `lodash.last`
+1. add dependency `lodash.fattendeep`
 1. remove dependency `object-assign`
-1. Change `StraightLine` to take a prop of type which defaults to `horizontal`
 
 ## v0.3.1
 

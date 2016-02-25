@@ -1,7 +1,7 @@
 'use strict';
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import ReStock from "react-stockcharts";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -12,7 +12,7 @@ import KagiWithUpdatingData from "lib/charts/KagiWithUpdatingData";
 import PointAndFigureWithUpdatingData from "lib/charts/PointAndFigureWithUpdatingData";
 import RenkoWithUpdatingData from "lib/charts/RenkoWithUpdatingData";
 
-var TypeChooser = helper.TypeChooser;
+var { helper: { TypeChooser } } = ReStock;
 
 
 var UpdatingDataPage = React.createClass({

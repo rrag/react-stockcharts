@@ -25,7 +25,7 @@ import * as Utils from "./lib/utils";
 
 const version = "0.3.1";
 
-export {
+export default {
 	ChartCanvas,
 	Chart,
 	EventCapture,

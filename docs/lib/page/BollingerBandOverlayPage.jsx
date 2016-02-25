@@ -1,14 +1,14 @@
 'use strict';
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import ReStock from "react-stockcharts";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 import CandleStickChartWithBollingerBandOverlay from "lib/charts/CandleStickChartWithBollingerBandOverlay";
 
-var TypeChooser = helper.TypeChooser;
+var { helper: { TypeChooser } } = ReStock;
 
 var BollingerBandOverlayPage = React.createClass({
 	statics: {

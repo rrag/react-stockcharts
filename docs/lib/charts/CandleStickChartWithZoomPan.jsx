@@ -3,7 +3,7 @@
 import React from "react";
 import d3 from "d3";
 
-import * as ReStock from "react-stockcharts";
+import ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart, DataSeries, EventCapture } = ReStock;
 var { CandlestickSeries, HistogramSeries } = ReStock.series;

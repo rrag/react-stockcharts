@@ -3,7 +3,7 @@
 import React from "react";
 import d3 from "d3";
 
-import * as ReStock from "react-stockcharts";
+import ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart, DataSeries } = ReStock;
 
@@ -19,7 +19,7 @@ class AreaChart extends React.Component {
 					margin={{left: 50, right: 50, top:10, bottom: 30}}
 					seriesName="MSFT"
 					data={data} type={type}
-					xAccessor={(d) => d.date} xScale={d3.time.scale()}
+					xAccessor={d => d.date} xScale={d3.time.scale()}
 					xExtents={[new Date(2011, 0, 1), new Date(2013, 0, 2)]}>
 				<Chart id={0} yExtents={d => d.close}>
 					<XAxis axisAt="bottom" orient="bottom" ticks={6}/>

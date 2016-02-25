@@ -1,7 +1,7 @@
 "use strict";
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import ReStock from "react-stockcharts";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -9,7 +9,7 @@ import Section from "lib/section";
 
 import CandleStickChartWithClickHandlerCallback from "lib/charts/CandleStickChartWithClickHandlerCallback";
 
-var { TypeChooser } = helper;
+var { helper: { TypeChooser } } = ReStock;
 
 var ClickHandlerCallbackPage = React.createClass({
 	statics: {

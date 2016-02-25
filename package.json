@@ -52,7 +52,7 @@
   },
   "scripts": {
     "clean": "rimraf -rf ./build",
-    "watch": "npm run clean && node scripts/watch.js",
+    "watch": "npm run clean && IP=0.0.0.0 PORT=8080 node scripts/watch.js",
     "docs": "npm run build:docs && ncp docs/images/ build/images && ncp docs/data/ build/data && node scripts/copyhtml.js",
     "build": "npm run clean && npm run build:dev && npm run build:prod",
     "build:dev": "echo 'DEV - BUILD' && webpack --config webpack.config.js",

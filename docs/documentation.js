@@ -22,7 +22,7 @@ var DOCUMENTATION = {
 		require("lib/page/GettingStartedPage").default,
 		require("lib/page/QuickStartExamplesPage").default,
 		require("lib/page/OverviewPage").default,
-		require("lib/page/SvgVsCanvas").default,
+		require("lib/page/SvgVsCanvasPage").default,
 		require("lib/page/LotsOfDataPage").default,
 		require("lib/page/ChangeLogPage").default,
 		require("lib/page/ComingSoonPage").default,

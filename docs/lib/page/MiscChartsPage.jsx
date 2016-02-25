@@ -1,7 +1,7 @@
 'use strict';
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import ReStock from "react-stockcharts";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -10,7 +10,7 @@ import Section from "lib/section";
 import AreaChartWithZoomPan from "lib/charts/AreaChartWithZoomPan";
 import AreaChartWithPointsAndEdge from "lib/charts/AreaChartWithPointsAndEdge";
 
-var { TypeChooser } = helper;
+var { helper: { TypeChooser } } = ReStock;
 
 var MiscChartsPage = React.createClass({
 	statics: {

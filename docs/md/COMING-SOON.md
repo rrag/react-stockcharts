@@ -1,44 +1,22 @@
-## v0.4.x
-
-1. (Done) Drop support for React 0.13 and use React 0.14, fix all the deprecation warnings
-1. (Done) Provide touch support
-1. (Done) Indicators derived from other indicators
-1. (Done) use d3.functor for `ScatterSeries` and add an example
-
-#### New Chart types
-1. (Done) Scatter chart
-1. (Almost Done, need example) StackedHistogram
-1. Volume Profile
-1. Line break
-1. (Done) OHLC Chart
-
-#### New Indicators
-1. (Done) ATR
-1. (Done, TODO add plunker) Force Index
-1. (Done, TODO add plunker) Elder Ray
-1. (Done) [Elder Impulse](http://stockcharts.com/school/doku.php?id=chart_school:chart_analysis:elder_impulse_system)
-1. [Envelope](http://www.investopedia.com/terms/e/envelope.asp?optm=sa_v2)
-1. [ATR Trailing stop](http://www.incrediblecharts.com/indicators/atr_average_true_range_trailing_stops.php)
-1. [Chandelier Exit](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:chandelier_exit)
-
-#### Internal changes
-1. Use stateless components in `RSISeries`, `StochasticSeries` to address react/prop-types lint error
-1. remove dependency `object-assign` and add dependency `lodash.set`, `lodash.get`, `lodash.first`, `lodash.last`
-1. (Done) use `d3.nest` for optimizing canvas draws for candlestick, histogram and scatter chart
-1. (Done) Upgraded to use Babel 6 instead of 5
-
 ## v0.5.x
 
-1. Refactor `EventHandler.jsx` and `ChartDataUtil.js` to be functional, avoid mutations
-1. Create an alternative for stockscale similar to the one created in [d3fc](https://github.com/ScottLogic/d3fc) with a discontinuty provider for weekends
-1. Automatic Support & Resistance trendlines
+1. New Chart Type
+    - Volume Profile
+    - Line break
+1. Annotations for events [#54](https://github.com/rrag/react-stockcharts/issues/54)
+1. Programatic Buy & sell signals (using annotations?)
+1. Labels [#42](https://github.com/rrag/react-stockcharts/issues/42) (using annotations?)
+1. Mouse following tooltip [#50](https://github.com/rrag/react-stockcharts/issues/50)
 1. Create intra day scale
 1. Interactive indicators should be able to subscribe to more events (drag, zoom, pan)
 1. Zoom on y too
-1. `EdgeCoordinate` to take `fill` property as function or string
-1. Add a playground to see live updates
-1. Programatic Buy & sell signals
-1. Change `StraightLine` to take a prop of type which defaults to `horizontal`
+1. [Envelope](http://www.investopedia.com/terms/e/envelope.asp?optm=sa_v2)
+1. [ATR Trailing stop](http://www.incrediblecharts.com/indicators/atr_average_true_range_trailing_stops.php)
+1. [Chandelier Exit](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:chandelier_exit)
+1. Use stateless components in `RSISeries`, `StochasticSeries` to address react/prop-types lint error
+1. Automatic Support & Resistance trendlines (Optional)
+1. Add a playground to see live updates (Optional)
+
 
 #### New Chart types
 1. Max Drawdown
