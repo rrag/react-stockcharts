@@ -2,11 +2,7 @@
 
 import React, { PropTypes, Component } from "react";
 
-import { hexToRGBA, isNotDefined } from "../utils";
-
-function d3_identity(d) {
-	return d;
-}
+import { hexToRGBA, isDefined, isNotDefined, identity } from "../utils";
 
 function tickTransform_svg_axisX(scale, tick) {
 	return [~~ (0.5 + scale(tick)), 0];
@@ -116,11 +112,12 @@ AxisTicks.helper = (props, scale) => {
 			: scale.domain())
 		: tickValues;
 
-	var format = isNotDefined(tickFormat)
-		? (scale.tickFormat
+	var baseFormat = scale.tickFormat
 			? scale.tickFormat.apply(scale, tickArguments)
-			: d3_identity)
-		: tickFormat;
+			: identity
+	var format = isNotDefined(tickFormat)
+		? baseFormat
+		: d => baseFormat(d) ? tickFormat(d) : "";
 
 	var sign = orient === "top" || orient === "left" ? -1 : 1;
 	var tickSpacing = Math.max(innerTickSize, 0) + tickPadding;

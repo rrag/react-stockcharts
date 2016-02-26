@@ -120,6 +120,7 @@ EdgeIndicator.helper = (props, xScale, yScale, plotData) => {
 				: right + yAxisPad;
 
 		edge = {
+			// ...props,
 			type: edgeType,
 			fill: d3.functor(fill)(item),
 			textFill: d3.functor(textFill)(item),

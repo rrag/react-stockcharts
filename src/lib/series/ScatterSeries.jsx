@@ -47,7 +47,7 @@ ScatterSeries.helper = (props, xScale, yScale, plotData) => {
 
 		if (markerProvider) Marker = markerProvider(d);
 
-		var mProps = { ...Marker.defaultProps, markerProps };
+		var mProps = { ...Marker.defaultProps, ...markerProps };
 
 		var fill = d3.functor(mProps.fill);
 		var stroke = d3.functor(mProps.stroke);

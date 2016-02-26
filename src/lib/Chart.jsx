@@ -59,6 +59,8 @@ Chart.defaultProps = {
 	origin: [0, 0],
 	padding: { top: 0, bottom: 0 },
 	yScale: d3.scale.linear(),
+	yMousePointerRectWidth: 60,
+	yMousePointerRectHeight: 20,
 };
 
 Chart.contextTypes = {

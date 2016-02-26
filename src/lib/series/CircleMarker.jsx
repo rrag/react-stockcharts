@@ -55,8 +55,8 @@ Circle.drawOnCanvasWithNoStateChange = (props, point, ctx) => {
 	var { r } = props;
 	var radius = d3.functor(r)(point.datum);
 
-	ctx.beginPath();
 	ctx.moveTo(point.x, point.y);
+	ctx.beginPath();
 	ctx.arc(point.x, point.y, radius, 0, 2 * Math.PI, false);
 	ctx.stroke();
 	ctx.fill();

@@ -50,28 +50,22 @@ discontinous xScale={financeEODDiscontiniousScale()}
 ```
 is the only difference in `<ChartCanvas>`
 
-`dataTransform` transforms the `data` provided as input which when taken as a linear scale includes weekend time breaks, into a linear scale over the input domain.
-
-Notice that it accepts an array. You can chain multiple transfoms together by adding them to the array. Some examples of that can be seen in the advanced chart types later on. Using this technique user can create custom transforms, and create their own components which uses the modified data.
-
-```jsx
-<Chart id={1} >
-```
-You will notice that the `Chart` component does not include the `xAccessor`, that is because it is defined inside the stockscale which provides the `xAccessor` behind the scenes
+- `discontinous` is to indicate that the data provided is to be displayed is discontinious -- in this case has gaps for weekend
+- `financeEODDiscontiniousScale()` - `financeEODDiscontiniousScale` is a discontinious scale provided by `react-stockcharts`
 
 ```jsx
-<XAxis axisAt="bottom" orient="bottom" ticks={5}/>
-<YAxis axisAt="right" orient="right" ticks={5} />
-<DataSeries yAccessor={CandlestickSeries.yAccessor} >
-	<CandlestickSeries />
-</DataSeries>
+<Chart id={1} yExtents={d => [d.high, d.low]}>
 ```
 
-Same as for `AreaChart` example above
+- `yExtents` can accept
+	- a function which returns a number / an object / an array of numbers. The min and max value of these are used to calculate the y domain
+	- an array of functions - same as above
+	- min and max values as number. Say you always want to show the y domain between 0 and 100, you may say `yExtents={[0, 100]}`
 
-
-`yAccessor={CandlestickSeries.yAccessor}` is just a convenience `yAccessor` available, it can also be represented as
-
-```js
-yAccessor={(d) => ({open: d.open, high: d.high, low: d.low, close: d.close})}
+```jsx
+<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
+<YAxis axisAt="left" orient="left" ticks={5} />
+<CandlestickSeries />
 ```
+
+Same as for `AreaChart` example.

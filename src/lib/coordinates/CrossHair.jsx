@@ -57,7 +57,9 @@ CrossHair.helper = (props) => {
 		if (edge.at === "right") {
 			x2 = width + yAxisPad;
 		}
+
 		return {
+			...edge,
 			type: "horizontal",
 			show: true,
 			x1: 0,
@@ -77,6 +79,7 @@ CrossHair.helper = (props) => {
 		};
 	});
 	edges.push({
+		...props,
 		type: "vertical",
 		show: true,
 		x1: mouseXY[0],

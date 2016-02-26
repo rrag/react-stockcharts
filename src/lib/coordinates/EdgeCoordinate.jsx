@@ -58,6 +58,7 @@ EdgeCoordinate.propTypes = {
 	opacity: PropTypes.number,
 	fontFamily: PropTypes.string.isRequired,
 	fontSize: PropTypes.number.isRequired,
+	rectHeight: PropTypes.number.isRequired,
 };
 
 EdgeCoordinate.defaultProps = {
@@ -71,18 +72,18 @@ EdgeCoordinate.defaultProps = {
 	fontSize: 13,
 	lineStroke: "#000000",
 	lineOpacity: 0.3,
+	rectHeight: 20,
 };
 
 
 EdgeCoordinate.helper = (props) => {
 	var { coordinate: displayCoordinate, show, rectWidth, type, orient, edgeAt, hideLine } = props;
-	var { fill, opacity, fontFamily, fontSize, textFill, lineStroke, lineOpacity } = props;
+	var { fill, opacity, fontFamily, fontSize, textFill, lineStroke, lineOpacity, rectHeight } = props;
 	var { x1, y1, x2, y2 } = props;
 
 	if (!show) return null;
 
 	rectWidth = rectWidth ? rectWidth : (type === "horizontal") ? 60 : 100;
-	var rectHeight = 20;
 
 	var edgeXRect, edgeYRect, edgeXText, edgeYText;
 

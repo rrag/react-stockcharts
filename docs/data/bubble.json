@@ -1,0 +1,1262 @@
+[
+  {
+    "name": "China",
+    "region": "East Asia & Pacific",
+    "income": 648.86068677913,
+    "population": 731149966.56273,
+    "lifeExpectancy": 56.558222188827
+  },
+  {
+    "name": "India",
+    "region": "South Asia",
+    "income": 699.8921741744,
+    "population": 492897584.25067,
+    "lifeExpectancy": 46.163342976293
+  },
+  {
+    "name": "France",
+    "region": "Europe & Central Asia",
+    "income": 13074.263804711,
+    "population": 49103385.881204,
+    "lifeExpectancy": 71.473800954277
+  },
+  {
+    "name": "Japan",
+    "region": "East Asia & Pacific",
+    "income": 8791.7631153023,
+    "population": 99599456.164557,
+    "lifeExpectancy": 70.969704324304
+  },
+  {
+    "name": "Germany",
+    "region": "Europe & Central Asia",
+    "income": 14664.769673893,
+    "population": 76086898.329226,
+    "lifeExpectancy": 70.683180674005
+  },
+  {
+    "name": "Italy",
+    "region": "Europe & Central Asia",
+    "income": 9400.1564282226,
+    "population": 52259171.777436,
+    "lifeExpectancy": 70.8623188188
+  },
+  {
+    "name": "Bangladesh",
+    "region": "South Asia",
+    "income": 754.05120787467,
+    "population": 61292463.244881,
+    "lifeExpectancy": 42.661698538528
+  },
+  {
+    "name": "Indonesia",
+    "region": "East Asia & Pacific",
+    "income": 795.86387271293,
+    "population": 106754651.72634,
+    "lifeExpectancy": 44.744933313296
+  },
+  {
+    "name": "United Kingdom",
+    "region": "Europe & Central Asia",
+    "income": 13873.045716272,
+    "population": 54581399.218545,
+    "lifeExpectancy": 71.546819325995
+  },
+  {
+    "name": "Pakistan",
+    "region": "South Asia",
+    "income": 923.11864597814,
+    "population": 58720063.023744,
+    "lifeExpectancy": 52.328571965285
+  },
+  {
+    "name": "Spain",
+    "region": "Europe & Central Asia",
+    "income": 7488.633793816,
+    "population": 32374718.789909,
+    "lifeExpectancy": 71.195337190517
+  },
+  {
+    "name": "Nigeria",
+    "region": "Sub-Saharan Africa",
+    "income": 1246.4298996882,
+    "population": 45900097.977496,
+    "lifeExpectancy": 39.281644437765
+  },
+  {
+    "name": "Ukraine",
+    "region": "Europe & Central Asia",
+    "income": 5685.2656100302,
+    "population": 45581392.093925,
+    "lifeExpectancy": 71.843234774768
+  },
+  {
+    "name": "Poland",
+    "region": "Europe & Central Asia",
+    "income": 6310.2099267386,
+    "population": 31475322.677387,
+    "lifeExpectancy": 69.823800954277
+  },
+  {
+    "name": "Turkey",
+    "region": "Europe & Central Asia",
+    "income": 3121.7943847917,
+    "population": 32524903.965361,
+    "lifeExpectancy": 53.67539129128
+  },
+  {
+    "name": "United States",
+    "region": "America",
+    "income": 22041.774651539,
+    "population": 196085484.76538,
+    "lifeExpectancy": 70.425795168501
+  },
+  {
+    "name": "Korea, Rep.",
+    "region": "East Asia & Pacific",
+    "income": 1483.1969042342,
+    "population": 29282313.408724,
+    "lifeExpectancy": 56.696981628283
+  },
+  {
+    "name": "Mexico",
+    "region": "America",
+    "income": 5542.8427091709,
+    "population": 46244453.968366,
+    "lifeExpectancy": 59.714313033024
+  },
+  {
+    "name": "Vietnam",
+    "region": "East Asia & Pacific",
+    "income": 752.57669609648,
+    "population": 38142976.622159,
+    "lifeExpectancy": 46.963288875531
+  },
+  {
+    "name": "Romania",
+    "region": "Europe & Central Asia",
+    "income": 6107.089858737,
+    "population": 19116938.241537,
+    "lifeExpectancy": 66.885283089755
+  },
+  {
+    "name": "Congo, Dem. Rep.",
+    "region": "Sub-Saharan Africa",
+    "income": 889.67949656235,
+    "population": 19240811.601871,
+    "lifeExpectancy": 42.637439606267
+  },
+  {
+    "name": "Sudan",
+    "region": "Sub-Saharan Africa",
+    "income": 1804.7371518203,
+    "population": 12315544.680054,
+    "lifeExpectancy": 44.862210617275
+  },
+  {
+    "name": "Ireland",
+    "region": "Europe & Central Asia",
+    "income": 7258.5733843033,
+    "population": 2882318.0674005,
+    "lifeExpectancy": 70.303018371717
+  },
+  {
+    "name": "Thailand",
+    "region": "East Asia & Pacific",
+    "income": 1212.2101190968,
+    "population": 32831057.390465,
+    "lifeExpectancy": 57.206981628283
+  },
+  {
+    "name": "Brazil",
+    "region": "America",
+    "income": 3359.2564601571,
+    "population": 85039293.700605,
+    "lifeExpectancy": 56.998005785776
+  },
+  {
+    "name": "Korea, Dem. Rep.",
+    "region": "East Asia & Pacific",
+    "income": 1566.5149716347,
+    "population": 12155519.391968,
+    "lifeExpectancy": 58.734933313296
+  },
+  {
+    "name": "Hungary",
+    "region": "Europe & Central Asia",
+    "income": 8759.6136641996,
+    "population": 10177911.68971,
+    "lifeExpectancy": 69.770216403051
+  },
+  {
+    "name": "Nepal",
+    "region": "South Asia",
+    "income": 692.70502122704,
+    "population": 11016461.653079,
+    "lifeExpectancy": 40.659596122779
+  },
+  {
+    "name": "Myanmar",
+    "region": "East Asia & Pacific",
+    "income": 663.8098504715,
+    "population": 25296947.760905,
+    "lifeExpectancy": 47.991294661307
+  },
+  {
+    "name": "Belgium",
+    "region": "Europe & Central Asia",
+    "income": 12654.187272044,
+    "population": 9495248.5779765,
+    "lifeExpectancy": 70.635283089755
+  },
+  {
+    "name": "Austria",
+    "region": "Europe & Central Asia",
+    "income": 12426.328166585,
+    "population": 7311306.4669196,
+    "lifeExpectancy": 70.194825111771
+  },
+  {
+    "name": "Portugal",
+    "region": "Europe & Central Asia",
+    "income": 5860.0530499305,
+    "population": 9113015.3435774,
+    "lifeExpectancy": 65.803018371717
+  },
+  {
+    "name": "Afghanistan",
+    "region": "South Asia",
+    "income": 836.05090468497,
+    "population": 11206727.928166,
+    "lifeExpectancy": 33.295903370027
+  },
+  {
+    "name": "Tanzania",
+    "region": "Sub-Saharan Africa",
+    "income": 825.02390126612,
+    "population": 12155496.627005,
+    "lifeExpectancy": 45.234825111771
+  },
+  {
+    "name": "Ethiopia",
+    "region": "Sub-Saharan Africa",
+    "income": 503.63618138784,
+    "population": 27188480.019461,
+    "lifeExpectancy": 41.565903370027
+  },
+  {
+    "name": "Morocco",
+    "region": "Middle East & North Africa",
+    "income": 1650.5338497952,
+    "population": 14341370.595484,
+    "lifeExpectancy": 49.509084044032
+  },
+  {
+    "name": "Algeria",
+    "region": "Middle East & North Africa",
+    "income": 3124.8325427358,
+    "population": 12260078.865988,
+    "lifeExpectancy": 50.309650223541
+  },
+  {
+    "name": "Yemen, Rep.",
+    "region": "Middle East & North Africa",
+    "income": 850.73213885863,
+    "population": 6600645.7576361,
+    "lifeExpectancy": 36.242210617275
+  },
+  {
+    "name": "Sweden",
+    "region": "Europe & Central Asia",
+    "income": 15677.930420408,
+    "population": 7792250.8969831,
+    "lifeExpectancy": 74.077439606267
+  },
+  {
+    "name": "Kenya",
+    "region": "Sub-Saharan Africa",
+    "income": 1019.6508438216,
+    "population": 9797526.4343465,
+    "lifeExpectancy": 49.802264718037
+  },
+  {
+    "name": "Belarus",
+    "region": "Europe & Central Asia",
+    "income": 4406.6722772141,
+    "population": 8672307.2339107,
+    "lifeExpectancy": 73.304313033024
+  },
+  {
+    "name": "Netherlands",
+    "region": "Europe & Central Asia",
+    "income": 12992.517647368,
+    "population": 12420572.671601,
+    "lifeExpectancy": 73.560512078747
+  },
+  {
+    "name": "Greece",
+    "region": "Europe & Central Asia",
+    "income": 7632.864664688,
+    "population": 8600338.9239584,
+    "lifeExpectancy": 70.509029943269
+  },
+  {
+    "name": "Bulgaria",
+    "region": "Europe & Central Asia",
+    "income": 5251.2175297742,
+    "population": 8246145.343089,
+    "lifeExpectancy": 71.244716910245
+  },
+  {
+    "name": "Philippines",
+    "region": "East Asia & Pacific",
+    "income": 1770.5979201262,
+    "population": 34086315.508059,
+    "lifeExpectancy": 55.992722696021
+  },
+  {
+    "name": "Serbia",
+    "region": "Europe & Central Asia",
+    "income": 7855.3304715032,
+    "population": 7890235.714919,
+    "lifeExpectancy": 66.173288875531
+  },
+  {
+    "name": "Slovak Republic",
+    "region": "Europe & Central Asia",
+    "income": 8035.7924533193,
+    "population": 4400778.2767404,
+    "lifeExpectancy": 70.410566179509
+  },
+  {
+    "name": "Uganda",
+    "region": "Sub-Saharan Africa",
+    "income": 883.0260919713,
+    "population": 8587412.0087538,
+    "lifeExpectancy": 47.185957470789
+  },
+  {
+    "name": "Mozambique",
+    "region": "Sub-Saharan Africa",
+    "income": 541.3804365631,
+    "population": 8447499.9743397,
+    "lifeExpectancy": 37.475903370027
+  },
+  {
+    "name": "Saudi Arabia",
+    "region": "Middle East & North Africa",
+    "income": 15611.134802194,
+    "population": 5439524.782545,
+    "lifeExpectancy": 48.461806740053
+  },
+  {
+    "name": "Cambodia",
+    "region": "East Asia & Pacific",
+    "income": 509.15151857835,
+    "population": 6742609.1907803,
+    "lifeExpectancy": 45.201132359019
+  },
+  {
+    "name": "Kazakhstan",
+    "region": "Europe & Central Asia",
+    "income": 5791.1789829318,
+    "population": 12121467.857647,
+    "lifeExpectancy": 60.809596122779
+  },
+  {
+    "name": "Ghana",
+    "region": "Sub-Saharan Africa",
+    "income": 1145.2965980388,
+    "population": 8195889.4275463,
+    "lifeExpectancy": 47.369029943269
+  },
+  {
+    "name": "Taiwan",
+    "region": "East Asia & Pacific",
+    "income": 2787.9920727355,
+    "population": 13248811.98114,
+    "lifeExpectancy": 67.4
+  },
+  {
+    "name": "Switzerland",
+    "region": "Europe & Central Asia",
+    "income": 22461.080616148,
+    "population": 5984857.1965285,
+    "lifeExpectancy": 72.440566179509
+  },
+  {
+    "name": "Uzbekistan",
+    "region": "Europe & Central Asia",
+    "income": 2129.0101874578,
+    "population": 10461524.039486,
+    "lifeExpectancy": 61.383800954277
+  },
+  {
+    "name": "Cameroon",
+    "region": "Sub-Saharan Africa",
+    "income": 1487.4372645302,
+    "population": 6193159.4326558,
+    "lifeExpectancy": 44.079596122779
+  },
+  {
+    "name": "Madagascar",
+    "region": "Sub-Saharan Africa",
+    "income": 1582.1164947214,
+    "population": 6172669.436225,
+    "lifeExpectancy": 42.165903370027
+  },
+  {
+    "name": "Burkina Faso",
+    "region": "Sub-Saharan Africa",
+    "income": 738.49226096104,
+    "population": 5067811.5586655,
+    "lifeExpectancy": 39.953800954277
+  },
+  {
+    "name": "Angola",
+    "region": "Sub-Saharan Africa",
+    "income": 5264.844952474,
+    "population": 5187283.231694,
+    "lifeExpectancy": 35.315903370027
+  },
+  {
+    "name": "South Africa",
+    "region": "Sub-Saharan Africa",
+    "income": 6742.4521985949,
+    "population": 20326484.5572,
+    "lifeExpectancy": 51.268005785776
+  },
+  {
+    "name": "Chad",
+    "region": "Sub-Saharan Africa",
+    "income": 1225.5580903182,
+    "population": 3403841.6608183,
+    "lifeExpectancy": 42.950108201525
+  },
+  {
+    "name": "Mali",
+    "region": "Sub-Saharan Africa",
+    "income": 536.93461997971,
+    "population": 5078398.1576436,
+    "lifeExpectancy": 36.834771011008
+  },
+  {
+    "name": "Peru",
+    "region": "America",
+    "income": 5662.5836397791,
+    "population": 11727209.497689,
+    "lifeExpectancy": 50.640674381035
+  },
+  {
+    "name": "Niger",
+    "region": "Sub-Saharan Africa",
+    "income": 1080.214733441,
+    "population": 4417866.5425856,
+    "lifeExpectancy": 37.837385505504
+  },
+  {
+    "name": "Croatia",
+    "region": "Europe & Central Asia",
+    "income": 6841.5240398993,
+    "population": 4151095.9904572,
+    "lifeExpectancy": 68.125337190517
+  },
+  {
+    "name": "Sri Lanka",
+    "region": "South Asia",
+    "income": 1072.6382097907,
+    "population": 11413457.249239,
+    "lifeExpectancy": 60.022264718037
+  },
+  {
+    "name": "Colombia",
+    "region": "America",
+    "income": 2643.9001217267,
+    "population": 19084930.821355,
+    "lifeExpectancy": 59.375903370027
+  },
+  {
+    "name": "Finland",
+    "region": "Europe & Central Asia",
+    "income": 10709.063773528,
+    "population": 4577266.0901304,
+    "lifeExpectancy": 69.540674381035
+  },
+  {
+    "name": "Denmark",
+    "region": "Europe & Central Asia",
+    "income": 14707.567465905,
+    "population": 4789216.4819476,
+    "lifeExpectancy": 72.463180674005
+  },
+  {
+    "name": "Bolivia",
+    "region": "America",
+    "income": 2469.5920276515,
+    "population": 3926098.3466957,
+    "lifeExpectancy": 44.484825111771
+  },
+  {
+    "name": "Iraq",
+    "region": "Middle East & North Africa",
+    "income": 8925.2144189804,
+    "population": 8183747.7960326,
+    "lifeExpectancy": 55.156011571552
+  },
+  {
+    "name": "Cote d'Ivoire",
+    "region": "Sub-Saharan Africa",
+    "income": 2106.8384483601,
+    "population": 4484529.0647331,
+    "lifeExpectancy": 43.598059886539
+  },
+  {
+    "name": "Zimbabwe",
+    "region": "Sub-Saharan Africa",
+    "income": 545.22268625315,
+    "population": 4804066.6725401,
+    "lifeExpectancy": 53.510620280272
+  },
+  {
+    "name": "Georgia",
+    "region": "Europe & Central Asia",
+    "income": 2845.9727332156,
+    "population": 4506929.9217418,
+    "lifeExpectancy": 65.978005785776
+  },
+  {
+    "name": "Senegal",
+    "region": "Sub-Saharan Africa",
+    "income": 1678.9386764098,
+    "population": 3832862.9980839,
+    "lifeExpectancy": 41.471644437765
+  },
+  {
+    "name": "Somalia",
+    "region": "Sub-Saharan Africa",
+    "income": 1214.527167224,
+    "population": 3339342.7036105,
+    "lifeExpectancy": 38.303800954277
+  },
+  {
+    "name": "Guinea",
+    "region": "Sub-Saharan Africa",
+    "income": 700.22514971635,
+    "population": 3371966.94094,
+    "lifeExpectancy": 37.941132359019
+  },
+  {
+    "name": "Norway",
+    "region": "Europe & Central Asia",
+    "income": 14328.703948604,
+    "population": 3747220.8880039,
+    "lifeExpectancy": 73.951132359019
+  },
+  {
+    "name": "Rwanda",
+    "region": "Sub-Saharan Africa",
+    "income": 486.60171732352,
+    "population": 3338531.3777661,
+    "lifeExpectancy": 43.787951685013
+  },
+  {
+    "name": "Burundi",
+    "region": "Sub-Saharan Africa",
+    "income": 385.91631476124,
+    "population": 3236168.9896683,
+    "lifeExpectancy": 43.075337190517
+  },
+  {
+    "name": "Azerbaijan",
+    "region": "Europe & Central Asia",
+    "income": 3932.8857002635,
+    "population": 4673396.1634294,
+    "lifeExpectancy": 63.411698538528
+  },
+  {
+    "name": "Tunisia",
+    "region": "Middle East & North Africa",
+    "income": 1991.0204328061,
+    "population": 4652833.6615321,
+    "lifeExpectancy": 51.132776796784
+  },
+  {
+    "name": "Bosnia and Herzegovina",
+    "region": "Europe & Central Asia",
+    "income": 2135.2862640418,
+    "population": 3530908.4044032,
+    "lifeExpectancy": 63.872264718037
+  },
+  {
+    "name": "Canada",
+    "region": "America",
+    "income": 15740.460803246,
+    "population": 20369152.511553,
+    "lifeExpectancy": 71.892668595259
+  },
+  {
+    "name": "Sierra Leone",
+    "region": "Sub-Saharan Africa",
+    "income": 1220.8154476462,
+    "population": 2613314.2450314,
+    "lifeExpectancy": 34.593234774768
+  },
+  {
+    "name": "Lithuania",
+    "region": "Europe & Central Asia",
+    "income": 9293.4514066035,
+    "population": 2988796.8385243,
+    "lifeExpectancy": 71.816361348011
+  },
+  {
+    "name": "Chile",
+    "region": "America",
+    "income": 4957.894217981,
+    "population": 8648950.6418455,
+    "lifeExpectancy": 59.670674381035
+  },
+  {
+    "name": "Papua New Guinea",
+    "region": "East Asia & Pacific",
+    "income": 1473.4610767555,
+    "population": 2033402.0859225,
+    "lifeExpectancy": 41.311186459781
+  },
+  {
+    "name": "Zambia",
+    "region": "Sub-Saharan Africa",
+    "income": 1726.1467520757,
+    "population": 3772975.8425067,
+    "lifeExpectancy": 47.192210617275
+  },
+  {
+    "name": "Malawi",
+    "region": "Sub-Saharan Africa",
+    "income": 456.81949280535,
+    "population": 4000103.6412819,
+    "lifeExpectancy": 39.059542022016
+  },
+  {
+    "name": "Haiti",
+    "region": "America",
+    "income": 1523.0748630574,
+    "population": 4207934.3761506,
+    "lifeExpectancy": 45.402776796784
+  },
+  {
+    "name": "Moldova",
+    "region": "Europe & Central Asia",
+    "income": 3792.5498803805,
+    "population": 3381417.0479017,
+    "lifeExpectancy": 63.626415448773
+  },
+  {
+    "name": "Benin",
+    "region": "Sub-Saharan Africa",
+    "income": 1049.0777213811,
+    "population": 2355917.4029755,
+    "lifeExpectancy": 43.373288875531
+  },
+  {
+    "name": "Mongolia",
+    "region": "East Asia & Pacific",
+    "income": 1181.9706540933,
+    "population": 1113260.946012,
+    "lifeExpectancy": 50.26385505504
+  },
+  {
+    "name": "Guatemala",
+    "region": "America",
+    "income": 3145.1929725364,
+    "population": 4594005.058008,
+    "lifeExpectancy": 49.023342976293
+  },
+  {
+    "name": "Latvia",
+    "region": "Europe & Central Asia",
+    "income": 4104.2286309501,
+    "population": 2273440.3623624,
+    "lifeExpectancy": 71.168409662997
+  },
+  {
+    "name": "Cuba",
+    "region": "America",
+    "income": 5159.7132340234,
+    "population": 7948439.6277567,
+    "lifeExpectancy": 67.519650223541
+  },
+  {
+    "name": "Libya",
+    "region": "Middle East & North Africa",
+    "income": 16879.89310854,
+    "population": 1679175.5023106,
+    "lifeExpectancy": 49.373288875531
+  },
+  {
+    "name": "Argentina",
+    "region": "America",
+    "income": 7969.9447574858,
+    "population": 22542538.801668,
+    "lifeExpectancy": 65.774771011008
+  },
+  {
+    "name": "Ecuador",
+    "region": "America",
+    "income": 4484.4796855393,
+    "population": 5240080.9897058,
+    "lifeExpectancy": 56.145903370027
+  },
+  {
+    "name": "Slovenia",
+    "region": "Europe & Central Asia",
+    "income": 9244.9840620656,
+    "population": 1629510.936657,
+    "lifeExpectancy": 69.22
+  },
+  {
+    "name": "Tajikistan",
+    "region": "Europe & Central Asia",
+    "income": 3786.9886589316,
+    "population": 2575485.8082429,
+    "lifeExpectancy": 58.633800954277
+  },
+  {
+    "name": "Togo",
+    "region": "Sub-Saharan Africa",
+    "income": 1418.8599530375,
+    "population": 1681783.7363339,
+    "lifeExpectancy": 47.19539129128
+  },
+  {
+    "name": "Albania",
+    "region": "Europe & Central Asia",
+    "income": 2639.8615798174,
+    "population": 1922595.7776985,
+    "lifeExpectancy": 66.043234774768
+  },
+  {
+    "name": "Armenia",
+    "region": "Europe & Central Asia",
+    "income": 2658.6863293319,
+    "population": 2259427.5862419,
+    "lifeExpectancy": 68.519596122779
+  },
+  {
+    "name": "Jamaica",
+    "region": "America",
+    "income": 6005.7551831536,
+    "population": 1811107.838374,
+    "lifeExpectancy": 66.972210617275
+  },
+  {
+    "name": "Bhutan",
+    "region": "South Asia",
+    "income": 803.82585407822,
+    "population": 964161.9480783,
+    "lifeExpectancy": 38.804313033024
+  },
+  {
+    "name": "Macedonia, FYR",
+    "region": "Europe & Central Asia",
+    "income": 4180.3477533156,
+    "population": 1485608.6726528,
+    "lifeExpectancy": 64.162264718037
+  },
+  {
+    "name": "Mauritania",
+    "region": "Sub-Saharan Africa",
+    "income": 1396.6432486757,
+    "population": 1208764.8532141,
+    "lifeExpectancy": 46.314825111771
+  },
+  {
+    "name": "Turkmenistan",
+    "region": "Europe & Central Asia",
+    "income": 5406.1374388386,
+    "population": 1924617.259308,
+    "lifeExpectancy": 56.903800954277
+  },
+  {
+    "name": "Estonia",
+    "region": "Europe & Central Asia",
+    "income": 6974.3060745911,
+    "population": 1297576.5219597,
+    "lifeExpectancy": 70.686307247248
+  },
+  {
+    "name": "Australia",
+    "region": "East Asia & Pacific",
+    "income": 13835.514462186,
+    "population": 11609734.102528,
+    "lifeExpectancy": 70.853638651989
+  },
+  {
+    "name": "Lebanon",
+    "region": "Middle East & North Africa",
+    "income": 6425.7148604276,
+    "population": 2108200.4876207,
+    "lifeExpectancy": 63.346415448773
+  },
+  {
+    "name": "Oman",
+    "region": "Middle East & North Africa",
+    "income": 2898.9824443025,
+    "population": 692923.98053876,
+    "lifeExpectancy": 45.551806740053
+  },
+  {
+    "name": "Congo, Rep.",
+    "region": "Sub-Saharan Africa",
+    "income": 2591.8674820603,
+    "population": 1145443.8579479,
+    "lifeExpectancy": 51.891752639291
+  },
+  {
+    "name": "Liberia",
+    "region": "Sub-Saharan Africa",
+    "income": 717.91635458543,
+    "population": 1236092.0161927,
+    "lifeExpectancy": 42.703800954277
+  },
+  {
+    "name": "Malaysia",
+    "region": "East Asia & Pacific",
+    "income": 2286.5397028215,
+    "population": 9846790.7971222,
+    "lifeExpectancy": 58.144421234549
+  },
+  {
+    "name": "Lesotho",
+    "region": "Sub-Saharan Africa",
+    "income": 462.37268249615,
+    "population": 969457.76034114,
+    "lifeExpectancy": 48.350566179509
+  },
+  {
+    "name": "El Salvador",
+    "region": "America",
+    "income": 4242.4913543976,
+    "population": 3105005.0012398,
+    "lifeExpectancy": 54.914879212533
+  },
+  {
+    "name": "Namibia",
+    "region": "Sub-Saharan Africa",
+    "income": 4047.5729590112,
+    "population": 684847.57842732,
+    "lifeExpectancy": 50.272264718037
+  },
+  {
+    "name": "Guinea-Bissau",
+    "region": "Sub-Saharan Africa",
+    "income": 716.91205319909,
+    "population": 599302.8594883,
+    "lifeExpectancy": 36.073234774768
+  },
+  {
+    "name": "Jordan",
+    "region": "Middle East & North Africa",
+    "income": 2820.6945673817,
+    "population": 1097729.4966375,
+    "lifeExpectancy": 50.274421234549
+  },
+  {
+    "name": "Israel",
+    "region": "Middle East & North Africa",
+    "income": 8374.6484051546,
+    "population": 2627890.6055153,
+    "lifeExpectancy": 70.317439606267
+  },
+  {
+    "name": "Eritrea",
+    "region": "Sub-Saharan Africa",
+    "income": 457.45647706353,
+    "population": 1767726.1485893,
+    "lifeExpectancy": 41.521698538528
+  },
+  {
+    "name": "Nicaragua",
+    "region": "America",
+    "income": 4480.9912694894,
+    "population": 1795195.5749709,
+    "lifeExpectancy": 50.799138144795
+  },
+  {
+    "name": "Cyprus",
+    "region": "Europe & Central Asia",
+    "income": 5607.5526601796,
+    "population": 594116.98538528,
+    "lifeExpectancy": 69.907951685013
+  },
+  {
+    "name": "Mauritius",
+    "region": "Sub-Saharan Africa",
+    "income": 2450.7664778149,
+    "population": 770242.77897584,
+    "lifeExpectancy": 61.161644437765
+  },
+  {
+    "name": "Guyana",
+    "region": "America",
+    "income": 2264.1540271255,
+    "population": 653119.56358718,
+    "lifeExpectancy": 58.658517864523
+  },
+  {
+    "name": "West Bank and Gaza",
+    "region": "Middle East & North Africa",
+    "income": 2532.1706349326,
+    "population": 1230470.9818913,
+    "lifeExpectancy": 50.2823188188
+  },
+  {
+    "name": "Gabon",
+    "region": "Sub-Saharan Africa",
+    "income": 8032.5147683811,
+    "population": 480019.346846,
+    "lifeExpectancy": 43.023397077056
+  },
+  {
+    "name": "Puerto Rico",
+    "region": "America",
+    "income": 6496.9722793704,
+    "population": 2620935.8692565,
+    "lifeExpectancy": 70.591132359019
+  },
+  {
+    "name": "Paraguay",
+    "region": "America",
+    "income": 2226.8039005147,
+    "population": 2216086.1289402,
+    "lifeExpectancy": 64.804771011008
+  },
+  {
+    "name": "Timor-Leste",
+    "region": "East Asia & Pacific",
+    "income": 1075.217099843,
+    "population": 560222.94698877,
+    "lifeExpectancy": 36.769650223541
+  },
+  {
+    "name": "Malta",
+    "region": "Europe & Central Asia",
+    "income": 2651.0786110381,
+    "population": 317835.62632904,
+    "lifeExpectancy": 69.236873426757
+  },
+  {
+    "name": "Fiji",
+    "region": "East Asia & Pacific",
+    "income": 1971.737224706,
+    "population": 471780.68993501,
+    "lifeExpectancy": 57.879596122779
+  },
+  {
+    "name": "Honduras",
+    "region": "America",
+    "income": 2478.8551733854,
+    "population": 2395881.7405418,
+    "lifeExpectancy": 49.985957470789
+  },
+  {
+    "name": "Luxembourg",
+    "region": "Europe & Central Asia",
+    "income": 19341.957403163,
+    "population": 333391.47142803,
+    "lifeExpectancy": 69.328921741744
+  },
+  {
+    "name": "Montenegro",
+    "region": "Europe & Central Asia",
+    "income": 5807.0384160499,
+    "population": 495385.19423677,
+    "lifeExpectancy": 65.940728481797
+  },
+  {
+    "name": "Botswana",
+    "region": "Sub-Saharan Africa",
+    "income": 1101.2151530977,
+    "population": 544311.45001315,
+    "lifeExpectancy": 52.662210617275
+  },
+  {
+    "name": "New Zealand",
+    "region": "East Asia & Pacific",
+    "income": 15247.146889206,
+    "population": 2677637.1097419,
+    "lifeExpectancy": 71.169433820491
+  },
+  {
+    "name": "Reunion",
+    "region": "Sub-Saharan Africa",
+    "income": 3818.8940658226,
+    "population": 401113.48762069,
+    "lifeExpectancy": 59.481752639291
+  },
+  {
+    "name": "Swaziland",
+    "region": "Sub-Saharan Africa",
+    "income": 2440.8062114438,
+    "population": 407741.8731262,
+    "lifeExpectancy": 46.014313033024
+  },
+  {
+    "name": "Martinique",
+    "region": "America",
+    "income": 8171.2325037611,
+    "population": 314852.01784574,
+    "lifeExpectancy": 65.916981628283
+  },
+  {
+    "name": "Barbados",
+    "region": "America",
+    "income": 7004.6879366571,
+    "population": 235964.82875606,
+    "lifeExpectancy": 67.130620280272
+  },
+  {
+    "name": "Kuwait",
+    "region": "Middle East & North Africa",
+    "income": 86425.483317805,
+    "population": 513349.05312395,
+    "lifeExpectancy": 63.175499492805
+  },
+  {
+    "name": "Guadeloupe",
+    "region": "America",
+    "income": 3435.8658048224,
+    "population": 305843.91114701,
+    "lifeExpectancy": 65.499542022016
+  },
+  {
+    "name": "Suriname",
+    "region": "America",
+    "income": 4588.8702830522,
+    "population": 343897.01190968,
+    "lifeExpectancy": 61.820108201525
+  },
+  {
+    "name": "Equatorial Guinea",
+    "region": "Sub-Saharan Africa",
+    "income": 864.06902731337,
+    "population": 255609.79062253,
+    "lifeExpectancy": 38.47692752752
+  },
+  {
+    "name": "Panama",
+    "region": "America",
+    "income": 4163.9998268024,
+    "population": 1356928.7917121,
+    "lifeExpectancy": 63.517493707029
+  },
+  {
+    "name": "Bahrain",
+    "region": "Middle East & North Africa",
+    "income": 14186.392395837,
+    "population": 195585.83288876,
+    "lifeExpectancy": 58.889650223541
+  },
+  {
+    "name": "French Polynesia",
+    "region": "East Asia & Pacific",
+    "income": 15322.906035241,
+    "population": 97753.621144382,
+    "lifeExpectancy": 58.471698538528
+  },
+  {
+    "name": "Iceland",
+    "region": "Europe & Central Asia",
+    "income": 13510.709138896,
+    "population": 194911.57748807,
+    "lifeExpectancy": 73.358247360709
+  },
+  {
+    "name": "Trinidad and Tobago",
+    "region": "America",
+    "income": 5517.3904282977,
+    "population": 949742.99188489,
+    "lifeExpectancy": 65.413180674005
+  },
+  {
+    "name": "Solomon Islands",
+    "region": "East Asia & Pacific",
+    "income": 1287.2525317362,
+    "population": 146159.03370027,
+    "lifeExpectancy": 52.094879212533
+  },
+  {
+    "name": "Comoros",
+    "region": "Sub-Saharan Africa",
+    "income": 1819.2889487921,
+    "population": 210458.40158545,
+    "lifeExpectancy": 45.771698538528
+  },
+  {
+    "name": "Cape Verde",
+    "region": "Sub-Saharan Africa",
+    "income": 751.45367885186,
+    "population": 237650.87553068,
+    "lifeExpectancy": 54.609084044032
+  },
+  {
+    "name": "Uruguay",
+    "region": "America",
+    "income": 5709.3976000301,
+    "population": 2715304.6780253,
+    "lifeExpectancy": 68.623692752752
+  },
+  {
+    "name": "Costa Rica",
+    "region": "America",
+    "income": 4015.231972048,
+    "population": 1527753.9490551,
+    "lifeExpectancy": 64.762776796784
+  },
+  {
+    "name": "Samoa",
+    "region": "East Asia & Pacific",
+    "income": 3439.5198882919,
+    "population": 129590.56377503,
+    "lifeExpectancy": 52.734879212533
+  },
+  {
+    "name": "Netherlands Antilles",
+    "region": "America",
+    "income": 9465.5155117657,
+    "population": 148259.40613142,
+    "lifeExpectancy": 67.736415448773
+  },
+  {
+    "name": "Maldives",
+    "region": "South Asia",
+    "income": 648.64082360897,
+    "population": 100270.95469061,
+    "lifeExpectancy": 47.227547807792
+  },
+  {
+    "name": "United Arab Emirates",
+    "region": "Middle East & North Africa",
+    "income": 10667.755800178,
+    "population": 153887.95363865,
+    "lifeExpectancy": 57.5723188188
+  },
+  {
+    "name": "Macao, China",
+    "region": "East Asia & Pacific",
+    "income": 7130.7499839201,
+    "population": 230205.19686667,
+    "lifeExpectancy": 63.778626066048
+  },
+  {
+    "name": "Singapore",
+    "region": "East Asia & Pacific",
+    "income": 4454.4353368149,
+    "population": 1924413.5251907,
+    "lifeExpectancy": 67.281698538528
+  },
+  {
+    "name": "New Caledonia",
+    "region": "East Asia & Pacific",
+    "income": 20001.567379118,
+    "population": 92809.830634557,
+    "lifeExpectancy": 59.758517864523
+  },
+  {
+    "name": "Grenada",
+    "region": "America",
+    "income": 1919.8865990908,
+    "population": 93518.240184844,
+    "lifeExpectancy": 63.928975842507
+  },
+  {
+    "name": "Vanuatu",
+    "region": "East Asia & Pacific",
+    "income": 2142.6410955091,
+    "population": 75724.762069354,
+    "lifeExpectancy": 49.97385505504
+  },
+  {
+    "name": "Belize",
+    "region": "America",
+    "income": 2040.968908968,
+    "population": 109452.73903896,
+    "lifeExpectancy": 64.334879212533
+  },
+  {
+    "name": "Djibouti",
+    "region": "Middle East & North Africa",
+    "income": 3023.373408348,
+    "population": 117194.39628809,
+    "lifeExpectancy": 41.269084044032
+  },
+  {
+    "name": "Sao Tome and Principe",
+    "region": "Sub-Saharan Africa",
+    "income": 1312.4871901416,
+    "population": 69539.990306947,
+    "lifeExpectancy": 53.616981628283
+  },
+  {
+    "name": "Hong Kong, China",
+    "region": "East Asia & Pacific",
+    "income": 6239.6398361949,
+    "population": 3623172.2696021,
+    "lifeExpectancy": 69.263288875531
+  },
+  {
+    "name": "Aruba",
+    "region": "America",
+    "income": 3990.32966131,
+    "population": 58713.573731074,
+    "lifeExpectancy": 67.720620280272
+  },
+  {
+    "name": "Tonga",
+    "region": "East Asia & Pacific",
+    "income": 1757.75211209,
+    "population": 75974.967276553,
+    "lifeExpectancy": 63.506415448773
+  },
+  {
+    "name": "Micronesia, Fed. Sts.",
+    "region": "East Asia & Pacific",
+    "income": 3230.1971115083,
+    "population": 49924.012322952,
+    "lifeExpectancy": 59.895903370027
+  },
+  {
+    "name": "Qatar",
+    "region": "Middle East & North Africa",
+    "income": 69506.352202825,
+    "population": 75839.950520345,
+    "lifeExpectancy": 57.438113987301
+  },
+  {
+    "name": "French Guiana",
+    "region": "America",
+    "income": 5770.4922428785,
+    "population": 41722.713754368,
+    "lifeExpectancy": 62.622884998309
+  },
+  {
+    "name": "Mayotte",
+    "region": "Sub-Saharan Africa",
+    "income": 9617.82,
+    "population": 32198.828380359,
+    "lifeExpectancy": 59.11385505504
+  },
+  {
+    "name": "Brunei",
+    "region": "East Asia & Pacific",
+    "income": 45820.663555998,
+    "population": 105742.83176166,
+    "lifeExpectancy": 64.173288875531
+  },
+  {
+    "name": "Tokelau",
+    "region": "East Asia & Pacific",
+    "income": 889.43,
+    "population": 1810.0371416764,
+    "lifeExpectancy": 69
+  }
+]

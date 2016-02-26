@@ -92,6 +92,8 @@ MouseCoordinates.defaultProps = {
 	textBGopacity: 1,
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 13,
+	rectWidth: 100,
+	rectHeight: 20,
 };
 
 MouseCoordinates.drawOnCanvas = (canvasContext, props) => {
@@ -114,42 +116,42 @@ MouseCoordinates.drawOnCanvasStatic = (props, ctx, show, xScale, mouseXY, curren
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
 	ctx.translate(originX, originY);
 
+	// console.log(pointer);
 	CrossHair.drawOnCanvasStatic(ctx, pointer);
 	ctx.restore();
 };
 
 MouseCoordinates.helper = (props, show, xScale, mouseXY, currentCharts, chartConfig, currentItem) => {
 	var { displayXAccessor, xAccessor, height, width, snapX, xDisplayFormat } = props;
-	var displayValue = displayXAccessor(currentItem);
+
+	var xValue = xAccessor(currentItem);
+	var x = snapX ? Math.round(xScale(xValue)) : mouseXY[0];
+	var y = mouseXY[1];
+
+	var displayValue = snapX ? displayXAccessor(currentItem) : xScale.invert(x);
 
 	if (!show || !displayValue) return;
 
 	var edges = chartConfig
 		.filter(eachChartConfig => currentCharts.indexOf(eachChartConfig.id) > -1)
 		.filter(eachChartConfig => isDefined(eachChartConfig.mouseCoordinates.at))
-		.filter(eachChartConfig => isDefined(eachChartConfig.mouseCoordinates.format))
+		.filter(eachChartConfig => isDefined(eachChartConfig.mouseCoordinates.yDisplayFormat))
 		.map(eachChartConfig => {
 			var mouseY = mouseXY[1] - eachChartConfig.origin[1];
 			var yValue = eachChartConfig.yScale.invert(mouseY);
 			return {
 				id: eachChartConfig.id,
-				at: eachChartConfig.mouseCoordinates.at,
+				yDisplayValue: eachChartConfig.mouseCoordinates.yDisplayFormat(yValue),
+				...eachChartConfig.mouseCoordinates,
 				yValue,
-				yDisplayFormat: eachChartConfig.mouseCoordinates.format,
-				yDisplayValue: eachChartConfig.mouseCoordinates.format(yValue),
 			};
 		});
 
 
-	var xValue = xAccessor(currentItem);
-	// console.log(show, edges, xValue);
-
-	var x = snapX ? Math.round(xScale(xValue)) : mouseXY[0];
-	var y = mouseXY[1];
 
 	var { stroke, opacity, textStroke, textBGFill, textBGopacity, fontFamily, fontSize } = props;
 
-	return { height, width, mouseXY: [x, y], xDisplayValue: xDisplayFormat(displayValue), edges,
+	return { ...props, height, width, mouseXY: [x, y], xDisplayValue: xDisplayFormat(displayValue), edges,
 		stroke, opacity, textStroke, textBGFill, textBGopacity, fontFamily, fontSize };
 };
 
