@@ -5,12 +5,12 @@ import d3 from "d3";
 
 import ReStock from "../../../src/";
 
-var { ChartCanvas, Chart, DataSeries, OverlaySeries, EventCapture } = ReStock;
+var { ChartCanvas, Chart, EventCapture } = ReStock;
 
 var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, StochasticSeries, BollingerSeries } = ReStock.series;
 var { financeEODDiscontiniousScale } = ReStock.scale;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
-var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
+var { EdgeIndicator } = ReStock.coordinates;
 
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, BollingerBandTooltip, StochasticTooltip } = ReStock.tooltip;
 

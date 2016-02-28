@@ -205,14 +205,17 @@ class EventHandler extends Component {
 	}
 
 	getChildContext() {
+		var { showingInterval } = this.state;
+		var { fullData } = this.props
 		return {
 			plotData: this.state.plotData,
+			data: isDefined(showingInterval) ? fullData[showingInterval] : fullData,
 			chartConfig: this.state.chartConfig,
 			currentCharts: this.state.currentCharts,
 			currentItem: this.state.currentItem,
 			show: this.state.show,
 			mouseXY: this.state.mouseXY,
-			interval: this.state.interval,
+			interval: this.state.showingInterval,
 			width: this.props.dimensions.width,
 			height: this.props.dimensions.height,
 			chartCanvasType: this.props.type,
@@ -668,6 +671,7 @@ EventHandler.propTypes = {
 
 EventHandler.childContextTypes = {
 	plotData: PropTypes.array,
+	data: PropTypes.array,
 	chartConfig: PropTypes.arrayOf(
 		PropTypes.shape({
 			id: PropTypes.number.isRequired,

@@ -5,7 +5,7 @@ import d3 from "d3";
 
 import ReStock from "react-stockcharts";
 
-var { ChartCanvas, Chart, DataSeries, EventCapture } = ReStock;
+var { ChartCanvas, Chart, EventCapture } = ReStock;
 
 var { CandlestickSeries, HistogramSeries } = ReStock.series;
 var { financeEODDiscontiniousScale } = ReStock.scale;

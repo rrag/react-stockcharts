@@ -5,12 +5,12 @@ import d3 from "d3";
 
 import ReStock from "react-stockcharts";
 
-var { ChartCanvas, Chart, DataSeries, OverlaySeries,EventCapture } = ReStock;
+var { ChartCanvas, Chart, EventCapture } = ReStock;
 
 var { AreaSeries, HistogramSeries, LineSeries, AreaSeries } = ReStock.series;
 var { financeEODDiscontiniousScale } = ReStock.scale;
 
-var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
+var { EdgeIndicator } = ReStock.coordinates;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 
 var { TooltipContainer, SingleValueTooltip, MovingAverageTooltip } = ReStock.tooltip;

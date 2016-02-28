@@ -11,7 +11,7 @@ import {
 
 import eodIntervalCalculator from "./eodIntervalCalculator";
 
-function getFilteredResponse(dataForInterval, left, right, xAccessor) {
+function filteredResponse(dataForInterval, left, right, xAccessor) {
 	var newLeftIndex = getClosestItemIndexes(dataForInterval, left, xAccessor).right;
 	var newRightIndex = getClosestItemIndexes(dataForInterval, right, xAccessor).left;
 
@@ -34,7 +34,7 @@ function getDomain(left, right, width, filteredData, predicate, currentDomain, c
 	return currentDomain;
 }
 
-function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShowTheseMany) {
+function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShowTheseMany, getFilteredResponse) {
 	var data, inputXAccessor, interval, width, currentInterval, currentDomain, currentPlotData, scale;
 
 	function domain([left, right], xAccessor) {
@@ -221,7 +221,7 @@ export default function() {
 			fullData: mappedData,
 			xAccessor: realXAccessor,
 			// inputXAccesor: xAccessor,
-			domainCalculator: extentsWrapper(xAccessor, realXAccessor, allowedIntervals, canShowTheseMany),
+			domainCalculator: extentsWrapper(xAccessor, realXAccessor, allowedIntervals, canShowTheseMany, filteredResponse),
 		};
 	}
 	evaluate.allowedIntervals = function(x) {

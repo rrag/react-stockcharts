@@ -7,12 +7,12 @@ import ReStock from "react-stockcharts";
 
 var pointAndFigureTransformOptions = { boxSize: 0.25 };
 
-var { ChartCanvas, Chart, DataSeries, OverlaySeries, EventCapture } = ReStock;
+var { ChartCanvas, Chart, EventCapture } = ReStock;
 var { HistogramSeries, LineSeries, AreaSeries, PointAndFigureSeries } = ReStock.series;
 var { financeEODDiscontiniousScale } = ReStock.scale;
 
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
-var { EdgeContainer, EdgeIndicator } = ReStock.coordinates;
+var { EdgeIndicator } = ReStock.coordinates;
 
 var { TooltipContainer, OHLCTooltip, MACDTooltip } = ReStock.tooltip;
 var { XAxis, YAxis } = ReStock.axes;

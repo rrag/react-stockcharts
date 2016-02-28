@@ -7,14 +7,19 @@ import ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 
-var { ScatterSeries, CircleMarker } = ReStock.series;
+var { HistogramSeries, LineSeries, AreaSeries, ScatterSeries, CircleMarker } = ReStock.series;
+var { financeEODDiscontiniousScale } = ReStock.scale;
 
 var { MouseCoordinates } = ReStock.coordinates;
 
+var { TooltipContainer, OHLCTooltip } = ReStock.tooltip;
 var { XAxis, YAxis } = ReStock.axes;
 var { fitWidth } = ReStock.helper;
 
-class BubbleChart extends React.Component {
+var xScale = financeEODDiscontiniousScale();
+
+
+class HistogramChart extends React.Component {
 	render() {
 		var { data: unsortedData, type, width } = this.props;
 
@@ -55,15 +60,15 @@ class BubbleChart extends React.Component {
 	}
 }
 
-BubbleChart.propTypes = {
+HistogramChart.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
-BubbleChart.defaultProps = {
+HistogramChart.defaultProps = {
 	type: "svg",
 };
-BubbleChart = fitWidth(BubbleChart);
+HistogramChart = fitWidth(HistogramChart);
 
-export default BubbleChart;
+export default HistogramChart;

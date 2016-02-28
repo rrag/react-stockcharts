@@ -3,7 +3,7 @@
 import React from "react";
 import ReStock from "react-stockcharts";
 
-var { ChartCanvas, Chart, DataSeries } = ReStock;
+var { ChartCanvas, Chart } = ReStock;
 
 var { AreaSeries } = ReStock.series;
 var { XAxis, YAxis } = ReStock.axes;
