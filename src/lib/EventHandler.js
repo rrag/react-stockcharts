@@ -37,6 +37,21 @@ function isLastItemVisible(fullData, plotData) {
 	return visible;
 }
 
+function setXRange(xScale, dimensions, padding) {
+	if (xScale.rangeRoundPoints) {
+		if (isNaN(padding)) throw new Error("padding has to be a number for ordinal scale")
+		xScale.rangeRoundPoints([0, dimensions.width], padding)
+	} else {
+		var { left, right } = isNaN(padding)
+			? padding
+			: { left: padding, right: padding }
+
+		xScale.range([left, dimensions.width - right]);
+	}
+	return xScale;
+}
+
+
 class EventHandler extends Component {
 	constructor(props, context) {
 		super(props, context);
@@ -82,9 +97,11 @@ class EventHandler extends Component {
 
 		var chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData);
 
+
+
 		this.setState({
 			showingInterval,
-			xScale: xScale.range([padding.left, dimensions.width - padding.right]),
+			xScale: setXRange(xScale, dimensions, padding),
 			plotData,
 			chartConfig,
 		});
@@ -114,7 +131,7 @@ class EventHandler extends Component {
 
 			newState = {
 				showingInterval,
-				xScale: xScale.range([padding.left, dimensions.width - padding.right]),
+				xScale: setXRange(xScale, dimensions, padding),
 				plotData,
 				chartConfig,
 			};
@@ -125,7 +142,7 @@ class EventHandler extends Component {
 				console.log("DATA CHANGED AND LAST ITEM VISIBLE");
 			}
 			// if last item was visible, then shift
-			var updatedXScale = this.state.xScale.copy().range([padding.left, dimensions.width - padding.right]);
+			var updatedXScale = setXRange(this.state.xScale.copy(), dimensions, padding);
 
 			var [start, end] = this.state.xScale.domain();
 			var l = last(isDefined(showingInterval) ? fullData[showingInterval] : fullData);
@@ -154,13 +171,13 @@ class EventHandler extends Component {
 				plotData,
 			};
 		} else {
-			// console.log("TRIVIAL CHANGE");
+			console.log("TRIVIAL CHANGE");
 			// this.state.plotData or plotData
 			let chartConfig = getChartConfigWithUpdatedYScales(
 				getNewChartConfig(dimensions, children), this.state.plotData);
 
 			newState = {
-				xScale: this.state.xScale.copy().range([padding.left, dimensions.width - padding.right]),
+				xScale: setXRange(this.state.xScale.copy(), dimensions, padding),
 				chartConfig,
 			};
 		}
@@ -472,7 +489,9 @@ class EventHandler extends Component {
 
 		var dx = mouseXY[0] - panOrigin[0];
 
-		// console.log(initialXScale.range());
+		if (isNotDefined(initialXScale.invert))
+			throw new Error("xScale provided does not have an invert() method."
+				+ "You are likely using an ordinal scale. This scale does not support zoom, pan");
 		var newDomain = initialXScale.range().map(x => x - dx).map(initialXScale.invert);
 
 		var { plotData, /* interval: updatedInterval,*/scale: updatedScale } = xExtentsCalculator
@@ -665,7 +684,13 @@ EventHandler.propTypes = {
 	canvasContexts: PropTypes.func.isRequired,
 	margin: PropTypes.object.isRequired,
 	plotData: PropTypes.array,
-	padding: PropTypes.object,
+	padding: PropTypes.oneOfType([
+		PropTypes.number,
+		PropTypes.shape({
+			left: PropTypes.number,
+			right: PropTypes.number,
+		})
+	]).isRequired,
 	showingInterval: PropTypes.string,
 };
 

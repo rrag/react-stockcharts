@@ -10,6 +10,8 @@ import CanvasContainer from "./CanvasContainer";
 import eodIntervalCalculator from "./scale/eodIntervalCalculator";
 import evaluator from "./scale/evaluator";
 
+
+
 function shouldResetChart(thisProps, nextProps) {
 	var candidates = ["seriesName", /* "data",*/"interval", "discontinous",
 		"intervalCalculator", "allowedIntervals",
@@ -72,9 +74,10 @@ function calculateState(props) {
 
 	// console.log(xAccessor, inputXAccesor, domainCalculator, domainCalculator, updatedScale);
 	// in componentWillReceiveProps calculate plotData and interval only if this.props.xExtentsProp != nextProps.xExtentsProp
-	var extent = d3.extent(xExtentsProp.map(d3.functor).map(each => each(data, inputXAccesor)));
 
-	// console.log(xExtentsProp, extent);
+	var extent = typeof xExtentsProp === "function"
+		? xExtentsProp(fullData)
+		: d3.extent(xExtentsProp.map(d3.functor).map(each => each(data, inputXAccesor)));
 
 	var { plotData, interval: showingInterval, scale: updatedScale } = xExtentsCalculator
 		.width(dimensions.width)
@@ -82,6 +85,7 @@ function calculateState(props) {
 		.data(fullData)
 		.interval(interval)(extent, inputXAccesor);
 
+	// console.log(updatedScale.domain());
 	return {
 		fullData,
 		plotData,
@@ -159,19 +163,22 @@ class ChartCanvas extends Component {
 						}
 					]]>`;
 
-		var { interval, data, type, height, width, margin, className, zIndex, postCalculator, padding } = this.props;
+		var { interval, data, type, height, width, margin, className, zIndex, postCalculator } = this.props;
+		var { padding, useCrossHairStyle } = this.props;
 		var { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor, dataAltered } = this.state;
 
-		// console.log(data);
+		var cursor = useCrossHairStyle
+			? (<style type="text/css" dangerouslySetInnerHTML={{ __html: style }}></style>)
+			: null;
+		console.log(useCrossHairStyle, cursor);
 		var dimensions = getDimensions(this.props);
 		var props = { padding, interval, type, margin, postCalculator };
 		var stateProps = { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor, dataAltered };
 		return (
 			<div style={{ position: "relative", height: height, width: width }} className={className} >
 				<CanvasContainer ref="canvases" width={width} height={height} type={type} zIndex={zIndex}/>
-				<svg width={width} height={height} style={{ position: "absolute", zIndex: (zIndex + 5) }}>
-					<style type="text/css" dangerouslySetInnerHTML={{ __html: style }}>
-					</style>
+				<svg className={className} width={width} height={height} style={{ position: "absolute", zIndex: (zIndex + 5) }}>
+					{cursor}
 					<defs>
 						<clipPath id="chart-area-clip">
 							<rect x="0" y="0" width={dimensions.width} height={dimensions.height} />
@@ -225,10 +232,13 @@ ChartCanvas.propTypes = {
 	children: PropTypes.node.isRequired,
 	discontinous: PropTypes.bool.isRequired,
 	postCalculator: PropTypes.func.isRequired,
-	padding: PropTypes.shape({
-		left: PropTypes.number,
-		right: PropTypes.number,
-	}).isRequired,
+	padding: PropTypes.oneOfType([
+		PropTypes.number,
+		PropTypes.shape({
+			left: PropTypes.number,
+			right: PropTypes.number,
+		})
+	]).isRequired,
 };
 
 ChartCanvas.defaultProps = {
@@ -245,7 +255,8 @@ ChartCanvas.defaultProps = {
 	dataEvaluator: evaluator,
 	discontinous: false,
 	postCalculator: identity,
-	padding: { left: 0, right: 0 },
+	padding: 0,
+	useCrossHairStyle: true,
 	// initialDisplay: 30
 };
 

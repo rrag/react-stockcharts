@@ -1,0 +1,1 @@
+and a simple bar chart too

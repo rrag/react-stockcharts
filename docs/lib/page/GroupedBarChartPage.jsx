@@ -9,26 +9,25 @@ import Section from "lib/section";
 
 var { helper: { TypeChooser } } = ReStock;
 
-import BubbleChart from "lib/charts/BubbleChart";
+import GroupedBarChart from "lib/charts/GroupedBarChart";
 
-
-var BubbleChartPage = React.createClass({
+var GroupedBarChartPage = React.createClass({
 	statics: {
-		title: "Bubble Chart"
+		title: "Grouped Bar Chart"
 	},
 	render() {
 		return (
-			<ContentSection title={BubbleChartPage.title}>
+			<ContentSection title={GroupedBarChartPage.title}>
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser ref="container">
-							{(type) => (<BubbleChart data={this.props.bubbleData} type={type} />)}
+							{(type) => (<GroupedBarChart data={this.props.groupedBarData} type={type} />)}
 						</TypeChooser>
 					</Section>
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/BUBBLE-CHART')}}></aside>
+						<aside dangerouslySetInnerHTML={{__html: require('md/BAR-CHART')}}></aside>
 					</Section>
 				</Row>
 			</ContentSection>
@@ -36,4 +35,4 @@ var BubbleChartPage = React.createClass({
 	}
 });
 
-export default BubbleChartPage;
+export default GroupedBarChartPage;

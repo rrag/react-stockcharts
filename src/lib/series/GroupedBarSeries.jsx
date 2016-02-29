@@ -5,14 +5,16 @@ import React, { PropTypes, Component } from "react";
 import StackedHistogramSeries from "./StackedHistogramSeries";
 import wrap from "./wrap";
 
-class HistogramSeries extends Component {
+import { identity } from "../utils";
+
+class GroupedBarSeries extends Component {
 	render() {
 		var { yAccessor } = this.props;
-		return <StackedHistogramSeries {...this.props} yAccessor={[yAccessor]} />;
+		return <StackedHistogramSeries {...this.props} yAccessor={yAccessor} />;
 	}
 }
 
-HistogramSeries.propTypes = {
+GroupedBarSeries.propTypes = {
 	baseAt: PropTypes.oneOfType([
 		PropTypes.oneOf(["top", "bottom", "middle"]),
 		PropTypes.number,
@@ -29,20 +31,20 @@ HistogramSeries.propTypes = {
 		PropTypes.func, PropTypes.string
 	]).isRequired,
 	xAccessor: PropTypes.func,
-	yAccessor: PropTypes.func.isRequired,
+	yAccessor: PropTypes.arrayOf(PropTypes.func),
 	xScale: PropTypes.func,
 	yScale: PropTypes.func,
 	plotData: PropTypes.array,
 };
 
-HistogramSeries.defaultProps = {
+GroupedBarSeries.defaultProps = {
 	baseAt: "bottom",
 	direction: "up",
 	className: "bar",
 	stroke: false,
 	fill: "#4682B4",
 	opacity: 1,
-	widthRatio: 0.5,
+	widthRatio: 0.5
 };
 
-export default wrap(HistogramSeries);
+export default wrap(GroupedBarSeries);

@@ -37,8 +37,9 @@ var CHART_TYPES = {
 		require("lib/page/VolumeHistogramPage").default,
 		require("lib/page/LineAndScatterChartPage").default,
 		require("lib/page/BubbleChartPage").default,
-		// TODO add scatter chart - bubble
-		// TODO add OHLC chart
+		require("lib/page/HistogramChartPage").default,
+		require("lib/page/GroupedBarChartPage").default,
+		// TODO add OHLC chart 
 		require("lib/page/HeikinAshiPage").default,
 		require("lib/page/KagiPage").default,
 		require("lib/page/PointAndFigurePage").default,
@@ -110,7 +111,8 @@ function compressString(string) {
 	// console.log(string);
 	return string
 }
-function renderPage(data, dataFull, compareData) {
+
+function renderPage(data, dataFull, compareData, bubbleData, histogramData, groupedBarData) {
 	data.forEach((d, i) => {
 		d.date = new Date(parseDate(d.date).getTime());
 		d.open = +d.open;
@@ -185,7 +187,12 @@ function renderPage(data, dataFull, compareData) {
 								</div>
 							)}
 						</Sidebar>
-						<Page someData={data} lotsOfData={dataFull} compareData={compareData} />
+						<Page someData={data}
+								lotsOfData={dataFull}
+								compareData={compareData}
+								bubbleData={bubbleData}
+								histogramData={histogramData}
+								groupedBarData={groupedBarData} />
 					</MainContainer>
 				</div>
 			);
@@ -195,11 +202,31 @@ function renderPage(data, dataFull, compareData) {
 	ReactDOM.render(<ExamplesPage />, document.getElementById("chart-goes-here"));
 }
 
+var histogramData = [
+	{ x: "Apple", y: 10 },
+	{ x: "Banana", y: 15 },
+	{ x: "Strawberry", y: 20 },
+	{ x: "Lemon", y: 25 },
+	{ x: "Cherry", y: 30 },
+	{ x: "Peach", y: 35 },
+];
+
+var groupedBarData = [
+	{ x: "Apple", y1: 10, y2: 10 },
+	{ x: "Banana", y1: 15, y2: 10 },
+	{ x: "Strawberry", y1: 20, y2: 10 },
+	{ x: "Lemon", y1: 25, y2: 10 },
+	{ x: "Cherry", y1: 30, y2: 10 },
+	{ x: "Peach", y1: 35, y2: 10 },
+];
+
+var bubbleData = require("data/bubble.json");
+
 d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
 	d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 		d3.tsv("data/comparison.tsv", (err3, compareData) => {
-			renderPage(MSFT, MSFTFull, compareData);
-			// renderPartialPage(MSFT, MSFTFull, compareData);
+			renderPage(MSFT, MSFTFull, compareData, bubbleData, histogramData, groupedBarData);
+			// renderPartialPage(MSFT, MSFTFull, compareData, bubbleData, histogramData, groupedBarData);
 		});
 	});
 });
@@ -224,7 +251,7 @@ d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
 	}
 })*/
 
-function renderPartialPage(data, dataFull, compareData) {
+function renderPartialPage(data, dataFull, compareData, bubbleData, histogramData, groupedBarData) {
 	data.forEach((d, i) => {
 		d.date = new Date(parseDate(d.date).getTime());
 		d.open = +d.open;

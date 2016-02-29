@@ -21,10 +21,10 @@ function filteredResponse(dataForInterval, left, right, xAccessor) {
 	return filteredData;
 }
 
-function getDomain(left, right, width, filteredData, predicate, currentDomain, canShowTheseMany, realXAccessor) {
+function getDomain(inputDomain, width, filteredData, predicate, currentDomain, canShowTheseMany, realXAccessor) {
 	if (canShowTheseMany(width, filteredData.length)) {
 		var domain = predicate
-			? [left, right]
+			? inputDomain
 			: [realXAccessor(first(filteredData)), realXAccessor(last(filteredData))]; // TODO fix me later
 		return domain;
 	}
@@ -37,7 +37,9 @@ function getDomain(left, right, width, filteredData, predicate, currentDomain, c
 function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShowTheseMany, getFilteredResponse) {
 	var data, inputXAccessor, interval, width, currentInterval, currentDomain, currentPlotData, scale;
 
-	function domain([left, right], xAccessor) {
+	function domain(inputDomain, xAccessor) {
+		var left = first(inputDomain);
+		var right = last(inputDomain);
 		var plotData = currentPlotData, intervalToShow = currentInterval, domain;
 
 		if (isNotDefined(interval) && isArray(allowedIntervals)) {
@@ -58,7 +60,7 @@ function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShow
 
 				let filteredData =  getFilteredResponse(data[eachInterval], tempLeft, tempRight, tempAccessor);
 
-				domain = getDomain(tempLeft, tempRight, width, filteredData,
+				domain = getDomain([tempLeft, tempRight], width, filteredData,
 					currentInterval === eachInterval, currentDomain,
 					canShowTheseMany, realXAccessor);
 
@@ -76,7 +78,7 @@ function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShow
 			// if interval is defined and allowedInterval is not defined, it is an error
 			let filteredData = getFilteredResponse(data[interval], left, right, xAccessor);
 
-			domain = getDomain(left, right, width, filteredData,
+			domain = getDomain(inputDomain, width, filteredData,
 				realXAccessor === xAccessor, currentDomain,
 				canShowTheseMany, realXAccessor);
 
@@ -92,7 +94,7 @@ function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShow
 			// interval is not defined and allowedInterval is not defined also.
 			let filteredData = getFilteredResponse(data, left, right, xAccessor);
 			// console.log(last(filteredData), last(data), right);
-			domain = getDomain(left, right, width, filteredData,
+			domain = getDomain(inputDomain, width, filteredData,
 				realXAccessor === xAccessor, currentDomain,
 				canShowTheseMany, realXAccessor);
 
@@ -216,7 +218,7 @@ export default function() {
 			mappedData = newData;
 		});
 
-		// console.log(mappedData);
+		// console.log(mappedData, realXAccessor);
 		return {
 			fullData: mappedData,
 			xAccessor: realXAccessor,

@@ -7,7 +7,7 @@ import ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 
-var { HistogramSeries  } = ReStock.series;
+var { GroupedBarSeries  } = ReStock.series;
 var { financeEODDiscontiniousScale } = ReStock.scale;
 
 var { MouseCoordinates } = ReStock.coordinates;
@@ -19,7 +19,7 @@ var { fitWidth } = ReStock.helper;
 var xScale = financeEODDiscontiniousScale();
 
 
-class HistogramChart extends React.Component {
+class GroupedBarChart extends React.Component {
 	render() {
 		var { data: unsortedData, type, width } = this.props;
 
@@ -35,34 +35,33 @@ class HistogramChart extends React.Component {
 		var radius = d => r(d.population);
 		return (
 			<ChartCanvas width={width} height={400} useCrossHairStyle={false}
-					margin={{left: 80, right: 10, top:20, bottom: 30}} type={type}
+					margin={{left: 40, right: 10, top:20, bottom: 30}} type={type}
 					seriesName="Fruits"
 					xExtents={list => list.map(d => d.x)}
 					data={data}
 					xAccessor={d => d.x} xScale={d3.scale.ordinal()}
 					padding={1}>
 				<Chart id={1}
-						yExtents={d => [0, d.y]}>
+						yExtents={d => [0, d.y1, d.y2]}>
 					<XAxis axisAt="bottom" orient="bottom" ticks={2} />
 					<YAxis axisAt="left" orient="left" />
-					<HistogramSeries yAccessor={d => d.y} />
+					<GroupedBarSeries yAccessor={[d => d.y1, d => d.y2]} />
 				</Chart>
 				<EventCapture mouseMove={true} defaultFocus={false} />
 			</ChartCanvas>
-
 		);
 	}
 }
 
-HistogramChart.propTypes = {
+GroupedBarChart.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
-HistogramChart.defaultProps = {
+GroupedBarChart.defaultProps = {
 	type: "svg",
 };
-HistogramChart = fitWidth(HistogramChart);
+GroupedBarChart = fitWidth(GroupedBarChart);
 
-export default HistogramChart;
+export default GroupedBarChart;

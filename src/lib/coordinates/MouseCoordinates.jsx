@@ -83,6 +83,7 @@ MouseCoordinates.propTypes = {
 MouseCoordinates.defaultProps = {
 	// show: false,
 	snapX: true,
+	showX: true,
 	type: "crosshair",
 	xDisplayFormat: d3.time.format("%Y-%m-%d"),
 	stroke: "#000000",
@@ -147,11 +148,10 @@ MouseCoordinates.helper = (props, show, xScale, mouseXY, currentCharts, chartCon
 			};
 		});
 
-
-
 	var { stroke, opacity, textStroke, textBGFill, textBGopacity, fontFamily, fontSize } = props;
 
-	return { ...props, height, width, mouseXY: [x, y], xDisplayValue: xDisplayFormat(displayValue), edges,
+	var { showX, rectHeight, rectWidth } = props;
+	return { showX, rectHeight, rectWidth, height, width, mouseXY: [x, y], xDisplayValue: xDisplayFormat(displayValue), edges,
 		stroke, opacity, textStroke, textBGFill, textBGopacity, fontFamily, fontSize };
 };
 

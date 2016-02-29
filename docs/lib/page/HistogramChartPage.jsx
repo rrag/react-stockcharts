@@ -9,26 +9,25 @@ import Section from "lib/section";
 
 var { helper: { TypeChooser } } = ReStock;
 
-import BubbleChart from "lib/charts/BubbleChart";
+import HistogramChart from "lib/charts/HistogramChart";
 
-
-var BubbleChartPage = React.createClass({
+var HistogramChartPage = React.createClass({
 	statics: {
-		title: "Bubble Chart"
+		title: "Bar Chart"
 	},
 	render() {
 		return (
-			<ContentSection title={BubbleChartPage.title}>
+			<ContentSection title={HistogramChartPage.title}>
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser ref="container">
-							{(type) => (<BubbleChart data={this.props.bubbleData} type={type} />)}
+							{(type) => (<HistogramChart data={this.props.histogramData} type={type} />)}
 						</TypeChooser>
 					</Section>
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/BUBBLE-CHART')}}></aside>
+						<aside dangerouslySetInnerHTML={{__html: require('md/BAR-CHART')}}></aside>
 					</Section>
 				</Row>
 			</ContentSection>
@@ -36,4 +35,4 @@ var BubbleChartPage = React.createClass({
 	}
 });
 
-export default BubbleChartPage;
+export default HistogramChartPage;

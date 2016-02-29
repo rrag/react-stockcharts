@@ -34,7 +34,6 @@ StackedHistogramSeries.propTypes = {
 	]).isRequired,
 	xAccessor: PropTypes.func,
 	yAccessor: PropTypes.arrayOf(PropTypes.func),
-	yAccessorNarrow: PropTypes.arrayOf(PropTypes.func),
 	xScale: PropTypes.func,
 	yScale: PropTypes.func,
 	plotData: PropTypes.array,
@@ -123,7 +122,7 @@ StackedHistogramSeries.getBarsSVG = (props) => {
 };
 
 StackedHistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData) => {
-	var { baseAt, className, fill, stroke, widthRatio, yAccessorNarrow } = props;
+	var { baseAt, className, fill, stroke, widthRatio } = props;
 	var base = baseAt === "top"
 				? 0
 				: baseAt === "bottom"
@@ -146,9 +145,6 @@ StackedHistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, p
 			.map(d => {
 				var innerBars = yAccessor.map((eachYAccessor, i) => {
 					var yValue = eachYAccessor(d);
-					if (isDefined(yAccessorNarrow) && isDefined(yAccessorNarrow[i])) {
-						yValue = yAccessorNarrow[i](eachYAccessor(d));
-					}
 					if (isNotDefined(yValue)) return undefined;
 
 					var x = Math.round(xScale(xAccessor(d))) - offset;

@@ -92,8 +92,14 @@ export function getChartConfigWithUpdatedYScales(chartConfig, plotData) {
 };
 
 export function getCurrentItem(xScale, xAccessor, mouseXY, plotData) {
-	var xValue = xScale.invert(mouseXY[0]);
-	// console.log(xValue, xAccessor);
-	var item = getClosestItem(plotData, xValue, xAccessor);
+	var xValue, item;
+	if (xScale.invert) {
+		xValue = xScale.invert(mouseXY[0]);
+		item = getClosestItem(plotData, xValue, xAccessor);
+	} else {
+		var d = xScale.range().map((d, idx) => ({ x: Math.abs(d - mouseXY[0]), idx})).reduce((a, b) => a.x < b.x ? a : b)
+		item = isDefined(d) ? plotData[d.idx] : plotData[0];
+		// console.log(d, item);
+	}
 	return item;
 };
