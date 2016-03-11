@@ -50,9 +50,13 @@ StackedHistogramSeries.defaultProps = {
 };
 
 StackedHistogramSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { xAccessor, yAccessor, stroke } = props;
-
+	var { xAccessor, yAccessor } = props;
 	var bars = StackedHistogramSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
+	drawOnCanvas2(props, ctx, xScale, yScale, plotData, bars);
+};
+
+export function drawOnCanvas2(props, ctx, xScale, yScale, plotData, bars) {
+	var { stroke } = props;
 
 	var nest = d3.nest()
 		.key(d => d.fill)
@@ -95,13 +99,10 @@ StackedHistogramSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => 
 	});
 };
 
-StackedHistogramSeries.getBarsSVG = (props) => {
-
+export function getBarsSVG2(props, bars) {
 	/* eslint-disable react/prop-types */
-	var { xAccessor, yAccessor, xScale, yScale, plotData } = props;
+	var { opacity } = props;
 	/* eslint-disable react/prop-types */
-
-	var bars = StackedHistogramSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
 
 	return bars.map((d, idx) => {
 		if (d.barWidth <= 1) {
@@ -116,9 +117,19 @@ StackedHistogramSeries.getBarsSVG = (props) => {
 					x={d.x}
 					y={d.y}
 					width={d.barWidth}
-					fillOpacity={props.opacity}
+					fillOpacity={opacity}
 					height={d.height} />;
 	});
+
+}
+StackedHistogramSeries.getBarsSVG = (props) => {
+
+	/* eslint-disable react/prop-types */
+	var { xAccessor, yAccessor, xScale, yScale, plotData } = props;
+	/* eslint-disable react/prop-types */
+
+	var bars = StackedHistogramSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
+	return getBarsSVG2(props, bars);
 };
 
 StackedHistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData) => {

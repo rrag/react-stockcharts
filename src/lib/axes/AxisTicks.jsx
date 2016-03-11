@@ -2,7 +2,7 @@
 
 import React, { PropTypes, Component } from "react";
 
-import { hexToRGBA, isDefined, isNotDefined, identity } from "../utils";
+import { hexToRGBA, isNotDefined, identity } from "../utils";
 
 function tickTransform_svg_axisX(scale, tick) {
 	return [~~ (0.5 + scale(tick)), 0];
@@ -114,7 +114,8 @@ AxisTicks.helper = (props, scale) => {
 
 	var baseFormat = scale.tickFormat
 			? scale.tickFormat.apply(scale, tickArguments)
-			: identity
+			: identity;
+
 	var format = isNotDefined(tickFormat)
 		? baseFormat
 		: d => baseFormat(d) ? tickFormat(d) : "";

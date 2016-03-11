@@ -145,7 +145,7 @@ class CandleStickChartWithDarkTheme extends React.Component {
 							stroke={{ top: "#37a600", middle: "#b8ab00", bottom: "#37a600" }}/>
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} stroke="#FFFFFF" opacity={0.4} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
+				<EventCapture mouseMove={true} zoom={true} pan={true} />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
 					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 10]} 

@@ -85,7 +85,7 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 					<CurrentCoordinate id={1} yAccessor={d => d.volume} fill="#9B0A47" />
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} defaultFocus={false} />
+				<EventCapture mouseMove={true} zoom={true} pan={true} />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
 					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 15]} 

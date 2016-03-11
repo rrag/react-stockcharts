@@ -103,7 +103,7 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 					<LineSeries yAccessor={atr14.accessor()} stroke={atr14.stroke()}/>
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} defaultFocus={false} />
+				<EventCapture mouseMove={true} zoom={true} pan={true} />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
 					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 15]}

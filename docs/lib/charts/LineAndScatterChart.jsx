@@ -37,7 +37,7 @@ class LineAndScatterChart extends React.Component {
 					<ScatterSeries yAccessor={d => d.close} marker={CircleMarker} markerProps={{ r: 3 }} />
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} defaultFocus={false} />
+				<EventCapture mouseMove={true} zoom={true} pan={true} />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
 				</TooltipContainer>

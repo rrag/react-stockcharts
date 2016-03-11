@@ -47,17 +47,19 @@ Chart.propTypes = {
 	yScale: PropTypes.func.isRequired,
 	yMousePointerDisplayLocation: PropTypes.oneOf(["left", "right"]),
 	yMousePointerDisplayFormat: PropTypes.func,
-	padding: PropTypes.shape({
-		top: PropTypes.number,
-		bottom: PropTypes.number,
-	}).isRequired,
-
+	padding: PropTypes.oneOfType([
+		PropTypes.number,
+		PropTypes.shape({
+			top: PropTypes.number,
+			bottom: PropTypes.number,
+		})
+	]).isRequired,
 };
 
 Chart.defaultProps = {
 	id: 0,
 	origin: [0, 0],
-	padding: { top: 0, bottom: 0 },
+	padding: 0,
 	yScale: d3.scale.linear(),
 	yMousePointerRectWidth: 60,
 	yMousePointerRectHeight: 20,

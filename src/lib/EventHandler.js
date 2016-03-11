@@ -39,12 +39,12 @@ function isLastItemVisible(fullData, plotData) {
 
 function setXRange(xScale, dimensions, padding) {
 	if (xScale.rangeRoundPoints) {
-		if (isNaN(padding)) throw new Error("padding has to be a number for ordinal scale")
-		xScale.rangeRoundPoints([0, dimensions.width], padding)
+		if (isNaN(padding)) throw new Error("padding has to be a number for ordinal scale");
+		xScale.rangeRoundPoints([0, dimensions.width], padding);
 	} else {
 		var { left, right } = isNaN(padding)
 			? padding
-			: { left: padding, right: padding }
+			: { left: padding, right: padding };
 
 		xScale.range([left, dimensions.width - right]);
 	}
@@ -223,7 +223,7 @@ class EventHandler extends Component {
 
 	getChildContext() {
 		var { showingInterval } = this.state;
-		var { fullData } = this.props
+		var { fullData } = this.props;
 		return {
 			plotData: this.state.plotData,
 			data: isDefined(showingInterval) ? fullData[showingInterval] : fullData,
@@ -701,10 +701,13 @@ EventHandler.childContextTypes = {
 		PropTypes.shape({
 			id: PropTypes.number.isRequired,
 			origin: PropTypes.arrayOf(PropTypes.number).isRequired,
-			padding: PropTypes.shape({
-				top: PropTypes.number,
-				bottom: PropTypes.number,
-			}),
+			padding: PropTypes.oneOfType([
+				PropTypes.number,
+				PropTypes.shape({
+					top: PropTypes.number,
+					bottom: PropTypes.number,
+				})
+			]),
 			yExtents: PropTypes.arrayOf(PropTypes.func).isRequired,
 			yScale: PropTypes.func.isRequired,
 			mouseCoordinates: PropTypes.shape({

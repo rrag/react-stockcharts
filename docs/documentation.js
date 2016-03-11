@@ -33,12 +33,13 @@ var CHART_TYPES = {
 	head: "Chart types",
 	pages: [
 		require("lib/page/AreaChartPage").default,
-		require("lib/page/CandleStickChartPage").default,
-		require("lib/page/VolumeHistogramPage").default,
 		require("lib/page/LineAndScatterChartPage").default,
 		require("lib/page/BubbleChartPage").default,
-		require("lib/page/HistogramChartPage").default,
+		require("lib/page/BarChartPage").default,
 		require("lib/page/GroupedBarChartPage").default,
+		// require("lib/page/HorizontalBarChartPage").default,
+		require("lib/page/CandleStickChartPage").default,
+		require("lib/page/VolumeHistogramPage").default,
 		// TODO add OHLC chart 
 		require("lib/page/HeikinAshiPage").default,
 		require("lib/page/KagiPage").default,
@@ -98,7 +99,7 @@ var ALL_PAGES = [
 	CHART_FEATURES,
 	INDICATORS,
 	INTERACTIVE,
-	CUSTOMIZATION,
+	// CUSTOMIZATION, TODO
 ];
 
 var pages = d3.merge(ALL_PAGES.map(_ => _.pages))
@@ -112,7 +113,7 @@ function compressString(string) {
 	return string
 }
 
-function renderPage(data, dataFull, compareData, bubbleData, histogramData, groupedBarData) {
+function renderPage(data, dataFull, compareData, bubbleData, histogramData, groupedBarData, horizontalBarData) {
 	data.forEach((d, i) => {
 		d.date = new Date(parseDate(d.date).getTime());
 		d.open = +d.open;
@@ -192,7 +193,8 @@ function renderPage(data, dataFull, compareData, bubbleData, histogramData, grou
 								compareData={compareData}
 								bubbleData={bubbleData}
 								histogramData={histogramData}
-								groupedBarData={groupedBarData} />
+								groupedBarData={groupedBarData}
+								horizontalBarData={horizontalBarData} />
 					</MainContainer>
 				</div>
 			);
@@ -211,13 +213,15 @@ var histogramData = [
 	{ x: "Peach", y: 35 },
 ];
 
+var horizontalBarData = histogramData.map(({x, y}) => ({ x: y, y: x }))
+
 var groupedBarData = [
-	{ x: "Apple", y1: 10, y2: 10 },
-	{ x: "Banana", y1: 15, y2: 10 },
-	{ x: "Strawberry", y1: 20, y2: 10 },
-	{ x: "Lemon", y1: 25, y2: 10 },
-	{ x: "Cherry", y1: 30, y2: 10 },
-	{ x: "Peach", y1: 35, y2: 10 },
+	{ x: "Apple", y1: 10, y2: 5, y3: 2, y4: 10 },
+	{ x: "Banana", y1: 15, y2: 10, y3: 4, y4: 10 },
+	{ x: "Strawberry", y1: 20, y2: 15, y3: 6, y4: 10 },
+	{ x: "Lemon", y1: 25, y2: 20, y3: 8, y4: 10 },
+	{ x: "Cherry", y1: 30, y2: 25, y3: 10, y4: 10 },
+	{ x: "Peach", y1: 35, y2: 30, y3: 12, y4: 10 },
 ];
 
 var bubbleData = require("data/bubble.json");
@@ -225,8 +229,8 @@ var bubbleData = require("data/bubble.json");
 d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
 	d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 		d3.tsv("data/comparison.tsv", (err3, compareData) => {
-			renderPage(MSFT, MSFTFull, compareData, bubbleData, histogramData, groupedBarData);
-			// renderPartialPage(MSFT, MSFTFull, compareData, bubbleData, histogramData, groupedBarData);
+			renderPage(MSFT, MSFTFull, compareData, bubbleData, histogramData, groupedBarData, horizontalBarData);
+			// renderPartialPage(MSFT, MSFTFull, compareData, bubbleData, histogramData, groupedBarData, horizontalBarData);
 		});
 	});
 });

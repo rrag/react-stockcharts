@@ -8,18 +8,11 @@ import ReStock from "react-stockcharts";
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 
 var { HistogramSeries  } = ReStock.series;
-var { financeEODDiscontiniousScale } = ReStock.scale;
 
-var { MouseCoordinates } = ReStock.coordinates;
-
-var { TooltipContainer, OHLCTooltip } = ReStock.tooltip;
 var { XAxis, YAxis } = ReStock.axes;
 var { fitWidth } = ReStock.helper;
 
-var xScale = financeEODDiscontiniousScale();
-
-
-class HistogramChart extends React.Component {
+class BarChart extends React.Component {
 	render() {
 		var { data: unsortedData, type, width } = this.props;
 
@@ -43,26 +36,26 @@ class HistogramChart extends React.Component {
 					padding={1}>
 				<Chart id={1}
 						yExtents={d => [0, d.y]}>
-					<XAxis axisAt="bottom" orient="bottom" ticks={2} />
+					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="left" orient="left" />
 					<HistogramSeries yAccessor={d => d.y} />
 				</Chart>
-				<EventCapture mouseMove={true} defaultFocus={false} />
+				<EventCapture mouseMove={true} />
 			</ChartCanvas>
 
 		);
 	}
 }
 
-HistogramChart.propTypes = {
+BarChart.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
-HistogramChart.defaultProps = {
+BarChart.defaultProps = {
 	type: "svg",
 };
-HistogramChart = fitWidth(HistogramChart);
+BarChart = fitWidth(BarChart);
 
-export default HistogramChart;
+export default BarChart;

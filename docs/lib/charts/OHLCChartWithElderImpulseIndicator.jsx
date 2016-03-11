@@ -85,7 +85,7 @@ class OHLCChartWithElderImpulseIndicator extends React.Component {
 					<MACDSeries calculator={macdCalculator} />
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
+				<EventCapture mouseMove={true} zoom={true} pan={true} />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
 					<MovingAverageTooltip forChart={1} origin={[-38, 5]}

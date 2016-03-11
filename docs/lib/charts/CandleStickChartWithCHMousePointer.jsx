@@ -39,8 +39,8 @@ class CandleStickChartWithCHMousePointer extends React.Component {
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 					<HistogramSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
-				<MouseCoordinates displayXAccessor={d => d.date} xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} mainChart={1}/>
+				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
+				<EventCapture mouseMove={true} />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
 				</TooltipContainer>

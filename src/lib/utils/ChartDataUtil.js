@@ -50,6 +50,7 @@ export function getNewChartConfig(innerDimension, children) {
 			var { yMousePointerRectWidth: rectWidth, yMousePointerRectHeight: rectHeight } = each.props;
 			var mouseCoordinates = { at, yDisplayFormat, rectHeight, rectWidth };
 			var yExtents = (Array.isArray(yExtentsProp) ? yExtentsProp : [yExtentsProp]).map(d3.functor);
+			// console.log(yExtentsProp, yExtents);
 			return {
 				id,
 				origin: d3.functor(origin)(availableWidth, availableHeight),
@@ -73,18 +74,45 @@ export function getCurrentCharts(chartConfig, mouseXY) {
 
 	return currentCharts;
 }
+
+
+function setRange(scale, height, padding) {
+	if (scale.rangeRoundPoints) {
+		if (isNaN(padding)) throw new Error("padding has to be a number for ordinal scale");
+		scale.rangeRoundPoints([height, 0], padding);
+	} else {
+		var { top, bottom } = isNaN(padding)
+			? padding
+			: { top: padding, bottom: padding };
+
+		scale.range([height - top, bottom]);
+	}
+	return scale;
+}
+
+
 export function getChartConfigWithUpdatedYScales(chartConfig, plotData) {
+
 	var yDomains = chartConfig
-		.map(({ yExtents }) =>
-			yExtents.map(eachExtent =>
-				plotData.map(values(eachExtent))))
-		.map(_ => flattenDeep(_))
-		.map(_ => d3.extent(_));
+			.map(({ yExtents, yScale }) => {
+				var yValues = yExtents.map(eachExtent =>
+					plotData.map(values(eachExtent)));
+				yValues = flattenDeep(yValues);
+
+				var yDomains = (yScale.invert)
+					? d3.extent(yValues)
+					: d3.set(yValues).values();
+
+				return yDomains;
+			});
 
 	var combine = zipper()
 		.combine((config, domain) => {
-			var { padding: { top, bottom }, height, yScale } = config;
-			return { ...config, yScale: yScale.copy().domain(domain).range([height - top, bottom]) };
+			var { padding, height, yScale } = config;
+
+			// yScale.copy().domain(domain).range([height - top, bottom])
+			return { ...config, yScale: setRange(yScale.copy().domain(domain), height, padding) };
+			// return { ...config, yScale: yScale.copy().domain(domain).range([height - padding, padding]) };
 		});
 
 	var updatedChartConfig = combine(chartConfig, yDomains);
@@ -97,7 +125,7 @@ export function getCurrentItem(xScale, xAccessor, mouseXY, plotData) {
 		xValue = xScale.invert(mouseXY[0]);
 		item = getClosestItem(plotData, xValue, xAccessor);
 	} else {
-		var d = xScale.range().map((d, idx) => ({ x: Math.abs(d - mouseXY[0]), idx})).reduce((a, b) => a.x < b.x ? a : b)
+		var d = xScale.range().map((d, idx) => ({ x: Math.abs(d - mouseXY[0]), idx })).reduce((a, b) => a.x < b.x ? a : b);
 		item = isDefined(d) ? plotData[d.idx] : plotData[0];
 		// console.log(d, item);
 	}

@@ -91,7 +91,7 @@ class OHLCChartWithElderRayIndicator extends React.Component {
 					<StraightLine yValue={0} />
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
+				<EventCapture mouseMove={true} zoom={true} pan={true} />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
 					<SingleValueTooltip forChart={3}

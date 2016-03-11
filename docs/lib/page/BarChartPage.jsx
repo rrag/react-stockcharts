@@ -9,19 +9,19 @@ import Section from "lib/section";
 
 var { helper: { TypeChooser } } = ReStock;
 
-import HistogramChart from "lib/charts/HistogramChart";
+import BarChart from "lib/charts/BarChart";
 
-var HistogramChartPage = React.createClass({
+var BarChartPage = React.createClass({
 	statics: {
 		title: "Bar Chart"
 	},
 	render() {
 		return (
-			<ContentSection title={HistogramChartPage.title}>
+			<ContentSection title={BarChartPage.title}>
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser ref="container">
-							{(type) => (<HistogramChart data={this.props.histogramData} type={type} />)}
+							{(type) => (<BarChart data={this.props.histogramData} type={type} />)}
 						</TypeChooser>
 					</Section>
 				</Row>
@@ -35,4 +35,4 @@ var HistogramChartPage = React.createClass({
 	}
 });
 
-export default HistogramChartPage;
+export default BarChartPage;

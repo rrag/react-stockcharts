@@ -6,6 +6,7 @@ import CandlestickSeries from "./CandlestickSeries";
 import OHLCSeries from "./OHLCSeries";
 import HistogramSeries from "./HistogramSeries";
 import StackedHistogramSeries from "./StackedHistogramSeries";
+import HorizontalBarSeries from "./HorizontalBarSeries";
 import GroupedBarSeries from "./GroupedBarSeries";
 import KagiSeries from "./KagiSeries";
 import PointAndFigureSeries from "./PointAndFigureSeries";
@@ -33,6 +34,7 @@ export {
 	OHLCSeries,
 	HistogramSeries,
 	StackedHistogramSeries,
+	HorizontalBarSeries,
 	GroupedBarSeries,
 	KagiSeries,
 	PointAndFigureSeries,

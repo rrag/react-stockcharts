@@ -49,7 +49,7 @@ class AreaChartWithEdge extends React.Component {
 						widthRatio={1} />
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} mainChart={1} defaultFocus={false} />
+				<EventCapture mouseMove={true} zoom={true} pan={true} />
 				<TooltipContainer>
 					<SingleValueTooltip forChart={1}
 						xLabel="Date" /* xLabel is optional, absense will not show the x value */ yLabel="C"

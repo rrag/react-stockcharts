@@ -11,7 +11,7 @@ import {
 
 import eodIntervalCalculator from "./eodIntervalCalculator";
 
-function filteredResponse(dataForInterval, left, right, xAccessor) {
+function getFilteredResponse(dataForInterval, left, right, xAccessor) {
 	var newLeftIndex = getClosestItemIndexes(dataForInterval, left, xAccessor).right;
 	var newRightIndex = getClosestItemIndexes(dataForInterval, right, xAccessor).left;
 
@@ -19,6 +19,9 @@ function filteredResponse(dataForInterval, left, right, xAccessor) {
 	// console.log(right, newRightIndex, dataForInterval.length);
 
 	return filteredData;
+}
+function getFilteredResponseWhole(dataForInterval/*  , left, right, xAccessor */) {
+	return dataForInterval;
 }
 
 function getDomain(inputDomain, width, filteredData, predicate, currentDomain, canShowTheseMany, realXAccessor) {
@@ -34,7 +37,7 @@ function getDomain(inputDomain, width, filteredData, predicate, currentDomain, c
 	return currentDomain;
 }
 
-function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShowTheseMany, getFilteredResponse) {
+function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShowTheseMany, filteredResponse) {
 	var data, inputXAccessor, interval, width, currentInterval, currentDomain, currentPlotData, scale;
 
 	function domain(inputDomain, xAccessor) {
@@ -58,7 +61,7 @@ function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShow
 				var tempRight = currentInterval === eachInterval ? right : newRight;
 				var tempAccessor = currentInterval === eachInterval ? xAccessor : inputXAccessor;
 
-				let filteredData =  getFilteredResponse(data[eachInterval], tempLeft, tempRight, tempAccessor);
+				let filteredData =  filteredResponse(data[eachInterval], tempLeft, tempRight, tempAccessor);
 
 				domain = getDomain([tempLeft, tempRight], width, filteredData,
 					currentInterval === eachInterval, currentDomain,
@@ -76,7 +79,7 @@ function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShow
 			}
 		} else if (isDefined(interval) && allowedIntervals.indexOf(interval) > -1) {
 			// if interval is defined and allowedInterval is not defined, it is an error
-			let filteredData = getFilteredResponse(data[interval], left, right, xAccessor);
+			let filteredData = filteredResponse(data[interval], left, right, xAccessor);
 
 			domain = getDomain(inputDomain, width, filteredData,
 				realXAccessor === xAccessor, currentDomain,
@@ -92,12 +95,12 @@ function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShow
 			}
 		} else if (isNotDefined(interval) && isNotDefined(allowedIntervals)) {
 			// interval is not defined and allowedInterval is not defined also.
-			let filteredData = getFilteredResponse(data, left, right, xAccessor);
-			// console.log(last(filteredData), last(data), right);
+			let filteredData = filteredResponse(data, left, right, xAccessor);
 			domain = getDomain(inputDomain, width, filteredData,
 				realXAccessor === xAccessor, currentDomain,
 				canShowTheseMany, realXAccessor);
 
+			// console.log(filteredData, inputDomain);
 			// console.log("HERE", left, right, last(data), last(filteredData));
 			if (domain !== currentDomain) {
 				plotData = filteredData;
@@ -117,7 +120,6 @@ function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShow
 			? scale.copy().data(plotData)
 			: scale.copy();
 
-		// console.log(domain);
 		updatedScale.domain(domain);
 		return { plotData, interval: intervalToShow, scale: updatedScale };
 	}
@@ -172,7 +174,7 @@ function showMax(width) {
 
 export default function() {
 
-	var allowedIntervals, xAccessor, discontinous = false,
+	var allowedIntervals, xAccessor, discontinous = false, useWholeData = false,
 		indexAccessor, indexMutator, map, scale, calculator = [], intervalCalculator = eodIntervalCalculator,
 		canShowTheseMany = canShowTheseManyPeriods;
 
@@ -194,7 +196,6 @@ export default function() {
 			.allowedIntervals(allowedIntervals);
 
 		var mappedData = calculate(data.map(map));
-
 
 		if (discontinous) {
 			calculator.unshift(values => values.map((d, i) => {
@@ -218,7 +219,8 @@ export default function() {
 			mappedData = newData;
 		});
 
-		// console.log(mappedData, realXAccessor);
+		var filteredResponse = useWholeData ? getFilteredResponseWhole : getFilteredResponse;
+
 		return {
 			fullData: mappedData,
 			xAccessor: realXAccessor,
@@ -264,6 +266,11 @@ export default function() {
 	evaluate.scale = function(x) {
 		if (!arguments.length) return scale;
 		scale = x;
+		return evaluate;
+	};
+	evaluate.useWholeData = function(x) {
+		if (!arguments.length) return useWholeData;
+		useWholeData = x;
 		return evaluate;
 	};
 	evaluate.calculator = function(x) {

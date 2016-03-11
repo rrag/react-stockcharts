@@ -48,7 +48,7 @@ class BubbleChart extends React.Component {
 						markerProps={{ r: radius, fill: fill }} />
 				</Chart>
 				<MouseCoordinates snapX={false} xDisplayFormat={d3.format(".0f")} rectWidth={60} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} defaultFocus={false} />
+				<EventCapture mouseMove={true} zoom={true} pan={true} />
 			</ChartCanvas>
 
 		);

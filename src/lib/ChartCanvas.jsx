@@ -170,7 +170,7 @@ class ChartCanvas extends Component {
 		var cursor = useCrossHairStyle
 			? (<style type="text/css" dangerouslySetInnerHTML={{ __html: style }}></style>)
 			: null;
-		console.log(useCrossHairStyle, cursor);
+
 		var dimensions = getDimensions(this.props);
 		var props = { padding, interval, type, margin, postCalculator };
 		var stateProps = { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor, dataAltered };
@@ -220,11 +220,9 @@ ChartCanvas.propTypes = {
 	calculator: PropTypes.arrayOf(PropTypes.func).isRequired,
 	xAccessor: PropTypes.func.isRequired,
 	xExtents: PropTypes.oneOfType([
-		PropTypes.arrayOf(PropTypes.func),
-		PropTypes.arrayOf(PropTypes.number),
-		PropTypes.arrayOf(PropTypes.instanceOf(Date)),
-		PropTypes.func,
-	]),
+		PropTypes.array,
+		PropTypes.func
+	]).isRequired,
 	xScale: PropTypes.func.isRequired,
 	className: PropTypes.string,
 	seriesName: PropTypes.string.isRequired,
@@ -232,6 +230,7 @@ ChartCanvas.propTypes = {
 	children: PropTypes.node.isRequired,
 	discontinous: PropTypes.bool.isRequired,
 	postCalculator: PropTypes.func.isRequired,
+	useCrossHairStyle: PropTypes.bool.isRequired,
 	padding: PropTypes.oneOfType([
 		PropTypes.number,
 		PropTypes.shape({
