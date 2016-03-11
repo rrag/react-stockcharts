@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "autoprefixer-loader": "^3.2.0",
+    "babel-cli": "^6.6.5",
     "babel-core": "^6.4.5",
     "babel-eslint": "^4.1.6",
     "babel-loader": "^6.2.1",
@@ -30,6 +31,7 @@
     "babel-preset-stage-2": "^6.3.13",
     "bootstrap": "^3.3.6",
     "cpr": "^1.0.0",
+    "cross-env": "^1.0.7",
     "css-loader": "^0.23.1",
     "eslint": "^1.10.3",
     "eslint-plugin-babel": "^3.0.0",
@@ -52,7 +54,7 @@
   },
   "scripts": {
     "clean": "rimraf -rf ./build",
-    "watch": "npm run clean && IP=0.0.0.0 PORT=8080 node scripts/watch.js",
+    "watch": "npm run clean && cross-env IP=0.0.0.0 PORT=8080 node scripts/watch.js",
     "docs": "npm run build:docs && ncp docs/images/ build/images && ncp docs/data/ build/data && node scripts/copyhtml.js",
     "build": "npm run clean && npm run build:dev && npm run build:prod",
     "build:dev": "echo 'DEV - BUILD' && webpack --config webpack.config.js",
