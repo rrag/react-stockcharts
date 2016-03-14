@@ -21,7 +21,7 @@ var BarChartPage = React.createClass({
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser ref="container">
-							{(type) => (<BarChart data={this.props.histogramData} type={type} />)}
+							{(type) => (<BarChart data={this.props.barData} type={type} />)}
 						</TypeChooser>
 					</Section>
 				</Row>

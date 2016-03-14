@@ -21,35 +21,24 @@ class HorizontalBarChart extends React.Component {
 
 		var fill = (d, i) => f(i);
 		return (
-			<ChartCanvas width={width} height={400} useCrossHairStyle={false}
+			<ChartCanvas width={width} height={400}
 					margin={{left: 90, right: 10, top:20, bottom: 30}} type={type}
 					seriesName="Fruits"
-					xExtents={[0, d3.max]}
-					data={data}
-					xAccessor={d => d.x} xScale={d3.scale.linear()}>
+					xExtents={data => [0, d3.max(data, d => d.x)]}
+					data={data} plotFull
+					xScale={d3.scale.linear()} flipXScale={false}>
 				<Chart id={1}
 						yExtents={data.map(d => d.y)}
 						yScale={d3.scale.ordinal()}
 						padding={1} >
 					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="left" orient="left" />
-					<HorizontalBarSeries yAccessor={d => d.y}
-							fill={fill}
-							spaceBetweenBar={3}/>
+					<HorizontalBarSeries yAccessor={d => d.y} xAccessor={d => d.x} />
 				</Chart>
-				<EventCapture mouseMove={true} />
 			</ChartCanvas>
 		);
 	}
 }
-
-/*
-					<HorizontalBarSeries yAccessor={[d => d.y]}
-							fill={fill}
-							spaceBetweenBar={3}/>
-
-
-*/
 
 HorizontalBarChart.propTypes = {
 	data: React.PropTypes.array.isRequired,

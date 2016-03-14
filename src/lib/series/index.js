@@ -4,8 +4,8 @@ import CircleMarker from "./CircleMarker";
 import LineSeries from "./LineSeries";
 import CandlestickSeries from "./CandlestickSeries";
 import OHLCSeries from "./OHLCSeries";
-import HistogramSeries from "./HistogramSeries";
-import StackedHistogramSeries from "./StackedHistogramSeries";
+import BarSeries from "./BarSeries";
+import StackedBarSeries from "./StackedBarSeries";
 import HorizontalBarSeries from "./HorizontalBarSeries";
 import GroupedBarSeries from "./GroupedBarSeries";
 import KagiSeries from "./KagiSeries";
@@ -32,8 +32,8 @@ export {
 	LineSeries,
 	CandlestickSeries,
 	OHLCSeries,
-	HistogramSeries,
-	StackedHistogramSeries,
+	BarSeries,
+	StackedBarSeries,
 	HorizontalBarSeries,
 	GroupedBarSeries,
 	KagiSeries,

@@ -2,7 +2,7 @@
 
 import React, { PropTypes, Component } from "react";
 
-import StackedHistogramSeries from "./StackedHistogramSeries";
+import StackedBarSeries from "./StackedBarSeries";
 import StraightLine from "./StraightLine";
 
 import wrap from "./wrap";
@@ -15,7 +15,7 @@ class ElderRaySeries extends Component {
 		this.yAccessorBearTop = this.yAccessorBearTop.bind(this);
 		this.yAccessorBullBottom = this.yAccessorBullBottom.bind(this);
 		this.yAccessorBearBottom = this.yAccessorBearBottom.bind(this);
-		this.yAccessorForHistogramBase = this.yAccessorForHistogramBase.bind(this);
+		this.yAccessorForBarBase = this.yAccessorForBarBase.bind(this);
 	}
 	yAccessorTop(d) {
 		var { calculator } = this.props;
@@ -44,7 +44,7 @@ class ElderRaySeries extends Component {
 				|| yAccessor(d).bullPower * yAccessor(d).bearPower < 0
 			? Math.min(0, yAccessor(d).bullPower) : undefined);
 	}
-	yAccessorForHistogramBase(xScale, yScale, d) {
+	yAccessorForBarBase(xScale, yScale, d) {
 		var { calculator } = this.props;
 		var yAccessor = calculator.accessor();
 		var y = yAccessor(d) ? yAccessor(d).bearPower : 0;
@@ -58,10 +58,10 @@ class ElderRaySeries extends Component {
 
 		return (
 			<g className={className}>
-				<StackedHistogramSeries
+				<StackedBarSeries
 					xScale={xScale} yScale={yScale}
-					baseAt={this.yAccessorForHistogramBase}
-					className="elderray-histogram"
+					baseAt={this.yAccessorForBarBase}
+					className="elderray-bar"
 					stroke={false} fill={this.fillForEachBar}
 					opacity={opacity}
 					plotData={plotData}
@@ -84,7 +84,7 @@ ElderRaySeries.propTypes = {
 	plotData: PropTypes.array,
 	type: PropTypes.string,
 	opacity: PropTypes.number,
-	histogramStroke: PropTypes.bool,
+	divergenceStroke: PropTypes.bool,
 };
 
 ElderRaySeries.defaultProps = {
@@ -92,7 +92,7 @@ ElderRaySeries.defaultProps = {
 	zeroLineStroke: "#000000",
 	zeroLineOpacity: 0.3,
 	opacity: 1,
-	histogramStroke: false,
+	divergenceStroke: false,
 };
 
 export default wrap(ElderRaySeries);

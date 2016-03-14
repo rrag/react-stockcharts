@@ -6,14 +6,14 @@ import d3 from "d3";
 import ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart } = ReStock;
-var { CandlestickSeries, HistogramSeries } = ReStock.series;
+var { CandlestickSeries, BarSeries } = ReStock.series;
 var { financeEODDiscontiniousScale } = ReStock.scale;
 
 var { XAxis, YAxis } = ReStock.axes;
 
 var { fitWidth } = ReStock.helper;
 
-class CandleStickStockScaleChartWithVolumeHistogramV3 extends React.Component {
+class CandleStickStockScaleChartWithVolumeBarV3 extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
 
@@ -32,21 +32,21 @@ class CandleStickStockScaleChartWithVolumeHistogramV3 extends React.Component {
 				<Chart id={2} origin={(w, h) => [0, h - 150]} height={150} yExtents={d => d.volume}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-					<HistogramSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
+					<BarSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
 				</Chart>
 			</ChartCanvas>
 		);
 	}
 }
-CandleStickStockScaleChartWithVolumeHistogramV3.propTypes = {
+CandleStickStockScaleChartWithVolumeBarV3.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
-CandleStickStockScaleChartWithVolumeHistogramV3.defaultProps = {
+CandleStickStockScaleChartWithVolumeBarV3.defaultProps = {
 	type: "svg",
 };
-CandleStickStockScaleChartWithVolumeHistogramV3 = fitWidth(CandleStickStockScaleChartWithVolumeHistogramV3);
+CandleStickStockScaleChartWithVolumeBarV3 = fitWidth(CandleStickStockScaleChartWithVolumeBarV3);
 
-export default CandleStickStockScaleChartWithVolumeHistogramV3;
+export default CandleStickStockScaleChartWithVolumeBarV3;

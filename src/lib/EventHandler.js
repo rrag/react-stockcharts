@@ -37,7 +37,7 @@ function isLastItemVisible(fullData, plotData) {
 	return visible;
 }
 
-function setXRange(xScale, dimensions, padding) {
+function setXRange(xScale, dimensions, padding, direction = 1) {
 	if (xScale.rangeRoundPoints) {
 		if (isNaN(padding)) throw new Error("padding has to be a number for ordinal scale");
 		xScale.rangeRoundPoints([0, dimensions.width], padding);
@@ -45,8 +45,11 @@ function setXRange(xScale, dimensions, padding) {
 		var { left, right } = isNaN(padding)
 			? padding
 			: { left: padding, right: padding };
-
-		xScale.range([left, dimensions.width - right]);
+		if (direction > 0) {
+			xScale.range([left, dimensions.width - right]);
+		} else {
+			xScale.range([dimensions.width - right, left]);
+		}
 	}
 	return xScale;
 }
@@ -88,7 +91,7 @@ class EventHandler extends Component {
 	}
 	componentWillMount() {
 
-		var { plotData, showingInterval } = this.props;
+		var { plotData, showingInterval, direction } = this.props;
 		var { xScale, dimensions, children, postCalculator, padding } = this.props;
 
 		// console.log(Array.isArray(fullData) ? fullData[60] : fullData);
@@ -101,14 +104,14 @@ class EventHandler extends Component {
 
 		this.setState({
 			showingInterval,
-			xScale: setXRange(xScale, dimensions, padding),
+			xScale: setXRange(xScale, dimensions, padding, direction),
 			plotData,
 			chartConfig,
 		});
 	}
 	componentWillReceiveProps(nextProps) {
 
-		var { plotData, fullData, showingInterval, padding } = nextProps;
+		var { plotData, fullData, showingInterval, padding, direction } = nextProps;
 		var { xScale, xAccessor, dimensions, children, postCalculator, dataAltered } = nextProps;
 
 		var reset = !shallowEqual(this.props.plotData, nextProps.plotData);
@@ -131,7 +134,7 @@ class EventHandler extends Component {
 
 			newState = {
 				showingInterval,
-				xScale: setXRange(xScale, dimensions, padding),
+				xScale: setXRange(xScale, dimensions, padding, direction),
 				plotData,
 				chartConfig,
 			};
@@ -142,7 +145,7 @@ class EventHandler extends Component {
 				console.log("DATA CHANGED AND LAST ITEM VISIBLE");
 			}
 			// if last item was visible, then shift
-			var updatedXScale = setXRange(this.state.xScale.copy(), dimensions, padding);
+			var updatedXScale = setXRange(this.state.xScale.copy(), dimensions, padding, direction);
 
 			var [start, end] = this.state.xScale.domain();
 			var l = last(isDefined(showingInterval) ? fullData[showingInterval] : fullData);
@@ -177,7 +180,7 @@ class EventHandler extends Component {
 				getNewChartConfig(dimensions, children), this.state.plotData);
 
 			newState = {
-				xScale: setXRange(this.state.xScale.copy(), dimensions, padding),
+				xScale: setXRange(this.state.xScale.copy(), dimensions, padding, direction),
 				chartConfig,
 			};
 		}

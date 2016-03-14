@@ -37,13 +37,17 @@ function getDomain(inputDomain, width, filteredData, predicate, currentDomain, c
 	return currentDomain;
 }
 
-function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShowTheseMany, filteredResponse) {
+function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShowTheseMany, useWholeData = false) {
 	var data, inputXAccessor, interval, width, currentInterval, currentDomain, currentPlotData, scale;
 
 	function domain(inputDomain, xAccessor) {
 		var left = first(inputDomain);
 		var right = last(inputDomain);
 		var plotData = currentPlotData, intervalToShow = currentInterval, domain;
+
+		if (useWholeData) {
+			return { plotData: data, scale: scale.copy().domain(inputDomain) };
+		}
 
 		if (isNotDefined(interval) && isArray(allowedIntervals)) {
 			let dataForCurrentInterval = data[currentInterval || allowedIntervals[0]];
@@ -61,7 +65,7 @@ function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShow
 				var tempRight = currentInterval === eachInterval ? right : newRight;
 				var tempAccessor = currentInterval === eachInterval ? xAccessor : inputXAccessor;
 
-				let filteredData =  filteredResponse(data[eachInterval], tempLeft, tempRight, tempAccessor);
+				let filteredData =  getFilteredResponse(data[eachInterval], tempLeft, tempRight, tempAccessor);
 
 				domain = getDomain([tempLeft, tempRight], width, filteredData,
 					currentInterval === eachInterval, currentDomain,
@@ -79,7 +83,7 @@ function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShow
 			}
 		} else if (isDefined(interval) && allowedIntervals.indexOf(interval) > -1) {
 			// if interval is defined and allowedInterval is not defined, it is an error
-			let filteredData = filteredResponse(data[interval], left, right, xAccessor);
+			let filteredData = getFilteredResponse(data[interval], left, right, xAccessor);
 
 			domain = getDomain(inputDomain, width, filteredData,
 				realXAccessor === xAccessor, currentDomain,
@@ -95,7 +99,7 @@ function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShow
 			}
 		} else if (isNotDefined(interval) && isNotDefined(allowedIntervals)) {
 			// interval is not defined and allowedInterval is not defined also.
-			let filteredData = filteredResponse(data, left, right, xAccessor);
+			let filteredData = getFilteredResponse(data, left, right, xAccessor);
 			domain = getDomain(inputDomain, width, filteredData,
 				realXAccessor === xAccessor, currentDomain,
 				canShowTheseMany, realXAccessor);
@@ -174,7 +178,7 @@ function showMax(width) {
 
 export default function() {
 
-	var allowedIntervals, xAccessor, discontinous = false, useWholeData = false,
+	var allowedIntervals, xAccessor, discontinous = false, useWholeData,
 		indexAccessor, indexMutator, map, scale, calculator = [], intervalCalculator = eodIntervalCalculator,
 		canShowTheseMany = canShowTheseManyPeriods;
 
@@ -219,13 +223,12 @@ export default function() {
 			mappedData = newData;
 		});
 
-		var filteredResponse = useWholeData ? getFilteredResponseWhole : getFilteredResponse;
 
 		return {
 			fullData: mappedData,
 			xAccessor: realXAccessor,
 			// inputXAccesor: xAccessor,
-			domainCalculator: extentsWrapper(xAccessor, realXAccessor, allowedIntervals, canShowTheseMany, filteredResponse),
+			domainCalculator: extentsWrapper(xAccessor, realXAccessor, allowedIntervals, canShowTheseMany, useWholeData),
 		};
 	}
 	evaluate.allowedIntervals = function(x) {

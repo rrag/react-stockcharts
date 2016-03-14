@@ -5,18 +5,18 @@ import React, { PropTypes, Component } from "react";
 
 import wrap from "./wrap";
 
-import { isDefined, isNotDefined, hexToRGBA } from "../utils";
+import { isDefined, isNotDefined, hexToRGBA, first, last } from "../utils";
 
-class StackedHistogramSeries extends Component {
+class StackedBarSeries extends Component {
 	render() {
 		var { props } = this;
-		return <g className="histogram">
-			{StackedHistogramSeries.getBarsSVG(props)}
+		return <g className="react-stockcharts-bar-series">
+			{StackedBarSeries.getBarsSVG(props)}
 		</g>;
 	}
 }
 
-StackedHistogramSeries.propTypes = {
+StackedBarSeries.propTypes = {
 	baseAt: PropTypes.oneOfType([
 		PropTypes.oneOf(["top", "bottom", "middle"]),
 		PropTypes.number,
@@ -39,7 +39,7 @@ StackedHistogramSeries.propTypes = {
 	plotData: PropTypes.array,
 };
 
-StackedHistogramSeries.defaultProps = {
+StackedBarSeries.defaultProps = {
 	baseAt: "bottom",
 	direction: "up",
 	className: "bar",
@@ -49,9 +49,9 @@ StackedHistogramSeries.defaultProps = {
 	widthRatio: 0.5,
 };
 
-StackedHistogramSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
+StackedBarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { xAccessor, yAccessor } = props;
-	var bars = StackedHistogramSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
+	var bars = StackedBarSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
 	drawOnCanvas2(props, ctx, xScale, yScale, plotData, bars);
 };
 
@@ -120,19 +120,19 @@ export function getBarsSVG2(props, bars) {
 					fillOpacity={opacity}
 					height={d.height} />;
 	});
-
 }
-StackedHistogramSeries.getBarsSVG = (props) => {
+
+StackedBarSeries.getBarsSVG = (props) => {
 
 	/* eslint-disable react/prop-types */
 	var { xAccessor, yAccessor, xScale, yScale, plotData } = props;
 	/* eslint-disable react/prop-types */
 
-	var bars = StackedHistogramSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
+	var bars = StackedBarSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
 	return getBarsSVG2(props, bars);
 };
 
-StackedHistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData) => {
+StackedBarSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData) => {
 	var { baseAt, className, fill, stroke, widthRatio } = props;
 	var base = baseAt === "top"
 				? 0
@@ -146,8 +146,8 @@ StackedHistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, p
 	var getFill = d3.functor(fill);
 	var getBase = d3.functor(base);
 
-	var width = xScale(xAccessor(plotData[plotData.length - 1]))
-		- xScale(xAccessor(plotData[0]));
+	var width = xScale(xAccessor(last(plotData)))
+		- xScale(xAccessor(first(plotData)));
 	var bw = (width / (plotData.length - 1) * widthRatio);
 	var barWidth = Math.round(bw);
 	var offset = (barWidth === 1 ? 0 : 0.5 * barWidth);
@@ -187,4 +187,4 @@ StackedHistogramSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, p
 	return d3.merge(bars);
 };
 
-export default wrap(StackedHistogramSeries);
+export default wrap(StackedBarSeries);

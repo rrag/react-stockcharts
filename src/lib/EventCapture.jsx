@@ -266,7 +266,7 @@ EventCapture.propTypes = {
 	pan: PropTypes.bool.isRequired,
 	panSpeedMultiplier: PropTypes.number.isRequired,
 	defaultFocus: PropTypes.bool.isRequired,
-
+	useCrossHairStyle: PropTypes.bool.isRequired,
 	onZoom: PropTypes.func,
 	onPan: PropTypes.func,
 };
@@ -277,7 +277,9 @@ EventCapture.defaultProps = {
 	zoomMultiplier: 1,
 	pan: false,
 	panSpeedMultiplier: 1,
-	defaultFocus: false
+	defaultFocus: false,
+	useCrossHairStyle: true,
+
 };
 
 EventCapture.contextTypes = {

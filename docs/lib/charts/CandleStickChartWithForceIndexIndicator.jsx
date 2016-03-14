@@ -7,7 +7,7 @@ import ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 
-var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, RSISeries, StraightLine } = ReStock.series;
+var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, RSISeries, StraightLine } = ReStock.series;
 var { financeEODDiscontiniousScale } = ReStock.scale;
 
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
@@ -62,7 +62,7 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 						origin={(w, h) => [0, h - 350]} >
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-					<HistogramSeries
+					<BarSeries
 						yAccessor={d => d.volume} 
 						fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"}
 						opacity={0.5} />

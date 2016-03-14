@@ -47,21 +47,22 @@ export default function() {
 		var signalEMA = ema()
 			.windowSize(signal);
 
-		var macdLineCalculator = zipper()
+		var macdCalculator = zipper()
 			.combine((fastEMA, slowEMA) => (isDefined(fastEMA) && isDefined(slowEMA)) ? fastEMA - slowEMA : undefined);
 
-		var macdLine = macdLineCalculator(fastEMA(data), slowEMA(data));
+		var macdArray = macdCalculator(fastEMA(data), slowEMA(data));
 
 		var undefinedArray = new Array(slow);
-		var signalLine = undefinedArray.concat(signalEMA(macdLine.slice(slow)));
+		var signalArray = undefinedArray.concat(signalEMA(macdArray.slice(slow)));
 
 		var zip = zipper()
 			.combine((macd, signal) => ({
-				MACDLine: macd,
-				signalLine: signal,
-				histogram: (isDefined(macd) && isDefined(signal)) ? macd - signal : undefined,
+				macd,
+				signal,
+				divergence: (isDefined(macd) && isDefined(signal)) ? macd - signal : undefined,
 			}));
-		var macd = zip(macdLine, signalLine);
+
+		var macd = zip(macdArray, signalArray);
 
 		return macd;
 	};

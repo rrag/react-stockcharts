@@ -4,12 +4,12 @@ import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
 import { shallowEqual, identity, last, isDefined, isNotDefined } from "./utils";
+import { shouldShowCrossHairStyle } from "./utils/ChartDataUtil";
 
 import EventHandler from "./EventHandler";
 import CanvasContainer from "./CanvasContainer";
 import eodIntervalCalculator from "./scale/eodIntervalCalculator";
 import evaluator from "./scale/evaluator";
-
 
 
 function shouldResetChart(thisProps, nextProps) {
@@ -33,7 +33,7 @@ function getDimensions(props) {
 
 function calculateFullData(props) {
 	var { data, calculator } = props;
-	var { xScale, intervalCalculator, allowedIntervals } = props;
+	var { xScale, intervalCalculator, allowedIntervals, plotFull } = props;
 	var { xAccessor, map, dataEvaluator, indexAccessor, indexMutator, discontinous } = props;
 
 	var evaluate = dataEvaluator()
@@ -44,6 +44,7 @@ function calculateFullData(props) {
 		.indexAccessor(indexAccessor)
 		.indexMutator(indexMutator)
 		.map(map)
+		.useWholeData(plotFull)
 		.scale(xScale)
 		.calculator(calculator.slice());
 
@@ -80,10 +81,10 @@ function calculateState(props) {
 		: d3.extent(xExtentsProp.map(d3.functor).map(each => each(data, inputXAccesor)));
 
 	var { plotData, interval: showingInterval, scale: updatedScale } = xExtentsCalculator
-		.width(dimensions.width)
-		.scale(xScale)
-		.data(fullData)
-		.interval(interval)(extent, inputXAccesor);
+			.width(dimensions.width)
+			.scale(xScale)
+			.data(fullData)
+			.interval(interval)(extent, inputXAccesor);
 
 	// console.log(updatedScale.domain());
 	return {
@@ -95,6 +96,26 @@ function calculateState(props) {
 		xAccessor,
 		dataAltered: false,
 	};
+}
+
+function getCursorStyle(children) {
+	var style = `<![CDATA[
+			.react-stockcharts-grabbing-cursor {
+				cursor: grabbing;
+				cursor: -moz-grabbing;
+				cursor: -webkit-grabbing;
+			}
+			.react-stockcharts-crosshair-cursor {
+				cursor: crosshair;
+			}
+			.react-stockcharts-toottip-hover {
+				pointer-events: all;
+				cursor: pointer;
+			}
+		]]>`;
+	return shouldShowCrossHairStyle(children)
+		? (<style type="text/css" dangerouslySetInnerHTML={{ __html: style }}></style>)
+		: null;
 }
 
 class ChartCanvas extends Component {
@@ -148,28 +169,11 @@ class ChartCanvas extends Component {
 		}
 	}
 	render() {
-		var style = `<![CDATA[
-						.react-stockcharts-grabbing-cursor {
-							cursor: grabbing;
-							cursor: -moz-grabbing;
-							cursor: -webkit-grabbing;
-						}
-						.react-stockcharts-crosshair-cursor {
-							cursor: crosshair;
-						}
-						.react-stockcharts-toottip-hover {
-							pointer-events: all;
-							cursor: pointer;
-						}
-					]]>`;
+		var cursor = getCursorStyle(this.props.children);
 
-		var { interval, data, type, height, width, margin, className, zIndex, postCalculator } = this.props;
-		var { padding, useCrossHairStyle } = this.props;
+		var { interval, data, type, height, width, margin, className, zIndex, postCalculator, flipXScale } = this.props;
+		var { padding } = this.props;
 		var { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor, dataAltered } = this.state;
-
-		var cursor = useCrossHairStyle
-			? (<style type="text/css" dangerouslySetInnerHTML={{ __html: style }}></style>)
-			: null;
 
 		var dimensions = getDimensions(this.props);
 		var props = { padding, interval, type, margin, postCalculator };
@@ -188,6 +192,7 @@ class ChartCanvas extends Component {
 						<EventHandler ref="chartContainer"
 							{...props}
 							{...stateProps}
+							direction={flipXScale ? -1 : 1}
 							lastItem={last(data)}
 							dimensions={dimensions}
 							canvasContexts={this.getCanvases}>
@@ -230,7 +235,6 @@ ChartCanvas.propTypes = {
 	children: PropTypes.node.isRequired,
 	discontinous: PropTypes.bool.isRequired,
 	postCalculator: PropTypes.func.isRequired,
-	useCrossHairStyle: PropTypes.bool.isRequired,
 	padding: PropTypes.oneOfType([
 		PropTypes.number,
 		PropTypes.shape({
@@ -255,7 +259,7 @@ ChartCanvas.defaultProps = {
 	discontinous: false,
 	postCalculator: identity,
 	padding: 0,
-	useCrossHairStyle: true,
+	xAccessor: identity,
 	// initialDisplay: 30
 };
 

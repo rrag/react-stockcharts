@@ -17,11 +17,11 @@ class MACDTooltip extends Component {
 		var yAccessor = calculator.accessor();
 		var config = first(chartConfig.filter(each => each.id === forChart));
 
-		var macd = yAccessor(currentItem);
+		var macdValue = yAccessor(currentItem);
 
-		var MACDLine = (macd && macd.MACDLine && displayFormat(macd.MACDLine)) || "n/a";
-		var signalLine = (macd && macd.signalLine && displayFormat(macd.signalLine)) || "n/a";
-		var histogram = (macd && macd.histogram && displayFormat(macd.histogram)) || "n/a";
+		var macd = (macdValue && macdValue.macd && displayFormat(macdValue.macd)) || "n/a";
+		var signal = (macdValue && macdValue.signal && displayFormat(macdValue.signal)) || "n/a";
+		var divergence = (macdValue && macdValue.divergence && displayFormat(macdValue.divergence)) || "n/a";
 
 		var { origin: originProp } = this.props;
 		var origin = d3.functor(originProp);
@@ -33,14 +33,14 @@ class MACDTooltip extends Component {
 				<ToolTipText x={0} y={0}
 					fontFamily={fontFamily} fontSize={fontSize}>
 					<ToolTipTSpanLabel>MACD (</ToolTipTSpanLabel>
-						<tspan fill={calculator.stroke().MACDLine}>{calculator.slow()}</tspan>
+						<tspan fill={calculator.stroke().macd}>{calculator.slow()}</tspan>
 						<ToolTipTSpanLabel>, </ToolTipTSpanLabel>
-						<tspan fill={calculator.stroke().MACDLine}>{calculator.fast()}</tspan>
-					<ToolTipTSpanLabel>): </ToolTipTSpanLabel><tspan fill={calculator.stroke().MACDLine}>{MACDLine}</tspan>
+						<tspan fill={calculator.stroke().macd}>{calculator.fast()}</tspan>
+					<ToolTipTSpanLabel>): </ToolTipTSpanLabel><tspan fill={calculator.stroke().macd}>{macd}</tspan>
 					<ToolTipTSpanLabel> Signal (</ToolTipTSpanLabel>
-						<tspan fill={calculator.stroke().signalLine}>{calculator.signal()}</tspan>
-						<ToolTipTSpanLabel>): </ToolTipTSpanLabel><tspan fill={calculator.stroke().signalLine}>{signalLine}</tspan>
-					<ToolTipTSpanLabel> Histogram: </ToolTipTSpanLabel><tspan fill={calculator.fill().histogram}>{histogram}</tspan>
+						<tspan fill={calculator.stroke().signal}>{calculator.signal()}</tspan>
+						<ToolTipTSpanLabel>): </ToolTipTSpanLabel><tspan fill={calculator.stroke().signal}>{signal}</tspan>
+					<ToolTipTSpanLabel> Divergence: </ToolTipTSpanLabel><tspan fill={calculator.fill().divergence}>{divergence}</tspan>
 				</ToolTipText>
 			</g>
 		);

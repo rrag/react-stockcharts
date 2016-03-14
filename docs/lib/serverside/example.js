@@ -22,9 +22,9 @@ var ReStock = require("../../../src/");
 // CandleStickChartWithCHMousePointer
 // CandleStickChartWithMA
 // CandleStickChartWithBollingerBandOverlay
-// CandleStickStockScaleChartWithVolumeHistogramV1
-// CandleStickStockScaleChartWithVolumeHistogramV2
-// CandleStickStockScaleChartWithVolumeHistogramV3
+// CandleStickStockScaleChartWithVolumeBarV1
+// CandleStickStockScaleChartWithVolumeBarV2
+// CandleStickStockScaleChartWithVolumeBarV3
 // CandleStickChartWithZoomPan
 // CandleStickChartWithCompare
 // CandleStickChartWithMACDIndicator

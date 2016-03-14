@@ -7,7 +7,7 @@ import ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 
-var { AreaSeries, HistogramSeries, LineSeries, AreaSeries } = ReStock.series;
+var { AreaSeries, BarSeries, LineSeries, AreaSeries } = ReStock.series;
 var { financeEODDiscontiniousScale } = ReStock.scale;
 
 var { EdgeIndicator } = ReStock.coordinates;
@@ -43,7 +43,7 @@ class AreaChartWithEdge extends React.Component {
 						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 						height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-					<HistogramSeries yAccessor={d => d.volume}
+					<BarSeries yAccessor={d => d.volume}
 						stroke fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"}
 						opacity={0.4}
 						widthRatio={1} />

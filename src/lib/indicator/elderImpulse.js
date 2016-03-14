@@ -27,16 +27,16 @@ export default function() {
 			if (isNotDefined(emaSource)) throw new Error(`emaSource not defined for ${ALGORITHM_TYPE} calculator`);
 
 			if (isDefined(macdSource(prev)) && isDefined(emaSource(prev))) {
-				var prevMACDHistogram = macdSource(prev).histogram;
-				var currMACDHistogram = macdSource(curr).histogram;
+				var prevMACDDivergence = macdSource(prev).divergence;
+				var currMACDDivergence = macdSource(curr).divergence;
 
 				var prevEMA = emaSource(prev);
 				var currEMA = emaSource(curr);
 
-				if (currMACDHistogram >= prevMACDHistogram
+				if (currMACDDivergence >= prevMACDDivergence
 					&& currEMA >= prevEMA) return "up";
 
-				if (currMACDHistogram <= prevMACDHistogram
+				if (currMACDDivergence <= prevMACDDivergence
 					&& currEMA <= prevEMA) return "down";
 			}
 			return "neutral";

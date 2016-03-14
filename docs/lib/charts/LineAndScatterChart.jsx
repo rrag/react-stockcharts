@@ -7,7 +7,7 @@ import ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 
-var { HistogramSeries, LineSeries, AreaSeries, ScatterSeries, CircleMarker } = ReStock.series;
+var { BarSeries, LineSeries, AreaSeries, ScatterSeries, CircleMarker } = ReStock.series;
 var { financeEODDiscontiniousScale } = ReStock.scale;
 
 var { MouseCoordinates } = ReStock.coordinates;

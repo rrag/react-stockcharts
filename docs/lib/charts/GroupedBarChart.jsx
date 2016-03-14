@@ -21,7 +21,7 @@ class GroupedBarChart extends React.Component {
 
 		var fill = (d, i) => f(i);
 		return (
-			<ChartCanvas width={width} height={400} useCrossHairStyle={false}
+			<ChartCanvas width={width} height={400}
 					margin={{left: 40, right: 10, top:20, bottom: 30}} type={type}
 					seriesName="Fruits"
 					xExtents={list => list.map(d => d.x)}
@@ -36,7 +36,6 @@ class GroupedBarChart extends React.Component {
 							fill={fill}
 							spaceBetweenBar={3}/>
 				</Chart>
-				<EventCapture mouseMove={true} />
 			</ChartCanvas>
 		);
 	}

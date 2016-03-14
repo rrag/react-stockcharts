@@ -7,7 +7,7 @@ import ReStock from "../../../src/";
 
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 
-var { CandlestickSeries, HistogramSeries, LineSeries, AreaSeries, StochasticSeries, BollingerSeries } = ReStock.series;
+var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, StochasticSeries, BollingerSeries } = ReStock.series;
 var { financeEODDiscontiniousScale } = ReStock.scale;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeIndicator } = ReStock.coordinates;
@@ -106,7 +106,7 @@ class CandleStickChartWithDarkTheme extends React.Component {
 						height={100} origin={(w, h) => [0, h - 475]} >
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}
 							tickStroke="#FFFFFF"/>
-					<HistogramSeries
+					<BarSeries
 							yAccessor={d => d.volume}
 							fill={d => d.close > d.open ? "#6BA583" : "#DB0000"} />
 				</Chart>

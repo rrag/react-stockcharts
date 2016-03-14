@@ -37,9 +37,11 @@ var CHART_TYPES = {
 		require("lib/page/BubbleChartPage").default,
 		require("lib/page/BarChartPage").default,
 		require("lib/page/GroupedBarChartPage").default,
-		// require("lib/page/HorizontalBarChartPage").default,
+		// require("lib/page/StackedBarChartPage").default,
+		require("lib/page/HorizontalBarChartPage").default,
+		// require("lib/page/HorizontalStackedBarChartPage").default,
 		require("lib/page/CandleStickChartPage").default,
-		require("lib/page/VolumeHistogramPage").default,
+		require("lib/page/VolumeBarPage").default,
 		// TODO add OHLC chart 
 		require("lib/page/HeikinAshiPage").default,
 		require("lib/page/KagiPage").default,
@@ -113,7 +115,7 @@ function compressString(string) {
 	return string
 }
 
-function renderPage(data, dataFull, compareData, bubbleData, histogramData, groupedBarData, horizontalBarData) {
+function renderPage(data, dataFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData) {
 	data.forEach((d, i) => {
 		d.date = new Date(parseDate(d.date).getTime());
 		d.open = +d.open;
@@ -192,7 +194,7 @@ function renderPage(data, dataFull, compareData, bubbleData, histogramData, grou
 								lotsOfData={dataFull}
 								compareData={compareData}
 								bubbleData={bubbleData}
-								histogramData={histogramData}
+								barData={barData}
 								groupedBarData={groupedBarData}
 								horizontalBarData={horizontalBarData} />
 					</MainContainer>
@@ -204,7 +206,7 @@ function renderPage(data, dataFull, compareData, bubbleData, histogramData, grou
 	ReactDOM.render(<ExamplesPage />, document.getElementById("chart-goes-here"));
 }
 
-var histogramData = [
+var barData = [
 	{ x: "Apple", y: 10 },
 	{ x: "Banana", y: 15 },
 	{ x: "Strawberry", y: 20 },
@@ -213,7 +215,7 @@ var histogramData = [
 	{ x: "Peach", y: 35 },
 ];
 
-var horizontalBarData = histogramData.map(({x, y}) => ({ x: y, y: x }))
+var horizontalBarData = barData.map(({x, y}) => ({ x: y, y: x }))
 
 var groupedBarData = [
 	{ x: "Apple", y1: 10, y2: 5, y3: 2, y4: 10 },
@@ -229,8 +231,8 @@ var bubbleData = require("data/bubble.json");
 d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
 	d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 		d3.tsv("data/comparison.tsv", (err3, compareData) => {
-			renderPage(MSFT, MSFTFull, compareData, bubbleData, histogramData, groupedBarData, horizontalBarData);
-			// renderPartialPage(MSFT, MSFTFull, compareData, bubbleData, histogramData, groupedBarData, horizontalBarData);
+			renderPage(MSFT, MSFTFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData);
+			// renderPartialPage(MSFT, MSFTFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData);
 		});
 	});
 });
@@ -255,7 +257,7 @@ d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
 	}
 })*/
 
-function renderPartialPage(data, dataFull, compareData, bubbleData, histogramData, groupedBarData) {
+function renderPartialPage(data, dataFull, compareData, bubbleData, barData, groupedBarData) {
 	data.forEach((d, i) => {
 		d.date = new Date(parseDate(d.date).getTime());
 		d.open = +d.open;
@@ -294,9 +296,9 @@ function renderPartialPage(data, dataFull, compareData, bubbleData, histogramDat
 	// AreaChartWithYPercent
 	// CandleStickChart
 	// CandleStickStockScaleChart
-	// CandleStickStockScaleChartWithVolumeHistogramV1
-	// CandleStickStockScaleChartWithVolumeHistogramV2
-	// CandleStickStockScaleChartWithVolumeHistogramV3
+	// CandleStickStockScaleChartWithVolumeBarV1
+	// CandleStickStockScaleChartWithVolumeBarV2
+	// CandleStickStockScaleChartWithVolumeBarV3
 	// CandleStickChartWithCHMousePointer
 	// CandleStickChartWithZoomPan
 	// CandleStickChartWithMA

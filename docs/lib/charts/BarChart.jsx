@@ -7,7 +7,7 @@ import ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 
-var { HistogramSeries  } = ReStock.series;
+var { BarSeries  } = ReStock.series;
 
 var { XAxis, YAxis } = ReStock.axes;
 var { fitWidth } = ReStock.helper;
@@ -27,7 +27,7 @@ class BarChart extends React.Component {
 		var fill = d => f(d.region);
 		var radius = d => r(d.population);
 		return (
-			<ChartCanvas width={width} height={400} useCrossHairStyle={false}
+			<ChartCanvas width={width} height={400}
 					margin={{left: 80, right: 10, top:20, bottom: 30}} type={type}
 					seriesName="Fruits"
 					xExtents={list => list.map(d => d.x)}
@@ -38,9 +38,8 @@ class BarChart extends React.Component {
 						yExtents={d => [0, d.y]}>
 					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="left" orient="left" />
-					<HistogramSeries yAccessor={d => d.y} />
+					<BarSeries yAccessor={d => d.y} />
 				</Chart>
-				<EventCapture mouseMove={true} />
 			</ChartCanvas>
 
 		);

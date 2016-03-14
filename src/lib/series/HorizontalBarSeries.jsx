@@ -1,16 +1,17 @@
+/* eslint-disable */
 "use strict";
 
-// import d3 from "d3";
+import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 
 import wrap from "./wrap";
 
-// import { isDefined, isNotDefined, hexToRGBA } from "../utils";
+import { isDefined, isNotDefined, hexToRGBA, first, last } from "../utils";
 
 class HorizontalBarSeries extends Component {
 	render() {
 		var { props } = this;
-		return <g className="histogram">
+		return <g className="react-stockcharts-horizontal-bar-series">
 			{HorizontalBarSeries.getBarsSVG(props)}
 		</g>;
 	}
@@ -24,7 +25,7 @@ HorizontalBarSeries.propTypes = {
 	]).isRequired,
 	direction: PropTypes.oneOf(["up", "down"]).isRequired,
 	stroke: PropTypes.bool.isRequired,
-	widthRatio: PropTypes.number.isRequired,
+	heightRatio: PropTypes.number.isRequired,
 	opacity: PropTypes.number.isRequired,
 	fill: PropTypes.oneOfType([
 		PropTypes.func, PropTypes.string
@@ -46,12 +47,13 @@ HorizontalBarSeries.defaultProps = {
 	stroke: false,
 	fill: "#4682B4",
 	opacity: 1,
-	widthRatio: 0.5,
+	heightRatio: 0.5,
 };
-/*
+
 HorizontalBarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { xAccessor, yAccessor, stroke } = props;
-	var bars = HorizontalBarSeries.getBars(props, xAccessor, [yAccessor], xScale, yScale, plotData);
+	var bars = HorizontalBarSeries.getBars(props, [xAccessor], yAccessor, xScale, yScale, plotData);
+	// console.log(bars);
 	drawOnCanvas2(props, ctx, xScale, yScale, plotData, bars);
 };
 
@@ -59,64 +61,136 @@ HorizontalBarSeries.getBarsSVG = (props) => {
 
 	var { xAccessor, yAccessor, xScale, yScale, plotData } = props;
 
-	var bars = HorizontalBarSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
+	var bars = HorizontalBarSeries.getBars(props, [xAccessor], yAccessor, xScale, yScale, plotData);
 	return getBarsSVG2(props, bars);
 };
 
+
+export function drawOnCanvas2(props, ctx, xScale, yScale, plotData, bars) {
+	var { stroke } = props;
+
+	var nest = d3.nest()
+		.key(d => d.fill)
+		.entries(bars);
+
+	nest.forEach(outer => {
+		var { key, values } = outer;
+		if (values[0].barWidth < 1) {
+			ctx.strokeStyle = key;
+		} else {
+			ctx.strokeStyle = key;
+			ctx.fillStyle = hexToRGBA(key, props.opacity);
+		}
+		values.forEach(d => {
+			if (d.barWidth < 1) {
+				/* <line key={idx} className={d.className}
+							stroke={stroke}
+							fill={fill}
+							x1={d.x} y1={d.y}
+							x2={d.x} y2={d.y + d.height} />*/
+				ctx.beginPath();
+				ctx.moveTo(d.x, d.y);
+				ctx.lineTo(d.x + d.width, d.y);
+				ctx.stroke();
+			} else {
+				/* <rect key={idx} className={d.className}
+						stroke={stroke}
+						fill={fill}
+						x={d.x}
+						y={d.y}
+						width={d.barWidth}
+						height={d.height} /> */
+				ctx.beginPath();
+				ctx.rect(d.x, d.y, d.width, d.barHeight);
+				ctx.fill();
+				if (stroke) ctx.stroke();
+			}
+
+		});
+	});
+};
+
+export function getBarsSVG2(props, bars) {
+	/* eslint-disable react/prop-types */
+	var { opacity } = props;
+	/* eslint-disable react/prop-types */
+
+	return bars.map((d, idx) => {
+		if (d.barWidth <= 1) {
+			return <line key={idx} className={d.className}
+						stroke={d.fill}
+						x1={d.x} y1={d.y}
+						x2={d.x + d.width} y2={d.y} />;
+		}
+		return <rect key={idx} className={d.className}
+					stroke={d.stroke}
+					fill={d.fill}
+					x={d.x}
+					y={d.y}
+					width={d.width}
+					fillOpacity={opacity}
+					height={d.barHeight} />;
+	});
+}
+
+
 HorizontalBarSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData) => {
-	var { baseAt, className, fill, stroke, widthRatio } = props;
+	var { baseAt, className, fill, stroke, heightRatio, height } = props;
 	var base = baseAt === "left"
-				? 0
+				? xScale.range()[0]
 				: baseAt === "right"
-					? yScale.range()[0]
+					? xScale.range()[1]
 					: baseAt === "middle"
-						? (yScale.range()[0] + yScale.range()[1]) / 2
+						? (xScale.range()[0] + xScale.range()[1]) / 2
 						: baseAt;
 
-	console.log(plotData.map(d => d.y), base, yAccessor);
+	// console.log(plotData.map(d => d.y), base, yAccessor);
 	var getClassName = d3.functor(className);
 	var getFill = d3.functor(fill);
 	var getBase = d3.functor(base);
 
-	var width = xScale(xAccessor(plotData[plotData.length - 1]))
-		- xScale(xAccessor(plotData[0]));
-	var bw = (width / (plotData.length - 1) * widthRatio);
-	var barWidth = Math.round(bw);
-	var offset = (barWidth === 1 ? 0 : 0.5 * barWidth);
+	var h = Math.abs(yScale(yAccessor(last(plotData)))
+		- yScale(yAccessor(first(plotData))));
+
+	var bh = (h / (plotData.length - 1) * heightRatio);
+	var barHeight = Math.round(bh);
+	var offset = (barHeight === 1 ? 0 : 0.5 * barHeight);
+
 
 	var bars = plotData
 			.map(d => {
-				var innerBars = yAccessor.map((eachYAccessor, i) => {
-					var yValue = eachYAccessor(d);
-					if (isNotDefined(yValue)) return undefined;
+				var innerBars = xAccessor.map((eachXAccessor, i) => {
+					var xValue = eachXAccessor(d);
+					if (isNotDefined(xValue)) return undefined;
 
-					var x = Math.round(xScale(xAccessor(d))) - offset;
+					var y = Math.round(yScale(yAccessor(d))) - offset;
+
 					return {
-						barWidth: barWidth,
-						x: x,
-						y: yScale(yValue),
+						barHeight: barHeight,
+						x: xScale(xValue),
+						y: y,
 						className: getClassName(d, i),
 						stroke: stroke ? getFill(d, i) : "none",
 						fill: getFill(d, i),
 						i,
 					};
-				}).filter(yValue => isDefined(yValue));
+				}).filter(xValue => isDefined(xValue));
 
 				var b = getBase(xScale, yScale, d);
-				var h;
+				var w;
 				for (var i = innerBars.length - 1; i >= 0; i--) {
-					h = b - innerBars[i].y;
-					if (h < 0) {
-						innerBars[i].y = b;
-						h = -1 * h;
+					w = b - innerBars[i].x;
+					if (w < 0) {
+						innerBars[i].x = b;
+						w = -1 * w;
 					}
-					innerBars[i].height = h;
-					b = innerBars[i].y;
+					innerBars[i].width = w;
+					b = innerBars[i].x;
 				};
 				return innerBars;
 			});
 
 	return d3.merge(bars);
 };
-*/
+
 export default wrap(HorizontalBarSeries);

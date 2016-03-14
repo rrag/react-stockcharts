@@ -2,7 +2,7 @@
 
 import React, { PropTypes, Component } from "react";
 
-import HistogramSeries from "./HistogramSeries";
+import BarSeries from "./BarSeries";
 import Line from "./Line";
 import StraightLine from "./StraightLine";
 
@@ -11,31 +11,31 @@ import wrap from "./wrap";
 class MACDSeries extends Component {
 	constructor(props) {
 		super(props);
-		this.yAccessorForMACDLine = this.yAccessorForMACDLine.bind(this);
-		this.yAccessorForSignalLine = this.yAccessorForSignalLine.bind(this);
-		this.yAccessorForHistogram = this.yAccessorForHistogram.bind(this);
-		this.yAccessorForHistogramBase = this.yAccessorForHistogramBase.bind(this);
+		this.yAccessorForMACD = this.yAccessorForMACD.bind(this);
+		this.yAccessorForSignal = this.yAccessorForSignal.bind(this);
+		this.yAccessorForDivergence = this.yAccessorForDivergence.bind(this);
+		this.yAccessorForDivergenceBase = this.yAccessorForDivergenceBase.bind(this);
 	}
-	yAccessorForMACDLine(d) {
+	yAccessorForMACD(d) {
 		var { calculator } = this.props;
 		var yAccessor = calculator.accessor();
-		return yAccessor(d) && yAccessor(d).MACDLine;
+		return yAccessor(d) && yAccessor(d).macd;
 	}
-	yAccessorForSignalLine(d) {
+	yAccessorForSignal(d) {
 		var { calculator } = this.props;
 		var yAccessor = calculator.accessor();
-		return yAccessor(d) && yAccessor(d).signalLine;
+		return yAccessor(d) && yAccessor(d).signal;
 	}
-	yAccessorForHistogram(d) {
+	yAccessorForDivergence(d) {
 		var { calculator } = this.props;
 		var yAccessor = calculator.accessor();
-		return yAccessor(d) && yAccessor(d).histogram;
+		return yAccessor(d) && yAccessor(d).divergence;
 	}
-	yAccessorForHistogramBase(xScale, yScale/* , d */) {
+	yAccessorForDivergenceBase(xScale, yScale/* , d */) {
 		return yScale(0);
 	}
 	render() {
-		var { className, xScale, yScale, xAccessor, plotData, type, opacity, histogramStroke, calculator } = this.props;
+		var { className, xScale, yScale, xAccessor, plotData, type, opacity, divergenceStroke, calculator } = this.props;
 		var stroke = calculator.stroke();
 		var fill = calculator.fill();
 		// console.log(this.props.yAccessor)
@@ -43,21 +43,21 @@ class MACDSeries extends Component {
 			<g className={className}>
 				<Line
 					xScale={xScale} yScale={yScale}
-					xAccessor={xAccessor} yAccessor={this.yAccessorForMACDLine}
+					xAccessor={xAccessor} yAccessor={this.yAccessorForMACD}
 					plotData={plotData}
-					stroke={stroke.MACDLine} fill="none"
+					stroke={stroke.macd} fill="none"
 					type={type} />
 				<Line
 					xScale={xScale} yScale={yScale}
-					xAccessor={xAccessor} yAccessor={this.yAccessorForSignalLine}
+					xAccessor={xAccessor} yAccessor={this.yAccessorForSignal}
 					plotData={plotData}
-					stroke={stroke.signalLine} fill="none"
+					stroke={stroke.signal} fill="none"
 					type={type} />
-				<HistogramSeries
-					baseAt={this.yAccessorForHistogramBase}
-					className="macd-histogram"
-					stroke={histogramStroke} fill={fill.histogram} opacity={opacity}
-					yAccessor={this.yAccessorForHistogram} />
+				<BarSeries
+					baseAt={this.yAccessorForDivergenceBase}
+					className="macd-divergence"
+					stroke={divergenceStroke} fill={fill.divergence} opacity={opacity}
+					yAccessor={this.yAccessorForDivergence} />
 				{MACDSeries.getHorizontalLine(this.props)}
 			</g>
 		);
@@ -87,7 +87,7 @@ MACDSeries.propTypes = {
 	plotData: PropTypes.array,
 	type: PropTypes.string,
 	opacity: PropTypes.number,
-	histogramStroke: PropTypes.bool,
+	divergenceStroke: PropTypes.bool,
 };
 
 MACDSeries.defaultProps = {
@@ -95,7 +95,7 @@ MACDSeries.defaultProps = {
 	zeroLineStroke: "#000000",
 	zeroLineOpacity: 0.3,
 	opacity: 0.6,
-	histogramStroke: false,
+	divergenceStroke: false,
 };
 
 export default wrap(MACDSeries);

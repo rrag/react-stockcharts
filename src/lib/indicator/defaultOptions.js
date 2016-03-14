@@ -38,11 +38,11 @@ export const MACD = {
 	signal: 9,
 	source: d => d.close, // "high", "low", "open", "close"
 	fill: {
-		histogram: "#4682B4"
+		divergence: "#4682B4"
 	},
 	stroke: {
-		MACDLine: "#FF0000",
-		signalLine: "#00F300",
+		macd: "#FF0000",
+		signal: "#00F300",
 	},
 };
 

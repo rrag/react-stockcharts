@@ -8,7 +8,7 @@ import ReStock from "react-stockcharts";
 var pointAndFigureTransformOptions = { boxSize: 0.25 };
 
 var { ChartCanvas, Chart, EventCapture } = ReStock;
-var { HistogramSeries, LineSeries, AreaSeries, PointAndFigureSeries } = ReStock.series;
+var { BarSeries, LineSeries, AreaSeries, PointAndFigureSeries } = ReStock.series;
 var { financeEODDiscontiniousScale } = ReStock.scale;
 
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
@@ -49,7 +49,7 @@ class PointAndFigure extends React.Component {
 						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 						height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-					<HistogramSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
+					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} />

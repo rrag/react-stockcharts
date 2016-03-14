@@ -7,7 +7,7 @@ import ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 
-var { OHLCSeries, HistogramSeries, LineSeries, AreaSeries, ElderRaySeries, StraightLine } = ReStock.series;
+var { OHLCSeries, BarSeries, LineSeries, AreaSeries, ElderRaySeries, StraightLine } = ReStock.series;
 var { financeEODDiscontiniousScale } = ReStock.scale;
 
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
@@ -51,7 +51,7 @@ class OHLCChartWithElderRayIndicator extends React.Component {
 						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 						origin={(w, h) => [0, h - 450]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-					<HistogramSeries yAccessor={d => d.volume}
+					<BarSeries yAccessor={d => d.volume}
 						fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}
 						opacity={0.4}/>
 				</Chart>
@@ -71,7 +71,7 @@ class OHLCChartWithElderRayIndicator extends React.Component {
 						padding={{ top: 10, bottom: 10 }} >
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={d3.format(".2f")}/>
-					<HistogramSeries
+					<BarSeries
 						yAccessor={d => elder.accessor()(d) && elder.accessor()(d).bullPower}
 						baseAt={(xScale, yScale, d) => yScale(0)}
 						fill="#6BA583" />
@@ -84,7 +84,7 @@ class OHLCChartWithElderRayIndicator extends React.Component {
 						padding={{ top: 10, bottom: 10 }} >
 					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={d3.format(".2f")}/>
-					<HistogramSeries
+					<BarSeries
 						yAccessor={d => elder.accessor()(d) && elder.accessor()(d).bearPower}
 						baseAt={(xScale, yScale, d) => yScale(0)}
 						fill="#FF0000" />

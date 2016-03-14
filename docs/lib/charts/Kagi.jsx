@@ -6,7 +6,7 @@ import d3 from "d3";
 import ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart, EventCapture } = ReStock;
-var { HistogramSeries, LineSeries, AreaSeries, KagiSeries } = ReStock.series;
+var { BarSeries, LineSeries, AreaSeries, KagiSeries } = ReStock.series;
 var { financeEODDiscontiniousScale } = ReStock.scale;
 
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
@@ -45,7 +45,7 @@ class Kagi extends React.Component {
 						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 						height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-					<HistogramSeries
+					<BarSeries
 							yAccessor={d => d.volume}
 							stroke
 							fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} 

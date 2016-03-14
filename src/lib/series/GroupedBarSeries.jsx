@@ -4,13 +4,13 @@ import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 
 import wrap from "./wrap";
-import { drawOnCanvas2, getBarsSVG2 } from "./StackedHistogramSeries";
+import { drawOnCanvas2, getBarsSVG2 } from "./StackedBarSeries";
 
 import { isDefined, isNotDefined } from "../utils";
 
 class GroupedBarSeries extends Component {
 	render() {
-		return <g className="histogram">
+		return <g className="react-stockcharts-grouped-bar-series">
 			{GroupedBarSeries.getBarsSVG(this.props)}
 		</g>;
 	}

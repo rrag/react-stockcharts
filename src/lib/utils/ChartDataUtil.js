@@ -4,6 +4,7 @@ import React from "react";
 import d3 from "d3";
 import flattenDeep from "lodash.flattendeep";
 
+import EventCapture from "../EventCapture";
 import Chart from "../Chart";
 
 import {
@@ -39,6 +40,15 @@ function values(func) {
 		return isObject(obj) ? Object.keys(obj).map(key => obj[key]) : obj;
 	};
 };
+
+export function shouldShowCrossHairStyle(children) {
+	return React.Children.map(children, (each) => {
+		if (each.type === EventCapture) {
+			return each.props.useCrossHairStyle;
+		}
+		return undefined
+	}).filter(isDefined)[0];
+}
 
 export function getNewChartConfig(innerDimension, children) {
 

@@ -2,17 +2,17 @@
 
 import React, { PropTypes, Component } from "react";
 
-import StackedHistogramSeries from "./StackedHistogramSeries";
+import StackedBarSeries from "./StackedBarSeries";
 import wrap from "./wrap";
 
-class HistogramSeries extends Component {
+class BarSeries extends Component {
 	render() {
 		var { yAccessor } = this.props;
-		return <StackedHistogramSeries {...this.props} yAccessor={[yAccessor]} />;
+		return <StackedBarSeries {...this.props} yAccessor={[yAccessor]} />;
 	}
 }
 
-HistogramSeries.propTypes = {
+BarSeries.propTypes = {
 	baseAt: PropTypes.oneOfType([
 		PropTypes.oneOf(["top", "bottom", "middle"]),
 		PropTypes.number,
@@ -35,7 +35,7 @@ HistogramSeries.propTypes = {
 	plotData: PropTypes.array,
 };
 
-HistogramSeries.defaultProps = {
+BarSeries.defaultProps = {
 	baseAt: "bottom",
 	direction: "up",
 	className: "bar",
@@ -45,4 +45,4 @@ HistogramSeries.defaultProps = {
 	widthRatio: 0.5,
 };
 
-export default wrap(HistogramSeries);
+export default wrap(BarSeries);
