@@ -85,7 +85,6 @@ export function getCurrentCharts(chartConfig, mouseXY) {
 	return currentCharts;
 }
 
-
 function setRange(scale, height, padding) {
 	if (scale.rangeRoundPoints) {
 		if (isNaN(padding)) throw new Error("padding has to be a number for ordinal scale");
@@ -95,11 +94,10 @@ function setRange(scale, height, padding) {
 			? padding
 			: { top: padding, bottom: padding };
 
-		scale.range([height - top, bottom]);
+		scale.range([height - bottom, top]);
 	}
 	return scale;
 }
-
 
 export function getChartConfigWithUpdatedYScales(chartConfig, plotData) {
 

@@ -37,7 +37,7 @@ var CHART_TYPES = {
 		require("lib/page/BubbleChartPage").default,
 		require("lib/page/BarChartPage").default,
 		require("lib/page/GroupedBarChartPage").default,
-		// require("lib/page/StackedBarChartPage").default,
+		require("lib/page/StackedBarChartPage").default,
 		require("lib/page/HorizontalBarChartPage").default,
 		// require("lib/page/HorizontalStackedBarChartPage").default,
 		require("lib/page/CandleStickChartPage").default,
@@ -218,12 +218,12 @@ var barData = [
 var horizontalBarData = barData.map(({x, y}) => ({ x: y, y: x }))
 
 var groupedBarData = [
-	{ x: "Apple", y1: 10, y2: 5, y3: 2, y4: 10 },
-	{ x: "Banana", y1: 15, y2: 10, y3: 4, y4: 10 },
-	{ x: "Strawberry", y1: 20, y2: 15, y3: 6, y4: 10 },
-	{ x: "Lemon", y1: 25, y2: 20, y3: 8, y4: 10 },
+	{ x: "Apple", y1: 10, y2: 5, y3: 15, y4: 10 },
+	{ x: "Banana", y1: 15, y2: 10, y3: 5, y4: 10 },
+	{ x: "Strawberry", y1: 20, y2: 15, y3: 5, y4: 10 },
+	{ x: "Lemon", y1: 25, y2: 20, y3: 5, y4: 10 },
 	{ x: "Cherry", y1: 30, y2: 25, y3: 10, y4: 10 },
-	{ x: "Peach", y1: 35, y2: 30, y3: 12, y4: 10 },
+	{ x: "Peach", y1: 35, y2: 30, y3: 15, y4: 10 },
 ];
 
 var bubbleData = require("data/bubble.json");

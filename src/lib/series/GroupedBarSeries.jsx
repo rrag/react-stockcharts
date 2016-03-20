@@ -4,7 +4,7 @@ import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 
 import wrap from "./wrap";
-import { drawOnCanvas2, getBarsSVG2 } from "./StackedBarSeries";
+import { drawOnCanvas2, getBarsSVG2 } from "./OverlayBarSeries";
 
 import { isDefined, isNotDefined } from "../utils";
 

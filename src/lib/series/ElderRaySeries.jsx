@@ -2,7 +2,7 @@
 
 import React, { PropTypes, Component } from "react";
 
-import StackedBarSeries from "./StackedBarSeries";
+import OverlayBarSeries from "./OverlayBarSeries";
 import StraightLine from "./StraightLine";
 
 import wrap from "./wrap";
@@ -58,7 +58,7 @@ class ElderRaySeries extends Component {
 
 		return (
 			<g className={className}>
-				<StackedBarSeries
+				<OverlayBarSeries
 					xScale={xScale} yScale={yScale}
 					baseAt={this.yAccessorForBarBase}
 					className="elderray-bar"

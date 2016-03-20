@@ -2,13 +2,13 @@
 
 import React, { PropTypes, Component } from "react";
 
-import StackedBarSeries from "./StackedBarSeries";
+import OverlayBarSeries from "./OverlayBarSeries";
 import wrap from "./wrap";
 
 class BarSeries extends Component {
 	render() {
 		var { yAccessor } = this.props;
-		return <StackedBarSeries {...this.props} yAccessor={[yAccessor]} />;
+		return <OverlayBarSeries {...this.props} yAccessor={[yAccessor]} />;
 	}
 }
 

@@ -22,6 +22,7 @@ class XAxis extends PureComponent {
 		if (ticks) ticks = [ticks];
 		return (
 			<Axis {...this.props}
+				range={[0, this.context.width]}
 				transform={[0, axisLocation]}
 				showTicks={showTicks} tickFormat={tickFormat} ticks={ticks}
 				scale={this.context.xScale} />

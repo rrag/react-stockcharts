@@ -4,8 +4,10 @@ import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 
 import wrap from "./wrap";
+import { drawOnCanvas2, getBarsSVG2 } from "./OverlayBarSeries";
 
 import { isDefined, isNotDefined, hexToRGBA, first, last } from "../utils";
+
 
 class StackedBarSeries extends Component {
 	render() {
@@ -55,73 +57,6 @@ StackedBarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	drawOnCanvas2(props, ctx, xScale, yScale, plotData, bars);
 };
 
-export function drawOnCanvas2(props, ctx, xScale, yScale, plotData, bars) {
-	var { stroke } = props;
-
-	var nest = d3.nest()
-		.key(d => d.fill)
-		.entries(bars);
-
-	nest.forEach(outer => {
-		var { key, values } = outer;
-		if (values[0].barWidth < 1) {
-			ctx.strokeStyle = key;
-		} else {
-			ctx.strokeStyle = key;
-			ctx.fillStyle = hexToRGBA(key, props.opacity);
-		}
-		values.forEach(d => {
-			if (d.barWidth < 1) {
-				/* <line key={idx} className={d.className}
-							stroke={stroke}
-							fill={fill}
-							x1={d.x} y1={d.y}
-							x2={d.x} y2={d.y + d.height} />*/
-				ctx.beginPath();
-				ctx.moveTo(d.x, d.y);
-				ctx.lineTo(d.x, d.y + d.height);
-				ctx.stroke();
-			} else {
-				/* <rect key={idx} className={d.className}
-						stroke={stroke}
-						fill={fill}
-						x={d.x}
-						y={d.y}
-						width={d.barWidth}
-						height={d.height} /> */
-				ctx.beginPath();
-				ctx.rect(d.x, d.y, d.barWidth, d.height);
-				ctx.fill();
-				if (stroke) ctx.stroke();
-			}
-
-		});
-	});
-};
-
-export function getBarsSVG2(props, bars) {
-	/* eslint-disable react/prop-types */
-	var { opacity } = props;
-	/* eslint-disable react/prop-types */
-
-	return bars.map((d, idx) => {
-		if (d.barWidth <= 1) {
-			return <line key={idx} className={d.className}
-						stroke={d.fill}
-						x1={d.x} y1={d.y}
-						x2={d.x} y2={d.y + d.height} />;
-		}
-		return <rect key={idx} className={d.className}
-					stroke={d.stroke}
-					fill={d.fill}
-					x={d.x}
-					y={d.y}
-					width={d.barWidth}
-					fillOpacity={opacity}
-					height={d.height} />;
-	});
-}
-
 StackedBarSeries.getBarsSVG = (props) => {
 
 	/* eslint-disable react/prop-types */
@@ -137,54 +72,50 @@ StackedBarSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotDat
 	var base = baseAt === "top"
 				? 0
 				: baseAt === "bottom"
-					? yScale.range()[0]
+					? first(yScale.range())
 					: baseAt === "middle"
-						? (yScale.range()[0] + yScale.range()[1]) / 2
+						? (first(yScale.range()) + last(yScale.range())) / 2
 						: baseAt;
 
 	var getClassName = d3.functor(className);
 	var getFill = d3.functor(fill);
 	var getBase = d3.functor(base);
 
+	var height = last(yScale.range());
 	var width = xScale(xAccessor(last(plotData)))
 		- xScale(xAccessor(first(plotData)));
 	var bw = (width / (plotData.length - 1) * widthRatio);
 	var barWidth = Math.round(bw);
 	var offset = (barWidth === 1 ? 0 : 0.5 * barWidth);
 
-	var bars = plotData
-			.map(d => {
-				var innerBars = yAccessor.map((eachYAccessor, i) => {
-					var yValue = eachYAccessor(d);
-					if (isNotDefined(yValue)) return undefined;
+	var layers = yAccessor.map((eachYAccessor, i) => plotData
+		.map(d => ({
+			series: xAccessor(d),
+			x: i,
+			y: eachYAccessor(d),
+			className: getClassName(d, i),
+			stroke: stroke ? getFill(d, i) : "none",
+			fill: getFill(d, i),
+		})))
 
-					var x = Math.round(xScale(xAccessor(d))) - offset;
-					return {
-						barWidth: barWidth,
-						x: x,
-						y: yScale(yValue),
-						className: getClassName(d, i),
-						stroke: stroke ? getFill(d, i) : "none",
-						fill: getFill(d, i),
-						i,
-					};
-				}).filter(yValue => isDefined(yValue));
+	console.log(layers);
 
-				var b = getBase(xScale, yScale, d);
-				var h;
-				for (var i = innerBars.length - 1; i >= 0; i--) {
-					h = b - innerBars[i].y;
-					if (h < 0) {
-						innerBars[i].y = b;
-						h = -1 * h;
-					}
-					innerBars[i].height = h;
-					b = innerBars[i].y;
-				};
-				return innerBars;
-			});
+	var stack = d3.layout.stack();
+	var data = stack(layers);
 
-	return d3.merge(bars);
+	console.log(data);
+	var bars = d3.merge(data)
+			.map((d, idx) => ({
+				className: d.className,
+				stroke: d.stroke,
+				fill: d.fill,
+				x: xScale(d.series) - barWidth / 2,
+				y: yScale(d.y0 + d.y),
+				height: getBase(xScale, yScale, d) - yScale(d.y),
+				barWidth: barWidth,
+			}));
+	console.log(bars);
+	return bars;
 };
 
 export default wrap(StackedBarSeries);

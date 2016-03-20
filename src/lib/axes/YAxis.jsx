@@ -23,6 +23,7 @@ class YAxis extends PureComponent {
 		return (
 			<Axis {...this.props}
 				transform={[axisLocation, 0]}
+				range={[0, this.context.height]}
 				tickFormat={tickFormat} ticks={[ticks]} tickValues={tickValues}
 				scale={yScale} />
 		);

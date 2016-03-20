@@ -15,10 +15,10 @@ function d3_scaleRange(scale) {
 
 class AxisLine extends Component {
 	render() {
-		var { orient, scale, outerTickSize, fill, stroke, strokeWidth, className, shapeRendering, opacity } = this.props;
+		var { orient, scale, outerTickSize, fill, stroke, strokeWidth, className, shapeRendering, opacity, range } = this.props;
 		var sign = orient === "top" || orient === "left" ? -1 : 1;
 
-		var range = d3_scaleRange(scale);
+		// var range = d3_scaleRange(scale);
 
 		var d;
 
@@ -57,7 +57,7 @@ AxisLine.propTypes = {
 AxisLine.defaultProps = {
 	className: "react-stockcharts-axis-line",
 	shapeRendering: "crispEdges",
-	outerTickSize: 6,
+	outerTickSize: 0,
 	fill: "none",
 	stroke: "#000000",
 	strokeWidth: 1,
@@ -67,12 +67,12 @@ AxisLine.defaultProps = {
 AxisLine.drawOnCanvasStatic = (props, ctx, xScale, yScale) => {
 	props = { ...AxisLine.defaultProps, ...props };
 
-	var { orient, outerTickSize, stroke, strokeWidth, opacity } = props;
+	var { orient, outerTickSize, stroke, strokeWidth, opacity, range } = props;
 
 	var sign = orient === "top" || orient === "left" ? -1 : 1;
 	var xAxis = (orient === "bottom" || orient === "top");
 
-	var range = d3_scaleRange(xAxis ? xScale : yScale);
+	// var range = d3_scaleRange(xAxis ? xScale : yScale);
 
 	ctx.lineWidth = strokeWidth;
 	ctx.strokeStyle = hexToRGBA(stroke, opacity);
