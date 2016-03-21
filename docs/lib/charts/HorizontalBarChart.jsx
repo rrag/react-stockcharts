@@ -25,7 +25,7 @@ class HorizontalBarChart extends React.Component {
 					margin={{left: 90, right: 10, top:20, bottom: 30}} type={type}
 					seriesName="Fruits"
 					xExtents={data => [0, d3.max(data, d => d.x)]}
-					data={data} plotFull
+					data={data}
 					xScale={d3.scale.linear()} flipXScale={false}>
 				<Chart id={1}
 						yExtents={data.map(d => d.y)}

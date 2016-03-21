@@ -36,6 +36,8 @@ function calculateFullData(props) {
 	var { xScale, intervalCalculator, allowedIntervals, plotFull } = props;
 	var { xAccessor, map, dataEvaluator, indexAccessor, indexMutator, discontinous } = props;
 
+	var wholeData = isDefined(plotFull) ? plotFull : xAccessor === identity;
+
 	var evaluate = dataEvaluator()
 		.allowedIntervals(allowedIntervals)
 		.intervalCalculator(intervalCalculator)
@@ -44,7 +46,7 @@ function calculateFullData(props) {
 		.indexAccessor(indexAccessor)
 		.indexMutator(indexMutator)
 		.map(map)
-		.useWholeData(plotFull)
+		.useWholeData(wholeData)
 		.scale(xScale)
 		.calculator(calculator.slice());
 
@@ -223,7 +225,7 @@ ChartCanvas.propTypes = {
 	data: PropTypes.array.isRequired,
 	initialDisplay: PropTypes.number,
 	calculator: PropTypes.arrayOf(PropTypes.func).isRequired,
-	xAccessor: PropTypes.func.isRequired,
+	xAccessor: PropTypes.func,
 	xExtents: PropTypes.oneOfType([
 		PropTypes.array,
 		PropTypes.func
@@ -264,7 +266,7 @@ ChartCanvas.defaultProps = {
 };
 
 ChartCanvas.childContextTypes = {
-	displayXAccessor: PropTypes.func.isRequired,
+	displayXAccessor: PropTypes.func,
 };
 
 ChartCanvas.ohlcv = d => ({ date: d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume });
