@@ -33,8 +33,7 @@ class StackedBarChart extends React.Component {
 					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="left" orient="left" />
 					<StackedBarSeries yAccessor={[d => d.y1, d => d.y2, d => d.y3, d => d.y4]}
-							fill={fill}
-							spaceBetweenBar={3}/>
+							fill={fill} />
 				</Chart>
 			</ChartCanvas>
 		);

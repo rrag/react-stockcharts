@@ -7,7 +7,7 @@ import ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 
-var { HorizontalStackedBarSeries  } = ReStock.series;
+var { StackedBarSeries  } = ReStock.series;
 
 var { XAxis, YAxis } = ReStock.axes;
 var { fitWidth } = ReStock.helper;
@@ -30,10 +30,14 @@ class HorizontalStackedBarChart extends React.Component {
 				<Chart id={1}
 						yExtents={data.map(d => d.y)}
 						yScale={d3.scale.ordinal()}
-						padding={1} >
+						padding={1}>
 					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="left" orient="left" />
-					<HorizontalStackedBarSeries yAccessor={d => d.y} xAccessor={[d => d.x1, d => d.x2]} />
+					<StackedBarSeries
+						yAccessor={d => d.y}
+						xAccessor={[d => d.x1, d => d.x2, d => d.x3, d => d.x4]}
+						fill={fill}
+						swapScales />
 				</Chart>
 			</ChartCanvas>
 		);

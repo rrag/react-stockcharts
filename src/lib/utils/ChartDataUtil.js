@@ -54,7 +54,7 @@ export function getNewChartConfig(innerDimension, children) {
 
 	return React.Children.map(children, (each) => {
 		if (each.type === Chart) {
-			var { id, origin, padding, yExtents: yExtentsProp, yScale } = each.props;
+			var { id, origin, padding, yExtents: yExtentsProp, yScale, flipYScale } = each.props;
 			var { width, height, availableWidth, availableHeight } = getDimensions(innerDimension, each.props);
 			var { yMousePointerDisplayLocation: at, yMousePointerDisplayFormat: yDisplayFormat } = each.props;
 			var { yMousePointerRectWidth: rectWidth, yMousePointerRectHeight: rectHeight } = each.props;
@@ -66,6 +66,7 @@ export function getNewChartConfig(innerDimension, children) {
 				origin: d3.functor(origin)(availableWidth, availableHeight),
 				padding,
 				yExtents,
+				flipYScale,
 				yScale,
 				mouseCoordinates,
 				width,
@@ -85,16 +86,16 @@ export function getCurrentCharts(chartConfig, mouseXY) {
 	return currentCharts;
 }
 
-function setRange(scale, height, padding) {
+function setRange(scale, height, padding, flipYScale) {
 	if (scale.rangeRoundPoints) {
 		if (isNaN(padding)) throw new Error("padding has to be a number for ordinal scale");
-		scale.rangeRoundPoints([height, 0], padding);
+		scale.rangeRoundPoints(flipYScale ? [0, height] : [height, 0], padding);
 	} else {
 		var { top, bottom } = isNaN(padding)
 			? padding
 			: { top: padding, bottom: padding };
 
-		scale.range([height - bottom, top]);
+		scale.range(flipYScale ? [top, height - bottom] : [height - bottom, top]);
 	}
 	return scale;
 }
@@ -116,10 +117,9 @@ export function getChartConfigWithUpdatedYScales(chartConfig, plotData) {
 
 	var combine = zipper()
 		.combine((config, domain) => {
-			var { padding, height, yScale } = config;
+			var { padding, height, yScale, flipYScale } = config;
 
-			// yScale.copy().domain(domain).range([height - top, bottom])
-			return { ...config, yScale: setRange(yScale.copy().domain(domain), height, padding) };
+			return { ...config, yScale: setRange(yScale.copy().domain(domain), height, padding, flipYScale) };
 			// return { ...config, yScale: yScale.copy().domain(domain).range([height - padding, padding]) };
 		});
 

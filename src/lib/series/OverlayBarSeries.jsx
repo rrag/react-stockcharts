@@ -54,7 +54,7 @@ OverlayBarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 
 	var bars = OverlayBarSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData)
 
-	console.log(bars);
+	// console.log(bars);
 	drawOnCanvas2(props, ctx, xScale, yScale, plotData, bars);
 };
 
@@ -167,7 +167,7 @@ OverlayBarSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotDat
 					var xValue = xAccessor(d);
 					var x = Math.round(xScale(xValue)) - offset;
 					var y = yScale(yValue);
-					console.log(yValue, y, xValue, x)
+					// console.log(yValue, y, xValue, x)
 					return {
 						width: barWidth,
 						x: x,

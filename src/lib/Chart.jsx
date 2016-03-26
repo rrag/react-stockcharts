@@ -47,6 +47,7 @@ Chart.propTypes = {
 	yScale: PropTypes.func.isRequired,
 	yMousePointerDisplayLocation: PropTypes.oneOf(["left", "right"]),
 	yMousePointerDisplayFormat: PropTypes.func,
+	flipYScale: PropTypes.bool.isRequired,
 	padding: PropTypes.oneOfType([
 		PropTypes.number,
 		PropTypes.shape({
@@ -63,6 +64,7 @@ Chart.defaultProps = {
 	yScale: d3.scale.linear(),
 	yMousePointerRectWidth: 60,
 	yMousePointerRectHeight: 20,
+	flipYScale: false,
 };
 
 Chart.contextTypes = {

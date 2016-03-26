@@ -5,7 +5,7 @@ import React, { PropTypes, Component } from "react";
 
 import wrap from "./wrap";
 
-import StackedBarSeries, { getBars, drawOnCanvas2, getBarsSVG2 } from "./StackedBarSeries";
+import StackedBarSeries, { drawOnCanvasHelper, svgHelper } from "./StackedBarSeries";
 import { identity, isDefined, isNotDefined, hexToRGBA, first, last } from "../utils";
 
 class GroupedBarSeries extends Component {
@@ -46,17 +46,12 @@ GroupedBarSeries.defaultProps = {
 
 GroupedBarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { xAccessor, yAccessor } = props;
-	var bars = getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, identity, postProcessor);
-	drawOnCanvas2(props, ctx, bars);
+	drawOnCanvasHelper(props, ctx, xScale, yScale, plotData, xAccessor, yAccessor,
+		identity, postProcessor)
 };
 
 GroupedBarSeries.getBarsSVG = (props) => {
-	/* eslint-disable react/prop-types */
-	var { xAccessor, yAccessor, xScale, yScale, plotData } = props;
-	/* eslint-disable react/prop-types */
-
-	var bars = getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, identity, postProcessor);
-	return getBarsSVG2(props, bars);
+	return svgHelper(props, identity, postProcessor);
 };
 
 function postProcessor(array) {
@@ -68,54 +63,5 @@ function postProcessor(array) {
 		}
 	})
 }
-
-/*
-GroupedBarSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData) => {
-	var { baseAt, className, fill, stroke, widthRatio, spaceBetweenBar } = props;
-	var base = baseAt === "top"
-				? 0
-				: baseAt === "bottom"
-					? yScale.range()[0]
-					: baseAt === "middle"
-						? (yScale.range()[0] + yScale.range()[1]) / 2
-						: baseAt;
-
-	var getClassName = d3.functor(className);
-	var getFill = d3.functor(fill);
-	var getBase = d3.functor(base);
-
-	var width = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData))));
-	var bw = (width / (plotData.length - 1) * widthRatio);
-	var barWidth = Math.round(bw);
-	var eachBarWidth = (barWidth - spaceBetweenBar * (yAccessor.length - 1)) / yAccessor.length;
-	var offset = (barWidth === 1 ? 0 : 0.5 * barWidth);
-
-	var bars = plotData
-			.map(d => {
-				var b = getBase(xScale, yScale, d);
-				var innerBars = yAccessor.map((eachYAccessor, i) => {
-					var yValue = eachYAccessor(d);
-					if (isNotDefined(yValue)) return undefined;
-
-					var dx = i > 0 ? (eachBarWidth + spaceBetweenBar) * i : 0;
-					var x = Math.round(xScale(xAccessor(d))) - offset + dx;
-					var y = yScale(yValue);
-					return {
-						width: eachBarWidth,
-						x,
-						y,
-						height: b - y,
-						className: getClassName(d, i),
-						stroke: stroke ? getFill(d, i) : "none",
-						fill: getFill(d, i),
-						i,
-					};
-				}).filter(yValue => isDefined(yValue));
-
-				return innerBars;
-			});
-
-	return d3.merge(bars);
-};*/
 
 export default wrap(GroupedBarSeries);

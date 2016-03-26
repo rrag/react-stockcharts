@@ -10,9 +10,8 @@ import { identity, isDefined, isNotDefined, hexToRGBA, first, last } from "../ut
 
 class StackedBarSeries extends Component {
 	render() {
-		var { props } = this;
 		return <g className="react-stockcharts-bar-series">
-			{StackedBarSeries.getBarsSVG(props)}
+			{svgHelper(this.props, d3.layout.stack())}
 		</g>;
 	}
 }
@@ -32,15 +31,19 @@ StackedBarSeries.propTypes = {
 	className: PropTypes.oneOfType([
 		PropTypes.func, PropTypes.string
 	]).isRequired,
-	xAccessor: PropTypes.func,
-	yAccessor: PropTypes.arrayOf(PropTypes.func),
+	xAccessor: PropTypes.oneOfType([
+		PropTypes.arrayOf(PropTypes.func), PropTypes.func
+	]).isRequired,
+	yAccessor: PropTypes.oneOfType([
+		PropTypes.arrayOf(PropTypes.func), PropTypes.func
+	]).isRequired,
 	xScale: PropTypes.func,
 	yScale: PropTypes.func,
 	plotData: PropTypes.array,
 };
 
 StackedBarSeries.defaultProps = {
-	baseAt: scale => first(scale.range()),
+	baseAt: (xScale, yScale, d) => first(yScale.range()),
 	direction: "up",
 	className: "bar",
 	stroke: false,
@@ -50,22 +53,58 @@ StackedBarSeries.defaultProps = {
 };
 
 StackedBarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { xAccessor, yAccessor } = props;
-	var bars = getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, d3.layout.stack());
+
+	var { yAccessor, xAccessor} = props;
+	drawOnCanvasHelper(props, ctx, xScale, yScale, plotData, xAccessor, yAccessor, d3.layout.stack())
+};
+
+export function drawOnCanvasHelper(props, ctx, xScale, yScale, plotData, xAccessor, yAccessor,
+		stackFn, defaultPostAction = identity, postRotateAction = rotateXY) {
+	var { yAccessor, xAccessor, swapScales } = props;
+
+	var bars = doStuff(props, plotData, xScale, yScale, stackFn, postRotateAction, defaultPostAction)
 	drawOnCanvas2(props, ctx, bars);
-};
+}
 
-StackedBarSeries.getBarsSVG = (props) => {
+function convertToArray(item) {
+	return Array.isArray(item) ? item : [item]
+}
 
+export function svgHelper(props, stackFn, defaultPostAction = identity, postRotateAction = rotateXY) {
 	/* eslint-disable react/prop-types */
-	var { xAccessor, yAccessor, xScale, yScale, plotData } = props;
+	var { xAccessor, yAccessor, xScale, yScale, plotData, swapScales } = props;
 	/* eslint-disable react/prop-types */
+	var bars = doStuff(props, plotData, xScale, yScale, stackFn, postRotateAction, defaultPostAction)
 
-	var bars = getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, d3.layout.stack());
 	return getBarsSVG2(props, bars);
-};
+}
 
-export function getBarsSVG2(props, bars) {
+function doStuff(props, plotData, xScale, yScale, stackFn, postRotateAction, defaultPostAction) {
+	var { yAccessor, xAccessor, swapScales } = props;
+
+	var modifiedYAccessor = swapScales ? convertToArray(xAccessor) : convertToArray(yAccessor);
+	var modifiedXAccessor = swapScales ? yAccessor : xAccessor;
+
+	var modifiedXScale = swapScales ? yScale : xScale;
+	var modifiedYScale = swapScales ? xScale : yScale;
+
+	var postProcessor =  swapScales ? postRotateAction : defaultPostAction;
+
+	var bars = getBars(props, modifiedXAccessor, modifiedYAccessor, modifiedXScale, modifiedYScale, plotData, stackFn , postProcessor);
+	return bars;
+}
+
+export const rotateXY = (array) => array.map(each => {
+	return {
+		...each,
+		x: each.y,
+		y: each.x,
+		height: each.width,
+		width: each.height
+	};
+});
+
+function getBarsSVG2(props, bars) {
 	/* eslint-disable react/prop-types */
 	var { opacity } = props;
 	/* eslint-disable react/prop-types */
@@ -87,7 +126,8 @@ export function getBarsSVG2(props, bars) {
 					height={d.height} />;
 	});
 }
-export function drawOnCanvas2(props, ctx, bars) {
+
+function drawOnCanvas2(props, ctx, bars) {
 	var { stroke } = props;
 
 	var nest = d3.nest()
@@ -161,19 +201,28 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 	var data = stack(layers);
 
 	var bars = d3.merge(data)
-			.map((d, idx) => ({
-				className: d.className,
-				stroke: d.stroke,
-				fill: d.fill,
-				// series: d.series,
-				x: xScale(d.series) - barWidth / 2,
-				y: yScale(d.y + (d.y0 || 0 )),
-				groupOffset: offset - (d.x > 0 ? (eachBarWidth + spaceBetweenBar) * d.x : 0),
-				groupWidth: eachBarWidth,
-				offset: barWidth / 2,
-				height: Math.abs(getBase(yScale, d) - yScale(d.y)),
-				width: barWidth,
-			}));
+			.map((d, idx) => {
+				let y = yScale(d.y + (d.y0 || 0 ));
+				let h = getBase(xScale, yScale, d) - yScale(d.y);
+				if (h < 0) {
+					y = y + h;
+					h = -h
+				}
+				return {
+					className: d.className,
+					stroke: d.stroke,
+					fill: d.fill,
+					series: d.series,
+					i: d.x,
+					x: xScale(d.series) - barWidth / 2,
+					y: y,
+					groupOffset: offset - (d.x > 0 ? (eachBarWidth + spaceBetweenBar) * d.x : 0),
+					groupWidth: eachBarWidth,
+					offset: barWidth / 2,
+					height: h,
+					width: barWidth,
+				}
+			});
 	return after(bars);
 };
 

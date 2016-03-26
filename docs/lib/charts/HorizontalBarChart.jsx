@@ -7,7 +7,7 @@ import ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 
-var { HorizontalBarSeries, BarSeries } = ReStock.series;
+var { BarSeries } = ReStock.series;
 
 var { XAxis, YAxis } = ReStock.axes;
 var { fitWidth } = ReStock.helper;
@@ -26,7 +26,7 @@ class HorizontalBarChart extends React.Component {
 				<Chart id={1}
 						yExtents={data.map(d => d.y)}
 						yScale={d3.scale.ordinal()}
-						padding={1} >
+						padding={1}>
 					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="left" orient="left" />
 					<BarSeries yAccessor={d => d.y} xAccessor={d => d.x} swapScales />
@@ -35,7 +35,6 @@ class HorizontalBarChart extends React.Component {
 		);
 	}
 }
-//					<HorizontalBarSeries yAccessor={d => d.y} xAccessor={d => d.x} />
 
 HorizontalBarChart.propTypes = {
 	data: React.PropTypes.array.isRequired,
