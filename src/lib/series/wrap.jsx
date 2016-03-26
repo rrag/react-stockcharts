@@ -20,6 +20,7 @@ function wrap(WrappedSeries) {
 				if (chartCanvasType !== "svg" && isDefined(getCanvasContexts)) {
 					var contexts = getCanvasContexts();
 					var props = { ...WrappedSeries.defaultProps, ...this.props };
+
 					if (contexts) BaseCanvasSeries.baseReStockDrawOnCanvasHelper(contexts.axes, props, callback);
 				}
 			}
@@ -51,7 +52,9 @@ function wrap(WrappedSeries) {
 
 				var props = { ...WrappedSeries.defaultProps, ...nextProps };
 
-				var draw = BaseCanvasSeries.baseReStockDrawOnCanvas.bind(null, props, callback, canvasOrigin, height, width, xAccessor, yAccessor);
+
+				var draw = BaseCanvasSeries.baseReStockDrawOnCanvas.bind(null, props,
+					callback, canvasOrigin, height, width, xAccessor, yAccessor);
 
 				nextProps.callbackForCanvasDraw({
 					chartId: chartId,
@@ -82,11 +85,11 @@ function wrap(WrappedSeries) {
 
 	BaseCanvasSeries.baseReStockDrawOnCanvasHelper = (canvasContext, props, callback) => {
 		var { height, width, xAccessor, yAccessor,
-			xScale, chartConfig, plotData, canvasOriginX, canvasOriginY } = props;
+			xScale, chartConfig, yScale, plotData, canvasOriginX, canvasOriginY } = props;
 		var canvasOrigin = [canvasOriginX, canvasOriginY];
 
 		BaseCanvasSeries.baseReStockDrawOnCanvas(props, callback, canvasOrigin, height, width,
-			xAccessor, yAccessor, canvasContext, xScale, chartConfig.yScale, plotData);
+			xAccessor, yAccessor, canvasContext, xScale, yScale || chartConfig.yScale, plotData);
 	};
 
 	BaseCanvasSeries.baseReStockDrawOnCanvas = (props, callback,
@@ -109,6 +112,7 @@ function wrap(WrappedSeries) {
 		// console.log("HERE");
 		if (callback) {
 			var newProps = { height, width, xAccessor, yAccessor, ...props };
+
 			callback(newProps, ctx, xScale, yScale, plotData);
 		}
 

@@ -39,7 +39,7 @@ var CHART_TYPES = {
 		require("lib/page/GroupedBarChartPage").default,
 		require("lib/page/StackedBarChartPage").default,
 		require("lib/page/HorizontalBarChartPage").default,
-		// require("lib/page/HorizontalStackedBarChartPage").default,
+		require("lib/page/HorizontalStackedBarChartPage").default,
 		require("lib/page/CandleStickChartPage").default,
 		require("lib/page/VolumeBarPage").default,
 		// TODO add OHLC chart 
@@ -115,7 +115,7 @@ function compressString(string) {
 	return string
 }
 
-function renderPage(data, dataFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData) {
+function renderPage(data, dataFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData) {
 	data.forEach((d, i) => {
 		d.date = new Date(parseDate(d.date).getTime());
 		d.open = +d.open;
@@ -196,7 +196,8 @@ function renderPage(data, dataFull, compareData, bubbleData, barData, groupedBar
 								bubbleData={bubbleData}
 								barData={barData}
 								groupedBarData={groupedBarData}
-								horizontalBarData={horizontalBarData} />
+								horizontalBarData={horizontalBarData}
+								horizontalGroupedBarData={horizontalGroupedBarData}/>
 					</MainContainer>
 				</div>
 			);
@@ -226,12 +227,22 @@ var groupedBarData = [
 	{ x: "Peach", y1: 35, y2: 30, y3: 15, y4: 10 },
 ];
 
+var horizontalGroupedBarData = groupedBarData.map(d => {
+		return {
+			y: d.x,
+			x1: d.y1,
+			x2: d.y2,
+			x3: d.y3,
+			x4: d.y4,
+		}
+	});
+
 var bubbleData = require("data/bubble.json");
 
 d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
 	d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 		d3.tsv("data/comparison.tsv", (err3, compareData) => {
-			renderPage(MSFT, MSFTFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData);
+			renderPage(MSFT, MSFTFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
 			// renderPartialPage(MSFT, MSFTFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData);
 		});
 	});

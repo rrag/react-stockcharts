@@ -4,9 +4,9 @@ import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 
 import wrap from "./wrap";
-import { drawOnCanvas2, getBarsSVG2 } from "./OverlayBarSeries";
 
-import { isDefined, isNotDefined } from "../utils";
+import StackedBarSeries, { getBars, drawOnCanvas2, getBarsSVG2 } from "./StackedBarSeries";
+import { identity, isDefined, isNotDefined, hexToRGBA, first, last } from "../utils";
 
 class GroupedBarSeries extends Component {
 	render() {
@@ -18,7 +18,6 @@ class GroupedBarSeries extends Component {
 
 GroupedBarSeries.propTypes = {
 	baseAt: PropTypes.oneOfType([
-		PropTypes.oneOf(["top", "bottom", "middle"]),
 		PropTypes.number,
 		PropTypes.func,
 	]).isRequired,
@@ -40,20 +39,15 @@ GroupedBarSeries.propTypes = {
 };
 
 GroupedBarSeries.defaultProps = {
-	baseAt: "bottom",
-	direction: "up",
-	className: "bar",
-	stroke: false,
-	fill: "#4682B4",
-	opacity: 1,
+	...StackedBarSeries.defaultProps,
 	widthRatio: 0.8,
 	spaceBetweenBar: 5,
 };
 
 GroupedBarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { xAccessor, yAccessor } = props;
-	var bars = GroupedBarSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
-	drawOnCanvas2(props, ctx, xScale, yScale, plotData, bars);
+	var bars = getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, identity, postProcessor);
+	drawOnCanvas2(props, ctx, bars);
 };
 
 GroupedBarSeries.getBarsSVG = (props) => {
@@ -61,10 +55,21 @@ GroupedBarSeries.getBarsSVG = (props) => {
 	var { xAccessor, yAccessor, xScale, yScale, plotData } = props;
 	/* eslint-disable react/prop-types */
 
-	var bars = GroupedBarSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
+	var bars = getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, identity, postProcessor);
 	return getBarsSVG2(props, bars);
 };
 
+function postProcessor(array) {
+	return array.map(each => {
+		return {
+			...each,
+			x: each.x + each.offset - each.groupOffset,
+			width: each.groupWidth,
+		}
+	})
+}
+
+/*
 GroupedBarSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData) => {
 	var { baseAt, className, fill, stroke, widthRatio, spaceBetweenBar } = props;
 	var base = baseAt === "top"
@@ -79,8 +84,7 @@ GroupedBarSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotDat
 	var getFill = d3.functor(fill);
 	var getBase = d3.functor(base);
 
-	var width = xScale(xAccessor(plotData[plotData.length - 1]))
-		- xScale(xAccessor(plotData[0]));
+	var width = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData))));
 	var bw = (width / (plotData.length - 1) * widthRatio);
 	var barWidth = Math.round(bw);
 	var eachBarWidth = (barWidth - spaceBetweenBar * (yAccessor.length - 1)) / yAccessor.length;
@@ -97,7 +101,7 @@ GroupedBarSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotDat
 					var x = Math.round(xScale(xAccessor(d))) - offset + dx;
 					var y = yScale(yValue);
 					return {
-						barWidth: eachBarWidth,
+						width: eachBarWidth,
 						x,
 						y,
 						height: b - y,
@@ -108,21 +112,10 @@ GroupedBarSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotDat
 					};
 				}).filter(yValue => isDefined(yValue));
 
-				/* var b = getBase(xScale, yScale, d);
-				var h;
-				for (var i = innerBars.length - 1; i >= 0; i--) {
-					h = b - innerBars[i].y;
-					if (h < 0) {
-						innerBars[i].y = b;
-						h = -1 * h;
-					}
-					innerBars[i].height = h;
-					b = innerBars[i].y;
-				};*/
 				return innerBars;
 			});
 
 	return d3.merge(bars);
-};
+};*/
 
 export default wrap(GroupedBarSeries);

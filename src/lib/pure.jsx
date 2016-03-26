@@ -26,7 +26,6 @@ function pure(PureSeries, contextShape, ignorePropKeys = []) {
 					ctx[key] = this.context[key];
 				});
 
-			// console.log(ctx);
 			return <PureSeries ref="pureSeries"
 				{...ctx}
 				{...this.props} />;

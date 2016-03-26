@@ -8,16 +8,16 @@ import wrap from "./wrap";
 
 import { isDefined, isNotDefined, hexToRGBA, first, last } from "../utils";
 
-class HorizontalBarSeries extends Component {
+class HorizontalStackedBarSeries extends Component {
 	render() {
 		var { props } = this;
 		return <g className="react-stockcharts-horizontal-bar-series">
-			{HorizontalBarSeries.getBarsSVG(props)}
+			{HorizontalStackedBarSeries.getBarsSVG(props)}
 		</g>;
 	}
 }
 
-HorizontalBarSeries.propTypes = {
+HorizontalStackedBarSeries.propTypes = {
 	baseAt: PropTypes.oneOfType([
 		PropTypes.oneOf(["left", "right", "middle"]),
 		PropTypes.number,
@@ -40,7 +40,7 @@ HorizontalBarSeries.propTypes = {
 	plotData: PropTypes.array,
 };
 
-HorizontalBarSeries.defaultProps = {
+HorizontalStackedBarSeries.defaultProps = {
 	baseAt: "left",
 	direction: "up",
 	className: "bar",
@@ -50,18 +50,18 @@ HorizontalBarSeries.defaultProps = {
 	heightRatio: 0.5,
 };
 
-HorizontalBarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
+HorizontalStackedBarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { xAccessor, yAccessor, stroke } = props;
-	var bars = HorizontalBarSeries.getBars(props, [xAccessor], yAccessor, xScale, yScale, plotData);
+	var bars = HorizontalStackedBarSeries.getBars(props, [xAccessor], yAccessor, xScale, yScale, plotData);
 	// console.log(bars);
 	drawOnCanvas2(props, ctx, xScale, yScale, plotData, bars);
 };
 
-HorizontalBarSeries.getBarsSVG = (props) => {
+HorizontalStackedBarSeries.getBarsSVG = (props) => {
 
 	var { xAccessor, yAccessor, xScale, yScale, plotData } = props;
 
-	var bars = HorizontalBarSeries.getBars(props, [xAccessor], yAccessor, xScale, yScale, plotData);
+	var bars = HorizontalStackedBarSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
 	return getBarsSVG2(props, bars);
 };
 
@@ -133,8 +133,60 @@ export function getBarsSVG2(props, bars) {
 	});
 }
 
+HorizontalStackedBarSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData) => {
 
-HorizontalBarSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData) => {
+	var { baseAt, className, fill, stroke, heightRatio, height } = props;
+
+	var base = baseAt === "left"
+				? 0
+				: baseAt === "right"
+					? first(xScale.range())
+					: baseAt === "middle"
+						? (first(xScale.range()) + last(xScale.range())) / 2
+						: baseAt;
+
+	var getClassName = d3.functor(className);
+	var getFill = d3.functor(fill);
+	var getBase = d3.functor(base);
+
+	var h = Math.abs(yScale(yAccessor(last(plotData)))
+		- yScale(yAccessor(first(plotData))));
+
+	var bh = (h / (plotData.length - 1) * heightRatio);
+	var barHeight = Math.round(bh);
+	var offset = (barHeight === 1 ? 0 : 0.5 * barHeight);
+
+	var layers = xAccessor.map((eachXAccessor, i) => plotData
+		.map(d => ({
+			series: yAccessor(d),
+			x: i,
+			y: eachXAccessor(d),
+			className: getClassName(d, i),
+			stroke: stroke ? getFill(d, i) : "none",
+			fill: getFill(d, i),
+		})))
+
+
+	var stack = d3.layout.stack();
+	var data = stack(layers);
+
+	console.log(data);
+	var bars = d3.merge(data)
+			.map((d, idx) => ({
+				className: d.className,
+				stroke: d.stroke,
+				fill: d.fill,
+				y: xScale(d.series) - barHeight / 2,
+				x: yScale(d.y0 + d.y),
+				width: getBase(xScale, yScale, d) - yScale(d.x),
+				barHeight: barHeight,
+			}));
+	return bars;
+};
+
+/*
+
+HorizontalStackedBarSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData) => {
 	var { baseAt, className, fill, stroke, heightRatio, height } = props;
 	var base = baseAt === "left"
 				? xScale.range()[0]
@@ -192,5 +244,5 @@ HorizontalBarSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plot
 
 	return d3.merge(bars);
 };
-
-export default wrap(HorizontalBarSeries);
+*/
+export default wrap(HorizontalStackedBarSeries);
