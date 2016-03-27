@@ -104,7 +104,7 @@ export const rotateXY = (array) => array.map(each => {
 	};
 });
 
-function getBarsSVG2(props, bars) {
+export function getBarsSVG2(props, bars) {
 	/* eslint-disable react/prop-types */
 	var { opacity } = props;
 	/* eslint-disable react/prop-types */
@@ -127,7 +127,7 @@ function getBarsSVG2(props, bars) {
 	});
 }
 
-function drawOnCanvas2(props, ctx, bars) {
+export function drawOnCanvas2(props, ctx, bars) {
 	var { stroke } = props;
 
 	var nest = d3.nest()
@@ -191,29 +191,40 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 		.map((eachYAccessor, i) => plotData
 			.map(d => ({
 				series: xAccessor(d),
+				datum: d,
 				x: i,
 				y: eachYAccessor(d),
 				className: getClassName(d, i),
 				stroke: stroke ? getFill(d, i) : "none",
 				fill: getFill(d, i),
-			})));
+			}))
+		);
 
 	var data = stack(layers);
 
 	var bars = d3.merge(data)
 			.map((d, idx) => {
-				let y = yScale(d.y + (d.y0 || 0 ));
-				let h = getBase(xScale, yScale, d) - yScale(d.y);
+				// let baseValue = yScale.invert(getBase(xScale, yScale, d.datum));
+				let y = yScale(d.y + (d.y0 || 0));
+				/*let h = isDefined(d.y0) && d.y0 !== 0 && !isNaN(d.y0)
+					? yScale(d.y0) - y
+					: getBase(xScale, yScale, d.datum) - yScale(d.y)*/
+				var h = getBase(xScale, yScale, d.datum) - yScale(d.y);
+
+				// let h = ;
+				// if (d.y < 0) h = -h;
 				if (h < 0) {
 					y = y + h;
 					h = -h
 				}
+				/* console.log(d.series, d.datum.date, d.x,
+					getBase(xScale, yScale, d.datum), `d.y=${d.y}, d.y0=${d.y0}, y=${y}, h=${h}`)*/
 				return {
 					className: d.className,
 					stroke: d.stroke,
 					fill: d.fill,
-					series: d.series,
-					i: d.x,
+					// series: d.series,
+					// i: d.x,
 					x: xScale(d.series) - barWidth / 2,
 					y: y,
 					groupOffset: offset - (d.x > 0 ? (eachBarWidth + spaceBetweenBar) * d.x : 0),

@@ -5,6 +5,7 @@ import React, { PropTypes, Component } from "react";
 
 import wrap from "./wrap";
 
+import StackedBarSeries, { drawOnCanvas2, getBarsSVG2 } from "./StackedBarSeries";
 import { isDefined, isNotDefined, hexToRGBA, first, last } from "../utils";
 
 class OverlayBarSeries extends Component {
@@ -18,7 +19,6 @@ class OverlayBarSeries extends Component {
 
 OverlayBarSeries.propTypes = {
 	baseAt: PropTypes.oneOfType([
-		PropTypes.oneOf(["top", "bottom", "middle"]),
 		PropTypes.number,
 		PropTypes.func,
 	]).isRequired,
@@ -40,7 +40,7 @@ OverlayBarSeries.propTypes = {
 };
 
 OverlayBarSeries.defaultProps = {
-	baseAt: "bottom",
+	baseAt: (xScale, yScale, d) => first(yScale.range()),
 	direction: "up",
 	className: "bar",
 	stroke: false,
@@ -55,75 +55,8 @@ OverlayBarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var bars = OverlayBarSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData)
 
 	// console.log(bars);
-	drawOnCanvas2(props, ctx, xScale, yScale, plotData, bars);
+	drawOnCanvas2(props, ctx, bars);
 };
-
-export function drawOnCanvas2(props, ctx, xScale, yScale, plotData, bars) {
-	var { stroke } = props;
-
-	var nest = d3.nest()
-		.key(d => d.fill)
-		.entries(bars);
-
-	nest.forEach(outer => {
-		var { key, values } = outer;
-		if (values[0].width < 1) {
-			ctx.strokeStyle = key;
-		} else {
-			ctx.strokeStyle = key;
-			ctx.fillStyle = hexToRGBA(key, props.opacity);
-		}
-		values.forEach(d => {
-			if (d.width < 1) {
-				/* <line key={idx} className={d.className}
-							stroke={stroke}
-							fill={fill}
-							x1={d.x} y1={d.y}
-							x2={d.x} y2={d.y + d.height} />*/
-				ctx.beginPath();
-				ctx.moveTo(d.x, d.y);
-				ctx.lineTo(d.x, d.y + d.height);
-				ctx.stroke();
-			} else {
-				/* <rect key={idx} className={d.className}
-						stroke={stroke}
-						fill={fill}
-						x={d.x}
-						y={d.y}
-						width={d.width}
-						height={d.height} /> */
-				ctx.beginPath();
-				ctx.rect(d.x, d.y, d.width, d.height);
-				ctx.fill();
-				if (stroke) ctx.stroke();
-			}
-
-		});
-	});
-};
-
-export function getBarsSVG2(props, bars) {
-	/* eslint-disable react/prop-types */
-	var { opacity } = props;
-	/* eslint-disable react/prop-types */
-
-	return bars.map((d, idx) => {
-		if (d.width <= 1) {
-			return <line key={idx} className={d.className}
-						stroke={d.fill}
-						x1={d.x} y1={d.y}
-						x2={d.x} y2={d.y + d.height} />;
-		}
-		return <rect key={idx} className={d.className}
-					stroke={d.stroke}
-					fill={d.fill}
-					x={d.x}
-					y={d.y}
-					width={d.width}
-					fillOpacity={opacity}
-					height={d.height} />;
-	});
-}
 
 OverlayBarSeries.getBarsSVG = (props) => {
 
@@ -137,17 +70,10 @@ OverlayBarSeries.getBarsSVG = (props) => {
 
 OverlayBarSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData) => {
 	var { baseAt, className, fill, stroke, widthRatio } = props;
-	var base = baseAt === "top"
-				? 0
-				: baseAt === "bottom"
-					? first(yScale.range())
-					: baseAt === "middle"
-						? (first(yScale.range()) + last(yScale.range())) / 2
-						: baseAt;
 
 	var getClassName = d3.functor(className);
 	var getFill = d3.functor(fill);
-	var getBase = d3.functor(base);
+	var getBase = d3.functor(baseAt);
 
 	var width = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData))));
 

@@ -41,14 +41,14 @@ class ElderRaySeries extends Component {
 		var { calculator } = this.props;
 		var yAccessor = calculator.accessor();
 		return yAccessor(d) && (yAccessor(d).bullPower < 0
-				|| yAccessor(d).bullPower * yAccessor(d).bearPower < 0
+				|| yAccessor(d).bullPower * yAccessor(d).bearPower < 0 // bullPower is +ve and bearPower is -ve
 			? Math.min(0, yAccessor(d).bullPower) : undefined);
 	}
 	yAccessorForBarBase(xScale, yScale, d) {
 		var { calculator } = this.props;
 		var yAccessor = calculator.accessor();
-		var y = yAccessor(d) ? yAccessor(d).bearPower : 0;
-		return yScale(Math.min(y, 0));
+		var y = yAccessor(d) && Math.min(yAccessor(d).bearPower, 0);
+		return yScale(y);
 	}
 	fillForEachBar(d, yAccessorNumber) {
 		return yAccessorNumber % 2 === 0 ? "#6BA583" : "#FF0000";
@@ -71,9 +71,6 @@ class ElderRaySeries extends Component {
 		);
 	}
 }
-
-/*
-*/
 
 ElderRaySeries.propTypes = {
 	className: PropTypes.string,
