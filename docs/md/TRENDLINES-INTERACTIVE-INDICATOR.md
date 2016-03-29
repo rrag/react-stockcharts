@@ -4,12 +4,6 @@
 
 inside a `Chart` creates an interactive trendline for that `Chart`
 
-other props of interest
+Review the source to see how to remove the last drawn trendline, and cancel a trendline
 
-`shouldDisableSnap` defaults to `(e) => (e.button === 2 || e.shiftKey)` -- mouse right click **or** holding the shift key while click -- 
-to temporarily disable snap (if it is enabled already)
-
-`shouldRemoveLastIndicator` defaults to `(e) => (e.button === 2 && e.ctrlKey)` -- mouse right click **and** holding the ctrl key while click --
-to remove the last drawn indicator
-
-These defaults can be changed to your convenience
+[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickChartWithInteractiveIndicator.jsx), [block](http://bl.ocks.org/rrag/63f666ef1159691d76cc), [plunker](http://plnkr.co/edit/gist:63f666ef1159691d76cc?p=preview)

@@ -40,6 +40,4 @@ Bollinger Bands - [source](https://gist.github.com/rrag/b993d5fcc5c09dd66a6e), [
 
 #### Other
 
-Add data / update data - [source](https://gist.github.com/rrag/555ea9d11c621a895171), [block](http://bl.ocks.org/rrag/555ea9d11c621a895171), [plunker](http://plnkr.co/edit/gist:555ea9d11c621a895171?p=preview)
-
 Dark theme - [source](https://gist.github.com/rrag/23dd469fe32d7fc1977c), [block](http://bl.ocks.org/rrag/23dd469fe32d7fc1977c), [plunker](http://plnkr.co/edit/gist:23dd469fe32d7fc1977c?p=preview)

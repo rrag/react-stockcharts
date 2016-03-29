@@ -1,10 +1,7 @@
 ## v0.5.x
 
-1. New Chart Type
-    - Volume Profile
-    - Line break
 1. Annotations for events [#54](https://github.com/rrag/react-stockcharts/issues/54)
-1. Programatic Buy & sell signals (using annotations?)
+1. Buy & sell signals (using annotations?)
 1. Labels [#42](https://github.com/rrag/react-stockcharts/issues/42) (using annotations?)
 1. Mouse following tooltip [#50](https://github.com/rrag/react-stockcharts/issues/50)
 1. Create intra day scale
@@ -14,14 +11,14 @@
 1. [ATR Trailing stop](http://www.incrediblecharts.com/indicators/atr_average_true_range_trailing_stops.php)
 1. [Chandelier Exit](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:chandelier_exit)
 1. Use stateless components in `RSISeries`, `StochasticSeries` to address react/prop-types lint error
-1. Automatic Support & Resistance trendlines (Optional)
-1. Add a playground to see live updates (Optional)
-
+1. Automatic Support & Resistance trendlines (Tentative)
+1. Add a playground to see live updates (Tentative)
 
 #### New Chart types
-1. Max Drawdown
-1. Better Renko/Mean Renko
-1. HLC Chart
+1. Volume Profile [#60](https://github.com/rrag/react-stockcharts/issues/60)
+1. Line break
+1. Max Drawdown [#7](https://github.com/rrag/react-stockcharts/issues/7)
+1. Better Renko/Mean Renko (Tentative)
 
 ## v0.6.x
 

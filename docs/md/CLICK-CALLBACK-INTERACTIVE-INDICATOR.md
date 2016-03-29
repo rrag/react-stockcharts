@@ -8,4 +8,4 @@ This component listens to the `click` event. Note: `pan` actions will not trigge
 
 Open the dev tools console and see the output of click
 
-[source](https://gist.github.com/rrag/67894a887e52891aa2a3), [block](http://bl.ocks.org/rrag/67894a887e52891aa2a3), [plunker](http://plnkr.co/edit/gist:67894a887e52891aa2a3?p=preview) of this example
+[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickChartWithClickHandlerCallback.jsx), [block](http://bl.ocks.org/rrag/67894a887e52891aa2a3), [plunker](http://plnkr.co/edit/gist:67894a887e52891aa2a3?p=preview) of this example

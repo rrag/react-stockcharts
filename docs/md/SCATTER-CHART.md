@@ -7,4 +7,5 @@ where
 ```jsx
 var { LineSeries, ScatterSeries, Circle } = ReStock.series;
 ```
-checkout the [source](https://gist.github.com/rrag/TBD), [block](http://bl.ocks.org/rrag/TBD), [plunker](http://plnkr.co/edit/gist:TBD?p=preview) of this example - TODO - ADD GIST, PLUNKER, BLOCK
+
+[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/LineAndScatterChart.jsx), [block](http://bl.ocks.org/rrag/95ffd539fa4e0b4544cf), [plunker](http://plnkr.co/edit/gist:95ffd539fa4e0b4544cf?p=preview)

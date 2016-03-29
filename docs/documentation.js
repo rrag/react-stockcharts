@@ -19,8 +19,8 @@ import MenuItem from "lib/MenuItem";
 var DOCUMENTATION = {
 	head: "Documentation",
 	pages: [
-		require("lib/page/GettingStartedPage").default,
-		require("lib/page/QuickStartExamplesPage").default,
+		// require("lib/page/GettingStartedPage").default,
+		// require("lib/page/QuickStartExamplesPage").default,
 		require("lib/page/OverviewPage").default,
 		require("lib/page/SvgVsCanvasPage").default,
 		require("lib/page/LotsOfDataPage").default,
@@ -207,43 +207,29 @@ function renderPage(data, dataFull, compareData, bubbleData, barData, groupedBar
 	ReactDOM.render(<ExamplesPage />, document.getElementById("chart-goes-here"));
 }
 
-var barData = [
-	{ x: "Apple", y: 10 },
-	{ x: "Banana", y: 15 },
-	{ x: "Strawberry", y: 20 },
-	{ x: "Lemon", y: 25 },
-	{ x: "Cherry", y: 30 },
-	{ x: "Peach", y: 35 },
-];
-
-var horizontalBarData = barData.map(({x, y}) => ({ x: y, y: x }))
-
-var groupedBarData = [
-	{ x: "Apple", y1: 10, y2: 5, y3: 15, y4: 10 },
-	{ x: "Banana", y1: 15, y2: 10, y3: 5, y4: 10 },
-	{ x: "Strawberry", y1: 20, y2: 15, y3: 5, y4: 10 },
-	{ x: "Lemon", y1: 25, y2: 20, y3: 5, y4: 10 },
-	{ x: "Cherry", y1: 30, y2: 25, y3: 10, y4: 10 },
-	{ x: "Peach", y1: 35, y2: 30, y3: 15, y4: 10 },
-];
-
-var horizontalGroupedBarData = groupedBarData.map(d => {
-		return {
-			y: d.x,
-			x1: d.y1,
-			x2: d.y2,
-			x3: d.y3,
-			x4: d.y4,
-		}
-	});
-
-var bubbleData = require("data/bubble.json");
 
 d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
 	d3.tsv("data/MSFT.tsv", (err, MSFT) => {
 		d3.tsv("data/comparison.tsv", (err3, compareData) => {
-			renderPage(MSFT, MSFTFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
-			// renderPartialPage(MSFT, MSFTFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData);
+			d3.json("data/bubble.json", (err4, bubbleData) => {
+				d3.json("data/barData.json", (err5, barData) => {
+					d3.json("data/groupedBarData.json", (err6, groupedBarData) => {
+						var horizontalBarData = barData.map(({x, y}) => ({ x: y, y: x }))
+						var horizontalGroupedBarData = groupedBarData.map(d => {
+								return {
+									y: d.x,
+									x1: d.y1,
+									x2: d.y2,
+									x3: d.y3,
+									x4: d.y4,
+								}
+							});
+
+						renderPage(MSFT, MSFTFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
+						// renderPartialPage(MSFT, MSFTFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData);
+					});
+				});
+			})
 		});
 	});
 });

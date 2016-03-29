@@ -4,7 +4,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import d3 from "d3";
 
-import Chart from "./lib/charts/CandleStickChartWithMACDIndicator";
+import Chart from "./lib/charts/CandleStickChartWithDarkTheme";
+// import Chart from "./lib/charts/OHLCChartWithElderRayIndicator";
 
 var ReadME = require('md/MAIN.md');
 

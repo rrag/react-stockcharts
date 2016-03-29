@@ -27,7 +27,7 @@ var StackedBarChartPage = React.createClass({
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/BAR-CHART')}}></aside>
+						<aside dangerouslySetInnerHTML={{__html: require('md/STACKED-BAR-CHART')}}></aside>
 					</Section>
 				</Row>
 			</ContentSection>

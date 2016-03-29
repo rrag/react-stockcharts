@@ -27,7 +27,7 @@ var HorizontalBarChartPage = React.createClass({
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/BAR-CHART')}}></aside>
+						<aside dangerouslySetInnerHTML={{__html: require('md/HORIZONTAL-STACKED-BAR-CHART')}}></aside>
 					</Section>
 				</Row>
 			</ContentSection>

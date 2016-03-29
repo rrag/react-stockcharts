@@ -1,1 +1,1 @@
-checkout the [source](https://gist.github.com/rrag/2dc9dd83567cd41c830a), [block](http://bl.ocks.org/rrag/2dc9dd83567cd41c830a), [plunker](http://plnkr.co/edit/gist:2dc9dd83567cd41c830a?p=preview) of this example
+[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickStockScaleChartWithVolumeBarV3.jsx), [block](http://bl.ocks.org/rrag/2dc9dd83567cd41c830a), [plunker](http://plnkr.co/edit/gist:2dc9dd83567cd41c830a?p=preview)

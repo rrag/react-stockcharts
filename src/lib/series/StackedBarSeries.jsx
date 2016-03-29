@@ -206,7 +206,7 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 			.map((d, idx) => {
 				// let baseValue = yScale.invert(getBase(xScale, yScale, d.datum));
 				let y = yScale(d.y + (d.y0 || 0));
-				/*let h = isDefined(d.y0) && d.y0 !== 0 && !isNaN(d.y0)
+				/* let h = isDefined(d.y0) && d.y0 !== 0 && !isNaN(d.y0)
 					? yScale(d.y0) - y
 					: getBase(xScale, yScale, d.datum) - yScale(d.y)*/
 				var h = getBase(xScale, yScale, d.datum) - yScale(d.y);
