@@ -1,12 +1,11 @@
 "use strict";
 
-import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 
 import wrap from "./wrap";
 
 import StackedBarSeries, { drawOnCanvasHelper, svgHelper } from "./StackedBarSeries";
-import { identity, isDefined, isNotDefined, hexToRGBA, first, last } from "../utils";
+import { identity } from "../utils";
 
 class GroupedBarSeries extends Component {
 	render() {
@@ -47,7 +46,7 @@ GroupedBarSeries.defaultProps = {
 GroupedBarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { xAccessor, yAccessor } = props;
 	drawOnCanvasHelper(props, ctx, xScale, yScale, plotData, xAccessor, yAccessor,
-		identity, postProcessor)
+		identity, postProcessor);
 };
 
 GroupedBarSeries.getBarsSVG = (props) => {
@@ -60,8 +59,8 @@ function postProcessor(array) {
 			...each,
 			x: each.x + each.offset - each.groupOffset,
 			width: each.groupWidth,
-		}
-	})
+		};
+	});
 }
 
 export default wrap(GroupedBarSeries);

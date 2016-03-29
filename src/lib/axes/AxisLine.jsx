@@ -2,8 +2,9 @@
 
 import React, { PropTypes, Component } from "react";
 
-import { hexToRGBA } from "../utils";
+import { first, last, hexToRGBA } from "../utils";
 
+/*
 function d3_scaleExtent(domain) {
 	var start = domain[0], stop = domain[domain.length - 1];
 	return start < stop ? [start, stop] : [stop, start];
@@ -12,10 +13,10 @@ function d3_scaleExtent(domain) {
 function d3_scaleRange(scale) {
 	return scale.rangeExtent ? scale.rangeExtent() : d3_scaleExtent(scale.range());
 }
-
+*/
 class AxisLine extends Component {
 	render() {
-		var { orient, scale, outerTickSize, fill, stroke, strokeWidth, className, shapeRendering, opacity, range } = this.props;
+		var { orient, outerTickSize, fill, stroke, strokeWidth, className, shapeRendering, opacity, range } = this.props;
 		var sign = orient === "top" || orient === "left" ? -1 : 1;
 
 		// var range = d3_scaleRange(scale);
@@ -52,6 +53,7 @@ AxisLine.propTypes = {
 	stroke: PropTypes.string,
 	strokeWidth: PropTypes.number,
 	opacity: PropTypes.number,
+	range: PropTypes.array,
 };
 
 AxisLine.defaultProps = {
@@ -64,7 +66,7 @@ AxisLine.defaultProps = {
 	opacity: 1,
 };
 
-AxisLine.drawOnCanvasStatic = (props, ctx, xScale, yScale) => {
+AxisLine.drawOnCanvasStatic = (props, ctx/* , xScale, yScale*/) => {
 	props = { ...AxisLine.defaultProps, ...props };
 
 	var { orient, outerTickSize, stroke, strokeWidth, opacity, range } = props;
@@ -80,15 +82,15 @@ AxisLine.drawOnCanvasStatic = (props, ctx, xScale, yScale) => {
 	ctx.beginPath();
 
 	if (xAxis) {
-		ctx.moveTo(range[0], sign * outerTickSize);
-		ctx.lineTo(range[0], 0);
-		ctx.lineTo(range[1], 0);
-		ctx.lineTo(range[1], sign * outerTickSize);
+		ctx.moveTo(first(range), sign * outerTickSize);
+		ctx.lineTo(first(range), 0);
+		ctx.lineTo(last(range), 0);
+		ctx.lineTo(last(range), sign * outerTickSize);
 	} else {
-		ctx.moveTo(sign * outerTickSize, range[0]);
-		ctx.lineTo(0, range[0]);
-		ctx.lineTo(0, range[1]);
-		ctx.lineTo(sign * outerTickSize, range[1]);
+		ctx.moveTo(sign * outerTickSize, first(range));
+		ctx.lineTo(0, first(range));
+		ctx.lineTo(0, last(range));
+		ctx.lineTo(sign * outerTickSize, last(range));
 	}
 	ctx.stroke();
 

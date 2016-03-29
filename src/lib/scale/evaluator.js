@@ -20,9 +20,12 @@ function getFilteredResponse(dataForInterval, left, right, xAccessor) {
 
 	return filteredData;
 }
-function getFilteredResponseWhole(dataForInterval/*  , left, right, xAccessor */) {
+
+/*
+function getFilteredResponseWhole(dataForInterval, left, right, xAccessor) {
 	return dataForInterval;
 }
+*/
 
 function getDomain(inputDomain, width, filteredData, predicate, currentDomain, canShowTheseMany, realXAccessor) {
 	if (canShowTheseMany(width, filteredData.length)) {

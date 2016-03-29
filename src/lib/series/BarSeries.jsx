@@ -5,7 +5,7 @@ import React, { PropTypes, Component } from "react";
 import wrap from "./wrap";
 
 import StackedBarSeries, { drawOnCanvasHelper, svgHelper } from "./StackedBarSeries";
-import { identity, first, last } from "../utils";
+import { identity } from "../utils";
 
 
 class BarSeries extends Component {
@@ -40,8 +40,8 @@ BarSeries.propTypes = {
 BarSeries.defaultProps = StackedBarSeries.defaultProps;
 
 BarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { yAccessor, xAccessor} = props;
-	drawOnCanvasHelper(props, ctx, xScale, yScale, plotData, xAccessor, yAccessor, identity)
+	var { yAccessor, xAccessor } = props;
+	drawOnCanvasHelper(props, ctx, xScale, yScale, plotData, xAccessor, yAccessor, identity);
 };
 
 BarSeries.getBarsSVG = (props) => {

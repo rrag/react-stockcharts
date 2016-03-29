@@ -237,6 +237,7 @@ ChartCanvas.propTypes = {
 	children: PropTypes.node.isRequired,
 	discontinous: PropTypes.bool.isRequired,
 	postCalculator: PropTypes.func.isRequired,
+	flipXScale: PropTypes.bool.isRequired,
 	padding: PropTypes.oneOfType([
 		PropTypes.number,
 		PropTypes.shape({
@@ -262,6 +263,7 @@ ChartCanvas.defaultProps = {
 	postCalculator: identity,
 	padding: 0,
 	xAccessor: identity,
+	flipXScale: false,
 	// initialDisplay: 30
 };
 

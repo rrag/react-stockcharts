@@ -5,7 +5,7 @@ import React, { PropTypes, Component } from "react";
 
 import wrap from "./wrap";
 
-import { identity, isDefined, isNotDefined, hexToRGBA, first, last } from "../utils";
+import { identity, hexToRGBA, first, last } from "../utils";
 
 
 class StackedBarSeries extends Component {
@@ -43,7 +43,7 @@ StackedBarSeries.propTypes = {
 };
 
 StackedBarSeries.defaultProps = {
-	baseAt: (xScale, yScale, d) => first(yScale.range()),
+	baseAt: (xScale, yScale/* , d*/) => first(yScale.range()),
 	direction: "up",
 	className: "bar",
 	stroke: false,
@@ -54,27 +54,25 @@ StackedBarSeries.defaultProps = {
 
 StackedBarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 
-	var { yAccessor, xAccessor} = props;
-	drawOnCanvasHelper(props, ctx, xScale, yScale, plotData, xAccessor, yAccessor, d3.layout.stack())
+	var { yAccessor, xAccessor } = props;
+	drawOnCanvasHelper(props, ctx, xScale, yScale, plotData, xAccessor, yAccessor, d3.layout.stack());
 };
 
 export function drawOnCanvasHelper(props, ctx, xScale, yScale, plotData, xAccessor, yAccessor,
 		stackFn, defaultPostAction = identity, postRotateAction = rotateXY) {
-	var { yAccessor, xAccessor, swapScales } = props;
+	var { yAccessor, xAccessor } = props;
 
-	var bars = doStuff(props, plotData, xScale, yScale, stackFn, postRotateAction, defaultPostAction)
+	var bars = doStuff(props, plotData, xScale, yScale, stackFn, postRotateAction, defaultPostAction);
 	drawOnCanvas2(props, ctx, bars);
 }
 
 function convertToArray(item) {
-	return Array.isArray(item) ? item : [item]
+	return Array.isArray(item) ? item : [item];
 }
 
 export function svgHelper(props, stackFn, defaultPostAction = identity, postRotateAction = rotateXY) {
-	/* eslint-disable react/prop-types */
-	var { xAccessor, yAccessor, xScale, yScale, plotData, swapScales } = props;
-	/* eslint-disable react/prop-types */
-	var bars = doStuff(props, plotData, xScale, yScale, stackFn, postRotateAction, defaultPostAction)
+	var { xScale, yScale, plotData } = props;
+	var bars = doStuff(props, plotData, xScale, yScale, stackFn, postRotateAction, defaultPostAction);
 
 	return getBarsSVG2(props, bars);
 }
@@ -90,7 +88,7 @@ function doStuff(props, plotData, xScale, yScale, stackFn, postRotateAction, def
 
 	var postProcessor =  swapScales ? postRotateAction : defaultPostAction;
 
-	var bars = getBars(props, modifiedXAccessor, modifiedYAccessor, modifiedXScale, modifiedYScale, plotData, stackFn , postProcessor);
+	var bars = getBars(props, modifiedXAccessor, modifiedYAccessor, modifiedXScale, modifiedYScale, plotData, stackFn, postProcessor);
 	return bars;
 }
 
@@ -178,7 +176,6 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 	var getFill = d3.functor(fill);
 	var getBase = d3.functor(baseAt);
 
-	var height = last(yScale.range());
 	var width = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData))));
 	var bw = (width / (plotData.length - 1) * widthRatio);
 	var barWidth = Math.round(bw);
@@ -203,7 +200,7 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 	var data = stack(layers);
 
 	var bars = d3.merge(data)
-			.map((d, idx) => {
+			.map(d => {
 				// let baseValue = yScale.invert(getBase(xScale, yScale, d.datum));
 				let y = yScale(d.y + (d.y0 || 0));
 				/* let h = isDefined(d.y0) && d.y0 !== 0 && !isNaN(d.y0)
@@ -215,7 +212,7 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 				// if (d.y < 0) h = -h;
 				if (h < 0) {
 					y = y + h;
-					h = -h
+					h = -h;
 				}
 				/* console.log(d.series, d.datum.date, d.x,
 					getBase(xScale, yScale, d.datum), `d.y=${d.y}, d.y0=${d.y0}, y=${y}, h=${h}`)*/
@@ -232,7 +229,7 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 					offset: barWidth / 2,
 					height: h,
 					width: barWidth,
-				}
+				};
 			});
 	return after(bars);
 };

@@ -694,6 +694,7 @@ EventHandler.propTypes = {
 			right: PropTypes.number,
 		})
 	]).isRequired,
+	direction: PropTypes.oneOf([-1, 1]).isRequired,
 	showingInterval: PropTypes.string,
 };
 

@@ -46,7 +46,7 @@ export function shouldShowCrossHairStyle(children) {
 		if (each.type === EventCapture) {
 			return each.props.useCrossHairStyle;
 		}
-		return undefined
+		return undefined;
 	}).filter(isDefined)[0];
 }
 

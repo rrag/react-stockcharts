@@ -5,8 +5,8 @@ import React, { PropTypes, Component } from "react";
 
 import wrap from "./wrap";
 
-import StackedBarSeries, { drawOnCanvas2, getBarsSVG2 } from "./StackedBarSeries";
-import { isDefined, isNotDefined, hexToRGBA, first, last } from "../utils";
+import { drawOnCanvas2, getBarsSVG2 } from "./StackedBarSeries";
+import { isDefined, isNotDefined, first, last } from "../utils";
 
 class OverlayBarSeries extends Component {
 	render() {
@@ -40,7 +40,7 @@ OverlayBarSeries.propTypes = {
 };
 
 OverlayBarSeries.defaultProps = {
-	baseAt: (xScale, yScale, d) => first(yScale.range()),
+	baseAt: (xScale, yScale/* , d*/) => first(yScale.range()),
 	direction: "up",
 	className: "bar",
 	stroke: false,
@@ -52,7 +52,7 @@ OverlayBarSeries.defaultProps = {
 OverlayBarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { xAccessor, yAccessor } = props;
 
-	var bars = OverlayBarSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData)
+	var bars = OverlayBarSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
 
 	// console.log(bars);
 	drawOnCanvas2(props, ctx, bars);
