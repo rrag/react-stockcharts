@@ -5,7 +5,7 @@ import d3 from "d3";
 
 import wrap from "./wrap";
 
-import { isDefined, isNotDefined } from "../utils";
+import { first } from "../utils";
 
 class Line extends Component {
 	render() {
@@ -30,41 +30,53 @@ Line.propTypes = {
 Line.defaultProps = {
 	className: "line ",
 	fill: "none",
-	stroke: "black"
+	stroke: "black",
+	defined: d => !isNaN(d),
 };
 
 Line.getPath = (props) => {
-	var { plotData, xScale, yScale, xAccessor, yAccessor } = props;
+	var { plotData, xScale, yScale, xAccessor, yAccessor, defined } = props;
 
 	var dataSeries = d3.svg.line()
-		.defined(d => isDefined(yAccessor(d)))
+		.defined(d => defined(yAccessor(d)))
 		.x(d => xScale(xAccessor(d)))
 		.y(d => yScale(yAccessor(d)));
 	return dataSeries(plotData);
 };
 
-Line.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { xAccessor, yAccessor, stroke } = props;
-
-	ctx.strokeStyle = stroke;
+function segment(points, ctx) {
 	ctx.beginPath();
 
-	var begin = true;
-	plotData.forEach((d) => {
-		if (isNotDefined(yAccessor(d))) {
-			ctx.stroke();
-			ctx.beginPath();
-			begin = true;
-		} else {
-			if (begin) {
-				begin = false;
-				let [x, y] = [~~ (0.5 + xScale(xAccessor(d))), ~~ (0.5 + yScale(yAccessor(d)))];
-				ctx.moveTo(x, y);
-			}
-			ctx.lineTo(xScale(xAccessor(d)), yScale(yAccessor(d)));
-		}
-	});
+	let [x, y] = first(points);
+	ctx.moveTo(x, y);
+	for (let i = 1; i < points.length; i++) {
+		let [x1, y1] = points[i];
+		ctx.lineTo(x1, y1);
+	};
+
 	ctx.stroke();
+};
+
+Line.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
+	var { xAccessor, yAccessor, stroke, defined } = props;
+
+	ctx.strokeStyle = stroke;
+
+	var points = [];
+	for (let i = 0; i < plotData.length; i++) {
+		let d = plotData[i];
+		if (defined(yAccessor(d), i)) {
+			let [x, y] = [xScale(xAccessor(d)), yScale(yAccessor(d))];
+
+			points.push([x, y]);
+		} else if (points.length) {
+			segment(points, ctx);
+			points = [];
+		}
+	}
+
+	if (points.length) segment(points, ctx);
+
 };
 
 export default wrap(Line);

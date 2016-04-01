@@ -4,7 +4,7 @@ import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
 import wrap from "./wrap";
-import { hexToRGBA, isDefined, isNotDefined } from "../utils";
+import { hexToRGBA, isDefined, first } from "../utils";
 
 class Area extends Component {
 	render() {
@@ -37,14 +37,15 @@ Area.defaultProps = {
 	className: "line ",
 	fill: "none",
 	opacity: 1,
+	defined: d => !isNaN(d),
+	base: (yScale/* , d*/) => first(yScale.range()),
 };
 Area.getArea = (props) => {
-	var { plotData, xScale, yScale, xAccessor, yAccessor, base } = props;
-	var height = yScale.range()[0];
-	var newBase = d3.functor( isNotDefined(base) ? height - 1 : base );
+	var { plotData, xScale, yScale, xAccessor, yAccessor, base, defined } = props;
+	var newBase = d3.functor(base);
 
 	var areaSeries = d3.svg.area()
-		.defined((d) => isDefined(yAccessor(d)))
+		.defined(d => defined(yAccessor(d)))
 		.x((d) => xScale(xAccessor(d)))
 		.y0(newBase.bind(null, yScale))
 		.y1((d) => yScale(yAccessor(d)));
@@ -53,41 +54,49 @@ Area.getArea = (props) => {
 	return areaSeries(plotData);
 };
 
+function segment(points0, points1, ctx) {
+	ctx.beginPath();
+	var [x0, y0] = first(points0);
+	ctx.moveTo(x0, y0);
+
+	var i;
+	for (i = 0; i < points1.length; i++) {
+		let [x1, y1] = points1[i];
+		ctx.lineTo(x1, y1);
+	};
+
+	for (i = points0.length - 1; i >= 0; i--) {
+		let [x0, y0] = points0[i];
+		ctx.lineTo(x0, y0);
+	};
+	ctx.closePath();
+	ctx.fill();
+};
+
 Area.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { xAccessor, yAccessor, fill, stroke, opacity, base } = props;
-	var begin = true;
-	var height = yScale.range()[0];
-	var newBase = d3.functor( isNotDefined(base) ? height - 1 : base);
+	var { xAccessor, yAccessor, fill, stroke, opacity, base, defined } = props;
+	// var height = yScale.range()[0];
+	var newBase = d3.functor(base);
 
 	ctx.fillStyle = hexToRGBA(fill, opacity);
 	ctx.strokeStyle = stroke;
-	// ctx.globalAlpha = opacity;
 
-	plotData.forEach((d) => {
-		if (isDefined(yAccessor(d))) {
-			if (begin) {
-				ctx.beginPath();
-				begin = false;
-				let [x, y] = [~~ (0.5 + xScale(xAccessor(d))), ~~ (0.5 + yScale(yAccessor(d)))];
-				ctx.moveTo(x, newBase(yScale, d));
-				ctx.lineTo(x, y);
-			}
-			ctx.lineTo(xScale(xAccessor(d)), yScale(yAccessor(d)));
+	var points0 = [], points1 = [];
+
+	for (let i = 0; i < plotData.length; i++) {
+		let d = plotData[i];
+		if (defined(yAccessor(d), i)) {
+			let [x, y1, y0] = [xScale(xAccessor(d)), yScale(yAccessor(d)), newBase(yScale, d)];
+
+			points0.push([x, y0]);
+			points1.push([x, y1]);
+		} else if (points0.length) {
+			segment(points0, points1, ctx);
+			points0 = [];
+			points1 = [];
 		}
-	});
-
-	var last = plotData[plotData.length - 1];
-	ctx.lineTo(xScale(xAccessor(last)), newBase(yScale, last));
-
-	if (isDefined(base)) {
-		plotData.slice().reverse().forEach((d) => {
-			if (isDefined(yAccessor(d))) {
-				ctx.lineTo(xScale(xAccessor(d)), newBase(yScale, d));
-			}
-		});
 	}
-	ctx.closePath();
-	ctx.fill();
+	if (points0.length) segment(points0, points1, ctx);
 };
 
 export default wrap(Area);

@@ -12,12 +12,13 @@ import eodIntervalCalculator from "./scale/eodIntervalCalculator";
 import evaluator from "./scale/evaluator";
 
 
+const CANDIDATES_FOR_RESET = ["seriesName", /* "data",*/"interval", "discontinous",
+	"intervalCalculator", "allowedIntervals",
+	"xScale", /* "xAccessor",*/"map", "dataEvaluator",
+	"indexAccessor", "indexMutator"];
+
 function shouldResetChart(thisProps, nextProps) {
-	var candidates = ["seriesName", /* "data",*/"interval", "discontinous",
-		"intervalCalculator", "allowedIntervals",
-		"xScale", /* "xAccessor",*/"map", "dataEvaluator",
-		"indexAccessor", "indexMutator"];
-	return !candidates.every(key => {
+	return !CANDIDATES_FOR_RESET.every(key => {
 		var result = shallowEqual(thisProps[key], nextProps[key]);
 		// console.log(key, result);
 		return result;
@@ -147,7 +148,7 @@ class ChartCanvas extends Component {
 		// console.log("shouldResetChart =", reset);
 
 		if (reset) {
-			if (process.env.NODE_ENV !== "production") console.log("RESET CHART");
+			if (process.env.NODE_ENV !== "production") console.log("RESET CHART, one or more of these props changed", CANDIDATES_FOR_RESET);
 			this.setState(calculateState(nextProps));
 		} else if (!shallowEqual(this.props.xExtents, nextProps.xExtents)) {
 			if (process.env.NODE_ENV !== "production") console.log("xExtents changed");
