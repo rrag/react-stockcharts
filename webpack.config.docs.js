@@ -6,7 +6,7 @@ myConfig.output.filename = "[name].js";
 
 myConfig.module.loaders = myConfig.module.loaders.concat([
 	{ test: /\.jpg$/, loader: "file-loader" },
-	{ test: /\.png$/, loader: "url-loader?mimetype=image/png" },
+	{ test: /\.(png|svg)$/, loader: "url-loader?mimetype=image/png" },
 	{ test: /\.md/, loaders: ["html", "remarkable"] },
 	{ test: /\.scss$/, loaders: ["style", "css", "autoprefixer", "sass?outputStyle=expanded"] },
 ]);

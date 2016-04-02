@@ -10,6 +10,7 @@ var parseDate = d3.time.format("%Y-%m-%d").parse
 
 import "stylesheets/re-stock";
 
+
 import Nav from "lib/navbar";
 import Sidebar from "lib/sidebar";
 import MainContainer from "lib/main-container";
@@ -57,6 +58,7 @@ var CHART_FEATURES = {
 		require("lib/page/MousePointerPage").default,
 		require("lib/page/ZoomAndPanPage").default,
 		require("lib/page/EdgeCoordinatesPage").default,
+		require("lib/page/AnnotationsPage").default,
 		require("lib/page/UpdatingDataPage").default,
 		require("lib/page/DarkThemePage").default,
 	]
