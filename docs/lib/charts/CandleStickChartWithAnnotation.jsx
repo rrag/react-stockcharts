@@ -21,7 +21,7 @@ var { fitWidth } = ReStock.helper;
 
 var xScale = financeEODDiscontiniousScale();
 
-class CandleStickChartWithEdge extends React.Component {
+class CandleStickChartWithAnnotation extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
 
@@ -84,25 +84,16 @@ class CandleStickChartWithEdge extends React.Component {
 		);
 	}
 }
-/*
 
-				className="glyphicon"
-				x={xScale(xValue)} y={yScale.range()[0]}
-				textAnchor="middle">&#xe182;</text>}
-
-*/
-
-// 								<path d="M17 1007l162 162q17 17 40 14t37 -22l139 -194q14 -20 11 -44.5t-20 -41.5l-119 -118q102 -142 228 -268t267 -227l119 118q17 17 42.5 19t44.5 -12l192 -136q19 -14 22.5 -37.5t-13.5 -40.5l-163 -162q-3 -1 -9.5 -1t-29.5 2t-47.5 6t-62.5 14.5t-77.5 26.5t-90 42.5 t-101.5 60t-111 83t-119 108.5q-74 74 -133.5 150.5t-94.5 138.5t-60 119.5t-34.5 100t-15 74.5t-4.5 48z" />
-
-CandleStickChartWithEdge.propTypes = {
+CandleStickChartWithAnnotation.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
-CandleStickChartWithEdge.defaultProps = {
+CandleStickChartWithAnnotation.defaultProps = {
 	type: "svg",
 };
-CandleStickChartWithEdge = fitWidth(CandleStickChartWithEdge);
+CandleStickChartWithAnnotation = fitWidth(CandleStickChartWithAnnotation);
 
-export default CandleStickChartWithEdge;
+export default CandleStickChartWithAnnotation;
