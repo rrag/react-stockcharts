@@ -12,7 +12,7 @@ var { financeEODDiscontiniousScale } = ReStock.scale;
 
 var { EdgeIndicator } = ReStock.coordinates;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
-var { Annotation, Label } = ReStock.annotation;
+var { Annotate, Label } = ReStock.annotation;
 
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
 var { XAxis, YAxis } = ReStock.axes;
@@ -36,6 +36,15 @@ class CandleStickChartWithAnnotation extends React.Component {
 			.windowSize(50)
 			.merge((d, c) => {d.ema50 = c})
 			.accessor(d => d.ema50);
+
+		var annotationProps = {
+			fontFamily: "Glyphicons Halflings",
+			fontSize: 20,
+			fill: "#060F8F",
+			opacity: 0.8,
+			text: "\ue093",
+			y: ({ yScale }) => (yScale.range()[0] - 10)
+		};
 
 		return (
 			<ChartCanvas width={width} height={400}
@@ -69,9 +78,8 @@ class CandleStickChartWithAnnotation extends React.Component {
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 
-					<Annotation when={d => d.high - d.low > 1}>
-						{props => <Label className="glyphicon" key={props.d.idx} {...props}>&#xe182;</Label>}
-					</Annotation>
+					<Annotate with={Label} when={d => d.high - d.low > 1}
+						usingProps={annotationProps} />
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} />
@@ -84,6 +92,16 @@ class CandleStickChartWithAnnotation extends React.Component {
 		);
 	}
 }
+
+//  className="glyphicon"
+
+/*
+
+					<Annotation when={d => d.high - d.low > 1}>
+						{({d, xAccessor}) => <Label key={d.idx} datum={d}
+							x={xScale => xScale(xAccessor(d))} y={yScale => yScale.range()[0]}></Label>}
+					</Annotation>
+*/
 
 CandleStickChartWithAnnotation.propTypes = {
 	data: React.PropTypes.array.isRequired,

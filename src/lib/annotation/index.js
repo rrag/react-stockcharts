@@ -1,7 +1,7 @@
 "use strict";
 
 
-import Annotation from "./Annotation";
+import Annotate from "./Annotate";
 import Label from "./Label";
 
-export { Annotation, Label };
+export { Annotate, Label };
