@@ -7,7 +7,8 @@ import { isDefined, hexToRGBA } from "../utils";
 
 class Label extends Component {
 	render() {
-		var { className, x, y, textAnchor, fontFamily, fontSize, opacity, xAccessor, xScale, yScale, datum } = this.props;
+		var { className, textAnchor, fontFamily, fontSize, opacity, rotate } = this.props;
+		var { x, y, xAccessor, xScale, yScale, datum } = this.props;
 
 		var { xPos, yPos, fill, text } = helper(this.props, xAccessor, xScale, yScale)
 
@@ -16,6 +17,7 @@ class Label extends Component {
 					fontFamily={fontFamily} fontSize={fontSize}
 					fill={fill}
 					opacity={opacity}
+					transform={`rotate(${rotate}, ${xPos}, ${yPos})`}
 					textAnchor={textAnchor}>{text}</text>
 	}
 }
@@ -26,9 +28,7 @@ function helper(props, xAccessor, xScale, yScale) {
 	var xFunc = d3.functor(x);
 	var yFunc = d3.functor(y);
 
-	var xValue = xAccessor(datum);
-
-	var [xPos, yPos] = [xFunc({ xScale, xValue, datum }), yFunc({ yScale, datum })];
+	var [xPos, yPos] = [xFunc({ xScale, xAccessor, datum }), yFunc({ yScale, datum })];
 
 	return {
 		xPos,
@@ -43,13 +43,22 @@ Label.propTypes = {
 	text: PropTypes.string,
 };
 
+/*
+Label.contextTypes = {
+	xScale: PropTypes.func,
+	chartConfig: PropTypes.object,
+	chartCanvasType: PropTypes.string,
+	getCanvasContexts: PropTypes.func,
+};
+*/
 Label.defaultProps = {
 	textAnchor: "middle",
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 12,
 	fill: "#000000",
 	opacity: 1,
-	x: ({ xValue, xScale }) => xScale(xValue),
+	rotate: 0,
+	x: ({ xScale, xAccessor, datum }) => xScale(xAccessor(datum)),
 };
 
 Label.drawOnCanvas = (props, ctx, xScale, yScale) => {

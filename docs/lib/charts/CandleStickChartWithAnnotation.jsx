@@ -46,20 +46,33 @@ class CandleStickChartWithAnnotation extends React.Component {
 			y: ({ yScale }) => (yScale.range()[0] - 10)
 		};
 
+		var margin = {left: 80, right: 80, top:30, bottom: 50};
+		var height = 400;
 		return (
-			<ChartCanvas width={width} height={400}
-					margin={{left: 80, right: 80, top:10, bottom: 30}} type={type}
+			<ChartCanvas width={width} height={height}
+					margin={margin} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50]}
 					allowedIntervals={["D", "W", "M"]}
 					xAccessor={d => d.date} discontinous xScale={xScale}
 					xExtents={[new Date(2015, 0, 1), new Date(2015, 5, 8)]}>
+				<Label x={(width -margin.left - margin.right)/ 2} y={-5} text="Chart title here" fontSize={30} />
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
 						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} 
 						padding={{ top: 10, bottom: 20 }}>
 					<XAxis axisAt="bottom" orient="bottom"/>
+					<Label
+						x={(width -margin.left - margin.right)/ 2}
+						y={height - 45}
+						text="XAxis Label here" />
+
 					<YAxis axisAt="right" orient="right" ticks={5} />
+					<Label
+						x={width -margin.left - 40}
+						y={margin.top + (height - margin.top - margin.bottom) / 2}
+						rotate={90}
+						text="YAxis Label here" />
 
 					<CandlestickSeries />
 					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
