@@ -1,78 +1,84 @@
 "use strict";
 
+import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 
-import wrap from "../series/wrap";
+import pure from "../pure";
 import { isDefined, hexToRGBA } from "../utils";
+import LabelAnnotation, { drawOnCanvas } from "./LabelAnnotation";
 
 class Label extends Component {
+
+	componentDidMount() {
+		var { selectCanvas, getCanvasContexts, chartConfig, chartCanvasType, text } = this.props;
+		if (chartCanvasType !== "svg") {
+			var ctx = selectCanvas(getCanvasContexts());
+			var yScale = getYScale(chartConfig);
+
+			drawOnCanvas2({ ...this.props, yScale, text: getText(this.props) }, ctx);
+		}
+	}
+	componentDidUpdate() {
+		this.componentDidMount();
+	}
 	render() {
-		var { className, textAnchor, fontFamily, fontSize, opacity, rotate } = this.props;
-		var { x, y, xAccessor, xScale, yScale, datum } = this.props;
+		var { chartConfig, chartCanvasType, text } = this.props;
+		if (chartCanvasType !== "svg") return null;
 
-		var { xPos, yPos, fill, text } = helper(this.props, xAccessor, xScale, yScale)
-
-		return <text className={className}
-					x={xPos} y={yPos}
-					fontFamily={fontFamily} fontSize={fontSize}
-					fill={fill}
-					opacity={opacity}
-					transform={`rotate(${rotate}, ${xPos}, ${yPos})`}
-					textAnchor={textAnchor}>{text}</text>
+		return <LabelAnnotation yScale={getYScale(chartConfig)} {...this.props} text={getText(this.props)}/>
 	}
 }
 
-function helper(props, xAccessor, xScale, yScale) {
-	var { x, y, datum, fill, text } = props;
+function getText(props) {
+	return d3.functor(props.text)(props)
+}
 
-	var xFunc = d3.functor(x);
-	var yFunc = d3.functor(y);
-
-	var [xPos, yPos] = [xFunc({ xScale, xAccessor, datum }), yFunc({ yScale, datum })];
-
-	return {
-		xPos,
-		yPos,
-		text: d3.functor(text)(datum),
-		fill: d3.functor(fill)(datum),
-	}
+function getYScale(chartConfig) {
+	return Array.isArray(chartConfig) ? undefined : chartConfig.yScale;
 }
 
 Label.propTypes = {
 	className: PropTypes.string,
-	text: PropTypes.string,
+	text: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.func
+	]).isRequired,
 };
 
-/*
-Label.contextTypes = {
-	xScale: PropTypes.func,
-	chartConfig: PropTypes.object,
-	chartCanvasType: PropTypes.string,
-	getCanvasContexts: PropTypes.func,
-};
-*/
 Label.defaultProps = {
-	textAnchor: "middle",
-	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
-	fontSize: 12,
-	fill: "#000000",
-	opacity: 1,
-	rotate: 0,
-	x: ({ xScale, xAccessor, datum }) => xScale(xAccessor(datum)),
+	...LabelAnnotation.defaultProps,
+	selectCanvas: canvases => canvases.bg,
 };
 
-Label.drawOnCanvas = (props, ctx, xScale, yScale) => {
+function drawOnCanvas2(props, ctx) {
+	ctx.save();
 
-	var { text, fill, textAnchor, fontFamily, fontSize, opacity, datum, xAccessor } = props;
+	ctx.setTransform(1, 0, 0, 1, 0, 0);
+	var { canvasOriginX, canvasOriginY, margin } = props;
 
-	var { xPos, yPos, fill, text } = helper(props, xAccessor, xScale, yScale)
+	if (isDefined(canvasOriginX)) 
+		ctx.translate(canvasOriginX, canvasOriginY);
+	else
+		ctx.translate(margin.left + 0.5, margin.top + 0.5);
 
-	ctx.font = `${ fontSize }px ${ fontFamily }`;
-	ctx.fillStyle = hexToRGBA(fill, opacity);;
-	ctx.textAlign = textAnchor === "middle" ? "center" : textAnchor;
+	drawOnCanvas(props, ctx);
 
-	ctx.beginPath();
-	ctx.fillText(text, xPos, yPos);
+	ctx.restore();
+
 }
 
-export default Label;
+export default pure(Label, {
+	xScale: PropTypes.func,
+	canvasOriginX: PropTypes.number,
+	canvasOriginY: PropTypes.number,
+	xAccessor: PropTypes.func,
+	chartConfig: PropTypes.oneOfType([
+		PropTypes.array,
+		PropTypes.object,
+	]).isRequired,
+	chartCanvasType: PropTypes.string,
+	getCanvasContexts: PropTypes.func,
+	interval: PropTypes.string,
+	plotData: PropTypes.array,
+	margin: PropTypes.object,
+});

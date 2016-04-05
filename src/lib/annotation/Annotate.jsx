@@ -51,7 +51,7 @@ Annotate.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	}
 
 	data.forEach(d => {
-		Annotation.drawOnCanvas({ ...p, datum: d }, ctx, xScale, yScale);
+		Annotation.drawOnCanvas({ ...p, datum: d }, ctx);
 	});
 }
 
