@@ -21,7 +21,7 @@ class HoverTooltip extends Component {
 
 		var content = tooltipContent({ currentItem, xAccessor: displayXAccessor });
 		var bgX = xScale(xValue)
-		var drawWidth = Math.abs(last(xScale.range()) - first(xScale.range())) / plotData.length;
+		var drawWidth = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData)))) / (plotData.length - 1);
 		return (
 			<g>
 				<rect x={bgX - drawWidth / 2} y={0} width={drawWidth} height={chartHeight} fill="#CDDDFB" opacity={0.4} />
