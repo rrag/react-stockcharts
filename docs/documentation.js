@@ -59,6 +59,7 @@ var CHART_FEATURES = {
 		require("lib/page/ZoomAndPanPage").default,
 		require("lib/page/EdgeCoordinatesPage").default,
 		require("lib/page/AnnotationsPage").default,
+		require("lib/page/MouseFollowingTooltipPage").default,
 		require("lib/page/UpdatingDataPage").default,
 		require("lib/page/DarkThemePage").default,
 	]

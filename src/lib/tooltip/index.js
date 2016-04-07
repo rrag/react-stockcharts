@@ -6,6 +6,7 @@ import MovingAverageTooltip from "./MovingAverageTooltip";
 import BollingerBandTooltip from "./BollingerBandTooltip";
 import RSITooltip from "./RSITooltip";
 import StochasticTooltip from "./StochasticTooltip";
+import HoverTooltip from "./HoverTooltip";
 
 export {
 	MACDTooltip,
@@ -16,4 +17,5 @@ export {
 	BollingerBandTooltip,
 	RSITooltip,
 	StochasticTooltip,
+	HoverTooltip
 };

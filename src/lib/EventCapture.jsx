@@ -279,7 +279,6 @@ EventCapture.defaultProps = {
 	panSpeedMultiplier: 1,
 	defaultFocus: false,
 	useCrossHairStyle: true,
-
 };
 
 EventCapture.contextTypes = {
