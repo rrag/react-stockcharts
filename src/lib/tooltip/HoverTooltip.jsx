@@ -3,24 +3,23 @@
 import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
-import { first, isDefined } from "../utils";
+import { first, isDefined, isNotDefined } from "../utils";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
-
-
 
 class HoverTooltip extends Component {
 	render() {
 		var { forChart, fontFamily, fontSize, backgroundShapeSVG, origin, height, width } = this.props;
 		var { tooltipContent } = this.props;
 		var { chartConfig, currentItem, width: chartWidth, height: chartHeight, mouseXY } = this.context;
-		var { show, panInProgress } = this.context;
+		var { show, panInProgress, xAccessor, xScale, displayXAccessor } = this.context;
 
-		if (!show || panInProgress) return null;
+		var xValue = xAccessor(currentItem);
+		if (!show || panInProgress || isNotDefined(xValue)) return null;
 
-		var [x, y] = origin({mouseXY, height, width, chartHeight, chartWidth});
+		var [x, y] = origin({mouseXY, height, width, chartHeight, chartWidth, xValue, xScale});
 
-		var content = tooltipContent(currentItem);
+		var content = tooltipContent({ currentItem, xAccessor: displayXAccessor });
 		return (
 			<g transform={`translate(${x}, ${y})`}>
 				{backgroundShapeSVG({height, width})}
@@ -37,6 +36,9 @@ HoverTooltip.contextTypes = {
 	height: PropTypes.number.isRequired,
 	mouseXY: PropTypes.array,
 	panInProgress: PropTypes.bool.isRequired,
+	xScale: PropTypes.func.isRequired,
+	xAccessor: PropTypes.func.isRequired,
+	displayXAccessor: PropTypes.func.isRequired,
 	show: PropTypes.bool,
 };
 
@@ -56,13 +58,13 @@ HoverTooltip.propTypes = {
 	fontSize: PropTypes.number,
 };
 
+
 HoverTooltip.defaultProps = {
 	width: 150,
 	height: 50,
-	tooltipContent: ({currentItem}) => ({x: "XValue", y:[{ label: "yLabel", value: 30, stroke: "yellow"}]}),
 	tooltipSVG: tooltipSVG,
 	origin: origin,
-	backgroundShapeSVG: ({height, width}) => <rect height={height} width={width} fill="steelblue" opacity={0.6} stroke="steelblue" />,
+	backgroundShapeSVG: ({height, width}) => <rect height={height} width={width} fill="#D4E2FD" opacity={0.8} stroke="steelblue" />,
 	backgroundShapeCanvas: ({height, width, ctx}) => { console.log("HERE") },
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 12,
@@ -72,16 +74,26 @@ HoverTooltip.defaultProps = {
 const PADDING = 5;
 
 function tooltipSVG({content, fontFamily, fontSize}) {
+	var tspans = [];
+	for (var i = 0; i < content.y.length; i++) {
+		let y = content.y[i]
+		tspans.push(<tspan key={`L-${i}`} x={10} dy={fontSize} fill={y.stroke}>{y.label}</tspan>);
+		tspans.push(<tspan key={`${i}`}>: </tspan>);
+		tspans.push(<tspan key={`V-${i}`}>{y.value}</tspan>);
+	};
 	return <text fontFamily={fontFamily} fontSize={fontSize}>
-		<tspan x={10} y={15}>SomeXValue</tspan>
-		<tspan x={10} dy={fontSize}>SomeyValue</tspan>
-		<tspan x={10} dy={fontSize}>SomeyValue</tspan>
+		<tspan x={10} y={15}>{content.x}</tspan>
+		{tspans}
 	</text>
 }
 
-function origin({mouseXY, height, width, chartHeight, chartWidth}) {
+function origin({mouseXY, height, width, chartHeight, chartWidth, xValue, xScale}) {
 	var [x, y] = mouseXY;
-	var originX = (x - width - PADDING * 2 < 0) ? x + PADDING : x - width - PADDING;
+
+	var snapX = xScale(xValue);
+	var originX = (snapX - width - PADDING * 2 < 0) ? snapX + PADDING : snapX - width - PADDING;
+	// originX = (x - width - PADDING * 2 < 0) ? x + PADDING : x - width - PADDING;
+
 	var originY = y - height / 2;
 	return [originX, originY];
 }

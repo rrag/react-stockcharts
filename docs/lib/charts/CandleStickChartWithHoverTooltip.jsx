@@ -20,6 +20,23 @@ var { fitWidth } = ReStock.helper;
 
 var xScale = financeEODDiscontiniousScale();
 
+var dateFormat = d3.time.format("%Y-%m-%d");
+var numberFormat = d3.format(".2f");
+
+function tooltipContent(calculators) {
+	return ({currentItem, xAccessor}) => {
+		return {
+			x: dateFormat(xAccessor(currentItem)),
+			y: [
+				{ label: "open", value: numberFormat(currentItem.open) },
+				{ label: "high", value: numberFormat(currentItem.high) },
+				{ label: "low", value: numberFormat(currentItem.low) },
+				{ label: "close", value: numberFormat(currentItem.close) },
+			].concat(calculators.map(each => ({ label: each.tooltipLabel(), value: numberFormat(each.accessor()(currentItem)), stroke: each.stroke() })))
+		}
+	}
+}
+
 class CandleStickChartWithHoverTooltip extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
@@ -81,7 +98,7 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
-				<HoverTooltip />
+				<HoverTooltip tooltipContent={tooltipContent([ema20, ema50])} width={120} height={95} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} useCrossHairStyle={false} />
 			</ChartCanvas>
 		);
