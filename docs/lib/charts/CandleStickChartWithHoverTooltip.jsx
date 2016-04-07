@@ -32,7 +32,11 @@ function tooltipContent(calculators) {
 				{ label: "high", value: numberFormat(currentItem.high) },
 				{ label: "low", value: numberFormat(currentItem.low) },
 				{ label: "close", value: numberFormat(currentItem.close) },
-			].concat(calculators.map(each => ({ label: each.tooltipLabel(), value: numberFormat(each.accessor()(currentItem)), stroke: each.stroke() })))
+			].concat(calculators.map(each => ({
+				label: each.tooltipLabel(),
+				value: numberFormat(each.accessor()(currentItem)),
+				stroke: each.stroke()
+			})))
 		}
 	}
 }

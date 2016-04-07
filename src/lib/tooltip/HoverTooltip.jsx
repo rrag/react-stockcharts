@@ -3,7 +3,7 @@
 import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
-import { first, isDefined, isNotDefined } from "../utils";
+import { first, last, isDefined, isNotDefined } from "../utils";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
@@ -12,7 +12,7 @@ class HoverTooltip extends Component {
 		var { forChart, fontFamily, fontSize, backgroundShapeSVG, origin, height, width } = this.props;
 		var { tooltipContent } = this.props;
 		var { chartConfig, currentItem, width: chartWidth, height: chartHeight, mouseXY } = this.context;
-		var { show, panInProgress, xAccessor, xScale, displayXAccessor } = this.context;
+		var { show, panInProgress, xAccessor, xScale, displayXAccessor, plotData } = this.context;
 
 		var xValue = xAccessor(currentItem);
 		if (!show || panInProgress || isNotDefined(xValue)) return null;
@@ -20,10 +20,15 @@ class HoverTooltip extends Component {
 		var [x, y] = origin({mouseXY, height, width, chartHeight, chartWidth, xValue, xScale});
 
 		var content = tooltipContent({ currentItem, xAccessor: displayXAccessor });
+		var bgX = xScale(xValue)
+		var drawWidth = Math.abs(last(xScale.range()) - first(xScale.range())) / plotData.length;
 		return (
-			<g transform={`translate(${x}, ${y})`}>
-				{backgroundShapeSVG({height, width})}
-				{tooltipSVG({content, fontFamily, fontSize})}
+			<g>
+				<rect x={bgX - drawWidth / 2} y={0} width={drawWidth} height={chartHeight} fill="#CDDDFB" opacity={0.4} />
+				<g transform={`translate(${x}, ${y})`}>
+					{backgroundShapeSVG({height, width})}
+					{tooltipSVG({content, fontFamily, fontSize})}
+				</g>
 			</g>
 		);
 	}
@@ -40,6 +45,7 @@ HoverTooltip.contextTypes = {
 	xAccessor: PropTypes.func.isRequired,
 	displayXAccessor: PropTypes.func.isRequired,
 	show: PropTypes.bool,
+	plotData: PropTypes.array,
 };
 
 HoverTooltip.propTypes = {
