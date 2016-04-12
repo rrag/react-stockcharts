@@ -102,20 +102,19 @@ function calculateState(props) {
 }
 
 function getCursorStyle(children) {
-	var style = `<![CDATA[
-			.react-stockcharts-grabbing-cursor {
-				cursor: grabbing;
-				cursor: -moz-grabbing;
-				cursor: -webkit-grabbing;
-			}
-			.react-stockcharts-crosshair-cursor {
-				cursor: crosshair;
-			}
-			.react-stockcharts-toottip-hover {
-				pointer-events: all;
-				cursor: pointer;
-			}
-		]]>`;
+	var style = `
+	.react-stockcharts-grabbing-cursor {
+		cursor: grabbing;
+		cursor: -moz-grabbing;
+		cursor: -webkit-grabbing;
+	}
+	.react-stockcharts-crosshair-cursor {
+		cursor: crosshair;
+	}
+	.react-stockcharts-toottip-hover {
+		pointer-events: all;
+		cursor: pointer;
+	}`;
 	return shouldShowCrossHairStyle(children)
 		? (<style type="text/css" dangerouslySetInnerHTML={{ __html: style }}></style>)
 		: null;

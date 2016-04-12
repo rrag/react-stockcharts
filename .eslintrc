@@ -2,27 +2,20 @@
 	"plugins": [
 		"react"
 	],
-	"ecmaFeatures": {
-		"arrowFunctions": true,
-		"blockBindings": true,
-		"classes": true,
-		"defaultParams": true,
-		"destructuring": true,
-		"forOf": true,
-		"jsx": true,
-		"modules": true,
-		"objectLiteralComputedProperties": true,
-		"objectLiteralShorthandMethods": true,
-		"objectLiteralShorthandProperties": true,
-		"restParams": true,
-		"spread": true,
-		"templateStrings": true,
-		"experimentalObjectRestSpread": true,
+	"parserOptions": {
+		"ecmaVersion": 6,
+		"sourceType": "module",
+		"ecmaFeatures": {
+			"jsx": true,
+			"experimentalObjectRestSpread": true,
+		},
 	},
 	"env": {
 		"browser": true,
-		"node": true
+		"node": true,
+		"es6": true
 	},
+	"extends": ["eslint:recommended", "plugin:react/recommended"],
 	"rules": {
 		"array-bracket-spacing": [2, "never"],
 		"block-scoped-var": 2,
@@ -40,8 +33,7 @@
 		"quotes": [2, "double", "avoid-escape"],
 		"semi": [2, "always"],
 		"semi-spacing": [2, { "before": false, "after": true }],
-		"space-after-keywords": [2, "always"],
-		"space-before-keywords": [2, "always"],
+		"keyword-spacing": ["error", {"before": true, "after": true, "overrides": {}}],
 		"space-before-blocks": 2,
 		"space-before-function-paren": [2, "never"],
 		"space-infix-ops": [2, { "int32Hint": false}],
