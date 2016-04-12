@@ -41,7 +41,7 @@ export default function() {
 		var newData = atrAlgorithm(trueRangeAlgorithm(data));
 
 		return newData;
-	};
+	}
 
 	atr.windowSize = function(x) {
 		if (!arguments.length) {

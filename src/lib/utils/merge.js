@@ -48,7 +48,7 @@ export default function() {
 			});
 
 		return zip(data, algorithm(data));
-	};
+	}
 
 	mergeCompute.algorithm = function(x) {
 		if (!arguments.length) {

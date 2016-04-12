@@ -30,7 +30,7 @@ function pure(PureSeries, contextShape, ignorePropKeys = []) {
 				{...ctx}
 				{...this.props} />;
 		}
-	};
+	}
 
 	PureCanvasSeries.displayName = `pure(${ getDisplayName(PureSeries) })`;
 

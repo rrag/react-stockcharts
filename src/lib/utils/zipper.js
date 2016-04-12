@@ -20,7 +20,7 @@ export default function zipper() {
 			zips[i] = combine.apply(this, zips[i]);
 		}
 		return zips;
-	};
+	}
 	function d3_zipLength(d) {
 		return d.length;
 	}
@@ -32,4 +32,4 @@ export default function zipper() {
 		return zip;
 	};
 	return zip;
-};
+}

@@ -25,12 +25,12 @@ class Label extends Component {
 		var { chartConfig, chartCanvasType, text } = this.props;
 		if (chartCanvasType !== "svg") return null;
 
-		return <LabelAnnotation yScale={getYScale(chartConfig)} {...this.props} text={getText(this.props)}/>
+		return <LabelAnnotation yScale={getYScale(chartConfig)} {...this.props} text={getText(this.props)}/>;
 	}
 }
 
 function getText(props) {
-	return d3.functor(props.text)(props)
+	return d3.functor(props.text)(props);
 }
 
 function getYScale(chartConfig) {
@@ -56,7 +56,7 @@ function drawOnCanvas2(props, ctx) {
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
 	var { canvasOriginX, canvasOriginY, margin } = props;
 
-	if (isDefined(canvasOriginX)) 
+	if (isDefined(canvasOriginX))
 		ctx.translate(canvasOriginX, canvasOriginY);
 	else
 		ctx.translate(margin.left + 0.5, margin.top + 0.5);

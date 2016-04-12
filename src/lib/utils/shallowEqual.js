@@ -50,4 +50,4 @@ export default function shallowEqual(a, b) {
 		numKeysA++;
 	}
 	return numKeysA === numKeysB;
-};
+}

@@ -149,4 +149,4 @@ export default function financeEODScale(indexAccessor = d => d.idx, dateAccessor
 		return financeEODScale(indexAccessor, dateAccessor, data, backingLinearScale.copy());
 	};
 	return scale;
-};
+}

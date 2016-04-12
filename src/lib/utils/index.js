@@ -32,7 +32,7 @@ export function getClosestItemIndexes2(array, value, accessor) {
 	if (item >= value && item <= value) right = left;
 
 	return { left, right };
-};
+}
 
 export function getClosestItemIndexes(array, value, accessor, log) {
 	var lo = 0, hi = array.length - 1;
@@ -62,7 +62,7 @@ export function getClosestItemIndexes(array, value, accessor, log) {
 
 	// console.log(value, accessor(array[left]), accessor(array[right]));
 	return { left: lo, right: hi };
-};
+}
 
 export function getClosestItem(array, value, accessor, log) {
 	var { left, right } = getClosestItemIndexes(array, value, accessor, log);
@@ -78,7 +78,7 @@ export function getClosestItem(array, value, accessor, log) {
 		console.log(array[left], array[right], closest, left, right);
 	}
 	return closest;
-};
+}
 
 
 export const overlayColors = d3.scale.category10();
@@ -107,7 +107,7 @@ export function head(array, accessor) {
 		for (var i = 0; i < array.length; i++) {
 			value = array[i];
 			if (isDefined(accessor(value))) break;
-		};
+		}
 		return value;
 	}
 	return array ? array[0] : undefined;
@@ -121,7 +121,7 @@ export function last(array, accessor) {
 		for (var i = array.length - 1; i >= 0; i--) {
 			value = array[i];
 			if (isDefined(accessor(value))) break;
-		};
+		}
 		return value;
 	}
 	var length = array ? array.length : 0;
@@ -149,7 +149,7 @@ export function touchPosition(touch, e) {
 		y = touch.clientY - rect.top - container.clientTop,
 		xy = [Math.round(x), Math.round(y)];
 	return xy;
-};
+}
 
 export function mousePosition(e) {
 	var container = e.currentTarget,
@@ -158,7 +158,7 @@ export function mousePosition(e) {
 		y = e.clientY - rect.top - container.clientTop,
 		xy = [Math.round(x), Math.round(y)];
 	return xy;
-};
+}
 
 
 export function clearCanvas(canvasList) {
@@ -166,7 +166,7 @@ export function clearCanvas(canvasList) {
 		each.setTransform(1, 0, 0, 1, 0, 0);
 		each.clearRect(-1, -1, each.canvas.width + 2, each.canvas.height + 2);
 	});
-};
+}
 
 export function hexToRGBA(inputHex, opacity) {
 	var hex = inputHex.replace("#", "");
@@ -183,4 +183,4 @@ export function hexToRGBA(inputHex, opacity) {
 		return result;
 	}
 	return inputHex;
-};
+}

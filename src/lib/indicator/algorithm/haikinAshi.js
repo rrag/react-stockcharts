@@ -23,7 +23,7 @@ export default function() {
 			});
 
 		return algorithm(data);
-	};
+	}
 	calculator.source = function(x) {
 		if (!arguments.length) {
 			return source;

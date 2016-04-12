@@ -72,7 +72,7 @@ export default function() {
 		var newData = stoAlgorithm(kData, dData);
 
 		return newData;
-	};
+	}
 
 	calculator.windowSize = function(x) {
 		if (!arguments.length) {

@@ -201,7 +201,7 @@ export default function() {
 		updateColumns(columnData, dateAccessor, dateMutator);
 
 		return columnData;
-	};
+	}
 	calculator.reversal = function(x) {
 		if (!arguments.length) return reversal;
 		reversal = x;

@@ -79,7 +79,7 @@ function wrap(WrappedSeries) {
 				</g>
 			);
 		}
-	};
+	}
 
 	BaseCanvasSeries.displayName = `wrap(${ getDisplayName(WrappedSeries) })`;
 

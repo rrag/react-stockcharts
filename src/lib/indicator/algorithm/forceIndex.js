@@ -16,7 +16,7 @@ export default function() {
 		var forceIndex = forceIndexCalulator(data);
 
 		return forceIndex;
-	};
+	}
 
 	calculator.close = function(x) {
 		if (!arguments.length) {

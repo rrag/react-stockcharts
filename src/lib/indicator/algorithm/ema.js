@@ -59,7 +59,7 @@ export default function() {
 				return nextValue;
 			}
 		});
-	};
+	}
 
 	calculator.windowSize = function(x) {
 		if (!arguments.length) {

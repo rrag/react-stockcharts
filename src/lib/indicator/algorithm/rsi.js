@@ -78,7 +78,7 @@ export default function() {
 		var rsiData = rsiAlgorithm(gainsAndLosses);
 
 		return rsiData;
-	};
+	}
 
 	calculator.windowSize = function(x) {
 		if (!arguments.length) {

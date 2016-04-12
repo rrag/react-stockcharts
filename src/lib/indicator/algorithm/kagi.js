@@ -167,7 +167,7 @@ export default function() {
 		if (!line.added) kagiData.push(line);
 
 		return kagiData;
-	};
+	}
 	calculator.reversalType = function(x) {
 		if (!arguments.length) return reversalType;
 		reversalType = x;

@@ -24,7 +24,7 @@ export default function() {
 		});
 		// console.log(compareData[20]);
 		return compareData;
-	};
+	}
 	calculator.base = function(x) {
 		if (!arguments.length) {
 			return base;

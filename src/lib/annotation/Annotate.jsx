@@ -10,14 +10,14 @@ class Annotate extends Component {
 	render() {
 		var { className, chartConfig, xScale, xAccessor, plotData, usingProps, with: Annotation } = this.props;
 		var { yScale } = chartConfig;
-		var data = helper(this.props, plotData)
+		var data = helper(this.props, plotData);
 
 		return (
 			<g className={className}>
 				{data.map(d => <Annotation key={d.idx}
 						{...usingProps}
 						xScale={xScale} yScale={yScale}
-						xAccessor={xAccessor} 
+						xAccessor={xAccessor}
 						datum={d} />)}
 			</g>
 		);
@@ -48,11 +48,11 @@ Annotate.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 		xScale,
 		yScale,
 		xAccessor
-	}
+	};
 
 	data.forEach(d => {
 		Annotation.drawOnCanvas({ ...p, datum: d }, ctx);
 	});
-}
+};
 
 export default wrap(Annotate);

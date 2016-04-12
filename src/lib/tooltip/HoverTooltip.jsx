@@ -17,17 +17,17 @@ class HoverTooltip extends Component {
 		var xValue = xAccessor(currentItem);
 		if (!show || panInProgress || isNotDefined(xValue)) return null;
 
-		var [x, y] = origin({mouseXY, height, width, chartHeight, chartWidth, xValue, xScale});
+		var [x, y] = origin({ mouseXY, height, width, chartHeight, chartWidth, xValue, xScale });
 
 		var content = tooltipContent({ currentItem, xAccessor: displayXAccessor });
-		var bgX = xScale(xValue)
+		var bgX = xScale(xValue);
 		var drawWidth = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData)))) / (plotData.length - 1);
 		return (
 			<g>
 				<rect x={bgX - drawWidth / 2} y={0} width={drawWidth} height={chartHeight} fill="#CDDDFB" opacity={0.4} />
 				<g transform={`translate(${x}, ${y})`}>
-					{backgroundShapeSVG({height, width})}
-					{tooltipSVG({content, fontFamily, fontSize})}
+					{backgroundShapeSVG({ height, width })}
+					{tooltipSVG({ content, fontFamily, fontSize })}
 				</g>
 			</g>
 		);
@@ -70,8 +70,8 @@ HoverTooltip.defaultProps = {
 	height: 50,
 	tooltipSVG: tooltipSVG,
 	origin: origin,
-	backgroundShapeSVG: ({height, width}) => <rect height={height} width={width} fill="#D4E2FD" opacity={0.8} stroke="steelblue" />,
-	backgroundShapeCanvas: ({height, width, ctx}) => { console.log("HERE") },
+	backgroundShapeSVG: ({ height, width }) => <rect height={height} width={width} fill="#D4E2FD" opacity={0.8} stroke="steelblue" />,
+	backgroundShapeCanvas: ({ height, width, ctx }) => { console.log("HERE"); },
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 12,
 
@@ -79,21 +79,21 @@ HoverTooltip.defaultProps = {
 
 const PADDING = 5;
 
-function tooltipSVG({content, fontFamily, fontSize}) {
+function tooltipSVG({ content, fontFamily, fontSize }) {
 	var tspans = [];
 	for (var i = 0; i < content.y.length; i++) {
-		let y = content.y[i]
+		let y = content.y[i];
 		tspans.push(<tspan key={`L-${i}`} x={10} dy={fontSize} fill={y.stroke}>{y.label}</tspan>);
 		tspans.push(<tspan key={`${i}`}>: </tspan>);
 		tspans.push(<tspan key={`V-${i}`}>{y.value}</tspan>);
-	};
+	}
 	return <text fontFamily={fontFamily} fontSize={fontSize}>
 		<tspan x={10} y={15}>{content.x}</tspan>
 		{tspans}
-	</text>
+	</text>;
 }
 
-function origin({mouseXY, height, width, chartHeight, chartWidth, xValue, xScale}) {
+function origin({ mouseXY, height, width, chartHeight, chartWidth, xValue, xScale }) {
 	var [x, y] = mouseXY;
 
 	var snapX = xScale(xValue);

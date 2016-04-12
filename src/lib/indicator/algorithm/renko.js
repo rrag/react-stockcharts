@@ -157,7 +157,7 @@ export default function() {
 		});
 		return renkoData;
 
-	};
+	}
 	calculator.reversalType = function(x) {
 		if (!arguments.length) return reversalType;
 		reversalType = x;

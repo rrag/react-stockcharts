@@ -10,7 +10,7 @@ class LabelAnnotation extends Component {
 		var { className, textAnchor, fontFamily, fontSize, opacity, rotate } = this.props;
 		var { x, y, xAccessor, xScale, yScale, datum } = this.props;
 
-		var { xPos, yPos, fill, text } = helper(this.props, xAccessor, xScale, yScale)
+		var { xPos, yPos, fill, text } = helper(this.props, xAccessor, xScale, yScale);
 
 		return <text className={className}
 					x={xPos} y={yPos}
@@ -18,7 +18,7 @@ class LabelAnnotation extends Component {
 					fill={fill}
 					opacity={opacity}
 					transform={`rotate(${rotate}, ${xPos}, ${yPos})`}
-					textAnchor={textAnchor}>{text}</text>
+					textAnchor={textAnchor}>{text}</text>;
 	}
 }
 
@@ -35,7 +35,7 @@ function helper(props, xAccessor, xScale, yScale) {
 		yPos,
 		text: d3.functor(text)(datum),
 		fill: d3.functor(fill)(datum),
-	}
+	};
 }
 
 LabelAnnotation.propTypes = {
@@ -64,20 +64,20 @@ LabelAnnotation.defaultProps = {
 export function drawOnCanvas(props, ctx) {
 	var { text, fill, textAnchor, fontFamily, fontSize, opacity, datum, xAccessor, xScale, yScale, rotate } = props;
 
-	var { xPos, yPos, fill, text } = helper(props, xAccessor, xScale, yScale)
+	var { xPos, yPos, fill, text } = helper(props, xAccessor, xScale, yScale);
 
-	var radians = (rotate / 180) * Math.PI
-	ctx.save()
-	ctx.translate(xPos, yPos)
+	var radians = (rotate / 180) * Math.PI;
+	ctx.save();
+	ctx.translate(xPos, yPos);
 	ctx.rotate(radians);
 
 	ctx.font = `${ fontSize }px ${ fontFamily }`;
-	ctx.fillStyle = hexToRGBA(fill, opacity);;
+	ctx.fillStyle = hexToRGBA(fill, opacity);
 	ctx.textAlign = textAnchor === "middle" ? "center" : textAnchor;
 
 	ctx.beginPath();
 	ctx.fillText(text, 0, 0);
-	ctx.restore()
+	ctx.restore();
 }
 
 LabelAnnotation.drawOnCanvas = drawOnCanvas;

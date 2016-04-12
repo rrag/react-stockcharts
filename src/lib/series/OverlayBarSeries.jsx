@@ -115,7 +115,7 @@ OverlayBarSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotDat
 					}
 					innerBars[i].height = h;
 					b = innerBars[i].y;
-				};
+				}
 				return innerBars;
 			});
 

@@ -19,7 +19,7 @@ export function getChartOrigin(origin, contextWidth, contextHeight) {
 		? origin(contextWidth, contextHeight)
 		: origin;
 	return originCoordinates;
-};
+}
 
 export function getDimensions({ width, height }, chartProps) {
 
@@ -32,14 +32,14 @@ export function getDimensions({ width, height }, chartProps) {
 		width: chartWidth,
 		height: chartHeight
 	};
-};
+}
 
 function values(func) {
 	return (d) => {
 		var obj = func(d);
 		return isObject(obj) ? Object.keys(obj).map(key => obj[key]) : obj;
 	};
-};
+}
 
 export function shouldShowCrossHairStyle(children) {
 	return React.Children.map(children, (each) => {
@@ -75,7 +75,7 @@ export function getNewChartConfig(innerDimension, children) {
 		}
 		return undefined;
 	}).filter(each => isDefined(each));
-};
+}
 export function getCurrentCharts(chartConfig, mouseXY) {
 	var currentCharts = chartConfig.filter(eachConfig => {
 		var top = eachConfig.origin[1];
@@ -125,7 +125,7 @@ export function getChartConfigWithUpdatedYScales(chartConfig, plotData) {
 
 	var updatedChartConfig = combine(chartConfig, yDomains);
 	return updatedChartConfig;
-};
+}
 
 export function getCurrentItem(xScale, xAccessor, mouseXY, plotData) {
 	var xValue, item;
@@ -138,4 +138,4 @@ export function getCurrentItem(xScale, xAccessor, mouseXY, plotData) {
 		// console.log(d, item);
 	}
 	return item;
-};
+}

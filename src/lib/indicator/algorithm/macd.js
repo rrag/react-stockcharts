@@ -65,7 +65,7 @@ export default function() {
 		var macd = zip(macdArray, signalArray);
 
 		return macd;
-	};
+	}
 
 	calculator.fast = function(x) {
 		if (!arguments.length) {

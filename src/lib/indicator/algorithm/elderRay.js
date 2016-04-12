@@ -53,7 +53,7 @@ export default function() {
 
 		var newData = zip(data, meanAlgorithm(data));
 		return newData;
-	};
+	}
 
 	calculator.windowSize = function(x) {
 		if (!arguments.length) {

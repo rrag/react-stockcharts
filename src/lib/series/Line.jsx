@@ -52,10 +52,10 @@ function segment(points, ctx) {
 	for (let i = 1; i < points.length; i++) {
 		let [x1, y1] = points[i];
 		ctx.lineTo(x1, y1);
-	};
+	}
 
 	ctx.stroke();
-};
+}
 
 Line.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { xAccessor, yAccessor, stroke, defined } = props;

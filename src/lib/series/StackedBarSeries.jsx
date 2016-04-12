@@ -167,7 +167,7 @@ export function drawOnCanvas2(props, ctx, bars) {
 
 		});
 	});
-};
+}
 
 export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, stack = identity, after = identity) {
 	var { baseAt, className, fill, stroke, widthRatio, spaceBetweenBar = 0 } = props;
@@ -232,6 +232,6 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 				};
 			});
 	return after(bars);
-};
+}
 
 export default wrap(StackedBarSeries);

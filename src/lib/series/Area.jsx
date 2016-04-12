@@ -16,7 +16,7 @@ class Area extends Component {
 			<path d={Area.getArea(props)} stroke={stroke} fill={fill} className={className} opacity={opacity} />
 		);
 	}
-};
+}
 
 Area.propTypes = {
 	className: PropTypes.string,
@@ -63,15 +63,15 @@ function segment(points0, points1, ctx) {
 	for (i = 0; i < points1.length; i++) {
 		let [x1, y1] = points1[i];
 		ctx.lineTo(x1, y1);
-	};
+	}
 
 	for (i = points0.length - 1; i >= 0; i--) {
 		let [x0, y0] = points0[i];
 		ctx.lineTo(x0, y0);
-	};
+	}
 	ctx.closePath();
 	ctx.fill();
-};
+}
 
 Area.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { xAccessor, yAccessor, fill, stroke, opacity, base, defined } = props;
