@@ -26,15 +26,17 @@ class MouseCoordinates extends Component {
 	componentWillReceiveProps(nextProps) {
 		var draw = MouseCoordinates.drawOnCanvasStatic.bind(null, nextProps);
 
-		var temp = nextProps.getAllCanvasDrawCallback().filter(each => each.type === "mouse");
+		var temp = nextProps.getAllCanvasDrawCallback().filter(each => each.type === "mouse").filter(each => each.subType === "MouseCoordinates");
 		if (temp.length === 0) {
 			nextProps.callbackForCanvasDraw({
 				type: "mouse",
+				subType: "MouseCoordinates",
 				draw: draw,
 			});
 		} else {
 			nextProps.callbackForCanvasDraw(temp[0], {
 				type: "mouse",
+				subType: "MouseCoordinates",
 				draw: draw,
 			});
 		}

@@ -102,7 +102,7 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
-				<HoverTooltip tooltipContent={tooltipContent([ema20, ema50])} width={120} height={95} />
+				<HoverTooltip tooltipContent={tooltipContent([ema20, ema50])} bgwidth={120} bgheight={95} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} useCrossHairStyle={false} />
 			</ChartCanvas>
 		);
