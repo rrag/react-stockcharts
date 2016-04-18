@@ -9,20 +9,24 @@ export default function() {
     var intradayScaleCalculator = slidingWindow()
     .windowSize(2)
     .undefinedValue(d => {
-      var row = { ...d, startOfQuarterHour: false, startOfHour: false, startOfQuarterDay: false };
+      var row = { ...d, startOfQuarterHour: false, startOfHour: false, startOfQuarterDay: false, startOfDay: false, startOfWeek: false };
       return row;
     })
     .accumulator(([prev, now]) => {
       var prevDate = dateAccessor(prev);
       var nowDate = dateAccessor(now);
 
-      var startOfQuarterHour = nowDate.getMinutes() % 15 === 0;
+      var startOfWeek = nowDate.getDay() < prevDate.getDay();
+
+      var startOfDay = nowDate.getMinutes() == 0 && nowDate.getHours() == 0;
+
+      var startOfQuarterHour = nowDate.getMinutes() % 15 === 0; // need this? prob not
 
       var startOfHour = nowDate.getMinutes() == 0;
 
-      var startOfQuarterDay = startOfHour && nowDate.getHours() % 3 === 0;
+      var startOfQuarterDay = startOfHour && nowDate.getHours() % 3 === 0; // need this? prob not
 
-      var row = { ...now, startOfQuarterHour, startOfHour, startOfQuarterDay };
+      var row = { ...now, startOfQuarterHour, startOfHour, startOfQuarterDay, startOfDay };
       return row;
     });
     var newData = intradayScaleCalculator(data);
