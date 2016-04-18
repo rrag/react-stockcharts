@@ -8,37 +8,18 @@ export default function financeIntradayScale(indexAccessor = d => d.idx, dateAcc
 
   var timeScaleSteps = [
     { step: 36e5, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfQuarterHour; } }, // 1 hour
-    { step: 432e5, f: function(d, i) { return isDefined(dateAccessor(d)) && (i % 10 == 0 || d.startOfDay); } }, // 12 hours
-    { step: 864e5, f: function(d, i, arr) {
-      if (d.startOfDay) return true;
-      var list = [];
-      if ((i - 2) >= 0) list.push(arr[i - 2]);
-      if ((i - 1) >= 0) list.push(arr[i - 1]);
-      list.push(arr[i]);
-      if ((i + 1) <= arr.length - 1) list.push(arr[i + 1]);
-      if ((i + 2) <= arr.length - 1) list.push(arr[i + 2]);
-      var sm = list
-            .map(function(each) { return each.startOfDay; })
-            .reduce(function(prev, curr) {
-              return prev || curr;
-            });
-      return sm ? false : d.startOfDay;
+    { step: 108e5, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfHour; } }, // 3 hours
+    { step: 216e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || (d.startOfHour && dateAccessor(d).getHours() % 3 == 0)); } }, // 6 hours
+    { step: 432e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || (d.startOfHour && dateAccessor(d).getHours() % 12 == 0)); } }, // 12 hours
+    { step: 864e5, f: function(d) {
+      return isDefined(dateAccessor(d)) && d.startOfDay;
     } },  // 1-day
-    { step: 6048e5, f: function(d, i, arr) {
-      if (d.startOfWeek) return true;
-      var list = [];
-      if ((i - 2) >= 0) list.push(arr[i - 2]);
-      if ((i - 1) >= 0) list.push(arr[i - 1]);
-      list.push(arr[i]);
-      if ((i + 1) <= arr.length - 1) list.push(arr[i + 1]);
-      if ((i + 2) <= arr.length - 1) list.push(arr[i + 2]);
-      var sm = list
-            .map(function(each) { return each.startOfWeek; })
-            .reduce(function(prev, curr) {
-              return prev || curr;
-            });
-      return sm ? false : d.startOfWeek;
-    } }  // 7-day, TODO
+    { step: 2592e5, f: function(d) {
+      return isDefined(dateAccessor(d)) && d.startOfDay;
+    } },  // 3-day
+    { step: 6048e5, f: function(d) {
+      return isDefined(dateAccessor(d)) && (d.startOfWeek || d.midWeek);
+    } }  // 7-day
   ];
   var timeScaleStepsBisector = d3.bisector(function(d) { return d.step; }).left;
   var bisectByIndex = d3.bisector(function(d) { return indexAccessor(d); }).left;
@@ -127,15 +108,15 @@ export default function financeIntradayScale(indexAccessor = d => d.idx, dateAcc
     var span = (dateAccessor(end).getTime() - dateAccessor(start).getTime());
     var target = span / m;
 
-    // console.log(dateAccessor(data[data.length - 1])
-    //   , data[0]
-    //   , span
-    //   , m
-    //   , target
-    //   , timeScaleStepsBisector(timeScaleSteps, target)
-    //   , count
-    //   , data.length
-    //   );
+    console.log(dateAccessor(data[data.length - 1])
+      , data[0]
+      , span
+      , m
+      , target
+      , timeScaleStepsBisector(timeScaleSteps, target)
+      , count
+      , data.length
+      );
 
     var scaleIndex = timeScaleStepsBisector(timeScaleSteps, target);
     
