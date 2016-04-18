@@ -108,15 +108,15 @@ export default function financeIntradayScale(indexAccessor = d => d.idx, dateAcc
     var span = (dateAccessor(end).getTime() - dateAccessor(start).getTime());
     var target = span / m;
 
-    console.log(dateAccessor(data[data.length - 1])
-      , data[0]
-      , span
-      , m
-      , target
-      , timeScaleStepsBisector(timeScaleSteps, target)
-      , count
-      , data.length
-      );
+    // console.log(dateAccessor(data[data.length - 1])
+    //   , data[0]
+    //   , span
+    //   , m
+    //   , target
+    //   , timeScaleStepsBisector(timeScaleSteps, target)
+    //   , count
+    //   , data.length
+    //   );
 
     var scaleIndex = timeScaleStepsBisector(timeScaleSteps, target);
     
