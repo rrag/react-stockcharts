@@ -17,9 +17,12 @@ function accumulator(predicate) {
         var startOfQuarterHour = a.startOfQuarterHour || b.startOfQuarterHour;
         var startOfHour = a.startOfHour || b.startOfHour;
         var startOfQuarterDay = a.startOfQuarterDay || b.startOfQuarterDay;
+        var startOfDay = a.startOfDay || b.startOfDay;
+        var startOfWeek = a.startOfWeek || b.startOfWeek;
+        var midWeek = a.midWeek || b.midWeek;
 
         var volume = a.volume + b.volume;
-        var row = { high, low, volume, startOfQuarterHour, startOfHour, startOfQuarterDay };
+        var row = { high, low, volume, startOfQuarterHour, startOfHour, startOfQuarterDay, startOfDay, startOfWeek, midWeek };
         return row;
       });
 
