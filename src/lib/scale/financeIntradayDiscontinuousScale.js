@@ -11,15 +11,9 @@ export default function financeIntradayScale(indexAccessor = d => d.idx, dateAcc
     { step: 108e5, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfHour; } }, // 3 hours
     { step: 216e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || (d.startOfHour && dateAccessor(d).getHours() % 3 == 0)); } }, // 6 hours
     { step: 432e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || (d.startOfHour && dateAccessor(d).getHours() % 12 == 0)); } }, // 12 hours
-    { step: 864e5, f: function(d) {
-      return isDefined(dateAccessor(d)) && d.startOfDay;
-    } },  // 1-day
-    { step: 2592e5, f: function(d) {
-      return isDefined(dateAccessor(d)) && d.startOfDay;
-    } },  // 3-day
-    { step: 6048e5, f: function(d) {
-      return isDefined(dateAccessor(d)) && (d.startOfWeek || d.midWeek);
-    } }  // 7-day
+    { step: 864e5, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfDay; } },  // 1-day
+    { step: 2592e5, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfDay; } },  // 3-day
+    { step: 6048e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfWeek || d.midWeek); } }  // 7-day
   ];
   var timeScaleStepsBisector = d3.bisector(function(d) { return d.step; }).left;
   var bisectByIndex = d3.bisector(function(d) { return indexAccessor(d); }).left;
