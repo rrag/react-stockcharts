@@ -9,26 +9,26 @@ export default function() {
     var intradayScaleCalculator = slidingWindow()
     .windowSize(2)
     .undefinedValue(d => {
-      var row = { ...d, startOfQuarterHour: false, startOfHour: false, startOfQuarterDay: false, startOfDay: false, startOfWeek: false, midWeek: false };
+      var row = { ...d, startOfQuarterHour: false, startOfHour: false, startOfEighthDay: false, startOfQuarterDay: false, startOfHalfDay: false, startOfDay: false, startOfWeek: false };
       return row;
     })
     .accumulator(([prev, now]) => {
       var prevDate = dateAccessor(prev);
       var nowDate = dateAccessor(now);
 
-      var startOfWeek = nowDate.getDay() < prevDate.getDay();
-
-      var startOfDay = nowDate.getMinutes() == 0 && nowDate.getUTCHours() == 0;
-
-      var midWeek = startOfDay && nowDate.getDay() == 3;
-
-      var startOfQuarterHour = nowDate.getMinutes() % 15 === 0; // need this? prob not
+      var startOfQuarterHour = nowDate.getMinutes() % 15 === 0;
 
       var startOfHour = nowDate.getMinutes() == 0;
 
-      var startOfQuarterDay = startOfHour && nowDate.getUTCHours() % 3 === 0; // need this? prob not
+      var startOfEighthDay = startOfHour && nowDate.getUTCHours() % 3 === 0;
+      var startOfQuarterDay = startOfHour && nowDate.getUTCHours() % 6 === 0;
+      var startOfHalfDay = startOfHour && nowDate.getUTCHours() % 12 === 0;
 
-      var row = { ...now, startOfQuarterHour, startOfHour, startOfQuarterDay, startOfDay, startOfWeek, midWeek };
+      var startOfDay = nowDate.getMinutes() == 0 && nowDate.getUTCHours() == 0;
+
+      var startOfWeek = nowDate.getDay() < prevDate.getDay();
+
+      var row = { ...now, startOfQuarterHour, startOfHour, startOfEighthDay, startOfQuarterDay, startOfHalfDay, startOfDay, startOfWeek };
       return row;
     });
     var newData = intradayScaleCalculator(data);
