@@ -18,7 +18,7 @@ export default function() {
 
       var startOfWeek = nowDate.getDay() < prevDate.getDay();
 
-      var startOfDay = nowDate.getMinutes() == 0 && nowDate.getHours() == 0;
+      var startOfDay = nowDate.getMinutes() == 0 && nowDate.getUTCHours() == 0;
 
       var midWeek = startOfDay && nowDate.getDay() == 3;
 
@@ -26,7 +26,7 @@ export default function() {
 
       var startOfHour = nowDate.getMinutes() == 0;
 
-      var startOfQuarterDay = startOfHour && nowDate.getHours() % 3 === 0; // need this? prob not
+      var startOfQuarterDay = startOfHour && nowDate.getUTCHours() % 3 === 0; // need this? prob not
 
       var row = { ...now, startOfQuarterHour, startOfHour, startOfQuarterDay, startOfDay, startOfWeek, midWeek };
       return row;

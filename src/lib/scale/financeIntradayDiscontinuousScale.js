@@ -9,11 +9,12 @@ export default function financeIntradayScale(indexAccessor = d => d.idx, dateAcc
   var timeScaleSteps = [
     { step: 36e5, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfQuarterHour; } }, // 1 hour
     { step: 108e5, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfHour; } }, // 3 hours
-    { step: 216e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || (d.startOfHour && dateAccessor(d).getHours() % 3 == 0)); } }, // 6 hours
-    { step: 432e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || (d.startOfHour && dateAccessor(d).getHours() % 12 == 0)); } }, // 12 hours
-    { step: 864e5, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfDay; } },  // 1-day
-    { step: 2592e5, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfDay; } },  // 3-day
-    { step: 6048e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfWeek || d.midWeek); } }  // 7-day
+    { step: 216e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || (d.startOfHour && dateAccessor(d).getUTCHours() % 3 == 0)); } }, // 6 hours
+    { step: 432e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || (d.startOfHour && dateAccessor(d).getUTCHours() % 6 == 0)); } }, // 12 hours
+    { step: 864e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || (d.startOfHour && dateAccessor(d).getUTCHours() % 12 == 0)); } },  // 1-day
+    { step: 2592e5, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfDay; } },  // 3-day, doesnt work with 2h scale
+    { step: 6048e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay && dateAccessor(d).getDate() % 3 == 0); } },  // 7-day
+    { step: 12096e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay && dateAccessor(d).getDate() % 3 == 0); } }  // 14-day
   ];
   var timeScaleStepsBisector = d3.bisector(function(d) { return d.step; }).left;
   var bisectByIndex = d3.bisector(function(d) { return indexAccessor(d); }).left;
@@ -113,6 +114,8 @@ export default function financeIntradayScale(indexAccessor = d => d.idx, dateAcc
     //   );
 
     var scaleIndex = timeScaleStepsBisector(timeScaleSteps, target);
+
+    console.log(timeScaleSteps[scaleIndex].step);
     
     var ticks = data
             .filter(timeScaleSteps[scaleIndex].f)
