@@ -5,7 +5,7 @@ import React, { PropTypes, Component } from "react";
 
 import pure from "../pure";
 import { isDefined, hexToRGBA } from "../utils";
-import LabelAnnotation, { drawOnCanvas } from "./LabelAnnotation";
+import LabelAnnotation, { drawOnCanvas, defaultProps } from "./LabelAnnotation";
 
 class Label extends Component {
 
@@ -46,7 +46,7 @@ Label.propTypes = {
 };
 
 Label.defaultProps = {
-	...LabelAnnotation.defaultProps,
+	...defaultProps,
 	selectCanvas: canvases => canvases.bg,
 };
 
