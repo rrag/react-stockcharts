@@ -117,15 +117,15 @@ export default function financeEODScale(indexAccessor = d => d.idx, dateAccessor
 		m = (count / data.length) * m;
 		var span = (dateAccessor(end).getTime() - dateAccessor(start).getTime());
 		var target = span / m;
-		/*
-		console.log(dateAccessor(data[data.length - 1])
-			, data[0]
-			, span
-			, m
-			, target
-			, timeScaleStepsBisector(d3_time_scaleSteps, target)
-			);
-		*/
+    /*
+    console.log(dateAccessor(data[data.length - 1])
+      , data[0]
+      , span
+      , m
+      , target
+      , timeScaleStepsBisector(d3_time_scaleSteps, target)
+      );
+    */
 		var ticks = data
 						.filter(timeScaleSteps[timeScaleStepsBisector(timeScaleSteps, target)].f)
 						.map(indexAccessor)
