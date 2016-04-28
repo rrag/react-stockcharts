@@ -11,7 +11,7 @@ export {
 	financeEODDiscontiniousScale,
 	identityIntervalCalculator,
 	eodIntervalCalculator,
-  financeIntradayDiscontinuousScale,
-  financeIntradayCalculator,
-  intradayIntervalCalculator
+	financeIntradayDiscontinuousScale,
+	financeIntradayCalculator,
+	intradayIntervalCalculator
 };
