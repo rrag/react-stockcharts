@@ -7,6 +7,7 @@ import d3 from "d3";
 import * as ReStock from "react-stockcharts";
 
 var parseDate = d3.time.format("%Y-%m-%d").parse
+var parseDateTime = d3.time.format("%Y-%m-%d %H:%M:%S").parse
 
 import "stylesheets/re-stock";
 
@@ -57,6 +58,7 @@ var CHART_FEATURES = {
 	pages: [
 		require("lib/page/MousePointerPage").default,
 		require("lib/page/ZoomAndPanPage").default,
+		require("lib/page/IntraDayDataPage").default,
 		require("lib/page/EdgeCoordinatesPage").default,
 		require("lib/page/AnnotationsPage").default,
 		require("lib/page/MouseFollowingTooltipPage").default,
@@ -119,33 +121,25 @@ function compressString(string) {
 	return string
 }
 
-function renderPage(data, dataFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData) {
-	data.forEach((d, i) => {
-		d.date = new Date(parseDate(d.date).getTime());
+function parseData(parse) {
+	return function (d) {
+		d.date = new Date(parse(d.date).getTime());
 		d.open = +d.open;
 		d.high = +d.high;
 		d.low = +d.low;
 		d.close = +d.close;
 		d.volume = +d.volume;
-		// console.log(d);
-	});
+	}
+}
 
-	dataFull.forEach((d, i) => {
-		d.date = new Date(parseDate(d.date).getTime());
-		d.open = +d.open;
-		d.high = +d.high;
-		d.low = +d.low;
-		d.close = +d.close;
-		d.volume = +d.volume;
-		// console.log(d);
-	});
+function renderPage(intraDay, data, dataFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData) {
+
+	data.forEach(parseData(parseDate));
+	dataFull.forEach(parseData(parseDate));
+	intraDay.forEach(parseData(parseDateTime));
+
 	compareData.forEach((d, i) => {
-		d.date = new Date(parseDate(d.date).getTime());
-		d.open = +d.open;
-		d.high = +d.high;
-		d.low = +d.low;
-		d.close = +d.close;
-		d.volume = +d.volume;
+		parseData(parseDate)(d);
 		d.SP500Close = +d.SP500Close;
 		d.AAPLClose = +d.AAPLClose;
 		d.GEClose = +d.GEClose;
@@ -195,6 +189,7 @@ function renderPage(data, dataFull, compareData, bubbleData, barData, groupedBar
 							)}
 						</Sidebar>
 						<Page someData={data}
+								intraDayData={intraDay}
 								lotsOfData={dataFull}
 								compareData={compareData}
 								bubbleData={bubbleData}
@@ -214,26 +209,28 @@ function renderPage(data, dataFull, compareData, bubbleData, barData, groupedBar
 
 d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
 	d3.tsv("data/MSFT.tsv", (err, MSFT) => {
-		d3.tsv("data/comparison.tsv", (err3, compareData) => {
-			d3.json("data/bubble.json", (err4, bubbleData) => {
-				d3.json("data/barData.json", (err5, barData) => {
-					d3.json("data/groupedBarData.json", (err6, groupedBarData) => {
-						var horizontalBarData = barData.map(({x, y}) => ({ x: y, y: x }))
-						var horizontalGroupedBarData = groupedBarData.map(d => {
-								return {
-									y: d.x,
-									x1: d.y1,
-									x2: d.y2,
-									x3: d.y3,
-									x4: d.y4,
-								}
-							});
+		d3.csv("data/bitfinex_xbtusd_1m.csv", (err, intraDay) => {
+			d3.tsv("data/comparison.tsv", (err3, compareData) => {
+				d3.json("data/bubble.json", (err4, bubbleData) => {
+					d3.json("data/barData.json", (err5, barData) => {
+						d3.json("data/groupedBarData.json", (err6, groupedBarData) => {
+							var horizontalBarData = barData.map(({x, y}) => ({ x: y, y: x }))
+							var horizontalGroupedBarData = groupedBarData.map(d => {
+									return {
+										y: d.x,
+										x1: d.y1,
+										x2: d.y2,
+										x3: d.y3,
+										x4: d.y4,
+									}
+								});
 
-						renderPage(MSFT, MSFTFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
-						// renderPartialPage(MSFT, MSFTFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData);
+							renderPage(intraDay, MSFT, MSFTFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
+							// renderPartialPage(MSFT, MSFTFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData);
+						});
 					});
-				});
-			})
+				})
+			});
 		});
 	});
 });
