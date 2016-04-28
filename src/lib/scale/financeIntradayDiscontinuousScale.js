@@ -4,39 +4,24 @@ import d3 from "d3";
 
 import { isDefined, isNotDefined } from "../utils";
 
-export default function financeEODScale(indexAccessor = d => d.idx, dateAccessor = d => d.date, data = [0, 1], backingLinearScale = d3.scale.linear()) {
+export default function financeIntradayScale(indexAccessor = d => d.idx, dateAccessor = d => d.date, data = [0, 1], backingLinearScale = d3.scale.linear()) {
 
 	var timeScaleSteps = [
-		{ step: 864e5, f: function(d) { return isDefined(dateAccessor(d)) && true; } },  // 1-day
-		{ step: 1728e5, f: function(d, i) { return isDefined(dateAccessor(d)) && (i % 2 === 0); } }, // 2-day
-		{ step: 8380e5, f: function(d, i, arr) {
-			if (d.startOfMonth) return true;
-			var list = [];
-			if ((i - 2) >= 0) list.push(arr[i - 2]);
-			if ((i - 1) >= 0) list.push(arr[i - 1]);
-			list.push(arr[i]);
-			if ((i + 1) <= arr.length - 1) list.push(arr[i + 1]);
-			if ((i + 2) <= arr.length - 1) list.push(arr[i + 2]);
-			var sm = list
-						.map(function(each) { return each.startOfMonth; })
-						.reduce(function(prev, curr) {
-							return prev || curr;
-						});
-			return sm ? false : d.startOfWeek;
-		} },  // 1-week
-		{ step: 3525e6, f: function(d) {return d.startOfMonth; } },  // 1-month
-		{ step: 7776e6, f: function(d) {return d.startOfQuarter; } },  // 3-month
-		{ step: 31536e6, f: function(d) {return d.startOfYear; } },  // 1-year
-		{ step: 91536e15, f: function(d) {return isDefined(dateAccessor(d)) && (d.startOfYear && dateAccessor(d).getFullYear() % 2 === 0); } }  // 2-year
+		{ step: 36e5, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfQuarterHour; } }, // 1 hour
+		{ step: 108e5, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfHour; } }, // 3 hours
+		{ step: 216e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || d.startOfEighthDay); } }, // 6 hours
+		{ step: 432e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || d.startOfQuarterDay); } }, // 12 hours
+		{ step: 864e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || d.startOfHalfDay); } },  // 1-day
+		{ step: 2592e5, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfDay; } },  // 3-day, doesnt work with 2h scale
+		{ step: 6048e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay && dateAccessor(d).getDate() % 3 == 0); } },  // 7-day
+		{ step: 12096e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay && dateAccessor(d).getDate() % 3 == 0); } }  // 14-day
 	];
 	var timeScaleStepsBisector = d3.bisector(function(d) { return d.step; }).left;
 	var bisectByIndex = d3.bisector(function(d) { return indexAccessor(d); }).left;
 	var tickFormat = [
-		[d3.time.format("%Y"), function(d) { return d.startOfYear; }],
-		[d3.time.format("%b %Y"), function(d) { return d.startOfQuarter; }],
-		[d3.time.format("%b"), function(d) { return d.startOfMonth; }],
-		[d3.time.format("%d %b"), function(d) { return d.startOfWeek; }],
-		[d3.time.format("%a %d "), function(/* d */) { return true; }]
+		[d3.time.format("%_I %p"), function(d) { return d.startOfHour && !d.startOfDay }],
+		[d3.time.format("%a %d"), function(d) { return d.startOfDay }],
+		[d3.time.format("%I:%M %p"), function(d) { return true; }] // accumulator fallback for first entry
 	];
 	function formater(d) {
 		var i = 0, format = tickFormat[i];
@@ -117,17 +102,21 @@ export default function financeEODScale(indexAccessor = d => d.idx, dateAccessor
 		m = (count / data.length) * m;
 		var span = (dateAccessor(end).getTime() - dateAccessor(start).getTime());
 		var target = span / m;
-    /*
-    console.log(dateAccessor(data[data.length - 1])
-      , data[0]
-      , span
-      , m
-      , target
-      , timeScaleStepsBisector(d3_time_scaleSteps, target)
-      );
-    */
+
+		// console.log(dateAccessor(data[data.length - 1])
+		//   , data[0]
+		//   , span
+		//   , m
+		//   , target
+		//   , timeScaleStepsBisector(timeScaleSteps, target)
+		//   , count
+		//   , data.length
+		//   );
+
+		var scaleIndex = timeScaleStepsBisector(timeScaleSteps, target);
+		
 		var ticks = data
-						.filter(timeScaleSteps[timeScaleStepsBisector(timeScaleSteps, target)].f)
+						.filter(timeScaleSteps[scaleIndex].f)
 						.map(indexAccessor)
 						;
 		// return the index of all the ticks to be displayed,
@@ -146,7 +135,7 @@ export default function financeEODScale(indexAccessor = d => d.idx, dateAccessor
 		return scale;
 	};
 	scale.copy = function() {
-		return financeEODScale(indexAccessor, dateAccessor, data, backingLinearScale.copy());
+		return financeIntradayScale(indexAccessor, dateAccessor, data, backingLinearScale.copy());
 	};
 	return scale;
-}
+};

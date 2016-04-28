@@ -123,6 +123,7 @@ function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShow
 			// console.log(currentInterval, currentDomain, currentPlotData)
 			throw new Error("Initial render and cannot display any data");
 		}
+
 		var updatedScale = (scale.isPolyLinear && scale.isPolyLinear() && scale.data)
 			? scale.copy().data(plotData)
 			: scale.copy();
