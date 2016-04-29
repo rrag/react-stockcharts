@@ -5,7 +5,7 @@ import React, { PropTypes, Component } from "react";
 
 import pure from "../pure";
 import { isDefined, hexToRGBA } from "../utils";
-import LabelAnnotation, { drawOnCanvas, defaultProps } from "./LabelAnnotation";
+import LabelAnnotation, { defaultProps, helper } from "./LabelAnnotation";
 
 class Label extends Component {
 
@@ -66,6 +66,26 @@ function drawOnCanvas2(props, ctx) {
 	ctx.restore();
 
 }
+
+function drawOnCanvas(props, ctx) {
+	var { text, fill, textAnchor, fontFamily, fontSize, opacity, datum, xAccessor, xScale, yScale, rotate } = props;
+
+	var { xPos, yPos, fill, text } = helper(props, xAccessor, xScale, yScale);
+
+	var radians = (rotate / 180) * Math.PI;
+	ctx.save();
+	ctx.translate(xPos, yPos);
+	ctx.rotate(radians);
+
+	ctx.font = `${ fontSize }px ${ fontFamily }`;
+	ctx.fillStyle = hexToRGBA(fill, opacity);
+	ctx.textAlign = textAnchor === "middle" ? "center" : textAnchor;
+
+	ctx.beginPath();
+	ctx.fillText(text, 0, 0);
+	ctx.restore();
+}
+
 
 export default pure(Label, {
 	xScale: PropTypes.func,

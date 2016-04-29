@@ -577,6 +577,10 @@ class EventHandler extends Component {
 					.forEach(each => each.draw(mouseContext, show,
 						xScale, mouseXY, currentCharts, chartConfig, currentItem));
 
+				canvasDrawCallbackList
+					.filter(each => each.type === "annotation")
+					.forEach(each => each.draw({ xScale, chartConfig, plotData}));
+
 			});
 		} else {
 			this.setState(state);

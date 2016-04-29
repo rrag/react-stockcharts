@@ -43,7 +43,9 @@ class CandleStickChartWithAnnotation extends React.Component {
 			fill: "#060F8F",
 			opacity: 0.8,
 			text: "\ue093",
-			y: ({ yScale }) => (yScale.range()[0] - 10)
+			y: ({ yScale }) => (yScale.range()[0] - 10),
+			onClick: console.log.bind(console),
+			// onMouseOver: console.log.bind(console),
 		};
 
 		var margin = {left: 80, right: 80, top:30, bottom: 50};
@@ -93,9 +95,6 @@ class CandleStickChartWithAnnotation extends React.Component {
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
-
-					<Annotate with={LabelAnnotation} when={d => d.high - d.low > 1}
-						usingProps={annotationProps} />
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} />
@@ -104,6 +103,10 @@ class CandleStickChartWithAnnotation extends React.Component {
 					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 15]} 
 						calculators={[ema20, ema50]}/>
 				</TooltipContainer>
+
+				<Annotate id={0} chartId={1} with={LabelAnnotation} when={d => d.high - d.low > 1}
+					usingProps={annotationProps} />
+
 			</ChartCanvas>
 		);
 	}

@@ -5,61 +5,37 @@ import React, { PropTypes, Component } from "react";
 import wrap from "../series/wrap";
 import { isDefined, hexToRGBA } from "../utils";
 
-export default function() {
-	var defaultProps, props, parentNode;
+class LabelAnnotation extends Component {
+	constructor(props) {
+		super(props);
+		this.handleClick = this.handleClick.bind(this);
+	}
+	handleClick(e) {
+		var { onClick } = this.props;
 
-	function annotate(data, isFirstTime) {
-		var { className, textAnchor, fontFamily, fontSize, opacity, rotate } = props;
-		var { xAccessor, xScale, chartConfig, datum } = props;
-		var { yScale } = chartConfig;
+		if (onClick) {
+			var { xScale, yScale, datum } = this.props;
+			onClick({ xScale, yScale, datum }, e);
+		}
+	}
+	render() {
+		var { className, textAnchor, fontFamily, fontSize, opacity, rotate } = this.props;
+		var { x, y, xAccessor, xScale, yScale, datum } = this.props;
 
-		var { xPos, yPos, fill, text } = helper(props, xAccessor, xScale, yScale);
+		var { xPos, yPos, fill, text } = helper(this.props, xAccessor, xScale, yScale);
 
-		if (isFirstTime) {
-			console.log("HERE", parentNode);
-			parentNode
-				.selectAll()
-				.data(data)
-				.enter()
-					.append("text")
-					.text("foo")
-					/*.attr({
-						className: className,
-						x: xPos,
-						y: yPos,
-						fontFamily: fontFamily,
-						fontSize: fontSize,
-						fill: fill,
-						opacity: opacity,
-						transform: `rotate(${rotate}, ${xPos}, ${yPos})`,
-						textAnchor: textAnchor,
-					})*/
-		}
+		return <text className={className}
+					x={xPos} y={yPos}
+					fontFamily={fontFamily} fontSize={fontSize}
+					fill={fill}
+					opacity={opacity}
+					transform={`rotate(${rotate}, ${xPos}, ${yPos})`}
+					onClick={this.handleClick}
+					textAnchor={textAnchor}>{text}</text>;
 	}
-	annotate.props = function(x) {
-		if (!arguments.length) {
-			return props;
-		}
-		props = { ...defaultProps, ...x };
-		return annotate;
-	}
-	annotate.defaultProps = function(x) {
-		if (!arguments.length) {
-			return defaultProps;
-		}
-		defaultProps = x;
-		return annotate;
-	}
-	annotate.parentNode = function(x) {
-		if (!arguments.length) {
-			return parentNode;
-		}
-		parentNode = x;
-		return annotate;
-	}
-	return annotate;
 }
-function helper(props, xAccessor, xScale, yScale) {
+
+export function helper(props, xAccessor, xScale, yScale) {
 	var { x, y, datum, fill, text } = props;
 
 	var xFunc = d3.functor(x);
@@ -74,43 +50,11 @@ function helper(props, xAccessor, xScale, yScale) {
 		fill: d3.functor(fill)(datum),
 	};
 }
-/*
-class LabelAnnotation extends Component {
-	render() {
-		var { className, textAnchor, fontFamily, fontSize, opacity, rotate } = this.props;
-		var { x, y, xAccessor, xScale, yScale, datum } = this.props;
-
-		var { xPos, yPos, fill, text } = helper(this.props, xAccessor, xScale, yScale);
-
-		return <text className={className}
-					x={xPos} y={yPos}
-					fontFamily={fontFamily} fontSize={fontSize}
-					fill={fill}
-					opacity={opacity}
-					transform={`rotate(${rotate}, ${xPos}, ${yPos})`}
-					textAnchor={textAnchor}>{text}</text>;
-	}
-}
-
 
 LabelAnnotation.propTypes = {
 	className: PropTypes.string,
 	text: PropTypes.string,
 };
-
-LabelAnnotation.defaultProps = {
-	textAnchor: "middle",
-	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
-	fontSize: 12,
-	fill: "#000000",
-	opacity: 1,
-	rotate: 0,
-	x: ({ xScale, xAccessor, datum }) => xScale(xAccessor(datum)),
-};
-
-LabelAnnotation.drawOnCanvas = drawOnCanvas;
-
-export default LabelAnnotation;*/
 
 export const defaultProps = {
 	textAnchor: "middle",
@@ -122,21 +66,6 @@ export const defaultProps = {
 	x: ({ xScale, xAccessor, datum }) => xScale(xAccessor(datum)),
 };
 
-export function drawOnCanvas(props, ctx) {
-	var { text, fill, textAnchor, fontFamily, fontSize, opacity, datum, xAccessor, xScale, yScale, rotate } = props;
+LabelAnnotation.defaultProps = defaultProps;
 
-	var { xPos, yPos, fill, text } = helper(props, xAccessor, xScale, yScale);
-
-	var radians = (rotate / 180) * Math.PI;
-	ctx.save();
-	ctx.translate(xPos, yPos);
-	ctx.rotate(radians);
-
-	ctx.font = `${ fontSize }px ${ fontFamily }`;
-	ctx.fillStyle = hexToRGBA(fill, opacity);
-	ctx.textAlign = textAnchor === "middle" ? "center" : textAnchor;
-
-	ctx.beginPath();
-	ctx.fillText(text, 0, 0);
-	ctx.restore();
-}
+export default LabelAnnotation;

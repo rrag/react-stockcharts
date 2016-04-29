@@ -10,22 +10,63 @@ import wrap from "../series/wrap";
 import { isDefined } from "../utils";
 
 class Annotate extends Component {
-	componentDidMount() {
-		annotate(this.refs.annotation, this.props, this.props, true);
+	constructor(props) {
+		super(props);
+		this.annotate = this.annotate.bind(this);
 	}
-	componentDidUpdate() {
-		annotate(this.refs.annotation, this.props, this.props, false);
+	annotate({ xScale, chartConfig, plotData}) {
+		var { chartId } = this.props;
+
+		var { yScale } = chartConfig.filter(each => each.id === chartId)[0];
+		this.setState({ plotData, xScale, yScale });
+	}
+	componentWillReceiveProps(nextProps) {
+		var { plotData, xScale, chartConfig, chartId } = nextProps;
+		var { yScale } = chartConfig.filter(each => each.id === chartId)[0];
+
+		this.setState({ plotData, xScale, yScale });
+
+		var { id, chartId, chartCanvasType, callbackForCanvasDraw, getAllCanvasDrawCallback } = nextProps;
+
+		if (chartCanvasType !== "svg") {
+			var temp = getAllCanvasDrawCallback().filter(each => each.type === "annotation").filter(each => each.id === id);
+			if (temp.length === 0) {
+				nextProps.callbackForCanvasDraw({
+					id,
+					type: "annotation",
+					draw: this.annotate,
+				});
+			} else {
+				nextProps.callbackForCanvasDraw(temp[0], {
+					id,
+					type: "annotation",
+					draw: this.annotate,
+				});
+			}
+		}
+	}
+	componentWillMount() {
+		this.componentWillReceiveProps(this.props);
 	}
 	render() {
-		var { className } = this.props;
+		var { yScale, xScale, plotData } = this.state;
+		var { className, xAccessor, usingProps, with: Annotation } = this.props;
+		var data = helper(this.props, plotData);
+
 		return (
-			<g ref="annotation" className={className}>
+			<g className={className}>
+				{data.map(d => <Annotation key={d.idx}
+						{...usingProps}
+						xScale={xScale} yScale={yScale}
+						xAccessor={xAccessor}
+						datum={d} />)}
 			</g>
 		);
 	}
 }
 
 Annotate.propTypes = {
+	id: PropTypes.number.isRequired,
 	with: PropTypes.func,
 	when: PropTypes.func,
 	usingProps: PropTypes.object,
@@ -39,46 +80,13 @@ function helper({ when }, plotData) {
 	return plotData.filter(when);
 }
 
-function annotate(node, props, { xScale, chartConfig, plotData }, isFirstTime) {
-	var data = helper(props, plotData);
-	var { className, xAccessor, usingProps, with: annotation } = props;
-
-	console.log(node, d3.select(node));
-	var a = annotation()
-		.props(props)
-		.parentNode(d3.select(node))
-
-	a(data, isFirstTime);
-}
-Annotate.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var data = helper(props, plotData);
-	var { className, xAccessor, usingProps, with: Annotation } = props;
-
-	var p = {
-		...Annotation.defaultProps,
-		...usingProps,
-		xScale,
-		yScale,
-		xAccessor
-	};
-
-	data.forEach(d => {
-		Annotation.drawOnCanvas({ ...p, datum: d }, ctx);
-	});
-};
-
 export default pure(Annotate, {
-	getCanvasContexts: PropTypes.func,
-	canvasOriginX: PropTypes.number,
-	canvasOriginY: PropTypes.number,
-	height: PropTypes.number.isRequired,
-	width: PropTypes.number.isRequired,
 	callbackForCanvasDraw: PropTypes.func.isRequired,
-	chartId: PropTypes.number.isRequired,
+	getAllCanvasDrawCallback: PropTypes.func,
 	// seriesId: PropTypes.number.isRequired,
 	// stroke: PropTypes.string,
 	// fill: PropTypes.string,
-	chartConfig: PropTypes.object.isRequired,
+	chartConfig: PropTypes.array.isRequired,
 	chartCanvasType: PropTypes.string,
 	xScale: PropTypes.func.isRequired,
 	// yScale: PropTypes.func.isRequired,
