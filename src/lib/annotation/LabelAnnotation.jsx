@@ -22,21 +22,24 @@ class LabelAnnotation extends Component {
 		var { className, textAnchor, fontFamily, fontSize, opacity, rotate } = this.props;
 		var { x, y, xAccessor, xScale, yScale, datum } = this.props;
 
-		var { xPos, yPos, fill, text } = helper(this.props, xAccessor, xScale, yScale);
+		var { xPos, yPos, fill, text, tooltip } = helper(this.props, xAccessor, xScale, yScale);
 
-		return <text className={className}
+		return (<g>
+			<text className={className}
 					x={xPos} y={yPos}
 					fontFamily={fontFamily} fontSize={fontSize}
 					fill={fill}
 					opacity={opacity}
 					transform={`rotate(${rotate}, ${xPos}, ${yPos})`}
 					onClick={this.handleClick}
-					textAnchor={textAnchor}>{text}</text>;
+					textAnchor={textAnchor}>{text}</text>
+			<title>{tooltip}</title>
+		</g>);
 	}
 }
 
 export function helper(props, xAccessor, xScale, yScale) {
-	var { x, y, datum, fill, text } = props;
+	var { x, y, datum, fill, text, tooltip } = props;
 
 	var xFunc = d3.functor(x);
 	var yFunc = d3.functor(y);
@@ -48,6 +51,7 @@ export function helper(props, xAccessor, xScale, yScale) {
 		yPos,
 		text: d3.functor(text)(datum),
 		fill: d3.functor(fill)(datum),
+		tooltip: d3.functor(tooltip)(datum),
 	};
 }
 

@@ -115,10 +115,17 @@ function getCursorStyle(children) {
 		pointer-events: all;
 		cursor: pointer;
 	}`;
+	const tooltipStyle = `
+		.react-stockcharts-annotate {
+			pointer-events: all;
+			cursor: default;
+		}`;
 	return shouldShowCrossHairStyle(children)
-		? (<style type="text/css" dangerouslySetInnerHTML={{ __html: style }}></style>)
-		: null;
+		? (<style type="text/css" dangerouslySetInnerHTML={{ __html: style + tooltipStyle }}></style>)
+		: (<style type="text/css" dangerouslySetInnerHTML={{ __html: tooltipStyle }}></style>);
 }
+
+
 
 class ChartCanvas extends Component {
 	constructor() {

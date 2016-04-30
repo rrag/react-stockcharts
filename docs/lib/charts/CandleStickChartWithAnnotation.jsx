@@ -43,8 +43,9 @@ class CandleStickChartWithAnnotation extends React.Component {
 			fill: "#060F8F",
 			opacity: 0.8,
 			text: "\ue093",
-			y: ({ yScale }) => (yScale.range()[0] - 10),
+			y: ({ yScale }) => yScale.range()[0],
 			onClick: console.log.bind(console),
+			tooltip: d => d3.time.format("%B")(d.date),
 			// onMouseOver: console.log.bind(console),
 		};
 
@@ -104,23 +105,13 @@ class CandleStickChartWithAnnotation extends React.Component {
 						calculators={[ema20, ema50]}/>
 				</TooltipContainer>
 
-				<Annotate id={0} chartId={1} with={LabelAnnotation} when={d => d.high - d.low > 1}
+				<Annotate id={0} chartId={1} with={LabelAnnotation} when={d => d.startOfMonth}
 					usingProps={annotationProps} />
 
 			</ChartCanvas>
 		);
 	}
 }
-
-//  className="glyphicon"
-
-/*
-					<text x={(width -margin.left - margin.right)/ 2} y={height - 45}
-						fontSize="12"
-						textAnchor="middle">XAxis Label here</text>
-
-
-*/
 
 CandleStickChartWithAnnotation.propTypes = {
 	data: React.PropTypes.array.isRequired,
@@ -131,6 +122,7 @@ CandleStickChartWithAnnotation.propTypes = {
 CandleStickChartWithAnnotation.defaultProps = {
 	type: "svg",
 };
+
 CandleStickChartWithAnnotation = fitWidth(CandleStickChartWithAnnotation);
 
 export default CandleStickChartWithAnnotation;
