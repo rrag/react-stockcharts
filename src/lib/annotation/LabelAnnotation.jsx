@@ -39,12 +39,12 @@ class LabelAnnotation extends Component {
 }
 
 export function helper(props, xAccessor, xScale, yScale) {
-	var { x, y, datum, fill, text, tooltip } = props;
+	var { x, y, datum, fill, text, tooltip, plotData } = props;
 
 	var xFunc = d3.functor(x);
 	var yFunc = d3.functor(y);
 
-	var [xPos, yPos] = [xFunc({ xScale, xAccessor, datum }), yFunc({ yScale, datum })];
+	var [xPos, yPos] = [xFunc({ xScale, xAccessor, datum, plotData }), yFunc({ yScale, datum, plotData })];
 
 	return {
 		xPos,

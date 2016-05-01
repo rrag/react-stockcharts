@@ -15,6 +15,7 @@ import * as scale from "./lib/scale";
 
 import * as coordinates from "./lib/coordinates";
 import * as indicator from "./lib/indicator";
+import * as algorithm from "./lib/algorithm";
 
 import * as annotation from "./lib/annotation";
 
@@ -35,6 +36,7 @@ export default {
 	series,
 	coordinates,
 	indicator,
+	algorithm,
 	axes,
 	scale,
 	tooltip,

@@ -19,9 +19,11 @@ var { XAxis, YAxis } = ReStock.axes;
 var { ema, sma } = ReStock.indicator;
 var { fitWidth } = ReStock.helper;
 
+var algorithm = ReStock.algorithm.default;
+
 var xScale = financeEODDiscontiniousScale();
 
-class CandleStickChartWithAnnotation extends React.Component {
+class MovingAverageCrossOverAlgorithm extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
 
@@ -37,16 +39,37 @@ class CandleStickChartWithAnnotation extends React.Component {
 			.merge((d, c) => {d.ema50 = c})
 			.accessor(d => d.ema50);
 
-		var annotationProps = {
+		var buySell = algorithm()
+			.windowSize(2)
+			.accumulator(([prev, now]) => {
+				var { ema20: prevShortTerm, ema50: prevLongTerm } = prev;
+				var { ema20: nowShortTerm, ema50: nowLongTerm } = now;
+				if (prevShortTerm < prevLongTerm && nowShortTerm > nowLongTerm) return "LONG";
+				if (prevShortTerm > prevLongTerm && nowShortTerm < nowLongTerm) return "SHORT";
+			})
+			.merge((d, c) => {d.longShort = c})
+
+		var defaultAnnotationProps = {
 			fontFamily: "Glyphicons Halflings",
 			fontSize: 20,
-			fill: "#060F8F",
 			opacity: 0.8,
-			text: "\ue182",
-			y: ({ yScale }) => yScale.range()[0],
 			onClick: console.log.bind(console),
-			tooltip: d => d3.time.format("%B")(d.date),
-			// onMouseOver: console.log.bind(console),
+		}
+
+		var longAnnotationProps = {
+			...defaultAnnotationProps,
+			fill: "#006517",
+			text: "\ue093",
+			y: ({ yScale, datum }) => yScale(datum.low) + 20,
+			tooltip: "Go long",
+		};
+
+		var shortAnnotationProps = {
+			...defaultAnnotationProps,
+			fill: "#E20000",
+			text: "\ue094",
+			y: ({ yScale, datum }) => yScale(datum.high),
+			tooltip: "Go short",
 		};
 
 		var margin = {left: 80, right: 80, top:30, bottom: 50};
@@ -57,13 +80,13 @@ class CandleStickChartWithAnnotation extends React.Component {
 			<ChartCanvas width={width} height={height}
 					margin={margin} type={type}
 					seriesName="MSFT"
-					data={data} calculator={[ema20, ema50]}
+					data={data} calculator={[ema20, ema50, buySell]}
 					allowedIntervals={["D", "W", "M"]}
 					xAccessor={d => d.date} discontinous xScale={xScale}
 					xExtents={[new Date(2015, 0, 1), new Date(2015, 5, 8)]}>
 
 				<Label x={(width -margin.left - margin.right)/ 2} y={30}
-					fontSize="30" text="Chart title here" />
+					fontSize="30" text="Moving Average Crossover Algorithm" />
 
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
@@ -97,28 +120,31 @@ class CandleStickChartWithAnnotation extends React.Component {
 						calculators={[ema20, ema50]}/>
 				</TooltipContainer>
 
-				<Annotate id={0} chartId={1} with={LabelAnnotation} when={d => d.startOfMonth}
-					usingProps={annotationProps} />
+				<Annotate id={0} chartId={1} with={LabelAnnotation} when={d => d.longShort === "LONG"}
+					usingProps={longAnnotationProps} />
+				<Annotate id={1} chartId={1} with={LabelAnnotation} when={d => d.longShort === "SHORT"}
+					usingProps={shortAnnotationProps} />
+
 			</ChartCanvas>
 		);
 	}
 }
 
 /*
-
+					<LineSeries yAccessor={d => d.close} stroke="#000000" />
 
 */
 
-CandleStickChartWithAnnotation.propTypes = {
+MovingAverageCrossOverAlgorithm.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
-CandleStickChartWithAnnotation.defaultProps = {
+MovingAverageCrossOverAlgorithm.defaultProps = {
 	type: "svg",
 };
 
-CandleStickChartWithAnnotation = fitWidth(CandleStickChartWithAnnotation);
+MovingAverageCrossOverAlgorithm = fitWidth(MovingAverageCrossOverAlgorithm);
 
-export default CandleStickChartWithAnnotation;
+export default MovingAverageCrossOverAlgorithm;
