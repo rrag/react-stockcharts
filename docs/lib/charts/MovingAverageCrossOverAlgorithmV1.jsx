@@ -23,7 +23,7 @@ var algorithm = ReStock.algorithm.default;
 
 var xScale = financeEODDiscontiniousScale();
 
-class MovingAverageCrossOverAlgorithm extends React.Component {
+class MovingAverageCrossOverAlgorithmV1 extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
 
@@ -85,9 +85,6 @@ class MovingAverageCrossOverAlgorithm extends React.Component {
 					xAccessor={d => d.date} discontinous xScale={xScale}
 					xExtents={[new Date(2015, 0, 1), new Date(2015, 5, 8)]}>
 
-				<Label x={(width -margin.left - margin.right)/ 2} y={30}
-					fontSize="30" text="Moving Average Crossover Algorithm" />
-
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
 						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} 
@@ -135,16 +132,16 @@ class MovingAverageCrossOverAlgorithm extends React.Component {
 
 */
 
-MovingAverageCrossOverAlgorithm.propTypes = {
+MovingAverageCrossOverAlgorithmV1.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
-MovingAverageCrossOverAlgorithm.defaultProps = {
+MovingAverageCrossOverAlgorithmV1.defaultProps = {
 	type: "svg",
 };
 
-MovingAverageCrossOverAlgorithm = fitWidth(MovingAverageCrossOverAlgorithm);
+MovingAverageCrossOverAlgorithmV1 = fitWidth(MovingAverageCrossOverAlgorithmV1);
 
-export default MovingAverageCrossOverAlgorithm;
+export default MovingAverageCrossOverAlgorithmV1;

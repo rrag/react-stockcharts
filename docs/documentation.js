@@ -61,7 +61,6 @@ var CHART_FEATURES = {
 		require("lib/page/IntraDayDataPage").default,
 		require("lib/page/EdgeCoordinatesPage").default,
 		require("lib/page/AnnotationsPage").default,
-		require("lib/page/MovingAverageCrossoverAlgorithmPage").default,
 		require("lib/page/MouseFollowingTooltipPage").default,
 		require("lib/page/UpdatingDataPage").default,
 		require("lib/page/DarkThemePage").default,
@@ -81,6 +80,13 @@ var INDICATORS = {
 		require("lib/page/ElderRayIndicatorPage").default,
 		require("lib/page/ElderImpulseIndicatorPage").default,
 		require("lib/page/BuyAndSellSignalPage").default,
+	] 
+}
+var ALGORITHMIC_INDICATORS = {
+	head: "Algorithmic Indicators",
+	pages: [
+		require("lib/page/MovingAverageCrossoverAlgorithmPage").default,
+		require("lib/page/MovingAverageCrossoverAlgorithmPage2").default,
 	] 
 }
 
@@ -107,6 +113,7 @@ var ALL_PAGES = [
 	CHART_TYPES,
 	CHART_FEATURES,
 	INDICATORS,
+	ALGORITHMIC_INDICATORS,
 	INTERACTIVE,
 	// CUSTOMIZATION, TODO
 ];

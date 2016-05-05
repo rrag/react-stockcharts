@@ -7,13 +7,13 @@ import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 
-import MovingAverageCrossOverAlgorithm from "lib/charts/MovingAverageCrossOverAlgorithm";
+import MovingAverageCrossOverAlgorithmV1 from "lib/charts/MovingAverageCrossOverAlgorithmV1";
 
 var { helper: { TypeChooser } } = ReStock;
 
 var AnnotationsPage = React.createClass({
 	statics: {
-		title: "MA Crossover"
+		title: "MA Crossover - Using text annotation"
 	},
 	render() {
 		return (
@@ -21,7 +21,7 @@ var AnnotationsPage = React.createClass({
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser ref="container">
-							{(type) => (<MovingAverageCrossOverAlgorithm  data={this.props.someData} type={type} />)}
+							{(type) => (<MovingAverageCrossOverAlgorithmV1  data={this.props.someData} type={type} />)}
 						</TypeChooser>
 					</Section>
 				</Row>

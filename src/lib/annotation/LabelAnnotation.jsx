@@ -25,6 +25,7 @@ class LabelAnnotation extends Component {
 		var { xPos, yPos, fill, text, tooltip } = helper(this.props, xAccessor, xScale, yScale);
 
 		return (<g>
+			<title>{tooltip}</title>
 			<text className={className}
 					x={xPos} y={yPos}
 					fontFamily={fontFamily} fontSize={fontSize}
@@ -33,7 +34,6 @@ class LabelAnnotation extends Component {
 					transform={`rotate(${rotate}, ${xPos}, ${yPos})`}
 					onClick={this.handleClick}
 					textAnchor={textAnchor}>{text}</text>
-			<title>{tooltip}</title>
 		</g>);
 	}
 }
