@@ -12,13 +12,11 @@
   "dependencies": {
     "d3": "^3.5.14",
     "lodash.flattendeep": "^4.1.0",
-    "react": "^0.14.6",
-    "react-dom": "^0.14.6",
     "save-svg-as-png": "^1.0.2"
   },
   "peerDependencies": {
-    "react": "^0.14.6",
-    "react-dom": "^0.14.6"
+    "react": "^0.14.0 || ^15.0.0",
+    "react-dom": "^0.14.0 || ^15.0.0"
   },
   "devDependencies": {
     "autoprefixer-loader": "^3.2.0",
@@ -34,7 +32,7 @@
     "css-loader": "^0.23.1",
     "eslint": "^2.7.0",
     "eslint-plugin-babel": "^3.0.0",
-    "eslint-plugin-react": "^4.3.0",
+    "eslint-plugin-react": "^5.0.1",
     "file-loader": "^0.8.5",
     "html-loader": "^0.4.0",
     "json-loader": "^0.5.4",
@@ -42,10 +40,12 @@
     "node-sass": "^3.4.2",
     "prismjs": "git://github.com/PrismJS/prism.git#gh-pages",
     "remarkable-loader": "^0.1.0",
+    "react": "^15.0.0",
+    "react-dom": "^15.0.0",
     "rimraf": "^2.5.1",
     "sass-loader": "^3.1.2",
     "serve-static": "^1.10.2",
-    "shelljs": "^0.6.0",
+    "shelljs": "^0.7.0",
     "style-loader": "^0.13.0",
     "url-loader": "^0.5.7",
     "webpack": "^1.12.12",
