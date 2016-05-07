@@ -35,8 +35,8 @@ import { isDefined, zipper, slidingWindow } from "../../utils";
 
 export default function() {
 
-	var { period: windowSize, source, movingAverageType, ohlc } = defaultOptions;
-	var source = d3.functor(source);
+	var { period: windowSize, source: src, movingAverageType, ohlc } = defaultOptions;
+	var source = d3.functor(src);
 
 	function calculator(data) {
 

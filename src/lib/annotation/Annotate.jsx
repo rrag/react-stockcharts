@@ -1,20 +1,15 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import ReactDOM from "react-dom";
-import d3 from "d3";
-
 
 import pure from "../pure";
-import wrap from "../series/wrap";
-import { isDefined } from "../utils";
 
 class Annotate extends Component {
 	constructor(props) {
 		super(props);
 		this.annotate = this.annotate.bind(this);
 	}
-	annotate({ xScale, chartConfig, plotData}) {
+	annotate({ xScale, chartConfig, plotData }) {
 		var { chartId } = this.props;
 
 		var { yScale } = chartConfig.filter(each => each.id === chartId)[0];
@@ -26,18 +21,18 @@ class Annotate extends Component {
 
 		this.setState({ plotData, xScale, yScale });
 
-		var { id, chartId, chartCanvasType, callbackForCanvasDraw, getAllCanvasDrawCallback } = nextProps;
+		var { id, chartCanvasType, callbackForCanvasDraw, getAllCanvasDrawCallback } = nextProps;
 
 		if (chartCanvasType !== "svg") {
 			var temp = getAllCanvasDrawCallback().filter(each => each.type === "annotation").filter(each => each.id === id);
 			if (temp.length === 0) {
-				nextProps.callbackForCanvasDraw({
+				callbackForCanvasDraw({
 					id,
 					type: "annotation",
 					draw: this.annotate,
 				});
 			} else {
-				nextProps.callbackForCanvasDraw(temp[0], {
+				callbackForCanvasDraw(temp[0], {
 					id,
 					type: "annotation",
 					draw: this.annotate,
@@ -68,7 +63,12 @@ class Annotate extends Component {
 }
 
 Annotate.propTypes = {
+	className: PropTypes.string.isRequired,
 	id: PropTypes.number.isRequired,
+	chartId: PropTypes.number.isRequired,
+	xAccessor: PropTypes.func.isRequired,
+	xScale: PropTypes.func.isRequired,
+	plotData: PropTypes.array.isRequired,
 	with: PropTypes.func,
 	when: PropTypes.func,
 	usingProps: PropTypes.object,
@@ -85,13 +85,9 @@ function helper({ when }, plotData) {
 export default pure(Annotate, {
 	callbackForCanvasDraw: PropTypes.func.isRequired,
 	getAllCanvasDrawCallback: PropTypes.func,
-	// seriesId: PropTypes.number.isRequired,
-	// stroke: PropTypes.string,
-	// fill: PropTypes.string,
 	chartConfig: PropTypes.array.isRequired,
 	chartCanvasType: PropTypes.string,
 	xScale: PropTypes.func.isRequired,
-	// yScale: PropTypes.func.isRequired,
 	xAccessor: PropTypes.func.isRequired,
 	plotData: PropTypes.array.isRequired,
 });

@@ -10,7 +10,7 @@ import LabelAnnotation, { defaultProps, helper } from "./LabelAnnotation";
 class Label extends Component {
 
 	componentDidMount() {
-		var { selectCanvas, getCanvasContexts, chartConfig, chartCanvasType, text } = this.props;
+		var { selectCanvas, getCanvasContexts, chartConfig, chartCanvasType } = this.props;
 		if (chartCanvasType !== "svg") {
 			var ctx = selectCanvas(getCanvasContexts());
 			var yScale = getYScale(chartConfig);
@@ -22,7 +22,7 @@ class Label extends Component {
 		this.componentDidMount();
 	}
 	render() {
-		var { chartConfig, chartCanvasType, text } = this.props;
+		var { chartConfig, chartCanvasType } = this.props;
 		if (chartCanvasType !== "svg") return null;
 
 		return <LabelAnnotation yScale={getYScale(chartConfig)} {...this.props} text={getText(this.props)}/>;
@@ -39,6 +39,13 @@ function getYScale(chartConfig) {
 
 Label.propTypes = {
 	className: PropTypes.string,
+	selectCanvas: PropTypes.func.isRequired,
+	getCanvasContexts: PropTypes.func,
+	chartCanvasType: PropTypes.string,
+	chartConfig: PropTypes.oneOfType([
+		PropTypes.array,
+		PropTypes.object,
+	]).isRequired,
 	text: PropTypes.oneOfType([
 		PropTypes.string,
 		PropTypes.func
@@ -68,7 +75,7 @@ function drawOnCanvas2(props, ctx) {
 }
 
 function drawOnCanvas(props, ctx) {
-	var { text, fill, textAnchor, fontFamily, fontSize, opacity, datum, xAccessor, xScale, yScale, rotate } = props;
+	var { textAnchor, fontFamily, fontSize, opacity, xAccessor, xScale, yScale, rotate } = props;
 
 	var { xPos, yPos, fill, text } = helper(props, xAccessor, xScale, yScale);
 

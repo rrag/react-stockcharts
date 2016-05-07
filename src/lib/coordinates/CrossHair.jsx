@@ -46,11 +46,11 @@ CrossHair.defaultProps = {
 };
 
 CrossHair.helper = (props) => {
-	var { width, edges, yAxisPad, mouseXY, xDisplayValue, height } = props;
+	var { width, edges: inputEdges, yAxisPad, mouseXY, xDisplayValue, height } = props;
 	var { stroke, opacity, textStroke, textBGFill, textBGopacity, fontFamily, fontSize } = props;
 	var x1 = 0, x2 = width;
 
-	var edges = edges.map((edge) => {
+	var edges = inputEdges.map((edge) => {
 		if (edge.at === "left") {
 			x1 = -yAxisPad;
 		}

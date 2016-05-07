@@ -49,7 +49,7 @@ SingleMAToolTip.propTypes = {
 
 class MovingAverageTooltip extends Component {
 	render() {
-		var { chartConfig, currentItem, width, height } = this.context;
+		var { chartConfig, currentItem, height } = this.context;
 
 		var { className, onClick, forChart, width, fontFamily, fontSize, origin: originProp, calculators, displayFormat } = this.props;
 
@@ -89,7 +89,6 @@ class MovingAverageTooltip extends Component {
 MovingAverageTooltip.contextTypes = {
 	chartConfig: PropTypes.array.isRequired,
 	currentItem: PropTypes.object.isRequired,
-	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 };
 

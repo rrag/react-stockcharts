@@ -1,9 +1,7 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-
-import wrap from "../series/wrap";
-import { isDefined, hexToRGBA } from "../utils";
+import d3 from "d3";
 
 class SvgPathAnnotation extends Component {
 	constructor(props) {
@@ -19,14 +17,14 @@ class SvgPathAnnotation extends Component {
 		}
 	}
 	render() {
-		var { className, stroke, fill, opacity } = this.props;
-		var { xAccessor, xScale, yScale, datum, path } = this.props;
+		var { className, stroke, opacity } = this.props;
+		var { xAccessor, xScale, yScale, path } = this.props;
 
 		var { x, y, fill, tooltip } = helper(this.props, xAccessor, xScale, yScale);
 
-		return (<g onClick={this.handleClick}>
+		return (<g className={className} onClick={this.handleClick}>
 			<title>{tooltip}</title>
-			<path d={path({x, y})} stroke={stroke} fill={fill} opacity={opacity} />
+			<path d={path({ x, y })} stroke={stroke} fill={fill} opacity={opacity} />
 		</g>);
 	}
 }
@@ -50,9 +48,18 @@ function helper(props, xAccessor, xScale, yScale) {
 SvgPathAnnotation.propTypes = {
 	className: PropTypes.string,
 	path: PropTypes.func.isRequired,
+	onClick: PropTypes.func,
+	xAccessor: PropTypes.func,
+	xScale: PropTypes.func,
+	yScale: PropTypes.func,
+	datum: PropTypes.object,
+	stroke: PropTypes.string,
+	fill: PropTypes.string,
+	opacity: PropTypes.number,
 };
 
 SvgPathAnnotation.defaultProps = {
+	className: "react-stockcharts-svgpathannotation",
 	opacity: 1,
 	x: ({ xScale, xAccessor, datum }) => xScale(xAccessor(datum)),
 };

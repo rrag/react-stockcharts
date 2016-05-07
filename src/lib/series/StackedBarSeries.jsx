@@ -60,8 +60,6 @@ StackedBarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 
 export function drawOnCanvasHelper(props, ctx, xScale, yScale, plotData, xAccessor, yAccessor,
 		stackFn, defaultPostAction = identity, postRotateAction = rotateXY) {
-	var { yAccessor, xAccessor } = props;
-
 	var bars = doStuff(props, plotData, xScale, yScale, stackFn, postRotateAction, defaultPostAction);
 	drawOnCanvas2(props, ctx, bars);
 }
@@ -105,7 +103,7 @@ export const rotateXY = (array) => array.map(each => {
 export function getBarsSVG2(props, bars) {
 	/* eslint-disable react/prop-types */
 	var { opacity } = props;
-	/* eslint-disable react/prop-types */
+	/* eslint-enable react/prop-types */
 
 	return bars.map((d, idx) => {
 		if (d.width <= 1) {

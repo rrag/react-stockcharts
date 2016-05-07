@@ -102,10 +102,10 @@ EdgeIndicator.helper = (props, xScale, yScale, plotData) => {
 	var { yAccessor, xAccessor, fill, textFill } = props;
 
 	// var currentItem = ChartDataUtil.getCurrentItemForChartNew(currentItems, forChart);
-	var edge = null, item, yAccessor;
+	var edge = null;
 	// console.log(chartData.config.compareSeries.length);
 
-	var item = itemType === "first" ? first(plotData, yAccessor) : last(plotData, yAccessor);
+	var item = (itemType === "first" ? first(plotData, yAccessor) : last(plotData, yAccessor));
 
 	if (isDefined(item)) {
 		var yValue = yAccessor(item),

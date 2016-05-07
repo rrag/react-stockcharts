@@ -13,15 +13,15 @@ export default function financeIntradayScale(indexAccessor = d => d.idx, dateAcc
 		{ step: 432e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || d.startOfQuarterDay); } }, // 12 hours
 		{ step: 864e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || d.startOfHalfDay); } },  // 1-day
 		{ step: 2592e5, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfDay; } },  // 3-day, doesnt work with 2h scale
-		{ step: 6048e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay && dateAccessor(d).getDate() % 3 == 0); } },  // 7-day
-		{ step: 12096e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay && dateAccessor(d).getDate() % 3 == 0); } }  // 14-day
+		{ step: 6048e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay && dateAccessor(d).getDate() % 3 === 0); } },  // 7-day
+		{ step: 12096e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay && dateAccessor(d).getDate() % 3 === 0); } }  // 14-day
 	];
 	var timeScaleStepsBisector = d3.bisector(function(d) { return d.step; }).left;
 	var bisectByIndex = d3.bisector(function(d) { return indexAccessor(d); }).left;
 	var tickFormat = [
-		[d3.time.format("%_I %p"), function(d) { return d.startOfHour && !d.startOfDay }],
-		[d3.time.format("%a %d"), function(d) { return d.startOfDay }],
-		[d3.time.format("%I:%M %p"), function(d) { return true; }] // accumulator fallback for first entry
+		[d3.time.format("%_I %p"), function(d) { return d.startOfHour && !d.startOfDay; }],
+		[d3.time.format("%a %d"), function(d) { return d.startOfDay; }],
+		[d3.time.format("%I:%M %p"), d3.functor(true)] // accumulator fallback for first entry
 	];
 	function formater(d) {
 		var i = 0, format = tickFormat[i];
@@ -114,7 +114,7 @@ export default function financeIntradayScale(indexAccessor = d => d.idx, dateAcc
 		//   );
 
 		var scaleIndex = timeScaleStepsBisector(timeScaleSteps, target);
-		
+
 		var ticks = data
 						.filter(timeScaleSteps[scaleIndex].f)
 						.map(indexAccessor)
@@ -138,4 +138,4 @@ export default function financeIntradayScale(indexAccessor = d => d.idx, dateAcc
 		return financeIntradayScale(indexAccessor, dateAccessor, data, backingLinearScale.copy());
 	};
 	return scale;
-};
+}

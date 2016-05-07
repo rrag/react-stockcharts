@@ -62,7 +62,7 @@ OverlayBarSeries.getBarsSVG = (props) => {
 
 	/* eslint-disable react/prop-types */
 	var { xAccessor, yAccessor, xScale, yScale, plotData } = props;
-	/* eslint-disable react/prop-types */
+	/* eslint-enable react/prop-types */
 
 	var bars = OverlayBarSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
 	return getBarsSVG2(props, bars);

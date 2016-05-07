@@ -113,7 +113,7 @@ export function drawOnCanvas2(props, ctx, xScale, yScale, plotData, bars) {
 export function getBarsSVG2(props, bars) {
 	/* eslint-disable react/prop-types */
 	var { opacity } = props;
-	/* eslint-disable react/prop-types */
+	/* eslint-enable react/prop-types */
 
 	return bars.map((d, idx) => {
 		if (d.barWidth <= 1) {

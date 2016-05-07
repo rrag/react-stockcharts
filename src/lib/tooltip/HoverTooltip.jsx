@@ -1,7 +1,6 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import d3 from "d3";
 
 import { first, last, isDefined, isNotDefined, hexToRGBA } from "../utils";
 import pure from "../pure";
@@ -17,7 +16,7 @@ class HoverTooltip extends Component {
 		}
 	}
 	componentDidUpdate() {
-		this.componentDidMount()
+		this.componentDidMount();
 	}
 	componentWillMount() {
 		this.componentWillReceiveProps(this.props);
@@ -41,13 +40,12 @@ class HoverTooltip extends Component {
 		}
 	}
 	render() {
-		var { fontFamily, fontSize, backgroundShapeSVG } = this.props;
-		var { tooltipContent } = this.props;
-		var { chartConfig, currentItem, width, height, mouseXY } = this.props;
+		var { backgroundShapeSVG } = this.props;
+		var { chartConfig, currentItem, height, mouseXY } = this.props;
 		var { chartCanvasType, show, xScale, bgFill, bgOpacity } = this.props;
 
 		if (chartCanvasType !== "svg") return null;
-		var pointer = helper(this.props, show, xScale, mouseXY, chartConfig, currentItem)
+		var pointer = helper(this.props, show, xScale, mouseXY, chartConfig, currentItem);
 
 		if (isNotDefined(pointer)) return null;
 		var { x, y, content, centerX, drawWidth } = pointer;
@@ -66,8 +64,22 @@ class HoverTooltip extends Component {
 
 HoverTooltip.propTypes = {
 	// forChart: PropTypes.number.isRequired,
+	getCanvasContexts: PropTypes.func,
+	chartCanvasType: PropTypes.string,
+	chartConfig: PropTypes.array.isRequired,
+	currentItem: PropTypes.object.isRequired,
+	width: PropTypes.number.isRequired,
+	height: PropTypes.number.isRequired,
+	mouseXY: PropTypes.array,
+	show: PropTypes.bool,
+	xScale: PropTypes.func.isRequired,
+
+
+	backgroundShapeSVG: PropTypes.func,
 	bgwidth: PropTypes.number.isRequired,
 	bgheight: PropTypes.number.isRequired,
+	bgFill: PropTypes.string.isRequired,
+	bgOpacity: PropTypes.number.isRequired,
 	tooltipContent: PropTypes.oneOfType([
 		PropTypes.object,
 		PropTypes.func
@@ -101,17 +113,10 @@ HoverTooltip.defaultProps = {
 
 const PADDING = 5;
 
+
+/* eslint-disable react/prop-types */
 function backgroundShapeSVG({ bgheight, bgwidth, fill, stroke, opacity }) {
 	return <rect height={bgheight} width={bgwidth} fill={fill} opacity={opacity} stroke={stroke} />;
-}
-
-function backgroundShapeCanvas({ bgheight, bgwidth, fill, stroke, opacity }, ctx) {
-	ctx.fillStyle = hexToRGBA(fill, opacity);
-	ctx.strokeStyle = stroke;
-	ctx.beginPath();
-	ctx.rect(0, 0, bgwidth, bgheight);
-	ctx.fill();
-	ctx.stroke();
 }
 
 function tooltipSVG({ fontFamily, fontSize, fontFill }, content) {
@@ -127,10 +132,20 @@ function tooltipSVG({ fontFamily, fontSize, fontFill }, content) {
 		{tspans}
 	</text>;
 }
+/* eslint-enable react/prop-types */
+
+function backgroundShapeCanvas({ bgheight, bgwidth, fill, stroke, opacity }, ctx) {
+	ctx.fillStyle = hexToRGBA(fill, opacity);
+	ctx.strokeStyle = stroke;
+	ctx.beginPath();
+	ctx.rect(0, 0, bgwidth, bgheight);
+	ctx.fill();
+	ctx.stroke();
+}
 
 function tooltipCanvas({ fontFamily, fontSize, fontFill }, content, ctx) {
 	ctx.font = `${fontSize}px ${fontFamily}`;
-	ctx.fillStyle = fontFill
+	ctx.fillStyle = fontFill;
 	ctx.textAlign = "left";
 
 	const X = 10;
@@ -149,7 +164,7 @@ function tooltipCanvas({ fontFamily, fontSize, fontFill }, content, ctx) {
 }
 
 function origin({ mouseXY, bgheight, bgwidth, xAccessor, currentItem, xScale }) {
-	var [x, y] = mouseXY;
+	var [... y] = mouseXY;
 
 	var snapX = xScale(xAccessor(currentItem));
 	var originX = (snapX - bgwidth - PADDING * 2 < 0) ? snapX + PADDING : snapX - bgwidth - PADDING;
@@ -159,18 +174,16 @@ function origin({ mouseXY, bgheight, bgwidth, xAccessor, currentItem, xScale }) 
 	return [originX, originY];
 }
 
-function drawOnCanvas (canvasContext, props) {
+function drawOnCanvas(canvasContext, props) {
 	var { mouseXY, chartConfig, currentItem, xScale, show } = props;
 
 	// console.log(props.
 	drawOnCanvasStatic(props, canvasContext, show, xScale, mouseXY, null, chartConfig, currentItem);
 }
 
-function drawOnCanvasStatic (props, ctx, show, xScale, mouseXY, currentCharts, chartConfig, currentItem) {
+function drawOnCanvasStatic(props, ctx, show, xScale, mouseXY, currentCharts, chartConfig, currentItem) {
 
-	var { fontFamily, fontSize } = props;
-	var { tooltipContent } = props;
-	var { width, height, margin } = props;
+	var { height, margin } = props;
 	var { bgFill, bgOpacity } = props;
 	var { backgroundShapeCanvas, tooltipCanvas } = props;
 
@@ -196,16 +209,7 @@ function drawOnCanvasStatic (props, ctx, show, xScale, mouseXY, currentCharts, c
 	ctx.translate(x, y);
 	backgroundShapeCanvas(props, ctx);
 	tooltipCanvas(props, content, ctx);
-	// CrossHair.drawOnCanvasStatic(ctx, pointer);
-	/*
-			<g>
-				<rect x={centerX - drawWidth / 2} y={0} width={drawWidth} height={height} fill={bgFill} opacity={bgOpacity} />
-				<g transform={`translate(${x}, ${y})`}>
-					{backgroundShapeSVG(this.props)}
-					{tooltipSVG({ content, fontFamily, fontSize })}
-				</g>
-			</g>
-	*/
+
 	ctx.restore();
 }
 

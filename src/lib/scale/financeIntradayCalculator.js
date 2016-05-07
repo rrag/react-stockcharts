@@ -32,7 +32,20 @@ export default function() {
 
 			var startOfWeek = nowDate.getDay() < prevDate.getDay();
 
-			var row = { ...now, startOfQuarterHour, startOfHour, startOfEighthDay, startOfQuarterDay, startOfHalfDay, startOfDay, startOfWeek };
+			var row = {
+				...now,
+				startOfHalfMinute,
+				startOfMinute,
+				startOf5Minutes,
+				startOfQuarterHour,
+				startOfHalfHour,
+				startOfHour,
+				startOfEighthDay,
+				startOfQuarterDay,
+				startOfHalfDay,
+				startOfDay,
+				startOfWeek
+			};
 			return row;
 		});
 		var newData = intradayScaleCalculator(data);

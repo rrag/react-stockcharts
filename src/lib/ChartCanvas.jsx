@@ -35,14 +35,14 @@ function getDimensions(props) {
 function calculateFullData(props) {
 	var { data, calculator } = props;
 	var { xScale, intervalCalculator, allowedIntervals, plotFull } = props;
-	var { xAccessor, map, dataEvaluator, indexAccessor, indexMutator, discontinous } = props;
+	var { xAccessor: inputXAccesor, map, dataEvaluator, indexAccessor, indexMutator, discontinous } = props;
 
-	var wholeData = isDefined(plotFull) ? plotFull : xAccessor === identity;
+	var wholeData = isDefined(plotFull) ? plotFull : inputXAccesor === identity;
 
 	var evaluate = dataEvaluator()
 		.allowedIntervals(allowedIntervals)
 		.intervalCalculator(intervalCalculator)
-		.xAccessor(xAccessor)
+		.xAccessor(inputXAccesor)
 		.discontinous(discontinous)
 		.indexAccessor(indexAccessor)
 		.indexMutator(indexMutator)
@@ -119,11 +119,12 @@ function getCursorStyle(children) {
 	.react-stockcharts-annotate {
 		cursor: default;
 	}`;
-	return (<style
+	/* return (<style
 		type="text/css"
 		dangerouslySetInnerHTML={{
 			__html: shouldShowCrossHairStyle(children) ? style + tooltipStyle : tooltipStyle
-		}}></style>)
+		}}></style>);*/
+	return (<style type="text/css">{shouldShowCrossHairStyle(children) ? style + tooltipStyle : tooltipStyle}</style>);
 }
 
 class ChartCanvas extends Component {

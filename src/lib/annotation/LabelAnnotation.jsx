@@ -1,9 +1,7 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-
-import wrap from "../series/wrap";
-import { isDefined, hexToRGBA } from "../utils";
+import d3 from "d3";
 
 class LabelAnnotation extends Component {
 	constructor(props) {
@@ -20,14 +18,13 @@ class LabelAnnotation extends Component {
 	}
 	render() {
 		var { className, textAnchor, fontFamily, fontSize, opacity, rotate } = this.props;
-		var { x, y, xAccessor, xScale, yScale, datum } = this.props;
+		var { xAccessor, xScale, yScale } = this.props;
 
 		var { xPos, yPos, fill, text, tooltip } = helper(this.props, xAccessor, xScale, yScale);
 
-		return (<g>
+		return (<g className={className}>
 			<title>{tooltip}</title>
-			<text className={className}
-					x={xPos} y={yPos}
+			<text x={xPos} y={yPos}
 					fontFamily={fontFamily} fontSize={fontSize}
 					fill={fill}
 					opacity={opacity}
@@ -58,6 +55,18 @@ export function helper(props, xAccessor, xScale, yScale) {
 LabelAnnotation.propTypes = {
 	className: PropTypes.string,
 	text: PropTypes.string,
+	textAnchor: PropTypes.string,
+	fontFamily: PropTypes.string,
+	fontSize: PropTypes.number,
+	opacity: PropTypes.number,
+	rotate: PropTypes.number,
+	onClick: PropTypes.func,
+	xAccessor: PropTypes.func,
+	xScale: PropTypes.func,
+	yScale: PropTypes.func,
+	datum: PropTypes.object,
+	x: PropTypes.number,
+	y: PropTypes.number,
 };
 
 export const defaultProps = {
@@ -70,6 +79,9 @@ export const defaultProps = {
 	x: ({ xScale, xAccessor, datum }) => xScale(xAccessor(datum)),
 };
 
-LabelAnnotation.defaultProps = defaultProps;
+LabelAnnotation.defaultProps = {
+	...defaultProps,
+	className: "react-stockcharts-labelannotation",
+};
 
 export default LabelAnnotation;

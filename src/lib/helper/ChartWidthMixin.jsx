@@ -22,9 +22,12 @@ var ChartWidthMixin = {
 		var el = ReactDOM.findDOMNode(this);
 		// console.log(this.refs, el);
 		var w = el.parentNode.clientWidth;
+
+		/* eslint-disable react/no-did-mount-set-state */
 		this.setState({
 			width: w
 		});
+		/* eslint-enable react/no-did-mount-set-state */
 	},
 };
 

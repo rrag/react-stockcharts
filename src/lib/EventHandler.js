@@ -383,7 +383,7 @@ class EventHandler extends Component {
 	handlePinchZoom(initialPinch, finalPinch) {
 		var { xScale: initialPinchXScale } = initialPinch;
 
-		var { plotData, showingInterval, xScale: initialXScale, chartConfig: initialChartConfig } = this.state;
+		var { showingInterval, xScale: initialXScale, chartConfig: initialChartConfig } = this.state;
 		var { xAccessor, fullData, interval, dimensions: { width }, xExtentsCalculator, postCalculator } = this.props;
 
 		var { topLeft: iTL, bottomRight: iBR } = this.pinchCoordinates(initialPinch);
@@ -443,7 +443,7 @@ class EventHandler extends Component {
 	}
 	handleZoom(zoomDirection, mouseXY) {
 		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
-		var { plotData, showingInterval, xScale: initialXScale, chartConfig: initialChartConfig, currentItem } = this.state;
+		var { showingInterval, xScale: initialXScale, chartConfig: initialChartConfig } = this.state;
 		var { xAccessor, fullData, interval, dimensions: { width }, xExtentsCalculator, postCalculator } = this.props;
 
 		var item = getCurrentItem(initialXScale, xAccessor, mouseXY, plotData),
@@ -579,7 +579,7 @@ class EventHandler extends Component {
 
 				canvasDrawCallbackList
 					.filter(each => each.type === "annotation")
-					.forEach(each => each.draw({ xScale, chartConfig, plotData}));
+					.forEach(each => each.draw({ xScale, chartConfig, plotData }));
 
 			});
 		} else {

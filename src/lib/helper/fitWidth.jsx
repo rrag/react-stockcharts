@@ -17,9 +17,12 @@ export default function fitWidth(WrappedComponent, withRef = true) {
 			window.addEventListener("resize", this.handleWindowResize);
 			var el = ReactDOM.findDOMNode(this);
 			var w = el.parentNode.clientWidth;
+
+			/* eslint-disable react/no-did-mount-set-state */
 			this.setState({
 				width: w
 			});
+			/* eslint-enable react/no-did-mount-set-state */
 		}
 		componentWillUnmount() {
 			window.removeEventListener("resize", this.handleWindowResize);

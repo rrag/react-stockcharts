@@ -41,7 +41,7 @@ function getDomain(inputDomain, width, filteredData, predicate, currentDomain, c
 }
 
 function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShowTheseMany, useWholeData = false) {
-	var data, inputXAccessor, interval, width, currentInterval, currentDomain, currentPlotData, scale;
+	var data, interval, width, currentInterval, currentDomain, currentPlotData, scale;
 
 	function domain(inputDomain, xAccessor) {
 		var left = first(inputDomain);
