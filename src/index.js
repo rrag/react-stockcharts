@@ -26,7 +26,7 @@ import * as helper from "./lib/helper";
 import * as interactive from "./lib/interactive";
 import * as Utils from "./lib/utils";
 
-const version = "0.4.0";
+const version = "0.5.0-alpha1";
 
 export default {
 	ChartCanvas,
