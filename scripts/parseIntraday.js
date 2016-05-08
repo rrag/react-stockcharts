@@ -1,5 +1,5 @@
 
-const ticker = "AAPL"
+const ticker = "MSFT"
 
 var fs = require('fs'),
 	readline = require('readline');
@@ -45,7 +45,7 @@ rd.on('close', function() {
 
 		fs.appendFileSync(target, "date	open	high	low	close	volume" + "\n");
 		while(stack.length > 0) {
-			fs.appendFileSync(target, stack.pop() + "\n");
+			fs.appendFileSync(target, stack.shift() + "\n");
 		}
 	})
 })
