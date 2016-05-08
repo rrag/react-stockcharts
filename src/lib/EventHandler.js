@@ -443,10 +443,10 @@ class EventHandler extends Component {
 	}
 	handleZoom(zoomDirection, mouseXY) {
 		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
-		var { showingInterval, xScale: initialXScale, chartConfig: initialChartConfig } = this.state;
+		var { showingInterval, xScale: initialXScale, chartConfig: initialChartConfig, plotData: initialPlotData } = this.state;
 		var { xAccessor, fullData, interval, dimensions: { width }, xExtentsCalculator, postCalculator } = this.props;
 
-		var item = getCurrentItem(initialXScale, xAccessor, mouseXY, plotData),
+		var item = getCurrentItem(initialXScale, xAccessor, mouseXY, initialPlotData),
 			cx = initialXScale(xAccessor(item)),
 			c = zoomDirection > 0 ? 2 : 0.5,
 			newDomain = initialXScale.range().map(x => cx + (x - cx) * c).map(initialXScale.invert);

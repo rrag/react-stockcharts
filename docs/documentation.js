@@ -58,7 +58,8 @@ var CHART_FEATURES = {
 	pages: [
 		require("lib/page/MousePointerPage").default,
 		require("lib/page/ZoomAndPanPage").default,
-		require("lib/page/IntraDayDataPage").default,
+		require("lib/page/IntraDayContiniousDataPage").default,
+		require("lib/page/EquityIntraDayDataPage").default,
 		require("lib/page/EdgeCoordinatesPage").default,
 		require("lib/page/AnnotationsPage").default,
 		require("lib/page/MouseFollowingTooltipPage").default,
@@ -131,29 +132,80 @@ function compressString(string) {
 
 function parseData(parse) {
 	return function (d) {
-		d.date = new Date(parse(d.date).getTime());
+		d.date = parse(d.date);
 		d.open = +d.open;
 		d.high = +d.high;
 		d.low = +d.low;
 		d.close = +d.close;
 		d.volume = +d.volume;
+
+		return d
 	}
 }
 
-function renderPage(intraDay, data, dataFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData) {
+if (!Modernizr.fetch || !Modernizr.promises) {
+	require.ensure(["whatwg-fetch", "es6-promise"], function(require) {
+		require("es6-promise");
+		require("whatwg-fetch");
+		loadPage();
+	})
+} else {
+	loadPage();
+}
 
-	data.forEach(parseData(parseDate));
-	dataFull.forEach(parseData(parseDate));
-	intraDay.forEach(parseData(parseDateTime));
 
-	compareData.forEach((d, i) => {
-		parseData(parseDate)(d);
-		d.SP500Close = +d.SP500Close;
-		d.AAPLClose = +d.AAPLClose;
-		d.GEClose = +d.GEClose;
-		// console.log(d);
-	});
+function loadPage() {
+	var promiseMSFT = fetch("data/MSFT.tsv")
+		.then(response => response.text())
+		.then(data => d3.tsv.parse(data, parseData(parseDate)))
+	var promiseMSFTfull = fetch("data/MSFT_full.tsv")
+		.then(response => response.text())
+		.then(data => d3.tsv.parse(data, parseData(parseDate)));
+	var promiseIntraDayContinious = fetch("data/bitfinex_xbtusd_1m.csv")
+		.then(response => response.text())
+		.then(data => d3.csv.parse(data, parseData(parseDateTime)))
+	var promiseIntraDayDiscontinious = fetch("data/AAPL_INTRA_DAY.tsv")
+		.then(response => response.text())
+		.then(data => d3.tsv.parse(data, parseData(d => new Date(+d))))
+	var promiseCompare = fetch("data/comparison.tsv")
+		.then(response => response.text())
+		.then(data => d3.tsv.parse(data, d => {
+			d = parseData(parseDate)(d);
+			d.SP500Close = +d.SP500Close;
+			d.AAPLClose = +d.AAPLClose;
+			d.GEClose = +d.GEClose;
+			return d;
+		}))
+	var promiseBubbleData = fetch("data/bubble.json")
+		.then(response => response.json())
+	var promiseBarData = fetch("data/barData.json")
+		.then(response => response.json())
+	var promisegroupedBarData = fetch("data/groupedBarData.json")
+		.then(response => response.json())
 
+	Promise.all([promiseMSFT, promiseMSFTfull, promiseIntraDayContinious, promiseIntraDayDiscontinious, promiseCompare, promiseBubbleData, promiseBarData, promisegroupedBarData])
+		.then(function (values) {
+			var [MSFT, MSFTfull, intraDayContinious, intraDayDiscontinious, compareData, bubbleData, barData, groupedBarData] = values;
+			var horizontalBarData = barData.map(({x, y}) => ({ x: y, y: x }))
+			var horizontalGroupedBarData = groupedBarData.map(d => {
+					return {
+						y: d.x,
+						x1: d.y1,
+						x2: d.y2,
+						x3: d.y3,
+						x4: d.y4,
+					}
+				});
+
+			renderPage(MSFT, MSFTfull, intraDayContinious, intraDayDiscontinious, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
+			// renderPartialPage(MSFT, MSFTFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData);
+
+
+		})
+
+}
+
+function renderPage(data, dataFull, intraDayContinious, intraDayDiscontinious, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData) {
 	var selected = location.hash.replace("#/", "");
 	var selectedPage = pages.filter((page) => (compressString(page.title) === compressString(selected)));
 
@@ -197,7 +249,8 @@ function renderPage(intraDay, data, dataFull, compareData, bubbleData, barData, 
 							)}
 						</Sidebar>
 						<Page someData={data}
-								intraDayData={intraDay}
+								intraDayContiniousData={intraDayContinious}
+								intraDayDiscontiniousData={intraDayDiscontinious}
 								lotsOfData={dataFull}
 								compareData={compareData}
 								bubbleData={bubbleData}
@@ -215,87 +268,7 @@ function renderPage(intraDay, data, dataFull, compareData, bubbleData, barData, 
 }
 
 
-d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
-	d3.tsv("data/MSFT.tsv", (err, MSFT) => {
-		d3.csv("data/bitfinex_xbtusd_1m.csv", (err, intraDay) => {
-			d3.tsv("data/comparison.tsv", (err3, compareData) => {
-				d3.json("data/bubble.json", (err4, bubbleData) => {
-					d3.json("data/barData.json", (err5, barData) => {
-						d3.json("data/groupedBarData.json", (err6, groupedBarData) => {
-							var horizontalBarData = barData.map(({x, y}) => ({ x: y, y: x }))
-							var horizontalGroupedBarData = groupedBarData.map(d => {
-									return {
-										y: d.x,
-										x1: d.y1,
-										x2: d.y2,
-										x3: d.y3,
-										x4: d.y4,
-									}
-								});
-
-							renderPage(intraDay, MSFT, MSFTFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
-							// renderPartialPage(MSFT, MSFTFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData);
-						});
-					});
-				})
-			});
-		});
-	});
-});
-
-/*document.addEventListener('keypress', function(e) {
-	var keyCode = e.which;
-	// b or s (98 or 115) - Begin performance
-	// e (101) - end performance
-	// l (108) - log performance
-	console.log("pressed ", e.which);
-	var Perf = React.addons.Perf;
-	if (keyCode === 98 || keyCode === 115) {
-		console.log("Perf.start()");
-		Perf.start();
-	} else if (keyCode === 101) {
-		console.log("Perf.stop()");
-		Perf.stop();
-	} else if (keyCode === 108) {
-		Perf.printInclusive();
-		Perf.printExclusive();
-		Perf.printWasted();
-	}
-})*/
-
 function renderPartialPage(data, dataFull, compareData, bubbleData, barData, groupedBarData) {
-	data.forEach((d, i) => {
-		d.date = new Date(parseDate(d.date).getTime());
-		d.open = +d.open;
-		d.high = +d.high;
-		d.low = +d.low;
-		d.close = +d.close;
-		d.volume = +d.volume;
-		// console.log(d);
-	});
-
-	dataFull.forEach((d, i) => {
-		d.date = new Date(parseDate(d.date).getTime());
-		d.open = +d.open;
-		d.high = +d.high;
-		d.low = +d.low;
-		d.close = +d.close;
-		d.volume = +d.volume;
-		// console.log(d);
-	});
-
-	compareData.forEach((d, i) => {
-		d.date = new Date(parseDate(d.date).getTime());
-		d.open = +d.open;
-		d.high = +d.high;
-		d.low = +d.low;
-		d.close = +d.close;
-		d.volume = +d.volume;
-		d.SP500Close = +d.SP500Close;
-		d.AAPLClose = +d.AAPLClose;
-		d.GEClose = +d.GEClose;
-		// console.log(d);
-	});
 
 	//var Renko = require("./lib/charts/Renko").init(dataFull);
 	// AreaChart

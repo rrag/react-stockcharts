@@ -7,9 +7,12 @@ import { isDefined, isNotDefined } from "../utils";
 export default function financeIntradayScale(indexAccessor = d => d.idx, dateAccessor = d => d.date, data = [0, 1], backingLinearScale = d3.scale.linear()) {
 
 	var timeScaleSteps = [
-		{ step: 36e5, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfQuarterHour; } }, // 1 hour
-		{ step: 108e5, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfHour; } }, // 3 hours
-		{ step: 216e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || d.startOfEighthDay); } }, // 6 hours
+		{ step: 40000, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfMinute; } }, // 1 min
+		{ step: 192000, f: function(d) { return isDefined(dateAccessor(d)) && d.startOf5Minutes; } }, // 5 min
+		{ step: 400000, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfQuarterHour; } },
+		{ step: 6684000, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfHalfHour; } },
+		{ step: 108e5, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfHour; } },
+		{ step: 216e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || d.startOfEighthDay); } },
 		{ step: 432e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || d.startOfQuarterDay); } }, // 12 hours
 		{ step: 864e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || d.startOfHalfDay); } },  // 1-day
 		{ step: 2592e5, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfDay; } },  // 3-day, doesnt work with 2h scale
@@ -103,15 +106,14 @@ export default function financeIntradayScale(indexAccessor = d => d.idx, dateAcc
 		var span = (dateAccessor(end).getTime() - dateAccessor(start).getTime());
 		var target = span / m;
 
-		// console.log(dateAccessor(data[data.length - 1])
-		//   , data[0]
-		//   , span
-		//   , m
-		//   , target
-		//   , timeScaleStepsBisector(timeScaleSteps, target)
-		//   , count
-		//   , data.length
-		//   );
+		/* console.log(dateAccessor(data[data.length - 1])
+			, data[0]
+			, span
+			, m
+			, target
+			, timeScaleStepsBisector(timeScaleSteps, target)
+			, count
+			, data.length);*/
 
 		var scaleIndex = timeScaleStepsBisector(timeScaleSteps, target);
 

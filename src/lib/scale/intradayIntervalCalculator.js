@@ -14,7 +14,10 @@ function accumulator(predicate) {
 				var high = Math.max(a.high, b.high);
 				var low = Math.min(a.low, b.low);
 
+				var startOfMinute = a.startOfMinute || b.startOfMinute;
+				var startOf5Minutes = a.startOf5Minutes || b.startOf5Minutes;
 				var startOfQuarterHour = a.startOfQuarterHour || b.startOfQuarterHour;
+				var startOfHalfHour = a.startOfHalfHour || b.startOfHalfHour;
 				var startOfHour = a.startOfHour || b.startOfHour;
 				var startOfEighthDay = a.startOfEighthDay || b.startOfEighthDay;
 				var startOfQuarterDay = a.startOfQuarterDay || b.startOfQuarterDay;
@@ -27,7 +30,10 @@ function accumulator(predicate) {
 					high,
 					low,
 					volume,
+					startOfMinute,
+					startOf5Minutes,
 					startOfQuarterHour,
+					startOfHalfHour,
 					startOfHour,
 					startOfEighthDay,
 					startOfQuarterDay,

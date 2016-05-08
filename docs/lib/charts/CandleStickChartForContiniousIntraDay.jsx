@@ -20,7 +20,7 @@ var { fitWidth } = ReStock.helper;
 
 // var xScale = financeEODDiscontiniousScale();
 
-class CandleStickChartForIntraDay extends React.Component {
+class CandleStickChartForContiniousIntraDay extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
 
@@ -49,6 +49,27 @@ class CandleStickChartForIntraDay extends React.Component {
 					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50, smaVolume50]}
 					xAccessor={d => d.date} xScale={d3.time.scale()}>
+				<Chart id={2}
+						yExtents={[d => d.volume, smaVolume50.accessor()]}
+						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
+						height={150} origin={(w, h) => [0, h - 150]}>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+
+					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
+					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
+
+					<CurrentCoordinate id={0} yAccessor={smaVolume50.accessor()} fill={smaVolume50.stroke()} />
+					<CurrentCoordinate id={1} yAccessor={d => d.volume} fill="#9B0A47" />
+
+					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
+						yAccessor={d => d.volume} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
+					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
+						yAccessor={d => d.volume} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
+					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
+						yAccessor={smaVolume50.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume50.fill()}/>
+					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
+						yAccessor={smaVolume50.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume50.fill()}/>
+				</Chart>
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
 						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} 
@@ -76,31 +97,11 @@ class CandleStickChartForIntraDay extends React.Component {
 					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 				</Chart>
-				<Chart id={2}
-						yExtents={[d => d.volume, smaVolume50.accessor()]}
-						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
-						height={150} origin={(w, h) => [0, h - 150]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 
-					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
-					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
-
-					<CurrentCoordinate id={0} yAccessor={smaVolume50.accessor()} fill={smaVolume50.stroke()} />
-					<CurrentCoordinate id={1} yAccessor={d => d.volume} fill="#9B0A47" />
-
-					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
-						yAccessor={d => d.volume} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
-					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
-						yAccessor={d => d.volume} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
-					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
-						yAccessor={smaVolume50.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume50.fill()}/>
-					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
-						yAccessor={smaVolume50.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume50.fill()}/>
-				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%H:%M:%S")} rectWidth={60} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} />
 				<TooltipContainer>
-					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
+					<OHLCTooltip forChart={1} origin={[-40, 0]} xDisplayFormat={d3.time.format("%Y-%m-%d %H:%M:%S")}/>
 					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 15]} 
 						calculators={[ema20, ema50]}/>
 				</TooltipContainer>
@@ -109,15 +110,15 @@ class CandleStickChartForIntraDay extends React.Component {
 	}
 }
 
-CandleStickChartForIntraDay.propTypes = {
+CandleStickChartForContiniousIntraDay.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
-CandleStickChartForIntraDay.defaultProps = {
+CandleStickChartForContiniousIntraDay.defaultProps = {
 	type: "svg",
 };
-CandleStickChartForIntraDay = fitWidth(CandleStickChartForIntraDay);
+CandleStickChartForContiniousIntraDay = fitWidth(CandleStickChartForContiniousIntraDay);
 
-export default CandleStickChartForIntraDay;
+export default CandleStickChartForContiniousIntraDay;

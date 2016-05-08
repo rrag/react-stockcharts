@@ -7,21 +7,21 @@ import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 
-import CandleStickChartForIntraDay from "lib/charts/CandleStickChartForIntraDay";
+import CandleStickChartForContiniousIntraDay from "lib/charts/CandleStickChartForContiniousIntraDay";
 var { helper: { TypeChooser } } = ReStock;
 
 
-var IntraDayDataPage = React.createClass({
+var IntraDayContiniousDataPage = React.createClass({
 	statics: {
 		title: "Intra day with Continious scale"
 	},
 	render() {
 		return (
-			<ContentSection title={IntraDayDataPage.title}>
+			<ContentSection title={IntraDayContiniousDataPage.title}>
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser ref="container">
-							{(type) => (<CandleStickChartForIntraDay data={this.props.intraDayData} type={type} />)}
+							{(type) => (<CandleStickChartForContiniousIntraDay data={this.props.intraDayContiniousData} type={type} />)}
 						</TypeChooser>
 					</Section>
 				</Row>
@@ -30,4 +30,4 @@ var IntraDayDataPage = React.createClass({
 	}
 });
 
-export default IntraDayDataPage;
+export default IntraDayContiniousDataPage;
