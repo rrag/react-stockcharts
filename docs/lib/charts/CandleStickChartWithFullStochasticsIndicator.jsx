@@ -8,7 +8,7 @@ import ReStock from "../../../src/";
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 
 var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, StochasticSeries } = ReStock.series;
-var { financeEODDiscontiniousScale } = ReStock.scale;
+var { financeEODDiscontinuousScale } = ReStock.scale;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeIndicator } = ReStock.coordinates;
 
@@ -18,7 +18,7 @@ var { XAxis, YAxis } = ReStock.axes;
 var { stochasticOscilator, ema } = ReStock.indicator;
 var { fitWidth } = ReStock.helper;
 
-var xScale = financeEODDiscontiniousScale();
+var xScale = financeEODDiscontinuousScale();
 
 class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 	render() {
@@ -68,7 +68,7 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 					margin={margin} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50, slowSTO, fastSTO, fullSTO]}
-					xAccessor={d => d.date} discontinous xScale={xScale}
+					xAccessor={d => d.date} discontinuous xScale={xScale}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1} yMousePointerDisplayLocation="right" height={325}
 						yExtents={d => [d.high, d.low]}

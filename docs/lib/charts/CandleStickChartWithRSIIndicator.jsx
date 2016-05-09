@@ -8,7 +8,7 @@ import ReStock from "react-stockcharts";
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 
 var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, RSISeries } = ReStock.series;
-var { financeEODDiscontiniousScale } = ReStock.scale;
+var { financeEODDiscontinuousScale } = ReStock.scale;
 
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeIndicator } = ReStock.coordinates;
@@ -20,7 +20,7 @@ var { rsi, atr, ema, sma } = ReStock.indicator;
 
 var { fitWidth } = ReStock.helper;
 
-var xScale = financeEODDiscontiniousScale();
+var xScale = financeEODDiscontinuousScale();
 
 class CandleStickChartWithRSIIndicator extends React.Component {
 	render() {
@@ -59,7 +59,7 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[ema26, ema12, smaVolume50, rsiCalculator, atr14]}
-					xAccessor={d => d.date} discontinous xScale={xScale}
+					xAccessor={d => d.date} discontinuous xScale={xScale}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1} height={300}
 						yExtents={[d => [d.high, d.low], ema26.accessor(), ema12.accessor()]}

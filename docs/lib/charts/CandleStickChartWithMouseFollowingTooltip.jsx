@@ -8,7 +8,7 @@ import ReStock from "react-stockcharts";
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 
 var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = ReStock.series;
-var { financeEODDiscontiniousScale } = ReStock.scale;
+var { financeEODDiscontinuousScale } = ReStock.scale;
 
 var { EdgeIndicator } = ReStock.coordinates;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
@@ -18,7 +18,7 @@ var { XAxis, YAxis } = ReStock.axes;
 var { ema, sma } = ReStock.indicator;
 var { fitWidth } = ReStock.helper;
 
-var xScale = financeEODDiscontiniousScale();
+var xScale = financeEODDiscontinuousScale();
 
 class CandleStickChartWithMouseFollowingTooltip extends React.Component {
 	render() {
@@ -55,7 +55,7 @@ class CandleStickChartWithMouseFollowingTooltip extends React.Component {
 					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50]}
 					allowedIntervals={["D", "W", "M"]}
-					xAccessor={d => d.date} discontinous xScale={xScale}
+					xAccessor={d => d.date} discontinuous xScale={xScale}
 					xExtents={[new Date(2015, 0, 1), new Date(2015, 5, 8)]}>
 
 				<Chart id={1}

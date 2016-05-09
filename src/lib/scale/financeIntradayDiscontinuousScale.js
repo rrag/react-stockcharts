@@ -2,16 +2,16 @@
 
 import d3 from "d3";
 
-import { isDefined, isNotDefined } from "../utils";
+import { isDefined, isNotDefined, head, last } from "../utils";
 
 export default function financeIntradayScale(indexAccessor = d => d.idx, dateAccessor = d => d.date, data = [0, 1], backingLinearScale = d3.scale.linear()) {
 
 	var timeScaleSteps = [
-		{ step: 40000, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfMinute; } }, // 1 min
-		{ step: 192000, f: function(d) { return isDefined(dateAccessor(d)) && d.startOf5Minutes; } }, // 5 min
-		{ step: 400000, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfQuarterHour; } },
-		{ step: 6684000, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfHalfHour; } },
-		{ step: 108e5, f: function(d) { return isDefined(dateAccessor(d)) && d.startOfHour; } },
+		{ step: 40000, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || d.startOfMinute); } }, // 1 min
+		{ step: 192000, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || d.startOf5Minutes); } }, // 5 min
+		{ step: 400000, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || d.startOfQuarterHour); } },
+		{ step: 6684000, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || d.startOfHalfHour); } },
+		{ step: 108e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || d.startOfHour); } },
 		{ step: 216e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || d.startOfEighthDay); } },
 		{ step: 432e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || d.startOfQuarterDay); } }, // 12 hours
 		{ step: 864e5, f: function(d) { return isDefined(dateAccessor(d)) && (d.startOfDay || d.startOfHalfDay); } },  // 1-day
@@ -22,8 +22,8 @@ export default function financeIntradayScale(indexAccessor = d => d.idx, dateAcc
 	var timeScaleStepsBisector = d3.bisector(function(d) { return d.step; }).left;
 	var bisectByIndex = d3.bisector(function(d) { return indexAccessor(d); }).left;
 	var tickFormat = [
-		[d3.time.format("%_I %p"), function(d) { return d.startOfHour && !d.startOfDay; }],
 		[d3.time.format("%a %d"), function(d) { return d.startOfDay; }],
+		[d3.time.format("%_I %p"), function(d) { return d.startOfHour && !d.startOfDay; }],
 		[d3.time.format("%I:%M %p"), d3.functor(true)] // accumulator fallback for first entry
 	];
 	function formater(d) {
@@ -91,7 +91,7 @@ export default function financeIntradayScale(indexAccessor = d => d.idx, dateAcc
 		return scale;
 	};
 	scale.ticks = function(m) {
-		var start, end, count = 0;
+		/* var start, end, count = 0;
 		data.forEach(function(d) {
 			if (isDefined(dateAccessor(d))) {
 				if (isNotDefined(start)) start = d;
@@ -99,12 +99,24 @@ export default function financeIntradayScale(indexAccessor = d => d.idx, dateAcc
 				count++;
 			}
 		});
-		// var start = head(data);
-		// var end = last(data);
-		// console.log(data);
+		console.log(count / data.length);
 		m = (count / data.length) * m;
+		*/
+
+		var start = head(data);
+		var end = last(data);
+		var [startIndex, endIndex] = backingLinearScale.domain();
+		var newM = ((indexAccessor(end) - indexAccessor(start)) / (endIndex - startIndex)) * m;
+		// newM > 
+		// m = (end - start) * m
+
+		/* var levels;
+		var levelsCount;
+		var levelsCount.filter(each => each > newM * .5 && each < newM * 1.5)*/
+
 		var span = (dateAccessor(end).getTime() - dateAccessor(start).getTime());
-		var target = span / m;
+		var target = Math.round(span / newM);
+		console.log(newM, m, span, target, dateAccessor(end), dateAccessor(start))
 
 		/* console.log(dateAccessor(data[data.length - 1])
 			, data[0]

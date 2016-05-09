@@ -164,7 +164,7 @@ function loadPage() {
 	var promiseIntraDayContinious = fetch("data/bitfinex_xbtusd_1m.csv")
 		.then(response => response.text())
 		.then(data => d3.csv.parse(data, parseData(parseDateTime)))
-	var promiseIntraDayDiscontinious = fetch("data/AAPL_INTRA_DAY.tsv")
+	var promiseIntraDayDiscontinuous = fetch("data/AAPL_INTRA_DAY.tsv")
 		.then(response => response.text())
 		.then(data => d3.tsv.parse(data, parseData(d => new Date(+d))))
 	var promiseCompare = fetch("data/comparison.tsv")
@@ -183,9 +183,9 @@ function loadPage() {
 	var promisegroupedBarData = fetch("data/groupedBarData.json")
 		.then(response => response.json())
 
-	Promise.all([promiseMSFT, promiseMSFTfull, promiseIntraDayContinious, promiseIntraDayDiscontinious, promiseCompare, promiseBubbleData, promiseBarData, promisegroupedBarData])
+	Promise.all([promiseMSFT, promiseMSFTfull, promiseIntraDayContinious, promiseIntraDayDiscontinuous, promiseCompare, promiseBubbleData, promiseBarData, promisegroupedBarData])
 		.then(function (values) {
-			var [MSFT, MSFTfull, intraDayContinious, intraDayDiscontinious, compareData, bubbleData, barData, groupedBarData] = values;
+			var [MSFT, MSFTfull, intraDayContinious, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData] = values;
 			var horizontalBarData = barData.map(({x, y}) => ({ x: y, y: x }))
 			var horizontalGroupedBarData = groupedBarData.map(d => {
 					return {
@@ -197,7 +197,7 @@ function loadPage() {
 					}
 				});
 
-			renderPage(MSFT, MSFTfull, intraDayContinious, intraDayDiscontinious, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
+			renderPage(MSFT, MSFTfull, intraDayContinious, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
 			// renderPartialPage(MSFT, MSFTFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData);
 
 
@@ -205,7 +205,7 @@ function loadPage() {
 
 }
 
-function renderPage(data, dataFull, intraDayContinious, intraDayDiscontinious, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData) {
+function renderPage(data, dataFull, intraDayContinious, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData) {
 	var selected = location.hash.replace("#/", "");
 	var selectedPage = pages.filter((page) => (compressString(page.title) === compressString(selected)));
 
@@ -250,7 +250,7 @@ function renderPage(data, dataFull, intraDayContinious, intraDayDiscontinious, c
 						</Sidebar>
 						<Page someData={data}
 								intraDayContiniousData={intraDayContinious}
-								intraDayDiscontiniousData={intraDayDiscontinious}
+								intraDayDiscontinuousData={intraDayDiscontinuous}
 								lotsOfData={dataFull}
 								compareData={compareData}
 								bubbleData={bubbleData}

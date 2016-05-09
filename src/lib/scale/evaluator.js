@@ -182,22 +182,22 @@ function showMax(width) {
 
 export default function() {
 
-	var allowedIntervals, xAccessor, discontinous = false, useWholeData,
+	var allowedIntervals, xAccessor, discontinuous = false, useWholeData,
 		indexAccessor, indexMutator, map, scale, calculator = [], intervalCalculator = eodIntervalCalculator,
 		canShowTheseMany = canShowTheseManyPeriods;
 
 	function evaluate(data) {
-		if (discontinous
+		if (discontinuous
 				&& (isNotDefined(scale.isPolyLinear)
 						|| (isDefined(scale.isPolyLinear) && !scale.isPolyLinear()))) {
-			throw new Error("you need a scale that is capable of handling discontinous data. change the scale prop or set discontinous to false");
+			throw new Error("you need a scale that is capable of handling discontinuous data. change the scale prop or set discontinuous to false");
 		}
-		var realXAccessor = discontinous ? indexAccessor : xAccessor;
+		var realXAccessor = discontinuous ? indexAccessor : xAccessor;
 
-		var xScale = (discontinous && isDefined(scale.isPolyLinear) && scale.isPolyLinear())
+		var xScale = (discontinuous && isDefined(scale.isPolyLinear) && scale.isPolyLinear())
 			? scale.copy().indexAccessor(realXAccessor).dateAccessor(xAccessor)
 			: scale;
-		// if any calculator gives a discontinious output and discontinous = false throw error
+		// if any calculator gives a discontinious output and discontinuous = false throw error
 
 		var calculate = intervalCalculator()
 			.doIt(isDefined(xScale.isPolyLinear))
@@ -205,7 +205,7 @@ export default function() {
 
 		var mappedData = calculate(data.map(map));
 
-		if (discontinous) {
+		if (discontinuous) {
 			calculator.unshift(values => values.map((d, i) => {
 				indexMutator(d, i);
 				return d;
@@ -250,9 +250,9 @@ export default function() {
 		xAccessor = x;
 		return evaluate;
 	};
-	evaluate.discontinous = function(x) {
-		if (!arguments.length) return discontinous;
-		discontinous = x;
+	evaluate.discontinuous = function(x) {
+		if (!arguments.length) return discontinuous;
+		discontinuous = x;
 		return evaluate;
 	};
 	evaluate.indexAccessor = function(x) {

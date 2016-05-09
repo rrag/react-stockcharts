@@ -8,7 +8,7 @@ import ReStock from "react-stockcharts";
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 
 var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = ReStock.series;
-var { financeEODDiscontiniousScale } = ReStock.scale;
+var { financeEODDiscontinuousScale } = ReStock.scale;
 
 var { EdgeIndicator } = ReStock.coordinates;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
@@ -20,11 +20,11 @@ var { fitWidth } = ReStock.helper;
 
 // Q: Why is xScale is not defined inside the render method:
 // A: when the chart is resized, the render method is called again and that time 
-//     financeEODDiscontiniousScale() will return in a new scale. This forces
+//     financeEODDiscontinuousScale() will return in a new scale. This forces
 //     the library to assume that the user changed the scale and resets the chart
 //     reseting the chart will lead to the loss of all the prev pan/zoom actions performed
 
-var xScale = financeEODDiscontiniousScale();
+var xScale = financeEODDiscontinuousScale();
 
 class CandleStickChartWithEdge extends React.Component {
 	render() {
@@ -66,7 +66,7 @@ class CandleStickChartWithEdge extends React.Component {
 					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50, smaVolume50]}
 					allowedIntervals={["D", "W", "M"]}
-					xAccessor={d => d.date} discontinous xScale={xScale}
+					xAccessor={d => d.date} discontinuous xScale={xScale}
 					xExtents={[new Date(2015, 0, 1), new Date(2015, 5, 8)]}>
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}

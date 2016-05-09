@@ -20,7 +20,7 @@ var { fitWidth } = ReStock.helper;
 
 var xScale = financeIntradayDiscontinuousScale();
 
-class CandleStickChartForDiscontiniousIntraDay extends React.Component {
+class CandleStickChartForDiscontinuousIntraDay extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
 
@@ -48,7 +48,7 @@ class CandleStickChartForDiscontiniousIntraDay extends React.Component {
 					margin={{left: 80, right: 80, top:10, bottom: 30}} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50, smaVolume50]}
-					xAccessor={d => d.date} discontinous xScale={xScale} intervalCalculator={intradayIntervalCalculator}>
+					xAccessor={d => d.date} discontinuous xScale={xScale} intervalCalculator={intradayIntervalCalculator}>
 				<Chart id={2}
 						yExtents={[d => d.volume, smaVolume50.accessor()]}
 						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
@@ -109,15 +109,15 @@ class CandleStickChartForDiscontiniousIntraDay extends React.Component {
 	}
 }
 
-CandleStickChartForDiscontiniousIntraDay.propTypes = {
+CandleStickChartForDiscontinuousIntraDay.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
-CandleStickChartForDiscontiniousIntraDay.defaultProps = {
+CandleStickChartForDiscontinuousIntraDay.defaultProps = {
 	type: "svg",
 };
-CandleStickChartForDiscontiniousIntraDay = fitWidth(CandleStickChartForDiscontiniousIntraDay);
+CandleStickChartForDiscontinuousIntraDay = fitWidth(CandleStickChartForDiscontinuousIntraDay);
 
-export default CandleStickChartForDiscontiniousIntraDay;
+export default CandleStickChartForDiscontinuousIntraDay;

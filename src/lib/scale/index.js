@@ -1,5 +1,5 @@
 import financeEODCalculator from "./financeEODCalculator";
-import financeEODDiscontiniousScale from "./financeEODDiscontiniousScale";
+import financeEODDiscontinuousScale from "./financeEODDiscontinuousScale";
 import eodIntervalCalculator from "./eodIntervalCalculator";
 import identityIntervalCalculator from "./identityIntervalCalculator";
 import financeIntradayDiscontinuousScale from "./financeIntradayDiscontinuousScale";
@@ -8,7 +8,7 @@ import intradayIntervalCalculator from "./intradayIntervalCalculator";
 
 export {
 	financeEODCalculator,
-	financeEODDiscontiniousScale,
+	financeEODDiscontinuousScale,
 	identityIntervalCalculator,
 	eodIntervalCalculator,
 	financeIntradayDiscontinuousScale,

@@ -7,7 +7,7 @@ import ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 var { BarSeries, LineSeries, AreaSeries, KagiSeries } = ReStock.series;
-var { financeEODDiscontiniousScale } = ReStock.scale;
+var { financeEODDiscontinuousScale } = ReStock.scale;
 
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeIndicator } = ReStock.coordinates;
@@ -17,7 +17,7 @@ var { XAxis, YAxis } = ReStock.axes;
 var { kagi } = ReStock.indicator;
 var { fitWidth } = ReStock.helper;
 
-var xScale = financeEODDiscontiniousScale();
+var xScale = financeEODDiscontinuousScale();
 
 class Kagi extends React.Component {
 	getChartCanvas() {
@@ -31,7 +31,7 @@ class Kagi extends React.Component {
 					margin={{left: 80, right: 80, top:10, bottom: 30}} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[kagiCalculator]}
-					xAccessor={d => d.date} discontinous xScale={xScale}>
+					xAccessor={d => d.date} discontinuous xScale={xScale}>
 				<Chart id={1}
 						yExtents={d => [d.high, d.low]}
 						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} 

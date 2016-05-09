@@ -12,7 +12,7 @@ import eodIntervalCalculator from "./scale/eodIntervalCalculator";
 import evaluator from "./scale/evaluator";
 
 
-const CANDIDATES_FOR_RESET = ["seriesName", /* "data",*/"interval", "discontinous",
+const CANDIDATES_FOR_RESET = ["seriesName", /* "data",*/"interval", "discontinuous",
 	"intervalCalculator", "allowedIntervals",
 	"xScale", /* "xAccessor",*/"map", "dataEvaluator",
 	"indexAccessor", "indexMutator"];
@@ -35,7 +35,7 @@ function getDimensions(props) {
 function calculateFullData(props) {
 	var { data, calculator } = props;
 	var { xScale, intervalCalculator, allowedIntervals, plotFull } = props;
-	var { xAccessor: inputXAccesor, map, dataEvaluator, indexAccessor, indexMutator, discontinous } = props;
+	var { xAccessor: inputXAccesor, map, dataEvaluator, indexAccessor, indexMutator, discontinuous } = props;
 
 	var wholeData = isDefined(plotFull) ? plotFull : inputXAccesor === identity;
 
@@ -43,7 +43,7 @@ function calculateFullData(props) {
 		.allowedIntervals(allowedIntervals)
 		.intervalCalculator(intervalCalculator)
 		.xAccessor(inputXAccesor)
-		.discontinous(discontinous)
+		.discontinuous(discontinuous)
 		.indexAccessor(indexAccessor)
 		.indexMutator(indexMutator)
 		.map(map)
@@ -242,7 +242,7 @@ ChartCanvas.propTypes = {
 	seriesName: PropTypes.string.isRequired,
 	zIndex: PropTypes.number,
 	children: PropTypes.node.isRequired,
-	discontinous: PropTypes.bool.isRequired,
+	discontinuous: PropTypes.bool.isRequired,
 	postCalculator: PropTypes.func.isRequired,
 	flipXScale: PropTypes.bool.isRequired,
 	padding: PropTypes.oneOfType([
@@ -266,7 +266,7 @@ ChartCanvas.defaultProps = {
 	xExtents: [d3.min, d3.max],
 	intervalCalculator: eodIntervalCalculator,
 	dataEvaluator: evaluator,
-	discontinous: false,
+	discontinuous: false,
 	postCalculator: identity,
 	padding: 0,
 	xAccessor: identity,
