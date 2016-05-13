@@ -74,7 +74,7 @@ function updateColumns(columnData, dateAccessor, dateMutator) {
 
 export default function() {
 	var { reversal, boxSize, source } = defaultOptions;
-	var { dateAccessor, dateMutator, indexMutator, indexAccessor } = defaultOptions;
+	var { dateAccessor, dateMutator } = defaultOptions;
 
 	function calculator(rawData) {
 		var pricingMethod = source;
@@ -87,10 +87,9 @@ export default function() {
 				open: rawData[0].open
 			}, box = createBox(rawData[0], dateAccessor, dateMutator);
 
-		indexMutator(column, 0);
 		columnData.push(column);
 
-		rawData.forEach(function(d) {
+		rawData.forEach(function(d, index) {
 			column.volume = (column.volume || 0) + d.volume;
 
 			if (!box.startOfYear) {
@@ -176,13 +175,12 @@ export default function() {
 					// box.startOfMonth = d.startOfMonth;
 					// box.startOfWeek = d.startOfWeek;
 					// console.table(column.boxes);
-					var idx = indexAccessor(column) + 1;
+					// var idx = index + 1;
 					column = {
 						boxes: [],
 						volume: 0,
 						direction: -1 * column.direction
 					};
-					indexMutator(column, idx);
 					let noOfBoxes = column.direction > 0
 										? Math.floor(upwardMovement / boxSize)
 										: Math.floor(downwardMovement / boxSize);
@@ -225,16 +223,6 @@ export default function() {
 	calculator.dateAccessor = function(x) {
 		if (!arguments.length) return dateAccessor;
 		dateAccessor = x;
-		return calculator;
-	};
-	calculator.indexMutator = function(x) {
-		if (!arguments.length) return indexMutator;
-		indexMutator = x;
-		return calculator;
-	};
-	calculator.indexAccessor = function(x) {
-		if (!arguments.length) return indexAccessor;
-		indexAccessor = x;
 		return calculator;
 	};
 
