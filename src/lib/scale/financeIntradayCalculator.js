@@ -9,7 +9,20 @@ export default function() {
 		var intradayScaleCalculator = slidingWindow()
 		.windowSize(2)
 		.undefinedValue(d => {
-			var row = { ...d, startOfQuarterHour: false, startOfHour: false, startOfEighthDay: false, startOfQuarterDay: false, startOfHalfDay: false, startOfDay: false, startOfWeek: false };
+			var row = {
+				...d,
+				startOfHalfMinute: false,
+				startOfMinute: false,
+				startOf5Minutes: false,
+				startOfQuarterHour: false,
+				startOfHalfHour: false,
+				startOfHour: false,
+				startOfEighthDay: false,
+				startOfQuarterDay: false,
+				startOfHalfDay: false,
+				startOfDay: false,
+				startOfWeek: false,
+			};
 			return row;
 		})
 		.accumulator(([prev, now]) => {
@@ -28,9 +41,9 @@ export default function() {
 			var startOfQuarterDay = startOfHour && nowDate.getUTCHours() % 6 === 0;
 			var startOfHalfDay = startOfHour && nowDate.getUTCHours() % 12 === 0;
 
-			var startOfDay = nowDate.getDay() !== prevDate.getDay();
+			var startOfDay = nowDate.getUTCDay() !== prevDate.getUTCDay();
 
-			var startOfWeek = nowDate.getDay() < prevDate.getDay();
+			var startOfWeek = nowDate.getUTCDay() < prevDate.getUTCDay();
 
 			var row = {
 				...now,

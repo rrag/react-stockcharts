@@ -49,7 +49,7 @@ export default function() {
 		return data.map(function(d, i) {
 			// console.log(d, i);
 			if (i < (skipInitial + size - 1)) {
-				return undef(d, i);
+				return undef(source(d), i);
 			}
 			if (i >= (skipInitial + size)) {
 				// Treat windowData as FIFO rolling buffer

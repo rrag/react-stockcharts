@@ -10,11 +10,15 @@ import EventHandler from "./EventHandler";
 import CanvasContainer from "./CanvasContainer";
 import eodIntervalCalculator from "./scale/eodIntervalCalculator";
 import evaluator from "./scale/evaluator";
+import discontinuousTimeScaleProvider from "./scale/discontinuousTimeScaleProvider";
 
+const second = 1000;
+const minute = 60 * second;
+const hour = 60 * minute;
+const daily = 24 * hour;
 
-const CANDIDATES_FOR_RESET = ["seriesName", /* "data",*/"interval", "discontinuous",
-	"intervalCalculator", "allowedIntervals",
-	"xScale", /* "xAccessor",*/"map", "dataEvaluator",
+const CANDIDATES_FOR_RESET = ["seriesName", /* "data",*/,
+	"xScaleProvider", /* "xAccessor",*/"map",
 	"indexAccessor", "indexMutator"];
 
 function shouldResetChart(thisProps, nextProps) {
@@ -33,71 +37,52 @@ function getDimensions(props) {
 }
 
 function calculateFullData(props) {
-	var { data, calculator } = props;
-	var { xScale, intervalCalculator, allowedIntervals, plotFull } = props;
-	var { xAccessor: inputXAccesor, map, dataEvaluator, indexAccessor, indexMutator, discontinuous } = props;
+	var { data: inputData, calculator, plotFull } = props;
+	var { xAccessor: inputXAccesor, map, xScaleProvider, indexAccessor, indexMutator, discontinuous } = props;
 
 	var wholeData = isDefined(plotFull) ? plotFull : inputXAccesor === identity;
 
-	var evaluate = dataEvaluator()
-		.allowedIntervals(allowedIntervals)
-		.intervalCalculator(intervalCalculator)
+	// xScale = discontinuousTimeScaleProvider(data);
+	var dimensions = getDimensions(props);
+	var evaluate = evaluator()
+		// .allowedIntervals(allowedIntervals)
+		// .intervalCalculator(intervalCalculator)
 		.xAccessor(inputXAccesor)
-		.discontinuous(discontinuous)
+		// .discontinuous(discontinuous)
 		.indexAccessor(indexAccessor)
 		.indexMutator(indexMutator)
 		.map(map)
 		.useWholeData(wholeData)
-		.scale(xScale)
-		.calculator(calculator.slice());
+		.width(dimensions.width)
+		.scaleProvider(xScaleProvider)
+		.calculator(calculator);
 
-	var { xAccessor, domainCalculator: xExtentsCalculator, fullData } = evaluate(data);
+	var { xAccessor, xScale, filterData, lastItem } = evaluate(inputData);
 
-	return {
-		xAccessor,
-		xExtentsCalculator,
-		fullData,
-	};
+	return { xAccessor, xScale, filterData, lastItem };
 }
 
 function calculateState(props) {
 
-	var { data, interval, allowedIntervals } = props;
-	var { xAccessor: inputXAccesor, xExtents: xExtentsProp, xScale } = props;
-
-	if (isDefined(interval)
-		&& (isNotDefined(allowedIntervals)
-			|| allowedIntervals.indexOf(interval) > -1)) throw new Error("interval has to be part of allowedInterval");
-
-
-	var { xAccessor, xExtentsCalculator, fullData } = calculateFullData(props);
-
-	var dimensions = getDimensions(props);
-	// xAccessor - if discontinious return indexAccessor, else xAccessor
-	// inputXAccesor - send this down as context
-
-	// console.log(xAccessor, inputXAccesor, domainCalculator, domainCalculator, updatedScale);
-	// in componentWillReceiveProps calculate plotData and interval only if this.props.xExtentsProp != nextProps.xExtentsProp
+	var { xAccessor: inputXAccesor, xExtents: xExtentsProp, xScaleProvider, plotFull, data } = props;
 
 	var extent = typeof xExtentsProp === "function"
-		? xExtentsProp(fullData)
-		: d3.extent(xExtentsProp.map(d3.functor).map(each => each(data, inputXAccesor)));
+		? xExtentsProp(data)
+		: d3.extent(xExtentsProp.map(d => d3.functor(d)).map(each => each(data, inputXAccesor)));
 
-	var { plotData, interval: showingInterval, scale: updatedScale } = xExtentsCalculator
-			.width(dimensions.width)
-			.scale(xScale)
-			.data(fullData)
-			.interval(interval)(extent, inputXAccesor);
+	var { xAccessor, xScale, filterData, lastItem } = calculateFullData(props);
 
-	// console.log(updatedScale.domain());
+	var { plotData, domain } = filterData(extent, inputXAccesor);
+
+	// console.log(xScale);
+
 	return {
-		fullData,
 		plotData,
-		showingInterval,
-		xExtentsCalculator,
-		xScale: updatedScale,
+		filterData,
+		xScale: xScale.domain(domain),
 		xAccessor,
 		dataAltered: false,
+		lastItem,
 	};
 }
 
@@ -180,13 +165,15 @@ class ChartCanvas extends Component {
 	render() {
 		var cursor = getCursorStyle(this.props.children);
 
-		var { interval, data, type, height, width, margin, className, zIndex, postCalculator, flipXScale } = this.props;
+		var { data, type, height, width, margin, className, zIndex, postCalculator, flipXScale } = this.props;
 		var { padding } = this.props;
-		var { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor, dataAltered } = this.state;
+
+		var { plotData, filterData, xScale, xAccessor, dataAltered, lastItem } = this.state;
 
 		var dimensions = getDimensions(this.props);
-		var props = { padding, interval, type, margin, postCalculator };
-		var stateProps = { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor, dataAltered };
+		// var stateProps = { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor, dataAltered };
+		var props = { padding, type, margin, postCalculator };
+		var stateProps = { plotData, filterData, xScale, xAccessor, dataAltered, lastItem };
 		return (
 			<div style={{ position: "relative", height: height, width: width }} className={className} >
 				<CanvasContainer ref="canvases" width={width} height={height} type={type} zIndex={zIndex}/>
@@ -202,7 +189,6 @@ class ChartCanvas extends Component {
 							{...props}
 							{...stateProps}
 							direction={flipXScale ? -1 : 1}
-							lastItem={last(data)}
 							dimensions={dimensions}
 							canvasContexts={this.getCanvases}>
 							{this.props.children}
@@ -215,11 +201,7 @@ class ChartCanvas extends Component {
 }
 
 /*
-							interval={interval} type={type} margin={margin}
-							data={plotData} showingInterval={updatedInterval}
-							xExtentsCalculator={domainCalculator}
-							xScale={updatedScale} xAccessor={xAccessor}
-							dimensions={dimensions}
+							lastItem={last(data)}
 
 */
 
@@ -227,22 +209,22 @@ ChartCanvas.propTypes = {
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 	margin: PropTypes.object,
-	interval: PropTypes.oneOf(["D", "W", "M"]), // ,"m1", "m5", "m15", "W", "M"
+	// interval: PropTypes.oneOf(["D", "W", "M"]), // ,"m1", "m5", "m15", "W", "M"
 	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 	data: PropTypes.array.isRequired,
-	initialDisplay: PropTypes.number,
+	// initialDisplay: PropTypes.number,
 	calculator: PropTypes.arrayOf(PropTypes.func).isRequired,
 	xAccessor: PropTypes.func,
 	xExtents: PropTypes.oneOfType([
 		PropTypes.array,
 		PropTypes.func
 	]).isRequired,
-	xScale: PropTypes.func.isRequired,
+	// xScale: PropTypes.func.isRequired,
 	className: PropTypes.string,
 	seriesName: PropTypes.string.isRequired,
 	zIndex: PropTypes.number,
 	children: PropTypes.node.isRequired,
-	discontinuous: PropTypes.bool.isRequired,
+	// discontinuous: PropTypes.bool.isRequired,
 	postCalculator: PropTypes.func.isRequired,
 	flipXScale: PropTypes.bool.isRequired,
 	padding: PropTypes.oneOfType([
@@ -257,15 +239,15 @@ ChartCanvas.propTypes = {
 ChartCanvas.defaultProps = {
 	margin: { top: 20, right: 30, bottom: 30, left: 80 },
 	indexAccessor: d => d.idx,
-	indexMutator: (d, idx) => d.idx = idx,
+	indexMutator: (d, idx) => ({ ...d, idx }),
 	map: identity,
 	type: "hybrid",
 	calculator: [],
 	className: "react-stockchart",
 	zIndex: 1,
 	xExtents: [d3.min, d3.max],
-	intervalCalculator: eodIntervalCalculator,
-	dataEvaluator: evaluator,
+	// intervalCalculator: eodIntervalCalculator,
+	// dataEvaluator: evaluator,
 	discontinuous: false,
 	postCalculator: identity,
 	padding: 0,

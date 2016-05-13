@@ -47,6 +47,7 @@ export default function() {
 				return isNotDefined(result) ? datum : result;
 			});
 
+		// console.log(data);
 		return zip(data, algorithm(data));
 	}
 

@@ -91,7 +91,10 @@ class EventHandler extends Component {
 	}
 	componentWillMount() {
 
-		var { plotData, showingInterval, direction } = this.props;
+		/* var props = { padding, type, margin, postCalculator };
+		var stateProps = { plotData, filterData, xScale, xAccessor, dataAltered }; */
+
+		var { plotData, direction } = this.props;
 		var { xScale, dimensions, children, postCalculator, padding } = this.props;
 
 		// console.log(Array.isArray(fullData) ? fullData[60] : fullData);
@@ -100,10 +103,7 @@ class EventHandler extends Component {
 
 		var chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData);
 
-
-
 		this.setState({
-			showingInterval,
 			xScale: setXRange(xScale, dimensions, padding, direction),
 			plotData,
 			chartConfig,
@@ -383,8 +383,8 @@ class EventHandler extends Component {
 	handlePinchZoom(initialPinch, finalPinch) {
 		var { xScale: initialPinchXScale } = initialPinch;
 
-		var { showingInterval, xScale: initialXScale, chartConfig: initialChartConfig } = this.state;
-		var { xAccessor, fullData, interval, dimensions: { width }, xExtentsCalculator, postCalculator } = this.props;
+		var { xScale: initialXScale, chartConfig: initialChartConfig, plotData: initialPlotData } = this.state;
+		var { xAccessor, dimensions: { width }, filterData, postCalculator } = this.props;
 
 		var { topLeft: iTL, bottomRight: iBR } = this.pinchCoordinates(initialPinch);
 		var { topLeft: fTL, bottomRight: fBR } = this.pinchCoordinates(finalPinch);
@@ -410,15 +410,13 @@ class EventHandler extends Component {
 		var newDomain = [x, y].map(initialPinchXScale.invert);
 		// var domainR = initial.right + right;
 
-		var { plotData, interval: updatedInterval, scale: updatedScale } = xExtentsCalculator
-			.data(fullData)
-			.width(width)
-			.scale(initialXScale)
-			.currentInterval(showingInterval)
-			.currentDomain(initialXScale.domain())
-			.currentPlotData(plotData)
-			.interval(interval)(newDomain, xAccessor);
+		var { plotData, domain } = filterData(newDomain,
+			xAccessor,
+			initialPlotData,
+			initialXScale.domain(), true);
+
 		plotData = postCalculator(plotData);
+		var updatedScale = initialXScale.copy().domain(domain);
 
 		var chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData);
 
@@ -431,7 +429,6 @@ class EventHandler extends Component {
 				chartConfig,
 				xScale: updatedScale,
 				plotData,
-				showingInterval: updatedInterval,
 			});
 		});
 
@@ -443,24 +440,22 @@ class EventHandler extends Component {
 	}
 	handleZoom(zoomDirection, mouseXY) {
 		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
-		var { showingInterval, xScale: initialXScale, chartConfig: initialChartConfig, plotData: initialPlotData } = this.state;
-		var { xAccessor, fullData, interval, dimensions: { width }, xExtentsCalculator, postCalculator } = this.props;
+		var { xScale: initialXScale, chartConfig: initialChartConfig, plotData: initialPlotData } = this.state;
+		var { xAccessor, dimensions: { width }, filterData, postCalculator } = this.props;
 
 		var item = getCurrentItem(initialXScale, xAccessor, mouseXY, initialPlotData),
 			cx = initialXScale(xAccessor(item)),
 			c = zoomDirection > 0 ? 2 : 0.5,
 			newDomain = initialXScale.range().map(x => cx + (x - cx) * c).map(initialXScale.invert);
 
-		var { plotData, interval: updatedInterval, scale: updatedScale } = xExtentsCalculator
-			.data(fullData)
-			.width(width)
-			.scale(initialXScale)
-			.currentInterval(showingInterval)
-			.currentDomain(initialXScale.domain())
-			.currentPlotData(plotData)
-			.interval(interval)(newDomain, xAccessor);
+		var { plotData, domain } = filterData(newDomain,
+			xAccessor,
+			initialPlotData,
+			initialXScale.domain(), true);
 
 		plotData = postCalculator(plotData);
+		var updatedScale = initialXScale.copy().domain(domain);
+
 		var currentItem = getCurrentItem(updatedScale, xAccessor, mouseXY, plotData);
 		var chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData);
 		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
@@ -471,7 +466,6 @@ class EventHandler extends Component {
 		this.clearCanvasDrawCallbackList();
 		this.setState({
 			xScale: updatedScale,
-			showingInterval: updatedInterval,
 			plotData,
 			mouseXY,
 			currentCharts,
@@ -495,8 +489,8 @@ class EventHandler extends Component {
 	}
 	panHelper(mouseXY) {
 		var { panStartXScale: initialXScale, chartConfig: initialChartConfig } = this.state;
-		var { showingInterval, panOrigin } = this.state;
-		var { xAccessor, dimensions: { width }, fullData, xExtentsCalculator, postCalculator } = this.props;
+		var { panOrigin } = this.state;
+		var { xAccessor, dimensions: { width }, filterData, postCalculator } = this.props;
 
 		var dx = mouseXY[0] - panOrigin[0];
 
@@ -505,15 +499,12 @@ class EventHandler extends Component {
 				+ "You are likely using an ordinal scale. This scale does not support zoom, pan");
 		var newDomain = initialXScale.range().map(x => x - dx).map(initialXScale.invert);
 
-		var { plotData, /* interval: updatedInterval,*/scale: updatedScale } = xExtentsCalculator
-			.data(fullData)
-			.width(width)
-			.scale(initialXScale)
-			.currentInterval(showingInterval)
-			.currentDomain(this.hackyWayToStopPanBeyondBounds__domain)
-			.currentPlotData(this.hackyWayToStopPanBeyondBounds__plotData)
-			.interval(showingInterval)(newDomain, xAccessor);
+		var { plotData, domain } = filterData(newDomain,
+			xAccessor,
+			this.hackyWayToStopPanBeyondBounds__plotData,
+			this.hackyWayToStopPanBeyondBounds__domain, true);
 
+		var updatedScale = initialXScale.copy().domain(domain);
 		plotData = postCalculator(plotData);
 		// console.log(last(plotData));
 		var currentItem = getCurrentItem(updatedScale, xAccessor, mouseXY, plotData);

@@ -4,7 +4,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import d3 from "d3";
 
-import * as ReStock from "react-stockcharts";
+import ReStock from "react-stockcharts";
 
 var parseDate = d3.time.format("%Y-%m-%d").parse
 var parseDateTime = d3.time.format("%Y-%m-%d %H:%M:%S").parse
@@ -164,7 +164,7 @@ function loadPage() {
 	var promiseIntraDayContinious = fetch("data/bitfinex_xbtusd_1m.csv")
 		.then(response => response.text())
 		.then(data => d3.csv.parse(data, parseData(parseDateTime)))
-	var promiseIntraDayDiscontinuous = fetch("data/AAPL_INTRA_DAY.tsv")
+	var promiseIntraDayDiscontinuous = fetch("data/MSFT_INTRA_DAY.tsv")
 		.then(response => response.text())
 		.then(data => d3.tsv.parse(data, parseData(d => new Date(+d))))
 	var promiseCompare = fetch("data/comparison.tsv")
@@ -197,8 +197,8 @@ function loadPage() {
 					}
 				});
 
-			renderPage(MSFT, MSFTfull, intraDayContinious, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
-			// renderPartialPage(MSFT, MSFTFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData);
+			// renderPage(MSFT, MSFTfull, intraDayContinious, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
+			renderPartialPage(MSFT, MSFTfull, intraDayContinious, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
 
 
 		})
@@ -268,7 +268,7 @@ function renderPage(data, dataFull, intraDayContinious, intraDayDiscontinuous, c
 }
 
 
-function renderPartialPage(data, dataFull, compareData, bubbleData, barData, groupedBarData) {
+function renderPartialPage(data, dataFull, intraDayContinious, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData) {
 
 	//var Renko = require("./lib/charts/Renko").init(dataFull);
 	// AreaChart
@@ -285,6 +285,8 @@ function renderPartialPage(data, dataFull, compareData, bubbleData, barData, gro
 	// CandleStickChartWithEdge
 	// CandleStickChartWithCompare
 	// CandleStickChartWithEdge  - Lots of data -> data={dataFull}/>
+	// CandleStickChartForDiscontinuousIntraDay - intraDayDiscontinuous
+	// CandleStickChartWithAnnotation
 	// CandleStickChartWithUpdatingData
 	// KagiWithUpdatingData
 	// RenkoWithUpdatingData
@@ -306,7 +308,7 @@ function renderPartialPage(data, dataFull, compareData, bubbleData, barData, gro
 	// Kagi
 	// PointAndFigure
 	// Renko
-	var Chart = require("lib/charts/CandleStickChartWithFullStochasticsIndicator").default;
+	var Chart = require("lib/charts/CandleStickChartForDiscontinuousIntraDay").default;
 	var TypeChooser = ReStock.helper.TypeChooser;
 
 	// data, dataFull, compareData
@@ -315,7 +317,7 @@ function renderPartialPage(data, dataFull, compareData, bubbleData, barData, gro
 			return (
 				<div>
 					<TypeChooser type="hybrid">
-						{(type) => <Chart data={data} type={type} />}
+						{(type) => <Chart data={intraDayDiscontinuous} type={type} />}
 					</TypeChooser>
 				</div>
 			)

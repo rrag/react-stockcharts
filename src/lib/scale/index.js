@@ -6,6 +6,8 @@ import financeIntradayDiscontinuousScale from "./financeIntradayDiscontinuousSca
 import financeIntradayCalculator from "./financeIntradayCalculator";
 import intradayIntervalCalculator from "./intradayIntervalCalculator";
 
+import discontinuousTimeScaleProvider from "./discontinuousTimeScaleProvider";
+
 export {
 	financeEODCalculator,
 	financeEODDiscontinuousScale,
@@ -13,5 +15,7 @@ export {
 	eodIntervalCalculator,
 	financeIntradayDiscontinuousScale,
 	financeIntradayCalculator,
-	intradayIntervalCalculator
+	intradayIntervalCalculator,
+
+	discontinuousTimeScaleProvider
 };

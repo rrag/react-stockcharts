@@ -1,5 +1,5 @@
 
-const ticker = "AAPL"
+const ticker = "MSFT"
 
 var fs = require('fs'),
 	readline = require('readline');

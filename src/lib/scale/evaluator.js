@@ -7,19 +7,11 @@ import {
 	isDefined,
 	isNotDefined,
 	isArray,
+	identity,
 } from "../utils";
 
 import eodIntervalCalculator from "./eodIntervalCalculator";
 
-function getFilteredResponse(dataForInterval, left, right, xAccessor) {
-	var newLeftIndex = getClosestItemIndexes(dataForInterval, left, xAccessor).right;
-	var newRightIndex = getClosestItemIndexes(dataForInterval, right, xAccessor).left;
-
-	var filteredData = dataForInterval.slice(newLeftIndex, newRightIndex + 1);
-	// console.log(right, newRightIndex, dataForInterval.length);
-
-	return filteredData;
-}
 
 /*
 function getFilteredResponseWhole(dataForInterval, left, right, xAccessor) {
@@ -40,69 +32,18 @@ function getDomain(inputDomain, width, filteredData, predicate, currentDomain, c
 	return currentDomain;
 }
 
-function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShowTheseMany, useWholeData = false) {
-	var data, interval, width, currentInterval, currentDomain, currentPlotData, scale;
 
-	function domain(inputDomain, xAccessor) {
-		var left = first(inputDomain);
-		var right = last(inputDomain);
-		var plotData = currentPlotData, intervalToShow = currentInterval, domain;
 
-		if (useWholeData) {
-			return { plotData: data, scale: scale.copy().domain(inputDomain) };
+/*function filterHelper(data, xAccessor, realXAccessor) {
+	var width, currentDomain, currentPlotData;
+	function foo(left, right) {
+		var filteredData = getFilteredResponse(data, left, right, xAccessor);
+		if (!canShowTheseManyPeriods(width, filteredData.length)) {
+			return {
+				domain:
+			}
 		}
-
-		if (isNotDefined(interval) && isArray(allowedIntervals)) {
-			let dataForCurrentInterval = data[currentInterval || allowedIntervals[0]];
-
-			var leftIndex = getClosestItemIndexes(dataForCurrentInterval, left, xAccessor).right;
-			var rightIndex = getClosestItemIndexes(dataForCurrentInterval, right, xAccessor).left;
-
-			var newLeft = inputXAccessor(dataForCurrentInterval[leftIndex]);
-			var newRight = inputXAccessor(dataForCurrentInterval[rightIndex]);
-
-			for (let i = 0; i < allowedIntervals.length; i++) {
-				let eachInterval = allowedIntervals[i];
-
-				var tempLeft = currentInterval === eachInterval ? left : newLeft;
-				var tempRight = currentInterval === eachInterval ? right : newRight;
-				var tempAccessor = currentInterval === eachInterval ? xAccessor : inputXAccessor;
-
-				let filteredData =  getFilteredResponse(data[eachInterval], tempLeft, tempRight, tempAccessor);
-
-				domain = getDomain([tempLeft, tempRight], width, filteredData,
-					currentInterval === eachInterval, currentDomain,
-					canShowTheseMany, realXAccessor);
-
-				if (domain !== currentDomain) {
-					plotData = filteredData;
-					intervalToShow = eachInterval;
-					break;
-				}
-			}
-			if (isNotDefined(plotData) && showMax(width) < dataForCurrentInterval.length) {
-				plotData = dataForCurrentInterval.slice(dataForCurrentInterval.length - showMax(width));
-				domain = [realXAccessor(first(plotData)), realXAccessor(last(plotData))];
-			}
-		} else if (isDefined(interval) && allowedIntervals.indexOf(interval) > -1) {
-			// if interval is defined and allowedInterval is not defined, it is an error
-			let filteredData = getFilteredResponse(data[interval], left, right, xAccessor);
-
-			domain = getDomain(inputDomain, width, filteredData,
-				realXAccessor === xAccessor, currentDomain,
-				canShowTheseMany, realXAccessor);
-
-			if (domain !== currentDomain) {
-				plotData = filteredData;
-				intervalToShow = interval;
-			}
-			if (isNotDefined(plotData) && showMax(width) < data[interval].length) {
-				plotData = data[interval].slice(data[interval].length - showMax(width));
-				domain = [realXAccessor(first(plotData)), realXAccessor(last(plotData))];
-			}
-		} else if (isNotDefined(interval) && isNotDefined(allowedIntervals)) {
-			// interval is not defined and allowedInterval is not defined also.
-			let filteredData = getFilteredResponse(data, left, right, xAccessor);
+	}
 			domain = getDomain(inputDomain, width, filteredData,
 				realXAccessor === xAccessor, currentDomain,
 				canShowTheseMany, realXAccessor);
@@ -117,55 +58,34 @@ function extentsWrapper(inputXAccessor, realXAccessor, allowedIntervals, canShow
 				plotData = data.slice(data.length - showMax(width));
 				domain = [realXAccessor(first(plotData)), realXAccessor(last(plotData))];
 			}
+}*/
+
+function extentsWrapper(data, inputXAccessor, realXAccessor, width, useWholeData) {
+	function domain(inputDomain, xAccessor, currentPlotData, currentDomain, subsequent = false) {
+		if (useWholeData) {
+			return { plotData: data, domain: inputDomain };
 		}
 
-		if (isNotDefined(plotData)) {
-			// console.log(currentInterval, currentDomain, currentPlotData)
-			throw new Error("Initial render and cannot display any data");
+		var left = first(inputDomain);
+		var right = last(inputDomain);
+
+		var filteredData = getFilteredResponse(data, left, right, xAccessor);
+
+		var plotData, domain
+		if (canShowTheseManyPeriods(width, filteredData.length)) {
+			plotData = filteredData;
+			domain = subsequent ? inputDomain : [realXAccessor(first(plotData)), realXAccessor(last(plotData))]
+		} else {
+			plotData = currentPlotData || filteredData.slice(filteredData.length - showMax(width));
+			domain = currentDomain || [realXAccessor(first(plotData)), realXAccessor(last(plotData))];
 		}
 
-		var updatedScale = (scale.isPolyLinear && scale.isPolyLinear() && scale.data)
-			? scale.copy().data(plotData)
-			: scale.copy();
-
-		updatedScale.domain(domain);
-		return { plotData, interval: intervalToShow, scale: updatedScale };
+		return { plotData, domain };
 	}
-	domain.data = function(x) {
-		if (!arguments.length) return data;
-		data = x;
-		return domain;
+
+	domain.isItemVisibleInDomain = function(d, domain) {
 	};
-	domain.interval = function(x) {
-		if (!arguments.length) return interval;
-		interval = x;
-		return domain;
-	};
-	domain.width = function(x) {
-		if (!arguments.length) return width;
-		width = x;
-		return domain;
-	};
-	domain.currentInterval = function(x) {
-		if (!arguments.length) return currentInterval;
-		currentInterval = x;
-		return domain;
-	};
-	domain.currentDomain = function(x) {
-		if (!arguments.length) return currentDomain;
-		currentDomain = x;
-		return domain;
-	};
-	domain.currentPlotData = function(x) {
-		if (!arguments.length) return currentPlotData;
-		currentPlotData = x;
-		return domain;
-	};
-	domain.scale = function(x) {
-		if (!arguments.length) return scale;
-		scale = x;
-		return domain;
-	};
+
 	return domain;
 }
 
@@ -179,80 +99,70 @@ function showMax(width) {
 	return Math.floor(width * threshold);
 }
 
+function getFilteredResponse(data, left, right, xAccessor) {
+	var newLeftIndex = getClosestItemIndexes(data, left, xAccessor).right;
+	var newRightIndex = getClosestItemIndexes(data, right, xAccessor).left;
+
+	var filteredData = data.slice(newLeftIndex, newRightIndex + 1);
+	// console.log(right, newRightIndex, dataForInterval.length);
+
+	return filteredData;
+}
+
+function compose(funcs) {
+	if (funcs.length === 0) {
+		return identity
+	}
+
+	if (funcs.length === 1) {
+		return funcs[0]
+	}
+
+	var [head, ...tail] = funcs;
+
+	return args => tail.reduce((composed, f) => f(composed), head(args));
+}
 
 export default function() {
 
-	var allowedIntervals, xAccessor, discontinuous = false, useWholeData,
-		indexAccessor, indexMutator, map, scale, calculator = [], intervalCalculator = eodIntervalCalculator,
-		canShowTheseMany = canShowTheseManyPeriods;
+	var xAccessor, useWholeData, width,
+		map, calculator = [], scaleProvider,
+		canShowTheseMany = canShowTheseManyPeriods, indexAccessor, indexMutator;
 
 	function evaluate(data) {
-		if (discontinuous
-				&& (isNotDefined(scale.isPolyLinear)
-						|| (isDefined(scale.isPolyLinear) && !scale.isPolyLinear()))) {
-			throw new Error("you need a scale that is capable of handling discontinuous data. change the scale prop or set discontinuous to false");
-		}
-		var realXAccessor = discontinuous ? indexAccessor : xAccessor;
 
-		var xScale = (discontinuous && isDefined(scale.isPolyLinear) && scale.isPolyLinear())
-			? scale.copy().indexAccessor(realXAccessor).dateAccessor(xAccessor)
-			: scale;
-		// if any calculator gives a discontinious output and discontinuous = false throw error
+		var mappedData = data.map(map);
 
-		var calculate = intervalCalculator()
-			.doIt(isDefined(xScale.isPolyLinear))
-			.allowedIntervals(allowedIntervals);
+		var composedCalculator = compose(calculator);
+		var calculatedData = composedCalculator(mappedData);
 
-		var mappedData = calculate(data.map(map));
-
-		if (discontinuous) {
-			calculator.unshift(values => values.map((d, i) => {
-				indexMutator(d, i);
-				return d;
-			}));
-		}
-		// console.log(mappedData);
-
-		calculator.forEach(each => {
-			var newData;
-			if (isArray(mappedData)) {
-				newData = each(mappedData);
-			} else {
-				newData = {};
-				Object.keys(mappedData)
-					.forEach(key => {
-						newData[key] = each(mappedData[key]);
-					});
-			}
-			mappedData = newData;
-		});
-
+		var {
+			data: finalData,
+			xScale,
+			xAccessor: realXAccessor
+		} = scaleProvider(calculatedData, xAccessor, indexAccessor, indexMutator);
 
 		return {
-			fullData: mappedData,
+			filterData: extentsWrapper(finalData, xAccessor, realXAccessor, width, useWholeData),
+			xScale,
 			xAccessor: realXAccessor,
+			lastItem: last(finalData),
+		}
+		/*return {
+			fullData: mappedData,
+			// xAccessor: realXAccessor,
 			// inputXAccesor: xAccessor,
 			domainCalculator: extentsWrapper(xAccessor, realXAccessor, allowedIntervals, canShowTheseMany, useWholeData),
-		};
+		};*/
 	}
-	evaluate.allowedIntervals = function(x) {
-		if (!arguments.length) return allowedIntervals;
-		allowedIntervals = x;
-		return evaluate;
-	};
-	evaluate.intervalCalculator = function(x) {
-		if (!arguments.length) return intervalCalculator;
-		intervalCalculator = x;
-		return evaluate;
-	};
 	evaluate.xAccessor = function(x) {
 		if (!arguments.length) return xAccessor;
 		xAccessor = x;
 		return evaluate;
 	};
-	evaluate.discontinuous = function(x) {
-		if (!arguments.length) return discontinuous;
-		discontinuous = x;
+	evaluate.map = function(x) {
+		if (!arguments.length) return map;
+		map = x;
 		return evaluate;
 	};
 	evaluate.indexAccessor = function(x) {
@@ -265,19 +175,19 @@ export default function() {
 		indexMutator = x;
 		return evaluate;
 	};
-	evaluate.map = function(x) {
-		if (!arguments.length) return map;
-		map = x;
-		return evaluate;
-	};
-	evaluate.scale = function(x) {
-		if (!arguments.length) return scale;
-		scale = x;
+	evaluate.scaleProvider = function(x) {
+		if (!arguments.length) return scaleProvider;
+		scaleProvider = x;
 		return evaluate;
 	};
 	evaluate.useWholeData = function(x) {
 		if (!arguments.length) return useWholeData;
 		useWholeData = x;
+		return evaluate;
+	};
+	evaluate.width = function(x) {
+		if (!arguments.length) return width;
+		width = x;
 		return evaluate;
 	};
 	evaluate.calculator = function(x) {
