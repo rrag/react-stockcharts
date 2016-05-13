@@ -12,9 +12,9 @@ var tickLevels = [
 	{ target: 11e5, level: 5 },
 	{ target: 21e5, level: 6 },
 	{ target: 43e5, level: 7 },
-	{ target: 49e5, level: 8 }, //
-	{ target: 50e5, level: 9 }, //
-	{ target: 58e6, level: 10 }, //
+	{ target: 49e5, level: 8 }, // not tested
+	{ target: 50e5, level: 9 }, // not tested
+	{ target: 58e6, level: 10 }, // not tested
 	{ target: 58e6, level: 11 },
 	{ target: 11e7, level: 12 },
 	{ target: 78e7, level: 13 },
@@ -22,7 +22,7 @@ var tickLevels = [
 	{ target: 62e8, level: 15 },
 	{ target: 90e8, level: 16 },
 	{ target: 10e20, level: 17 },
-]
+];
 
 var tickLevelBisector = d3.bisector(function(d) { return d.target; }).left;
 
@@ -30,11 +30,14 @@ export default function financeDiscontinuousScale(index,
 		interval,
 		backingLinearScale = d3.scale.linear()) {
 
+	if (isNotDefined(index) || isNotDefined(interval))
+		throw new Error("Use the discontinuousTimeScaleProvider to create financeDiscontinuousScale");
+
 	function scale(x) {
 		return backingLinearScale(x);
 	}
 	scale.invert = function(x) {
-		return backingLinearScale.invert(x);
+		return backingLinearScale.invert(Math.round(x * 1e5 / 1e5));
 	};
 	scale.domain = function(x) {
 		if (!arguments.length) return backingLinearScale.domain();

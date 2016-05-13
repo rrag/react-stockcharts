@@ -8,7 +8,7 @@ import ReStock from "react-stockcharts";
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 
 var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, BollingerSeries } = ReStock.series;
-var { financeEODDiscontinuousScale } = ReStock.scale;
+var { discontinuousTimeScaleProvider } = ReStock.scale;
 var { EdgeIndicator } = ReStock.coordinates;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 
@@ -16,8 +16,6 @@ var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, BollingerBandTooltip 
 var { XAxis, YAxis } = ReStock.axes;
 var { ema, sma, bollingerBand } = ReStock.indicator;
 var { fitWidth } = ReStock.helper;
-
-var xScale = financeEODDiscontinuousScale();
 
 class CandleStickChartWithBollingerBandOverlay extends React.Component {
 	render() {
@@ -59,7 +57,7 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 					margin={{left: 70, right: 70, top:10, bottom: 30}} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[sma20, ema20, ema50, smaVolume50, bb]}
-					xAccessor={d => d.date} discontinuous xScale={xScale}
+					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], sma20.accessor(), ema20.accessor(), ema50.accessor(), bb.accessor()]}

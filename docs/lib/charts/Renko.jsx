@@ -7,7 +7,7 @@ import ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 var { BarSeries, LineSeries, AreaSeries, RenkoSeries } = ReStock.series;
-var { financeEODDiscontinuousScale } = ReStock.scale;
+var { discontinuousTimeScaleProvider } = ReStock.scale;
 
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeIndicator } = ReStock.coordinates;
@@ -17,8 +17,6 @@ var { XAxis, YAxis } = ReStock.axes;
 var { renko } = ReStock.indicator;
 
 var { fitWidth } = ReStock.helper;
-
-var xScale = financeEODDiscontinuousScale();
 
 class Renko extends React.Component {
 	getChartCanvas() {
@@ -33,7 +31,7 @@ class Renko extends React.Component {
 					margin={{left: 80, right: 80, top:10, bottom: 30}} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[renkoCalculator]}
-					xAccessor={d => d.date} discontinuous xScale={xScale}>
+					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}>
 				<Chart id={1}
 						yExtents={d => [d.high, d.low]}
 						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} 

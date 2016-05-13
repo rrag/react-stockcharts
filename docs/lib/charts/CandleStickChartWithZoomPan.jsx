@@ -7,7 +7,7 @@ import ReStock from "react-stockcharts";
 
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 var { CandlestickSeries, BarSeries } = ReStock.series;
-var { financeEODDiscontinuousScale } = ReStock.scale;
+var { discontinuousTimeScaleProvider } = ReStock.scale;
 
 var { MouseCoordinates } = ReStock.coordinates;
 
@@ -17,8 +17,6 @@ var { XAxis, YAxis } = ReStock.axes;
 
 var { fitWidth } = ReStock.helper;
 
-var xScale = financeEODDiscontinuousScale();
-
 class CandleStickChartWithZoomPan extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
@@ -27,8 +25,7 @@ class CandleStickChartWithZoomPan extends React.Component {
 					margin={{left: 70, right: 70, top:10, bottom: 30}} type={type}
 					seriesName="MSFT"
 					data={data}
-					xAccessor={d => d.date} discontinuous xScale={xScale}
-					allowedIntervals={["D", "W", "M"]}
+					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1} yExtents={[d => [d.high, d.low]]}
 						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}>

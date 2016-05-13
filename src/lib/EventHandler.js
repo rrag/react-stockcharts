@@ -15,28 +15,6 @@ import { getNewChartConfig, getChartConfigWithUpdatedYScales, getCurrentCharts, 
 
 var subscriptionCount = 0;
 
-function getDataBetween(fullData, showingInterval, xAccessor, left, right) {
-	var dataForInterval = Array.isArray(fullData) ? fullData : fullData[showingInterval];
-
-	var newLeftIndex = getClosestItemIndexes(dataForInterval, left, xAccessor).right;
-	var newRightIndex = getClosestItemIndexes(dataForInterval, right, xAccessor).left;
-
-	var filteredData = dataForInterval.slice(newLeftIndex, newRightIndex + 1);
-
-	return filteredData;
-}
-
-function isLastItemVisible(fullData, plotData) {
-	if (Array.isArray(fullData)) {
-		return last(plotData) === last(fullData);
-	}
-	var visible = false;
-	for (let key in fullData) {
-		visible = visible || last(fullData[key]) === last(plotData);
-	}
-	return visible;
-}
-
 function setXRange(xScale, dimensions, padding, direction = 1) {
 	if (xScale.rangeRoundPoints) {
 		if (isNaN(padding)) throw new Error("padding has to be a number for ordinal scale");
@@ -53,7 +31,6 @@ function setXRange(xScale, dimensions, padding, direction = 1) {
 	}
 	return xScale;
 }
-
 
 class EventHandler extends Component {
 	constructor(props, context) {
@@ -97,9 +74,7 @@ class EventHandler extends Component {
 		var { plotData, direction } = this.props;
 		var { xScale, dimensions, children, postCalculator, padding } = this.props;
 
-		// console.log(Array.isArray(fullData) ? fullData[60] : fullData);
 		plotData = postCalculator(plotData);
-		// console.log(last(fullData), last(plotData));
 
 		var chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData);
 
@@ -111,7 +86,7 @@ class EventHandler extends Component {
 	}
 	componentWillReceiveProps(nextProps) {
 
-		var { plotData, fullData, showingInterval, padding, direction } = nextProps;
+		var { plotData, padding, direction, lastItem } = nextProps;
 		var { xScale, xAccessor, dimensions, children, postCalculator, dataAltered } = nextProps;
 
 		var reset = !shallowEqual(this.props.plotData, nextProps.plotData);
@@ -133,13 +108,12 @@ class EventHandler extends Component {
 			let chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData);
 
 			newState = {
-				showingInterval,
 				xScale: setXRange(xScale, dimensions, padding, direction),
 				plotData,
 				chartConfig,
 			};
 		} else if (dataAltered
-				&& isLastItemVisible(this.props.fullData, this.state.plotData)) {
+				&& this.props.lastItem === last(this.state.plotData)) {
 
 			if (process.env.NODE_ENV !== "production") {
 				console.log("DATA CHANGED AND LAST ITEM VISIBLE");
@@ -148,22 +122,16 @@ class EventHandler extends Component {
 			var updatedXScale = setXRange(this.state.xScale.copy(), dimensions, padding, direction);
 
 			var [start, end] = this.state.xScale.domain();
-			var l = last(isDefined(showingInterval) ? fullData[showingInterval] : fullData);
-			if (end >= xAccessor(l)) {
+			if (end >= xAccessor(lastItem)) {
 				// get plotData between [start, end] and do not change the domain
-				plotData = getDataBetween(fullData, showingInterval, xAccessor, start, end);
+				plotData = filterData([start, end], xAccessor).plotData;
 			} else {
 				// get plotData between [xAccessor(l) - (end - start), xAccessor(l)] and DO change the domain
-				var dx = updatedXScale(xAccessor(l)) - updatedXScale.range()[1];
+				var dx = updatedXScale(xAccessor(lastItem)) - updatedXScale.range()[1];
 				var [newStart, newEnd] = updatedXScale.range().map(x => x + dx).map(updatedXScale.invert);
 
-				plotData = getDataBetween(fullData, showingInterval, xAccessor, newStart, newEnd);
-
-				if (updatedXScale.isPolyLinear && updatedXScale.isPolyLinear() && updatedXScale.data) {
-					updatedXScale.data(plotData);
-				} else {
-					updatedXScale.domain(newStart, newEnd);
-				}
+				plotData = filterData([newStart, newEnd], xAccessor).plotData;
+				updatedXScale.domain([newStart, newEnd]);
 			}
 			// plotData = getDataOfLength(fullData, showingInterval, plotData.length)
 			let chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData);
@@ -176,12 +144,16 @@ class EventHandler extends Component {
 		} else {
 			console.log("TRIVIAL CHANGE");
 			// this.state.plotData or plotData
+
+			plotData = filterData(this.state.xScale.domain(), xAccessor).plotData;
+
 			let chartConfig = getChartConfigWithUpdatedYScales(
-				getNewChartConfig(dimensions, children), this.state.plotData);
+				getNewChartConfig(dimensions, children), plotData);
 
 			newState = {
 				xScale: setXRange(this.state.xScale.copy(), dimensions, padding, direction),
 				chartConfig,
+				plotData,
 			};
 		}
 
@@ -234,10 +206,10 @@ class EventHandler extends Component {
 
 	getChildContext() {
 		var { showingInterval } = this.state;
-		var { fullData } = this.props;
+		// var { fullData } = this.props;
 		return {
 			plotData: this.state.plotData,
-			data: isDefined(showingInterval) ? fullData[showingInterval] : fullData,
+			// data: isDefined(showingInterval) ? fullData[showingInterval] : fullData,
 			chartConfig: this.state.chartConfig,
 			currentCharts: this.state.currentCharts,
 			currentItem: this.state.currentItem,
@@ -413,7 +385,7 @@ class EventHandler extends Component {
 		var { plotData, domain } = filterData(newDomain,
 			xAccessor,
 			initialPlotData,
-			initialXScale.domain(), true);
+			initialXScale.domain());
 
 		plotData = postCalculator(plotData);
 		var updatedScale = initialXScale.copy().domain(domain);
@@ -451,7 +423,7 @@ class EventHandler extends Component {
 		var { plotData, domain } = filterData(newDomain,
 			xAccessor,
 			initialPlotData,
-			initialXScale.domain(), true);
+			initialXScale.domain());
 
 		plotData = postCalculator(plotData);
 		var updatedScale = initialXScale.copy().domain(domain);
@@ -502,7 +474,7 @@ class EventHandler extends Component {
 		var { plotData, domain } = filterData(newDomain,
 			xAccessor,
 			this.hackyWayToStopPanBeyondBounds__plotData,
-			this.hackyWayToStopPanBeyondBounds__domain, true);
+			this.hackyWayToStopPanBeyondBounds__domain);
 
 		var updatedScale = initialXScale.copy().domain(domain);
 		plotData = postCalculator(plotData);
@@ -679,13 +651,8 @@ EventHandler.propTypes = {
 	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 	xAccessor: PropTypes.func.isRequired,
 	xScale: PropTypes.func.isRequired,
-	fullData: PropTypes.oneOfType([
-		PropTypes.array,
-		PropTypes.object,
-	]).isRequired,
 	interval: PropTypes.string,
 	dimensions: PropTypes.object,
-	xExtentsCalculator: PropTypes.func.isRequired,
 	postCalculator: PropTypes.func.isRequired,
 	canvasContexts: PropTypes.func.isRequired,
 	margin: PropTypes.object.isRequired,

@@ -8,15 +8,13 @@ import ReStock from "react-stockcharts";
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 
 var { BarSeries, LineSeries, AreaSeries, ScatterSeries, CircleMarker } = ReStock.series;
-var { financeEODDiscontinuousScale } = ReStock.scale;
+var { discontinuousTimeScaleProvider } = ReStock.scale;
 
 var { MouseCoordinates } = ReStock.coordinates;
 
 var { TooltipContainer, OHLCTooltip } = ReStock.tooltip;
 var { XAxis, YAxis } = ReStock.axes;
 var { fitWidth } = ReStock.helper;
-
-var xScale = financeEODDiscontinuousScale();
 
 class LineAndScatterChart extends React.Component {
 	render() {
@@ -26,7 +24,7 @@ class LineAndScatterChart extends React.Component {
 					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
 					seriesName="MSFT"
 					data={data}
-					xAccessor={d => d.date} discontinuous xScale={xScale}
+					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 2, 2)]}>
 				<Chart id={1}
 						yExtents={d => [d.high, d.low]}

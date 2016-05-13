@@ -56,7 +56,6 @@ class CandleStickChartWithAnnotation extends React.Component {
 					margin={margin} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50]}
-					allowedIntervals={["D", "W", "M"]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2015, 0, 1), new Date(2015, 5, 8)]}>
 
@@ -95,7 +94,8 @@ class CandleStickChartWithAnnotation extends React.Component {
 						calculators={[ema20, ema50]}/>
 				</TooltipContainer>
 
-				<Annotate id={0} chartId={1} with={LabelAnnotation} when={d => d.startOfMonth}
+				<Annotate id={0} chartId={1} with={LabelAnnotation}
+					when={d => d.date.getDate() === 1 /* some condition */}
 					usingProps={annotationProps} />
 			</ChartCanvas>
 		);

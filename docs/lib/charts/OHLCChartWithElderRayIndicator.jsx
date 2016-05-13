@@ -8,7 +8,7 @@ import ReStock from "react-stockcharts";
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 
 var { OHLCSeries, BarSeries, LineSeries, AreaSeries, ElderRaySeries, StraightLine } = ReStock.series;
-var { financeEODDiscontinuousScale } = ReStock.scale;
+var { discontinuousTimeScaleProvider } = ReStock.scale;
 
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeIndicator } = ReStock.coordinates;
@@ -19,8 +19,6 @@ var { XAxis, YAxis } = ReStock.axes;
 var { elderRay, change } = ReStock.indicator;
 
 var { fitWidth } = ReStock.helper;
-
-var xScale = financeEODDiscontinuousScale();
 
 class OHLCChartWithElderRayIndicator extends React.Component {
 	render() {
@@ -34,7 +32,7 @@ class OHLCChartWithElderRayIndicator extends React.Component {
 					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[changeCalculator, elder]}
-					xAccessor={d => d.date} discontinuous xScale={xScale}
+					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1} height={300} 
 						yExtents={d => [d.high, d.low]}

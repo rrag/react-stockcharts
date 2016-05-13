@@ -8,7 +8,7 @@ import ReStock from "react-stockcharts";
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 
 var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = ReStock.series;
-var { financeEODDiscontinuousScale } = ReStock.scale;
+var { discontinuousTimeScaleProvider } = ReStock.scale;
 
 var { EdgeIndicator } = ReStock.coordinates;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
@@ -17,8 +17,6 @@ var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, HoverTooltip } = ReSt
 var { XAxis, YAxis } = ReStock.axes;
 var { ema, sma } = ReStock.indicator;
 var { fitWidth } = ReStock.helper;
-
-var xScale = financeEODDiscontinuousScale();
 
 var dateFormat = d3.time.format("%Y-%m-%d");
 var numberFormat = d3.format(".2f");
@@ -75,8 +73,7 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 					margin={margin} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50]}
-					allowedIntervals={["D", "W", "M"]}
-					xAccessor={d => d.date} discontinuous xScale={xScale}
+					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2015, 0, 1), new Date(2015, 5, 8)]}>
 
 				<Chart id={1}

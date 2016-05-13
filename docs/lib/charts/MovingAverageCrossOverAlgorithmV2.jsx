@@ -8,7 +8,7 @@ import ReStock from "react-stockcharts";
 var { ChartCanvas, Chart, EventCapture } = ReStock;
 
 var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = ReStock.series;
-var { financeEODDiscontinuousScale } = ReStock.scale;
+var { discontinuousTimeScaleProvider } = ReStock.scale;
 
 var { EdgeIndicator } = ReStock.coordinates;
 var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
@@ -20,8 +20,6 @@ var { ema, sma } = ReStock.indicator;
 var { fitWidth } = ReStock.helper;
 
 var algorithm = ReStock.algorithm.default;
-
-var xScale = financeEODDiscontinuousScale();
 
 class MovingAverageCrossOverAlgorithmV2 extends React.Component {
 	render() {
@@ -78,8 +76,7 @@ class MovingAverageCrossOverAlgorithmV2 extends React.Component {
 					margin={margin} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50, buySell]}
-					allowedIntervals={["D", "W", "M"]}
-					xAccessor={d => d.date} discontinuous xScale={xScale}
+					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2015, 0, 1), new Date(2015, 5, 8)]}>
 
 				<Chart id={1}

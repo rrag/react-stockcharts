@@ -75,7 +75,7 @@ Annotate.propTypes = {
 };
 
 Annotate.defaultProps = {
-	className: "react-stockcharts-annotate",
+	className: "react-stockcharts-annotate react-stockcharts-default-cursor",
 };
 
 function helper({ when }, plotData) {

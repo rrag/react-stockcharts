@@ -3,7 +3,7 @@
 import d3 from "d3";
 
 import financeDiscontinuousScale from "./financeDiscontinuousScale";
-import { isDefined, isNotDefined, head, last, slidingWindow, merge } from "../utils";
+import { isDefined, isNotDefined, head, last, slidingWindow, zipper } from "../utils";
 
 const yearFormat = d3.time.format("%Y");
 const quarterFormat = d3.time.format("%b %Y");
@@ -116,7 +116,7 @@ var discontinuousIndexCalculatorLocalTime = discontinuousIndexCalculator
 	});
 
 function discontinuousTimeScaleProvider(data,
-		dateAccessor = d => d.date,
+		dateAccessor,
 		indexAccessor,
 		indexMutator) {
 
@@ -126,8 +126,15 @@ function discontinuousTimeScaleProvider(data,
 	// console.log(interval, interval1);
 
 	var map = d3.map()
+	var idx = [];
 	for (var i = 0; i < data.length - 1; i++) {
-		var diff = dateAccessor(data[i + 1]) - dateAccessor(data[i])
+
+		var nextDate = dateAccessor(data[i + 1]);
+		var nowDate = dateAccessor(data[i]);
+		var diff = nextDate - nowDate;
+
+		idx.push({ i, date: nowDate });
+
 		if (map.has(diff)) {
 			var count = parseInt(map.get(diff), 10) + 1;
 			map.set(diff, count)
@@ -135,27 +142,40 @@ function discontinuousTimeScaleProvider(data,
 			map.set(diff, 0)
 		}
 	};
+	idx.push({ i, date: dateAccessor(last(data)) });
 
 	var interval = parseInt(map.entries().sort((a, b) => a.value < b.value)[0].key, 10)
 
 	var xScale = financeDiscontinuousScale(index, interval)
-	var indexAlgorithm = data => data.map((d, i) => i);
 
-	var mergedData = merge()
-		.algorithm(indexAlgorithm)
-		.merge(indexMutator);
+	var mergedData = zipper()
+		.combine((d, idx) => {
+			var newD = indexMutator(d, idx.i);
+			newD.displayX = idx.date;
+			return newD;
+		})
 
-	var finalData = mergedData(data);
+	var finalData = mergedData(data, idx);
 
 	return {
 		data: finalData,
 		xScale,
-		xAccessor: indexAccessor
+		xAccessor: indexAccessor,
+		displayXAccessor: d => d.displayX,
 	}
 }
 
-discontinuousTimeScaleProvider.utc = function () {
-	return financeDiscontinuousScale(index);
+discontinuousTimeScaleProvider.utc = function (data,
+		dateAccessor,
+		indexAccessor,
+		indexMutator) {
+	var utcDateAccessor = d => {
+		var date = dateAccessor(d);
+		// The getTimezoneOffset() method returns the time-zone offset from UTC, in minutes, for the current locale.
+		var offsetInMillis = date.getTimezoneOffset() * 60 * 1000
+		return new Date(date.getTime() + offsetInMillis);
+	}
+	return discontinuousTimeScaleProvider(data, utcDateAccessor, indexAccessor, indexMutator);
 }
 
 export default discontinuousTimeScaleProvider;

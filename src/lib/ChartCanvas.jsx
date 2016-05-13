@@ -37,7 +37,7 @@ function getDimensions(props) {
 }
 
 function calculateFullData(props) {
-	var { data: inputData, calculator, plotFull } = props;
+	var { data: inputData, calculator, plotFull, xScale: xScaleProp } = props;
 	var { xAccessor: inputXAccesor, map, xScaleProvider, indexAccessor, indexMutator, discontinuous } = props;
 
 	var wholeData = isDefined(plotFull) ? plotFull : inputXAccesor === identity;
@@ -55,11 +55,12 @@ function calculateFullData(props) {
 		.useWholeData(wholeData)
 		.width(dimensions.width)
 		.scaleProvider(xScaleProvider)
+		.xScale(xScaleProp)
 		.calculator(calculator);
 
-	var { xAccessor, xScale, filterData, lastItem } = evaluate(inputData);
+	var { xAccessor, displayXAccessor, xScale, filterData, lastItem } = evaluate(inputData);
 
-	return { xAccessor, xScale, filterData, lastItem };
+	return { xAccessor, displayXAccessor, xScale, filterData, lastItem };
 }
 
 function calculateState(props) {
@@ -70,17 +71,16 @@ function calculateState(props) {
 		? xExtentsProp(data)
 		: d3.extent(xExtentsProp.map(d => d3.functor(d)).map(each => each(data, inputXAccesor)));
 
-	var { xAccessor, xScale, filterData, lastItem } = calculateFullData(props);
+	var { xAccessor, displayXAccessor, xScale, filterData, lastItem } = calculateFullData(props);
 
 	var { plotData, domain } = filterData(extent, inputXAccesor);
-
-	// console.log(xScale);
 
 	return {
 		plotData,
 		filterData,
 		xScale: xScale.domain(domain),
 		xAccessor,
+		displayXAccessor,
 		dataAltered: false,
 		lastItem,
 	};
@@ -101,8 +101,17 @@ function getCursorStyle(children) {
 		cursor: pointer;
 	}`;
 	var tooltipStyle = `
-	.react-stockcharts-annotate {
+	.react-stockcharts-default-cursor {
 		cursor: default;
+	}
+	.react-stockcharts-move-cursor {
+		cursor: move;
+	}
+	.react-stockcharts-ns-resize-cursor {
+		cursor: ns-resize;
+	}
+	.react-stockcharts-ew-resize-cursor {
+		cursor: ew-resize;
 	}`;
 	/* return (<style
 		type="text/css"
@@ -128,7 +137,7 @@ class ChartCanvas extends Component {
 	}
 	getChildContext() {
 		return {
-			displayXAccessor: this.props.xAccessor,
+			displayXAccessor: this.state.displayXAccessor,
 		};
 	}
 	componentWillMount() {
@@ -138,25 +147,32 @@ class ChartCanvas extends Component {
 		var reset = shouldResetChart(this.props, nextProps);
 		// console.log("shouldResetChart =", reset);
 
+		/*
+		plotData,
+		filterData,
+		xScale: xScale.domain(domain),
+		xAccessor,
+		dataAltered: false,
+		lastItem, */
+
 		if (reset) {
 			if (process.env.NODE_ENV !== "production") console.log("RESET CHART, one or more of these props changed", CANDIDATES_FOR_RESET);
 			this.setState(calculateState(nextProps));
 		} else if (!shallowEqual(this.props.xExtents, nextProps.xExtents)) {
 			if (process.env.NODE_ENV !== "production") console.log("xExtents changed");
-			// since the xExtents changed update fullData, plotData, xExtentsCalculator to state
-			let { fullData, plotData, xExtentsCalculator, xScale } = calculateState(nextProps);
-			this.setState({ fullData, plotData, xExtentsCalculator, xScale, dataAltered: false });
+			// since the xExtents changed update plotData, xScale, filterData to state
+			let { plotData, xScale, filterData } = calculateState(nextProps);
+			this.setState({ plotData, xScale, filterData, dataAltered: false });
 		} else if (this.props.data !== nextProps.data) {
 			if (process.env.NODE_ENV !== "production") console.log("data is changed but seriesName did not");
 			// this means there are more points pushed/removed or existing points are altered
-			// console.log("data changed");
-			let { fullData } = calculateFullData(nextProps);
-			this.setState({ fullData, dataAltered: true });
+			let { filterData } = calculateFullData(nextProps);
+			this.setState({ filterData, dataAltered: true });
 		} else if (!shallowEqual(this.props.calculator, nextProps.calculator)) {
 			if (process.env.NODE_ENV !== "production") console.log("calculator changed");
-			// data did not change but calculator changed, so update only the fullData to state
-			let { fullData } = calculateFullData(nextProps);
-			this.setState({ fullData, dataAltered: false });
+			// data did not change but calculator changed, so update only the filterData to state
+			let { filterData } = calculateFullData(nextProps);
+			this.setState({ filterData, dataAltered: false });
 		} else {
 			if (process.env.NODE_ENV !== "production")
 				console.log("Trivial change, may be width/height or type changed, but that does not matter");
@@ -224,7 +240,16 @@ ChartCanvas.propTypes = {
 	seriesName: PropTypes.string.isRequired,
 	zIndex: PropTypes.number,
 	children: PropTypes.node.isRequired,
-	// discontinuous: PropTypes.bool.isRequired,
+	xScaleProvider: function(props, propName, componentName) {
+		if (isDefined(props[propName]) &&  typeof props[propName] === "function" && isDefined(props.xScale)) {
+			return new Error("Do not define both xScaleProvider and xScale choose only one");
+		} 
+	},
+	xScale: function(props, propName, componentName) {
+		if (isDefined(props[propName]) &&  typeof props[propName] === "function" && isDefined(props.xScaleProvider)) {
+			return new Error("Do not define both xScaleProvider and xScale choose only one");
+		} 
+	},
 	postCalculator: PropTypes.func.isRequired,
 	flipXScale: PropTypes.bool.isRequired,
 	padding: PropTypes.oneOfType([
@@ -248,7 +273,6 @@ ChartCanvas.defaultProps = {
 	xExtents: [d3.min, d3.max],
 	// intervalCalculator: eodIntervalCalculator,
 	// dataEvaluator: evaluator,
-	discontinuous: false,
 	postCalculator: identity,
 	padding: 0,
 	xAccessor: identity,

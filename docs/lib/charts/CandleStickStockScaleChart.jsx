@@ -8,7 +8,7 @@ import ReStock from "react-stockcharts";
 var { ChartCanvas, Chart } = ReStock;
 
 var { CandlestickSeries } = ReStock.series;
-var { financeEODDiscontinuousScale } = ReStock.scale;
+var { discontinuousTimeScaleProvider } = ReStock.scale;
 var { XAxis, YAxis } = ReStock.axes;
 
 var { fitWidth } = ReStock.helper;
@@ -22,7 +22,7 @@ class CandleStickStockScaleChart extends React.Component {
 					margin={{left: 50, right: 50, top:10, bottom: 30}} type={type}
 					seriesName="MSFT"
 					data={data}
-					xAccessor={d => d.date} discontinuous xScale={financeEODDiscontinuousScale()}
+					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 
 				<Chart id={1} yExtents={d => [d.high, d.low]}>

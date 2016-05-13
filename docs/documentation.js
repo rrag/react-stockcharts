@@ -197,10 +197,8 @@ function loadPage() {
 					}
 				});
 
-			// renderPage(MSFT, MSFTfull, intraDayContinious, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
-			renderPartialPage(MSFT, MSFTfull, intraDayContinious, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
-
-
+			renderPage(MSFT, MSFTfull, intraDayContinious, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
+			// renderPartialPage(MSFT, MSFTfull, intraDayContinious, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
 		})
 
 }

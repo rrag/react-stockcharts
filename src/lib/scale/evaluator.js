@@ -61,7 +61,7 @@ function getDomain(inputDomain, width, filteredData, predicate, currentDomain, c
 }*/
 
 function extentsWrapper(data, inputXAccessor, realXAccessor, width, useWholeData) {
-	function domain(inputDomain, xAccessor, currentPlotData, currentDomain, subsequent = false) {
+	function domain(inputDomain, xAccessor, currentPlotData, currentDomain) {
 		if (useWholeData) {
 			return { plotData: data, domain: inputDomain };
 		}
@@ -74,7 +74,8 @@ function extentsWrapper(data, inputXAccessor, realXAccessor, width, useWholeData
 		var plotData, domain
 		if (canShowTheseManyPeriods(width, filteredData.length)) {
 			plotData = filteredData;
-			domain = subsequent ? inputDomain : [realXAccessor(first(plotData)), realXAccessor(last(plotData))]
+			// domain = subsequent ? inputDomain : [realXAccessor(first(plotData)), realXAccessor(last(plotData))]
+			domain = realXAccessor === xAccessor ? inputDomain : [realXAccessor(first(plotData)), realXAccessor(last(plotData))];
 		} else {
 			plotData = currentPlotData || filteredData.slice(filteredData.length - showMax(width));
 			domain = currentDomain || [realXAccessor(first(plotData)), realXAccessor(last(plotData))];
@@ -125,7 +126,7 @@ function compose(funcs) {
 
 export default function() {
 
-	var xAccessor, useWholeData, width,
+	var xAccessor, useWholeData, width, xScale,
 		map, calculator = [], scaleProvider,
 		canShowTheseMany = canShowTheseManyPeriods, indexAccessor, indexMutator;
 
@@ -136,24 +137,30 @@ export default function() {
 		var composedCalculator = compose(calculator);
 		var calculatedData = composedCalculator(mappedData);
 
-		var {
-			data: finalData,
-			xScale,
-			xAccessor: realXAccessor
-		} = scaleProvider(calculatedData, xAccessor, indexAccessor, indexMutator);
+		if (isDefined(scaleProvider)) {
+			var {
+				data: finalData,
+				xScale: modifiedXScale,
+				xAccessor: realXAccessor,
+				displayXAccessor
+			} = scaleProvider(calculatedData, xAccessor, indexAccessor, indexMutator);
+
+			return {
+				filterData: extentsWrapper(finalData, xAccessor, realXAccessor, width, useWholeData),
+				xScale: modifiedXScale,
+				xAccessor: realXAccessor,
+				displayXAccessor,
+				lastItem: last(finalData),
+			};
+		}
 
 		return {
-			filterData: extentsWrapper(finalData, xAccessor, realXAccessor, width, useWholeData),
+			filterData: extentsWrapper(calculatedData, xAccessor, xAccessor, width, useWholeData),
 			xScale,
-			xAccessor: realXAccessor,
-			lastItem: last(finalData),
-		}
-		/*return {
-			fullData: mappedData,
-			// xAccessor: realXAccessor,
-			// inputXAccesor: xAccessor,
-			domainCalculator: extentsWrapper(xAccessor, realXAccessor, allowedIntervals, canShowTheseMany, useWholeData),
-		};*/
+			xAccessor,
+			displayXAccessor: xAccessor,
+			lastItem: last(calculatedData),
+		};
 	}
 	evaluate.xAccessor = function(x) {
 		if (!arguments.length) return xAccessor;
@@ -178,6 +185,11 @@ export default function() {
 	evaluate.scaleProvider = function(x) {
 		if (!arguments.length) return scaleProvider;
 		scaleProvider = x;
+		return evaluate;
+	};
+	evaluate.xScale = function(x) {
+		if (!arguments.length) return xScale;
+		xScale = x;
 		return evaluate;
 	};
 	evaluate.useWholeData = function(x) {

@@ -10,7 +10,7 @@ import { Kagi as defaultOptions } from "../defaultOptions";
 export default function() {
 
 	var { reversalType, period: windowSize, reversal, source } = defaultOptions;
-	var { dateAccessor, dateMutator, indexMutator } = defaultOptions;
+	var { dateAccessor, dateMutator } = defaultOptions;
 
 	function calculator(data) {
 		var reversalThreshold;
@@ -36,7 +36,6 @@ export default function() {
 
 		data.forEach(function(d) {
 			if (isNotDefined(line.from)) {
-				indexMutator(line, index++);
 				dateMutator(line, dateAccessor(d));
 				line.from = dateAccessor(d);
 
@@ -155,7 +154,6 @@ export default function() {
 				line.added = false;
 				line.from = undefined;
 				line.volume = 0;
-				indexMutator(line, index);
 			} else {
 				// console.log("MOVING IN REV DIR BUT..", line.open, line.close, source(d));
 			}
@@ -183,11 +181,5 @@ export default function() {
 		dateAccessor = x;
 		return calculator;
 	};
-	calculator.indexMutator = function(x) {
-		if (!arguments.length) return indexMutator;
-		indexMutator = x;
-		return calculator;
-	};
-
 	return calculator;
 }
