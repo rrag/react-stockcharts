@@ -26,7 +26,7 @@ var levelDefinition = [
 	/* 10 */(d, date, i) => d.startOfHalfDay && hourFormat, // 12h
 	/*  9 */(d, date, i) => d.startOfQuarterDay && hourFormat, // 6h
 	/*  8 */(d, date, i) => d.startOfEighthOfADay && hourFormat, // 3h
-	/*  7 */(d, date, i) => d.startOfHour && date.getHours() % 2 === 0 && hourFormat, // 2h
+	/*  7 */(d, date, i) => d.startOfHour && date.getHours() % 2 === 0 && hourFormat, // 2h -- REMOVE THIS
 	/*  6 */(d, date, i) => d.startOfHour && hourFormat, // 1h
 	/*  5 */(d, date, i) => d.startOf30Minutes && minuteFormat,
 	/*  4 */(d, date, i) => d.startOf15Minutes && minuteFormat,
@@ -139,14 +139,21 @@ function discontinuousTimeScaleProvider(data,
 			var count = parseInt(map.get(diff), 10) + 1;
 			map.set(diff, count)
 		} else {
-			map.set(diff, 0)
+			map.set(diff, 1)
 		}
 	};
 	idx.push({ i, date: dateAccessor(last(data)) });
 
-	var interval = parseInt(map.entries().sort((a, b) => a.value < b.value)[0].key, 10)
+	var entries = map.entries().sort((a, b) => a.value < b.value);
 
-	var xScale = financeDiscontinuousScale(index, interval)
+	// For Renko/p&f
+	var interval = entries[0].value === 1
+		? Math.round((dateAccessor(last(data)) - dateAccessor(head(data))) / data.length)
+		: parseInt(entries[0].key, 10)
+
+	// console.log(interval, entries[0].key);
+
+	var xScale = financeDiscontinuousScale(index, interval);
 
 	var mergedData = zipper()
 		.combine((d, idx) => {

@@ -86,17 +86,11 @@ class EventHandler extends Component {
 	}
 	componentWillReceiveProps(nextProps) {
 
-		var { plotData, padding, direction, lastItem } = nextProps;
+		var { plotData, padding, direction, lastItem, filterData } = nextProps;
 		var { xScale, xAccessor, dimensions, children, postCalculator, dataAltered } = nextProps;
 
 		var reset = !shallowEqual(this.props.plotData, nextProps.plotData);
 
-		// console.log(dimensions);
-		// if plotData changed - reset the whole chart
-		// else update the fullData from props and xScale from state with range updated to state
-
-		// console.log("reset: ", reset, dimensions.width);
-		// console.log(last(this.props.fullData), last(nextProps.fullData));
 		var newState;
 		if (reset) {
 			if (process.env.NODE_ENV !== "production") {
@@ -113,15 +107,19 @@ class EventHandler extends Component {
 				chartConfig,
 			};
 		} else if (dataAltered
-				&& this.props.lastItem === last(this.state.plotData)) {
+				&& this.props.lastItem === last(this.state.plotData)
+				/*&& xAccessor(this.props.lastItem) >= xAccessor(last(this.state.plotData))
+				&& xAccessor(this.props.lastItem) <= xAccessor(last(this.state.plotData))*/) {
 
 			if (process.env.NODE_ENV !== "production") {
 				console.log("DATA CHANGED AND LAST ITEM VISIBLE");
 			}
 			// if last item was visible, then shift
-			var updatedXScale = setXRange(this.state.xScale.copy(), dimensions, padding, direction);
-
 			var [start, end] = this.state.xScale.domain();
+
+			var updatedXScale = setXRange(xScale, dimensions, padding, direction);
+			updatedXScale.domain([start, end]);
+
 			if (end >= xAccessor(lastItem)) {
 				// get plotData between [start, end] and do not change the domain
 				plotData = filterData([start, end], xAccessor).plotData;
@@ -151,7 +149,7 @@ class EventHandler extends Component {
 				getNewChartConfig(dimensions, children), plotData);
 
 			newState = {
-				xScale: setXRange(this.state.xScale.copy(), dimensions, padding, direction),
+				xScale: setXRange(xScale, dimensions, padding, direction).domain(this.state.xScale.domain()),
 				chartConfig,
 				plotData,
 			};

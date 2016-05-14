@@ -5,6 +5,7 @@ import d3 from "d3";
 import { isDefined, isNotDefined, head, last, slidingWindow } from "../utils";
 
 var tickLevels = [
+	{ target: 50e2, level: 0 },
 	{ target: 50e3, level: 1 },
 	{ target: 10e4, level: 2 },
 	{ target: 28e4, level: 3 },
@@ -20,8 +21,7 @@ var tickLevels = [
 	{ target: 78e7, level: 13 },
 	{ target: 16e8, level: 14 },
 	{ target: 62e8, level: 15 },
-	{ target: 90e8, level: 16 },
-	{ target: 10e20, level: 17 },
+	{ target: 10e20, level: 16 },
 ];
 
 var tickLevelBisector = d3.bisector(function(d) { return d.target; }).left;
@@ -37,7 +37,8 @@ export default function financeDiscontinuousScale(index,
 		return backingLinearScale(x);
 	}
 	scale.invert = function(x) {
-		return backingLinearScale.invert(Math.round(x * 1e5 / 1e5));
+		var inverted = backingLinearScale.invert(x);
+		return Math.round(inverted * 10000) / 10000;
 	};
 	scale.domain = function(x) {
 		if (!arguments.length) return backingLinearScale.domain();
@@ -68,11 +69,16 @@ export default function financeDiscontinuousScale(index,
 		var start = Math.max(Math.ceil(domainStart), 0);
 		var end = Math.min(Math.floor(domainEnd), index.length - 1);
 
+		// console.log(index.length, domainStart, domainEnd, start, end)
+
 		var newM = ((end - start) / (domainEnd - domainStart)) * m;
+		// newM = newM <= 0 ? m : newM;
 		var target = Math.round((end - start + 1) * interval / newM);
 
 		// var subList = index.slice(start, end + 1);
-		var { level } = tickLevels[tickLevelBisector(tickLevels, target)];
+		var levelIndex = tickLevelBisector(tickLevels, target);
+		// console.log(target, levelIndex)
+		var { level } = tickLevels[levelIndex];
 
 		// console.log(target, level);
 
