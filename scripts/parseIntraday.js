@@ -1,5 +1,6 @@
 
-const ticker = "MSFT"
+if (process.argv.length !== 3) throw new Error("Need a ticker as argument")
+const ticker = process.argv[2];
 
 var fs = require('fs'),
 	readline = require('readline');
