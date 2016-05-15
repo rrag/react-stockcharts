@@ -219,7 +219,7 @@ class EventHandler extends Component {
 			chartCanvasType: this.props.type,
 			xScale: this.state.xScale,
 			xAccessor: this.props.xAccessor,
-
+			displayXAccessor: this.props.displayXAccessor,
 			margin: this.props.margin,
 			interactiveState: this.state.interactiveState,
 
@@ -692,6 +692,7 @@ EventHandler.childContextTypes = {
 	).isRequired,
 	xScale: PropTypes.func.isRequired,
 	xAccessor: PropTypes.func.isRequired,
+	displayXAccessor: PropTypes.func.isRequired,
 	currentItem: PropTypes.object,
 	show: PropTypes.bool,
 	mouseXY: PropTypes.array,
@@ -701,7 +702,6 @@ EventHandler.childContextTypes = {
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 	chartCanvasType: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
-	dateAccessor: PropTypes.func,
 
 	margin: PropTypes.object.isRequired,
 	dataTransform: PropTypes.array,

@@ -164,7 +164,7 @@ function tooltipCanvas({ fontFamily, fontSize, fontFill }, content, ctx) {
 }
 
 function origin({ mouseXY, bgheight, bgwidth, xAccessor, currentItem, xScale }) {
-	var [... y] = mouseXY;
+	var y = last(mouseXY);
 
 	var snapX = xScale(xAccessor(currentItem));
 	var originX = (snapX - bgwidth - PADDING * 2 < 0) ? snapX + PADDING : snapX - bgwidth - PADDING;

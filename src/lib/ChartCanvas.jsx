@@ -135,11 +135,6 @@ class ChartCanvas extends Component {
 			return this.refs.canvases.getCanvasContexts();
 		}
 	}
-	getChildContext() {
-		return {
-			displayXAccessor: this.state.displayXAccessor,
-		};
-	}
 	componentWillMount() {
 		this.setState(calculateState(this.props));
 	}
@@ -184,12 +179,11 @@ class ChartCanvas extends Component {
 		var { data, type, height, width, margin, className, zIndex, postCalculator, flipXScale } = this.props;
 		var { padding } = this.props;
 
-		var { plotData, filterData, xScale, xAccessor, dataAltered, lastItem } = this.state;
-
+		var { plotData, filterData, xScale, xAccessor, dataAltered, lastItem, displayXAccessor } = this.state;
 		var dimensions = getDimensions(this.props);
 		// var stateProps = { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor, dataAltered };
 		var props = { padding, type, margin, postCalculator };
-		var stateProps = { plotData, filterData, xScale, xAccessor, dataAltered, lastItem };
+		var stateProps = { plotData, filterData, xScale, xAccessor, dataAltered, lastItem, displayXAccessor };
 		return (
 			<div style={{ position: "relative", height: height, width: width }} className={className} >
 				<CanvasContainer ref="canvases" width={width} height={height} type={type} zIndex={zIndex}/>
@@ -278,10 +272,6 @@ ChartCanvas.defaultProps = {
 	xAccessor: identity,
 	flipXScale: false,
 	// initialDisplay: 30
-};
-
-ChartCanvas.childContextTypes = {
-	displayXAccessor: PropTypes.func,
 };
 
 ChartCanvas.ohlcv = d => ({ date: d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume });
