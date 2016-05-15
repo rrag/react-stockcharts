@@ -3,7 +3,8 @@ var path = require("path");
 
 var root = path.join(__dirname, "..");
 
-var origPackage = fs.readFileSync(path.join(root, "package.json")).toString(), buildPackage;
+var origPackage = fs.readFileSync(path.join(root, "package.json")).toString();
+var buildPackage
 
 try {
 	var pkg = JSON.parse(origPackage);

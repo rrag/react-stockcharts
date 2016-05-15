@@ -47,7 +47,6 @@
     "rimraf": "^2.5.1",
     "sass-loader": "^3.1.2",
     "serve-static": "^1.10.2",
-    "shelljs": "^0.7.0",
     "style-loader": "^0.13.0",
     "url-loader": "^0.5.7",
     "webpack": "^1.12.12",
