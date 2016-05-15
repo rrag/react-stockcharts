@@ -16,7 +16,7 @@ class TooltipContainer extends PureComponent {
 
 TooltipContainer.contextTypes = {
 	chartConfig: PropTypes.array.isRequired,
-	currentItem: PropTypes.object.isRequired,
+	currentItem: PropTypes.object,
 };
 
 export default TooltipContainer;

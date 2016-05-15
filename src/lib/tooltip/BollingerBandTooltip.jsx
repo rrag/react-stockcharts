@@ -47,7 +47,7 @@ class BollingerBandTooltip extends Component {
 
 BollingerBandTooltip.contextTypes = {
 	chartConfig: PropTypes.array.isRequired,
-	currentItem: PropTypes.object.isRequired,
+	currentItem: PropTypes.object,
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 };

@@ -73,7 +73,7 @@ Chart.contextTypes = {
 	chartConfig: PropTypes.array,
 	margin: PropTypes.object.isRequired,
 	interactiveState: PropTypes.array.isRequired,
-	currentItem: PropTypes.object.isRequired,
+	currentItem: PropTypes.object,
 	mouseXY: PropTypes.array,
 	show: PropTypes.bool,
 	// adding here even when this is not used by Chart, refer to https://github.com/facebook/react/issues/2517

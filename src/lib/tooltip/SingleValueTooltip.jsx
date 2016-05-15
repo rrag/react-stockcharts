@@ -17,8 +17,8 @@ class SingleValueTooltip extends Component {
 
 		var config = first(chartConfig.filter(each => each.id === forChart));
 
-		var xDisplayValue = isDefined(xAccessor(currentItem)) ? xDisplayFormat(xAccessor(currentItem)) : "n/a";
-		var yDisplayValue = isDefined(yAccessor(currentItem)) ? yDisplayFormat(yAccessor(currentItem)) : "n/a";
+		var xDisplayValue = isDefined(currentItem) && isDefined(xAccessor(currentItem)) ? xDisplayFormat(xAccessor(currentItem)) : "n/a";
+		var yDisplayValue = isDefined(currentItem) && isDefined(yAccessor(currentItem)) ? yDisplayFormat(yAccessor(currentItem)) : "n/a";
 
 		var { origin: originProp } = this.props;
 		var origin = d3.functor(originProp);
@@ -41,7 +41,7 @@ class SingleValueTooltip extends Component {
 
 SingleValueTooltip.contextTypes = {
 	chartConfig: PropTypes.array.isRequired,
-	currentItem: PropTypes.object.isRequired,
+	currentItem: PropTypes.object,
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 };

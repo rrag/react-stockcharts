@@ -71,7 +71,7 @@ MouseCoordinates.propTypes = {
 	mouseXY: PropTypes.array,
 	currentCharts: PropTypes.arrayOf(PropTypes.number),
 	chartConfig: PropTypes.array.isRequired,
-	currentItem: PropTypes.object.isRequired,
+	currentItem: PropTypes.object,
 	show: PropTypes.bool,
 	stroke: PropTypes.string,
 	opacity: PropTypes.number,
@@ -127,13 +127,13 @@ MouseCoordinates.drawOnCanvasStatic = (props, ctx, show, xScale, mouseXY, curren
 MouseCoordinates.helper = (props, show, xScale, mouseXY, currentCharts, chartConfig, currentItem) => {
 	var { displayXAccessor, xAccessor, height, width, snapX, xDisplayFormat } = props;
 
+	var displayValue = snapX ? currentItem && displayXAccessor(currentItem) : xScale.invert(x);
+
+	if (!show || !displayValue) return;
+
 	var xValue = xAccessor(currentItem);
 	var x = snapX ? Math.round(xScale(xValue)) : mouseXY[0];
 	var y = mouseXY[1];
-
-	var displayValue = snapX ? displayXAccessor(currentItem) : xScale.invert(x);
-
-	if (!show || !displayValue) return;
 
 	var edges = chartConfig
 		.filter(eachChartConfig => currentCharts.indexOf(eachChartConfig.id) > -1)
@@ -170,7 +170,7 @@ export default pure(MouseCoordinates, {
 	displayXAccessor: PropTypes.func.isRequired,
 	chartCanvasType: PropTypes.string.isRequired,
 	chartConfig: PropTypes.array.isRequired,
-	currentItem: PropTypes.object.isRequired,
+	currentItem: PropTypes.object,
 	currentCharts: PropTypes.arrayOf(PropTypes.number),
 
 	getCanvasContexts: PropTypes.func,

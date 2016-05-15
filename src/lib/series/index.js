@@ -15,6 +15,7 @@ import BollingerSeries from "./BollingerSeries";
 import RSISeries from "./RSISeries";
 import StochasticSeries from "./StochasticSeries";
 import ElderRaySeries from "./ElderRaySeries";
+import VolumeProfileSeries from "./VolumeProfileSeries";
 
 // import ElderImpulseBackground from "./ElderImpulseBackground";
 
@@ -42,6 +43,7 @@ export {
 	RSISeries,
 	StochasticSeries,
 	ElderRaySeries,
+	VolumeProfileSeries,
 	Area,
 	Line,
 	StraightLine,

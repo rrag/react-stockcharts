@@ -15,9 +15,9 @@ class RSITooltip extends Component {
 
 		var yAccessor = calculator.accessor();
 		var config = first(chartConfig.filter(each => each.id === forChart));
-		var rsi = yAccessor(currentItem);
 
-		var value = (isDefined(rsi) && displayFormat(rsi)) || "n/a";
+		var rsi = isDefined(currentItem) && yAccessor(currentItem);
+		var value = (rsi && displayFormat(rsi)) || "n/a";
 
 		var { origin: originProp } = this.props;
 		var origin = d3.functor(originProp);
@@ -38,7 +38,7 @@ class RSITooltip extends Component {
 
 RSITooltip.contextTypes = {
 	chartConfig: PropTypes.array.isRequired,
-	currentItem: PropTypes.object.isRequired,
+	currentItem: PropTypes.object,
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 };

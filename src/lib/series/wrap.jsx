@@ -71,6 +71,12 @@ function wrap(WrappedSeries) {
 			if (chartCanvasType !== "svg" && isDefined(callback)) return null;
 			var style = clip ? { "clipPath": "url(#chart-area-clip)" } : null;
 
+			// Idea: send plotData + 1 row on left + 1 row on right so the chart shows a continuity when pan
+			// Problems:
+			// 		Edge coordinate will not seem consistent
+			// 		yExtents will not be valid any more
+			// 		candle width will not be valid any more
+
 			return (
 				<g style={style}>
 					<WrappedSeries ref="wrappedSeries"

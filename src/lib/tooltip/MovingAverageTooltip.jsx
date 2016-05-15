@@ -63,7 +63,7 @@ class MovingAverageTooltip extends Component {
 			<g transform={`translate(${ ox + x }, ${ oy + y })`} className={className}>
 				{calculators
 					.map((each, idx) => {
-						var yValue = each.accessor()(currentItem);
+						var yValue = currentItem && each.accessor()(currentItem);
 						var options = {
 							maType: each.type(),
 							period: each.windowSize(),
@@ -88,7 +88,7 @@ class MovingAverageTooltip extends Component {
 
 MovingAverageTooltip.contextTypes = {
 	chartConfig: PropTypes.array.isRequired,
-	currentItem: PropTypes.object.isRequired,
+	currentItem: PropTypes.object,
 	height: PropTypes.number.isRequired,
 };
 

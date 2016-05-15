@@ -15,7 +15,7 @@ class StochasticTooltip extends Component {
 		var yAccessor = calculator.accessor();
 		var stroke = calculator.stroke();
 		var config = first(chartConfig.filter(each => each.id === forChart));
-		var stochastic = yAccessor(currentItem);
+		var stochastic = currentItem && yAccessor(currentItem);
 
 		var K = (stochastic && stochastic.K && displayFormat(stochastic.K)) || "n/a";
 		var D = (stochastic && stochastic.D && displayFormat(stochastic.D)) || "n/a";
@@ -45,7 +45,7 @@ class StochasticTooltip extends Component {
 
 StochasticTooltip.contextTypes = {
 	chartConfig: PropTypes.array.isRequired,
-	currentItem: PropTypes.object.isRequired,
+	currentItem: PropTypes.object,
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 };

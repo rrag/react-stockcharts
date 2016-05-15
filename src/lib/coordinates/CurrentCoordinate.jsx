@@ -74,7 +74,7 @@ CurrentCoordinate.propTypes = {
 	chartId: PropTypes.number.isRequired,
 
 	chartConfig: PropTypes.object.isRequired,
-	currentItem: PropTypes.object.isRequired,
+	currentItem: PropTypes.object,
 
 };
 
@@ -131,7 +131,7 @@ CurrentCoordinate.helper = (props, show, xScale, yScale, currentItem) => {
 
 export default pure(CurrentCoordinate, {
 	show: PropTypes.bool.isRequired,
-	currentItem: PropTypes.object.isRequired,
+	currentItem: PropTypes.object,
 	chartConfig: PropTypes.object.isRequired,
 	mouseXY: PropTypes.array, // this is to avoid the flicker
 	canvasOriginX: PropTypes.number,

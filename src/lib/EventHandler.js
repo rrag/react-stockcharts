@@ -57,7 +57,7 @@ class EventHandler extends Component {
 		this.panHappened = false;
 		this.state = {
 			focus: false,
-			currentItem: {},
+			// currentItem: {},
 			show: false,
 			mouseXY: [0, 0],
 			panInProgress: false,

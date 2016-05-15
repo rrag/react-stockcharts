@@ -80,6 +80,7 @@ var INDICATORS = {
 		require("lib/page/ForceIndexIndicatorPage").default,
 		require("lib/page/ElderRayIndicatorPage").default,
 		require("lib/page/ElderImpulseIndicatorPage").default,
+		require("lib/page/VolumeProfilePage").default,
 		require("lib/page/BuyAndSellSignalPage").default,
 	] 
 }

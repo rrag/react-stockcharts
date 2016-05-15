@@ -17,7 +17,7 @@ class MACDTooltip extends Component {
 		var yAccessor = calculator.accessor();
 		var config = first(chartConfig.filter(each => each.id === forChart));
 
-		var macdValue = yAccessor(currentItem);
+		var macdValue = currentItem && yAccessor(currentItem);
 
 		var macd = (macdValue && macdValue.macd && displayFormat(macdValue.macd)) || "n/a";
 		var signal = (macdValue && macdValue.signal && displayFormat(macdValue.signal)) || "n/a";
@@ -49,7 +49,7 @@ class MACDTooltip extends Component {
 
 MACDTooltip.contextTypes = {
 	chartConfig: PropTypes.array.isRequired,
-	currentItem: PropTypes.object.isRequired,
+	currentItem: PropTypes.object,
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 };
