@@ -21,7 +21,7 @@ var VolumeProfilePage = React.createClass({
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser ref="container">
-							{(type) => (<VolumeProfileChart data={this.props.intraDayDiscontinuousData} type={type} />)}
+							{(type) => (<VolumeProfileChart data={this.props.lotsOfData} type={type} />)}
 						</TypeChooser>
 					</Section>
 				</Row>

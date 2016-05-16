@@ -42,6 +42,7 @@ class VolumeProfileChart extends React.Component {
 					margin={{left: 80, right: 80, top:10, bottom: 30}} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50, changeCalculator]}
+					xExtents={[new Date(2014, 9, 1), new Date(2015, 2, 2)]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}>
 				<Chart id={2}
 						yExtents={[d => d.volume]}
@@ -49,7 +50,10 @@ class VolumeProfileChart extends React.Component {
 						height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 
-					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
+					<BarSeries yAccessor={d => d.volume}
+							widthRatio={0.95}
+							opacity={0.3}
+							fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
@@ -65,10 +69,10 @@ class VolumeProfileChart extends React.Component {
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 				</Chart>
-				<MouseCoordinates xDisplayFormat={d3.time.format("%H:%M:%S")} rectWidth={60} />
+				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
 				<EventCapture mouseMove={true} zoom={true} pan={true} />
 				<TooltipContainer>
-					<OHLCTooltip forChart={1} origin={[-40, 0]} xDisplayFormat={d3.time.format("%Y-%m-%d %H:%M:%S")}/>
+					<OHLCTooltip forChart={1} origin={[-40, 0]} />
 					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 15]} 
 						calculators={[ema20, ema50]}/>
 				</TooltipContainer>
