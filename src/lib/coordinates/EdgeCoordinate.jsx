@@ -141,21 +141,21 @@ EdgeCoordinate.drawOnCanvasStatic = (ctx, props) => {
 
 		ctx.beginPath();
 
-    if (edge.orient === 'right') {
-      ctx.lineTo(x, y + 10);
-      ctx.lineTo(x + 10, y);
-      ctx.lineTo(x + 60, y);
-      ctx.lineTo(x + 60, y + 20);
-      ctx.lineTo(x + 10, y + 20);
-    } else if (edge.orient === 'left') {
-      ctx.lineTo(x, y);
-      ctx.lineTo(x + 50, y);
-      ctx.lineTo(x + 60, y + 10);
-      ctx.lineTo(x + 50, y + 20);
-      ctx.lineTo(x, y + 20);
-    } else {
-      ctx.rect(x, y, edge.coordinateBase.rectWidth, edge.coordinateBase.rectHeight);
-    }
+		if (edge.orient === 'right') {
+			ctx.lineTo(x, y + 10);
+			ctx.lineTo(x + 10, y);
+			ctx.lineTo(x + 60, y);
+			ctx.lineTo(x + 60, y + 20);
+			ctx.lineTo(x + 10, y + 20);
+		} else if (edge.orient === 'left') {
+			ctx.lineTo(x, y);
+			ctx.lineTo(x + 50, y);
+			ctx.lineTo(x + 60, y + 10);
+			ctx.lineTo(x + 50, y + 20);
+			ctx.lineTo(x, y + 20);
+		} else {
+			ctx.rect(x, y, edge.coordinateBase.rectWidth, edge.coordinateBase.rectHeight);
+		}
 		ctx.fill();
 
 		ctx.font = `${ edge.coordinate.fontSize }px ${edge.coordinate.fontFamily}`;
