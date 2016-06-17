@@ -33,7 +33,7 @@ VolumeProfileSeries.propTypes = {
 VolumeProfileSeries.defaultProps = {
 	opacity: 0.2,
 	className: "line ",
-	bins: 24,
+	bins: 50,
 	maxProfileWidthPercent: 50,
 	source: d => d.close,
 	volume: d => d.volume,
@@ -43,7 +43,8 @@ VolumeProfileSeries.defaultProps = {
 	orient: "left",
 	fill: ({ type }) =>  type === "up" ? "#6BA583" : "#FF0000",
 	// stroke: ({ type }) =>  type === "up" ? "#6BA583" : "#FF0000",
-	stroke: "none",
+	// stroke: "none",
+	stroke: "#FFFFFF",
 };
 
 VolumeProfileSeries.yAccessor = (d) => d.close;
@@ -59,7 +60,7 @@ function helper(props, yScale, plotData) {
 		var rollup = d3.nest()
 			.key(d => d.direction)
 			.sortKeys(orient === "right" ? d3.descending : d3.ascending)
-			.rollup(leaves => d3.sum(leaves, d => d.volume))
+			.rollup(leaves => d3.sum(leaves, d => d.volume));
 
 		var values = histogram(plotData)
 		var volumeInBins = values
@@ -67,7 +68,7 @@ function helper(props, yScale, plotData) {
 			.map(arr => rollup.entries(arr));
 
 		var volumeValues = volumeInBins
-			.map(each => d3.sum(each.map(d => d.values)))
+			.map(each => d3.sum(each.map(d => d.values)));
 
 		var base = xScale => head(xScale.range());
 
@@ -78,7 +79,7 @@ function helper(props, yScale, plotData) {
 
 		var xScale = d3.scale.linear()
 			.domain([0, d3.max(volumeValues)])
-			.range([start, end])
+			.range([start, end]);
 
 		var rects = d3.zip(values, volumeInBins)
 			.map(([d, volumes]) => {
@@ -152,10 +153,7 @@ VolumeProfileSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 			if (stroke2 !== "none") ctx.stroke();
 		}
 
-
 	});
-
-
 }
 
 export default wrap(VolumeProfileSeries);
