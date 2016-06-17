@@ -20,11 +20,21 @@ class EdgeCoordinate extends Component {
 				x2={edge.line.x2} y2={edge.line.y2} />;
 		}
 		if (isDefined(edge.coordinateBase)) {
-			coordinateBase = <rect key={1} className="react-stockchart-text-background"
-				x={edge.coordinateBase.edgeXRect}
-				y={edge.coordinateBase.edgeYRect}
-				height={edge.coordinateBase.rectHeight} width={edge.coordinateBase.rectWidth}
-				fill={edge.coordinateBase.fill}  opacity={edge.coordinateBase.opacity} />;
+			var path = edge.orient === "left"
+				? "M0,0L0,20L50,20L60,10L50,0L0,0L0,0"
+				: "M0,10L10,20L60,20L60,0L10,0L0,10";
+
+				coordinateBase = edge.orient === "left" || edge.orient === "right"
+				? <g transform={`translate(${edge.coordinateBase.edgeXRect},${edge.coordinateBase.edgeYRect})`}>
+						<path d={path} key={1} className="react-stockchart-text-background"
+							height={edge.coordinateBase.rectHeight} width={edge.coordinateBase.rectWidth}
+							fill={edge.coordinateBase.fill} opacity={edge.coordinateBase.opacity} />
+					</g>
+				: <rect key={1} className="react-stockchart-text-background"
+						x={edge.coordinateBase.edgeXRect}
+						y={edge.coordinateBase.edgeYRect}
+						height={edge.coordinateBase.rectHeight} width={edge.coordinateBase.rectWidth}
+						fill={edge.coordinateBase.fill} opacity={edge.coordinateBase.opacity} />;
 
 			coordinate = (<text key={2} x={edge.coordinate.edgeXText}
 				y={edge.coordinate.edgeYText}
@@ -112,7 +122,7 @@ EdgeCoordinate.helper = (props) => {
 		opacity: lineOpacity, stroke: lineStroke, x1, y1, x2, y2
 	};
 	return {
-		coordinateBase, coordinate, line
+		coordinateBase, coordinate, line, orient
 	};
 };
 
@@ -126,8 +136,26 @@ EdgeCoordinate.drawOnCanvasStatic = (ctx, props) => {
 	if (isDefined(edge.coordinateBase)) {
 		ctx.fillStyle = hexToRGBA(edge.coordinateBase.fill, edge.coordinateBase.opacity);
 
+    var x = edge.coordinateBase.edgeXRect;
+    var y = edge.coordinateBase.edgeYRect;
+
 		ctx.beginPath();
-		ctx.rect(edge.coordinateBase.edgeXRect, edge.coordinateBase.edgeYRect, edge.coordinateBase.rectWidth, edge.coordinateBase.rectHeight);
+
+		if (edge.orient === 'right') {
+			ctx.lineTo(x, y + 10);
+			ctx.lineTo(x + 10, y);
+			ctx.lineTo(x + 60, y);
+			ctx.lineTo(x + 60, y + 20);
+			ctx.lineTo(x + 10, y + 20);
+		} else if (edge.orient === 'left') {
+			ctx.lineTo(x, y);
+			ctx.lineTo(x + 50, y);
+			ctx.lineTo(x + 60, y + 10);
+			ctx.lineTo(x + 50, y + 20);
+			ctx.lineTo(x, y + 20);
+		} else {
+			ctx.rect(x, y, edge.coordinateBase.rectWidth, edge.coordinateBase.rectHeight);
+		}
 		ctx.fill();
 
 		ctx.font = `${ edge.coordinate.fontSize }px ${edge.coordinate.fontFamily}`;
