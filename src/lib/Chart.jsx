@@ -62,8 +62,9 @@ Chart.defaultProps = {
 	origin: [0, 0],
 	padding: 0,
 	yScale: d3.scale.linear(),
-	yMousePointerRectWidth: 60,
+	yMousePointerRectWidth: 50,
 	yMousePointerRectHeight: 20,
+	yMousePointerArrowWidth: 10,
 	flipYScale: false,
 };
 

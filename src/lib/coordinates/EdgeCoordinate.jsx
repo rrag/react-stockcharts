@@ -20,20 +20,23 @@ class EdgeCoordinate extends Component {
 				x2={edge.line.x2} y2={edge.line.y2} />;
 		}
 		if (isDefined(edge.coordinateBase)) {
+
+			var { rectWidth, rectHeight, arrowWidth } = edge.coordinateBase;
+
 			var path = edge.orient === "left"
-				? "M0,0L0,20L50,20L60,10L50,0L0,0L0,0"
-				: "M0,10L10,20L60,20L60,0L10,0L0,10";
+				? `M0,0L0,${ rectHeight }L${ rectWidth },${ rectHeight }L${ rectWidth + arrowWidth },10L${ rectWidth },0L0,0L0,0`
+				: `M0,${ arrowWidth }L${ arrowWidth },${ rectHeight }L${ rectWidth + arrowWidth },${ rectHeight }L${ rectWidth + arrowWidth },0L${ arrowWidth },0L0,${ arrowWidth }`;
 
 				coordinateBase = edge.orient === "left" || edge.orient === "right"
 				? <g transform={`translate(${edge.coordinateBase.edgeXRect},${edge.coordinateBase.edgeYRect})`}>
 						<path d={path} key={1} className="react-stockchart-text-background"
-							height={edge.coordinateBase.rectHeight} width={edge.coordinateBase.rectWidth}
+							height={rectHeight} width={rectWidth}
 							fill={edge.coordinateBase.fill} opacity={edge.coordinateBase.opacity} />
 					</g>
 				: <rect key={1} className="react-stockchart-text-background"
 						x={edge.coordinateBase.edgeXRect}
 						y={edge.coordinateBase.edgeYRect}
-						height={edge.coordinateBase.rectHeight} width={edge.coordinateBase.rectWidth}
+						height={rectHeight} width={rectWidth}
 						fill={edge.coordinateBase.fill} opacity={edge.coordinateBase.opacity} />;
 
 			coordinate = (<text key={2} x={edge.coordinate.edgeXText}
@@ -68,7 +71,6 @@ EdgeCoordinate.propTypes = {
 	opacity: PropTypes.number,
 	fontFamily: PropTypes.string.isRequired,
 	fontSize: PropTypes.number.isRequired,
-	rectHeight: PropTypes.number.isRequired,
 };
 
 EdgeCoordinate.defaultProps = {
@@ -82,26 +84,25 @@ EdgeCoordinate.defaultProps = {
 	fontSize: 13,
 	lineStroke: "#000000",
 	lineOpacity: 0.3,
-	rectHeight: 20,
 };
 
 
 EdgeCoordinate.helper = (props) => {
-	var { coordinate: displayCoordinate, show, rectWidth, type, orient, edgeAt, hideLine } = props;
-	var { fill, opacity, fontFamily, fontSize, textFill, lineStroke, lineOpacity, rectHeight } = props;
+	var { coordinate: displayCoordinate, show, type, orient, edgeAt, hideLine } = props;
+	var { fill, opacity, fontFamily, fontSize, textFill, lineStroke, lineOpacity, rectWidth, rectHeight, arrowWidth } = props;
 	var { x1, y1, x2, y2 } = props;
 
 	if (!show) return null;
 
-	rectWidth = rectWidth ? rectWidth : (type === "horizontal") ? 60 : 100;
+	// rectWidth = rectWidth ? rectWidth : (type === "horizontal") ? 60 : 100;
 
 	var edgeXRect, edgeYRect, edgeXText, edgeYText;
 
 	if (type === "horizontal") {
 
-		edgeXRect = (orient === "right") ? edgeAt + 1 : edgeAt - rectWidth - 1;
+		edgeXRect = (orient === "right") ? edgeAt + 1 : edgeAt - rectWidth - arrowWidth - 1;
 		edgeYRect = y1 - (rectHeight / 2);
-		edgeXText = (orient === "right") ? edgeAt + (rectWidth / 2) : edgeAt - (rectWidth / 2);
+		edgeXText = (orient === "right") ? edgeAt + (rectWidth / 2) + arrowWidth: edgeAt - (rectWidth / 2) - arrowWidth;
 		edgeYText = y1;
 	} else {
 		edgeXRect = x1 - (rectWidth / 2);
@@ -112,12 +113,13 @@ EdgeCoordinate.helper = (props) => {
 	var coordinateBase, coordinate, textAnchor = "middle";
 	if (isDefined(displayCoordinate)) {
 		coordinateBase = {
-			edgeXRect, edgeYRect, rectHeight, rectWidth, fill, opacity
+			edgeXRect, edgeYRect, rectHeight, rectWidth, fill, opacity, arrowWidth
 		};
 		coordinate = {
 			edgeXText, edgeYText, textAnchor, fontFamily, fontSize, textFill, displayCoordinate
 		};
 	}
+
 	var line = hideLine ? undefined : {
 		opacity: lineOpacity, stroke: lineStroke, x1, y1, x2, y2
 	};
@@ -134,27 +136,31 @@ EdgeCoordinate.drawOnCanvasStatic = (ctx, props) => {
 	if (edge === null) return;
 
 	if (isDefined(edge.coordinateBase)) {
+		var { rectWidth, rectHeight, arrowWidth } = edge.coordinateBase;
+
 		ctx.fillStyle = hexToRGBA(edge.coordinateBase.fill, edge.coordinateBase.opacity);
 
-    var x = edge.coordinateBase.edgeXRect;
-    var y = edge.coordinateBase.edgeYRect;
+		var x = edge.coordinateBase.edgeXRect;
+		var y = edge.coordinateBase.edgeYRect;
 
 		ctx.beginPath();
 
-		if (edge.orient === 'right') {
-			ctx.lineTo(x, y + 10);
-			ctx.lineTo(x + 10, y);
-			ctx.lineTo(x + 60, y);
-			ctx.lineTo(x + 60, y + 20);
-			ctx.lineTo(x + 10, y + 20);
-		} else if (edge.orient === 'left') {
-			ctx.lineTo(x, y);
-			ctx.lineTo(x + 50, y);
-			ctx.lineTo(x + 60, y + 10);
-			ctx.lineTo(x + 50, y + 20);
-			ctx.lineTo(x, y + 20);
+		if (edge.orient === "right") {
+			ctx.moveTo(x, y + rectHeight / 2);
+			ctx.lineTo(x + arrowWidth, y);
+			ctx.lineTo(x + rectWidth + arrowWidth, y);
+			ctx.lineTo(x + rectWidth + arrowWidth, y + rectHeight);
+			ctx.lineTo(x + arrowWidth, y + rectHeight);
+			ctx.closePath();
+		} else if (edge.orient === "left") {
+			ctx.moveTo(x, y);
+			ctx.lineTo(x + rectWidth, y);
+			ctx.lineTo(x + rectWidth + arrowWidth, y + rectHeight / 2);
+			ctx.lineTo(x + rectWidth, y + rectHeight);
+			ctx.lineTo(x, y + rectHeight);
+			ctx.closePath();
 		} else {
-			ctx.rect(x, y, edge.coordinateBase.rectWidth, edge.coordinateBase.rectHeight);
+			ctx.rect(x, y, rectWidth, rectHeight);
 		}
 		ctx.fill();
 

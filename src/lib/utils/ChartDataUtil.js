@@ -57,8 +57,8 @@ export function getNewChartConfig(innerDimension, children) {
 			var { id, origin, padding, yExtents: yExtentsProp, yScale, flipYScale } = each.props;
 			var { width, height, availableWidth, availableHeight } = getDimensions(innerDimension, each.props);
 			var { yMousePointerDisplayLocation: at, yMousePointerDisplayFormat: yDisplayFormat } = each.props;
-			var { yMousePointerRectWidth: rectWidth, yMousePointerRectHeight: rectHeight } = each.props;
-			var mouseCoordinates = { at, yDisplayFormat, rectHeight, rectWidth };
+			var { yMousePointerRectWidth: rectWidth, yMousePointerRectHeight: rectHeight, yMousePointerArrowWidth: arrowWidth } = each.props;
+			var mouseCoordinates = { at, yDisplayFormat, rectHeight, rectWidth, arrowWidth };
 			var yExtents = (Array.isArray(yExtentsProp) ? yExtentsProp : [yExtentsProp]).map(d3.functor);
 			// console.log(yExtentsProp, yExtents);
 			return {

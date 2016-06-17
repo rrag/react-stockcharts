@@ -42,7 +42,7 @@ CrossHair.propTypes = {
 };
 
 CrossHair.defaultProps = {
-	yAxisPad: 5
+	yAxisPad: 0
 };
 
 CrossHair.helper = (props) => {

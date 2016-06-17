@@ -48,14 +48,9 @@ class MouseCoordinates extends Component {
 		if (chartCanvasType !== "svg") return null;
 
 		var pointer = MouseCoordinates.helper(this.props, show, xScale, mouseXY, currentCharts, chartConfig, currentItem);
-
 		if (!pointer) return null;
 
-		return <CrossHair height={pointer.height} width={pointer.width} mouseXY={pointer.mouseXY}
-					xDisplayValue={pointer.xDisplayValue} edges={pointer.edges}
-					stroke={stroke} opacity={opacity} textStroke={textStroke}
-					textBGFill={textBGFill} textBGopacity={textBGopacity}
-					fontFamily={fontFamily} fontSize={fontSize} />;
+		return <CrossHair {...pointer} />;
 	}
 }
 
