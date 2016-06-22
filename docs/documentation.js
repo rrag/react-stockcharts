@@ -81,6 +81,7 @@ var INDICATORS = {
 		require("lib/page/ElderRayIndicatorPage").default,
 		require("lib/page/ElderImpulseIndicatorPage").default,
 		require("lib/page/VolumeProfilePage").default,
+		require("lib/page/VolumeProfileBySessionPage").default,
 		require("lib/page/BuyAndSellSignalPage").default,
 	] 
 }
