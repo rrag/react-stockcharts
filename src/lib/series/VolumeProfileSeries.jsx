@@ -46,7 +46,7 @@ VolumeProfileSeries.defaultProps = {
 	// stroke: "none",
 	stroke: "#FFFFFF",
 	partialStartOK: false,
-	partialEndOK: false,
+	partialEndOK: true,
 };
 
 function helper(props, realXScale, yScale, plotData) {
