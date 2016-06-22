@@ -41,8 +41,8 @@ class EdgeIndicator extends Component {
 
 		var edge = EdgeIndicator.helper(this.props, xScale, chartConfig.yScale, plotData);
 
-
 		if (isNotDefined(edge)) return null;
+
 		return <EdgeCoordinate
 			className="react-stockcharts-edge-coordinate"
 				{...edge} />;

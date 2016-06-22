@@ -156,18 +156,18 @@ class ChartCanvas extends Component {
 		} else if (!shallowEqual(this.props.xExtents, nextProps.xExtents)) {
 			if (process.env.NODE_ENV !== "production") console.log("xExtents changed");
 			// since the xExtents changed update plotData, xScale, filterData to state
-			let { plotData, xScale, filterData, lastItem } = calculateState(nextProps);
-			this.setState({ plotData, xScale, filterData, lastItem, dataAltered: false });
+			let { plotData, xScale, xAccessor, filterData, lastItem } = calculateState(nextProps);
+			this.setState({ plotData, xScale, xAccessor, filterData, lastItem, dataAltered: false });
 		} else if (this.props.data !== nextProps.data) {
 			if (process.env.NODE_ENV !== "production") console.log("data is changed but seriesName did not");
 			// this means there are more points pushed/removed or existing points are altered
-			let { xScale, filterData, lastItem } = calculateFullData(nextProps);
-			this.setState({ xScale, filterData, lastItem, dataAltered: true });
+			let { xScale, xAccessor, filterData, lastItem } = calculateFullData(nextProps);
+			this.setState({ xScale, xAccessor, filterData, lastItem, dataAltered: true });
 		} else if (!shallowEqual(this.props.calculator, nextProps.calculator)) {
 			if (process.env.NODE_ENV !== "production") console.log("calculator changed");
 			// data did not change but calculator changed, so update only the filterData to state
-			let { filterData, lastItem } = calculateFullData(nextProps);
-			this.setState({ filterData, lastItem, dataAltered: false });
+			let { xAccessor, filterData, lastItem } = calculateFullData(nextProps);
+			this.setState({ xAccessor, filterData, lastItem, dataAltered: false });
 		} else {
 			if (process.env.NODE_ENV !== "production")
 				console.log("Trivial change, may be width/height or type changed, but that does not matter");

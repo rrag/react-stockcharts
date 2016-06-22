@@ -160,7 +160,7 @@ function discontinuousTimeScaleProvider(data,
 	return {
 		data: finalData,
 		xScale,
-		xAccessor: d => indexAccessor(d).index,
+		xAccessor: d => d && indexAccessor(d).index,
 		displayXAccessor: dateAccessor,
 	}
 }

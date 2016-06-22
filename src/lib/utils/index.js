@@ -106,9 +106,9 @@ export function head(array, accessor) {
 		var value;
 		for (var i = 0; i < array.length; i++) {
 			value = array[i];
-			if (isDefined(accessor(value))) break;
+			if (isDefined(accessor(value))) return value;
 		}
-		return value;
+		return undefined;
 	}
 	return array ? array[0] : undefined;
 }
@@ -120,9 +120,9 @@ export function last(array, accessor) {
 		var value;
 		for (var i = array.length - 1; i >= 0; i--) {
 			value = array[i];
-			if (isDefined(accessor(value))) break;
+			if (isDefined(accessor(value))) return value;
 		}
-		return value;
+		return undefined;
 	}
 	var length = array ? array.length : 0;
 	return length ? array[length - 1] : undefined;

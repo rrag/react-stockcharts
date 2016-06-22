@@ -5,7 +5,7 @@ import React, { PropTypes, Component } from "react";
 
 import wrap from "./wrap";
 
-import { identity, hexToRGBA, first, last } from "../utils";
+import { identity, hexToRGBA, first, last, isDefined } from "../utils";
 
 
 class StackedBarSeries extends Component {
@@ -198,6 +198,7 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 	var data = stack(layers);
 
 	var bars = d3.merge(data)
+			.filter(d => isDefined(d.y))
 			.map(d => {
 				// let baseValue = yScale.invert(getBase(xScale, yScale, d.datum));
 				let y = yScale(d.y + (d.y0 || 0));

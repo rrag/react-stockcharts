@@ -22,16 +22,6 @@ class CandleStickChartWithEdge extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
 
-		/* 
-			Q. Why does the rule of xScale not apply for these calculators?
-			A. Because changing only the calculator array is not considered as a trigger to
-			   reset the chart. Updating the calculators will result in the recalculation
-			   of these, but the domain of the chart is retained.
-			   To avoid recalculation of the calculators either
-			   1. move them out of render, either outside of the react component
-			   or
-			   2. in the componentWillMount and set them in the state (recommended)
-		*/
 		var ema20 = ema()
 			.id(0)
 			.windowSize(20)
@@ -44,30 +34,30 @@ class CandleStickChartWithEdge extends React.Component {
 			.merge((d, c) => {d.ema50 = c})
 			.accessor(d => d.ema50);
 
-		var smaVolume50 = sma()
+		var smaVolume70 = sma()
 			.id(3)
-			.windowSize(50)
+			.windowSize(70)
 			.source(d => d.volume)
-			.merge((d, c) => {d.smaVolume50 = c})
-			.accessor(d => d.smaVolume50);
+			.merge((d, c) => {d.smaVolume70 = c})
+			.accessor(d => d.smaVolume70);
 
 		return (
 			<ChartCanvas width={width} height={400}
 					margin={{left: 90, right: 90, top:10, bottom: 30}} type={type}
 					seriesName="MSFT"
-					data={data} calculator={[ema20, ema50, smaVolume50]}
+					data={data} calculator={[ema20, ema50, smaVolume70]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
-					xExtents={[new Date(2015, 0, 1), new Date(2015, 5, 8)]}>
+					xExtents={[new Date(2009, 0, 1), new Date(2009, 2, 1)]}>
 				<Chart id={2}
-						yExtents={[d => d.volume, smaVolume50.accessor()]}
+						yExtents={[d => d.volume, smaVolume70.accessor()]}
 						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 						height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
-					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
+					<AreaSeries yAccessor={smaVolume70.accessor()} stroke={smaVolume70.stroke()} fill={smaVolume70.fill()}/>
 
-					<CurrentCoordinate id={0} yAccessor={smaVolume50.accessor()} fill={smaVolume50.stroke()} />
+					<CurrentCoordinate id={0} yAccessor={smaVolume70.accessor()} fill={smaVolume70.stroke()} />
 					<CurrentCoordinate id={1} yAccessor={d => d.volume} fill="#9B0A47" />
 
 					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
@@ -75,9 +65,9 @@ class CandleStickChartWithEdge extends React.Component {
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={d => d.volume} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
 					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
-						yAccessor={smaVolume50.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume50.fill()}/>
+						yAccessor={smaVolume70.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume70.fill()}/>
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
-						yAccessor={smaVolume50.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume50.fill()}/>
+						yAccessor={smaVolume70.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume70.fill()}/>
 				</Chart>
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
