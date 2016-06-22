@@ -45,7 +45,7 @@ export default function() {
 		for (var i = 0; i < data.length; i++) {
 			var d = data[i];
 			// console.log(d, accumulateTill(d));
-			if (accumulateTill(d)) {
+			if (accumulateTill(d, i)) {
 				if (accumulatedWindow.length > 0) response.push(accumulator(accumulatedWindow, i, accumulatorIdx++));
 				accumulatedWindow = [value(d)];
 			} else {

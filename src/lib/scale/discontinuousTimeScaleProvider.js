@@ -126,14 +126,11 @@ function discontinuousTimeScaleProvider(data,
 	// console.log(interval, interval1);
 
 	var map = d3.map()
-	var idx = [];
 	for (var i = 0; i < data.length - 1; i++) {
 
 		var nextDate = dateAccessor(data[i + 1]);
 		var nowDate = dateAccessor(data[i]);
 		var diff = nextDate - nowDate;
-
-		idx.push({ i, date: nowDate });
 
 		if (map.has(diff)) {
 			var count = parseInt(map.get(diff), 10) + 1;
@@ -142,7 +139,6 @@ function discontinuousTimeScaleProvider(data,
 			map.set(diff, 1)
 		}
 	};
-	idx.push({ i, date: dateAccessor(last(data)) });
 
 	var entries = map.entries().sort((a, b) => a.value < b.value);
 
@@ -155,20 +151,17 @@ function discontinuousTimeScaleProvider(data,
 
 	var xScale = financeDiscontinuousScale(index, interval);
 
+	// console.log(index);
 	var mergedData = zipper()
-		.combine((d, idx) => {
-			var newD = indexMutator(d, idx.i);
-			newD.displayX = idx.date;
-			return newD;
-		})
+		.combine(indexMutator);
 
-	var finalData = mergedData(data, idx);
+	var finalData = mergedData(data, index);
 
 	return {
 		data: finalData,
 		xScale,
-		xAccessor: indexAccessor,
-		displayXAccessor: d => d.displayX,
+		xAccessor: d => indexAccessor(d).index,
+		displayXAccessor: dateAccessor,
 	}
 }
 

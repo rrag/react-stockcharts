@@ -5,7 +5,7 @@ import d3 from "d3";
 
 import wrap from "./wrap";
 
-import { head, last, hexToRGBA, accumulatingWindow, identity } from "../utils";
+import { head, last, hexToRGBA } from "../utils";
 
 class VolumeProfileSeries extends Component {
 	render() {
@@ -44,18 +44,12 @@ VolumeProfileSeries.defaultProps = {
 	// stroke: ({ type }) =>  type === "up" ? "#6BA583" : "#FF0000",
 	// stroke: "none",
 	stroke: "#FFFFFF",
+
 };
 
 function helper(props, yScale, plotData) {
-		var { xAccessor, yAccessor, stroke, type, width, sessionStart } = props;
+		var { xAccessor, yAccessor, stroke, type, width } = props;
 		var { bins, maxProfileWidthPercent, source, volume, absoluteChange, orient, fill, stroke } = props;
-
-		// console.log(head(plotData));
-		var sessions = accumulatingWindow()
-			.accumulateTill((d, i) => {
-				return sessionStart({ d,  })
-			})
-			.accumulator(identity);
 
 		var histogram = d3.layout.histogram()
 			.value(source)
@@ -129,6 +123,7 @@ VolumeProfileSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 
 	var rects = helper(props, yScale, plotData)
 
+	console.log(rects)
 	rects.forEach(each => {
 		var { x, y, height, w1, w2, stroke1, stroke2, fill1, fill2 } = each
 
