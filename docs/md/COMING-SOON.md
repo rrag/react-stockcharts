@@ -1,21 +1,22 @@
 ## v0.5.x
 
-1. Annotations for events [#54](https://github.com/rrag/react-stockcharts/issues/54)
-1. Buy & sell signals (using annotations?)
-1. Labels [#42](https://github.com/rrag/react-stockcharts/issues/42) (using annotations?)
-1. Mouse following tooltip [#50](https://github.com/rrag/react-stockcharts/issues/50)
-1. Create intra day scale
+1. Support React 15 ![Done][DONE]
+1. Annotations for events [#54](https://github.com/rrag/react-stockcharts/issues/54) ![Done][DONE]
+1. Buy & sell signals (using annotations?) ![Done][DONE]
+1. Labels [#42](https://github.com/rrag/react-stockcharts/issues/42) (using annotations?) ![Done][DONE]
+1. Mouse following tooltip [#50](https://github.com/rrag/react-stockcharts/issues/50) ![Done][DONE]
+1. Create intra day scale ![Done][DONE]
 1. Interactive indicators should be able to subscribe to more events (drag, zoom, pan)
-1. Zoom on y too
+1. update `MouseCoordinates` & `EdgeIndicator` [#74](https://github.com/rrag/react-stockcharts/issues/74#issuecomment-226934832), [#77](https://github.com/rrag/react-stockcharts/issues/77)
 1. [Envelope](http://www.investopedia.com/terms/e/envelope.asp?optm=sa_v2)
 1. [ATR Trailing stop](http://www.incrediblecharts.com/indicators/atr_average_true_range_trailing_stops.php)
 1. [Chandelier Exit](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:chandelier_exit)
-1. Use stateless components in `RSISeries`, `StochasticSeries` to address react/prop-types lint error
+1. Zoom on y too (Tentative)
 1. Automatic Support & Resistance trendlines (Tentative)
 1. Add a playground to see live updates (Tentative)
 
 #### New Chart types
-1. Volume Profile [#60](https://github.com/rrag/react-stockcharts/issues/60)
+1. Volume Profile [#60](https://github.com/rrag/react-stockcharts/issues/60) - WIP
 1. Line break
 1. Max Drawdown [#7](https://github.com/rrag/react-stockcharts/issues/7)
 1. Better Renko/Mean Renko (Tentative)
@@ -44,3 +45,5 @@ Guess this can be `1.0.0`
 
 
 [and more....](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators)
+
+[DONE]: /images/check-mark.png "Done"

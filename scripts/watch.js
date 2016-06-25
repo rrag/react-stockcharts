@@ -23,5 +23,6 @@ server.listen(watchConfig.devServer.port, watchConfig.devServer.host, function(e
 	console.log("[webpack-dev-server]", `http://${watchConfig.devServer.host}:${watchConfig.devServer.port}/index.html`);
 });
 
+server.app.use(serveStatic("docs"));
 server.app.use(serveStatic("build"));
 server.app.use(serveStatic("node_modules"));
