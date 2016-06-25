@@ -62,7 +62,7 @@ class VolumeProfileChart extends React.Component {
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 
-					<VolumeProfileSeries bySession orient="right" />
+					<VolumeProfileSeries bySession orient="right" showSessionBackground />
 					<CandlestickSeries />
 					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
 					<LineSeries yAccessor={ema50.accessor()} stroke={ema50.stroke()}/>

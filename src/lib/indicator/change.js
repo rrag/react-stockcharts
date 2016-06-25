@@ -18,7 +18,7 @@ export default function() {
 		.windowSize(2)
 		.source(d => d.close)
 		.accumulator(([prev, curr]) => {
-			var absoluteChange = prev - curr;
+			var absoluteChange = curr - prev;
 			var percentChange = absoluteChange * 100 / prev;
 			return { absoluteChange, percentChange };
 		});
