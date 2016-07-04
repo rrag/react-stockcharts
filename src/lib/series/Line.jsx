@@ -9,10 +9,10 @@ import { first } from "../utils";
 
 class Line extends Component {
 	render() {
-		var { stroke, fill, className } = this.props;
+		var { stroke, strokeWidth, fill, className } = this.props;
 
 		className = className.concat((stroke) ? "" : " line-stroke");
-		return <path d={Line.getPath(this.props)} stroke={stroke} fill={fill} className={className}/>;
+		return <path d={Line.getPath(this.props)} stroke={stroke} strokeWidth={strokeWidth} fill={fill} className={className}/>;
 	}
 }
 
@@ -24,6 +24,7 @@ Line.propTypes = {
 	yAccessor: PropTypes.func.isRequired,
 	plotData: PropTypes.array.isRequired,
 	stroke: PropTypes.string,
+	strokeWidth: PropTypes.number,
 	fill: PropTypes.string,
 };
 
@@ -31,6 +32,7 @@ Line.defaultProps = {
 	className: "line ",
 	fill: "none",
 	stroke: "black",
+	strokeWidth: 1,
 	defined: d => !isNaN(d),
 };
 
@@ -58,8 +60,9 @@ function segment(points, ctx) {
 }
 
 Line.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { xAccessor, yAccessor, stroke, defined } = props;
+	var { xAccessor, yAccessor, stroke, strokeWidth, defined } = props;
 
+	ctx.lineWidth = strokeWidth;
 	ctx.strokeStyle = stroke;
 
 	var points = [];
