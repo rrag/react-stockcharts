@@ -10,7 +10,7 @@ import wrap from "./wrap";
 class AreaSeries extends Component {
 	render() {
 		var { props } = this;
-		var { className, xScale, yScale, xAccessor, yAccessor, plotData, type, stroke, fill, baseAt } = props;
+		var { className, xScale, yScale, xAccessor, yAccessor, plotData, type, stroke, strokeWidth, fill, baseAt } = props;
 
 		var { opacity } = props;
 
@@ -21,6 +21,7 @@ class AreaSeries extends Component {
 					xAccessor={xAccessor} yAccessor={yAccessor}
 					plotData={plotData}
 					stroke={stroke} fill="none"
+					strokeWidth={strokeWidth}
 					type={type} />
 				<Area
 					xScale={xScale} yScale={yScale}
@@ -36,6 +37,7 @@ class AreaSeries extends Component {
 
 AreaSeries.propTypes = {
 	stroke: PropTypes.string,
+	strokeWidth: PropTypes.number,
 	fill: PropTypes.string.isRequired,
 	opacity: PropTypes.number.isRequired,
 	className: PropTypes.string,
@@ -43,6 +45,7 @@ AreaSeries.propTypes = {
 
 AreaSeries.defaultProps = {
 	stroke: "#4682B4",
+	strokeWidth: 1,
 	opacity: 0.5,
 	fill: "#4682B4",
 	className: "react-stockcharts-area"
