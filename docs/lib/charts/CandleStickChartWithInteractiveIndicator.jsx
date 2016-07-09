@@ -20,7 +20,7 @@ var { macd, ema, sma } = ReStock.indicator;
 
 var { fitWidth } = ReStock.helper;
 
-var { TrendLine } = ReStock.interactive;
+var { Interactive, TrendLine } = ReStock.interactive;
 
 class CandlestickChart extends React.Component {
 	constructor(props) {
@@ -91,12 +91,6 @@ class CandlestickChart extends React.Component {
 					<LineSeries yAccessor={ema26.accessor()} stroke={ema26.stroke()}/>
 					<LineSeries yAccessor={ema12.accessor()} stroke={ema12.stroke()}/>
 
-					<TrendLine ref="trend"
-						id={0} enabled={true}
-						type="LINE"
-						onStart={e => console.log("Start Event:", e)}
-						onComplete={e => console.log("Complete Event:", e)}
-						snap={true} snapTo={d => [d.high, d.low]} />
 
 					<CurrentCoordinate id={1} yAccessor={ema26.accessor()} fill={ema26.stroke()} />
 					<CurrentCoordinate id={2} yAccessor={ema12.accessor()} fill={ema12.stroke()} />
@@ -121,7 +115,17 @@ class CandlestickChart extends React.Component {
 					<MACDSeries calculator={macdCalculator} />
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} />
+				<EventCapture mouseMove={true} zoom={true} pan={true}>
+					<Interactive forChart={1}>
+						<TrendLine ref="trend"
+							enabled={true}
+							type="LINE"
+							onStart={e => console.log("Start Event:", e)}
+							onComplete={e => console.log("Complete Event:", e)}
+							snap={true} snapTo={d => [d.high, d.low]} />
+					</Interactive>
+				</EventCapture>
+
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
 					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 15]}

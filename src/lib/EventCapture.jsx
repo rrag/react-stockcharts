@@ -41,47 +41,73 @@ class EventCapture extends Component {
 		this.initialPinch = {};
 		this.mouseInteraction = true;
 	}
+	getChildContext() {
+		return {
+			eventMeta: this.eventMeta,
+		}
+	}
 	componentWillMount() {
 		if (this.context.onFocus) this.context.onFocus(this.props.defaultFocus);
 	}
-	handleEnter() {
+	handleEnter(e) {
+		var { eventMeta } = this.props;
+		this.eventMeta = eventMeta(e, ["enter"]);
+
+		console.log("HERE")
 		if (this.context.onMouseEnter) {
-			this.context.onMouseEnter();
+			this.context.onMouseEnter(e);
 		}
 	}
-	handleLeave() {
-		if (this.context.onMouseLeave) {
-			this.context.onMouseLeave();
-		}
+	handleLeave(e) {
+		var { eventMeta } = this.props;
+		var { height, width } = this.context;
+		this.eventMeta = eventMeta(e, ["exit"]);
+
+		var [x, y] = mousePosition(e);
+		// if (!(x >= 0 && x <= width && y >=0 && y <= height))
+			if (this.context.onMouseLeave)
+				this.context.onMouseLeave(e);
 	}
 	handleWheel(e) {
-		if (this.props.zoom
-				&& this.context.onZoom
+		var { zoom, onZoom, zoomMultiplier, eventMeta } = this.props;
+		if (zoom && this.context.onZoom
 				&& this.context.focus) {
-			e.stopPropagation();
+			// e.stopPropagation();
 			e.preventDefault();
-			var zoomDir = e.deltaY > 0 ? this.props.zoomMultiplier : -this.props.zoomMultiplier;
+			var zoomDir = e.deltaY > 0 ? zoomMultiplier : -zoomMultiplier;
 			var newPos = mousePosition(e);
-			this.context.onZoom(zoomDir, newPos);
-			if (this.props.onZoom) {
-				this.props.onZoom(e);
+
+			this.eventMeta = eventMeta(e, ["zoom"]);
+
+			this.context.onZoom(zoomDir, newPos, e);
+
+			if (onZoom) {
+				onZoom(e);
 			}
 		}
 	}
 	handleMouseMove(e) {
-		if (this.mouseInteraction && this.context.onMouseMove && this.props.mouseMove) {
-			if (!this.context.panInProgress) {
-				var newPos = mousePosition(e);
-				this.context.onMouseMove(newPos, "mouse", e);
-			}
+		var { eventMeta } = this.props;
+		this.eventMeta = eventMeta(e, ["mousemove"]);
+
+		if (this.mouseInteraction 
+				&& this.context.onMouseMove
+				&& this.props.mouseMove
+				&& !this.context.panInProgress) {
+			var newPos = mousePosition(e);
+			this.context.onMouseMove(newPos, "mouse", e);
 		}
 	}
 	handleMouseDown(e) {
 		var mouseEvent = e || d3.event;
-		var { pan } = this.props;
+		var { pan, eventMeta } = this.props;
+
+		this.eventMeta = eventMeta(mouseEvent, ["mousedown"]);
+
 		var { onPanStart, focus, onFocus, xScale } = this.context;
 		if (this.mouseInteraction && pan && onPanStart) {
 			var mouseXY = mousePosition(mouseEvent);
+			this.panStart = mouseXY;
 
 			var dx = mouseEvent.pageX - mouseXY[0],
 				dy = mouseEvent.pageY - mouseXY[1];
@@ -105,14 +131,19 @@ class EventCapture extends Component {
 	}
 	handlePan() {
 		// console.log("handlePan")
+		var e = d3.event;
+
+		var { eventMeta } = this.props;
 		var { pan: panEnabled, onPan: panListener } = this.props;
 		var { deltaXY: dxdy, xScale, onPan } = this.context;
 
-		var e = d3.event;
 		var newPos = [e.pageX - dxdy[0], e.pageY - dxdy[1]];
+
+		this.eventMeta = eventMeta(e, ["pan"]);
 		// console.log("moved from- ", startXY, " to ", newPos);
 		if (this.mouseInteraction && panEnabled && onPan) {
-			onPan(newPos, xScale.domain());
+
+			onPan(newPos, xScale.domain(), e);
 			if (panListener) {
 				panListener(e);
 			}
@@ -121,10 +152,17 @@ class EventCapture extends Component {
 	handlePanEnd() {
 		var e = d3.event;
 
-		var { pan: panEnabled } = this.props;
+		var { pan: panEnabled, eventMeta } = this.props;
 		var { deltaXY: dxdy, onPanEnd } = this.context;
 
-		var newPos = [e.pageX - dxdy[0], e.pageY - dxdy[1]];
+
+		var [startX, startY] = this.panStart;
+		var [x, y] = [e.pageX - dxdy[0], e.pageY - dxdy[1]];
+
+		var eventType = startX === x && startY === y ? ["click"] : [];
+
+		this.eventMeta = eventMeta(e, ["mouseup"].concat(eventType));
+		this.panStart = null;
 
 		var captureDOM = this.refs.capture;
 
@@ -134,7 +172,7 @@ class EventCapture extends Component {
 			d3.select(win)
 				.on(mousemove, null)
 				.on(mouseup, null);
-			onPanEnd(newPos, e);
+			onPanEnd([x, y], e);
 		}
 		// e.preventDefault();
 	}
@@ -242,19 +280,21 @@ class EventCapture extends Component {
 		var className = this.context.panInProgress ? "react-stockcharts-grabbing-cursor" : "react-stockcharts-crosshair-cursor";
 
 		return (
-			<rect ref="capture"
-				className={className}
-				width={this.context.width} height={this.context.height} style={{ opacity: 0 }}
-				onMouseEnter={this.handleEnter}
-				onMouseLeave={this.handleLeave}
-				onMouseMove={this.handleMouseMove}
-				onWheel={this.handleWheel}
-				onMouseDown={this.handleMouseDown}
-				onContextMenu={this.handleRightClick}
-				onTouchStart={this.handleTouchStart}
-				onTouchEnd={this.handleTouchEnd}
-				onTouchMove={this.handleTouchMove}
-				/>
+			<g>
+				<rect ref="capture"
+					className={className}
+					width={this.context.width} height={this.context.height} style={{ opacity: 0 }}
+					onMouseEnter={this.handleEnter}
+					onMouseLeave={this.handleLeave}
+					onMouseMove={this.handleMouseMove}
+					onWheel={this.handleWheel}
+					onMouseDown={this.handleMouseDown}
+					onContextMenu={this.handleRightClick}
+					onTouchStart={this.handleTouchStart}
+					onTouchEnd={this.handleTouchEnd}
+					onTouchMove={this.handleTouchMove} />
+				{this.props.children}
+			</g>
 		);
 	}
 }
@@ -279,6 +319,7 @@ EventCapture.defaultProps = {
 	panSpeedMultiplier: 1,
 	defaultFocus: false,
 	useCrossHairStyle: true,
+	eventMeta: (e, type) => { var { button, shiftKey } = e; return { button, shiftKey, type }; },
 };
 
 EventCapture.contextTypes = {
@@ -301,5 +342,9 @@ EventCapture.contextTypes = {
 	onPanEnd: PropTypes.func,
 	onFocus: PropTypes.func,
 };
+
+EventCapture.childContextTypes = {
+	eventMeta: PropTypes.object,
+}
 
 export default EventCapture;

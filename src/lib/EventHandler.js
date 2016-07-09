@@ -203,7 +203,7 @@ class EventHandler extends Component {
 	}
 
 	getChildContext() {
-		var { showingInterval } = this.state;
+		// var { showingInterval } = this.state;
 		// var { fullData } = this.props;
 		return {
 			plotData: this.state.plotData,
@@ -213,7 +213,7 @@ class EventHandler extends Component {
 			currentItem: this.state.currentItem,
 			show: this.state.show,
 			mouseXY: this.state.mouseXY,
-			interval: this.state.showingInterval,
+			// interval: this.state.showingInterval,
 			width: this.props.dimensions.width,
 			height: this.props.dimensions.height,
 			chartCanvasType: this.props.type,
@@ -279,7 +279,7 @@ class EventHandler extends Component {
 		// console.log(this.state.canvases, this.props.canvasContexts())
 		return this.state.canvases || this.props.canvasContexts();
 	}
-	handleMouseEnter() {
+	handleMouseEnter(e) {
 		// if type === svg remove state.canvases
 		// if type !== svg get canvases and set in state if state.canvases is not present already
 		/* var { type, canvasContexts } = this.props;
@@ -302,22 +302,10 @@ class EventHandler extends Component {
 		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
 		// optimization oportunity do not change currentItem if it is not the same as prev
 
-		var { interactiveState/* , callbackList*/ } = inputType === "mouse"
-			? this.triggerCallback(
-				"mousemove",
-				{ ...this.state, currentItem, currentCharts },
-				this.state.interactiveState,
-				e)
-			: this.triggerCallback(
-				"touch",
-				{ ...this.state, currentItem, currentCharts },
-				this.state.interactiveState,
-				e);
-
 		var contexts = this.getCanvasContexts();
 		if (contexts && contexts.mouseCoord) {
 			clearCanvas([contexts.mouseCoord]);
-			this.clearInteractiveCanvas();
+			// this.clearInteractiveCanvas();
 		}
 		// console.log(interactiveState === this.state.interactiveState);
 		// if (interactiveState !== this.state.interactiveState) this.clearInteractiveCanvas();
@@ -326,11 +314,11 @@ class EventHandler extends Component {
 			mouseXY,
 			currentItem,
 			currentCharts,
-			interactiveState,
+			// interactiveState,
 		});
 	}
 
-	handleMouseLeave() {
+	handleMouseLeave(e) {
 		var contexts = this.getCanvasContexts();
 
 		this.clearInteractiveCanvas();
@@ -490,7 +478,7 @@ class EventHandler extends Component {
 			currentItem,
 		};
 	}
-	handlePan(mousePosition/* , startDomain*/) {
+	handlePan(mousePosition, e) {
 		this.panHappened = true;
 		var state = this.panHelper(mousePosition);
 
@@ -500,7 +488,7 @@ class EventHandler extends Component {
 		if (this.props.type !== "svg") {
 			var { axes: axesCanvasContext, mouseCoord: mouseContext } = this.getCanvasContexts();
 			var { mouseXY, chartConfig, plotData, currentItem, xScale, currentCharts } = state;
-			var { show } = this.state;
+			var { show, interactiveState } = this.state;
 			var { canvasDrawCallbackList } = this;
 
 			requestAnimationFrame(() => {
@@ -540,7 +528,15 @@ class EventHandler extends Component {
 
 				canvasDrawCallbackList
 					.filter(each => each.type === "annotation")
-					.forEach(each => each.draw({ xScale, chartConfig, plotData }));
+					.forEach(each => each.draw({
+						xScale,
+						chartConfig,
+						plotData,
+						mouseXY,
+						currentCharts,
+						currentItem,
+						interactiveState,
+					}));
 
 			});
 		} else {
@@ -649,7 +645,7 @@ EventHandler.propTypes = {
 	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 	xAccessor: PropTypes.func.isRequired,
 	xScale: PropTypes.func.isRequired,
-	interval: PropTypes.string,
+	// interval: PropTypes.string,
 	dimensions: PropTypes.object,
 	postCalculator: PropTypes.func.isRequired,
 	canvasContexts: PropTypes.func.isRequired,
@@ -663,7 +659,7 @@ EventHandler.propTypes = {
 		})
 	]).isRequired,
 	direction: PropTypes.oneOf([-1, 1]).isRequired,
-	showingInterval: PropTypes.string,
+	// showingInterval: PropTypes.string,
 };
 
 EventHandler.childContextTypes = {
@@ -696,7 +692,7 @@ EventHandler.childContextTypes = {
 	currentItem: PropTypes.object,
 	show: PropTypes.bool,
 	mouseXY: PropTypes.array,
-	interval: PropTypes.string,
+	// interval: PropTypes.string,
 	currentCharts: PropTypes.array,
 	mainChart: PropTypes.number,
 	width: PropTypes.number.isRequired,

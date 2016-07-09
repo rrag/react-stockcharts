@@ -2,8 +2,7 @@
 
 import React, { PropTypes, Component } from "react";
 
-import pure from "../pure";
-// import makeInteractive from "./makeInteractive";
+import makeInteractive from "./makeInteractive";
 import { head, last, hexToRGBA, noop } from "../utils";
 
 function getYValue(values, currentValue) {
@@ -16,7 +15,7 @@ function getYValue(values, currentValue) {
 class TrendLine extends Component {
 	constructor(props) {
 		super(props);
-		// this.onMousemove = this.onMousemove.bind(this);
+		this.onMousemove = this.onMousemove.bind(this);
 		this.onClick = this.onClick.bind(this);
 	}
 	removeLast(interactive) {
@@ -32,6 +31,20 @@ class TrendLine extends Component {
 			return { ...interactive, start: null };
 		}
 		return interactive;
+	}
+	onMousemove({ chartId, xAccessor }, interactive, { mouseXY, currentItem, currentCharts, chartConfig }, e) {
+		var { enabled, snapTo, snap, shouldDisableSnap } = this.props;
+		if (enabled) {
+			var { yScale } = chartConfig;
+
+			var yValue = (snap && !shouldDisableSnap(e))
+				? getYValue(snapTo(currentItem), yScale.invert(mouseXY[1]))
+				: yScale.invert(mouseXY[1]);
+			var xValue = xAccessor(currentItem);
+
+			return { interactive: { ...interactive, currentPos: [xValue, yValue], } };
+		}
+		return { interactive };
 	}
 	onClick({ chartId, xAccessor }, interactive, { mouseXY, currentItem, currentChartstriggerCallback, chartConfig }, e) {
 		var { onStart, onComplete, enabled, snapTo, snap, shouldDisableSnap } = this.props;
@@ -64,16 +77,15 @@ class TrendLine extends Component {
 		return { interactive };
 	}
 	render() {
-		var { enabled, show, id, eventMeta } = this.props;
-		var { xScale, chartCanvasType, currentItem, chartConfig, plotData, xAccessor, interactiveState, show } = this.props;
+		var { xScale, chartCanvasType, chartConfig, plotData, xAccessor, interactive, enabled, show } = this.props;
+
+		if (chartCanvasType !== "svg") return null;
 
 		var { yScale } = chartConfig;
-		var { interactive } = getInteractiveState(this.props, { trends: [] });
+		var { currentPos } = interactive;
 
 		var { currentPositionStroke, currentPositionStrokeWidth, currentPositionOpacity, currentPositionRadius } = this.props;
 		var { stroke, opacity, type } = this.props;
-
-		var currentPos = currentPosition(this.props);
 
 		var circle = (currentPos && enabled && show)
 			? <circle cx={xScale(currentPos[0])} cy={yScale(currentPos[1])}
@@ -84,8 +96,7 @@ class TrendLine extends Component {
 				r={currentPositionRadius} />
 			: null;
 
-		console.log(eventMeta && eventMeta.type)
-		var lines = helper(plotData, type, xAccessor, interactive);
+		var lines = TrendLine.helper(plotData, type, xAccessor, interactive);
 		return (
 			<g>
 				{circle}
@@ -97,35 +108,40 @@ class TrendLine extends Component {
 		);
 	}
 }
+TrendLine.drawOnCanvas = (props,
+		interactive,
+		ctx,
+		{ show, xScale, plotData, chartConfig }) => {
 
-function currentPosition(props) {
-	var { enabled, snapTo, snap, shouldDisableSnap } = props;
-	var { eventMeta, xAccessor, mouseXY, currentItem, chartConfig } = props;
-	if (enabled && event && currentItem) {
-		var { yScale } = chartConfig;
+	var { currentPos } = interactive;
 
-		var yValue = (snap && !shouldDisableSnap(eventMeta))
-			? getYValue(snapTo(currentItem), yScale.invert(mouseXY[1]))
-			: yScale.invert(mouseXY[1]);
-		var xValue = xAccessor(currentItem);
+	var { type, xAccessor } = props;
+	var lines = TrendLine.helper(plotData, type, xAccessor, interactive);
 
-		return [xValue, yValue];
+	var { yScale } = chartConfig;
+	// console.error(show);
+
+	var { enabled, currentPositionStroke, currentPositionStrokeWidth, currentPositionOpacity, currentPositionRadius } = props;
+	if (currentPos && enabled && show) {
+		ctx.strokeStyle = hexToRGBA(currentPositionStroke, currentPositionOpacity);
+		ctx.lineWidth = currentPositionStrokeWidth;
+		ctx.beginPath();
+		ctx.arc(xScale(currentPos[0]), yScale(currentPos[1]), currentPositionRadius, 0, 2 * Math.PI, false);
+		ctx.stroke();
 	}
-}
+	ctx.lineWidth = 1;
+	ctx.strokeStyle = hexToRGBA(props.stroke, props.opacity);
 
-function getInteractiveState(props, initialState) {
-	var { interactiveState, id } = props;
-	// console.log(interactiveState);
-	var state = interactiveState.filter(each => each.id === id);
-	var response = { interactive: initialState };
-	if (state.length > 0) {
-		response = state[0];
-	}
-	// console.log(interactiveState, response.interactive, this.props.id);
-	return response;
-}
+	lines.forEach(each => {
+		ctx.beginPath();
+		ctx.moveTo(xScale(each.x1), yScale(each.y1));
+		ctx.lineTo(xScale(each.x2), yScale(each.y2));
+		// console.log(each);
+		ctx.stroke();
+	});
+};
 
-function helper(plotData, type, xAccessor, interactive/* , chartConfig */) {
+TrendLine.helper = (plotData, type, xAccessor, interactive/* , chartConfig */) => {
 	var { currentPos, start, trends } = interactive;
 	var temp = trends;
 	if (start && currentPos) {
@@ -201,22 +217,4 @@ TrendLine.defaultProps = {
 	currentPositionRadius: 4,
 };
 
-export default pure(TrendLine, {
-	interactiveState: PropTypes.array.isRequired,
-	show: PropTypes.bool,
-	callbackForCanvasDraw: PropTypes.func.isRequired,
-	getAllCanvasDrawCallback: PropTypes.func,
-	chartConfig: PropTypes.object.isRequired,
-	mouseXY: PropTypes.array,
-	currentItem: PropTypes.object,
-	currentCharts: PropTypes.arrayOf(PropTypes.number),
-	eventMeta: PropTypes.object,
-
-	chartCanvasType: PropTypes.string,
-	xScale: PropTypes.func.isRequired,
-	plotData: PropTypes.array.isRequired,
-	xAccessor: PropTypes.func.isRequired,
-
-	setInteractiveState: PropTypes.func.isRequired,
-	displayXAccessor: PropTypes.func.isRequired,
-});
+export default makeInteractive(TrendLine, ["click", "mousemove"], { trends: [] });

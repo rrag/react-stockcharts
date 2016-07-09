@@ -50,7 +50,7 @@ class Annotate extends Component {
 
 		return (
 			<g className={className}>
-				{data.map(d => <Annotation key={d.idx}
+				{data.map((d, idx) => <Annotation key={idx}
 						{...usingProps}
 						xScale={xScale}
 						yScale={yScale}

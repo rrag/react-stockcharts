@@ -3,6 +3,7 @@ import FibonacciRetracement from "./FibonacciRetracement";
 import ClickCallback from "./ClickCallback";
 import Brush from "./Brush";
 import makeInteractive from "./makeInteractive";
+import Interactive from "./Interactive";
 
 export {
 	TrendLine,
@@ -10,4 +11,5 @@ export {
 	ClickCallback,
 	Brush,
 	makeInteractive,
+	Interactive,
 };
