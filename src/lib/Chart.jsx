@@ -73,7 +73,6 @@ Chart.contextTypes = {
 	height: PropTypes.number.isRequired,
 	chartConfig: PropTypes.array,
 	margin: PropTypes.object.isRequired,
-	interactiveState: PropTypes.array.isRequired,
 	currentItem: PropTypes.object,
 	mouseXY: PropTypes.array,
 	show: PropTypes.bool,

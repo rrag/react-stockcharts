@@ -53,7 +53,6 @@ class EventCapture extends Component {
 		var { eventMeta } = this.props;
 		this.eventMeta = eventMeta(e, ["enter"]);
 
-		console.log("HERE")
 		if (this.context.onMouseEnter) {
 			this.context.onMouseEnter(e);
 		}
@@ -278,9 +277,9 @@ class EventCapture extends Component {
 	}
 	render() {
 		var className = this.context.panInProgress ? "react-stockcharts-grabbing-cursor" : "react-stockcharts-crosshair-cursor";
-
+		var clipStyle = { "clipPath": "url(#chart-area-clip)" };
 		return (
-			<g>
+			<g style={clipStyle}>
 				<rect ref="capture"
 					className={className}
 					width={this.context.width} height={this.context.height} style={{ opacity: 0 }}

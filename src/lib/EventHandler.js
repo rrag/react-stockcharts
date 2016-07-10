@@ -51,17 +51,19 @@ class EventHandler extends Component {
 		this.unsubscribe = this.unsubscribe.bind(this);
 		this.pinchCoordinates = this.pinchCoordinates.bind(this);
 		this.setInteractiveState = this.setInteractiveState.bind(this);
+		this.getInteractiveState = this.getInteractiveState.bind(this);
 
 		this.subscriptions = [];
 		this.canvasDrawCallbackList = [];
 		this.panHappened = false;
+		this.interactiveState = [];
+
 		this.state = {
 			focus: false,
 			// currentItem: {},
 			show: false,
 			mouseXY: [0, 0],
 			panInProgress: false,
-			interactiveState: [],
 			currentCharts: [],
 			receivedProps: 0,
 		};
@@ -221,12 +223,12 @@ class EventHandler extends Component {
 			xAccessor: this.props.xAccessor,
 			displayXAccessor: this.props.displayXAccessor,
 			margin: this.props.margin,
-			interactiveState: this.state.interactiveState,
 
 			callbackForCanvasDraw: this.pushCallbackForCanvasDraw,
 			getAllCanvasDrawCallback: this.getAllCanvasDrawCallback,
 			subscribe: this.subscribe,
 			unsubscribe: this.unsubscribe,
+			getInteractiveState: this.getInteractiveState,
 			setInteractiveState: this.setInteractiveState,
 			getCanvasContexts: this.getCanvasContexts,
 			onMouseMove: this.handleMouseMove,
@@ -314,6 +316,7 @@ class EventHandler extends Component {
 			mouseXY,
 			currentItem,
 			currentCharts,
+			// show: true,
 			// interactiveState,
 		});
 	}
@@ -534,8 +537,7 @@ class EventHandler extends Component {
 						plotData,
 						mouseXY,
 						currentCharts,
-						currentItem,
-						interactiveState,
+						currentItem
 					}));
 
 			});
@@ -568,12 +570,7 @@ class EventHandler extends Component {
 
 		this.clearCanvasDrawCallbackList();
 
-		var { interactiveState, callbackList } = this.panHappened
-			? this.triggerCallback("panend", state, this.state.interactiveState, e)
-			: this.triggerCallback("click", state, this.state.interactiveState, e);
-
 		this.clearThreeCanvas();
-		if (interactiveState !== this.state.interactive) this.clearInteractiveCanvas();
 
 		// console.log(interactiveState[0].interactive);
 		this.setState({
@@ -581,52 +578,23 @@ class EventHandler extends Component {
 			show: this.state.show,
 			panInProgress: false,
 			panStartXScale: null,
-			interactiveState,
-		}, () => {
-			if (isDefined(callbackList)) callbackList.forEach(callback => callback());
 		});
 	}
-	setInteractiveState(interactiveState) {
-		this.clearInteractiveCanvas();
+	setInteractiveState(id, chartId, interactive) {
+		var everyThingElse = this.interactiveState
+			.filter(each => !(each.id === id && each.chartId === chartId));
 
-		this.setState({
-			interactiveState,
-		});
+		this.interactiveState = everyThingElse.concat({ id, chartId, interactive });
 	}
-	triggerCallback(eventType, state, interactiveState, event) {
-		var { currentCharts, chartConfig } = state;
-		var subscribers = this.subscriptions.filter(each => each.eventType === eventType);
-		var delta = subscribers.map(each => {
-			var singleChartConfig = chartConfig.filter(eachItem => eachItem.id === each.forChart)[0];
-			return {
-				callback: each.callback,
-				forChart: each.forChart,
-				chartConfig: singleChartConfig
-			};
-		})
-		.filter(each => currentCharts.indexOf(each.forChart) >= -1)
-		.map(({ callback, chartConfig }) => callback({ ...state, chartConfig }, event))
-		.filter(each => each !== false);
+	getInteractiveState(forChart, id, initialState) {
+		var state = this.interactiveState
+			.filter(each => each.chartId === forChart)
+			.filter(each => each.id === id);
 
-		// console.log(delta);
-		if (delta.length === 0) return { interactiveState };
-
-		var i = 0, j = 0, added = false;
-		var newInteractiveState = interactiveState.slice(0);
-		var callbackList = [];
-		for (i = 0; i < delta.length; i++) {
-			var each = delta[i];
-			for (j = 0; j < newInteractiveState.length; j++) {
-				if (each.id === newInteractiveState[j].id) {
-					newInteractiveState[j] = { id: each.id, interactive: each.interactive };
-					if (each.callback) callbackList.push(each.callback);
-					added = true;
-				}
-			}
-			if (!added) newInteractiveState.push(each);
-			added = false;
-		}
-		return { interactiveState: newInteractiveState, callbackList };
+		var response = (state.length > 0)
+			? response = state[0].interactive
+			: initialState
+		return response;
 	}
 	handleFocus(focus) {
 		// console.log(focus);interactive
@@ -701,10 +669,10 @@ EventHandler.childContextTypes = {
 
 	margin: PropTypes.object.isRequired,
 	dataTransform: PropTypes.array,
-	interactiveState: PropTypes.array.isRequired,
 
 	subscribe: PropTypes.func,
 	unsubscribe: PropTypes.func,
+	getInteractiveState: PropTypes.func.isRequired,
 	setInteractiveState: PropTypes.func,
 	callbackForCanvasDraw: PropTypes.func,
 	getAllCanvasDrawCallback: PropTypes.func,

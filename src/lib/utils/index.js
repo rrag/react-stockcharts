@@ -168,6 +168,10 @@ export function clearCanvas(canvasList) {
 	});
 }
 
+export function capitalizeFirst(str) {
+	return str.charAt(0).toUpperCase() + str.substring(1);
+}
+
 export function hexToRGBA(inputHex, opacity) {
 	var hex = inputHex.replace("#", "");
 	if (inputHex.indexOf("#") > -1 && (hex.length === 3 || hex.length === 6)) {

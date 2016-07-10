@@ -3,8 +3,8 @@
 import React, { PropTypes, Component } from "react";
 
 import pure from "../pure";
-// import makeInteractive from "./makeInteractive";
-import { head, last, hexToRGBA, noop } from "../utils";
+import makeInteractive from "./makeInteractive";
+import { isDefined, head, last, hexToRGBA, noop } from "../utils";
 
 function getYValue(values, currentValue) {
 	var diff = values
@@ -16,7 +16,7 @@ function getYValue(values, currentValue) {
 class TrendLine extends Component {
 	constructor(props) {
 		super(props);
-		// this.onMousemove = this.onMousemove.bind(this);
+		this.onMousemove = this.onMousemove.bind(this);
 		this.onClick = this.onClick.bind(this);
 	}
 	removeLast(interactive) {
@@ -33,50 +33,76 @@ class TrendLine extends Component {
 		}
 		return interactive;
 	}
-	onClick({ chartId, xAccessor }, interactive, { mouseXY, currentItem, currentChartstriggerCallback, chartConfig }, e) {
+	onMousemove(state) {
+		var {
+			xScale,
+			plotData,
+			mouseXY,
+			currentCharts,
+			currentItem,
+			chartConfig,
+			interactiveState,
+			eventMeta,
+		} = state;
+
+		var { enabled, show, eventMeta } = this.props;
+		var { yScale } = chartConfig;
+		var currentPos = currentPosition(this.props, { eventMeta, mouseXY, currentItem, yScale });
+
+		return { ...interactiveState, currentPos };
+	}
+	onClick(state) {
+		var {
+			xScale,
+			plotData,
+			mouseXY,
+			currentCharts,
+			currentItem,
+			chartConfig,
+			interactiveState,
+			eventMeta,
+		} = state;
+
 		var { onStart, onComplete, enabled, snapTo, snap, shouldDisableSnap } = this.props;
+		var { xAccessor } = this.props;
 
 		if (enabled) {
-			var { start, trends } = interactive;
+			var { start, trends } = interactiveState;
 
 			var { yScale } = chartConfig;
+			var [xValue, yValue] = xy(snapTo, snap, shouldDisableSnap, xAccessor, eventMeta, currentItem, mouseXY, yScale)
 
-			var yValue = (snap && !shouldDisableSnap(e))
-				? getYValue(snapTo(currentItem), yScale.invert(mouseXY[1]))
-				: yScale.invert(mouseXY[1]);
-			var xValue = xAccessor(currentItem);
-			if (start) {
+			if (isDefined(start)) {
 				return {
-					interactive: {
-						...interactive,
-						start: null,
-						trends: trends.concat({ start, end: [xValue, yValue] }),
-					},
-					callback: onComplete.bind(null, { currentItem, point: [xValue, yValue] }, e),
+					...interactiveState,
+					start: null,
+					trends: trends.concat({ start, end: [xValue, yValue] }),
 				};
-			} else if (e.button === 0) {
+			} else if (eventMeta.button === 0) {
 				return {
-					interactive: { ...interactive, start: [xValue, yValue], },
-					callback: onStart.bind(null, { currentItem, point: [xValue, yValue] }, e),
+					...interactiveState,
+					start: [xValue, yValue],
 				};
 			}
 		}
-		return { interactive };
+		return interactiveState;
 	}
 	render() {
+
 		var { enabled, show, id, eventMeta } = this.props;
 		var { xScale, chartCanvasType, currentItem, chartConfig, plotData, xAccessor, interactiveState, show } = this.props;
 
 		var { yScale } = chartConfig;
-		var { interactive } = getInteractiveState(this.props, { trends: [] });
+
+		// var { interactive } = getInteractiveState(this.props, { trends: [] });
 
 		var { currentPositionStroke, currentPositionStrokeWidth, currentPositionOpacity, currentPositionRadius } = this.props;
 		var { stroke, opacity, type } = this.props;
 
-		var currentPos = currentPosition(this.props);
+		var { currentPos } = interactiveState
 
 		var circle = (currentPos && enabled && show)
-			? <circle cx={xScale(currentPos[0])} cy={yScale(currentPos[1])}
+			? <circle className="react-stockcharts-avoid-interaction" cx={xScale(currentPos[0])} cy={yScale(currentPos[1])}
 				stroke={currentPositionStroke}
 				opacity={currentPositionOpacity}
 				fill="none"
@@ -84,33 +110,44 @@ class TrendLine extends Component {
 				r={currentPositionRadius} />
 			: null;
 
-		console.log(eventMeta && eventMeta.type)
-		var lines = helper(plotData, type, xAccessor, interactive);
+		var lines = helper(plotData, type, xAccessor, interactiveState);
+		var className = enabled ? "react-stockcharts-avoid-interaction" : "";
 		return (
-			<g>
+			<g className={className}>
 				{circle}
 				{lines
-				.map((coords, idx) =>
-					<line key={idx} stroke={stroke} opacity={opacity} x1={xScale(coords.x1)} y1={yScale(coords.y1)}
-						x2={xScale(coords.x2)} y2={yScale(coords.y2)} />)}
+					.map((coords, idx) => {
+						var x1 = xScale(coords.x1)
+						var y1 = yScale(coords.y1)
+						var x2 = xScale(coords.x2)
+						var y2 = yScale(coords.y2)
+						return (<g key={idx}>
+							<line stroke={stroke} opacity={opacity}
+								x1={x1} y1={y1} x2={x2} y2={y2}/>
+							<circle cx={x1} cy={y1} r={4} />
+							<circle cx={x2} cy={y2} r={4} />
+						</g>)
+					})
+				}
 			</g>
 		);
 	}
 }
 
-function currentPosition(props) {
-	var { enabled, snapTo, snap, shouldDisableSnap } = props;
-	var { eventMeta, xAccessor, mouseXY, currentItem, chartConfig } = props;
+function currentPosition({ enabled, snapTo, snap, shouldDisableSnap, xAccessor }, { eventMeta, mouseXY, currentItem, yScale }) {
 	if (enabled && event && currentItem) {
-		var { yScale } = chartConfig;
-
-		var yValue = (snap && !shouldDisableSnap(eventMeta))
-			? getYValue(snapTo(currentItem), yScale.invert(mouseXY[1]))
-			: yScale.invert(mouseXY[1]);
-		var xValue = xAccessor(currentItem);
-
-		return [xValue, yValue];
+		
+		return xy(snapTo, snap, shouldDisableSnap, xAccessor, eventMeta, currentItem, mouseXY, yScale)
 	}
+}
+
+function xy(snapTo, snap, shouldDisableSnap, xAccessor, eventMeta, currentItem, mouseXY, yScale) {
+	var yValue = (snap && !shouldDisableSnap(eventMeta))
+		? getYValue(snapTo(currentItem), yScale.invert(mouseXY[1]))
+		: yScale.invert(mouseXY[1]);
+	var xValue = xAccessor(currentItem);
+
+	return [xValue, yValue];
 }
 
 function getInteractiveState(props, initialState) {
@@ -201,6 +238,8 @@ TrendLine.defaultProps = {
 	currentPositionRadius: 4,
 };
 
+export default makeInteractive(TrendLine, { trends: [] })
+/*
 export default pure(TrendLine, {
 	interactiveState: PropTypes.array.isRequired,
 	show: PropTypes.bool,
@@ -219,4 +258,4 @@ export default pure(TrendLine, {
 
 	setInteractiveState: PropTypes.func.isRequired,
 	displayXAccessor: PropTypes.func.isRequired,
-});
+});*/

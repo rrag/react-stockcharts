@@ -19,6 +19,7 @@
     "react-dom": "^0.14.0 || ^15.0.0"
   },
   "devDependencies": {
+    "asyncawait": "^1.0.6",
     "autoprefixer-loader": "^3.2.0",
     "babel-cli": "^6.6.5",
     "babel-core": "^6.4.5",
@@ -36,6 +37,7 @@
     "eslint-plugin-react": "^5.0.1",
     "file-loader": "^0.8.5",
     "html-loader": "^0.4.0",
+    "jsdom": "^9.4.1",
     "json-loader": "^0.5.4",
     "modernizr": "^3.3.1",
     "ncp": "^2.0.0",
@@ -44,6 +46,7 @@
     "react": "^15.0.0",
     "react-dom": "^15.0.0",
     "remarkable-loader": "^0.1.0",
+    "request-promise": "^3.0.0",
     "rimraf": "^2.5.1",
     "sass-loader": "^3.1.2",
     "serve-static": "^1.10.2",

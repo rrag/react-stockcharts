@@ -39,9 +39,11 @@ class CandlestickChart extends React.Component {
 		switch (keyCode) {
 			case 46: { // DEL
 				this.refs.trend.getWrappedComponent().removeLast();
+				break;
 			}
 			case 27: { // ESC
 				this.refs.trend.getWrappedComponent().terminate();
+				break;
 			}
 		}
 	}
@@ -115,15 +117,14 @@ class CandlestickChart extends React.Component {
 					<MACDSeries calculator={macdCalculator} />
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
+
 				<EventCapture mouseMove={true} zoom={true} pan={true}>
-					<Interactive forChart={1}>
-						<TrendLine ref="trend"
-							enabled={true}
-							type="LINE"
-							onStart={e => console.log("Start Event:", e)}
-							onComplete={e => console.log("Complete Event:", e)}
-							snap={true} snapTo={d => [d.high, d.low]} />
-					</Interactive>
+					<TrendLine forChart={1} id={1} ref="trend"
+						enabled={true}
+						type="LINE"
+						onStart={e => console.log("Start Event:", e)}
+						onComplete={e => console.log("Complete Event:", e)}
+						snap={true} snapTo={d => [d.high, d.low]} />
 				</EventCapture>
 
 				<TooltipContainer>

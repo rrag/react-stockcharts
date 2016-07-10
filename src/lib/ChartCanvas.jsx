@@ -101,6 +101,9 @@ function getCursorStyle(children) {
 		cursor: pointer;
 	}`;
 	var tooltipStyle = `
+	.react-stockcharts-avoid-interaction {
+  		pointer-events: none;
+	}
 	.react-stockcharts-default-cursor {
 		cursor: default;
 	}
