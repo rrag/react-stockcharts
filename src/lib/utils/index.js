@@ -34,6 +34,14 @@ export function getClosestItemIndexes2(array, value, accessor) {
 	return { left, right };
 }
 
+export function d3Window(node) {
+	var d3win = node && (node.ownerDocument && node.ownerDocument.defaultView || node.document && node || node.defaultView);
+	return d3win;
+}
+
+export const MOUSEMOVE = "mousemove.pan"
+export const MOUSEUP = "mouseup.pan";
+
 export function getClosestItemIndexes(array, value, accessor, log) {
 	var lo = 0, hi = array.length - 1;
 	while (hi - lo > 1) {

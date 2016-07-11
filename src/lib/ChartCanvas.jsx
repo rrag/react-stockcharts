@@ -192,11 +192,6 @@ class ChartCanvas extends Component {
 				<CanvasContainer ref="canvases" width={width} height={height} type={type} zIndex={zIndex}/>
 				<svg className={className} width={width} height={height} style={{ position: "absolute", zIndex: (zIndex + 5) }}>
 					{cursor}
-					<defs>
-						<clipPath id="chart-area-clip">
-							<rect x="0" y="0" width={dimensions.width} height={dimensions.height} />
-						</clipPath>
-					</defs>
 					<g transform={`translate(${margin.left + 0.5}, ${margin.top + 0.5})`}>
 						<EventHandler ref="chartContainer"
 							{...props}

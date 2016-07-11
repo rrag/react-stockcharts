@@ -3,14 +3,7 @@
 import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
-import { mousePosition, touchPosition } from "./utils";
-
-var mousemove = "mousemove.pan", mouseup = "mouseup.pan";
-
-function d3Window(node) {
-	var d3win = node && (node.ownerDocument && node.ownerDocument.defaultView || node.document && node || node.defaultView);
-	return d3win;
-}
+import { mousePosition, touchPosition, d3Window, MOUSEMOVE, MOUSEUP } from "./utils";
 
 function getTouchProps(touch) {
 	if (!touch) return {};
@@ -115,8 +108,8 @@ class EventCapture extends Component {
 
 			var win = d3Window(captureDOM);
 			d3.select(win)
-				.on(mousemove, this.handlePan)
-				.on(mouseup, this.handlePanEnd);
+				.on(MOUSEMOVE, this.handlePan)
+				.on(MOUSEUP, this.handlePanEnd);
 
 			onPanStart(xScale.domain(), mouseXY, [dx, dy]);
 		} else {
@@ -169,8 +162,8 @@ class EventCapture extends Component {
 
 		if (this.mouseInteraction && panEnabled && onPanEnd) {
 			d3.select(win)
-				.on(mousemove, null)
-				.on(mouseup, null);
+				.on(MOUSEMOVE, null)
+				.on(MOUSEUP, null);
 			onPanEnd([x, y], e);
 		}
 		// e.preventDefault();
