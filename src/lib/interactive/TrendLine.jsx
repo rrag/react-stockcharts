@@ -116,18 +116,46 @@ class TrendLine extends Component {
 			.on(MOUSEUP, this.handleEdgeDrop.bind(this, side, idx));
 	}
 	handleEdgeDrag(side, idx) {
-		console.log("DRAG", side, idx)
+		var { mouseXY, chartConfig, xScale } = this.props;
+		var { yScale } = chartConfig;
+		var [x, y] = mouseXY;
+
+		var xValue = xScale.invert(x);
+		var yValue = yScale.invert(y);
+
+		if (side === "left") {
+			this.setState({
+				override: {
+					index: idx,
+					x1: xValue,
+					y1: yValue,
+				}
+			})
+		} else {
+			this.setState({
+				override: {
+					index: idx,
+					x2: xValue,
+					y2: yValue,
+				}
+			})
+		}
+
+		// console.log("DRAG", side, idx, mouseXY)
 	}
 	handleEdgeDrop(side, idx) {
-		console.log("DROP", side, idx)
+		// console.log("DROP", side, idx)
 
 		var captureDOM = this.refs[`${side}_${idx}`];
+
+		this.setState({
+			override: null
+		})
 
 		var win = d3Window(captureDOM);
 		d3.select(win)
 			.on(MOUSEMOVE, null)
 			.on(MOUSEUP, null);
-
 	}
 	render() {
 
@@ -151,18 +179,22 @@ class TrendLine extends Component {
 			: null;
 
 		var lines = helper(plotData, type, xAccessor, interactiveState);
-		var className = enabled && !adjust ? "react-stockcharts-avoid-interaction" : "";
 		var adjustClassName = adjust ? "react-stockcharts-move-cursor" : ""
-		var circleOpacity = this.state.hover ? 0.5 : 0.1;
+
+		var { override, hover } = this.state;
+		var circleOpacity = hover ? 0.5 : 0.1;
+
+		var className = (enabled && !adjust) || isDefined(override) ? "react-stockcharts-avoid-interaction" : "";
+
 		return (
 			<g className={className}>
 				{circle}
 				{lines
 					.map((coords, idx) => {
-						var x1 = xScale(coords.x1)
-						var y1 = yScale(coords.y1)
-						var x2 = xScale(coords.x2)
-						var y2 = yScale(coords.y2)
+						var x1 = xScale(getCoordinate(idx, override, coords, "x1"))
+						var y1 = yScale(getCoordinate(idx, override, coords, "y1"))
+						var x2 = xScale(getCoordinate(idx, override, coords, "x2"))
+						var y2 = yScale(getCoordinate(idx, override, coords, "y2"))
 						return (<g key={idx}>
 							<line ref={`line_${idx}`} className={adjustClassName}
 								x1={x1} y1={y1} x2={x2} y2={y2}
@@ -185,6 +217,18 @@ class TrendLine extends Component {
 			</g>
 		);
 	}
+}
+
+function getCoordinate(idx, override, coords, key) {
+	if (isDefined(override)) {
+		var { index } = override;
+		if (index === idx) {
+			if (isDefined(override[key])) {
+				return override[key];
+			}
+		}
+	}
+	return coords[key];
 }
 
 function currentPosition({ enabled, snapTo, snap, shouldDisableSnap, xAccessor }, { eventMeta, mouseXY, currentItem, yScale }) {
