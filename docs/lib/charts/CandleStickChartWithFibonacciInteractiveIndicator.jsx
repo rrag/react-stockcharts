@@ -92,18 +92,6 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 					<LineSeries yAccessor={ema26.accessor()} stroke={ema26.stroke()}/>
 					<LineSeries yAccessor={ema12.accessor()} stroke={ema12.stroke()}/>
 
-					<FibonacciRetracement ref="fib"
-						id={0} enabled={true}
-						type="BOUND"
-						onStart={e => console.log("Start Event:", e)}
-						onComplete={e => console.log("Complete Event:", e)} />
-					<TrendLine ref="trend"
-						id={1} enabled={false}
-						type="LINE"
-						onStart={e => console.log("Start Event:", e)}
-						onComplete={e => console.log("Complete Event:", e)}
-						snap={true} snapTo={d => [d.high, d.low]} />
-
 					<CurrentCoordinate id={1} yAccessor={ema26.accessor()} fill={ema26.stroke()} />
 					<CurrentCoordinate id={2} yAccessor={ema12.accessor()} fill={ema12.stroke()} />
 
@@ -127,7 +115,13 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 					<MACDSeries calculator={macdCalculator} />
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} />
+
+				<EventCapture mouseMove={true} zoom={true} pan={true}>
+					<FibonacciRetracement forChart={1} id={1} ref="fib"
+						enabled={this.state.enableFib}
+						type="BOUND" />
+				</EventCapture>
+
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
 					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 15]}

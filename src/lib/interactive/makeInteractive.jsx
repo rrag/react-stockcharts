@@ -3,7 +3,7 @@
 import React, { PropTypes, Component } from "react";
 
 import pure from "../pure";
-import { isDefined , capitalizeFirst} from "../utils";
+import { isDefined , capitalizeFirst, noop } from "../utils";
 
 function getDisplayName(Series) {
 	var name = Series.displayName || Series.name || "Series";
@@ -22,6 +22,7 @@ export default function makeInteractive(InteractiveComponent, initialState) {
 
 			// this.subscriptionIds = subscription.map(each => subscribe(chartId, each, this.subscription.bind(this, each)));
 			this.panHandler = this.panHandler.bind(this);
+			this.overrideInteractive = this.overrideInteractive.bind(this);
 		}
 		panHandler(propOverride) {
 			var { forChart, id, getInteractiveState } = this.props;
@@ -38,6 +39,35 @@ export default function makeInteractive(InteractiveComponent, initialState) {
 		updateInteractiveState(interactive) {
 			var { setInteractiveState, id, forChart } = this.props;
 			setInteractiveState(id, forChart, interactive);
+		}
+		overrideInteractive(idx, override, callback = noop) {
+			var { interactiveState } = this.state;
+			var trend = interactiveState.trends[idx];
+			var newTrend = trend;
+			var { x1, y1, x2, y2 } = override;
+			if (isDefined(x1) && isDefined(y1)) {
+				newTrend = {
+					start: [x1, y1],
+					end: trend.end
+				}
+			} else if (isDefined(x2) && isDefined(y2)) {
+				newTrend = {
+					start: trend.start,
+					end: [x2, y2],
+				}
+			}
+			var newTrends = interactiveState.trends
+				.map((each, i) => (i === idx) ? newTrend : each)
+
+			var newInteractiveState = {
+				trends: newTrends
+			}
+
+			this.updateInteractiveState(newInteractiveState);
+
+			this.setState({
+				interactiveState: newInteractiveState
+			}, callback)
 		}
 		componentWillMount() {
 			this.componentWillReceiveProps(this.props);
@@ -126,7 +156,11 @@ export default function makeInteractive(InteractiveComponent, initialState) {
 			var interactive = getInteractiveState(forChart, id, initialState);
 
 			console.log(interactive)*/
-			return <InteractiveComponent ref="interactive" {...this.props} {...this.state} />;
+			return <InteractiveComponent
+				ref="interactive"
+				{...this.props}
+				{...this.state}
+				overrideInteractive={this.overrideInteractive} />;
 			// return null;
 		}
 	}

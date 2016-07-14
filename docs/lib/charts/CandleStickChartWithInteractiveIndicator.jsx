@@ -134,10 +134,7 @@ class CandlestickChart extends React.Component {
 				<EventCapture mouseMove={true} zoom={true} pan={true}>
 					<TrendLine forChart={1} id={1} ref="trend"
 						enabled={this.state.enableTrendLine}
-						adjust={!this.state.enableTrendLine}
 						type="LINE"
-						onStart={e => console.log("Start Event:", e)}
-						onComplete={e => console.log("Complete Event:", e)}
 						snap={true} snapTo={d => [d.high, d.low]} />
 				</EventCapture>
 

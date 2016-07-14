@@ -147,9 +147,14 @@ class TrendLine extends Component {
 		// console.log("DROP", side, idx)
 
 		var captureDOM = this.refs[`${side}_${idx}`];
+		var { overrideInteractive } = this.props;
+		var { override } = this.state;
 
-		this.setState({
-			override: null
+
+		overrideInteractive(idx, override, () => {		
+			this.setState({
+				override: null
+			})
 		})
 
 		var win = d3Window(captureDOM);
@@ -159,7 +164,7 @@ class TrendLine extends Component {
 	}
 	render() {
 
-		var { enabled, show, id, eventMeta, adjust, endPointCircleFill, endPointCircleRadius } = this.props;
+		var { enabled, show, id, eventMeta, endPointCircleFill, endPointCircleRadius } = this.props;
 		var { xScale, chartCanvasType, currentItem, chartConfig, plotData, xAccessor, interactiveState, show } = this.props;
 
 		var { yScale } = chartConfig;
@@ -179,12 +184,12 @@ class TrendLine extends Component {
 			: null;
 
 		var lines = helper(plotData, type, xAccessor, interactiveState);
-		var adjustClassName = adjust ? "react-stockcharts-move-cursor" : ""
+		var adjustClassName = !enabled ? "react-stockcharts-move-cursor" : ""
 
 		var { override, hover } = this.state;
 		var circleOpacity = hover ? 0.5 : 0.1;
 
-		var className = (enabled && !adjust) || isDefined(override) ? "react-stockcharts-avoid-interaction" : "";
+		var className = enabled || isDefined(override) ? "react-stockcharts-avoid-interaction" : "";
 
 		return (
 			<g className={className}>
@@ -298,7 +303,6 @@ function generateLine(type, start, end, xAccessor, plotData) {
 TrendLine.propTypes = {
 	snap: PropTypes.bool.isRequired,
 	show: PropTypes.bool,
-	adjust: PropTypes.bool,
 	enabled: PropTypes.bool.isRequired,
 	snapTo: PropTypes.func,
 	shouldDisableSnap: PropTypes.func.isRequired,
@@ -327,7 +331,6 @@ TrendLine.defaultProps = {
 	stroke: "#000000",
 	type: "XLINE",
 	opacity: 0.7,
-	adjust: false,
 	onStart: noop,
 	onComplete: noop,
 	shouldDisableSnap: e => (e.button === 2 || e.shiftKey),

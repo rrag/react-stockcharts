@@ -103,17 +103,17 @@ function setRange(scale, height, padding, flipYScale) {
 export function getChartConfigWithUpdatedYScales(chartConfig, plotData) {
 
 	var yDomains = chartConfig
-			.map(({ yExtents, yScale }) => {
-				var yValues = yExtents.map(eachExtent =>
-					plotData.map(values(eachExtent)));
-				yValues = flattenDeep(yValues);
+		.map(({ yExtents, yScale }) => {
+			var yValues = yExtents.map(eachExtent =>
+				plotData.map(values(eachExtent)));
+			yValues = flattenDeep(yValues);
 
-				var yDomains = (yScale.invert)
-					? d3.extent(yValues)
-					: d3.set(yValues).values();
+			var yDomains = (yScale.invert)
+				? d3.extent(yValues)
+				: d3.set(yValues).values();
 
-				return yDomains;
-			});
+			return yDomains;
+		});
 
 	var combine = zipper()
 		.combine((config, domain) => {

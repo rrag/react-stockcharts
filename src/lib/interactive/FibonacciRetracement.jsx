@@ -75,10 +75,8 @@ class FibonacciRetracement extends Component {
 		var { chartCanvasType, chartConfig, plotData, xScale, xAccessor, interactive } = this.props;
 		var { stroke, opacity, fontFamily, fontSize, fontStroke, type } = this.props;
 
-		if (chartCanvasType !== "svg") return null;
-
 		var { yScale } = chartConfig;
-		var retracements = FibonacciRetracement.helper(plotData, type, xAccessor, interactive, chartConfig);
+		var retracements = helper(plotData, type, xAccessor, interactive, chartConfig);
 
 		return (
 			<g>
@@ -104,37 +102,7 @@ class FibonacciRetracement extends Component {
 	}
 }
 
-FibonacciRetracement.drawOnCanvas = (props,
-		interactive,
-		ctx,
-		{ xScale, plotData, chartConfig }) => {
-
-	var { xAccessor } = props;
-	var { yScale } = chartConfig;
-	var { fontSize, fontFamily, fontStroke, type } = props;
-	var lines = FibonacciRetracement.helper(plotData, type, xAccessor, interactive, chartConfig);
-
-	ctx.strokeStyle = hexToRGBA(props.stroke, props.opacity);
-	ctx.font = `${ fontSize }px ${ fontFamily }`;
-	ctx.fillStyle = fontStroke;
-
-	lines.forEach(retracements => {
-		var dir = retracements[0].y1 > retracements[retracements.length - 1].y1 ? 3 : -1.3;
-
-		retracements.forEach((each) => {
-			ctx.beginPath();
-			ctx.moveTo(xScale(each.x1), yScale(each.y));
-			ctx.lineTo(xScale(each.x2), yScale(each.y));
-
-			var text = `${ each.y.toFixed(2) } (${ each.percent.toFixed(2) }%)`;
-			ctx.fillText(text, xScale(Math.min(each.x1, each.x2)) + 10, yScale(each.y) + dir * 4);
-
-			ctx.stroke();
-		});
-	});
-};
-
-FibonacciRetracement.helper = (plotData, type, xAccessor, interactive/* , chartConfig */) => {
+function helper(plotData, type, xAccessor, interactive/* , chartConfig */) {
 	var { retracements, start, tempEnd } = interactive;
 
 	var temp = retracements;
