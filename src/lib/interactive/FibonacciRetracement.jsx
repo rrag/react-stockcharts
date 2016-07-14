@@ -24,24 +24,46 @@ class FibonacciRetracement extends Component {
 		}
 		return interactive;
 	}
-	onMousemove({ chartId, xAccessor }, interactive, { mouseXY, currentItem, chartConfig } /* , e */) {
-		var { enabled } = this.props;
+	onMousemove(state) {
+		var {
+			xScale,
+			plotData,
+			mouseXY,
+			currentCharts,
+			currentItem,
+			chartConfig,
+			interactiveState,
+			eventMeta,
+		} = state;
+
+		var { enabled, xAccessor } = this.props;
 		if (enabled) {
 			var { yScale } = chartConfig;
 
 			var yValue = yScale.invert(mouseXY[1]);
 			var xValue = xAccessor(currentItem);
 
-			if (interactive.start) {
-				return { interactive: { ...interactive, tempEnd: [xValue, yValue], } };
+			if (interactiveState.start) {
+				return { ...interactiveState, tempEnd: [xValue, yValue], };
 			}
 		}
-		return { interactive };
+		return interactiveState;
 	}
-	onClick({ chartId, xAccessor }, interactive, { mouseXY, currentItem, currentChartstriggerCallback, chartConfig }, e) {
-		var { enabled, onStart, onComplete } = this.props;
+	onClick(state) {
+		var {
+			xScale,
+			plotData,
+			mouseXY,
+			currentCharts,
+			currentItem,
+			chartConfig,
+			interactiveState,
+			eventMeta,
+		} = state;
+
+		var { enabled, xAccessor } = this.props;
 		if (enabled) {
-			var { start, retracements } = interactive;
+			var { start, retracements } = interactiveState;
 
 			var { yScale } = chartConfig;
 
@@ -50,43 +72,40 @@ class FibonacciRetracement extends Component {
 
 			if (start) {
 				return {
-					interactive: {
-						...interactive,
-						start: null,
-						tempEnd: null,
-						retracements: retracements.concat({ start, end: [xValue, yValue] }),
-					},
-					callback: onComplete.bind(null, { currentItem, point: [xValue, yValue] }, e),
+					...interactiveState,
+					start: null,
+					tempEnd: null,
+					retracements: retracements.concat({ start, end: [xValue, yValue] }),
 				};
-			} else if (e.button === 0) {
+			} else if (eventMeta.button === 0) {
 				return {
-					interactive: {
-						...interactive,
-						start: [xValue, yValue],
-						tempEnd: null,
-					},
-					callback: onStart.bind(null, { currentItem, point: [xValue, yValue] }, e),
+					...interactiveState,
+					start: [xValue, yValue],
+					tempEnd: null,
 				};
 			}
 		}
-		return { interactive };
+		return interactiveState;
 	}
 	render() {
-		var { chartCanvasType, chartConfig, plotData, xScale, xAccessor, interactive } = this.props;
-		var { stroke, opacity, fontFamily, fontSize, fontStroke, type } = this.props;
+		var { chartCanvasType, chartConfig, plotData, xScale, xAccessor, interactiveState } = this.props;
+		var { stroke, opacity, fontFamily, fontSize, fontStroke, type, enabled } = this.props;
 
 		var { yScale } = chartConfig;
-		var retracements = helper(plotData, type, xAccessor, interactive, chartConfig);
-
+		var retracements = helper(plotData, type, xAccessor, interactiveState, chartConfig);
+		var className = enabled ? "react-stockcharts-avoid-interaction" : ""
 		return (
-			<g>
+			<g className={className}>
 				{retracements.map((eachRetracement, idx) => {
 					var dir = eachRetracement[0].y1 > eachRetracement[eachRetracement.length - 1].y1 ? 3 : -1.3;
+
 					return <g key={idx}>
 						{eachRetracement.map((line, i) => {
 							var text = `${ line.y.toFixed(2) } (${ line.percent.toFixed(2) }%)`;
-
-							return (<g key={i}>
+							var cursorClassName = enabled ? "" : (i === 0 || i === eachRetracement.length - 1)
+								? "react-stockcharts-ns-resize-cursor"
+								: "react-stockcharts-move-cursor"
+							return (<g key={i} className={cursorClassName}>
 								<line
 									x1={xScale(line.x1)} y1={yScale(line.y)}
 									x2={xScale(line.x2)} y2={yScale(line.y)}
@@ -118,13 +137,15 @@ function helper(plotData, type, xAccessor, interactive/* , chartConfig */) {
 
 function generateLine(type, start, end, xAccessor, plotData) {
 	var dy = end[1] - start[1];
-	return [100, 61.8, 50, 38.2, 23.6, 0]
+	var retracements = [100, 61.8, 50, 38.2, 23.6, 0]
 		.map(each => ({
 			percent: each,
 			x1: type === "EXTEND" ? xAccessor(head(plotData)) : start[0],
 			x2: type === "EXTEND" ? xAccessor(last(plotData)) : end[0],
 			y: (end[1] - (each / 100) * dy)
 		}));
+
+	return retracements
 }
 
 FibonacciRetracement.propTypes = {
@@ -163,4 +184,4 @@ FibonacciRetracement.defaultProps = {
 
 };
 
-export default makeInteractive(FibonacciRetracement, ["click", "mousemove"], { retracements: [] });
+export default makeInteractive(FibonacciRetracement, { retracements: [] });

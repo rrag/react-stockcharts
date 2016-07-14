@@ -27,6 +27,9 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 	constructor(props) {
 		super(props);
 		this.onKeyPress = this.onKeyPress.bind(this);
+		this.state = {
+			enableFib: true
+		}
 	}
 	componentDidMount() {
 		document.addEventListener("keyup", this.onKeyPress);
@@ -36,15 +39,27 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 	}
 	onKeyPress(e) {
 		var keyCode = e.which;
-		// console.log(keyCode);
 		switch (keyCode) {
 			case 46: { // DEL
 				this.refs.fib.getWrappedComponent().removeLast();
+				break;
 			}
 			case 27: { // ESC
 				this.refs.fib.getWrappedComponent().terminate();
+				this.setState({
+					enableFib: false
+				})
+				break;
+			}
+			case 68:   // D - Draw Fib
+			case 69: { // E - Enable Fib
+				this.setState({
+					enableFib: true
+				})
+				break;
 			}
 		}
+
 	}
 	render() {
 		var { data, type, width } = this.props;

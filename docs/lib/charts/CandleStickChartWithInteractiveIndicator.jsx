@@ -131,7 +131,7 @@ class CandlestickChart extends React.Component {
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
 
-				<EventCapture mouseMove={true} zoom={true} pan={true}>
+				<EventCapture mouseMove zoom pan>
 					<TrendLine forChart={1} id={1} ref="trend"
 						enabled={this.state.enableTrendLine}
 						type="LINE"

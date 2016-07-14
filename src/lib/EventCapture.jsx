@@ -57,38 +57,42 @@ class EventCapture extends Component {
 
 		var [x, y] = mousePosition(e);
 		// if (!(x >= 0 && x <= width && y >=0 && y <= height))
-			if (this.context.onMouseLeave)
-				this.context.onMouseLeave(e);
+		if (this.context.onMouseLeave)
+			this.context.onMouseLeave(e);
 	}
 	handleWheel(e) {
 		var { zoom, onZoom, zoomMultiplier, eventMeta } = this.props;
+
 		if (zoom && this.context.onZoom
 				&& this.context.focus) {
 			// e.stopPropagation();
 			e.preventDefault();
-			var zoomDir = e.deltaY > 0 ? zoomMultiplier : -zoomMultiplier;
 			var newPos = mousePosition(e);
+			var zoomDir = e.deltaY > 0 ? zoomMultiplier : -zoomMultiplier;
 
 			this.eventMeta = eventMeta(e, ["zoom"]);
 
 			this.context.onZoom(zoomDir, newPos, e);
 
 			if (onZoom) {
-				onZoom(e);
+				onZoom(newPos, e);
 			}
 		}
+
 	}
 	handleMouseMove(e) {
-		var { eventMeta } = this.props;
+		var { eventMeta, onMouseMove } = this.props;
 		this.eventMeta = eventMeta(e, ["mousemove"]);
+
+		var newPos = mousePosition(e);
 
 		if (this.mouseInteraction 
 				&& this.context.onMouseMove
 				&& this.props.mouseMove
 				&& !this.context.panInProgress) {
-			var newPos = mousePosition(e);
 			this.context.onMouseMove(newPos, "mouse", e);
 		}
+		if (onMouseMove) onMouseMove(newPos, e)
 	}
 	handleMouseDown(e) {
 		var mouseEvent = e || d3.event;
@@ -137,7 +141,7 @@ class EventCapture extends Component {
 
 			onPan(newPos, xScale.domain(), e);
 			if (panListener) {
-				panListener(e);
+				panListener(newPos, e);
 			}
 		}
 	}
@@ -301,6 +305,7 @@ EventCapture.propTypes = {
 	useCrossHairStyle: PropTypes.bool.isRequired,
 	onZoom: PropTypes.func,
 	onPan: PropTypes.func,
+	onMouseMove: PropTypes.func,
 };
 
 EventCapture.defaultProps = {
