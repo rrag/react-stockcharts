@@ -40,7 +40,14 @@ export default function makeInteractive(InteractiveComponent, initialState) {
 			var { setInteractiveState, id, forChart } = this.props;
 			setInteractiveState(id, forChart, interactive);
 		}
-		overrideInteractive(idx, override, callback = noop) {
+		overrideInteractive(newInteractiveState, callback = noop) {
+			this.updateInteractiveState(newInteractiveState);
+
+			this.setState({
+				interactiveState: newInteractiveState
+			}, callback)
+		}
+		overrideInteractive22(idx, override, callback = noop) {
 			var { interactiveState } = this.state;
 			var trend = interactiveState.trends[idx];
 			var newTrend = trend;

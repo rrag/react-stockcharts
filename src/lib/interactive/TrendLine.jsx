@@ -19,8 +19,8 @@ class TrendLine extends Component {
 		this.onMousemove = this.onMousemove.bind(this);
 		this.onClick = this.onClick.bind(this);
 
-		this.handleEdgeEnter = this.handleEdgeEnter.bind(this);
-		this.handleEdgeLeave = this.handleEdgeLeave.bind(this);
+		this.handleEnter = this.handleEnter.bind(this);
+		this.handleLeave = this.handleLeave.bind(this);
 		this.handleEdgeMouseDown = this.handleEdgeMouseDown.bind(this);
 		this.handleEdgeDrag = this.handleEdgeDrag.bind(this);
 		this.handleEdgeDrop = this.handleEdgeDrop.bind(this);
@@ -97,34 +97,105 @@ class TrendLine extends Component {
 		}
 		return interactiveState;
 	}
-	handleEdgeEnter() {
+	handleEnter(idx) {
+		console.log("ENTER", idx)
 		this.setState({
-			hover: true
+			hover: idx
 		})
 	}
-	handleEdgeLeave() {
+	handleLeave(idx) {
 		this.setState({
-			hover: false
+			hover: null
 		})
+	}
+	handleLineMouseDown(idx, e) {
+		var captureDOM = this.refs.trend;
+
+		var { mouseXY, chartConfig, xAccessor, currentItem } = this.props;
+		var { yScale } = chartConfig;
+
+		var startY = mouseXY[1];
+		this.moveStartPosition = [xAccessor(currentItem), yScale.invert(startY)];
+
+		var win = d3Window(captureDOM);
+		d3.select(win)
+			.on(MOUSEMOVE, this.handleLineDrag.bind(this, idx))
+			.on(MOUSEUP, this.handleLineDrop.bind(this, idx));
+		e.preventDefault();
+	}
+	handleLineDrag(idx) {
+		var { mouseXY, chartConfig, xAccessor, currentItem, interactiveState } = this.props;
+		var { yScale } = chartConfig;
+
+		var endXValue = xAccessor(currentItem);
+		var endYValue = yScale.invert(mouseXY[1]);
+
+		var [startXValue, startYValue] = this.moveStartPosition;
+
+		var dx = endXValue - startXValue
+		var dy = endYValue - startYValue
+
+		var { start, end } = interactiveState.trends[idx];
+
+		this.setState({
+			hover: idx,
+			override: {
+				index: idx,
+				x1: start[0] + dx,
+				y1: start[1] + dy,
+				x2: end[0] + dx,
+				y2: end[1] + dy,
+			}
+		})
+	}
+	handleLineDrop(idx) {
+		var { overrideInteractive, interactiveState } = this.props;
+		var { override } = this.state;
+
+		if (isDefined(override)) {		
+			var { x1, y1, x2, y2 } = override;
+			var newTrend = {
+				start: [x1, y1],
+				end: [x2, y2]
+			}
+
+			var trends = interactiveState.trends
+				.map((each, i) => (i === idx) ? newTrend : each)
+
+			overrideInteractive({ trends }, () => {		
+				this.setState({
+					override: null,
+					hover: null,
+				})
+			})
+		}
+
+		this.moveStartPosition = null;
+		var captureDOM = this.refs.trend;
+		var win = d3Window(captureDOM);
+		d3.select(win)
+			.on(MOUSEMOVE, null)
+			.on(MOUSEUP, null);
 	}
 	handleEdgeMouseDown(side, idx, e) {
-		var captureDOM = this.refs[`${side}_${idx}`];
+		var captureDOM = this.refs.trend;
 
 		var win = d3Window(captureDOM);
 		d3.select(win)
 			.on(MOUSEMOVE, this.handleEdgeDrag.bind(this, side, idx))
 			.on(MOUSEUP, this.handleEdgeDrop.bind(this, side, idx));
+		e.preventDefault();
 	}
 	handleEdgeDrag(side, idx) {
-		var { mouseXY, chartConfig, xScale } = this.props;
+		var { mouseXY, chartConfig, xScale, xAccessor, currentItem } = this.props;
 		var { yScale } = chartConfig;
-		var [x, y] = mouseXY;
 
-		var xValue = xScale.invert(x);
-		var yValue = yScale.invert(y);
+		var xValue = xAccessor(currentItem);
+		var yValue = yScale.invert(mouseXY[1]);
 
 		if (side === "left") {
 			this.setState({
+				hover: idx,
 				override: {
 					index: idx,
 					x1: xValue,
@@ -133,6 +204,7 @@ class TrendLine extends Component {
 			})
 		} else {
 			this.setState({
+				hover: idx,
 				override: {
 					index: idx,
 					x2: xValue,
@@ -146,16 +218,38 @@ class TrendLine extends Component {
 	handleEdgeDrop(side, idx) {
 		// console.log("DROP", side, idx)
 
-		var captureDOM = this.refs[`${side}_${idx}`];
-		var { overrideInteractive } = this.props;
+		var captureDOM = this.refs.trend;
+		var { overrideInteractive, interactiveState } = this.props;
+
+		var trend = interactiveState.trends[idx];
+		var newTrend = trend;
+
 		var { override } = this.state;
+		if (isDefined(override)) {		
+			var { x1, y1, x2, y2 } = override;
+			if (isDefined(x1) && isDefined(y1)) {
+				newTrend = {
+					start: [x1, y1],
+					end: trend.end
+				}
+			} else if (isDefined(x2) && isDefined(y2)) {
+				newTrend = {
+					start: trend.start,
+					end: [x2, y2],
+				}
+			}
+
+			var trends = interactiveState.trends
+				.map((each, i) => (i === idx) ? newTrend : each)
 
 
-		overrideInteractive(idx, override, () => {		
-			this.setState({
-				override: null
+			overrideInteractive({ trends }, () => {		
+				this.setState({
+					override: null,
+					hover: null,
+				})
 			})
-		})
+		}
 
 		var win = d3Window(captureDOM);
 		d3.select(win)
@@ -187,12 +281,12 @@ class TrendLine extends Component {
 		var adjustClassName = !enabled ? "react-stockcharts-move-cursor" : ""
 
 		var { override, hover } = this.state;
-		var circleOpacity = hover ? 0.5 : 0.1;
+		
 
 		var className = enabled || isDefined(override) ? "react-stockcharts-avoid-interaction" : "";
 
 		return (
-			<g className={className}>
+			<g ref="trend" className={className}>
 				{circle}
 				{lines
 					.map((coords, idx) => {
@@ -200,19 +294,30 @@ class TrendLine extends Component {
 						var y1 = yScale(getCoordinate(idx, override, coords, "y1"))
 						var x2 = xScale(getCoordinate(idx, override, coords, "x2"))
 						var y2 = yScale(getCoordinate(idx, override, coords, "y2"))
+
+						var circleOpacity = hover === idx ? 0.5 : 0.1;
+						var strokeWidth = hover === idx ? 2 : 1;
+
 						return (<g key={idx}>
-							<line ref={`line_${idx}`} className={adjustClassName}
+							<line className={adjustClassName}
 								x1={x1} y1={y1} x2={x2} y2={y2}
-								stroke={stroke} opacity={opacity} />
-							<circle ref={`left_${idx}`} className={adjustClassName}
-								onMouseEnter={this.handleEdgeEnter}
-								onMouseLeave={this.handleEdgeLeave}
+								stroke={stroke} strokeWidth={strokeWidth}
+								opacity={opacity} />
+							<line className={adjustClassName}
+								onMouseEnter={this.handleEnter.bind(this, idx)}
+								onMouseLeave={this.handleLeave.bind(this, idx)}
+								onMouseDown={this.handleLineMouseDown.bind(this, idx)}
+								x1={x1} y1={y1} x2={x2} y2={y2}
+								stroke={stroke} strokeWidth={8} opacity={0} />
+							<circle className={adjustClassName}
+								onMouseEnter={this.handleEnter.bind(this, idx)}
+								onMouseLeave={this.handleLeave.bind(this, idx)}
 								onMouseDown={this.handleEdgeMouseDown.bind(this, "left", idx)}
 								cx={x1} cy={y1} r={endPointCircleRadius}
 								fill={endPointCircleFill} opacity={circleOpacity} />
-							<circle ref={`right_${idx}`}  className={adjustClassName}
-								onMouseEnter={this.handleEdgeEnter}
-								onMouseLeave={this.handleEdgeLeave}
+							<circle className={adjustClassName}
+								onMouseEnter={this.handleEnter.bind(this, idx)}
+								onMouseLeave={this.handleLeave.bind(this, idx)}
 								onMouseDown={this.handleEdgeMouseDown.bind(this, "right", idx)}
 								cx={x2} cy={y2} r={endPointCircleRadius}
 								fill={endPointCircleFill} opacity={circleOpacity} />
@@ -343,23 +448,3 @@ TrendLine.defaultProps = {
 };
 
 export default makeInteractive(TrendLine, { trends: [] })
-/*
-export default pure(TrendLine, {
-	interactiveState: PropTypes.array.isRequired,
-	show: PropTypes.bool,
-	callbackForCanvasDraw: PropTypes.func.isRequired,
-	getAllCanvasDrawCallback: PropTypes.func,
-	chartConfig: PropTypes.object.isRequired,
-	mouseXY: PropTypes.array,
-	currentItem: PropTypes.object,
-	currentCharts: PropTypes.arrayOf(PropTypes.number),
-	eventMeta: PropTypes.object,
-
-	chartCanvasType: PropTypes.string,
-	xScale: PropTypes.func.isRequired,
-	plotData: PropTypes.array.isRequired,
-	xAccessor: PropTypes.func.isRequired,
-
-	setInteractiveState: PropTypes.func.isRequired,
-	displayXAccessor: PropTypes.func.isRequired,
-});*/
