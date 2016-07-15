@@ -3,6 +3,7 @@
 - Delete the last drawn line - Press DEL
 - Get out of draw mode - Press ESC
 - Enter draw mode again - Press D
+- After drawing the line, press ESC to get out of draw mode and now click and drag the edges of the trend line, or the trend line itself
 
 More Work in progress to implement - modifying indicators after it is drawn - [#94](https://github.com/rrag/react-stockcharts/issues/94)
 
