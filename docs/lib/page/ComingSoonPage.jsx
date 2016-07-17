@@ -7,7 +7,7 @@ import Section from "lib/section";
 
 var ComingSoonPage = React.createClass({
 	statics: {
-		title: 'Coming soon...'
+		title: 'Coming soon'
 	},
 	render() {
 		return (

@@ -58,8 +58,9 @@ class TrendLine extends Component {
 		var { enabled, show, eventMeta } = this.props;
 		var { yScale } = chartConfig;
 		var currentPos = currentPosition(this.props, { eventMeta, mouseXY, currentItem, yScale });
+		var status = "inprogress";
 
-		return { ...interactiveState, currentPos };
+		return { ...interactiveState, currentPos, status };
 	}
 	onClick(state) {
 		var {
@@ -86,12 +87,15 @@ class TrendLine extends Component {
 				return {
 					...interactiveState,
 					start: null,
+					currentPos: null,
 					trends: trends.concat({ start, end: [xValue, yValue] }),
+					status: "complete",
 				};
 			} else if (eventMeta.button === 0) {
 				return {
 					...interactiveState,
 					start: [xValue, yValue],
+					status: "start",
 				};
 			}
 		}

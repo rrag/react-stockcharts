@@ -47,7 +47,7 @@ var smaVolume50 = sma()
 	.merge((d, c) => {d.smaVolume50 = c})
 	.accessor(d => d.smaVolume50);
 
-const BRUSH_TYPE = "1D"; // Valid values = "2D", "1D"
+const BRUSH_TYPE = "2D"; // Valid values = "2D", "1D"
 
 class CandlestickChart extends React.Component {
 	constructor(props) {
@@ -76,13 +76,13 @@ class CandlestickChart extends React.Component {
 		}
 	}
 	handleBrush(brushCoords, startAndEndItem, startAndEndMouseLocation, event) {
+		console.log(arguments);
 		var left = Math.min(brushCoords.x1, brushCoords.x2);
 		var right = Math.max(brushCoords.x1, brushCoords.x2);
 
 		var low = Math.min(brushCoords.y1, brushCoords.y2);
 		var high = Math.max(brushCoords.y1, brushCoords.y2);
 
-		console.log(arguments);
 		// uncomment the line below to make the brush to zoom
 		this.setState({
 			xExtents: [left, right],
@@ -112,12 +112,6 @@ class CandlestickChart extends React.Component {
 					<CurrentCoordinate id={1} yAccessor={ema26.accessor()} fill={ema26.stroke()} />
 					<CurrentCoordinate id={2} yAccessor={ema12.accessor()} fill={ema12.stroke()} />
 
-					<Brush ref="brush"
-						id={0} enabled={true}
-						type={BRUSH_TYPE}
-						onStart={e => console.log("Start Event:", e)}
-						onBrush={this.handleBrush}/>
-
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 				</Chart>
@@ -138,7 +132,12 @@ class CandlestickChart extends React.Component {
 					<MACDSeries calculator={macdCalculator} />
 				</Chart>
 				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} />
+				<EventCapture mouseMove zoom pan>
+					<Brush ref="brush"
+						forChart={1} id={0} enabled={true}
+						type={BRUSH_TYPE}
+						onBrush={this.handleBrush}/>
+				</EventCapture>
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
 					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 15]}

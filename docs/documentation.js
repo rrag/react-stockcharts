@@ -127,6 +127,7 @@ function compressString(string) {
 	string = string.replace(/\s+/g, "_");
 	string = string.replace(/[-&]/g, "_");
 	string = string.replace(/_+/g, "_");
+	string = string.replace(/[.]/g, "");
 	string = string.toLowerCase();
 	// console.log(string);
 	return string

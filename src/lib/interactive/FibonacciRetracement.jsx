@@ -105,6 +105,12 @@ class FibonacciRetracement extends Component {
 			.on(MOUSEUP, null);
 
 	}
+	isStart(interactive) {
+		return interactive.status === "start"
+	}
+	isComplete(interactive) {
+		return interactive.status === "complete"
+	}
 	onMousemove(state) {
 		var {
 			xScale,
@@ -125,7 +131,8 @@ class FibonacciRetracement extends Component {
 			var xValue = xAccessor(currentItem);
 
 			if (interactiveState.start) {
-				return { ...interactiveState, tempEnd: [xValue, yValue], };
+				var status =  "inprogress";
+				return { ...interactiveState, tempEnd: [xValue, yValue], status };
 			}
 		}
 		return interactiveState;
@@ -157,12 +164,14 @@ class FibonacciRetracement extends Component {
 					start: null,
 					tempEnd: null,
 					retracements: retracements.concat({ start, end: [xValue, yValue] }),
+					status: "complete",
 				};
 			} else if (eventMeta.button === 0) {
 				return {
 					...interactiveState,
 					start: [xValue, yValue],
 					tempEnd: null,
+					status: "start",
 				};
 			}
 		}
@@ -201,11 +210,16 @@ class FibonacciRetracement extends Component {
 										onMouseDown: this.handleMoveStart.bind(this, idx)
 									};
 
-							return (<g key={i} className={cursorClassName} onMouseDown={onMouseDown}>
+							return (<g key={i} className={cursorClassName}
+									onMouseDown={onMouseDown}>
 								<line
 									x1={xScale(line.x1)} y1={yScale(line.y)}
 									x2={xScale(line.x2)} y2={yScale(line.y)}
 									stroke={stroke} opacity={opacity} />
+								<line
+									x1={xScale(line.x1)} y1={yScale(line.y)}
+									x2={xScale(line.x2)} y2={yScale(line.y)}
+									stroke={stroke} strokeWidth={7} opacity={0} />
 								<text x={xScale(Math.min(line.x1, line.x2)) + 10} y={yScale(line.y) + dir * 4}
 									fontFamily={fontFamily} fontSize={fontSize} fill={fontStroke}>{text}</text>
 							</g>);

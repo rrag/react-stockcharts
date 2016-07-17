@@ -47,35 +47,6 @@ export default function makeInteractive(InteractiveComponent, initialState) {
 				interactiveState: newInteractiveState
 			}, callback)
 		}
-		overrideInteractive22(idx, override, callback = noop) {
-			var { interactiveState } = this.state;
-			var trend = interactiveState.trends[idx];
-			var newTrend = trend;
-			var { x1, y1, x2, y2 } = override;
-			if (isDefined(x1) && isDefined(y1)) {
-				newTrend = {
-					start: [x1, y1],
-					end: trend.end
-				}
-			} else if (isDefined(x2) && isDefined(y2)) {
-				newTrend = {
-					start: trend.start,
-					end: [x2, y2],
-				}
-			}
-			var newTrends = interactiveState.trends
-				.map((each, i) => (i === idx) ? newTrend : each)
-
-			var newInteractiveState = {
-				trends: newTrends
-			}
-
-			this.updateInteractiveState(newInteractiveState);
-
-			this.setState({
-				interactiveState: newInteractiveState
-			}, callback)
-		}
 		componentWillMount() {
 			this.componentWillReceiveProps(this.props);
 		}
@@ -98,6 +69,7 @@ export default function makeInteractive(InteractiveComponent, initialState) {
 			};
 
 			if (isDefined(eventMeta)) {
+				// console.log(eventMeta.type)
 				eventMeta.type.forEach(each => {
 					var invoke = this.refs.interactive["on" + capitalizeFirst(each)];
 					if (isDefined(invoke)) {
@@ -108,10 +80,6 @@ export default function makeInteractive(InteractiveComponent, initialState) {
 
 			this.updateInteractiveState(interactiveState)
 
-			this.setState({
-				...newState,
-				interactiveState
-			});
 
 			var { id, chartCanvasType, callbackForCanvasDraw, getAllCanvasDrawCallback } = nextProps;
 
@@ -131,6 +99,23 @@ export default function makeInteractive(InteractiveComponent, initialState) {
 					});
 				}
 			}
+
+			this.setState({
+				...newState,
+				interactiveState
+			}, () => {
+				if (isDefined(interactiveState)) {
+					var { status, callbackProps } = interactiveState;
+					if (isDefined(status)) {
+						var callback = "on" + capitalizeFirst(status)
+
+						if (isDefined(this.props[callback])) {
+
+							this.props[callback].apply(null, callbackProps)
+						}
+					}
+				}
+			});
 		}
 		removeLast() {
 			var { id, forChart, getInteractiveState } = this.props;

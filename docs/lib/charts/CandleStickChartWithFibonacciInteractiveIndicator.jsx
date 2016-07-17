@@ -27,6 +27,7 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 	constructor(props) {
 		super(props);
 		this.onKeyPress = this.onKeyPress.bind(this);
+		this.onFibComplete = this.onFibComplete.bind(this);
 		this.state = {
 			enableFib: true
 		}
@@ -36,6 +37,11 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 	}
 	componentWillUnmount() {
 		document.removeEventListener("keyup", this.onKeyPress);
+	}
+	onFibComplete() {
+		this.setState({
+			enableFib: false
+		})
 	}
 	onKeyPress(e) {
 		var keyCode = e.which;
@@ -134,7 +140,8 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 				<EventCapture mouseMove={true} zoom={true} pan={true}>
 					<FibonacciRetracement forChart={1} id={1} ref="fib"
 						enabled={this.state.enableFib}
-						type="BOUND" />
+						type="BOUND"
+						onComplete={this.onFibComplete}/>
 				</EventCapture>
 
 				<TooltipContainer>

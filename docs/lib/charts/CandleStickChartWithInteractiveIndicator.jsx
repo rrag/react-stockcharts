@@ -26,6 +26,7 @@ class CandlestickChart extends React.Component {
 	constructor(props) {
 		super(props);
 		this.onKeyPress = this.onKeyPress.bind(this);
+		this.onTrendLineComplete = this.onTrendLineComplete.bind(this);
 		this.state = {
 			enableTrendLine: true
 		}
@@ -35,6 +36,11 @@ class CandlestickChart extends React.Component {
 	}
 	componentWillUnmount() {
 		document.removeEventListener("keyup", this.onKeyPress);
+	}
+	onTrendLineComplete() {
+		this.setState({
+			enableTrendLine: false
+		})
 	}
 	onKeyPress(e) {
 		var keyCode = e.which;
@@ -135,7 +141,10 @@ class CandlestickChart extends React.Component {
 					<TrendLine forChart={1} id={1} ref="trend"
 						enabled={this.state.enableTrendLine}
 						type="LINE"
-						snap={true} snapTo={d => [d.high, d.low]} />
+						snap={true} snapTo={d => [d.high, d.low]}
+						onStart={() => console.log("START")}
+						onComplete={this.onTrendLineComplete}
+						/>
 				</EventCapture>
 
 				<TooltipContainer>

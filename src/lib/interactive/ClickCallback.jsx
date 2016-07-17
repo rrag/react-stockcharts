@@ -9,7 +9,18 @@ class ClickCallback extends Component {
 		super(props);
 		this.onClick = this.onClick.bind(this);
 	}
-	onClick({ chartId, xAccessor }, interactive, { mouseXY, currentItem, chartConfig }, e) {
+	onClick(state) {
+		var {
+			xScale,
+			plotData,
+			mouseXY,
+			currentCharts,
+			currentItem,
+			chartConfig,
+			interactiveState,
+			eventMeta,
+		} = state;
+
 		var { onClick, displayXAccessor } = this.props;
 
 		var { yScale } = chartConfig;
@@ -20,8 +31,8 @@ class ClickCallback extends Component {
 			xy: [xValue, yValue],
 			mouseXY,
 			currentItem
-		}, e);
-		return { interactive }; // returning the same input to indicate that the state of the chart is not changing
+		}, eventMeta);
+		return interactiveState
 	}
 	render() {
 		return null;
@@ -41,4 +52,4 @@ ClickCallback.defaultProps = {
 	onClick: (e) => { console.log(e); },
 };
 
-export default makeInteractive(ClickCallback, ["click"], {});
+export default makeInteractive(ClickCallback);
