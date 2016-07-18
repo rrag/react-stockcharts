@@ -6,8 +6,8 @@
 1. Labels [#42](https://github.com/rrag/react-stockcharts/issues/42) (using annotations?) ![Done][DONE]
 1. Mouse following tooltip [#50](https://github.com/rrag/react-stockcharts/issues/50) ![Done][DONE]
 1. Create intra day scale ![Done][DONE]
-1. Interactive indicators to be more interactive [#94](https://github.com/rrag/react-stockcharts/issues/94) - ![Done][DONE]
-1. update `MouseCoordinates` & `EdgeIndicator` [#74](https://github.com/rrag/react-stockcharts/issues/74#issuecomment-226934832), [#77](https://github.com/rrag/react-stockcharts/issues/77)
+1. Interactive indicators to be more interactive [#94](https://github.com/rrag/react-stockcharts/issues/94) ![Done][DONE]
+1. update `MouseCoordinates` & `EdgeIndicator` [#74](https://github.com/rrag/react-stockcharts/issues/74#issuecomment-226934832), [#77](https://github.com/rrag/react-stockcharts/issues/77) ![Done][DONE]
 1. [#98](https://github.com/rrag/react-stockcharts/issues/98)
 
 #### New Chart types
