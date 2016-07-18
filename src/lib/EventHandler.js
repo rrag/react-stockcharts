@@ -134,6 +134,7 @@ class EventHandler extends Component {
 				updatedXScale.domain([newStart, newEnd]);
 			}
 			// plotData = getDataOfLength(fullData, showingInterval, plotData.length)
+			plotData = postCalculator(plotData);
 			let chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData);
 
 			newState = {
@@ -145,7 +146,7 @@ class EventHandler extends Component {
 			console.log("TRIVIAL CHANGE");
 			// this.state.plotData or plotData
 
-			plotData = filterData(this.state.xScale.domain(), xAccessor).plotData;
+			plotData = postCalculator(filterData(this.state.xScale.domain(), xAccessor).plotData);
 
 			let chartConfig = getChartConfigWithUpdatedYScales(
 				getNewChartConfig(dimensions, children), plotData);
