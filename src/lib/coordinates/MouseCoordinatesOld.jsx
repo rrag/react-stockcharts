@@ -14,7 +14,7 @@ class MouseCoordinates extends Component {
 
 		if (chartCanvasType !== "svg" && isDefined(getCanvasContexts)) {
 			var contexts = getCanvasContexts();
-			if (contexts) drawOnCanvas(contexts.mouseCoord, this.props);
+			if (contexts) MouseCoordinates.drawOnCanvas(contexts.mouseCoord, this.props);
 		}
 	}
 	componentDidUpdate() {
@@ -24,11 +24,9 @@ class MouseCoordinates extends Component {
 		this.componentWillReceiveProps(this.props, this.props);
 	}
 	componentWillReceiveProps(nextProps) {
-		var draw = drawOnCanvasStatic.bind(null, nextProps);
+		var draw = MouseCoordinates.drawOnCanvasStatic.bind(null, nextProps);
 
-		var temp = nextProps.getAllCanvasDrawCallback()
-			.filter(each => each.type === "mouse")
-			.filter(each => each.subType === "MouseCoordinates");
+		var temp = nextProps.getAllCanvasDrawCallback().filter(each => each.type === "mouse").filter(each => each.subType === "MouseCoordinates");
 		if (temp.length === 0) {
 			nextProps.callbackForCanvasDraw({
 				type: "mouse",
@@ -44,7 +42,15 @@ class MouseCoordinates extends Component {
 		}
 	}
 	render() {
-		return <g>{this.props.children}</g>;
+		var { chartCanvasType, mouseXY, xScale, currentCharts, chartConfig, currentItem, show } = this.props;
+		var { stroke, opacity, textStroke, textBGFill, textBGopacity, fontFamily, fontSize } = this.props;
+
+		if (chartCanvasType !== "svg") return null;
+
+		var pointer = MouseCoordinates.helper(this.props, show, xScale, mouseXY, currentCharts, chartConfig, currentItem);
+		if (!pointer) return null;
+
+		return <CrossHair {...pointer} />;
 	}
 }
 
@@ -88,16 +94,15 @@ MouseCoordinates.defaultProps = {
 	rectHeight: 20,
 };
 
-function drawOnCanvas(canvasContext, props) {
+MouseCoordinates.drawOnCanvas = (canvasContext, props) => {
 	var { mouseXY, currentCharts, chartConfig, currentItem, xScale, show } = props;
 
 	// console.log(props.currentCharts);
-	drawOnCanvasStatic(props, canvasContext, show, xScale, mouseXY, currentCharts, chartConfig, currentItem);
+	MouseCoordinates.drawOnCanvasStatic(props, canvasContext, show, xScale, mouseXY, currentCharts, chartConfig, currentItem);
 };
-
-function drawOnCanvasStatic (props, ctx, show, xScale, mouseXY, currentCharts, chartConfig, currentItem) {
+MouseCoordinates.drawOnCanvasStatic = (props, ctx, show, xScale, mouseXY, currentCharts, chartConfig, currentItem) => {
 	var { margin } = props;
-	var pointer = helper(props, show, xScale, mouseXY, currentCharts, chartConfig, currentItem);
+	var pointer = MouseCoordinates.helper(props, show, xScale, mouseXY, currentCharts, chartConfig, currentItem);
 
 	if (!pointer) return null;
 
@@ -114,7 +119,7 @@ function drawOnCanvasStatic (props, ctx, show, xScale, mouseXY, currentCharts, c
 	ctx.restore();
 };
 
-function helper(props, show, xScale, mouseXY, currentCharts, chartConfig, currentItem) {
+MouseCoordinates.helper = (props, show, xScale, mouseXY, currentCharts, chartConfig, currentItem) => {
 	var { displayXAccessor, xAccessor, height, width, snapX, xDisplayFormat } = props;
 
 	var displayValue = snapX ? currentItem && displayXAccessor(currentItem) : xScale.invert(x);

@@ -196,12 +196,13 @@ class EventHandler extends Component {
 		}
 	}
 	clearInteractiveCanvas(props) {
-		props = props || this.props;
+		// DO NOTHING, since now the interactive canvas is no longer used
+		/* props = props || this.props;
 		var canvases = props.canvasContexts();
 		if (canvases && canvases.interactive) {
 			// console.error("CLEAR");
 			clearCanvas([canvases.interactive]);
-		}
+		}*/
 	}
 
 	getChildContext() {
@@ -512,6 +513,8 @@ class EventHandler extends Component {
 								each.draw(axesCanvasContext, xScale, yScale);
 							} else if (each.type === "currentcoordinate") {
 								each.draw(mouseContext, show, xScale, yScale, currentItem);
+							} else if (each.type === "mouse") {
+								each.draw(mouseContext, show, xScale, mouseXY, currentCharts, eachChart, currentItem);
 							} else if (each.type !== "interactive") {
 								each.draw(axesCanvasContext, xScale, yScale, plotData);
 							}
@@ -526,6 +529,7 @@ class EventHandler extends Component {
 
 				canvasDrawCallbackList
 					.filter(each => each.type === "mouse")
+					.filter(each => isNotDefined(each.chartId))
 					.forEach(each => each.draw(mouseContext, show,
 						xScale, mouseXY, currentCharts, chartConfig, currentItem));
 

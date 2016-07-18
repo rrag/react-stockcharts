@@ -81,6 +81,8 @@ EdgeIndicator.defaultProps = {
 	rectHeight: 20,
 	rectWidth: 50,
 	arrowWidth: 10,
+	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
+	fontSize: 13,
 };
 
 EdgeIndicator.drawOnCanvas = (props, canvasContext) => {
@@ -106,6 +108,7 @@ EdgeIndicator.drawOnCanvasStatic = (props, ctx, xScale, yScale, plotData) => {
 EdgeIndicator.helper = (props, xScale, yScale, plotData) => {
 	var { type: edgeType, displayFormat, itemType, edgeAt, yAxisPad, orient } = props;
 	var { yAccessor, xAccessor, fill, textFill, rectHeight, rectWidth, arrowWidth } = props;
+	var { fontFamily, fontSize } = props;
 
 	// var currentItem = ChartDataUtil.getCurrentItemForChartNew(currentItems, forChart);
 	var edge = null;
@@ -127,18 +130,19 @@ EdgeIndicator.helper = (props, xScale, yScale, plotData) => {
 
 		edge = {
 			// ...props,
-			type: edgeType,
-			fill: d3.functor(fill)(item),
-			textFill: d3.functor(textFill)(item),
+			coordinate: displayFormat(yValue),
 			show: true,
+			type: edgeType,
+			orient,
+			edgeAt: edgeX,
+			fill: d3.functor(fill)(item),
+			fontFamily, fontSize,
+			textFill: d3.functor(textFill)(item),
+			rectHeight, rectWidth, arrowWidth,
 			x1,
 			y1,
 			x2: edgeX,
 			y2: y1,
-			coordinate: displayFormat(yValue),
-			edgeAt: edgeX,
-			orient,
-			rectHeight, rectWidth, arrowWidth,
 		};
 	}
 	return edge;

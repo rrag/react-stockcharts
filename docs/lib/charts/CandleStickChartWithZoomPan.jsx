@@ -9,7 +9,7 @@ var { ChartCanvas, Chart, EventCapture } = ReStock;
 var { CandlestickSeries, BarSeries } = ReStock.series;
 var { discontinuousTimeScaleProvider } = ReStock.scale;
 
-var { MouseCoordinates } = ReStock.coordinates;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY } = ReStock.coordinates;
 
 var { TooltipContainer, OHLCTooltip } = ReStock.tooltip;
 
@@ -27,19 +27,36 @@ class CandleStickChartWithZoomPan extends React.Component {
 					data={data}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
-				<Chart id={1} yExtents={[d => [d.high, d.low]]}
-						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}>
+				<Chart id={1}
+						yExtents={[d => [d.high, d.low]]}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
+
+					<MouseCoordinateY id={0}
+						at="right"
+						orient="right"
+						displayFormat={d3.format(".2f")} />
+
 					<CandlestickSeries />
 				</Chart>
-				<Chart id={2} origin={(w, h) => [0, h - 150]} height={150} yExtents={d => d.volume}
-						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}>
+				<Chart id={2}
+						yExtents={d => d.volume}
+						height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+
+					<MouseCoordinateX id={0}
+						at="bottom"
+						orient="bottom"
+						displayFormat={d3.time.format("%Y-%m-%d")} />
+					<MouseCoordinateY id={0}
+						at="left"
+						orient="left"
+						displayFormat={d3.format(".4s")} />
+
 					<BarSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
-				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} />
+				<CrossHairCursor />
+				<EventCapture mouseMove zoom pan />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
 				</TooltipContainer>

@@ -27,6 +27,7 @@
 	- Bolinger band
 1. Zoom on y
 1. Pan on y
+1. Support for pan to load more data
 1. Volume Profile (Tentative)
 	- show/hide Point of control
 	- show/hide value area
@@ -41,10 +42,10 @@
 
 Guess this can be `v1.0.0`
 
+1. Explore removal of svg mode & all svg components completely, so this becomes a canvas only library (Tentative)
 1. Detailed documentation of each component and its props
 1. Explore spliting project into multiple modules, one for each type of indicator, chart type
 1. use d3 v4 individual modules
-
 
 ## Sometime in the future....
 

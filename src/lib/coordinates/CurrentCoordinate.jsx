@@ -21,8 +21,6 @@ class CurrentCoordinate extends Component {
 		this.componentWillReceiveProps(this.props);
 	}
 	componentWillReceiveProps(nextProps) {
-		// console.log("HERE111");
-
 		var draw = CurrentCoordinate.drawOnCanvasStatic.bind(null, nextProps);
 		var { id, chartId } = nextProps;
 

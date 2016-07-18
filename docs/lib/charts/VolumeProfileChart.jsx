@@ -11,7 +11,7 @@ var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, VolumeProfileSeries 
 var { discontinuousTimeScaleProvider } = ReStock.scale;
 
 var { EdgeIndicator } = ReStock.coordinates;
-var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
 
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
 var { XAxis, YAxis } = ReStock.axes;
@@ -46,9 +46,12 @@ class VolumeProfileChart extends React.Component {
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}>
 				<Chart id={2}
 						yExtents={[d => d.volume]}
-						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 						height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+					<MouseCoordinateY id={0}
+						at="left"
+						orient="left"
+						displayFormat={d3.format(".4s")} />
 
 					<BarSeries yAccessor={d => d.volume}
 							widthRatio={0.95}
@@ -57,10 +60,17 @@ class VolumeProfileChart extends React.Component {
 				</Chart>
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
-						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} 
 						padding={{ top: 40, bottom: 20 }}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
+					<MouseCoordinateX id={0}
+						at="bottom"
+						orient="bottom"
+						displayFormat={d3.time.format("%Y-%m-%d")} />
+					<MouseCoordinateY id={0}
+						at="right"
+						orient="right"
+						displayFormat={d3.format(".2f")} />
 
 					<VolumeProfileSeries />
 					<CandlestickSeries />
@@ -69,8 +79,8 @@ class VolumeProfileChart extends React.Component {
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 				</Chart>
-				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} />
+				<CrossHairCursor />
+				<EventCapture mouseMove zoom pan />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, 0]} />
 					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 15]} 

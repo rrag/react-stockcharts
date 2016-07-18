@@ -11,7 +11,7 @@ var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = ReStock.series;
 var { discontinuousTimeScaleProvider } = ReStock.scale;
 
 var { EdgeIndicator } = ReStock.coordinates;
-var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
+var { CurrentCoordinate } = ReStock.coordinates;
 
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, HoverTooltip } = ReStock.tooltip;
 var { XAxis, YAxis } = ReStock.axes;
@@ -78,7 +78,6 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
-						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} 
 						padding={{ top: 10, bottom: 20 }}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 
@@ -93,14 +92,13 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 				</Chart>
 				<Chart id={2}
 						yExtents={[d => d.volume]}
-						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 						height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
 				<HoverTooltip tooltipContent={tooltipContent([ema20, ema50])} bgwidth={120} bgheight={95} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} useCrossHairStyle={false} />
+				<EventCapture mouseMove zoom pan useCrossHairStyle={false} />
 			</ChartCanvas>
 		);
 	}

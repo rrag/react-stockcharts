@@ -10,7 +10,7 @@ var { ChartCanvas, Chart, EventCapture } = ReStock;
 var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, MACDSeries } = ReStock.series;
 var { discontinuousTimeScaleProvider } = ReStock.scale;
 
-var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeIndicator } = ReStock.coordinates;
 
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, MACDTooltip } = ReStock.tooltip;
@@ -104,10 +104,13 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1} height={400}
 						yExtents={[d => [d.high, d.low], ema26.accessor(), ema12.accessor()]}
-						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} 
 						padding={{ top: 10, bottom: 20 }}>
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right" orient="right" ticks={5} />
+					<MouseCoordinateY id={0}
+						at="right"
+						orient="right"
+						displayFormat={d3.format(".2f")} />
 
 					<CandlestickSeries />
 					<LineSeries yAccessor={ema26.accessor()} stroke={ema26.stroke()}/>
@@ -121,23 +124,36 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 				</Chart>
 				<Chart id={2} height={150}
 						yExtents={[d => d.volume, smaVolume50.accessor()]}
-						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 						origin={(w, h) => [0, h - 300]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+
+					<MouseCoordinateY id={0}
+						at="left"
+						orient="left"
+						displayFormat={d3.format(".4s")} />
+
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
 				</Chart>
 				<Chart id={3} height={150}
 						yExtents={macdCalculator.accessor()}
-						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
 						origin={(w, h) => [0, h - 150]} padding={{ top: 10, bottom: 10 }} >
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={2} />
+					<MouseCoordinateX id={0}
+						at="bottom"
+						orient="bottom"
+						displayFormat={d3.time.format("%Y-%m-%d")} />
+					<MouseCoordinateY id={0}
+						at="right"
+						orient="right"
+						displayFormat={d3.format(".2f")} />
+
 					<MACDSeries calculator={macdCalculator} />
 				</Chart>
-				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
+				<CrossHairCursor />
 
-				<EventCapture mouseMove={true} zoom={true} pan={true}>
+				<EventCapture mouseMove zoom pan>
 					<FibonacciRetracement forChart={1} id={1} ref="fib"
 						enabled={this.state.enableFib}
 						type="BOUND"

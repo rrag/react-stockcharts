@@ -9,7 +9,7 @@ var { ChartCanvas, Chart, EventCapture } = ReStock;
 var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = ReStock.series;
 var { discontinuousTimeScaleProvider } = ReStock.scale;
 
-var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
 
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
 var { XAxis, YAxis } = ReStock.axes;
@@ -58,10 +58,15 @@ class CandleStickChartWithMA extends React.Component {
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], sma20.accessor(), ema20.accessor(), ema50.accessor()]}
-						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} 
 						padding={{ top: 10, bottom: 20 }}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
+
+					<MouseCoordinateY id={0}
+						at="right"
+						orient="right"
+						displayFormat={d3.format(".2f")} />
+
 					<CandlestickSeries />
 					<LineSeries yAccessor={sma20.accessor()} stroke={sma20.stroke()}/>
 					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
@@ -72,16 +77,25 @@ class CandleStickChartWithMA extends React.Component {
 				</Chart>
 				<Chart id={2}
 						yExtents={[d => d.volume, smaVolume50.accessor()]}
-						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 						height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+
+					<MouseCoordinateX id={0}
+						at="bottom"
+						orient="bottom"
+						displayFormat={d3.time.format("%Y-%m-%d")} />
+					<MouseCoordinateY id={0}
+						at="left"
+						orient="left"
+						displayFormat={d3.format(".4s")} />
+
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "red"} />
 					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
 					<CurrentCoordinate id={0} yAccessor={smaVolume50.accessor()} fill={smaVolume50.stroke()} />
 					<CurrentCoordinate id={1} yAccessor={d => d.volume} fill="#9B0A47" />
 				</Chart>
-				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} />
+				<CrossHairCursor />
+				<EventCapture mouseMove zoom pan />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
 					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 15]} 

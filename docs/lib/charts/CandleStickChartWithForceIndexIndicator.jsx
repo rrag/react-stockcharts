@@ -10,7 +10,7 @@ var { ChartCanvas, Chart, EventCapture } = ReStock;
 var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, RSISeries, StraightLine } = ReStock.series;
 var { discontinuousTimeScaleProvider } = ReStock.scale;
 
-var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeIndicator } = ReStock.coordinates;
 
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, SingleValueTooltip, RSITooltip } = ReStock.tooltip;
@@ -45,10 +45,14 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1}  height={300}
 						yExtents={d => [d.high, d.low]}
-						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
 						padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
+					<MouseCoordinateY id={0}
+						at="right"
+						orient="right"
+						displayFormat={d3.format(".2f")} />
+
 					<CandlestickSeries />
 
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
@@ -57,9 +61,13 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 				</Chart>
 				<Chart id={2} height={150} 
 						yExtents={d => d.volume}
-						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 						origin={(w, h) => [0, h - 350]} >
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+					<MouseCoordinateY id={0}
+						at="left"
+						orient="left"
+						displayFormat={d3.format(".4s")} />
+
 					<BarSeries
 						yAccessor={d => d.volume} 
 						fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"}
@@ -67,26 +75,39 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 				</Chart>
 				<Chart id={3} height={100}
 						yExtents={fi.accessor()}
-						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".4s")}
 						origin={(w, h) => [0, h - 200]}
 						padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={d3.format("s")}/>
+					<MouseCoordinateY id={0}
+						at="right"
+						orient="right"
+						displayFormat={d3.format(".4s")} />
+
 					<AreaSeries baseAt={scale => scale(0)} yAccessor={fi.accessor()} />
 					<StraightLine yValue={0} />
 				</Chart>
 				<Chart id={4} height={100}
 						yExtents={fiEMA13.accessor()}
-						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".4s")}
 						origin={(w, h) => [0, h - 100]}
 						padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
 					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={d3.format("s")}/>
+
+					<MouseCoordinateX id={0}
+						at="bottom"
+						orient="bottom"
+						displayFormat={d3.time.format("%Y-%m-%d")} />
+					<MouseCoordinateY id={0}
+						at="right"
+						orient="right"
+						displayFormat={d3.format(".4s")} />
+
 					<AreaSeries baseAt={scale => scale(0)} yAccessor={fiEMA13.accessor()} />
 					<StraightLine yValue={0} />
 				</Chart>
-				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} />
+				<CrossHairCursor />
+				<EventCapture mouseMove zoom pan />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
 					<SingleValueTooltip forChart={3}
@@ -104,18 +125,6 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 		);
 	}
 };
-
-/*
-					<SingleValueTooltip forChart={3} forSeries={0}
-						yLabel={indicator => `ForceIndex (1)`}
-						yDisplayFormat={d3.format(".4s")}
-						origin={[-40, 15]}/>
-					<SingleValueTooltip forChart={4} forSeries={0}
-						yLabel={indicator => `ForceIndex (${ indicator.options().period })`}
-						yDisplayFormat={d3.format(".4s")}
-						origin={[-40, 15]}/>
-
-*/
 
 CandleStickChartWithForceIndexIndicator.propTypes = {
 	data: React.PropTypes.array.isRequired,

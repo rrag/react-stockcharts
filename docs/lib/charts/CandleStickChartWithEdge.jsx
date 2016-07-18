@@ -11,7 +11,7 @@ var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = ReStock.series;
 var { discontinuousTimeScaleProvider } = ReStock.scale;
 
 var { EdgeIndicator } = ReStock.coordinates;
-var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
 
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
 var { XAxis, YAxis } = ReStock.axes;
@@ -42,15 +42,14 @@ class CandleStickChartWithEdge extends React.Component {
 			.accessor(d => d.smaVolume70);
 
 		return (
-			<ChartCanvas width={width} height={400}
-					margin={{left: 90, right: 90, top:10, bottom: 30}} type={type}
+			<ChartCanvas width={width} height={450}
+					margin={{left: 90, right: 90, top:70, bottom: 30}} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50, smaVolume70]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
-					xExtents={[new Date(2009, 0, 1), new Date(2009, 2, 1)]}>
+					xExtents={[new Date(2015, 0, 1), new Date(2015, 2, 1)]}>
 				<Chart id={2}
 						yExtents={[d => d.volume, smaVolume70.accessor()]}
-						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 						height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 
@@ -71,10 +70,27 @@ class CandleStickChartWithEdge extends React.Component {
 				</Chart>
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
-						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} 
 						padding={{ top: 10, bottom: 20 }}>
 					<XAxis axisAt="bottom" orient="bottom"/>
+					<XAxis axisAt="top" orient="top"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
+
+					<MouseCoordinateX id={0}
+						at="top"
+						orient="top"
+						displayFormat={d3.time.format("%Y-%m-%d")} />
+					<MouseCoordinateX id={1}
+						at="bottom"
+						orient="bottom"
+						displayFormat={d3.time.format("%Y-%m-%d")} />
+					<MouseCoordinateY id={0}
+						at="right"
+						orient="right"
+						displayFormat={d3.format(".2f")} />
+					<MouseCoordinateY id={1}
+						at="left"
+						orient="left"
+						displayFormat={d3.format(".2f")} />
 
 					<CandlestickSeries />
 					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
@@ -96,17 +112,25 @@ class CandleStickChartWithEdge extends React.Component {
 					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 				</Chart>
-				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} />
+				<CrossHairCursor />
+				<EventCapture mouseMove zoom pan />
 				<TooltipContainer>
-					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
-					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 15]} 
+					<OHLCTooltip forChart={1} origin={[-40, -65]}/>
+					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, -55]} 
 						calculators={[ema20, ema50]}/>
 				</TooltipContainer>
 			</ChartCanvas>
 		);
 	}
 }
+
+/*
+					<MouseCoordinateY
+						at="right"
+						orient="right"
+						displayFormat={d3.format(".2f")} />
+
+*/
 
 CandleStickChartWithEdge.propTypes = {
 	data: React.PropTypes.array.isRequired,

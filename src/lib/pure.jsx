@@ -25,7 +25,6 @@ function pure(PureSeries, contextShape, ignorePropKeys = []) {
 				.forEach(key => {
 					ctx[key] = this.context[key];
 				});
-
 			return <PureSeries ref="pureSeries"
 				{...ctx}
 				{...this.props} />;

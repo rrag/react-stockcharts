@@ -10,7 +10,7 @@ var { ChartCanvas, Chart, EventCapture } = ReStock;
 var { OHLCSeries, BarSeries, LineSeries, AreaSeries, ElderRaySeries, StraightLine } = ReStock.series;
 var { discontinuousTimeScaleProvider } = ReStock.scale;
 
-var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeIndicator } = ReStock.coordinates;
 
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, SingleValueTooltip, RSITooltip } = ReStock.tooltip;
@@ -36,39 +36,57 @@ class OHLCChartWithElderRayIndicator extends React.Component {
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1} height={300} 
 						yExtents={d => [d.high, d.low]}
-						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
 						padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
+
+					<MouseCoordinateY id={0}
+						at="right"
+						orient="right"
+						displayFormat={d3.format(".2f")} />
+
 					<OHLCSeries />
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 				</Chart>
 				<Chart id={2} height={150} 
 						yExtents={d => d.volume}
-						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 						origin={(w, h) => [0, h - 450]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+					<MouseCoordinateY id={0}
+						at="left"
+						orient="left"
+						displayFormat={d3.format(".4s")} />
+
 					<BarSeries yAccessor={d => d.volume}
 						fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}
 						opacity={0.4}/>
 				</Chart>
 				<Chart id={3} height={100}
 						yExtents={[0, elder.accessor()]}
-						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
 						origin={(w, h) => [0, h - 300]}
 						padding={{ top: 10, bottom: 10 }} >
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
-					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={d3.format("s")}/>
+					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={d3.format(".2f")}/>
+
+					<MouseCoordinateY id={0}
+						at="right"
+						orient="right"
+						displayFormat={d3.format(".2f")} />
+
 					<ElderRaySeries calculator={elder} />
 				</Chart>
 				<Chart id={4} height={100}
 						yExtents={[0, d => elder.accessor()(d) && elder.accessor()(d).bullPower]}
-						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
 						origin={(w, h) => [0, h - 200]}
 						padding={{ top: 10, bottom: 10 }} >
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={d3.format(".2f")}/>
+					<MouseCoordinateY id={0}
+						at="right"
+						orient="right"
+						displayFormat={d3.format(".2f")} />
+
 					<BarSeries
 						yAccessor={d => elder.accessor()(d) && elder.accessor()(d).bullPower}
 						baseAt={(xScale, yScale, d) => yScale(0)}
@@ -77,19 +95,26 @@ class OHLCChartWithElderRayIndicator extends React.Component {
 				</Chart>
 				<Chart id={5} height={100}
 						yExtents={[0, d => elder.accessor()(d) && elder.accessor()(d).bearPower]}
-						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
 						origin={(w, h) => [0, h - 100]}
 						padding={{ top: 10, bottom: 10 }} >
 					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={d3.format(".2f")}/>
+					<MouseCoordinateX id={0}
+						at="bottom"
+						orient="bottom"
+						displayFormat={d3.time.format("%Y-%m-%d")} />
+					<MouseCoordinateY id={0}
+						at="right"
+						orient="right"
+						displayFormat={d3.format(".2f")} />
 					<BarSeries
 						yAccessor={d => elder.accessor()(d) && elder.accessor()(d).bearPower}
 						baseAt={(xScale, yScale, d) => yScale(0)}
 						fill="#FF0000" />
 					<StraightLine yValue={0} />
 				</Chart>
-				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} />
+				<CrossHairCursor />
+				<EventCapture mouseMove zoom pan />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
 					<SingleValueTooltip forChart={3}

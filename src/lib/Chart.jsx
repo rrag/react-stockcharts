@@ -73,10 +73,12 @@ Chart.contextTypes = {
 	height: PropTypes.number.isRequired,
 	chartConfig: PropTypes.array,
 	margin: PropTypes.object.isRequired,
+
+	// adding here even when this is not used by Chart, refer to https://github.com/facebook/react/issues/2517
+	// used by CurrentCoordinate
 	currentItem: PropTypes.object,
 	mouseXY: PropTypes.array,
 	show: PropTypes.bool,
-	// adding here even when this is not used by Chart, refer to https://github.com/facebook/react/issues/2517
 };
 
 Chart.childContextTypes = {

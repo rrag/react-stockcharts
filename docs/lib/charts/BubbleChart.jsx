@@ -9,7 +9,7 @@ var { ChartCanvas, Chart, EventCapture } = ReStock;
 
 var { ScatterSeries, CircleMarker } = ReStock.series;
 
-var { MouseCoordinates } = ReStock.coordinates;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY } = ReStock.coordinates;
 
 var { XAxis, YAxis } = ReStock.axes;
 var { fitWidth } = ReStock.helper;
@@ -38,7 +38,6 @@ class BubbleChart extends React.Component {
 					>
 				<Chart id={1}
 						yExtents={d => d.lifeExpectancy}
-						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".2f")}
 						yMousePointerRectWidth={45}
 						padding={{ top: 20, bottom: 20 }}>
 					<XAxis axisAt="bottom" orient="bottom" ticks={2} tickFormat={d3.format(",d")}/>
@@ -46,9 +45,18 @@ class BubbleChart extends React.Component {
 					<ScatterSeries yAccessor={d => d.lifeExpectancy} marker={CircleMarker}
 						fill={fill}
 						markerProps={{ r: radius, fill: fill }} />
+
+					<MouseCoordinateX id={0} snapX={false}
+						at="bottom"
+						orient="bottom"
+						displayFormat={d3.format(".0f")} />
+					<MouseCoordinateY id={0}
+						at="left"
+						orient="left"
+						displayFormat={d3.format(".2f")} />
 				</Chart>
-				<MouseCoordinates snapX={false} xDisplayFormat={d3.format(".0f")} rectWidth={60} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} />
+				<CrossHairCursor snapX={false} />
+				<EventCapture mouseMove zoom pan />
 			</ChartCanvas>
 
 		);

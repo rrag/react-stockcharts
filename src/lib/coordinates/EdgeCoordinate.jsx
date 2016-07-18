@@ -9,7 +9,7 @@ class EdgeCoordinate extends Component {
 	render() {
 		var { className } = this.props;
 
-		var edge = EdgeCoordinate.helper(this.props);
+		var edge = helper(this.props);
 		if (edge === null) return null;
 		var line, coordinateBase, coordinate;
 
@@ -79,17 +79,19 @@ EdgeCoordinate.defaultProps = {
 	hideLine: false,
 	fill: "#8a8a8a",
 	opacity: 1,
-	textFill: "#FFFFFF",
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 13,
+	textFill: "#FFFFFF",
 	lineStroke: "#000000",
 	lineOpacity: 0.3,
+	arrowWidth: 10,
 };
 
 
-EdgeCoordinate.helper = (props) => {
+function helper(props) {
 	var { coordinate: displayCoordinate, show, type, orient, edgeAt, hideLine } = props;
-	var { fill, opacity, fontFamily, fontSize, textFill, lineStroke, lineOpacity, rectWidth, rectHeight, arrowWidth } = props;
+	var { fill, opacity, fontFamily, fontSize, textFill, lineStroke, lineOpacity, arrowWidth } = props;
+	var { rectWidth, rectHeight } = props;
 	var { x1, y1, x2, y2 } = props;
 
 	if (!show) return null;
@@ -131,7 +133,7 @@ EdgeCoordinate.helper = (props) => {
 EdgeCoordinate.drawOnCanvasStatic = (ctx, props) => {
 	props = { ...EdgeCoordinate.defaultProps, ...props };
 
-	var edge = EdgeCoordinate.helper(props);
+	var edge = helper(props);
 
 	if (edge === null) return;
 

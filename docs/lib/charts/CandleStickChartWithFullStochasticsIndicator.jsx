@@ -9,7 +9,7 @@ var { ChartCanvas, Chart, EventCapture } = ReStock;
 
 var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, StochasticSeries } = ReStock.series;
 var { discontinuousTimeScaleProvider } = ReStock.scale;
-var { MouseCoordinates, CurrentCoordinate } = ReStock.coordinates;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeIndicator } = ReStock.coordinates;
 
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, StochasticTooltip } = ReStock.tooltip;
@@ -29,8 +29,8 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 		var gridWidth = width - margin.left - margin.right;
 
 		var showGrid = true;
-		var yGrid = showGrid ? { innerTickSize: -1 * gridWidth, tickStrokeOpacity: 0.2 } : {};
-		var xGrid = showGrid ? { innerTickSize: -1 * gridHeight, tickStrokeOpacity: 0.2 } : {};
+		var yGrid = showGrid ? { innerTickSize: -1 * gridWidth, tickStrokeOpacity: 0.1 } : {};
+		var xGrid = showGrid ? { innerTickSize: -1 * gridHeight, tickStrokeOpacity: 0.1 } : {};
 
 		var ema20 = ema()
 			.id(0)
@@ -68,12 +68,17 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 					data={data} calculator={[ema20, ema50, slowSTO, fastSTO, fullSTO]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
-				<Chart id={1} yMousePointerDisplayLocation="right" height={325}
+				<Chart id={1} height={325}
 						yExtents={d => [d.high, d.low]}
-						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} 
 						padding={{ top: 10, bottom: 20 }}>
 					<YAxis axisAt="right" orient="right" ticks={5} {...yGrid}/>
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
+
+					<MouseCoordinateY id={0}
+						at="right"
+						orient="right"
+						displayFormat={d3.format(".2f")} />
+
 					<CandlestickSeries />
 
 					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
@@ -87,38 +92,60 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 				</Chart>
 				<Chart id={2}
 						yExtents={d => d.volume}
-						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
 						height={100} origin={(w, h) => [0, h - 475]} >
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+
+					<MouseCoordinateY id={0}
+						at="left"
+						orient="left"
+						displayFormat={d3.format(".4s")} />
+
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
 				<Chart id={3}
 						yExtents={slowSTO.domain()}
-						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
 						height={125} origin={(w, h) => [0, h - 375]} padding={{ top: 10, bottom: 10 }} >
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right" orient="right" ticks={2} tickValues={slowSTO.tickValues()} />
+					<MouseCoordinateY id={0}
+						at="right"
+						orient="right"
+						displayFormat={d3.format(".2f")} />
+
 					<StochasticSeries calculator={slowSTO}/>
 				</Chart>
 				<Chart id={4}
 						yExtents={fastSTO.domain()}
-						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
 						height={125} origin={(w, h) => [0, h - 250]} padding={{ top: 10, bottom: 10 }} >
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
-					<YAxis axisAt="right" orient="right" ticks={2}/>
 					<YAxis axisAt="right" orient="right" ticks={2} tickValues={fastSTO.tickValues()} />
+
+					<MouseCoordinateY id={0}
+						at="right"
+						orient="right"
+						displayFormat={d3.format(".2f")} />
+
 					<StochasticSeries calculator={fastSTO}/>
 				</Chart>
 				<Chart id={5}
 						yExtents={fullSTO.domain()}
-						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
 						height={125} origin={(w, h) => [0, h - 125]} padding={{ top: 10, bottom: 10 }} >
 					<XAxis axisAt="bottom" orient="bottom" {...xGrid} />
 					<YAxis axisAt="right" orient="right" ticks={2} tickValues={fullSTO.tickValues()} />
+
+					<MouseCoordinateX id={0}
+						at="bottom"
+						orient="bottom"
+						displayFormat={d3.time.format("%Y-%m-%d")} />
+					<MouseCoordinateY id={0}
+						at="right"
+						orient="right"
+						displayFormat={d3.format(".2f")} />
+
 					<StochasticSeries calculator={fullSTO}/>
 				</Chart>
-				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} />
+				<CrossHairCursor />
+				<EventCapture mouseMove zoom pan />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
 					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 15]} 
