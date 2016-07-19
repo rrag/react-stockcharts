@@ -40,7 +40,11 @@ function calculateFullData(props) {
 	var { data: inputData, calculator, plotFull, xScale: xScaleProp } = props;
 	var { xAccessor: inputXAccesor, map, xScaleProvider, indexAccessor, indexMutator, discontinuous } = props;
 
-	var wholeData = isDefined(plotFull) ? plotFull : inputXAccesor === identity;
+	var wholeData = isDefined(plotFull)
+			? plotFull
+			: isDefined(xScaleProp.invert)
+				? inputXAccesor === identity
+				: true;
 
 	// xScale = discontinuousTimeScaleProvider(data);
 	var dimensions = getDimensions(props);
