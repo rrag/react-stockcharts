@@ -1,10 +1,9 @@
 "use strict";
 
+import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 import makeInteractive from "./makeInteractive";
-import { isDefined, head, last, hexToRGBA, noop, d3Window, MOUSEMOVE, MOUSEUP } from "../utils";
-
-
+import { isDefined, head, last, d3Window, MOUSEMOVE, MOUSEUP } from "../utils";
 
 class FibonacciRetracement extends Component {
 	constructor(props) {
@@ -32,8 +31,8 @@ class FibonacciRetracement extends Component {
 		}
 		return interactive;
 	}
-	handleMoveStart(idx, e) {
-		var { mouseXY, chartConfig, xScale, xAccessor, currentItem } = this.props;
+	handleMoveStart(idx, lineIndex, e) {
+		var { mouseXY, chartConfig, xAccessor, currentItem } = this.props;
 		var { yScale } = chartConfig;
 
 		var startY = mouseXY[1];
@@ -48,13 +47,13 @@ class FibonacciRetracement extends Component {
 		e.preventDefault();
 	}
 	handleResizeStart(idx, line, e) {
-		var { mouseXY } = this.props;
+		// var { mouseXY } = this.props;
 
 		console.log(idx, line);
 		e.preventDefault();
 	}
 	handleMove(idx) {
-		var { mouseXY, interactiveState, chartConfig, xScale } = this.props;
+		var { mouseXY, interactiveState, chartConfig } = this.props;
 		var { type, xAccessor, currentItem, plotData } = this.props;
 
 		var { yScale } = chartConfig;
@@ -113,14 +112,14 @@ class FibonacciRetracement extends Component {
 	}
 	onMousemove(state) {
 		var {
-			xScale,
-			plotData,
+			// xScale,
+			// plotData,
 			mouseXY,
-			currentCharts,
+			// currentCharts,
 			currentItem,
 			chartConfig,
 			interactiveState,
-			eventMeta,
+			// eventMeta,
 		} = state;
 
 		var { enabled, xAccessor } = this.props;
@@ -139,10 +138,10 @@ class FibonacciRetracement extends Component {
 	}
 	onClick(state) {
 		var {
-			xScale,
-			plotData,
+			// xScale,
+			// plotData,
 			mouseXY,
-			currentCharts,
+			// currentCharts,
 			currentItem,
 			chartConfig,
 			interactiveState,
@@ -178,7 +177,7 @@ class FibonacciRetracement extends Component {
 		return interactiveState;
 	}
 	render() {
-		var { chartCanvasType, chartConfig, plotData, xScale, xAccessor, interactiveState } = this.props;
+		var { chartConfig, plotData, xScale, xAccessor, interactiveState } = this.props;
 		var { stroke, opacity, fontFamily, fontSize, fontStroke, type, enabled } = this.props;
 
 		var { override } = this.state;
@@ -199,30 +198,32 @@ class FibonacciRetracement extends Component {
 							var text = `${ line.y.toFixed(2) } (${ line.percent.toFixed(2) }%)`;
 
 							var { className: cursorClassName, onMouseDown } = enabled
-								? ""
+								? {}
 								: (i === 0 || i === eachRetracement.length - 1)
 									? {
 										className: "react-stockcharts-ns-resize-cursor",
-										onMouseDown: this.handleResizeStart.bind(this, idx, i === 0 ? "start" : "end")
+										onMouseDown: this.handleResizeStart
 									}
 									: {
 										className: "react-stockcharts-move-cursor",
-										onMouseDown: this.handleMoveStart.bind(this, idx)
+										onMouseDown: this.handleMoveStart
 									};
 
-							return (<g key={i} className={cursorClassName}
-									onMouseDown={onMouseDown}>
-								<line
-									x1={xScale(line.x1)} y1={yScale(line.y)}
-									x2={xScale(line.x2)} y2={yScale(line.y)}
-									stroke={stroke} opacity={opacity} />
-								<line
-									x1={xScale(line.x1)} y1={yScale(line.y)}
-									x2={xScale(line.x2)} y2={yScale(line.y)}
-									stroke={stroke} strokeWidth={7} opacity={0} />
-								<text x={xScale(Math.min(line.x1, line.x2)) + 10} y={yScale(line.y) + dir * 4}
-									fontFamily={fontFamily} fontSize={fontSize} fill={fontStroke}>{text}</text>
-							</g>);
+							return (<EachRetracement key={i} idx={idx} lineIndex={i}
+										className={cursorClassName}
+										onMouseDown={onMouseDown}
+										x1={xScale(line.x1)}
+										x2={xScale(line.x2)}
+										y={yScale(line.y)}
+										stroke={stroke}
+										opacity={opacity}
+										fontFamily={fontFamily}
+										fontSize={fontSize}
+										fontStroke={fontStroke}
+										text={text}
+										textX={xScale(Math.min(line.x1, line.x2)) + 10}
+										textY={yScale(line.y) + dir * 4}
+										/>);
 						})}
 					</g>;
 				})}
@@ -231,17 +232,35 @@ class FibonacciRetracement extends Component {
 	}
 }
 
-function getCoordinate(idx, override, coords, key) {
-	if (isDefined(override)) {
-		var { index } = override;
-		if (index === idx) {
-			if (isDefined(override[key])) {
-				return override[key];
-			}
-		}
+/* eslint-disable react/prop-types */
+class EachRetracement extends Component {
+	constructor(props) {
+		super(props);
+		this.handleMouseDown = this.handleMouseDown.bind(this);
 	}
-	return coords[key];
+	handleMouseDown(e) {
+		var { idx, lineIndex, onMouseDown } = this.props;
+		onMouseDown(idx, lineIndex, e);
+	}
+	render() {
+		var { className, x1, x2, y, stroke, opacity, fontFamily, fontSize, fontStroke } = this.props;
+		var { text, textX, textY } = this.props;
+		return <g className={className}
+				onMouseDown={this.handleMouseDown}>
+			<line
+				x1={x1} y1={y}
+				x2={x2} y2={y}
+				stroke={stroke} opacity={opacity} />
+			<line
+				x1={x1} y1={y}
+				x2={x2} y2={y}
+				stroke={stroke} strokeWidth={7} opacity={0} />
+			<text x={textX} y={textY}
+				fontFamily={fontFamily} fontSize={fontSize} fill={fontStroke}>{text}</text>
+		</g>;
+	}
 }
+/* eslint-enable react/prop-types */
 
 function helper(plotData, type, xAccessor, interactive/* , chartConfig */) {
 	var { retracements, start, tempEnd } = interactive;
@@ -292,6 +311,10 @@ FibonacciRetracement.propTypes = {
 		"EXTEND", // extends from -Infinity to +Infinity
 		"BOUND", // extends between the set bounds
 	]).isRequired,
+	mouseXY: PropTypes.array,
+	currentItem: PropTypes.object,
+	interactiveState: PropTypes.object,
+	overrideInteractive: PropTypes.func,
 };
 
 FibonacciRetracement.defaultProps = {

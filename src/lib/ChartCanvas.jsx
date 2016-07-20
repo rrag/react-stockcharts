@@ -8,7 +8,6 @@ import { shouldShowCrossHairStyle } from "./utils/ChartDataUtil";
 
 import EventHandler from "./EventHandler";
 import CanvasContainer from "./CanvasContainer";
-import eodIntervalCalculator from "./scale/eodIntervalCalculator";
 import evaluator from "./scale/evaluator";
 import discontinuousTimeScaleProvider from "./scale/discontinuousTimeScaleProvider";
 
@@ -42,9 +41,7 @@ function calculateFullData(props) {
 
 	var wholeData = isDefined(plotFull)
 			? plotFull
-			: isDefined(xScaleProp.invert)
-				? inputXAccesor === identity
-				: true;
+			: inputXAccesor === identity;
 
 	// xScale = discontinuousTimeScaleProvider(data);
 	var dimensions = getDimensions(props);
@@ -196,6 +193,11 @@ class ChartCanvas extends Component {
 				<CanvasContainer ref="canvases" width={width} height={height} type={type} zIndex={zIndex}/>
 				<svg className={className} width={width} height={height} style={{ position: "absolute", zIndex: (zIndex + 5) }}>
 					{cursor}
+					<defs>
+						<clipPath id="chart-area-clip">
+							<rect x="0" y="0" width={dimensions.width} height={dimensions.height} />
+						</clipPath>
+					</defs>
 					<g transform={`translate(${margin.left + 0.5}, ${margin.top + 0.5})`}>
 						<EventHandler ref="chartContainer"
 							{...props}
@@ -267,7 +269,6 @@ ChartCanvas.defaultProps = {
 	className: "react-stockchart",
 	zIndex: 1,
 	xExtents: [d3.min, d3.max],
-	// intervalCalculator: eodIntervalCalculator,
 	// dataEvaluator: evaluator,
 	postCalculator: identity,
 	padding: 0,

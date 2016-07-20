@@ -28,6 +28,9 @@ class VolumeProfileSeries extends Component {
 
 VolumeProfileSeries.propTypes = {
 	className: PropTypes.string,
+	opacity: PropTypes.number,
+	yScale: PropTypes.func,
+	plotData: PropTypes.array,
 };
 
 VolumeProfileSeries.defaultProps = {

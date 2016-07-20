@@ -34,6 +34,13 @@ class VolumeProfileSeries extends Component {
 
 VolumeProfileSeries.propTypes = {
 	className: PropTypes.string,
+	opacity: PropTypes.number,
+	xScale: PropTypes.func,
+	yScale: PropTypes.func,
+	plotData: PropTypes.array,
+	showSessionBackground: PropTypes.bool,
+	sessionBackGround: PropTypes.string,
+	sessionBackGroundOpacity: PropTypes.number,
 };
 
 VolumeProfileSeries.defaultProps = {
@@ -45,7 +52,9 @@ VolumeProfileSeries.defaultProps = {
 	volume: d => d.volume,
 	absoluteChange: d => d.absoluteChange,
 	bySession: false,
+	/* eslint-disable no-unused-vars */
 	sessionStart: ({ d, i, plotData }) => d.idx.startOfMonth,
+	/* eslint-enable no-unused-vars */
 	orient: "left",
 	fill: ({ type }) => type === "up" ? "#6BA583" : "#FF0000",
 	// fill: ({ type }) => { var c = type === "up" ? "#6BA583" : "#FF0000"; console.log(type, c); return c },
@@ -60,8 +69,8 @@ VolumeProfileSeries.defaultProps = {
 };
 
 function helper(props, realXScale, yScale, plotData) {
-	var { xAccessor, yAccessor, stroke, type, width, sessionStart, bySession, partialStartOK, partialEndOK } = props;
-	var { bins, maxProfileWidthPercent, source, volume, absoluteChange, orient, fill, stroke, sessionBackGround } = props;
+	var { xAccessor, width, sessionStart, bySession, partialStartOK, partialEndOK } = props;
+	var { bins, maxProfileWidthPercent, source, volume, absoluteChange, orient, fill, stroke } = props;
 
 	var sessionBuilder = accumulatingWindow()
 			.discardTillStart(!partialStartOK)
@@ -125,10 +134,9 @@ function helper(props, realXScale, yScale, plotData) {
 		});
 
 		var rects = d3.zip(values, totalVolumes)
-				.map(([d, { x, ws, totalVolumeX }]) => {
+				.map(([d, { x, ws }]) => {
 					var w1 = ws[0] || { type: "up", width: 0 };
 					var w2 = ws[1] || { type: "down", width: 0 };
-					// console.log(w1.type, w2.type)
 
 					return {
 						y: yScale(d.x + d.dx),

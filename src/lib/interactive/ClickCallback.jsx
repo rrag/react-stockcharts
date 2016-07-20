@@ -11,10 +11,10 @@ class ClickCallback extends Component {
 	}
 	onClick(state) {
 		var {
-			xScale,
-			plotData,
+			// xScale,
+			// plotData,
 			mouseXY,
-			currentCharts,
+			// currentCharts,
 			currentItem,
 			chartConfig,
 			interactiveState,

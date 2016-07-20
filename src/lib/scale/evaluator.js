@@ -6,59 +6,8 @@ import {
 	getClosestItemIndexes,
 	isDefined,
 	isNotDefined,
-	isArray,
 	identity,
 } from "../utils";
-
-import eodIntervalCalculator from "./eodIntervalCalculator";
-
-
-/*
-function getFilteredResponseWhole(dataForInterval, left, right, xAccessor) {
-	return dataForInterval;
-}
-*/
-
-function getDomain(inputDomain, width, filteredData, predicate, currentDomain, canShowTheseMany, realXAccessor) {
-	if (canShowTheseMany(width, filteredData.length)) {
-		var domain = predicate
-			? inputDomain
-			: [realXAccessor(first(filteredData)), realXAccessor(last(filteredData))]; // TODO fix me later
-		return domain;
-	}
-	if (process.env.NODE_ENV !== "production") {
-		console.error(`Trying to show ${filteredData.length} items in a width of ${width}px. This is either too much or too few points`);
-	}
-	return currentDomain;
-}
-
-
-
-/* function filterHelper(data, xAccessor, realXAccessor) {
-	var width, currentDomain, currentPlotData;
-	function foo(left, right) {
-		var filteredData = getFilteredResponse(data, left, right, xAccessor);
-		if (!canShowTheseManyPeriods(width, filteredData.length)) {
-			return {
-				domain:
-			}
-		}
-	}
-			domain = getDomain(inputDomain, width, filteredData,
-				realXAccessor === xAccessor, currentDomain,
-				canShowTheseMany, realXAccessor);
-
-			// console.log(filteredData, inputDomain);
-			// console.log("HERE", left, right, last(data), last(filteredData));
-			if (domain !== currentDomain) {
-				plotData = filteredData;
-				intervalToShow = null;
-			}
-			if (isNotDefined(plotData) && showMax(width) < data.length) {
-				plotData = data.slice(data.length - showMax(width));
-				domain = [realXAccessor(first(plotData)), realXAccessor(last(plotData))];
-			}
-}*/
 
 function extentsWrapper(data, inputXAccessor, realXAccessor, width, useWholeData) {
 	function domain(inputDomain, xAccessor, currentPlotData, currentDomain) {
@@ -83,9 +32,6 @@ function extentsWrapper(data, inputXAccessor, realXAccessor, width, useWholeData
 
 		return { plotData, domain };
 	}
-
-	domain.isItemVisibleInDomain = function(d, domain) {
-	};
 
 	return domain;
 }
@@ -128,7 +74,7 @@ export default function() {
 
 	var xAccessor, useWholeData, width, xScale,
 		map, calculator = [], scaleProvider,
-		canShowTheseMany = canShowTheseManyPeriods, indexAccessor, indexMutator;
+		indexAccessor, indexMutator;
 
 	function evaluate(data) {
 
@@ -146,7 +92,7 @@ export default function() {
 			} = scaleProvider(calculatedData, xAccessor, indexAccessor, indexMutator);
 
 			return {
-				filterData: extentsWrapper(finalData, xAccessor, realXAccessor, width, useWholeData),
+				filterData: extentsWrapper(finalData, xAccessor, realXAccessor, width, useWholeData || isNotDefined(modifiedXScale.invert)),
 				xScale: modifiedXScale,
 				xAccessor: realXAccessor,
 				displayXAccessor,
@@ -155,7 +101,7 @@ export default function() {
 		}
 
 		return {
-			filterData: extentsWrapper(calculatedData, xAccessor, xAccessor, width, useWholeData),
+			filterData: extentsWrapper(calculatedData, xAccessor, xAccessor, width, useWholeData || isNotDefined(xScale.invert)),
 			xScale,
 			xAccessor,
 			displayXAccessor: xAccessor,

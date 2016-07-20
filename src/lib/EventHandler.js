@@ -7,7 +7,6 @@ import {
 	isDefined,
 	isNotDefined,
 	clearCanvas,
-	getClosestItemIndexes,
 	shallowEqual,
 } from "./utils";
 
@@ -608,15 +607,10 @@ class EventHandler extends Component {
 		});
 	}
 	render() {
-		var { chartConfig } = this.state;
-		var { dimensions } = this.props;
+		// var { chartConfig } = this.state;
+		// var { dimensions } = this.props;
 		return (
 			<g>
-				<defs>
-					<clipPath id="chart-area-clip">
-						<rect x="0" y="0" width={dimensions.width} height={dimensions.height} />
-					</clipPath>
-				</defs>
 				{this.props.children}
 			</g>
 		);

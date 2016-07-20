@@ -81,7 +81,7 @@ export default function makeInteractive(InteractiveComponent, initialState) {
 			this.updateInteractiveState(interactiveState);
 
 
-			var { id, chartCanvasType, callbackForCanvasDraw, getAllCanvasDrawCallback } = nextProps;
+			var { chartCanvasType, callbackForCanvasDraw, getAllCanvasDrawCallback } = nextProps;
 
 			if (chartCanvasType !== "svg") {
 				var temp = getAllCanvasDrawCallback().filter(each => each.type === "annotation").filter(each => each.id === id);

@@ -31,7 +31,7 @@ export default function() {
 
 		var kagiData = [];
 
-		var index = 0, prevPeak, prevTrough, direction;
+		var prevPeak, prevTrough, direction;
 		var line = {};
 
 		data.forEach(function(d) {

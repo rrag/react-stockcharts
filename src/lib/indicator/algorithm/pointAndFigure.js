@@ -89,7 +89,7 @@ export default function() {
 
 		columnData.push(column);
 
-		rawData.forEach(function(d, index) {
+		rawData.forEach(function(d) {
 			column.volume = (column.volume || 0) + d.volume;
 
 			if (!box.startOfYear) {

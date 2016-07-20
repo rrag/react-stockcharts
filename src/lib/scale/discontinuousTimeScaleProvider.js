@@ -3,7 +3,7 @@
 import d3 from "d3";
 
 import financeDiscontinuousScale from "./financeDiscontinuousScale";
-import { isDefined, isNotDefined, head, last, slidingWindow, zipper } from "../utils";
+import { head, last, slidingWindow, zipper } from "../utils";
 
 const yearFormat = d3.time.format("%Y");
 const quarterFormat = d3.time.format("%b %Y");
@@ -13,9 +13,11 @@ const dayFormat = d3.time.format("%a %d");
 const hourFormat = d3.time.format("%_I %p");
 const minuteFormat = d3.time.format("%I:%M %p");
 const secondFormat = d3.time.format("%I:%M:%S %p");
-const milliSecondFormat = d3.time.format("%L");
+// const milliSecondFormat = d3.time.format("%L");
 
 var levelDefinition = [
+
+	/* eslint-disable no-unused-vars */
 	/* 17 */(d, date, i) => d.startOfYear && date.getFullYear() % 2 === 0 && yearFormat,
 	/* 16 */(d, date, i) => d.startOfYear && yearFormat,
 	/* 15 */(d, date, i) => d.startOfQuarter && quarterFormat,
@@ -34,6 +36,8 @@ var levelDefinition = [
 	/*  2 */(d, date, i) => d.startOfMinute && minuteFormat,
 	/*  1 */(d, date, i) => d.startOf30Seconds && secondFormat,
 	/*  0 */(d, date, i) => secondFormat,
+	/* eslint-enable no-unused-vars */
+
 ];
 
 function evaluateLevel(d, date, i) {

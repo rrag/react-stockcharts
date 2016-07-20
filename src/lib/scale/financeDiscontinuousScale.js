@@ -2,7 +2,7 @@
 
 import d3 from "d3";
 
-import { isDefined, isNotDefined, head, last, slidingWindow } from "../utils";
+import { isNotDefined, head, last } from "../utils";
 
 var tickLevels = [
 	{ target: 50e2, level: 0 },
@@ -88,7 +88,7 @@ export default function financeDiscontinuousScale(index,
 			: 1;
 
 		var ticks = [];
-		for (var i = start; i < end + 1; i++) {
+		for (let i = start; i < end + 1; i++) {
 			if (index[i].level >= level) ticks.push(index[i].index);
 		}
 
@@ -96,7 +96,7 @@ export default function financeDiscontinuousScale(index,
 
 		var ticksSet = d3.set(ticks);
 
-		for (var i = 0; i < ticks.length - 1; i++) {
+		for (let i = 0; i < ticks.length - 1; i++) {
 			for (var j = i + 1; j < ticks.length; j++) {
 				if (ticks[j] - ticks[i] < distance) {
 					ticksSet.remove(index[ticks[i]].level >= index[ticks[j]].level ? ticks[j] : ticks[i]);
@@ -106,7 +106,7 @@ export default function financeDiscontinuousScale(index,
 
 		return ticksSet.values().map(d => parseInt(d, 10));
 	};
-	scale.tickFormat = function(m) {
+	scale.tickFormat = function() {
 		return function(x) {
 			var { format, date } = index[x];
 			return format(date);

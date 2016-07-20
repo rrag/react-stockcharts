@@ -1,10 +1,10 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
+import d3 from "d3";
 
-import pure from "../pure";
 import makeInteractive from "./makeInteractive";
-import { isDefined, head, last, hexToRGBA, noop, d3Window, MOUSEMOVE, MOUSEUP } from "../utils";
+import { isDefined, head, last, noop, d3Window, MOUSEMOVE, MOUSEUP } from "../utils";
 
 function getYValue(values, currentValue) {
 	var diff = values
@@ -25,8 +25,10 @@ class TrendLine extends Component {
 		this.handleEdgeDrag = this.handleEdgeDrag.bind(this);
 		this.handleEdgeDrop = this.handleEdgeDrop.bind(this);
 
+		this.handleLineMouseDown = this.handleLineMouseDown.bind(this);
+
 		this.state = {
-			hover: false,
+			hover: null,
 		};
 	}
 	removeLast(interactive) {
@@ -45,17 +47,16 @@ class TrendLine extends Component {
 	}
 	onMousemove(state) {
 		var {
-			xScale,
-			plotData,
+			// xScale,
+			// plotData,
 			mouseXY,
-			currentCharts,
+			// currentCharts,
 			currentItem,
 			chartConfig,
 			interactiveState,
 			eventMeta,
 		} = state;
 
-		var { enabled, show, eventMeta } = this.props;
 		var { yScale } = chartConfig;
 		var currentPos = currentPosition(this.props, { eventMeta, mouseXY, currentItem, yScale });
 		var status = "inprogress";
@@ -64,17 +65,17 @@ class TrendLine extends Component {
 	}
 	onClick(state) {
 		var {
-			xScale,
-			plotData,
+			// xScale,
+			// plotData,
 			mouseXY,
-			currentCharts,
+			// currentCharts,
 			currentItem,
 			chartConfig,
 			interactiveState,
 			eventMeta,
 		} = state;
 
-		var { onStart, onComplete, enabled, snapTo, snap, shouldDisableSnap } = this.props;
+		var { enabled, snapTo, snap, shouldDisableSnap } = this.props;
 		var { xAccessor } = this.props;
 
 		if (enabled) {
@@ -102,12 +103,11 @@ class TrendLine extends Component {
 		return interactiveState;
 	}
 	handleEnter(idx) {
-		console.log("ENTER", idx);
 		this.setState({
 			hover: idx
 		});
 	}
-	handleLeave(idx) {
+	handleLeave() {
 		this.setState({
 			hover: null
 		});
@@ -191,7 +191,7 @@ class TrendLine extends Component {
 		e.preventDefault();
 	}
 	handleEdgeDrag(side, idx) {
-		var { mouseXY, chartConfig, xScale, xAccessor, currentItem } = this.props;
+		var { mouseXY, chartConfig, xAccessor, currentItem } = this.props;
 		var { yScale } = chartConfig;
 
 		var xValue = xAccessor(currentItem);
@@ -262,8 +262,8 @@ class TrendLine extends Component {
 	}
 	render() {
 
-		var { enabled, show, id, eventMeta, endPointCircleFill, endPointCircleRadius } = this.props;
-		var { xScale, chartCanvasType, currentItem, chartConfig, plotData, xAccessor, interactiveState, show } = this.props;
+		var { enabled, endPointCircleFill, endPointCircleRadius } = this.props;
+		var { xScale, chartConfig, plotData, xAccessor, interactiveState, show } = this.props;
 
 		var { yScale } = chartConfig;
 
@@ -307,22 +307,22 @@ class TrendLine extends Component {
 								x1={x1} y1={y1} x2={x2} y2={y2}
 								stroke={stroke} strokeWidth={strokeWidth}
 								opacity={opacity} />
-							<line className={adjustClassName}
-								onMouseEnter={this.handleEnter.bind(this, idx)}
-								onMouseLeave={this.handleLeave.bind(this, idx)}
-								onMouseDown={this.handleLineMouseDown.bind(this, idx)}
+							<ClickableLine className={adjustClassName} idx={idx}
+								onMouseEnter={this.handleEnter}
+								onMouseLeave={this.handleLeave}
+								onMouseDown={this.handleLineMouseDown}
 								x1={x1} y1={y1} x2={x2} y2={y2}
 								stroke={stroke} strokeWidth={8} opacity={0} />
-							<circle className={adjustClassName}
-								onMouseEnter={this.handleEnter.bind(this, idx)}
-								onMouseLeave={this.handleLeave.bind(this, idx)}
-								onMouseDown={this.handleEdgeMouseDown.bind(this, "left", idx)}
+							<ClickableCircle className={adjustClassName} idx={idx} side="left"
+								onMouseEnter={this.handleEnter}
+								onMouseLeave={this.handleLeave}
+								onMouseDown={this.handleEdgeMouseDown}
 								cx={x1} cy={y1} r={endPointCircleRadius}
 								fill={endPointCircleFill} opacity={circleOpacity} />
-							<circle className={adjustClassName}
-								onMouseEnter={this.handleEnter.bind(this, idx)}
-								onMouseLeave={this.handleLeave.bind(this, idx)}
-								onMouseDown={this.handleEdgeMouseDown.bind(this, "right", idx)}
+							<ClickableCircle className={adjustClassName} idx={idx} side="right"
+								onMouseEnter={this.handleEnter}
+								onMouseLeave={this.handleLeave}
+								onMouseDown={this.handleEdgeMouseDown}
 								cx={x2} cy={y2} r={endPointCircleRadius}
 								fill={endPointCircleFill} opacity={circleOpacity} />
 						</g>);
@@ -332,6 +332,70 @@ class TrendLine extends Component {
 		);
 	}
 }
+
+/* eslint-disable react/prop-types */
+class ClickableLine extends Component {
+	constructor(props) {
+		super(props);
+		this.handleMouseEnter = this.handleMouseEnter.bind(this);
+		this.handleMouseLeave = this.handleMouseLeave.bind(this);
+		this.handleMouseDown = this.handleMouseDown.bind(this);
+	}
+	handleMouseEnter(e) {
+		var { idx, onMouseEnter } = this.props;
+		onMouseEnter(idx, e);
+	}
+	handleMouseLeave(e) {
+		var { idx, onMouseLeave } = this.props;
+		onMouseLeave(idx, e);
+	}
+	handleMouseDown(e) {
+		var { idx, onMouseDown } = this.props;
+		onMouseDown(idx, e);
+	}
+	render() {
+		var { className, x1, x2, y1, y2, stroke, strokeWidth, opacity } = this.props;
+
+		return <line className={className}
+			onMouseEnter={this.handleEnter}
+			onMouseLeave={this.handleLeave}
+			onMouseDown={this.handleMouseDown}
+			x1={x1} y1={y1} x2={x2} y2={y2}
+			stroke={stroke} strokeWidth={strokeWidth} opacity={opacity} />;
+	}
+}
+
+class ClickableCircle extends Component {
+	constructor(props) {
+		super(props);
+		this.handleMouseEnter = this.handleMouseEnter.bind(this);
+		this.handleMouseLeave = this.handleMouseLeave.bind(this);
+		this.handleMouseDown = this.handleMouseDown.bind(this);
+	}
+	handleMouseEnter(e) {
+		var { idx, onMouseEnter } = this.props;
+		onMouseEnter(idx, e);
+	}
+	handleMouseLeave(e) {
+		var { idx, onMouseLeave } = this.props;
+		onMouseLeave(idx, e);
+	}
+	handleMouseDown(e) {
+		var { idx, side, onMouseDown } = this.props;
+		onMouseDown(side, idx, e);
+	}
+	render() {
+		var { className, cx, cy, r, fill, opacity } = this.props;
+
+		return <circle className={className}
+			onMouseEnter={this.handleMouseEnter}
+			onMouseLeave={this.handleMouseLeave}
+			onMouseDown={this.handleMouseDown}
+			cx={cx} cy={cy} r={r}
+			fill={fill} opacity={opacity} />;
+	}
+}
+/* eslint-enable react/prop-types */
 
 function getCoordinate(idx, override, coords, key) {
 	if (isDefined(override)) {
@@ -359,18 +423,6 @@ function xy(snapTo, snap, shouldDisableSnap, xAccessor, eventMeta, currentItem, 
 	var xValue = xAccessor(currentItem);
 
 	return [xValue, yValue];
-}
-
-function getInteractiveState(props, initialState) {
-	var { interactiveState, id } = props;
-	// console.log(interactiveState);
-	var state = interactiveState.filter(each => each.id === id);
-	var response = { interactive: initialState };
-	if (state.length > 0) {
-		response = state[0];
-	}
-	// console.log(interactiveState, response.interactive, this.props.id);
-	return response;
 }
 
 function helper(plotData, type, xAccessor, interactive/* , chartConfig */) {
@@ -434,6 +486,12 @@ TrendLine.propTypes = {
 		"RAY", // extends to +/-Infinity in one direction
 		"LINE", // extends between the set bounds
 	]),
+	interactiveState: PropTypes.object,
+	currentItem: PropTypes.object,
+	mouseXY: PropTypes.array,
+	overrideInteractive: PropTypes.func,
+	endPointCircleFill: PropTypes.string,
+	endPointCircleRadius: PropTypes.number,
 };
 
 TrendLine.defaultProps = {

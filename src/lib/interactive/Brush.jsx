@@ -4,7 +4,7 @@ import React, { PropTypes, Component } from "react";
 
 import makeInteractive from "./makeInteractive";
 
-import { hexToRGBA, isDefined, noop } from "../utils";
+import { isDefined, noop } from "../utils";
 
 class Brush extends Component {
 	constructor(props) {
@@ -23,14 +23,14 @@ class Brush extends Component {
 	}
 	onMousemove(state) {
 		var {
-			xScale,
-			plotData,
+			// xScale,
+			// plotData,
 			mouseXY,
-			currentCharts,
+			// currentCharts,
 			currentItem,
 			chartConfig,
 			interactiveState,
-			eventMeta,
+			// eventMeta,
 		} = state;
 
 		var { enabled, xAccessor } = this.props;
@@ -49,10 +49,10 @@ class Brush extends Component {
 	}
 	onClick(state) {
 		var {
-			xScale,
-			plotData,
+			// xScale,
+			// plotData,
 			mouseXY,
-			currentCharts,
+			// currentCharts,
 			currentItem,
 			chartConfig,
 			interactiveState,
@@ -60,7 +60,7 @@ class Brush extends Component {
 		} = state;
 
 		var { displayXAccessor, xAccessor } = this.props;
-		var { enabled, onStart, onBrush } = this.props;
+		var { enabled } = this.props;
 
 		if (enabled) {
 			var { x1, y1, startItem, startClick } = interactiveState;
@@ -113,7 +113,7 @@ class Brush extends Component {
 		return interactiveState;
 	}
 	render() {
-		var { chartCanvasType, chartConfig, plotData, xScale, xAccessor, interactiveState, enabled } = this.props;
+		var { chartConfig, plotData, xScale, xAccessor, interactiveState, enabled } = this.props;
 		var { type, fill, stroke, opacity } = this.props;
 
 		var { x1, y1, x2, y2 } = interactiveState;
@@ -166,6 +166,8 @@ Brush.propTypes = {
 	stroke: PropTypes.string,
 	fill: PropTypes.string,
 	opacity: PropTypes.number,
+	displayXAccessor: PropTypes.func,
+	interactiveState: PropTypes.object,
 };
 
 Brush.defaultProps = {
