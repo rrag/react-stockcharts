@@ -3,20 +3,14 @@
 import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
-import { shallowEqual, identity, last, isDefined, isNotDefined } from "./utils";
+import { shallowEqual, identity, isDefined } from "./utils";
 import { shouldShowCrossHairStyle } from "./utils/ChartDataUtil";
 
 import EventHandler from "./EventHandler";
 import CanvasContainer from "./CanvasContainer";
 import evaluator from "./scale/evaluator";
-import discontinuousTimeScaleProvider from "./scale/discontinuousTimeScaleProvider";
 
-const second = 1000;
-const minute = 60 * second;
-const hour = 60 * minute;
-const daily = 24 * hour;
-
-const CANDIDATES_FOR_RESET = ["seriesName", /* "data",*/,
+const CANDIDATES_FOR_RESET = ["seriesName", /* "data",*/
 	"xScaleProvider", /* "xAccessor",*/"map",
 	"indexAccessor", "indexMutator"];
 
@@ -37,7 +31,7 @@ function getDimensions(props) {
 
 function calculateFullData(props) {
 	var { data: inputData, calculator, plotFull, xScale: xScaleProp } = props;
-	var { xAccessor: inputXAccesor, map, xScaleProvider, indexAccessor, indexMutator, discontinuous } = props;
+	var { xAccessor: inputXAccesor, map, xScaleProvider, indexAccessor, indexMutator } = props;
 
 	var wholeData = isDefined(plotFull)
 			? plotFull
@@ -66,7 +60,7 @@ function calculateFullData(props) {
 
 function calculateState(props) {
 
-	var { xAccessor: inputXAccesor, xExtents: xExtentsProp, xScaleProvider, plotFull, data } = props;
+	var { xAccessor: inputXAccesor, xExtents: xExtentsProp, data } = props;
 
 	var extent = typeof xExtentsProp === "function"
 		? xExtentsProp(data)
@@ -180,7 +174,7 @@ class ChartCanvas extends Component {
 	render() {
 		var cursor = getCursorStyle(this.props.children);
 
-		var { data, type, height, width, margin, className, zIndex, postCalculator, flipXScale } = this.props;
+		var { type, height, width, margin, className, zIndex, postCalculator, flipXScale } = this.props;
 		var { padding } = this.props;
 
 		var { plotData, filterData, xScale, xAccessor, dataAltered, lastItem, displayXAccessor } = this.state;
@@ -238,12 +232,12 @@ ChartCanvas.propTypes = {
 	seriesName: PropTypes.string.isRequired,
 	zIndex: PropTypes.number,
 	children: PropTypes.node.isRequired,
-	xScaleProvider: function(props, propName, componentName) {
+	xScaleProvider: function(props, propName/* , componentName */) {
 		if (isDefined(props[propName]) &&  typeof props[propName] === "function" && isDefined(props.xScale)) {
 			return new Error("Do not define both xScaleProvider and xScale choose only one");
 		}
 	},
-	xScale: function(props, propName, componentName) {
+	xScale: function(props, propName/* , componentName */) {
 		if (isDefined(props[propName]) &&  typeof props[propName] === "function" && isDefined(props.xScaleProvider)) {
 			return new Error("Do not define both xScaleProvider and xScale choose only one");
 		}

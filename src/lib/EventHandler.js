@@ -160,7 +160,7 @@ class EventHandler extends Component {
 		if (isDefined(newState)) {
 			if (!this.state.panInProgress) {
 				this.clearThreeCanvas(nextProps);
-				this.clearInteractiveCanvas(nextProps);
+				// this.clearInteractiveCanvas(nextProps);
 				this.clearCanvasDrawCallbackList();
 			}
 			this.setState({
@@ -195,15 +195,15 @@ class EventHandler extends Component {
 			clearCanvas([canvases.axes, canvases.mouseCoord, canvases.bg]);
 		}
 	}
-	clearInteractiveCanvas(props) {
+	/* clearInteractiveCanvas(props) {
 		// DO NOTHING, since now the interactive canvas is no longer used
-		/* props = props || this.props;
+		props = props || this.props;
 		var canvases = props.canvasContexts();
 		if (canvases && canvases.interactive) {
 			// console.error("CLEAR");
 			clearCanvas([canvases.interactive]);
-		}*/
-	}
+		}
+	}*/
 
 	getChildContext() {
 		// var { showingInterval } = this.state;
@@ -282,7 +282,7 @@ class EventHandler extends Component {
 		// console.log(this.state.canvases, this.props.canvasContexts())
 		return this.state.canvases || this.props.canvasContexts();
 	}
-	handleMouseEnter(e) {
+	handleMouseEnter(/* e */) {
 		// if type === svg remove state.canvases
 		// if type !== svg get canvases and set in state if state.canvases is not present already
 		/* var { type, canvasContexts } = this.props;
@@ -296,7 +296,7 @@ class EventHandler extends Component {
 			show: true,
 		});
 	}
-	handleMouseMove(mouseXY, inputType, e) {
+	handleMouseMove(mouseXY/* , inputType, e */) {
 		var { chartConfig, plotData, xScale } = this.state;
 		var { xAccessor } = this.props;
 
@@ -322,10 +322,10 @@ class EventHandler extends Component {
 		});
 	}
 
-	handleMouseLeave(e) {
+	handleMouseLeave(/* e */) {
 		var contexts = this.getCanvasContexts();
 
-		this.clearInteractiveCanvas();
+		// this.clearInteractiveCanvas();
 
 		if (contexts && contexts.mouseCoord) {
 			clearCanvas([contexts.mouseCoord]);
@@ -346,7 +346,7 @@ class EventHandler extends Component {
 		var { xScale: initialPinchXScale } = initialPinch;
 
 		var { xScale: initialXScale, chartConfig: initialChartConfig, plotData: initialPlotData } = this.state;
-		var { xAccessor, dimensions: { width }, filterData, postCalculator } = this.props;
+		var { xAccessor, filterData, postCalculator } = this.props;
 
 		var { topLeft: iTL, bottomRight: iBR } = this.pinchCoordinates(initialPinch);
 		var { topLeft: fTL, bottomRight: fBR } = this.pinchCoordinates(finalPinch);
@@ -384,7 +384,7 @@ class EventHandler extends Component {
 
 		requestAnimationFrame(() => {
 			this.clearThreeCanvas();
-			this.clearInteractiveCanvas();
+			// this.clearInteractiveCanvas();
 
 			this.clearCanvasDrawCallbackList();
 			this.setState({
@@ -403,7 +403,7 @@ class EventHandler extends Component {
 	handleZoom(zoomDirection, mouseXY) {
 		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
 		var { xScale: initialXScale, chartConfig: initialChartConfig, plotData: initialPlotData } = this.state;
-		var { xAccessor, dimensions: { width }, filterData, postCalculator } = this.props;
+		var { xAccessor, filterData, postCalculator } = this.props;
 
 		var item = getCurrentItem(initialXScale, xAccessor, mouseXY, initialPlotData),
 			cx = initialXScale(xAccessor(item)),
@@ -422,7 +422,7 @@ class EventHandler extends Component {
 		var chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData);
 		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
 		this.clearThreeCanvas();
-		this.clearInteractiveCanvas();
+		// this.clearInteractiveCanvas();
 
 		// console.log(showingInterval, updatedInterval);
 		this.clearCanvasDrawCallbackList();
@@ -452,7 +452,7 @@ class EventHandler extends Component {
 	panHelper(mouseXY) {
 		var { panStartXScale: initialXScale, chartConfig: initialChartConfig } = this.state;
 		var { panOrigin } = this.state;
-		var { xAccessor, dimensions: { width }, filterData, postCalculator } = this.props;
+		var { xAccessor, filterData, postCalculator } = this.props;
 
 		var dx = mouseXY[0] - panOrigin[0];
 
@@ -482,7 +482,7 @@ class EventHandler extends Component {
 			currentItem,
 		};
 	}
-	handlePan(mousePosition, e) {
+	handlePan(mousePosition/* , e*/) {
 		this.panHappened = true;
 		var state = this.panHelper(mousePosition);
 
@@ -492,14 +492,14 @@ class EventHandler extends Component {
 		if (this.props.type !== "svg") {
 			var { axes: axesCanvasContext, mouseCoord: mouseContext } = this.getCanvasContexts();
 			var { mouseXY, chartConfig, plotData, currentItem, xScale, currentCharts } = state;
-			var { show, interactiveState } = this.state;
+			var { show } = this.state;
 			var { canvasDrawCallbackList } = this;
 
 			requestAnimationFrame(() => {
 				// this.clearCanvas([axesCanvasContext, mouseContext]);
 				// this.clearCanvas([axesCanvasContext, mouseContext]);
 				this.clearBothCanvas();
-				this.clearInteractiveCanvas();
+				// this.clearInteractiveCanvas();
 
 				// console.log(canvasDrawCallbackList.length)
 
@@ -566,7 +566,7 @@ class EventHandler extends Component {
 	clearCanvasDrawCallbackList() {
 		this.canvasDrawCallbackList = [];
 	}
-	handlePanEnd(mousePosition, e) {
+	handlePanEnd(mousePosition) {
 		var state = this.panHelper(mousePosition);
 		// console.log(this.canvasDrawCallbackList.map(d => d.type));
 		this.hackyWayToStopPanBeyondBounds__plotData = null;
@@ -635,6 +635,9 @@ EventHandler.propTypes = {
 		})
 	]).isRequired,
 	direction: PropTypes.oneOf([-1, 1]).isRequired,
+	lastItem: PropTypes.object,
+	displayXAccessor: PropTypes.func,
+	filterData: PropTypes.func,
 	// showingInterval: PropTypes.string,
 };
 

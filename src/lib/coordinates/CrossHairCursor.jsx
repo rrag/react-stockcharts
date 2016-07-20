@@ -2,7 +2,6 @@
 
 import React, { PropTypes, Component } from "react";
 
-import EdgeCoordinate from "./EdgeCoordinate";
 import pure from "../pure";
 
 import { hexToRGBA, isDefined, isNotDefined } from "../utils";
@@ -64,6 +63,16 @@ CrossHairCursor.propTypes = {
 	height: PropTypes.number.isRequired,
 	width: PropTypes.number.isRequired,
 	mouseXY: PropTypes.array.isRequired,
+	show: PropTypes.bool,
+	xScale: PropTypes.func.isRequired,
+	chartCanvasType: PropTypes.string.isRequired,
+	chartConfig: PropTypes.array.isRequired,
+	currentItem: PropTypes.object,
+	currentCharts: PropTypes.arrayOf(PropTypes.number),
+	getCanvasContexts: PropTypes.func,
+	callbackForCanvasDraw: PropTypes.func.isRequired,
+	getAllCanvasDrawCallback: PropTypes.func,
+
 };
 
 CrossHairCursor.defaultProps = {
@@ -140,7 +149,6 @@ export default pure(CrossHairCursor, {
 
 	xScale: PropTypes.func.isRequired,
 	xAccessor: PropTypes.func.isRequired,
-	displayXAccessor: PropTypes.func.isRequired,
 	chartCanvasType: PropTypes.string.isRequired,
 	chartConfig: PropTypes.array.isRequired,
 	currentItem: PropTypes.object,

@@ -5,7 +5,7 @@ import React, { PropTypes, Component } from "react";
 import EdgeCoordinate from "./EdgeCoordinate";
 import pure from "../pure";
 
-import { hexToRGBA, isDefined, isNotDefined, shallowEqual } from "../utils";
+import { isDefined, isNotDefined, shallowEqual } from "../utils";
 
 class MouseCoordinateY extends Component {
 	componentDidMount() {
@@ -67,6 +67,14 @@ class MouseCoordinateY extends Component {
 MouseCoordinateY.propTypes = {
 	id: PropTypes.number.isRequired,
 	displayFormat: PropTypes.func.isRequired,
+
+	chartCanvasType: PropTypes.string.isRequired,
+	getCanvasContexts: PropTypes.func,
+	chartConfig: PropTypes.object.isRequired,
+	mouseXY: PropTypes.array,
+	xScale: PropTypes.func.isRequired,
+	currentCharts: PropTypes.arrayOf(PropTypes.number),
+	currentItem: PropTypes.object,
 };
 
 MouseCoordinateY.defaultProps = {
@@ -83,11 +91,11 @@ MouseCoordinateY.defaultProps = {
 	textFill: "#FFFFFF",
 };
 
-function helper(props, xScale, { id, yScale, origin }, mouseXY, currentCharts, currentItem) {
+function helper(props, xScale, { id, yScale, origin }, mouseXY, currentCharts/* , currentItem */) {
 	if (isNotDefined(mouseXY)) return null;
 	if (currentCharts.indexOf(id) < 0) return null;
 
-	var { xAccessor, width, show } = props;
+	var { width, show } = props;
 
 	var { orient, at, rectWidth, rectHeight, displayFormat } = props;
 	var { fill, opacity, fontFamily, fontSize, textFill } = props;
@@ -102,7 +110,7 @@ function helper(props, xScale, { id, yScale, origin }, mouseXY, currentCharts, c
 	var coordinate = displayFormat(yScale.invert(y));
 	var hideLine = true;
 
-	var props = {
+	var coordinateProps = {
 		coordinate,
 		show,
 		type,
@@ -117,7 +125,7 @@ function helper(props, xScale, { id, yScale, origin }, mouseXY, currentCharts, c
 		y1: y,
 		y2: y,
 	};
-	return props;
+	return coordinateProps;
 }
 
 function drawOnCanvas(canvasContext, props) {
@@ -145,12 +153,11 @@ export default pure(MouseCoordinateY, {
 	show: PropTypes.bool.isRequired,
 	currentItem: PropTypes.object,
 	chartConfig: PropTypes.object.isRequired,
-	mouseXY: PropTypes.array, // this is to avoid the flicker
+	mouseXY: PropTypes.array,
 	canvasOriginX: PropTypes.number,
 	canvasOriginY: PropTypes.number,
 
 	width: PropTypes.number.isRequired,
-	currentItem: PropTypes.object,
 	displayXAccessor: PropTypes.func.isRequired,
 	currentCharts: PropTypes.arrayOf(PropTypes.number),
 

@@ -5,7 +5,7 @@ import React, { PropTypes, Component } from "react";
 import EdgeCoordinate from "./EdgeCoordinate";
 import pure from "../pure";
 
-import { hexToRGBA, isDefined, isNotDefined, shallowEqual } from "../utils";
+import { isDefined, isNotDefined, shallowEqual } from "../utils";
 
 class MouseCoordinateX extends Component {
 	componentDidMount() {
@@ -67,6 +67,14 @@ class MouseCoordinateX extends Component {
 MouseCoordinateX.propTypes = {
 	id: PropTypes.number.isRequired,
 	displayFormat: PropTypes.func.isRequired,
+
+	chartCanvasType: PropTypes.string.isRequired,
+	getCanvasContexts: PropTypes.func,
+	chartConfig: PropTypes.object.isRequired,
+	mouseXY: PropTypes.array,
+	xScale: PropTypes.func.isRequired,
+	currentCharts: PropTypes.arrayOf(PropTypes.number),
+	currentItem: PropTypes.object,
 };
 
 MouseCoordinateX.defaultProps = {
@@ -102,7 +110,7 @@ function helper(props, xScale, { yScale }, mouseXY, currentItem) {
 	var y1 = 0, y2 = height;
 	var hideLine = true;
 
-	var props = {
+	var coordinateProps = {
 		coordinate,
 		show,
 		type,
@@ -117,7 +125,7 @@ function helper(props, xScale, { yScale }, mouseXY, currentItem) {
 		y1,
 		y2
 	};
-	return props;
+	return coordinateProps;
 }
 
 function drawOnCanvas(canvasContext, props) {
@@ -150,7 +158,6 @@ export default pure(MouseCoordinateX, {
 	canvasOriginY: PropTypes.number,
 
 	height: PropTypes.number.isRequired,
-	currentItem: PropTypes.object,
 	displayXAccessor: PropTypes.func.isRequired,
 
 	xAccessor: PropTypes.func.isRequired,

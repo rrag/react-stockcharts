@@ -52,11 +52,8 @@ class EventCapture extends Component {
 	}
 	handleLeave(e) {
 		var { eventMeta } = this.props;
-		var { height, width } = this.context;
 		this.eventMeta = eventMeta(e, ["exit"]);
 
-		var [x, y] = mousePosition(e);
-		// if (!(x >= 0 && x <= width && y >=0 && y <= height))
 		if (this.context.onMouseLeave)
 			this.context.onMouseLeave(e);
 	}
@@ -306,6 +303,8 @@ EventCapture.propTypes = {
 	onZoom: PropTypes.func,
 	onPan: PropTypes.func,
 	onMouseMove: PropTypes.func,
+	eventMeta: PropTypes.func,
+	children: PropTypes.node,
 };
 
 EventCapture.defaultProps = {
