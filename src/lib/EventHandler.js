@@ -110,7 +110,7 @@ class EventHandler extends Component {
 			};
 		} else if (dataAltered
 				&& this.props.lastItem === last(this.state.plotData)
-				/*&& xAccessor(this.props.lastItem) >= xAccessor(last(this.state.plotData))
+				/* && xAccessor(this.props.lastItem) >= xAccessor(last(this.state.plotData))
 				&& xAccessor(this.props.lastItem) <= xAccessor(last(this.state.plotData))*/) {
 
 			if (process.env.NODE_ENV !== "production") {
@@ -598,7 +598,7 @@ class EventHandler extends Component {
 
 		var response = (state.length > 0)
 			? response = state[0].interactive
-			: initialState
+			: initialState;
 		return response;
 	}
 	handleFocus(focus) {
@@ -608,7 +608,7 @@ class EventHandler extends Component {
 		});
 	}
 	render() {
-		var { chartConfig } = this.state
+		var { chartConfig } = this.state;
 		var { dimensions } = this.props;
 		return (
 			<g>

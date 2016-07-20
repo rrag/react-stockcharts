@@ -44,7 +44,8 @@ export default function() {
 		var accumulatedWindow = discardTillStart ? undefined : [];
 		var response = [];
 		var accumulatorIdx = 0;
-		for (var i = 0; i < data.length; i++) {
+		var i = 0;
+		for (i = 0; i < data.length; i++) {
 			var d = data[i];
 			// console.log(d, accumulateTill(d));
 			if (accumulateTill(d, i)) {

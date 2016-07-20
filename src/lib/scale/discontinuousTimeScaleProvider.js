@@ -76,7 +76,7 @@ var discontinuousIndexCalculatorLocalTime = discontinuousIndexCalculator
 		var startOf15Minutes = startOfMinute && nowDate.getMinutes() % 15 <= prevDate.getMinutes() % 15;
 		var startOf30Minutes = startOfMinute && nowDate.getMinutes() % 30 <= prevDate.getMinutes() % 30;
 
-		var startOfHour = nowDate.getHours() !== prevDate.getHours();;
+		var startOfHour = nowDate.getHours() !== prevDate.getHours();
 
 		var startOfEighthOfADay = startOfHour && nowDate.getHours() % 3 === 0;
 		var startOfQuarterDay = startOfHour && nowDate.getHours() % 6 === 0;
@@ -125,7 +125,7 @@ function discontinuousTimeScaleProvider(data,
 	// var interval1 = Math.round((dateAccessor(last(data)) - dateAccessor(head(data))) / data.length)
 	// console.log(interval, interval1);
 
-	var map = d3.map()
+	var map = d3.map();
 	for (var i = 0; i < data.length - 1; i++) {
 
 		var nextDate = dateAccessor(data[i + 1]);
@@ -134,18 +134,18 @@ function discontinuousTimeScaleProvider(data,
 
 		if (map.has(diff)) {
 			var count = parseInt(map.get(diff), 10) + 1;
-			map.set(diff, count)
+			map.set(diff, count);
 		} else {
-			map.set(diff, 1)
+			map.set(diff, 1);
 		}
-	};
+	}
 
 	var entries = map.entries().sort((a, b) => a.value < b.value);
 
 	// For Renko/p&f
 	var interval = entries[0].value === 1
 		? Math.round((dateAccessor(last(data)) - dateAccessor(head(data))) / data.length)
-		: parseInt(entries[0].key, 10)
+		: parseInt(entries[0].key, 10);
 
 	// console.log(interval, entries[0].key);
 
@@ -162,20 +162,20 @@ function discontinuousTimeScaleProvider(data,
 		xScale,
 		xAccessor: d => d && indexAccessor(d).index,
 		displayXAccessor: dateAccessor,
-	}
+	};
 }
 
-discontinuousTimeScaleProvider.utc = function (data,
+discontinuousTimeScaleProvider.utc = function(data,
 		dateAccessor,
 		indexAccessor,
 		indexMutator) {
 	var utcDateAccessor = d => {
 		var date = dateAccessor(d);
 		// The getTimezoneOffset() method returns the time-zone offset from UTC, in minutes, for the current locale.
-		var offsetInMillis = date.getTimezoneOffset() * 60 * 1000
+		var offsetInMillis = date.getTimezoneOffset() * 60 * 1000;
 		return new Date(date.getTime() + offsetInMillis);
-	}
+	};
 	return discontinuousTimeScaleProvider(data, utcDateAccessor, indexAccessor, indexMutator);
-}
+};
 
 export default discontinuousTimeScaleProvider;

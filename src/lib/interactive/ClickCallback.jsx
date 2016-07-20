@@ -32,7 +32,7 @@ class ClickCallback extends Component {
 			mouseXY,
 			currentItem
 		}, eventMeta);
-		return interactiveState
+		return interactiveState;
 	}
 	render() {
 		return null;

@@ -34,7 +34,7 @@ function getDomain(inputDomain, width, filteredData, predicate, currentDomain, c
 
 
 
-/*function filterHelper(data, xAccessor, realXAccessor) {
+/* function filterHelper(data, xAccessor, realXAccessor) {
 	var width, currentDomain, currentPlotData;
 	function foo(left, right) {
 		var filteredData = getFilteredResponse(data, left, right, xAccessor);
@@ -71,7 +71,7 @@ function extentsWrapper(data, inputXAccessor, realXAccessor, width, useWholeData
 
 		var filteredData = getFilteredResponse(data, left, right, xAccessor);
 
-		var plotData, domain
+		var plotData, domain;
 		if (canShowTheseManyPeriods(width, filteredData.length)) {
 			plotData = filteredData;
 			// domain = subsequent ? inputDomain : [realXAccessor(first(plotData)), realXAccessor(last(plotData))]
@@ -112,11 +112,11 @@ function getFilteredResponse(data, left, right, xAccessor) {
 
 function compose(funcs) {
 	if (funcs.length === 0) {
-		return identity
+		return identity;
 	}
 
 	if (funcs.length === 1) {
-		return funcs[0]
+		return funcs[0];
 	}
 
 	var [head, ...tail] = funcs;

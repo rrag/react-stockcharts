@@ -27,7 +27,7 @@ class TrendLine extends Component {
 
 		this.state = {
 			hover: false,
-		}
+		};
 	}
 	removeLast(interactive) {
 		var { trends, start } = interactive;
@@ -81,7 +81,7 @@ class TrendLine extends Component {
 			var { start, trends } = interactiveState;
 
 			var { yScale } = chartConfig;
-			var [xValue, yValue] = xy(snapTo, snap, shouldDisableSnap, xAccessor, eventMeta, currentItem, mouseXY, yScale)
+			var [xValue, yValue] = xy(snapTo, snap, shouldDisableSnap, xAccessor, eventMeta, currentItem, mouseXY, yScale);
 
 			if (isDefined(start)) {
 				return {
@@ -102,15 +102,15 @@ class TrendLine extends Component {
 		return interactiveState;
 	}
 	handleEnter(idx) {
-		console.log("ENTER", idx)
+		console.log("ENTER", idx);
 		this.setState({
 			hover: idx
-		})
+		});
 	}
 	handleLeave(idx) {
 		this.setState({
 			hover: null
-		})
+		});
 	}
 	handleLineMouseDown(idx, e) {
 		var captureDOM = this.refs.trend;
@@ -136,8 +136,8 @@ class TrendLine extends Component {
 
 		var [startXValue, startYValue] = this.moveStartPosition;
 
-		var dx = endXValue - startXValue
-		var dy = endYValue - startYValue
+		var dx = endXValue - startXValue;
+		var dy = endYValue - startYValue;
 
 		var { start, end } = interactiveState.trends[idx];
 
@@ -150,28 +150,28 @@ class TrendLine extends Component {
 				x2: end[0] + dx,
 				y2: end[1] + dy,
 			}
-		})
+		});
 	}
 	handleLineDrop(idx) {
 		var { overrideInteractive, interactiveState } = this.props;
 		var { override } = this.state;
 
-		if (isDefined(override)) {		
+		if (isDefined(override)) {
 			var { x1, y1, x2, y2 } = override;
 			var newTrend = {
 				start: [x1, y1],
 				end: [x2, y2]
-			}
+			};
 
 			var trends = interactiveState.trends
-				.map((each, i) => (i === idx) ? newTrend : each)
+				.map((each, i) => (i === idx) ? newTrend : each);
 
-			overrideInteractive({ trends }, () => {		
+			overrideInteractive({ trends }, () => {
 				this.setState({
 					override: null,
 					hover: null,
-				})
-			})
+				});
+			});
 		}
 
 		this.moveStartPosition = null;
@@ -205,7 +205,7 @@ class TrendLine extends Component {
 					x1: xValue,
 					y1: yValue,
 				}
-			})
+			});
 		} else {
 			this.setState({
 				hover: idx,
@@ -214,7 +214,7 @@ class TrendLine extends Component {
 					x2: xValue,
 					y2: yValue,
 				}
-			})
+			});
 		}
 
 		// console.log("DRAG", side, idx, mouseXY)
@@ -229,30 +229,30 @@ class TrendLine extends Component {
 		var newTrend = trend;
 
 		var { override } = this.state;
-		if (isDefined(override)) {		
+		if (isDefined(override)) {
 			var { x1, y1, x2, y2 } = override;
 			if (isDefined(x1) && isDefined(y1)) {
 				newTrend = {
 					start: [x1, y1],
 					end: trend.end
-				}
+				};
 			} else if (isDefined(x2) && isDefined(y2)) {
 				newTrend = {
 					start: trend.start,
 					end: [x2, y2],
-				}
+				};
 			}
 
 			var trends = interactiveState.trends
-				.map((each, i) => (i === idx) ? newTrend : each)
+				.map((each, i) => (i === idx) ? newTrend : each);
 
 
-			overrideInteractive({ trends }, () => {		
+			overrideInteractive({ trends }, () => {
 				this.setState({
 					override: null,
 					hover: null,
-				})
-			})
+				});
+			});
 		}
 
 		var win = d3Window(captureDOM);
@@ -270,7 +270,7 @@ class TrendLine extends Component {
 		var { currentPositionStroke, currentPositionStrokeWidth, currentPositionOpacity, currentPositionRadius } = this.props;
 		var { stroke, opacity, type } = this.props;
 
-		var { currentPos } = interactiveState
+		var { currentPos } = interactiveState;
 
 		var circle = (currentPos && enabled && show)
 			? <circle className="react-stockcharts-avoid-interaction" cx={xScale(currentPos[0])} cy={yScale(currentPos[1])}
@@ -282,10 +282,10 @@ class TrendLine extends Component {
 			: null;
 
 		var lines = helper(plotData, type, xAccessor, interactiveState);
-		var adjustClassName = !enabled ? "react-stockcharts-move-cursor" : ""
+		var adjustClassName = !enabled ? "react-stockcharts-move-cursor" : "";
 
 		var { override, hover } = this.state;
-		
+
 
 		var className = enabled || isDefined(override) ? "react-stockcharts-avoid-interaction" : "";
 
@@ -294,10 +294,10 @@ class TrendLine extends Component {
 				{circle}
 				{lines
 					.map((coords, idx) => {
-						var x1 = xScale(getCoordinate(idx, override, coords, "x1"))
-						var y1 = yScale(getCoordinate(idx, override, coords, "y1"))
-						var x2 = xScale(getCoordinate(idx, override, coords, "x2"))
-						var y2 = yScale(getCoordinate(idx, override, coords, "y2"))
+						var x1 = xScale(getCoordinate(idx, override, coords, "x1"));
+						var y1 = yScale(getCoordinate(idx, override, coords, "y1"));
+						var x2 = xScale(getCoordinate(idx, override, coords, "x2"));
+						var y2 = yScale(getCoordinate(idx, override, coords, "y2"));
 
 						var circleOpacity = hover === idx ? 0.5 : 0.1;
 						var strokeWidth = hover === idx ? 2 : 1;
@@ -325,7 +325,7 @@ class TrendLine extends Component {
 								onMouseDown={this.handleEdgeMouseDown.bind(this, "right", idx)}
 								cx={x2} cy={y2} r={endPointCircleRadius}
 								fill={endPointCircleFill} opacity={circleOpacity} />
-						</g>)
+						</g>);
 					})
 				}
 			</g>
@@ -347,8 +347,8 @@ function getCoordinate(idx, override, coords, key) {
 
 function currentPosition({ enabled, snapTo, snap, shouldDisableSnap, xAccessor }, { eventMeta, mouseXY, currentItem, yScale }) {
 	if (enabled && eventMeta && currentItem) {
-		
-		return xy(snapTo, snap, shouldDisableSnap, xAccessor, eventMeta, currentItem, mouseXY, yScale)
+
+		return xy(snapTo, snap, shouldDisableSnap, xAccessor, eventMeta, currentItem, mouseXY, yScale);
 	}
 }
 
@@ -384,7 +384,7 @@ function helper(plotData, type, xAccessor, interactive/* , chartConfig */) {
 		.map((each) => generateLine(type, each.start, each.end, xAccessor, plotData));
 
 	return lines;
-};
+}
 
 function generateLine(type, start, end, xAccessor, plotData) {
 	/* if (end[0] - start[0] === 0) {
@@ -451,4 +451,4 @@ TrendLine.defaultProps = {
 	endPointCircleRadius: 5,
 };
 
-export default makeInteractive(TrendLine, { trends: [] })
+export default makeInteractive(TrendLine, { trends: [] });

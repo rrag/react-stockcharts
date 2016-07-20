@@ -3,7 +3,7 @@
 import React, { PropTypes, Component } from "react";
 
 import pure from "../pure";
-import { isDefined , capitalizeFirst, noop } from "../utils";
+import { isDefined, capitalizeFirst, noop } from "../utils";
 
 function getDisplayName(Series) {
 	var name = Series.displayName || Series.name || "Series";
@@ -45,7 +45,7 @@ export default function makeInteractive(InteractiveComponent, initialState) {
 
 			this.setState({
 				interactiveState: newInteractiveState
-			}, callback)
+			}, callback);
 		}
 		componentWillMount() {
 			this.componentWillReceiveProps(this.props);
@@ -75,10 +75,10 @@ export default function makeInteractive(InteractiveComponent, initialState) {
 					if (isDefined(invoke)) {
 						interactiveState = invoke(newState);
 					}
-				})
+				});
 			}
 
-			this.updateInteractiveState(interactiveState)
+			this.updateInteractiveState(interactiveState);
 
 
 			var { id, chartCanvasType, callbackForCanvasDraw, getAllCanvasDrawCallback } = nextProps;
@@ -107,11 +107,11 @@ export default function makeInteractive(InteractiveComponent, initialState) {
 				if (isDefined(interactiveState)) {
 					var { status, callbackProps } = interactiveState;
 					if (isDefined(status)) {
-						var callback = "on" + capitalizeFirst(status)
+						var callback = "on" + capitalizeFirst(status);
 
 						if (isDefined(this.props[callback])) {
 
-							this.props[callback].apply(null, callbackProps)
+							this.props[callback].apply(null, callbackProps);
 						}
 					}
 				}
@@ -144,7 +144,7 @@ export default function makeInteractive(InteractiveComponent, initialState) {
 			}
 		}
 		render() {
-			/*var { id, forChart, getInteractiveState } = this.props;
+			/* var { id, forChart, getInteractiveState } = this.props;
 			var interactive = getInteractiveState(forChart, id, initialState);
 
 			console.log(interactive)*/

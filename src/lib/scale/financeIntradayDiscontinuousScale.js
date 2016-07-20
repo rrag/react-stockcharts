@@ -107,7 +107,7 @@ export default function financeIntradayScale(indexAccessor = d => d.idx, dateAcc
 		var end = last(data);
 		var [startIndex, endIndex] = backingLinearScale.domain();
 		var newM = ((indexAccessor(end) - indexAccessor(start)) / (endIndex - startIndex)) * m;
-		// newM > 
+		// newM >
 		// m = (end - start) * m
 
 		/* var levels;

@@ -39,7 +39,7 @@ export function d3Window(node) {
 	return d3win;
 }
 
-export const MOUSEMOVE = "mousemove.pan"
+export const MOUSEMOVE = "mousemove.pan";
 export const MOUSEUP = "mouseup.pan";
 
 export function getClosestItemIndexes(array, value, accessor, log) {

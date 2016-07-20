@@ -93,9 +93,9 @@ function drawOnCanvas(canvasContext, props) {
 
 	// console.log(props.currentCharts);
 	drawOnCanvasStatic(props, canvasContext, show, xScale, mouseXY, currentCharts, chartConfig, currentItem);
-};
+}
 
-function drawOnCanvasStatic (props, ctx, show, xScale, mouseXY, currentCharts, chartConfig, currentItem) {
+function drawOnCanvasStatic(props, ctx, show, xScale, mouseXY, currentCharts, chartConfig, currentItem) {
 	var { margin } = props;
 	var pointer = helper(props, show, xScale, mouseXY, currentCharts, chartConfig, currentItem);
 
@@ -112,7 +112,7 @@ function drawOnCanvasStatic (props, ctx, show, xScale, mouseXY, currentCharts, c
 	// console.log(pointer);
 	CrossHair.drawOnCanvasStatic(ctx, pointer);
 	ctx.restore();
-};
+}
 
 function helper(props, show, xScale, mouseXY, currentCharts, chartConfig, currentItem) {
 	var { displayXAccessor, xAccessor, height, width, snapX, xDisplayFormat } = props;
@@ -145,7 +145,7 @@ function helper(props, show, xScale, mouseXY, currentCharts, chartConfig, curren
 	var { showX, rectHeight, rectWidth } = props;
 	return { showX, rectHeight, rectWidth, height, width, mouseXY: [x, y], xDisplayValue: xDisplayFormat(displayValue), edges,
 		stroke, opacity, textStroke, textBGFill, textBGopacity, fontFamily, fontSize };
-};
+}
 
 // export default MouseCoordinates;
 export default pure(MouseCoordinates, {

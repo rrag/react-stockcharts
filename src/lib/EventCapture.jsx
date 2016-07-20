@@ -37,7 +37,7 @@ class EventCapture extends Component {
 	getChildContext() {
 		return {
 			eventMeta: this.eventMeta,
-		}
+		};
 	}
 	componentWillMount() {
 		if (this.context.onFocus) this.context.onFocus(this.props.defaultFocus);
@@ -86,13 +86,13 @@ class EventCapture extends Component {
 
 		var newPos = mousePosition(e);
 
-		if (this.mouseInteraction 
+		if (this.mouseInteraction
 				&& this.context.onMouseMove
 				&& this.props.mouseMove
 				&& !this.context.panInProgress) {
 			this.context.onMouseMove(newPos, "mouse", e);
 		}
-		if (onMouseMove) onMouseMove(newPos, e)
+		if (onMouseMove) onMouseMove(newPos, e);
 	}
 	handleMouseDown(e) {
 		var mouseEvent = e || d3.event;
@@ -342,6 +342,6 @@ EventCapture.contextTypes = {
 
 EventCapture.childContextTypes = {
 	eventMeta: PropTypes.object,
-}
+};
 
 export default EventCapture;

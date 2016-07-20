@@ -53,7 +53,7 @@ class CrossHairCursor extends Component {
 
 		return (
 			<g className="CrossHairCursor ">
-				{lines.map((each, idx) => 
+				{lines.map((each, idx) =>
 					<line key={idx} {...each} />)}
 			</g>
 		);
@@ -85,7 +85,7 @@ function helper(props, mouseXY, xScale, currentItem, show) {
 		y1: mouseXY[1],
 		y2: mouseXY[1],
 		stroke, strokeDasharray, opacity,
-	}
+	};
 	var x = snapX ? xScale(xAccessor(currentItem)) : mouseXY[0];
 	var line2 = {
 		x1: x,
@@ -93,15 +93,15 @@ function helper(props, mouseXY, xScale, currentItem, show) {
 		y1: 0,
 		y2: height,
 		stroke, strokeDasharray, opacity,
-	}
+	};
 	return [line1, line2];
-};
+}
 function drawOnCanvas(canvasContext, props) {
 	var { mouseXY, currentCharts, chartConfig, currentItem, xScale, show } = props;
 
 	// console.log(props.currentCharts);
 	drawOnCanvasStatic(props, canvasContext, show, xScale, mouseXY, currentCharts, chartConfig, currentItem);
-};
+}
 
 function drawOnCanvasStatic(props, ctx, show, xScale, mouseXY, currentCharts, chartConfig, currentItem) {
 	var { margin } = props;
@@ -120,16 +120,16 @@ function drawOnCanvasStatic(props, ctx, show, xScale, mouseXY, currentCharts, ch
 
 			ctx.strokeStyle = hexToRGBA(line.stroke, line.opacity);
 			var dashArray = line.strokeDasharray.split(",").map(d => +d);
-			ctx.setLineDash(dashArray)
+			ctx.setLineDash(dashArray);
 			ctx.beginPath();
 			ctx.moveTo(line.x1, line.y1);
 			ctx.lineTo(line.x2, line.y2);
 			ctx.stroke();
-		})
+		});
 
 		ctx.restore();
 	}
-};
+}
 
 export default pure(CrossHairCursor, {
 	width: PropTypes.number.isRequired,

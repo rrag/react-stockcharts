@@ -239,12 +239,12 @@ ChartCanvas.propTypes = {
 	xScaleProvider: function(props, propName, componentName) {
 		if (isDefined(props[propName]) &&  typeof props[propName] === "function" && isDefined(props.xScale)) {
 			return new Error("Do not define both xScaleProvider and xScale choose only one");
-		} 
+		}
 	},
 	xScale: function(props, propName, componentName) {
 		if (isDefined(props[propName]) &&  typeof props[propName] === "function" && isDefined(props.xScaleProvider)) {
 			return new Error("Do not define both xScaleProvider and xScale choose only one");
-		} 
+		}
 	},
 	postCalculator: PropTypes.func.isRequired,
 	flipXScale: PropTypes.bool.isRequired,

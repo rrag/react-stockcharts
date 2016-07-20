@@ -16,7 +16,7 @@ class FibonacciRetracement extends Component {
 
 		this.state = {
 			hover: false,
-		}
+		};
 	}
 	removeLast(interactive) {
 		var { retracements, start } = interactive;
@@ -50,7 +50,7 @@ class FibonacciRetracement extends Component {
 	handleResizeStart(idx, line, e) {
 		var { mouseXY } = this.props;
 
-		console.log(idx, line)
+		console.log(idx, line);
 		e.preventDefault();
 	}
 	handleMove(idx) {
@@ -63,14 +63,14 @@ class FibonacciRetracement extends Component {
 		var [startXValue, startYValue] = this.moveStartPosition;
 		var [endXValue, endYValue] = [xAccessor(currentItem), yScale.invert(endY)];
 
-		var dx = endXValue - startXValue
-		var dy = endYValue - startYValue
+		var dx = endXValue - startXValue;
+		var dy = endYValue - startYValue;
 
 		var { start, end } = interactiveState.retracements[idx];
-		var newStart = [start[0] + dx, start[1] + dy]
-		var newEnd = [end[0] + dx, end[1] + dy]
+		var newStart = [start[0] + dx, start[1] + dy];
+		var newEnd = [end[0] + dx, end[1] + dy];
 
-		var retracement = generateLine(type, newStart, newEnd, xAccessor, plotData)
+		var retracement = generateLine(type, newStart, newEnd, xAccessor, plotData);
 
 		var override = {
 			index: idx,
@@ -81,7 +81,7 @@ class FibonacciRetracement extends Component {
 
 		this.setState({
 			override
-		})
+		});
 	}
 	handleMoveEnd(idx) {
 		var win = d3Window(this.refs.fib);
@@ -91,13 +91,13 @@ class FibonacciRetracement extends Component {
 
 		if (isDefined(override)) {
 			var retracements = interactiveState.retracements
-				.map((each, i) => (i === idx) ? { start, end } : each)
+				.map((each, i) => (i === idx) ? { start, end } : each);
 
-			overrideInteractive({ retracements }, () => {		
+			overrideInteractive({ retracements }, () => {
 				this.setState({
 					override: null
-				})
-			})
+				});
+			});
 		}
 		this.moveStartPosition = null;
 		d3.select(win)
@@ -106,10 +106,10 @@ class FibonacciRetracement extends Component {
 
 	}
 	isStart(interactive) {
-		return interactive.status === "start"
+		return interactive.status === "start";
 	}
 	isComplete(interactive) {
-		return interactive.status === "complete"
+		return interactive.status === "complete";
 	}
 	onMousemove(state) {
 		var {
@@ -185,19 +185,19 @@ class FibonacciRetracement extends Component {
 
 		var { yScale } = chartConfig;
 		var retracements = helper(plotData, type, xAccessor, interactiveState, chartConfig);
-		var className = enabled || isDefined(override) ? "react-stockcharts-avoid-interaction" : ""
+		var className = enabled || isDefined(override) ? "react-stockcharts-avoid-interaction" : "";
 		return (
 			<g className={className} ref="fib">
 				{retracements.map((eachRetracement, idx) => {
 					if (isDefined(override) && idx === override.index) {
-						eachRetracement = override.retracement
+						eachRetracement = override.retracement;
 					}
 					var dir = eachRetracement[0].y1 > eachRetracement[eachRetracement.length - 1].y1 ? 3 : -1.3;
 
 					return <g key={idx}>
 						{eachRetracement.map((line, i) => {
 							var text = `${ line.y.toFixed(2) } (${ line.percent.toFixed(2) }%)`;
-	
+
 							var { className: cursorClassName, onMouseDown } = enabled
 								? ""
 								: (i === 0 || i === eachRetracement.length - 1)
@@ -255,7 +255,7 @@ function helper(plotData, type, xAccessor, interactive/* , chartConfig */) {
 		.map(each => generateLine(type, each.start, each.end, xAccessor, plotData));
 
 	return lines;
-};
+}
 
 function generateLine(type, start, end, xAccessor, plotData) {
 	var dy = end[1] - start[1];
@@ -267,7 +267,7 @@ function generateLine(type, start, end, xAccessor, plotData) {
 			y: (end[1] - (each / 100) * dy),
 		}));
 
-	return retracements
+	return retracements;
 }
 
 FibonacciRetracement.propTypes = {

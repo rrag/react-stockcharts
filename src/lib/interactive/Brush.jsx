@@ -36,14 +36,14 @@ class Brush extends Component {
 		var { enabled, xAccessor } = this.props;
 		var { x1, y1 } = interactiveState;
 
-		var status = "mousemove"
+		var status = "mousemove";
 		if (enabled && isDefined(x1) && isDefined(y1)) {
 			var { yScale } = chartConfig;
 
 			var x2 = xAccessor(currentItem);
 			var y2 = yScale.invert(mouseXY[1]);
 
-			return { ...interactiveState, x2, y2, status }
+			return { ...interactiveState, x2, y2, status };
 		}
 		return { ...interactiveState, status, callbackProps: null };
 	}
@@ -73,7 +73,7 @@ class Brush extends Component {
 				return {
 					...interactiveState,
 					status: null,
-				}
+				};
 			} else if (isDefined(x1)) {
 				var callbackProps = [{
 					x1: displayXAccessor(startItem),
@@ -96,7 +96,7 @@ class Brush extends Component {
 					callbackProps,
 				};
 				// return { interactive: onCompleteBrushCoords, callback: onCompleteCallback };
-				return interactive
+				return interactive;
 			} else if (eventMeta.button === 0) {
 
 				return {
@@ -149,7 +149,7 @@ function helper(type, plotData, xScale, xAccessor, chartConfig, { x1, y1, x2, y2
 		width,
 		height,
 	};
-};
+}
 
 Brush.propTypes = {
 	enabled: PropTypes.bool.isRequired,

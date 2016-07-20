@@ -60,71 +60,71 @@ VolumeProfileSeries.defaultProps = {
 };
 
 function helper(props, realXScale, yScale, plotData) {
-		var { xAccessor, yAccessor, stroke, type, width, sessionStart, bySession, partialStartOK, partialEndOK } = props;
-		var { bins, maxProfileWidthPercent, source, volume, absoluteChange, orient, fill, stroke, sessionBackGround } = props;
+	var { xAccessor, yAccessor, stroke, type, width, sessionStart, bySession, partialStartOK, partialEndOK } = props;
+	var { bins, maxProfileWidthPercent, source, volume, absoluteChange, orient, fill, stroke, sessionBackGround } = props;
 
-		var sessionBuilder = accumulatingWindow()
+	var sessionBuilder = accumulatingWindow()
 			.discardTillStart(!partialStartOK)
 			.discardTillEnd(!partialEndOK)
 			.accumulateTill((d, i) => {
-				return sessionStart({ d, i, plotData })
+				return sessionStart({ d, i, plotData });
 			})
 			.accumulator(identity);
 
-		var dx = plotData.length > 1 ? realXScale(xAccessor(plotData[1])) - realXScale(xAccessor(head(plotData))) : 0;
+	var dx = plotData.length > 1 ? realXScale(xAccessor(plotData[1])) - realXScale(xAccessor(head(plotData))) : 0;
 
-		var sessions = bySession ? sessionBuilder(plotData) : [plotData];
+	var sessions = bySession ? sessionBuilder(plotData) : [plotData];
 
-		var allRects = sessions.map(session => {
+	var allRects = sessions.map(session => {
 
-			var begin = bySession ? realXScale(xAccessor(head(session))) : 0;
-			var finish = bySession ? realXScale(xAccessor(last(session))) : width;
-			var sessionWidth = finish - begin + dx;
+		var begin = bySession ? realXScale(xAccessor(head(session))) : 0;
+		var finish = bySession ? realXScale(xAccessor(last(session))) : width;
+		var sessionWidth = finish - begin + dx;
 
-			var histogram = d3.layout.histogram()
+		var histogram = d3.layout.histogram()
 				.value(source)
 				.bins(bins);
 
-			var rollup = d3.nest()
+		var rollup = d3.nest()
 				.key(d => d.direction)
 				.sortKeys(orient === "right" ? d3.descending : d3.ascending)
 				.rollup(leaves => d3.sum(leaves, d => d.volume));
 
-			var values = histogram(session)
-			var volumeInBins = values
+		var values = histogram(session);
+		var volumeInBins = values
 				.map(arr => arr.map(d => absoluteChange(d) > 0 ? { direction: "up", volume: volume(d) } : { direction: "down", volume: volume(d) }))
 				.map(arr => rollup.entries(arr));
 
-			var volumeValues = volumeInBins
+		var volumeValues = volumeInBins
 				.map(each => d3.sum(each.map(d => d.values)));
 
-			var base = xScale => head(xScale.range());
+		var base = xScale => head(xScale.range());
 
-			var [start, end] = orient === "right"
+		var [start, end] = orient === "right"
 				? [begin, begin + sessionWidth * maxProfileWidthPercent / 100]
 				: [finish, finish - sessionWidth * (100 - maxProfileWidthPercent) / 100];
 
-			var xScale = d3.scale.linear()
+		var xScale = d3.scale.linear()
 				.domain([0, d3.max(volumeValues)])
 				.range([start, end]);
 
-			var totalVolumes = volumeInBins.map(volumes => {
+		var totalVolumes = volumeInBins.map(volumes => {
 
-				var totalVolume = d3.sum(volumes, d => d.values);
-				var totalVolumeX = xScale(totalVolume);
-				var width = base(xScale) - totalVolumeX;
-				var x = width < 0 ? totalVolumeX + width : totalVolumeX;
+			var totalVolume = d3.sum(volumes, d => d.values);
+			var totalVolumeX = xScale(totalVolume);
+			var width = base(xScale) - totalVolumeX;
+			var x = width < 0 ? totalVolumeX + width : totalVolumeX;
 
-				var ws = volumes.map(d => {
-					return {
-						type: d.key,
-						width: d.values * Math.abs(width) / totalVolume,
-					};
-				});
-				return { x, ws, totalVolumeX };
+			var ws = volumes.map(d => {
+				return {
+					type: d.key,
+					width: d.values * Math.abs(width) / totalVolume,
+				};
 			});
+			return { x, ws, totalVolumeX };
+		});
 
-			var rects = d3.zip(values, totalVolumes)
+		var rects = d3.zip(values, totalVolumes)
 				.map(([d, { x, ws, totalVolumeX }]) => {
 					var w1 = ws[0] || { type: "up", width: 0 };
 					var w2 = ws[1] || { type: "down", width: 0 };
@@ -144,15 +144,15 @@ function helper(props, realXScale, yScale, plotData) {
 					};
 				});
 
-			var sessionBg = {
-				x: begin,
-				y: last(rects).y,
-				height: head(rects).y - last(rects).y + head(rects).height,
-				width: sessionWidth,
-			};
+		var sessionBg = {
+			x: begin,
+			y: last(rects).y,
+			height: head(rects).y - last(rects).y + head(rects).height,
+			width: sessionWidth,
+		};
 
-			return { rects, sessionBg };
-		});
+		return { rects, sessionBg };
+	});
 
 	return {
 		rects: d3.merge(allRects.map(d => d.rects)),
@@ -164,7 +164,7 @@ function helper(props, realXScale, yScale, plotData) {
 VolumeProfileSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	var { opacity, sessionBackGround, sessionBackGroundOpacity, showSessionBackground } = props;
 
-	var { rects, sessionBg } = helper(props, xScale, yScale, plotData)
+	var { rects, sessionBg } = helper(props, xScale, yScale, plotData);
 
 	if (showSessionBackground) {
 		ctx.fillStyle = hexToRGBA(sessionBackGround, sessionBackGroundOpacity);
@@ -180,7 +180,7 @@ VolumeProfileSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	}
 
 	rects.forEach(each => {
-		var { x, y, height, w1, w2, stroke1, stroke2, fill1, fill2 } = each
+		var { x, y, height, w1, w2, stroke1, stroke2, fill1, fill2 } = each;
 
 
 		if (w1 > 0) {
@@ -208,6 +208,6 @@ VolumeProfileSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 		}
 
 	});
-}
+};
 
 export default wrap(VolumeProfileSeries);

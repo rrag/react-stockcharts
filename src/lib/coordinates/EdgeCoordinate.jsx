@@ -27,7 +27,7 @@ class EdgeCoordinate extends Component {
 				? `M0,0L0,${ rectHeight }L${ rectWidth },${ rectHeight }L${ rectWidth + arrowWidth },10L${ rectWidth },0L0,0L0,0`
 				: `M0,${ arrowWidth }L${ arrowWidth },${ rectHeight }L${ rectWidth + arrowWidth },${ rectHeight }L${ rectWidth + arrowWidth },0L${ arrowWidth },0L0,${ arrowWidth }`;
 
-				coordinateBase = edge.orient === "left" || edge.orient === "right"
+			coordinateBase = edge.orient === "left" || edge.orient === "right"
 				? <g transform={`translate(${edge.coordinateBase.edgeXRect},${edge.coordinateBase.edgeYRect})`}>
 						<path d={path} key={1} className="react-stockchart-text-background"
 							height={rectHeight} width={rectWidth}
@@ -104,7 +104,7 @@ function helper(props) {
 
 		edgeXRect = (orient === "right") ? edgeAt + 1 : edgeAt - rectWidth - arrowWidth - 1;
 		edgeYRect = y1 - (rectHeight / 2);
-		edgeXText = (orient === "right") ? edgeAt + (rectWidth / 2) + arrowWidth: edgeAt - (rectWidth / 2) - arrowWidth;
+		edgeXText = (orient === "right") ? edgeAt + (rectWidth / 2) + arrowWidth : edgeAt - (rectWidth / 2) - arrowWidth;
 		edgeYText = y1;
 	} else {
 		edgeXRect = x1 - (rectWidth / 2);
@@ -128,7 +128,7 @@ function helper(props) {
 	return {
 		coordinateBase, coordinate, line, orient
 	};
-};
+}
 
 EdgeCoordinate.drawOnCanvasStatic = (ctx, props) => {
 	props = { ...EdgeCoordinate.defaultProps, ...props };

@@ -95,9 +95,9 @@ function helper(props, xScale, { id, yScale, origin }, mouseXY, currentCharts, c
 	var x1 = 0, x2 = width;
 	var edgeAt = (at === "right")
 		? width
-		: 0
+		: 0;
 
-	var type = "horizontal"
+	var type = "horizontal";
 	var y = mouseXY[1] - origin[1];
 	var coordinate = displayFormat(yScale.invert(y));
 	var hideLine = true;
@@ -116,11 +116,11 @@ function helper(props, xScale, { id, yScale, origin }, mouseXY, currentCharts, c
 		x2,
 		y1: y,
 		y2: y,
-	}
+	};
 	return props;
-};
+}
 
-function drawOnCanvas (canvasContext, props) {
+function drawOnCanvas(canvasContext, props) {
 	var { chartConfig, currentItem, xScale, mouseXY, show, currentCharts } = props;
 
 	drawOnCanvasStatic(props, canvasContext, show, xScale, mouseXY, currentCharts, chartConfig, currentItem);
@@ -139,7 +139,7 @@ function drawOnCanvasStatic(props, ctx, show, xScale, mouseXY, currentCharts, ch
 	EdgeCoordinate.drawOnCanvasStatic(ctx, edgeProps);
 
 	ctx.restore();
-};
+}
 
 export default pure(MouseCoordinateY, {
 	show: PropTypes.bool.isRequired,

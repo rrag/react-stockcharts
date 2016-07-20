@@ -68,7 +68,7 @@ class Interactive extends Component {
 		var { className } = this.props;
 		var { origin } = this.state.chartConfig;
 		var [x, y] = origin;
-		// 
+		//
 		return (
 			<g transform={`translate(${ x }, ${ y })`} className={className}>
 				{this.props.children}
@@ -85,7 +85,7 @@ Interactive.childContextTypes = {
 	currentCharts: PropTypes.arrayOf(PropTypes.number),
 	currentItem: PropTypes.object,
 	interactiveState: PropTypes.array.isRequired,
-}
+};
 
 Interactive.propTypes = {
 	className: PropTypes.string,

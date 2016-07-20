@@ -87,10 +87,10 @@ export default function financeDiscontinuousScale(index,
 			? (last(backingTicks) - head(backingTicks)) / (backingTicks.length - 1) / 4
 			: 1;
 
-		var ticks = []
+		var ticks = [];
 		for (var i = start; i < end + 1; i++) {
 			if (index[i].level >= level) ticks.push(index[i].index);
-		};
+		}
 
 		// subList.filter(each => each.level >= level).map(d => d.index);
 
@@ -99,7 +99,7 @@ export default function financeDiscontinuousScale(index,
 		for (var i = 0; i < ticks.length - 1; i++) {
 			for (var j = i + 1; j < ticks.length; j++) {
 				if (ticks[j] - ticks[i] < distance) {
-					ticksSet.remove(index[ticks[i]].level >= index[ticks[j]].level ? ticks[j] : ticks[i])
+					ticksSet.remove(index[ticks[i]].level >= index[ticks[j]].level ? ticks[j] : ticks[i]);
 				}
 			}
 		}

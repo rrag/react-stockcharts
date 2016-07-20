@@ -95,10 +95,10 @@ function helper(props, xScale, { yScale }, mouseXY, currentItem) {
 	var x = snapX ? xScale(xAccessor(currentItem)) : mouseXY[0];
 	var edgeAt = (at === "bottom")
 		? height
-		: 0
+		: 0;
 
 	var coordinate = snapX ? displayFormat(displayXAccessor(currentItem)) : displayFormat(xScale.invert(x));
-	var type = "vertical"
+	var type = "vertical";
 	var y1 = 0, y2 = height;
 	var hideLine = true;
 
@@ -116,11 +116,11 @@ function helper(props, xScale, { yScale }, mouseXY, currentItem) {
 		x2: x,
 		y1,
 		y2
-	}
+	};
 	return props;
-};
+}
 
-function drawOnCanvas (canvasContext, props) {
+function drawOnCanvas(canvasContext, props) {
 	var { chartConfig, currentItem, xScale, mouseXY, currentCharts, show } = props;
 
 	drawOnCanvasStatic(props, canvasContext, show, xScale, mouseXY, currentCharts, chartConfig, currentItem);
@@ -139,7 +139,7 @@ function drawOnCanvasStatic(props, ctx, show, xScale, mouseXY, currentCharts, ch
 	EdgeCoordinate.drawOnCanvasStatic(ctx, edgeProps);
 
 	ctx.restore();
-};
+}
 
 export default pure(MouseCoordinateX, {
 	show: PropTypes.bool.isRequired,
@@ -152,7 +152,7 @@ export default pure(MouseCoordinateX, {
 	height: PropTypes.number.isRequired,
 	currentItem: PropTypes.object,
 	displayXAccessor: PropTypes.func.isRequired,
-	
+
 	xAccessor: PropTypes.func.isRequired,
 	xScale: PropTypes.func.isRequired,
 	chartId: PropTypes.number.isRequired,
