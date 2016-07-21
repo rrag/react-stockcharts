@@ -1,3 +1,104 @@
+## v0.5.0
+
+#### Breaking Changes
+
+1. Removed `financeEODDiscontiniousScale`, there is a new discontinious scale which supports both eod and intraday - Thank you [@brobits](https://github.com/brobits)
+    
+    in `0.4`
+
+        <ChartCanvas ...
+            discontinous xScale={financeEODDiscontiniousScale()}
+            ...>
+
+    in `0.5`
+
+        <ChartCanvas ...
+            xScaleProvider={discontinuousTimeScaleProvider}
+            ...>
+
+    `discontinous` prop is also removed. However should you choose to use any of the scales provided by d3, you can use them without any changes from `0.4`
+
+    in `0.4`
+
+        <ChartCanvas ...
+            xScale={d3.time.scale()}
+            ...>
+
+    in `0.5`
+
+        <ChartCanvas ...
+            xScale={d3.time.scale()}
+            ...>
+
+    no changes here when using an existing d3 scale, `xScaleProvider` is useful only when you have to work with a discontinuous scale
+
+1. Removed `MouseCoordinates`, use `MouseCoordinateX`, `MouseCoordinateY` and `CrossHairCursor` together to get similar results. Breaking out one component into multiple gave a lot more flexibility and also helps in removing the awkward props `yMousePointerDisplayLocation`, `yMousePointerDisplayFormat` from `Chart`
+1. Removed `yMousePointerDisplayLocation`, `yMousePointerDisplayFormat` from `Chart`, Use `MouseCoordinateY` instead
+1. Interactive indicators are `svg` only. This is most likely a transitional change till they get rewritten again in a future version to support canvas, be on the lookout for another possibly breaking change on interactive indicators
+
+    Interactive indicators are no longer placed inside a `Chart`, they live inside `EventCapture`. Placing them on top of the event capture `rect` has helped in making [#94](https://github.com/rrag/react-stockcharts/issues/94) possible
+
+    in `0.4`
+
+        <ChartCanvas ...>
+            <Chart id={0} ...>
+                ...
+                <TrendLine ... />
+                ...
+            </Chart>
+            ...
+            <EventCapture ... />
+            ...
+        </ChartCanvas>
+
+    in `0.5`
+
+        <ChartCanvas ...>
+            <Chart id={0} ...>
+                ...
+            </Chart>
+            ...
+            <EventCapture ... >
+                <TrendLine forChart={0} ... />
+            </EventCapture>
+            ...
+        </ChartCanvas>
+
+    look for more details in the [documentation](#/trendline) page
+
+
+#### New features
+
+1. Support both React `0.14` and React `15`
+1. Annotations for events [#54](https://github.com/rrag/react-stockcharts/issues/54) - [more details](#/annotations)
+1. Buy & sell signals using Annotation - [more](#/ma_crossover_using_text_annotation) [details](#/ma_crossover_using_svg_shape)
+1. Labels - Look at how Chart title and axis labels [more details](#/annotations)
+1. Hover tooltip - [more details](#/hover_tooltip)
+1. intraday scale - [more details](#/intra_day_with_discontinuous_scale)
+1. Better edge coordinate - [#79](https://github.com/rrag/react-stockcharts/pull/79) - Thank you [@cesardeazevedo](https://github.com/cesardeazevedo) - 
+1. Volume profile - Refer to documentation for [volume profile](#/volume_profile) and [volume profile by session](#/volume_profile_by_session) Thank you [@aajtodd](https://github.com/aajtodd) for great documentation references
+
+#### Contributors
+
+I thank all the contributors for taking your time to help make this better
+
+1. [@akinoniku](https://github.com/akinoniku) for [#88](https://github.com/rrag/react-stockcharts/pull/88)
+1. [@brobits](https://github.com/brobits) for [#69](https://github.com/rrag/react-stockcharts/pull/69)
+1. [@cesardeazevedo](https://github.com/cesardeazevedo) for [#79](https://github.com/rrag/react-stockcharts/pull/79), [#97](https://github.com/rrag/react-stockcharts/pull/97)
+
+Special thanks to
+[@rsklyar](https://github.com/rsklyar)
+[@iNikNik](https://github.com/iNikNik)
+[@Pinxie](https://github.com/Pinxie)
+[@WaiSiuKei](https://github.com/WaiSiuKei)
+[@itsjimbo](https://github.com/itsjimbo)
+[@cesardeazevedo](https://github.com/cesardeazevedo)
+[@aajtodd](https://github.com/aajtodd)
+[@XmelesX](https://github.com/XmelesX)
+[@raptoria](https://github.com/raptoria)
+for your constant support, providing ideas for new features, suggestions for improvement and identifying defects
+
+
 ## v0.4.0
 
 #### Breaking Changes
