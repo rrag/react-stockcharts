@@ -15,7 +15,7 @@ var { EdgeIndicator } = ReStock.coordinates;
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, StochasticTooltip } = ReStock.tooltip;
 
 var { XAxis, YAxis } = ReStock.axes;
-var { stochasticOscilator, ema } = ReStock.indicator;
+var { stochasticOscillator, ema } = ReStock.indicator;
 var { fitWidth } = ReStock.helper;
 
 class CandleStickChartWithFullStochasticsIndicator extends React.Component {
@@ -44,17 +44,17 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 			.merge((d, c) => {d.ema50 = c})
 			.accessor(d => d.ema50);
 
-		var slowSTO = stochasticOscilator()
+		var slowSTO = stochasticOscillator()
 			.windowSize(14)
 			.kWindowSize(1)
 			.merge((d, c) => {d.slowSTO = c})
 			.accessor(d => d.slowSTO);
-		var fastSTO = stochasticOscilator()
+		var fastSTO = stochasticOscillator()
 			.windowSize(14)
 			.kWindowSize(3)
 			.merge((d, c) => {d.fastSTO = c})
 			.accessor(d => d.fastSTO);
-		var fullSTO = stochasticOscilator()
+		var fullSTO = stochasticOscillator()
 			.windowSize(14)
 			.kWindowSize(3)
 			.dWindowSize(4)

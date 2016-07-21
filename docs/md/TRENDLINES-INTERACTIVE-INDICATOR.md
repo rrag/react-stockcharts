@@ -1,5 +1,5 @@
 - create a line - click, mousemove, click
-	- by default the line edge snaps to the nearest high or low, press Shift when you click to disable shap temporarily
+	- by default the line edge snaps to the nearest high or low, press Shift when you click to disable snap temporarily
 - Once a line is drawn it gets out of draw mode automatically. To get back into draw mode again - Press D
 - Delete the last drawn line - Press DEL
 - Get out of draw mode - Press ESC

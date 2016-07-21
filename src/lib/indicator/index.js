@@ -11,7 +11,7 @@ import renko from "./renko";
 import macd from "./macd";
 import rsi from "./rsi";
 import atr from "./atr";
-import stochasticOscilator from "./stochasticOscilator";
+import stochasticOscillator from "./stochasticOscillator";
 import forceIndex from "./forceIndex";
 import elderRay from "./elderRay";
 import change from "./change";
@@ -29,7 +29,7 @@ export {
 	macd,
 	rsi,
 	atr,
-	stochasticOscilator,
+	stochasticOscillator,
 	forceIndex,
 	elderRay,
 	change,

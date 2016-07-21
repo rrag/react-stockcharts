@@ -25,4 +25,4 @@ Look!!! there is more than one `Chart` there. Each `Chart` has different `yExten
 
 Remember all `Chart`s use the same `data` and `xScale` but each `Chart` has `yScale`.
 
-But... I dont want the Volume chart to span the whole chart height. I got you covered.
+But... I don't want the Volume chart to span the whole chart height. I got you covered.

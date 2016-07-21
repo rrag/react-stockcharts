@@ -58,7 +58,7 @@ var CHART_FEATURES = {
 	pages: [
 		require("lib/page/MousePointerPage").default,
 		require("lib/page/ZoomAndPanPage").default,
-		require("lib/page/IntraDayContiniousDataPage").default,
+		require("lib/page/IntraDayContinuousDataPage").default,
 		require("lib/page/EquityIntraDayDataPage").default,
 		require("lib/page/EdgeCoordinatesPage").default,
 		require("lib/page/AnnotationsPage").default,
@@ -163,7 +163,7 @@ function loadPage() {
 	var promiseMSFTfull = fetch("data/MSFT_full.tsv")
 		.then(response => response.text())
 		.then(data => d3.tsv.parse(data, parseData(parseDate)));
-	var promiseIntraDayContinious = fetch("data/bitfinex_xbtusd_1m.csv")
+	var promiseIntraDayContinuous = fetch("data/bitfinex_xbtusd_1m.csv")
 		.then(response => response.text())
 		.then(data => d3.csv.parse(data, parseData(parseDateTime)))
 	var promiseIntraDayDiscontinuous = fetch("data/MSFT_INTRA_DAY.tsv")
@@ -185,9 +185,9 @@ function loadPage() {
 	var promisegroupedBarData = fetch("data/groupedBarData.json")
 		.then(response => response.json())
 
-	Promise.all([promiseMSFT, promiseMSFTfull, promiseIntraDayContinious, promiseIntraDayDiscontinuous, promiseCompare, promiseBubbleData, promiseBarData, promisegroupedBarData])
+	Promise.all([promiseMSFT, promiseMSFTfull, promiseIntraDayContinuous, promiseIntraDayDiscontinuous, promiseCompare, promiseBubbleData, promiseBarData, promisegroupedBarData])
 		.then(function (values) {
-			var [MSFT, MSFTfull, intraDayContinious, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData] = values;
+			var [MSFT, MSFTfull, intraDayContinuous, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData] = values;
 			var horizontalBarData = barData.map(({x, y}) => ({ x: y, y: x }))
 			var horizontalGroupedBarData = groupedBarData.map(d => {
 					return {
@@ -199,13 +199,13 @@ function loadPage() {
 					}
 				});
 
-			renderPage(MSFT, MSFTfull, intraDayContinious, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
-			// renderPartialPage(MSFT, MSFTfull, intraDayContinious, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
+			renderPage(MSFT, MSFTfull, intraDayContinuous, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
+			// renderPartialPage(MSFT, MSFTfull, intraDayContinuous, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
 		})
 
 }
 
-function renderPage(data, dataFull, intraDayContinious, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData) {
+function renderPage(data, dataFull, intraDayContinuous, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData) {
 	var selected = location.hash.replace("#/", "");
 	var selectedPage = pages.filter((page) => (compressString(page.title) === compressString(selected)));
 
@@ -249,7 +249,7 @@ function renderPage(data, dataFull, intraDayContinious, intraDayDiscontinuous, c
 							)}
 						</Sidebar>
 						<Page someData={data}
-								intraDayContiniousData={intraDayContinious}
+								intraDayContinuousData={intraDayContinuous}
 								intraDayDiscontinuousData={intraDayDiscontinuous}
 								lotsOfData={dataFull}
 								compareData={compareData}
@@ -268,7 +268,7 @@ function renderPage(data, dataFull, intraDayContinious, intraDayDiscontinuous, c
 }
 
 
-function renderPartialPage(data, dataFull, intraDayContinious, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData) {
+function renderPartialPage(data, dataFull, intraDayContinuous, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData) {
 
 	//var Renko = require("./lib/charts/Renko").init(dataFull);
 	// AreaChart
