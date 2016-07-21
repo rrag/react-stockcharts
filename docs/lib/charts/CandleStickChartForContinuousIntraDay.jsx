@@ -17,7 +17,7 @@ var { XAxis, YAxis } = ReStock.axes;
 var { ema, sma } = ReStock.indicator;
 var { fitWidth } = ReStock.helper;
 
-class CandleStickChartForContiniousIntraDay extends React.Component {
+class CandleStickChartForContinuousIntraDay extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
 
@@ -120,15 +120,15 @@ class CandleStickChartForContiniousIntraDay extends React.Component {
 	}
 }
 
-CandleStickChartForContiniousIntraDay.propTypes = {
+CandleStickChartForContinuousIntraDay.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
-CandleStickChartForContiniousIntraDay.defaultProps = {
+CandleStickChartForContinuousIntraDay.defaultProps = {
 	type: "svg",
 };
-CandleStickChartForContiniousIntraDay = fitWidth(CandleStickChartForContiniousIntraDay);
+CandleStickChartForContinuousIntraDay = fitWidth(CandleStickChartForContinuousIntraDay);
 
-export default CandleStickChartForContiniousIntraDay;
+export default CandleStickChartForContinuousIntraDay;

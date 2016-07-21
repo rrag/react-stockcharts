@@ -110,7 +110,7 @@ Similar to `XAxis` except left/right instead of top/bottom
 
 ### Highly customizable you say, how?
 
-So you dont want to display the `YAxis` at all, go ahead and just remove that.
+So you don't want to display the `YAxis` at all, go ahead and just remove that.
 
 Want to display `YAxis` on both left and right? add 
 

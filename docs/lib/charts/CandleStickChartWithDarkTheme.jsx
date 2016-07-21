@@ -15,7 +15,7 @@ var { EdgeIndicator } = ReStock.coordinates;
 var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, BollingerBandTooltip, StochasticTooltip } = ReStock.tooltip;
 
 var { XAxis, YAxis } = ReStock.axes;
-var { stochasticOscilator, ema, bollingerBand } = ReStock.indicator;
+var { stochasticOscillator, ema, bollingerBand } = ReStock.indicator;
 var { fitWidth } = ReStock.helper;
 
 class CandleStickChartWithDarkTheme extends React.Component {
@@ -44,19 +44,19 @@ class CandleStickChartWithDarkTheme extends React.Component {
 			.merge((d, c) => {d.ema50 = c})
 			.accessor(d => d.ema50);
 
-		var slowSTO = stochasticOscilator()
+		var slowSTO = stochasticOscillator()
 			.windowSize(14)
 			.kWindowSize(1)
 			.stroke({ D: "#ea2bff", K: "#74d400", top: "#37a600", middle: "#b8ab00", bottom: "#37a600" })
 			.merge((d, c) => {d.slowSTO = c})
 			.accessor(d => d.slowSTO);
-		var fastSTO = stochasticOscilator()
+		var fastSTO = stochasticOscillator()
 			.windowSize(14)
 			.kWindowSize(3)
 			.stroke({ D: "#ea2bff", K: "#74d400", top: "#37a600", middle: "#b8ab00", bottom: "#37a600" })
 			.merge((d, c) => {d.fastSTO = c})
 			.accessor(d => d.fastSTO);
-		var fullSTO = stochasticOscilator()
+		var fullSTO = stochasticOscillator()
 			.windowSize(14)
 			.kWindowSize(3)
 			.dWindowSize(4)

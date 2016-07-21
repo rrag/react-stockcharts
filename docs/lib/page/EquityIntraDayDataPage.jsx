@@ -11,13 +11,13 @@ import CandleStickChartForDiscontinuousIntraDay from "lib/charts/CandleStickChar
 var { helper: { TypeChooser } } = ReStock;
 
 
-var IntraDayContiniousDataPage = React.createClass({
+var IntraDayContinuousDataPage = React.createClass({
 	statics: {
 		title: "Intra day with discontinuous scale"
 	},
 	render() {
 		return (
-			<ContentSection title={IntraDayContiniousDataPage.title}>
+			<ContentSection title={IntraDayContinuousDataPage.title}>
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser ref="container">
@@ -30,4 +30,4 @@ var IntraDayContiniousDataPage = React.createClass({
 	}
 });
 
-export default IntraDayContiniousDataPage;
+export default IntraDayContinuousDataPage;

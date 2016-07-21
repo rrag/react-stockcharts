@@ -33,7 +33,7 @@ Moving Average Convergence Divergence (MACD) - [source](https://gist.github.com/
 
 Relative Strength Index (RSI) - [source](https://gist.github.com/rrag/78817a1ccf0a450eed0c), [block](http://bl.ocks.org/rrag/78817a1ccf0a450eed0c), [plunker](http://plnkr.co/edit/gist:78817a1ccf0a450eed0c?p=preview)
 
-Full Stochastics Indicator (configurable to get Slow & Fast Stochastic Oscilator) - [source](https://gist.github.com/rrag/3957c24595cc025eb3ef), [block](http://bl.ocks.org/rrag/3957c24595cc025eb3ef), [plunker](http://plnkr.co/edit/gist:3957c24595cc025eb3ef?p=preview)
+Full Stochastics Indicator (configurable to get Slow & Fast Stochastic Oscillator) - [source](https://gist.github.com/rrag/3957c24595cc025eb3ef), [block](http://bl.ocks.org/rrag/3957c24595cc025eb3ef), [plunker](http://plnkr.co/edit/gist:3957c24595cc025eb3ef?p=preview)
 
 Bollinger Bands - [source](https://gist.github.com/rrag/b993d5fcc5c09dd66a6e), [block](http://bl.ocks.org/rrag/b993d5fcc5c09dd66a6e), [plunker](http://plnkr.co/edit/gist:b993d5fcc5c09dd66a6e?p=preview)
 
