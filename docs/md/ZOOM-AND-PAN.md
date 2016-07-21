@@ -5,7 +5,7 @@
 
 The only change is enabling `zoom` and `pan`
 ```jsx
-<EventCapture mouseMove={true} zoom={true} pan={true} />
+<EventCapture mouseMove zoom pan />
 ```
 enabling `zoom` and `pan` to `true`
 

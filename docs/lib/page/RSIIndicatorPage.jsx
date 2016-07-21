@@ -13,7 +13,7 @@ var { helper: { TypeChooser } } = ReStock;
 
 var RSIIndicatorPage = React.createClass({
 	statics: {
-		title: "RSI"
+		title: "RSI and ATR"
 	},
 	render() {
 		return (

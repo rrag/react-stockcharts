@@ -82,8 +82,7 @@ var INDICATORS = {
 		require("lib/page/ElderImpulseIndicatorPage").default,
 		require("lib/page/VolumeProfilePage").default,
 		require("lib/page/VolumeProfileBySessionPage").default,
-		require("lib/page/BuyAndSellSignalPage").default,
-	] 
+	]
 }
 var ALGORITHMIC_INDICATORS = {
 	head: "Algorithmic Indicators",

@@ -32,7 +32,7 @@ d3.tsv("path/to/data.tsv", function(err, data) {
 		margin={{left: 50, right: 50, top:10, bottom: 30}} type={type}
 		seriesName="MSFT"
 		data={data}
-		xAccessor={d => d.date} discontinous xScale={financeEODDiscontiniousScale()}
+		xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 		xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 
 	<Chart id={1} yExtents={d => [d.high, d.low]}>
@@ -46,12 +46,12 @@ d3.tsv("path/to/data.tsv", function(err, data) {
 Compare this with the simpler `AreaChart` example from before
 
 ```js
-discontinous xScale={financeEODDiscontiniousScale()}
+xScaleProvider={discontinuousTimeScaleProvider}
 ```
+
 is the only difference in `<ChartCanvas>`
 
-- `discontinous` is to indicate that the data provided is to be displayed is discontinious -- in this case has gaps for weekend
-- `financeEODDiscontiniousScale()` - `financeEODDiscontiniousScale` is a discontinious scale provided by `react-stockcharts`
+`xScale` is replaced with `xScaleProvider`, `discontinuousTimeScaleProvider` is a function which takes some pre calculated values and the data array to return a scale that removes the discontinuity, to and show a linear scale
 
 ```jsx
 <Chart id={1} yExtents={d => [d.high, d.low]}>

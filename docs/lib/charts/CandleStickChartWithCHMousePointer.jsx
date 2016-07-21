@@ -55,7 +55,7 @@ class CandleStickChartWithCHMousePointer extends React.Component {
 					<BarSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
 				<CrossHairCursor />
-				<EventCapture mouseMove={true} />
+				<EventCapture mouseMove />
 				<TooltipContainer>
 					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
 				</TooltipContainer>

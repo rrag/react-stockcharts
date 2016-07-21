@@ -5,21 +5,36 @@
 		margin={{left: 70, right: 70, top:10, bottom: 30}} type={type}
 		seriesName="MSFT"
 		data={data}
-		xAccessor={d => d.date} discontinous xScale={financeEODDiscontiniousScale()}
+		xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 		xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
-	<Chart id={1} yExtents={[d => [d.high, d.low]]}
-			yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}>
+	<Chart id={1}
+			yExtents={[d => [d.high, d.low]]}>
 		<XAxis axisAt="bottom" orient="bottom"/>
 		<YAxis axisAt="right" orient="right" ticks={5} />
+		<MouseCoordinateY id={0}
+			at="right"
+			orient="right"
+			displayFormat={d3.format(".2f")} />
 		<CandlestickSeries />
 	</Chart>
-	<Chart id={2} origin={(w, h) => [0, h - 150]} height={150} yExtents={d => d.volume}
-			yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}>
+	<Chart id={2} height={150}
+			yExtents={d => d.volume}
+			origin={(w, h) => [0, h - 150]}>
 		<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-		<HistogramSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"} />
+
+		<MouseCoordinateX id={0}
+			at="bottom"
+			orient="bottom"
+			displayFormat={d3.time.format("%Y-%m-%d")} />
+		<MouseCoordinateY id={0}
+			at="left"
+			orient="left"
+			displayFormat={d3.format(".4s")} />
+
+		<BarSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"} />
 	</Chart>
-	<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-	<EventCapture mouseMove={true} />
+	<CrossHairCursor />
+	<EventCapture mouseMove />
 	<TooltipContainer>
 		<OHLCTooltip forChart={1} origin={[-40, 0]}/>
 	</TooltipContainer>
@@ -27,22 +42,21 @@
 ```
 
 `EventCapture` is used to capture mousemove, scroll/zoom and drag events
+
 ```jsx
-<EventCapture mouseMove={true} />
+<EventCapture mouseMove />
 ```
 
 By default none of the events are captured, and each has to be enabled individually `mouseMove` is enabled above.
 
 ```jsx
-<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
+<CrossHairCursor />
 ```
-Displays the crosshair at the mouse position, the attributes of `MouseCoordinates` are self explanatory.
+Displays the crosshair at the mouse position. If you prefer a different type of cursor, just swap this out with a custom one
 
-`Chart` gets a few new props to indicate the y mouse pointer edge location and format
-```jsx
-yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}
-yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}
-```
+Notice there is a `MouseCoordinateY` for each `Chart`, this shows the value of y mouse pointer for each chart. The different props are self explanatory
+
+`MouseCoordinateX` is also self explanatory, you could have multiple of these with different `at` and `orient` values to show the x coordinate multiple times at different places
 
 And for the tooltip on the top left
 ```jsx

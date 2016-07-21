@@ -5,7 +5,7 @@
 		margin={{left: 50, right: 50, top:10, bottom: 30}} type={type}
 		seriesName="MSFT"
 		data={data}
-		xAccessor={d => d.date} discontinous xScale={financeEODDiscontiniousScale()}
+		xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 		xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 
 	<Chart id={1} yExtents={d => [d.high, d.low]}>
@@ -15,9 +15,10 @@
 	</Chart>
 	<Chart id={2} yExtents={d => d.volume}>
 		<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-		<HistogramSeries yAccessor={d => d.volume} />
+		<BarSeries yAccessor={d => d.volume} />
 	</Chart>
 </ChartCanvas>
+
 ```
 
 Look!!! there is more than one `Chart` there. Each `Chart` has different `yExtents` to indicate its domain. 

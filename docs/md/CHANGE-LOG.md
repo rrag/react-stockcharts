@@ -2,7 +2,7 @@
 
 #### Breaking Changes
 
-1. Removed `financeEODDiscontiniousScale`, there is a new discontinious scale which supports both eod and intraday - Thank you [@brobits](https://github.com/brobits)
+1. Removed `financeEODDiscontiniousScale` and replaced by a new discontinious scale which supports both eod and intraday - Thank you [@brobits](https://github.com/brobits)
     
     in `0.4`
 
