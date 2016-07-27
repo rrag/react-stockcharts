@@ -1,1 +1,1 @@
-[source](https://github.com/rrag/react-stockcharts/blob/next/docs/lib/charts/MovingAverageCrossOverAlgorithm.jsx), [block](http://bl.ocks.org/rrag/TBD), [plunker](http://plnkr.co/edit/gist:TBD?p=preview)
+[source](https://github.com/rrag/react-stockcharts/blob/next/docs/lib/charts/MovingAverageCrossOverAlgorithm.jsx), [block](http://bl.ocks.org/rrag/7feb29450469cf60773c520133a31511), [plunker](http://plnkr.co/edit/gist:7feb29450469cf60773c520133a31511?p=preview)

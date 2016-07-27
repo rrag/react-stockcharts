@@ -25,6 +25,11 @@ var IntraDayContinuousDataPage = React.createClass({
 						</TypeChooser>
 					</Section>
 				</Row>
+				<Row>
+					<Section colSpan={2}>
+						<aside dangerouslySetInnerHTML={{__html: require('md/INTRA-DAY-DISCONTINUOUS')}}></aside>
+					</Section>
+				</Row>
 			</ContentSection>
 		);
 	}

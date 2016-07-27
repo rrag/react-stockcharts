@@ -25,6 +25,11 @@ var VolumeProfilePage = React.createClass({
 						</TypeChooser>
 					</Section>
 				</Row>
+				<Row>
+					<Section colSpan={2}>
+						<aside dangerouslySetInnerHTML={{__html: require("md/VOLUME-PROFILE")}}></aside>
+					</Section>
+				</Row>
 			</ContentSection>
 		);
 	}

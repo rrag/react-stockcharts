@@ -25,6 +25,11 @@ var VolumeProfileBySessionPage = React.createClass({
 						</TypeChooser>
 					</Section>
 				</Row>
+				<Row>
+					<Section colSpan={2}>
+						<aside dangerouslySetInnerHTML={{__html: require("md/VOLUME-PROFILE-BY-SESSION")}}></aside>
+					</Section>
+				</Row>
 			</ContentSection>
 		);
 	}

@@ -1,1 +1,1 @@
-[source](https://github.com/rrag/react-stockcharts/blob/next/docs/lib/charts/CandleStickChartWithAnnotation.jsx), [block](http://bl.ocks.org/rrag/TBD), [plunker](http://plnkr.co/edit/gist:TBD?p=preview)
+[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickChartWithAnnotation.jsx), [block](http://bl.ocks.org/rrag/46a2db7be6336500bedee27f5fa08713), [plunker](http://plnkr.co/edit/gist:46a2db7be6336500bedee27f5fa08713?p=preview)
