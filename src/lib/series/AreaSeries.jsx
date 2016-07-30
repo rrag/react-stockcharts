@@ -2,7 +2,7 @@
 
 import React, { PropTypes, Component } from "react";
 
-import Line from "./Line";
+import LineSeries from "./LineSeries";
 import Area from "./Area";
 
 import wrap from "./wrap";
@@ -16,10 +16,8 @@ class AreaSeries extends Component {
 
 		return (
 			<g className={className}>
-				<Line
-					xScale={xScale} yScale={yScale}
-					xAccessor={xAccessor} yAccessor={yAccessor}
-					plotData={plotData}
+				<LineSeries
+					yAccessor={yAccessor}
 					stroke={stroke} fill="none"
 					strokeWidth={strokeWidth}
 					type={type} />

@@ -12,7 +12,7 @@ function getDisplayName(Series) {
 
 function wrap(WrappedSeries) {
 	class BaseCanvasSeries extends Component {
-		/*componentDidMount() {
+		componentDidMount() {
 			var callback = WrappedSeries.drawOnCanvas;
 			if (callback) {
 				var { chartCanvasType, getCanvasContexts } = this.props;
@@ -63,12 +63,12 @@ function wrap(WrappedSeries) {
 					draw: draw,
 				});
 			}
-		}*/
+		}
 		render() {
-			// var callback = WrappedSeries.drawOnCanvas;
-			var { clip, chartConfig } = this.props;
+			var callback = WrappedSeries.drawOnCanvas;
+			var { clip, chartCanvasType, chartConfig } = this.props;
 
-			// if (chartCanvasType !== "svg" && isDefined(callback)) return null;
+			if (chartCanvasType !== "svg" && isDefined(callback)) return null;
 			var style = clip ? { "clipPath": "url(#chart-area-clip)" } : null;
 
 			// Idea: send plotData + 1 row on left + 1 row on right so the chart shows a continuity when pan
@@ -89,7 +89,7 @@ function wrap(WrappedSeries) {
 
 	BaseCanvasSeries.displayName = `wrap(${ getDisplayName(WrappedSeries) })`;
 
-	/*BaseCanvasSeries.baseReStockDrawOnCanvasHelper = (canvasContext, props, callback) => {
+	BaseCanvasSeries.baseReStockDrawOnCanvasHelper = (canvasContext, props, callback) => {
 		var { height, width, xAccessor, yAccessor,
 			xScale, chartConfig, yScale, plotData, canvasOriginX, canvasOriginY } = props;
 		var canvasOrigin = [canvasOriginX, canvasOriginY];
@@ -123,7 +123,7 @@ function wrap(WrappedSeries) {
 		}
 
 		ctx.restore();
-	};*/
+	};
 
 	BaseCanvasSeries.defaultProps = {
 		...WrappedSeries.defaultProps,

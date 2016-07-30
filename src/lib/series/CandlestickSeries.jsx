@@ -3,20 +3,39 @@
 import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 
-import wrap from "./wrap";
+import GenericComponent from "../GenericComponent";
 import { first, last, hexToRGBA, isDefined } from "../utils";
 
 class CandlestickSeries extends Component {
-	render() {
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+	}
+	drawOnCanvas(ctx, moreProps) {
+		drawOnCanvas(ctx, this.props, moreProps);
+	}
+	renderSVG(moreProps) {
 		var { className, wickClassName, candleClassName } = this.props;
+		var { xAccessor, xScale, chartConfig: { yScale }, plotData } = moreProps;
+
 		return <g className={className}>
 			<g className={wickClassName} key="wicks">
-				{getWicksSVG(this.props)}
+				{getWicksSVG(this.props, moreProps)}
 			</g>
 			<g className={candleClassName} key="candles">
-				{getCandlesSVG(this.props)}
+				{getCandlesSVG(this.props, moreProps)}
 			</g>
 		</g>;
+	}
+
+	render() {
+		return <GenericComponent
+			canvasToDraw={contexts => contexts.axes}
+			svgDraw={this.renderSVG}
+			canvasDraw={this.drawOnCanvas}
+			drawOnPan
+			/>
 	}
 }
 
@@ -64,14 +83,13 @@ CandlestickSeries.defaultProps = {
 	opacity: 1,
 };
 
-function getWicksSVG(props) {
+function getWicksSVG(props, moreProps) {
 
 	/* eslint-disable react/prop-types */
-	var { xAccessor, yAccessor, xScale, yScale, plotData } = props;
+	var { xAccessor, xScale, chartConfig: { yScale }, plotData } = moreProps;
 	/* eslint-enable react/prop-types */
 
-
-	var wickData = getWickData(props, xAccessor, yAccessor, xScale, yScale, plotData);
+	var wickData = getWickData(props, xAccessor, xScale, yScale, plotData);
 	var wicks = wickData
 		.map((d, idx) => <line key={idx}
 			className={d.className} stroke={d.stroke} style={{ shapeRendering: "crispEdges" }}
@@ -81,13 +99,14 @@ function getWicksSVG(props) {
 	return wicks;
 }
 
-function getCandlesSVG(props) {
+function getCandlesSVG(props, moreProps) {
 
 	/* eslint-disable react/prop-types */
-	var { xAccessor, yAccessor, xScale, yScale, plotData, opacity } = props;
+	var { opacity } = props;
+	var { xAccessor, xScale, chartConfig: { yScale }, plotData } = moreProps;
 	/* eslint-enable react/prop-types */
 
-	var candleData = getCandleData(props, xAccessor, yAccessor, xScale, yScale, plotData);
+	var candleData = getCandleData(props, xAccessor, xScale, yScale, plotData);
 	var candles = candleData.map((d, idx) => {
 		if (d.width < 0)
 			return (
@@ -111,9 +130,10 @@ function getCandlesSVG(props) {
 	return candles;
 }
 
-CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { xAccessor, yAccessor, opacity } = props;
-	var wickData = getWickData(props, xAccessor, yAccessor, xScale, yScale, plotData);
+function drawOnCanvas(ctx, props, moreProps) {
+	var { opacity } = props;
+	var { xAccessor, xScale, chartConfig: { yScale }, plotData } = moreProps;
+	var wickData = getWickData(props, xAccessor, xScale, yScale, plotData);
 
 	var wickNest = d3.nest()
 		.key(d => d.stroke)
@@ -130,7 +150,7 @@ CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 		});
 	});
 
-	var candleData = getCandleData(props, xAccessor, yAccessor, xScale, yScale, plotData);
+	var candleData = getCandleData(props, xAccessor, xScale, yScale, plotData);
 
 	var candleNest = d3.nest()
 		.key(d => d.stroke)
@@ -169,9 +189,9 @@ CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	});
 };
 
-function getWickData(props, xAccessor, yAccessor, xScale, yScale, plotData) {
+function getWickData(props, xAccessor, xScale, yScale, plotData) {
 
-	var { classNames: classNameProp, wickStroke: wickStrokeProp } = props;
+	var { classNames: classNameProp, wickStroke: wickStrokeProp, yAccessor } = props;
 	var wickStroke = d3.functor(wickStrokeProp);
 	var className = d3.functor(classNameProp);
 	var wickData = plotData
@@ -198,8 +218,8 @@ function getWickData(props, xAccessor, yAccessor, xScale, yScale, plotData) {
 	return wickData;
 }
 
-function getCandleData(props, xAccessor, yAccessor, xScale, yScale, plotData) {
-	var { classNames, fill: fillProp, stroke: strokeProp, widthRatio } = props;
+function getCandleData(props, xAccessor, xScale, yScale, plotData) {
+	var { classNames, fill: fillProp, stroke: strokeProp, widthRatio, yAccessor } = props;
 	var fill = d3.functor(fillProp);
 	var stroke = d3.functor(strokeProp);
 	// console.log(plotData);
@@ -231,4 +251,4 @@ function getCandleData(props, xAccessor, yAccessor, xScale, yScale, plotData) {
 	return candles;
 }
 
-export default wrap(CandlestickSeries);
+export default CandlestickSeries;

@@ -12,8 +12,6 @@ import {
 
 import { getNewChartConfig, getChartConfigWithUpdatedYScales, getCurrentCharts, getCurrentItem } from "./utils/ChartDataUtil";
 
-var subscriptionCount = 0;
-
 function setXRange(xScale, dimensions, padding, direction = 1) {
 	if (xScale.rangeRoundPoints) {
 		if (isNaN(padding)) throw new Error("padding has to be a number for ordinal scale");
@@ -44,16 +42,18 @@ class EventHandler extends Component {
 		this.handlePanEnd = this.handlePanEnd.bind(this);
 		this.handleFocus = this.handleFocus.bind(this);
 		this.getCanvasContexts = this.getCanvasContexts.bind(this);
-		this.pushCallbackForCanvasDraw = this.pushCallbackForCanvasDraw.bind(this);
-		this.getAllCanvasDrawCallback = this.getAllCanvasDrawCallback.bind(this);
-		this.subscribe = this.subscribe.bind(this);
-		this.unsubscribe = this.unsubscribe.bind(this);
+
+		// this.pushCallbackForCanvasDraw = this.pushCallbackForCanvasDraw.bind(this);
+		// this.getAllCanvasDrawCallback = this.getAllCanvasDrawCallback.bind(this);
+
 		this.pinchCoordinates = this.pinchCoordinates.bind(this);
 		this.setInteractiveState = this.setInteractiveState.bind(this);
 		this.getInteractiveState = this.getInteractiveState.bind(this);
 
-		this.subscriptions = [];
-		this.canvasDrawCallbackList = [];
+		this.subscriptions = []
+		this.subscribe = this.subscribe.bind(this);
+		this.unsubscribe = this.unsubscribe.bind(this);
+		// this.canvasDrawCallbackList = [];
 		this.panHappened = false;
 		this.interactiveState = [];
 
@@ -161,7 +161,7 @@ class EventHandler extends Component {
 			if (!this.state.panInProgress) {
 				this.clearThreeCanvas(nextProps);
 				// this.clearInteractiveCanvas(nextProps);
-				this.clearCanvasDrawCallbackList();
+				// this.clearCanvasDrawCallbackList();
 			}
 			this.setState({
 				...newState,
@@ -204,7 +204,14 @@ class EventHandler extends Component {
 			clearCanvas([canvases.interactive]);
 		}
 	}*/
-
+	subscribe(id, callback) {
+		this.subscriptions = this.subscriptions.concat({
+			id, callback
+		})
+	}
+	unsubscribe(id) {
+		this.subscriptions = this.subscriptions.filter(each => each.id !== id);
+	}
 	getChildContext() {
 		// var { showingInterval } = this.state;
 		// var { fullData } = this.props;
@@ -212,10 +219,10 @@ class EventHandler extends Component {
 			plotData: this.state.plotData,
 			// data: isDefined(showingInterval) ? fullData[showingInterval] : fullData,
 			chartConfig: this.state.chartConfig,
-			currentCharts: this.state.currentCharts,
-			currentItem: this.state.currentItem,
-			show: this.state.show,
-			mouseXY: this.state.mouseXY,
+			// currentCharts: this.state.currentCharts,
+			// currentItem: this.state.currentItem,
+			// show: this.state.show,
+			// mouseXY: this.state.mouseXY,
 			// interval: this.state.showingInterval,
 			width: this.props.dimensions.width,
 			height: this.props.dimensions.height,
@@ -225,13 +232,14 @@ class EventHandler extends Component {
 			displayXAccessor: this.props.displayXAccessor,
 			margin: this.props.margin,
 
-			callbackForCanvasDraw: this.pushCallbackForCanvasDraw,
-			getAllCanvasDrawCallback: this.getAllCanvasDrawCallback,
-			subscribe: this.subscribe,
-			unsubscribe: this.unsubscribe,
+			// callbackForCanvasDraw: this.pushCallbackForCanvasDraw,
+			// getAllCanvasDrawCallback: this.getAllCanvasDrawCallback,
+
 			getInteractiveState: this.getInteractiveState,
 			setInteractiveState: this.setInteractiveState,
 			getCanvasContexts: this.getCanvasContexts,
+			subscribe: this.subscribe,
+			unsubscribe: this.unsubscribe,
 			onMouseMove: this.handleMouseMove,
 			onMouseEnter: this.handleMouseEnter,
 			onMouseLeave: this.handleMouseLeave,
@@ -246,7 +254,7 @@ class EventHandler extends Component {
 			focus: this.state.focus
 		};
 	}
-	pushCallbackForCanvasDraw(findThis, replaceWith) {
+	/*pushCallbackForCanvasDraw(findThis, replaceWith) {
 		var { canvasDrawCallbackList } = this;
 		// console.log(findThis, canvasDrawCallbackList.length);
 		if (replaceWith) {
@@ -262,27 +270,12 @@ class EventHandler extends Component {
 	}
 	getAllCanvasDrawCallback() {
 		return this.canvasDrawCallbackList;
-	}
-	subscribe(forChart, eventType, callback) {
-		subscriptionCount++;
-
-		this.subscriptions.push({
-			forChart,
-			subscriptionId: subscriptionCount,
-			eventType,
-			callback,
-		});
-		return subscriptionCount;
-	}
-	unsubscribe(subscriptionId) {
-		// console.log(subscriptionId);
-		this.subscriptions = this.subscriptions.filter(each => each.subscriptionId === subscriptionId);
-	}
+	}*/
 	getCanvasContexts() {
 		// console.log(this.state.canvases, this.props.canvasContexts())
 		return this.state.canvases || this.props.canvasContexts();
 	}
-	handleMouseEnter(/* e */) {
+	handleMouseEnter(e) {
 		// if type === svg remove state.canvases
 		// if type !== svg get canvases and set in state if state.canvases is not present already
 		/* var { type, canvasContexts } = this.props;
@@ -292,11 +285,14 @@ class EventHandler extends Component {
 		} else {
 			canvases = canvasContexts();
 		}*/
-		this.setState({
+		/* this.setState({
 			show: true,
-		});
+		}); */
+		this.triggerEvent("mouseenter", {
+			show: true,
+		}, e)
 	}
-	handleMouseMove(mouseXY/* , inputType, e */) {
+	handleMouseMove(mouseXY, inputType, e) {
 		var { chartConfig, plotData, xScale } = this.state;
 		var { xAccessor } = this.props;
 
@@ -306,23 +302,31 @@ class EventHandler extends Component {
 		// optimization oportunity do not change currentItem if it is not the same as prev
 
 		var contexts = this.getCanvasContexts();
-		if (contexts && contexts.mouseCoord) {
-			clearCanvas([contexts.mouseCoord]);
-			// this.clearInteractiveCanvas();
-		}
+
+		requestAnimationFrame(() => {
+			if (contexts && contexts.mouseCoord) {
+				clearCanvas([contexts.mouseCoord]);
+				// this.clearInteractiveCanvas();
+			}
+			this.triggerEvent("mousemove", {
+				mouseXY,
+				currentItem,
+				currentCharts,
+			}, e)
+		})
 		// console.log(interactiveState === this.state.interactiveState);
 		// if (interactiveState !== this.state.interactiveState) this.clearInteractiveCanvas();
 
-		this.setState({
+		/* this.setState({
 			mouseXY,
 			currentItem,
 			currentCharts,
 			// show: true,
 			// interactiveState,
-		});
+		}); */
 	}
 
-	handleMouseLeave(/* e */) {
+	handleMouseLeave(e) {
 		var contexts = this.getCanvasContexts();
 
 		// this.clearInteractiveCanvas();
@@ -330,9 +334,10 @@ class EventHandler extends Component {
 		if (contexts && contexts.mouseCoord) {
 			clearCanvas([contexts.mouseCoord]);
 		}
-		this.setState({
+		this.triggerEvent("mouseleave", { show: false }, e)
+		/* this.setState({
 			show: false
-		});
+		}); */
 	}
 	pinchCoordinates(pinch) {
 		var { touch1Pos, touch2Pos } = pinch;
@@ -386,7 +391,7 @@ class EventHandler extends Component {
 			this.clearThreeCanvas();
 			// this.clearInteractiveCanvas();
 
-			this.clearCanvasDrawCallbackList();
+			// this.clearCanvasDrawCallbackList();
 			this.setState({
 				chartConfig,
 				xScale: updatedScale,
@@ -425,14 +430,14 @@ class EventHandler extends Component {
 		// this.clearInteractiveCanvas();
 
 		// console.log(showingInterval, updatedInterval);
-		this.clearCanvasDrawCallbackList();
+		// this.clearCanvasDrawCallbackList();
 		this.setState({
 			xScale: updatedScale,
 			plotData,
-			mouseXY,
-			currentCharts,
 			chartConfig,
-			currentItem,
+			/* mouseXY,
+			currentCharts,
+			currentItem, */
 		});/**/
 	}
 
@@ -482,28 +487,35 @@ class EventHandler extends Component {
 			currentItem,
 		};
 	}
-	handlePan(mousePosition/* , e*/) {
+	triggerEvent(type, props, e) {
+		this.subscriptions.forEach(each => {
+			// console.log(each)
+			each.callback(type, props, e);
+		})
+	}
+	handlePan(mousePosition, e) {
 		this.panHappened = true;
 		var state = this.panHelper(mousePosition);
 
 		this.hackyWayToStopPanBeyondBounds__plotData = state.plotData;
 		this.hackyWayToStopPanBeyondBounds__domain = state.xScale.domain();
 
-		if (this.props.type !== "svg") {
-			var { axes: axesCanvasContext, mouseCoord: mouseContext } = this.getCanvasContexts();
-			var { mouseXY, chartConfig, plotData, currentItem, xScale, currentCharts } = state;
-			var { show } = this.state;
-			var { canvasDrawCallbackList } = this;
+		// if (this.props.type !== "svg") {
+			// var { axes: axesCanvasContext, mouseCoord: mouseContext } = this.getCanvasContexts();
+			// var { mouseXY, chartConfig, plotData, currentItem, xScale, currentCharts } = state;
+			// var { show } = this.state;
+			// var { canvasDrawCallbackList } = this;
 
 			requestAnimationFrame(() => {
 				// this.clearCanvas([axesCanvasContext, mouseContext]);
 				// this.clearCanvas([axesCanvasContext, mouseContext]);
 				this.clearBothCanvas();
+				this.triggerEvent("pan", state, e)
 				// this.clearInteractiveCanvas();
 
 				// console.log(canvasDrawCallbackList.length)
 
-				chartConfig.forEach(eachChart => {
+				/*chartConfig.forEach(eachChart => {
 					canvasDrawCallbackList
 						.filter(each => eachChart.id === each.chartId)
 						.forEach(each => {
@@ -521,7 +533,6 @@ class EventHandler extends Component {
 						});
 
 				});
-				this.drawInteractive(state);
 				canvasDrawCallbackList
 					.filter(each => isNotDefined(each.chartId))
 					.filter(each => each.type === "axis")
@@ -542,37 +553,23 @@ class EventHandler extends Component {
 						mouseXY,
 						currentCharts,
 						currentItem
-					}));
+					}));*/
 
 			});
-		} else {
+		/*} else {
 			this.setState(state);
-		}
+		}*/
 	}
-	drawInteractive({ plotData, chartConfig, xScale }) {
-		var { interactive } = this.getCanvasContexts();
-
-		this.canvasDrawCallbackList
-			.filter(each => each.type === "interactive")
-			.forEach(each => {
-				chartConfig
-					.filter(eachChart => eachChart.id === each.chartId)
-					.forEach(eachChart => {
-						each.draw(interactive, { xScale, plotData,  chartConfig: eachChart });
-						// console.log("DRAW");
-					});
-			});
-	}
-	clearCanvasDrawCallbackList() {
+	/*clearCanvasDrawCallbackList() {
 		this.canvasDrawCallbackList = [];
-	}
+	}*/
 	handlePanEnd(mousePosition) {
 		var state = this.panHelper(mousePosition);
 		// console.log(this.canvasDrawCallbackList.map(d => d.type));
 		this.hackyWayToStopPanBeyondBounds__plotData = null;
 		this.hackyWayToStopPanBeyondBounds__domain = null;
 
-		this.clearCanvasDrawCallbackList();
+		// this.clearCanvasDrawCallbackList();
 
 		this.clearThreeCanvas();
 
@@ -681,13 +678,13 @@ EventHandler.childContextTypes = {
 	margin: PropTypes.object.isRequired,
 	dataTransform: PropTypes.array,
 
-	subscribe: PropTypes.func,
-	unsubscribe: PropTypes.func,
 	getInteractiveState: PropTypes.func.isRequired,
 	setInteractiveState: PropTypes.func,
-	callbackForCanvasDraw: PropTypes.func,
-	getAllCanvasDrawCallback: PropTypes.func,
+	// callbackForCanvasDraw: PropTypes.func,
+	// getAllCanvasDrawCallback: PropTypes.func,
 	getCanvasContexts: PropTypes.func,
+	subscribe: PropTypes.func,
+	unsubscribe: PropTypes.func,
 	onMouseMove: PropTypes.func,
 	onMouseEnter: PropTypes.func,
 	onMouseLeave: PropTypes.func,
