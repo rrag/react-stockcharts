@@ -48,17 +48,41 @@ class CandleStickChartWithEdge extends React.Component {
 					data={data} calculator={[ema20, ema50, smaVolume70]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2015, 0, 1), new Date(2015, 2, 1)]}>
+
+				<Chart id={2}
+						yExtents={[d => d.volume, smaVolume70.accessor()]}
+						height={150} origin={(w, h) => [0, h - 150]}>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+
+					<AreaSeries yAccessor={smaVolume70.accessor()} stroke={smaVolume70.stroke()} fill={smaVolume70.fill()}/>
+
+					<CurrentCoordinate id={0} yAccessor={smaVolume70.accessor()} fill={smaVolume70.stroke()} />
+					<CurrentCoordinate id={1} yAccessor={d => d.volume} fill="#9B0A47" />
+
+					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
+						yAccessor={d => d.volume} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
+					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
+						yAccessor={d => d.volume} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
+					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
+						yAccessor={smaVolume70.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume70.fill()}/>
+					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
+						yAccessor={smaVolume70.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume70.fill()}/>
+				</Chart>
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
 						padding={{ top: 10, bottom: 20 }}>
+
+					<XAxis axisAt="bottom" orient="bottom"/>
+					<XAxis axisAt="top" orient="top"/>
+					<YAxis axisAt="right" orient="right" ticks={5} />
 
 					<CandlestickSeries />
 
 					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
 					<LineSeries yAccessor={ema50.accessor()} stroke={ema50.stroke()}/>
 
-					<CurrentCoordinate id={1} yAccessor={ema20.accessor()} fill={ema20.stroke()} />
-					<CurrentCoordinate id={2} yAccessor={ema50.accessor()} fill={ema50.stroke()} />
+					<CurrentCoordinate yAccessor={ema20.accessor()} fill={ema20.stroke()} />
+					<CurrentCoordinate yAccessor={ema50.accessor()} fill={ema50.stroke()} />
 
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={ema20.accessor()} fill={ema20.fill()}/>

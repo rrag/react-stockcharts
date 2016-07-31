@@ -3,34 +3,25 @@
 import React, { PropTypes, Component } from "react";
 
 import LineSeries from "./LineSeries";
-import Area from "./Area";
+import AreaOnlySeries from "./AreaOnlySeries";
 
-import wrap from "./wrap";
+function AreaSeries(props) {
+	var { yAccessor, baseAt } = props;
+	var { className, opacity, stroke, strokeWidth, fill } = props;
 
-class AreaSeries extends Component {
-	render() {
-		var { props } = this;
-		var { className, xScale, yScale, xAccessor, yAccessor, plotData, type, stroke, strokeWidth, fill, baseAt } = props;
-
-		var { opacity } = props;
-
-		return (
-			<g className={className}>
-				<LineSeries
-					yAccessor={yAccessor}
-					stroke={stroke} fill="none"
-					strokeWidth={strokeWidth}
-					type={type} />
-				<Area
-					xScale={xScale} yScale={yScale}
-					xAccessor={xAccessor} yAccessor={yAccessor}
-					plotData={plotData}
-					base={baseAt}
-					stroke="none" fill={fill} opacity={opacity}
-					type={type} />
-			</g>
-		);
-	}
+	return (
+		<g className={className}>
+			<LineSeries
+				yAccessor={yAccessor}
+				stroke={stroke} fill="none"
+				strokeWidth={strokeWidth} />
+			<AreaOnlySeries
+				yAccessor={yAccessor}
+				base={baseAt}
+				stroke="none" fill={fill}
+				opacity={opacity} />
+		</g>
+	);
 }
 
 AreaSeries.propTypes = {
@@ -49,6 +40,4 @@ AreaSeries.defaultProps = {
 	className: "react-stockcharts-area"
 };
 
-AreaSeries.yAccessor = (d) => d.close;
-
-export default wrap(AreaSeries);
+export default AreaSeries;

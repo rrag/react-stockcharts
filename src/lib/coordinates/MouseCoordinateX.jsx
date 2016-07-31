@@ -22,7 +22,7 @@ class MouseCoordinateX extends Component {
 	renderSVG(moreProps) {
 		var props = helper(this.props, this.context, moreProps);
 		if (isNotDefined(props)) return null;
-		console.log(props)
+
 		return renderSVG(props)
 	}
 	render() {

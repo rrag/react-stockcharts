@@ -34,9 +34,10 @@ class GenericComponent extends Component {
 		}
 
 		switch (type) {
-			case "mouseenter": {
+			case "zoom":
+			case "mouseenter":
+				// DO NOT DRAW FOR THESE EVENTS
 				break;
-			}
 			case "mousemove": {
 				if (this.props.drawOnMouseMove) {
 					this.draw();
@@ -86,6 +87,13 @@ class GenericComponent extends Component {
 
 		if (chartCanvasType !== "svg") {
 			this.drawOnCanvas();
+		}
+	}
+	componentWillReceiveProps(nextProps, nextContext) {
+		var { xScale, plotData, chartConfig } = nextContext;
+		this.moreProps = {
+			...this.moreProps,
+			xScale, plotData, chartConfig
 		}
 	}
 	getMoreProps() {

@@ -107,7 +107,7 @@ function getCandlesSVG(props, context, moreProps) {
 	/* eslint-disable react/prop-types */
 	var { opacity } = props;
 	var { xAccessor } = context;
-	var { xAccessor, xScale, chartConfig: { yScale }, plotData } = moreProps;
+	var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 	/* eslint-enable react/prop-types */
 
 	var candleData = getCandleData(props, xAccessor, xScale, yScale, plotData);

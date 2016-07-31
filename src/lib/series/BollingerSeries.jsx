@@ -3,7 +3,7 @@
 import React, { PropTypes, Component } from "react";
 
 import LineSeries from "./LineSeries";
-import Area from "./Area";
+import AreaOnlySeries from "./AreaOnlySeries";
 
 import wrap from "./wrap";
 
@@ -53,14 +53,11 @@ class BollingerSeries extends Component {
 				<LineSeries yAccessor={this.yAccessorForBottom}
 					stroke={stroke.bottom} fill="none"
 					type={type} />
-				<Area
-					className={areaClassName}
-					xScale={xScale} yScale={yScale}
-					xAccessor={xAccessor} yAccessor={this.yAccessorForTop}
+				<AreaOnlySeries className={areaClassName}
+					yAccessor={this.yAccessorForTop}
 					base={this.yAccessorForScalledBottom}
-					plotData={plotData}
-					stroke="none" fill={fill} opacity={opacity}
-					type={type} />
+					stroke="none" fill={fill}
+					opacity={opacity} />
 			</g>
 		);
 	}

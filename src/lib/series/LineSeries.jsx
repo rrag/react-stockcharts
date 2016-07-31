@@ -40,7 +40,7 @@ class LineSeries extends Component {
 		var { yAccessor, stroke, strokeWidth, defined } = this.props;
 		var { xAccessor } = this.context;
 
-		var { xAccessor, xScale, chartConfig: { yScale }, plotData } = moreProps;
+		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 		var dataSeries = d3.svg.line()
 			.defined(d => defined(yAccessor(d)))

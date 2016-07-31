@@ -19,7 +19,6 @@ import VolumeProfileSeries from "./VolumeProfileSeries";
 
 // import ElderImpulseBackground from "./ElderImpulseBackground";
 
-import Area from "./Area";
 import StraightLine from "./StraightLine";
 
 import wrap from "./wrap";
@@ -43,7 +42,5 @@ export {
 	StochasticSeries,
 	ElderRaySeries,
 	VolumeProfileSeries,
-	Area,
 	StraightLine,
-	wrap
 };

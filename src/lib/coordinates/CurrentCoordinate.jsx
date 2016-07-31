@@ -44,7 +44,6 @@ class CurrentCoordinate extends Component {
 }
 
 CurrentCoordinate.propTypes = {
-	id: PropTypes.number.isRequired,
 	yAccessor: PropTypes.func,
 	r: PropTypes.number.isRequired,
 	className: PropTypes.string,

@@ -2,32 +2,10 @@
 
 import React, { PropTypes } from "react";
 import Axis from "./Axis";
-import PureComponent from "../utils/PureComponent";
 
-class XAxis extends PureComponent {
-	render() {
-		var { axisAt, showTicks, tickFormat, ticks } = this.props;
-
-		var axisLocation;
-		if (axisAt === "top") axisLocation = 0;
-		else if (axisAt === "bottom") axisLocation = this.context.height;
-		else if (axisAt === "middle") axisLocation = (this.context.height) / 2;
-		else axisLocation = axisAt;
-
-		if (tickFormat && this.context.xScale.isPolyLinear && this.context.xScale.isPolyLinear()) {
-			console.warn("Cannot set tickFormat on a poly linear scale, ignoring tickFormat on XAxis");
-			tickFormat = undefined;
-		}
-
-		if (ticks) ticks = [ticks];
-		return (
-			<Axis {...this.props}
-				range={[0, this.context.width]}
-				transform={[0, axisLocation]}
-				showTicks={showTicks} tickFormat={tickFormat} ticks={ticks}
-				scale={this.context.xScale} />
-		);
-	}
+function XAxis(props, context) {
+	var moreProps = helper(props, context)
+	return <Axis {...props} {...moreProps} />
 }
 
 XAxis.propTypes = {
@@ -46,18 +24,49 @@ XAxis.propTypes = {
 	showTicks: PropTypes.bool,
 	className: PropTypes.string,
 };
+
 XAxis.defaultProps = {
 	showGrid: false,
 	showTicks: true,
+	showDomain: true,
 	className: "react-stockcharts-x-axis",
 	ticks: 10,
+	outerTickSize: 0,
+	domain: {
+		className: "react-stockcharts-axis-domain",
+		shapeRendering: "crispEdges",
+		fill: "none",
+		stroke: "#000000",
+		strokeWidth: 1,
+		opacity: 1,
+	},
+	innerTickSize: 5,
+	tickPadding: 6,
+	tickStroke: "#000000",
+	tickStrokeOpacity: 1,
+	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
+	fontSize: 12,
 };
 
 XAxis.contextTypes = {
-	xScale: PropTypes.func.isRequired,
-	chartConfig: PropTypes.object.isRequired,
 	height: PropTypes.number.isRequired,
 	width: PropTypes.number.isRequired,
 };
 
+function helper(props, context) {
+	var { axisAt } = props;
+	var { width } = context;
+
+	var axisLocation;
+	if (axisAt === "top") axisLocation = 0;
+	else if (axisAt === "bottom") axisLocation = context.height;
+	else if (axisAt === "middle") axisLocation = (context.height) / 2;
+	else axisLocation = axisAt;
+
+	return {
+		transform: [0, axisLocation],
+		range: [0, width],
+		getScale: moreProps => moreProps.xScale,
+	}
+}
 export default XAxis;

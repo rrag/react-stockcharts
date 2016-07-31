@@ -1,33 +1,11 @@
 "use strict";
 
 import React, { PropTypes } from "react";
-
 import Axis from "./Axis";
-import PureComponent from "../utils/PureComponent";
 
-class YAxis extends PureComponent {
-	render() {
-		var { axisAt, tickFormat, ticks, percentScale, tickValues } = this.props;
-		var { chartConfig } = this.context;
-		var yScale = (percentScale) ? chartConfig.yScale.copy().domain([0, 1]) : chartConfig.yScale;
-
-		tickValues = tickValues || chartConfig.yTicks;
-
-		var axisLocation;
-
-		if (axisAt === "left") axisLocation = 0;
-		else if (axisAt === "right") axisLocation = this.context.width;
-		else if (axisAt === "middle") axisLocation = (this.context.width) / 2;
-		else axisLocation = axisAt;
-
-		return (
-			<Axis {...this.props}
-				transform={[axisLocation, 0]}
-				range={[0, this.context.height]}
-				tickFormat={tickFormat} ticks={[ticks]} tickValues={tickValues}
-				scale={yScale} />
-		);
-	}
+function YAxis(props, context) {
+	var moreProps = helper(props, context)
+	return <Axis {...props} {...moreProps} />
 }
 
 YAxis.propTypes = {
@@ -43,21 +21,52 @@ YAxis.propTypes = {
 	tickSize: PropTypes.number,
 	ticks: PropTypes.number,
 	tickValues: PropTypes.array,
-	percentScale: PropTypes.bool,
 	showTicks: PropTypes.bool,
-	showDomain: PropTypes.bool,
 	className: PropTypes.string,
 };
+
 YAxis.defaultProps = {
 	showGrid: false,
+	showTicks: true,
 	showDomain: false,
 	className: "react-stockcharts-y-axis",
 	ticks: 10,
+	outerTickSize: 0,
+	domain: {
+		className: "react-stockcharts-axis-domain",
+		shapeRendering: "crispEdges",
+		fill: "none",
+		stroke: "#000000",
+		strokeWidth: 1,
+		opacity: 1,
+	},
+	innerTickSize: 5,
+	tickPadding: 6,
+	tickStroke: "#000000",
+	tickStrokeOpacity: 1,
+	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
+	fontSize: 12,
 };
+
 YAxis.contextTypes = {
-	chartConfig: PropTypes.object.isRequired,
-	xScale: PropTypes.func.isRequired,
+	height: PropTypes.number.isRequired,
 	width: PropTypes.number.isRequired,
 };
 
+function helper(props, context) {
+	var { axisAt } = props;
+	var { width, height } = context;
+
+	var axisLocation;
+	if (axisAt === "left") axisLocation = 0;
+	else if (axisAt === "right") axisLocation = width;
+	else if (axisAt === "middle") axisLocation = (width) / 2;
+	else axisLocation = axisAt;
+
+	return {
+		transform: [axisLocation, 0],
+		range: [0, height],
+		getScale: moreProps => moreProps.chartConfig.yScale,
+	}
+}
 export default YAxis;

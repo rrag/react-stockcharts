@@ -405,7 +405,7 @@ class EventHandler extends Component {
 		// document.getElementById("debug_here").innerHTML = `${id[1] - id[0]} = ${initial.left - id[0]} + ${initial.right - initial.left} + ${id[1] - initial.right}`;
 		// document.getElementById("debug_here").innerHTML = `${range[1] - range[0]}, ${i1[0]}, ${i2[0]}`;
 	}
-	handleZoom(zoomDirection, mouseXY) {
+	handleZoom(zoomDirection, mouseXY, e) {
 		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
 		var { xScale: initialXScale, chartConfig: initialChartConfig, plotData: initialPlotData } = this.state;
 		var { xAccessor, filterData, postCalculator } = this.props;
@@ -426,19 +426,20 @@ class EventHandler extends Component {
 		var currentItem = getCurrentItem(updatedScale, xAccessor, mouseXY, plotData);
 		var chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData);
 		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
-		this.clearThreeCanvas();
+		this.clearBothCanvas();
 		// this.clearInteractiveCanvas();
 
-		// console.log(showingInterval, updatedInterval);
-		// this.clearCanvasDrawCallbackList();
+		this.triggerEvent("zoom", {
+			mouseXY,
+			currentCharts,
+			currentItem,
+		}, e)
+
 		this.setState({
 			xScale: updatedScale,
 			plotData,
 			chartConfig,
-			/* mouseXY,
-			currentCharts,
-			currentItem, */
-		});/**/
+		});
 	}
 
 	handlePanStart(panStartDomain, panOrigin, dxy) {
