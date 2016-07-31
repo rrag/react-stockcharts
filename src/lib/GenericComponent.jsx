@@ -89,10 +89,10 @@ class GenericComponent extends Component {
 		}
 	}
 	getMoreProps() {
-		var { xScale, xAccessor, plotData, chartConfig } = this.context;
+		var { xScale, plotData, chartConfig } = this.context;
 
 		var moreProps = {
-			xScale, xAccessor, plotData, chartConfig,
+			xScale, plotData, chartConfig,
 			...this.moreProps
 		}
 		return moreProps;

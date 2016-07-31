@@ -14,7 +14,9 @@ class LineSeries extends Component {
 	}
 	drawOnCanvas(ctx, moreProps) {
 		var { yAccessor, stroke, strokeWidth, defined } = this.props;
-		var { xAccessor, xScale, chartConfig: { yScale }, plotData } = moreProps;
+		var { xAccessor } = this.context;
+
+		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 		ctx.lineWidth = strokeWidth;
 		ctx.strokeStyle = stroke;
@@ -36,6 +38,8 @@ class LineSeries extends Component {
 	}
 	renderSVG(moreProps) {
 		var { yAccessor, stroke, strokeWidth, defined } = this.props;
+		var { xAccessor } = this.context;
+
 		var { xAccessor, xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 		var dataSeries = d3.svg.line()
@@ -80,6 +84,9 @@ LineSeries.propTypes = {
 	className: PropTypes.string,
 	strokeWidth: PropTypes.number,
 };
+LineSeries.contextTypes = {
+	xAccessor: PropTypes.func.isRequired,
+}
 
 LineSeries.defaultProps = {
 	stroke: "#4682B4",

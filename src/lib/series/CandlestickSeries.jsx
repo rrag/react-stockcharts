@@ -13,18 +13,17 @@ class CandlestickSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		drawOnCanvas(ctx, this.props, moreProps);
+		drawOnCanvas(ctx, this.props, this.context, moreProps);
 	}
 	renderSVG(moreProps) {
 		var { className, wickClassName, candleClassName } = this.props;
-		var { xAccessor, xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 		return <g className={className}>
 			<g className={wickClassName} key="wicks">
-				{getWicksSVG(this.props, moreProps)}
+				{getWicksSVG(this.props, this.context, moreProps)}
 			</g>
 			<g className={candleClassName} key="candles">
-				{getCandlesSVG(this.props, moreProps)}
+				{getCandlesSVG(this.props, this.context, moreProps)}
 			</g>
 		</g>;
 	}
@@ -66,6 +65,9 @@ CandlestickSeries.propTypes = {
 	yScale: PropTypes.func,
 	plotData: PropTypes.array,
 };
+CandlestickSeries.contextTypes = {
+	xAccessor: PropTypes.func.isRequired,
+}
 
 CandlestickSeries.defaultProps = {
 	className: "react-stockcharts-candlestick",
@@ -83,10 +85,11 @@ CandlestickSeries.defaultProps = {
 	opacity: 1,
 };
 
-function getWicksSVG(props, moreProps) {
+function getWicksSVG(props, context, moreProps) {
 
 	/* eslint-disable react/prop-types */
-	var { xAccessor, xScale, chartConfig: { yScale }, plotData } = moreProps;
+	var { xAccessor } = context;
+	var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 	/* eslint-enable react/prop-types */
 
 	var wickData = getWickData(props, xAccessor, xScale, yScale, plotData);
@@ -99,10 +102,11 @@ function getWicksSVG(props, moreProps) {
 	return wicks;
 }
 
-function getCandlesSVG(props, moreProps) {
+function getCandlesSVG(props, context, moreProps) {
 
 	/* eslint-disable react/prop-types */
 	var { opacity } = props;
+	var { xAccessor } = context;
 	var { xAccessor, xScale, chartConfig: { yScale }, plotData } = moreProps;
 	/* eslint-enable react/prop-types */
 
@@ -130,9 +134,10 @@ function getCandlesSVG(props, moreProps) {
 	return candles;
 }
 
-function drawOnCanvas(ctx, props, moreProps) {
+function drawOnCanvas(ctx, props, context, moreProps) {
 	var { opacity } = props;
-	var { xAccessor, xScale, chartConfig: { yScale }, plotData } = moreProps;
+	var { xAccessor } = context;
+	var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 	var wickData = getWickData(props, xAccessor, xScale, yScale, plotData);
 
 	var wickNest = d3.nest()

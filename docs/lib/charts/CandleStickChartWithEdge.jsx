@@ -60,6 +60,36 @@ class CandleStickChartWithEdge extends React.Component {
 					<CurrentCoordinate id={1} yAccessor={ema20.accessor()} fill={ema20.stroke()} />
 					<CurrentCoordinate id={2} yAccessor={ema50.accessor()} fill={ema50.stroke()} />
 
+					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
+						yAccessor={ema20.accessor()} fill={ema20.fill()}/>
+					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
+						yAccessor={ema50.accessor()} fill={ema50.fill()}/>
+					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
+						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
+					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
+						yAccessor={ema20.accessor()} fill={ema20.fill()}/>
+					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
+						yAccessor={ema50.accessor()} fill={ema50.fill()}/>
+					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
+						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
+
+					<MouseCoordinateX
+						at="top"
+						orient="top"
+						displayFormat={d3.time.format("%Y-%m-%d")} />
+					<MouseCoordinateX
+						at="bottom"
+						orient="bottom"
+						displayFormat={d3.time.format("%Y-%m-%d")} />
+					<MouseCoordinateY
+						at="right"
+						orient="right"
+						displayFormat={d3.format(".2f")} />
+					<MouseCoordinateY
+						at="left"
+						orient="left"
+						displayFormat={d3.format(".2f")} />
+
 				</Chart>
 				<EventCapture mouseMove zoom pan />
 			</ChartCanvas>

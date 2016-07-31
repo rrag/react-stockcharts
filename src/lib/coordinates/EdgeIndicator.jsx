@@ -3,49 +3,40 @@
 import React, { Component, PropTypes } from "react";
 import d3 from "d3";
 
-import EdgeCoordinate from "./EdgeCoordinate";
+import { drawOnCanvas, renderSVG } from "./EdgeCoordinateV2";
+import GenericComponent from "../GenericComponent";
 
-import pure from "../pure";
 import { first, last, isDefined, isNotDefined } from "../utils";
 
 class EdgeIndicator extends Component {
-	componentDidMount() {
-		var { chartCanvasType, getCanvasContexts } = this.props;
-
-		if (chartCanvasType !== "svg" && isDefined(getCanvasContexts)) {
-			var contexts = getCanvasContexts();
-			if (contexts)
-				EdgeIndicator.drawOnCanvas(this.props, contexts.axes);
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+	}
+	drawOnCanvas(ctx, moreProps) {
+		var edge = helper(this.props, this.context, moreProps);
+		var props = {
+			...this.props,
+			...edge,
 		}
+		drawOnCanvas(ctx, props)
 	}
-	componentDidUpdate() {
-		this.componentDidMount();
-	}
-	componentWillMount() {
-		this.componentWillReceiveProps(this.props);
-	}
-	componentWillReceiveProps(nextProps) {
-		var draw = EdgeIndicator.drawOnCanvasStatic.bind(null, nextProps);
-
-		var { chartId } = nextProps;
-
-		nextProps.callbackForCanvasDraw({
-			type: "edge",
-			chartId, draw,
-		});
+	renderSVG(moreProps) {
+		var edge = helper(this.props, this.context, moreProps);
+		var props = {
+			...this.props,
+			...edge,
+		}
+		return renderSVG(props)
 	}
 	render() {
-		var { xScale, chartConfig, plotData, chartCanvasType } = this.props;
-
-		if (chartCanvasType !== "svg") return null;
-
-		var edge = EdgeIndicator.helper(this.props, xScale, chartConfig.yScale, plotData);
-
-		if (isNotDefined(edge)) return null;
-
-		return <EdgeCoordinate
-			className="react-stockcharts-edge-coordinate"
-				{...edge} />;
+		return <GenericComponent
+			canvasToDraw={contexts => contexts.axes}
+			svgDraw={this.renderSVG}
+			canvasDraw={this.drawOnCanvas}
+			drawOnPan
+			/>
 	}
 }
 
@@ -70,8 +61,13 @@ EdgeIndicator.propTypes = {
 	rectWidth: PropTypes.number.isRequired,
 	arrowWidth: PropTypes.number.isRequired,
 };
+EdgeIndicator.contextTypes = {
+	xAccessor: PropTypes.func.isRequired,
+}
 
 EdgeIndicator.defaultProps = {
+	className: "react-stockcharts-edgeindicator",
+
 	type: "horizontal",
 	orient: "left",
 	edgeAt: "left",
@@ -83,32 +79,21 @@ EdgeIndicator.defaultProps = {
 	arrowWidth: 10,
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 13,
+
+	hideLine: false,
+	fill: "#8a8a8a",
+	opacity: 1,
+	lineStroke: "#000000",
+	lineOpacity: 0.3,
 };
 
-EdgeIndicator.drawOnCanvas = (props, canvasContext) => {
-	var { chartConfig, xScale, plotData } = props;
-	EdgeIndicator.drawOnCanvasStatic(props, canvasContext, xScale, chartConfig.yScale, plotData);
-};
-
-EdgeIndicator.drawOnCanvasStatic = (props, ctx, xScale, yScale, plotData) => {
-	var { canvasOriginX, canvasOriginY } = props;
-	var edge = EdgeIndicator.helper(props, xScale, yScale, plotData);
-
-	if (isNotDefined(edge)) return null;
-
-	ctx.save();
-
-	ctx.setTransform(1, 0, 0, 1, 0, 0);
-	ctx.translate(canvasOriginX, canvasOriginY);
-
-	EdgeCoordinate.drawOnCanvasStatic(ctx, edge);
-	ctx.restore();
-};
-
-EdgeIndicator.helper = (props, xScale, yScale, plotData) => {
+function helper(props, context, moreProps) {
 	var { type: edgeType, displayFormat, itemType, edgeAt, yAxisPad, orient } = props;
-	var { yAccessor, xAccessor, fill, textFill, rectHeight, rectWidth, arrowWidth } = props;
+	var { yAccessor, fill, textFill, rectHeight, rectWidth, arrowWidth } = props;
 	var { fontFamily, fontSize } = props;
+	var { xAccessor } = context;
+
+	var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 	// var currentItem = ChartDataUtil.getCurrentItemForChartNew(currentItems, forChart);
 	var edge = null;
@@ -148,34 +133,4 @@ EdgeIndicator.helper = (props, xScale, yScale, plotData) => {
 	return edge;
 };
 
-EdgeIndicator.propTypes = {
-	canvasOriginX: PropTypes.number,
-	canvasOriginY: PropTypes.number,
-	chartConfig: PropTypes.object.isRequired,
-	xAccessor: PropTypes.func.isRequired,
-	xScale: PropTypes.func.isRequired,
-	chartId: PropTypes.number.isRequired,
-	getCanvasContexts: PropTypes.func,
-	margin: PropTypes.object.isRequired,
-	callbackForCanvasDraw: PropTypes.func.isRequired,
-	getAllCanvasDrawCallback: PropTypes.func,
-	chartCanvasType: PropTypes.string.isRequired,
-	plotData: PropTypes.array.isRequired,
-};
-
-
-export default pure(EdgeIndicator, {
-	// width: PropTypes.number.isRequired,
-	canvasOriginX: PropTypes.number,
-	canvasOriginY: PropTypes.number,
-	chartConfig: PropTypes.object.isRequired,
-	xAccessor: PropTypes.func.isRequired,
-	xScale: PropTypes.func.isRequired,
-	chartId: PropTypes.number.isRequired,
-	getCanvasContexts: PropTypes.func,
-	margin: PropTypes.object.isRequired,
-	callbackForCanvasDraw: PropTypes.func.isRequired,
-	getAllCanvasDrawCallback: PropTypes.func,
-	chartCanvasType: PropTypes.string.isRequired,
-	plotData: PropTypes.array.isRequired,
-});
+export default EdgeIndicator;
