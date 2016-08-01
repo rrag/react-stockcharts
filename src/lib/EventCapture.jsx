@@ -15,8 +15,6 @@ function getTouchProps(touch) {
 	};
 }
 
-
-
 class EventCapture extends Component {
 	constructor(props) {
 		super(props);

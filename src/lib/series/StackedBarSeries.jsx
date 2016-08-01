@@ -60,7 +60,7 @@ StackedBarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 
 export function drawOnCanvasHelper(props, ctx, xScale, yScale, plotData, xAccessor, yAccessor,
 		stackFn, defaultPostAction = identity, postRotateAction = rotateXY) {
-	var bars = doStuff(props, plotData, xScale, yScale, stackFn, postRotateAction, defaultPostAction);
+	var bars = doStuff(props, xAccessor, plotData, xScale, yScale, stackFn, postRotateAction, defaultPostAction);
 	drawOnCanvas2(props, ctx, bars);
 }
 
@@ -68,15 +68,14 @@ function convertToArray(item) {
 	return Array.isArray(item) ? item : [item];
 }
 
-export function svgHelper(props, stackFn, defaultPostAction = identity, postRotateAction = rotateXY) {
-	var { xScale, yScale, plotData } = props;
-	var bars = doStuff(props, plotData, xScale, yScale, stackFn, postRotateAction, defaultPostAction);
-
+export function svgHelper(props, moreProps, xAccessor, stackFn, defaultPostAction = identity, postRotateAction = rotateXY) {
+	var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+	var bars = doStuff(props, xAccessor, plotData, xScale, yScale, stackFn, postRotateAction, defaultPostAction);
 	return getBarsSVG2(props, bars);
 }
 
-function doStuff(props, plotData, xScale, yScale, stackFn, postRotateAction, defaultPostAction) {
-	var { yAccessor, xAccessor, swapScales } = props;
+function doStuff(props, xAccessor, plotData, xScale, yScale, stackFn, postRotateAction, defaultPostAction) {
+	var { yAccessor, swapScales } = props;
 
 	var modifiedYAccessor = swapScales ? convertToArray(xAccessor) : convertToArray(yAccessor);
 	var modifiedXAccessor = swapScales ? yAccessor : xAccessor;

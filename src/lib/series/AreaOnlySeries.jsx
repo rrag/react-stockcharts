@@ -3,7 +3,7 @@
 import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
-import GenericComponent from "../GenericComponent";
+import GenericChartComponent from "../GenericChartComponent";
 import { hexToRGBA, isDefined, first } from "../utils";
 
 class AreaOnlySeries extends Component {
@@ -63,7 +63,7 @@ class AreaOnlySeries extends Component {
 		);
 	}
 	render() {
-		return <GenericComponent
+		return <GenericChartComponent
 			canvasToDraw={contexts => contexts.axes}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}

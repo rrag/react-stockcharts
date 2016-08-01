@@ -54,10 +54,11 @@ class CandleStickChartWithEdge extends React.Component {
 						height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 
+					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 					<AreaSeries yAccessor={smaVolume70.accessor()} stroke={smaVolume70.stroke()} fill={smaVolume70.fill()}/>
 
-					<CurrentCoordinate id={0} yAccessor={smaVolume70.accessor()} fill={smaVolume70.stroke()} />
-					<CurrentCoordinate id={1} yAccessor={d => d.volume} fill="#9B0A47" />
+					<CurrentCoordinate yAccessor={smaVolume70.accessor()} fill={smaVolume70.stroke()} />
+					<CurrentCoordinate yAccessor={d => d.volume} fill="#9B0A47" />
 
 					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
 						yAccessor={d => d.volume} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
@@ -114,8 +115,11 @@ class CandleStickChartWithEdge extends React.Component {
 						orient="left"
 						displayFormat={d3.format(".2f")} />
 
+					<OHLCTooltip origin={[-40, -65]}/>
+					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, -55]} 
+						calculators={[ema20, ema50]}/>
 				</Chart>
-				<EventCapture mouseMove zoom pan />
+				<CrossHairCursor />
 			</ChartCanvas>
 		);
 	}

@@ -3,7 +3,7 @@
 import React, { PropTypes, Component } from "react";
 
 import { drawOnCanvas, renderSVG } from "./EdgeCoordinateV2";
-import GenericComponent from "../GenericComponent";
+import GenericChartComponent from "../GenericChartComponent";
 
 import { isDefined, isNotDefined, shallowEqual } from "../utils";
 
@@ -26,8 +26,9 @@ class MouseCoordinateX extends Component {
 		return renderSVG(props)
 	}
 	render() {
-		return <GenericComponent
+		return <GenericChartComponent
 			svgDraw={this.renderSVG}
+			clip={false}
 			canvasDraw={this.drawOnCanvas}
 			drawOnMouseMove
 			drawOnPan

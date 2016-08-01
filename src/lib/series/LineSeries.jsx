@@ -3,7 +3,7 @@
 import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
-import GenericComponent from "../GenericComponent";
+import GenericChartComponent from "../GenericChartComponent";
 import { first } from "../utils";
 
 class LineSeries extends Component {
@@ -59,7 +59,7 @@ class LineSeries extends Component {
 			/>;
 	}
 	render() {
-		return <GenericComponent
+		return <GenericChartComponent
 			canvasToDraw={contexts => contexts.axes}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}

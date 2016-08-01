@@ -41,15 +41,6 @@ function values(func) {
 	};
 }
 
-export function shouldShowCrossHairStyle(children) {
-	return React.Children.map(children, (each) => {
-		if (each.type === EventCapture) {
-			return each.props.useCrossHairStyle;
-		}
-		return undefined;
-	}).filter(isDefined)[0];
-}
-
 export function getNewChartConfig(innerDimension, children) {
 
 	return React.Children.map(children, (each) => {

@@ -2,8 +2,7 @@
 
 import React, { PropTypes, Component } from "react";
 
-import pure from "../pure";
-import GenericComponent from "../GenericComponent";
+import GenericChartComponent from "../GenericChartComponent";
 import { shallowEqual, isDefined, isNotDefined } from "../utils";
 
 class CurrentCoordinate extends Component {
@@ -33,7 +32,7 @@ class CurrentCoordinate extends Component {
 		);
 	}
 	render() {
-		return <GenericComponent
+		return <GenericChartComponent
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
 			drawOnMouseMove

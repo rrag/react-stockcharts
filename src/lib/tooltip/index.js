@@ -1,5 +1,5 @@
 import MACDTooltip from "./MACDTooltip";
-import TooltipContainer from "./TooltipContainer";
+// import TooltipContainer from "./TooltipContainer";
 import OHLCTooltip from "./OHLCTooltip";
 import SingleValueTooltip from "./SingleValueTooltip";
 import MovingAverageTooltip from "./MovingAverageTooltip";
@@ -10,7 +10,7 @@ import HoverTooltip from "./HoverTooltip";
 
 export {
 	MACDTooltip,
-	TooltipContainer,
+//	TooltipContainer,
 	OHLCTooltip,
 	SingleValueTooltip,
 	MovingAverageTooltip,

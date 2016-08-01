@@ -2,7 +2,7 @@
 
 import React, { PropTypes, Component } from "react";
 import d3 from "d3";
-import { noop } from "./utils";
+import { noop, isNotDefined, isDefined } from "./utils";
 
 var suscriberId = 0;
 
@@ -13,6 +13,7 @@ class GenericComponent extends Component {
 		this.getMoreProps = this.getMoreProps.bind(this);
 		this.listener = this.listener.bind(this);
 		this.draw = this.draw.bind(this);
+		this.evaluateType = this.evaluateType.bind(this);
 
 		this.suscriberId = suscriberId++;
 
@@ -26,13 +27,9 @@ class GenericComponent extends Component {
 		var { chartConfig: chartConfigList } = moreProps;
 		this.moreProps = Object.assign(this.moreProps, moreProps);
 
-		if (chartConfigList) {
-			var { chartId } = this.context;
-			var chartConfig = chartConfigList
-				.filter(each => each.id === chartId)[0];
-			this.moreProps.chartConfig = chartConfig
-		}
-
+		this.evaluateType(type)
+	}
+	evaluateType(type) {
 		switch (type) {
 			case "zoom":
 			case "mouseenter":
@@ -61,7 +58,9 @@ class GenericComponent extends Component {
 	}
 	draw() {
 		var { chartCanvasType } = this.context;
-		if (chartCanvasType === "svg") {
+		var { canvasDraw } = this.props;
+
+		if (isNotDefined(canvasDraw) || chartCanvasType === "svg") {
 			var { updateCount } = this.state;
 
 			this.setState({
@@ -84,8 +83,9 @@ class GenericComponent extends Component {
 	}
 	componentDidUpdate() {
 		var { chartCanvasType } = this.context;
+		var { canvasDraw } = this.props;
 
-		if (chartCanvasType !== "svg") {
+		if (isDefined(canvasDraw) && chartCanvasType !== "svg") {
 			this.drawOnCanvas();
 		}
 	}
@@ -106,8 +106,8 @@ class GenericComponent extends Component {
 		return moreProps;
 	}
 	drawOnCanvas() {
-		var { canvasDraw, canvasToDraw } = this.props;
-		var { getCanvasContexts } = this.context;
+		var { canvasDraw, canvasToDraw, clip } = this.props;
+		var { getCanvasContexts, width, height } = this.context;
 
 		var ctx = canvasToDraw(getCanvasContexts());
 
@@ -118,49 +118,56 @@ class GenericComponent extends Component {
 		ctx.setTransform(1, 0, 0, 1, 0, 0);
 		ctx.translate(canvasOriginX, canvasOriginY);
 
+		if (clip) {
+			ctx.beginPath();
+			ctx.rect(-1, -1, width + 1, height + 1);
+			ctx.clip();
+		}
 		canvasDraw(ctx, this.getMoreProps());
 
 		ctx.restore();
 	}
 	render() {
 		var { chartCanvasType } = this.context;
-		if (chartCanvasType !== "svg") return null;
+		var { canvasDraw, clip, svgDraw } = this.props;
 
-		var { svgDraw } = this.props;
+		if (isDefined(canvasDraw) && chartCanvasType !== "svg") return null;
 
-		return svgDraw(this.getMoreProps());
+		var style = clip ? { "clipPath": "url(#chart-area-clip)" } : null;
+
+		return <g style={style}>{svgDraw(this.getMoreProps())}</g>;
 	}
 }
 
 GenericComponent.propTypes = {
 	svgDraw: PropTypes.func.isRequired,
-	canvasDraw: PropTypes.func.isRequired,
+	canvasDraw: PropTypes.func,
 	drawOnMouseMove: PropTypes.bool.isRequired,
 	drawOnPan: PropTypes.bool.isRequired,
 };
 
 GenericComponent.defaultProps = {
 	svgDraw: d3.functor(null),
-	canvasDraw: noop,
 	drawOnMouseMove: false,
 	drawOnPan: false,
 	drawOnHover: false,
 	drawOnMouseExitOfCanvas: false,
-	canvasToDraw: contexts => contexts.mouseCoord
+	canvasToDraw: contexts => contexts.mouseCoord,
+	clip: true,
 };
 
 GenericComponent.contextTypes = {
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 	margin: PropTypes.object.isRequired,
-	chartId: PropTypes.number.isRequired,
+	// chartId: PropTypes.number.isRequired,
 	getCanvasContexts: PropTypes.func,
 
 	chartCanvasType: PropTypes.string,
 	xScale: PropTypes.func.isRequired,
 	xAccessor: PropTypes.func.isRequired,
 	plotData: PropTypes.array.isRequired,
-	chartConfig: PropTypes.object.isRequired,
+	// chartConfig: PropTypes.object.isRequired,
 	canvasOriginX: PropTypes.number,
 	canvasOriginY: PropTypes.number,
 

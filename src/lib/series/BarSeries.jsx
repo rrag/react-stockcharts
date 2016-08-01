@@ -2,17 +2,37 @@
 
 import React, { PropTypes, Component } from "react";
 
-import wrap from "./wrap";
+import GenericChartComponent from "../GenericChartComponent";
 
 import StackedBarSeries, { drawOnCanvasHelper, svgHelper } from "./StackedBarSeries";
 import { identity } from "../utils";
 
 
 class BarSeries extends Component {
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+	}
+	drawOnCanvas(ctx, moreProps) {
+		var { yAccessor } = this.props;
+		var { xAccessor } = this.context;
+		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+
+		drawOnCanvasHelper(this.props, ctx, xScale, yScale, plotData, xAccessor, yAccessor, identity);
+	}
+	renderSVG(moreProps) {
+		var { xAccessor } = this.context;
+
+		return <g>{svgHelper(this.props, moreProps, xAccessor, identity)}</g>;
+	}
 	render() {
-		return <g className="react-stockcharts-bar-series">
-			{BarSeries.getBarsSVG(this.props)}
-		</g>;
+		return <GenericChartComponent
+			canvasToDraw={contexts => contexts.axes}
+			svgDraw={this.renderSVG}
+			canvasDraw={this.drawOnCanvas}
+			drawOnPan
+			/>
 	}
 }
 
@@ -30,22 +50,12 @@ BarSeries.propTypes = {
 	className: PropTypes.oneOfType([
 		PropTypes.func, PropTypes.string
 	]).isRequired,
-	xAccessor: PropTypes.func,
-	yAccessor: PropTypes.func.isRequired,
-	xScale: PropTypes.func,
-	yScale: PropTypes.func,
-	plotData: PropTypes.array,
 };
+
+BarSeries.contextTypes = {
+	xAccessor: PropTypes.func.isRequired,
+}
 
 BarSeries.defaultProps = StackedBarSeries.defaultProps;
 
-BarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { yAccessor, xAccessor } = props;
-	drawOnCanvasHelper(props, ctx, xScale, yScale, plotData, xAccessor, yAccessor, identity);
-};
-
-BarSeries.getBarsSVG = (props) => {
-	return svgHelper(props, identity);
-};
-
-export default wrap(BarSeries);
+export default BarSeries;

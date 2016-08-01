@@ -3,20 +3,29 @@
 import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
+import GenericChartComponent from "../GenericChartComponent";
+
 import { first, isDefined } from "../utils";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
 class OHLCTooltip extends Component {
-	render() {
-		var { forChart, onClick, xDisplayFormat, fontFamily, fontSize, accessor, volumeFormat, ohlcFormat } = this.props;
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+	}
+	renderSVG(moreProps) {
+		var { className } = this.props;
+		var { width, height } = this.context;
+		var { chartConfig, currentItem } = moreProps;
+
+		var { onClick, xDisplayFormat, fontFamily, fontSize, accessor, volumeFormat, ohlcFormat } = this.props;
 
 		var displayDate, open, high, low, close, volume;
 
-		displayDate = open = high = low = close = volume = "n/a";
+		displayDate = open = height = low = close = volume = "n/a";
 
-		var { chartConfig, currentItem, width, height } = this.context;
-		var config = first(chartConfig.filter(each => each.id === forChart));
+		var config = chartConfig;
 
 		if (isDefined(currentItem)
 				&& isDefined(accessor(currentItem))
@@ -37,7 +46,7 @@ class OHLCTooltip extends Component {
 		var [ox, oy] = config.origin;
 
 		return (
-			<g transform={`translate(${ ox + x }, ${ oy + y })`} onClick={onClick}>
+			<g className="react-stockcharts-toottip-hover" transform={`translate(${ ox + x }, ${ oy + y })`} onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={fontFamily} fontSize={fontSize}>
 					<ToolTipTSpanLabel key="label" x={0} dy="5">Date: </ToolTipTSpanLabel>
@@ -51,17 +60,23 @@ class OHLCTooltip extends Component {
 			</g>
 		);
 	}
+	render() {
+		return <GenericChartComponent
+			clip={false}
+			svgDraw={this.renderSVG}
+			drawOnMouseMove
+			/>
+	}
 }
 
 OHLCTooltip.contextTypes = {
-	chartConfig: PropTypes.array.isRequired,
+	chartConfig: PropTypes.object.isRequired,
 	currentItem: PropTypes.object,
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 };
 
 OHLCTooltip.propTypes = {
-	forChart: PropTypes.number.isRequired,
 	accessor: PropTypes.func.isRequired,
 	xDisplayFormat: PropTypes.func.isRequired,
 	ohlcFormat: PropTypes.func.isRequired,

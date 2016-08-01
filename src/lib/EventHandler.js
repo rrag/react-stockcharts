@@ -10,6 +10,7 @@ import {
 	shallowEqual,
 } from "./utils";
 
+import EventCapture from "./EventCapture";
 import { getNewChartConfig, getChartConfigWithUpdatedYScales, getCurrentCharts, getCurrentItem } from "./utils/ChartDataUtil";
 
 function setXRange(xScale, dimensions, padding, direction = 1) {
@@ -609,7 +610,10 @@ class EventHandler extends Component {
 		// var { dimensions } = this.props;
 		return (
 			<g>
-				{this.props.children}
+				<EventCapture mouseMove zoom pan />
+				<g className="react-stockcharts-avoid-interaction">
+					{this.props.children}
+				</g>
 			</g>
 		);
 	}

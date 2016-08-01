@@ -4,7 +4,6 @@ import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
 import { shallowEqual, identity, isDefined } from "./utils";
-import { shouldShowCrossHairStyle } from "./utils/ChartDataUtil";
 
 import EventHandler from "./EventHandler";
 import CanvasContainer from "./CanvasContainer";
@@ -81,7 +80,7 @@ function calculateState(props) {
 	};
 }
 
-function getCursorStyle(children) {
+function getCursorStyle(useCrossHairStyleCursor) {
 	var style = `
 	.react-stockcharts-grabbing-cursor {
 		cursor: grabbing;
@@ -89,6 +88,7 @@ function getCursorStyle(children) {
 		cursor: -webkit-grabbing;
 	}
 	.react-stockcharts-crosshair-cursor {
+		pointer-events: all;
 		cursor: crosshair;
 	}
 	.react-stockcharts-toottip-hover {
@@ -97,7 +97,10 @@ function getCursorStyle(children) {
 	}`;
 	var tooltipStyle = `
 	.react-stockcharts-avoid-interaction {
-  		pointer-events: none;
+		pointer-events: none;
+	}
+	.react-stockcharts-enable-interaction {
+		pointer-events: all;
 	}
 	.react-stockcharts-default-cursor {
 		cursor: default;
@@ -116,7 +119,7 @@ function getCursorStyle(children) {
 		dangerouslySetInnerHTML={{
 			__html: shouldShowCrossHairStyle(children) ? style + tooltipStyle : tooltipStyle
 		}}></style>);*/
-	return (<style type="text/css">{shouldShowCrossHairStyle(children) ? style + tooltipStyle : tooltipStyle}</style>);
+	return (<style type="text/css">{useCrossHairStyleCursor ? style + tooltipStyle : tooltipStyle}</style>);
 }
 
 class ChartCanvas extends Component {
@@ -172,7 +175,7 @@ class ChartCanvas extends Component {
 		}
 	}
 	render() {
-		var cursor = getCursorStyle(this.props.children);
+		var cursor = getCursorStyle(this.props.useCrossHairStyleCursor);
 
 		var { type, height, width, margin, className, zIndex, postCalculator, flipXScale } = this.props;
 		var { padding } = this.props;
@@ -268,6 +271,7 @@ ChartCanvas.defaultProps = {
 	padding: 0,
 	xAccessor: identity,
 	flipXScale: false,
+	useCrossHairStyleCursor: true,
 	// initialDisplay: 30
 };
 

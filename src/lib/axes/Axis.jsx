@@ -2,7 +2,7 @@
 
 import React, { PropTypes, Component } from "react";
 
-import GenericComponent from "../GenericComponent";
+import GenericChartComponent from "../GenericChartComponent";
 import { first, last, hexToRGBA, isNotDefined, isDefined } from "../utils";
 
 class Axis extends Component {
@@ -39,8 +39,9 @@ class Axis extends Component {
 		</g>
 	}
 	render() {
-		return <GenericComponent
+		return <GenericChartComponent
 			canvasToDraw={contexts => contexts.axes}
+			clip={false}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
 			drawOnPan

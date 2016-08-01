@@ -3,7 +3,7 @@
 import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 
-import GenericComponent from "../GenericComponent";
+import GenericChartComponent from "../GenericChartComponent";
 import { first, last, hexToRGBA, isDefined } from "../utils";
 
 class CandlestickSeries extends Component {
@@ -29,7 +29,7 @@ class CandlestickSeries extends Component {
 	}
 
 	render() {
-		return <GenericComponent
+		return <GenericChartComponent
 			canvasToDraw={contexts => contexts.axes}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
