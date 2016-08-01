@@ -188,6 +188,14 @@ class EventHandler extends Component {
 			clearCanvas([canvases.axes, canvases.mouseCoord]);
 		}
 	}
+	clearMouseCanvas(props) {
+		props = props || this.props;
+		var canvases = props.canvasContexts();
+		if (canvases && canvases.mouseCoord) {
+			// console.log("CLEAR");
+			clearCanvas([canvases.mouseCoord]);
+		}
+	}
 	clearThreeCanvas(props) {
 		props = props || this.props;
 		var canvases = props.canvasContexts();
@@ -305,10 +313,7 @@ class EventHandler extends Component {
 		var contexts = this.getCanvasContexts();
 
 		requestAnimationFrame(() => {
-			if (contexts && contexts.mouseCoord) {
-				clearCanvas([contexts.mouseCoord]);
-				// this.clearInteractiveCanvas();
-			}
+			this.clearMouseCanvas();
 			this.triggerEvent("mousemove", {
 				mouseXY,
 				currentItem,
@@ -565,7 +570,7 @@ class EventHandler extends Component {
 	/*clearCanvasDrawCallbackList() {
 		this.canvasDrawCallbackList = [];
 	}*/
-	handlePanEnd(mousePosition) {
+	handlePanEnd(mousePosition, e) {
 		var state = this.panHelper(mousePosition);
 		// console.log(this.canvasDrawCallbackList.map(d => d.type));
 		this.hackyWayToStopPanBeyondBounds__plotData = null;
@@ -573,15 +578,32 @@ class EventHandler extends Component {
 
 		// this.clearCanvasDrawCallbackList();
 
-		this.clearThreeCanvas();
+		if (!this.panHappened) {
+			if (this.clicked) {
+				this.triggerEvent("dblclick", {}, e)
+				this.clicked = false;
+			} else {
+				this.triggerEvent("click", {}, e)
+				this.clicked = true;
+				this.clickInterval = setTimeout(() => {
+					this.clicked = false;
+				}, 300)
+			}
 
+			this.setState({
+				panInProgress: false,
+				panStartXScale: null,
+			});
+		} else {
+			this.clearThreeCanvas();
+
+			this.setState({
+				...state,
+				panInProgress: false,
+				panStartXScale: null,
+			});
+		}
 		// console.log(interactiveState[0].interactive);
-		this.setState({
-			...state,
-			show: this.state.show,
-			panInProgress: false,
-			panStartXScale: null,
-		});
 	}
 	setInteractiveState(id, chartId, interactive) {
 		var everyThingElse = this.interactiveState

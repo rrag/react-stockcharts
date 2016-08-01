@@ -14,7 +14,8 @@ function AreaSeries(props) {
 			<LineSeries
 				yAccessor={yAccessor}
 				stroke={stroke} fill="none"
-				strokeWidth={strokeWidth} />
+				strokeWidth={strokeWidth}
+				hoverHighlight={false} />
 			<AreaOnlySeries
 				yAccessor={yAccessor}
 				base={baseAt}

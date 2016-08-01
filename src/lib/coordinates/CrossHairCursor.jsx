@@ -2,10 +2,11 @@
 
 import React, { PropTypes, Component } from "react";
 import GenericComponent from "../GenericComponent";
+import PureComponent from "../utils/PureComponent";
 
 import { hexToRGBA, isDefined, isNotDefined } from "../utils";
 
-class CrossHairCursor extends Component {
+class CrossHairCursor extends PureComponent {
 	constructor(props) {
 		super(props);
 		this.renderSVG = this.renderSVG.bind(this);

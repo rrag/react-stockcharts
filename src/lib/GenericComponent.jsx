@@ -13,7 +13,10 @@ class GenericComponent extends Component {
 		this.getMoreProps = this.getMoreProps.bind(this);
 		this.listener = this.listener.bind(this);
 		this.draw = this.draw.bind(this);
+		this.updateMoreProps = this.updateMoreProps.bind(this);
 		this.evaluateType = this.evaluateType.bind(this);
+		this.isHover = this.isHover.bind(this);
+		this.executeMouseMove = this.executeMouseMove.bind(this);
 
 		this.suscriberId = suscriberId++;
 
@@ -22,22 +25,43 @@ class GenericComponent extends Component {
 			updateCount: 0,
 		}
 	}
-	listener(type, moreProps, e) {
+	updateMoreProps(moreProps) {
 		// console.log(type, moreProps, e)
-		var { chartConfig: chartConfigList } = moreProps;
 		this.moreProps = Object.assign(this.moreProps, moreProps);
-
-		this.evaluateType(type)
 	}
-	evaluateType(type) {
+	listener(type, moreProps, e) {
+		this.updateMoreProps(moreProps);
+		this.evaluateType(type, e)
+	}
+	executeMouseMove(e) {
+		this.moreProps.hovering = this.isHover(e)
+		// console.log(this.moreProps.prevHovering, this.moreProps.hovering)
+		if (this.moreProps.hovering
+				|| (this.moreProps.prevHovering && !this.moreProps.hovering)
+				|| this.props.drawOnMouseMove) {
+			this.draw();
+		}
+		this.moreProps.prevHovering = this.moreProps.hovering;
+	}
+	evaluateType(type, e) {
 		switch (type) {
 			case "zoom":
 			case "mouseenter":
 				// DO NOT DRAW FOR THESE EVENTS
 				break;
+			case "click": {
+				if (this.moreProps.hovering && this.props.onClick) {
+					this.props.onClick(e);
+				}
+				break;
+			}
 			case "mousemove": {
-				if (this.props.drawOnMouseMove) {
-					this.draw();
+				this.executeMouseMove();
+				break;
+			}
+			case "dblclick": {
+				if (this.moreProps.hovering && this.props.onDoubleClick) {
+					this.props.onDoubleClick(e);
 				}
 				break;
 			}
@@ -55,8 +79,12 @@ class GenericComponent extends Component {
 				break;
 			}
 		}
+		if (type !== "mousemove" && type !== "click") this.moreProps.prevHovering = false;
 	}
-	draw() {
+	isHover(e) {
+		return this.props.isHover(this.moreProps, e);
+	}
+	draw(hovering = false) {
 		var { chartCanvasType } = this.context;
 		var { canvasDraw } = this.props;
 
@@ -66,13 +94,14 @@ class GenericComponent extends Component {
 			this.setState({
 				updateCount: updateCount + 1,
 			})
-		} else {
+		} else if (!(this.moreProps.prevHovering && !this.moreProps.hovering)) {
 			this.drawOnCanvas();
 		}
 	}
 	componentWillMount() {
 		var { subscribe } = this.context;
 		subscribe(this.suscriberId, this.listener);
+		this.componentWillReceiveProps(this.props, this.context);
 	}
 	componentWillUnmount() {
 		var { unsubscribe } = this.context;
@@ -106,10 +135,13 @@ class GenericComponent extends Component {
 		return moreProps;
 	}
 	drawOnCanvas() {
-		var { canvasDraw, canvasToDraw, clip } = this.props;
+		var { canvasDraw, canvasToDraw, hoverCanvasToDraw, clip } = this.props;
 		var { getCanvasContexts, width, height } = this.context;
+		var { hovering } = this.moreProps;
 
-		var ctx = canvasToDraw(getCanvasContexts());
+		var ctx = hovering
+			? hoverCanvasToDraw(getCanvasContexts())
+			: canvasToDraw(getCanvasContexts());
 
 		var { canvasOriginX, canvasOriginY } = this.context;
 
@@ -153,7 +185,9 @@ GenericComponent.defaultProps = {
 	drawOnHover: false,
 	drawOnMouseExitOfCanvas: false,
 	canvasToDraw: contexts => contexts.mouseCoord,
+	hoverCanvasToDraw: contexts => contexts.mouseCoord,
 	clip: true,
+	isHover: d3.functor(false),
 };
 
 GenericComponent.contextTypes = {

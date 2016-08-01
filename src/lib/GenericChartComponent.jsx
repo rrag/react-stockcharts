@@ -13,8 +13,8 @@ class GenericChartComponent extends GenericComponent {
 	}
 	listener(type, moreProps, e) {
 		// console.log(type, moreProps, e)
+		this.updateMoreProps(moreProps);
 		var { chartConfig: chartConfigList } = moreProps;
-		this.moreProps = Object.assign(this.moreProps, moreProps);
 
 		if (chartConfigList) {
 			var { chartId } = this.context;
@@ -22,7 +22,7 @@ class GenericChartComponent extends GenericComponent {
 				.filter(each => each.id === chartId)[0];
 			this.moreProps.chartConfig = chartConfig
 		}
-		this.evaluateType(type)
+		this.evaluateType(type, e)
 	}
 }
 
