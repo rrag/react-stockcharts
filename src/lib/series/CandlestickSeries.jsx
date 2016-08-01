@@ -238,14 +238,15 @@ function getCandleData(props, xAccessor, xScale, yScale, plotData) {
 	// console.log(plotData);
 	var width = xScale(xAccessor(last(plotData)))
 		- xScale(xAccessor(first(plotData)));
-	var cw = (width / (plotData.length - 1)) * widthRatio;
+	var cw = (width / (plotData.length - 1) * widthRatio);
 	var candleWidth = Math.round(cw); // Math.floor(cw) % 2 === 0 ? Math.floor(cw) : Math.round(cw);
-	var offset = (candleWidth === 1 ? 0 : Math.round(0.5 * cw));
+
+	var offset = (candleWidth === 1 ? 0 : 0.5 * cw);
 	var candles = plotData
 			.filter(d => isDefined(d.close))
 			.map(d => {
 				var ohlc = yAccessor(d);
-				var x = Math.round(xScale(xAccessor(d))) - offset,
+				var x = Math.round(xScale(xAccessor(d)) - offset),
 					y = yScale(Math.max(ohlc.open, ohlc.close)),
 					height = Math.abs(yScale(ohlc.open) - yScale(ohlc.close)),
 					className = (ohlc.open <= ohlc.close) ? classNames.up : classNames.down;

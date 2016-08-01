@@ -4,7 +4,6 @@ import React from "react";
 import d3 from "d3";
 import flattenDeep from "lodash.flattendeep";
 
-import EventCapture from "../EventCapture";
 import Chart from "../Chart";
 
 import {

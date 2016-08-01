@@ -5,7 +5,7 @@ import d3 from "d3";
 
 import GenericChartComponent from "../GenericChartComponent";
 
-import { first, isDefined } from "../utils";
+import { isDefined } from "../utils";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
@@ -46,7 +46,7 @@ class OHLCTooltip extends Component {
 		var [ox, oy] = config.origin;
 
 		return (
-			<g className="react-stockcharts-toottip-hover" transform={`translate(${ ox + x }, ${ oy + y })`} onClick={onClick}>
+			<g className={`react-stockcharts-toottip-hover ${className}`} transform={`translate(${ ox + x }, ${ oy + y })`} onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={fontFamily} fontSize={fontSize}>
 					<ToolTipTSpanLabel key="label" x={0} dy="5">Date: </ToolTipTSpanLabel>

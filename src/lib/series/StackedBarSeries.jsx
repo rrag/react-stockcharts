@@ -46,10 +46,10 @@ StackedBarSeries.defaultProps = {
 	baseAt: (xScale, yScale/* , d*/) => first(yScale.range()),
 	direction: "up",
 	className: "bar",
-	stroke: false,
+	stroke: true,
 	fill: "#4682B4",
-	opacity: 1,
-	widthRatio: 0.5,
+	opacity: 0.5,
+	widthRatio: 0.8,
 };
 
 StackedBarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
@@ -179,7 +179,7 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 
 	var eachBarWidth = (barWidth - spaceBetweenBar * (yAccessor.length - 1)) / yAccessor.length;
 
-	var offset = (barWidth === 1 ? 0 : 0.5 * barWidth);
+	var offset = (barWidth === 1 ? 0 : 0.5 * bw);
 
 	var layers = yAccessor
 		.map((eachYAccessor, i) => plotData
@@ -220,11 +220,11 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 					fill: d.fill,
 					// series: d.series,
 					// i: d.x,
-					x: xScale(d.series) - barWidth / 2,
+					x: Math.round(xScale(d.series) - bw / 2),
 					y: y,
-					groupOffset: offset - (d.x > 0 ? (eachBarWidth + spaceBetweenBar) * d.x : 0),
-					groupWidth: eachBarWidth,
-					offset: barWidth / 2,
+					groupOffset: Math.round(offset - (d.x > 0 ? (eachBarWidth + spaceBetweenBar) * d.x : 0)),
+					groupWidth: Math.round(eachBarWidth),
+					offset: Math.round(offset),
 					height: h,
 					width: barWidth,
 				};

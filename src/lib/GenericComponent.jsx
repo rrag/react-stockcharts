@@ -17,6 +17,8 @@ class GenericComponent extends Component {
 		this.evaluateType = this.evaluateType.bind(this);
 		this.isHover = this.isHover.bind(this);
 		this.executeMouseMove = this.executeMouseMove.bind(this);
+		this.preCanvasDraw = this.preCanvasDraw.bind(this);
+		this.postCanvasDraw = this.postCanvasDraw.bind(this);
 
 		this.suscriberId = suscriberId++;
 
@@ -72,10 +74,12 @@ class GenericComponent extends Component {
 				break;
 			}
 			case "pan": {
+				this.moreProps.hovering = this.isHover(e)
 				if (this.props.drawOnPan) {
 					// console.log("HERE", this.moreProps)
 					this.draw();
 				}
+				this.moreProps.prevHovering = this.moreProps.hovering;
 				break;
 			}
 		}
@@ -134,30 +138,25 @@ class GenericComponent extends Component {
 		}
 		return moreProps;
 	}
+	preCanvasDraw(ctx) {
+		// do nothing
+	}
+	postCanvasDraw(ctx) {
+		// do nothing
+	}
 	drawOnCanvas() {
-		var { canvasDraw, canvasToDraw, hoverCanvasToDraw, clip } = this.props;
-		var { getCanvasContexts, width, height } = this.context;
+		var { canvasDraw, canvasToDraw, hoverCanvasToDraw } = this.props;
+		var { getCanvasContexts } = this.context;
 		var { hovering } = this.moreProps;
 
 		var ctx = hovering
 			? hoverCanvasToDraw(getCanvasContexts())
 			: canvasToDraw(getCanvasContexts());
 
-		var { canvasOriginX, canvasOriginY } = this.context;
-
-		ctx.save();
-
-		ctx.setTransform(1, 0, 0, 1, 0, 0);
-		ctx.translate(canvasOriginX, canvasOriginY);
-
-		if (clip) {
-			ctx.beginPath();
-			ctx.rect(-1, -1, width + 1, height + 1);
-			ctx.clip();
-		}
+		this.preCanvasDraw(ctx);
 		canvasDraw(ctx, this.getMoreProps());
 
-		ctx.restore();
+		this.postCanvasDraw(ctx);
 	}
 	render() {
 		var { chartCanvasType } = this.context;

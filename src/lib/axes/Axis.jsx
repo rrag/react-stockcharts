@@ -71,11 +71,11 @@ Axis.contextTypes = {
 };
 
 function tickTransform_svg_axisX(scale, tick) {
-	return [scale(tick), 0];
+	return [Math.round(scale(tick)), 0];
 }
 
 function tickTransform_svg_axisY(scale, tick) {
-	return [0, scale(tick)];
+	return [0, Math.round(scale(tick))];
 }
 
 function tickHelper(props, scale) {

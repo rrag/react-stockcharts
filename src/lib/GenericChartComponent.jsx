@@ -10,6 +10,25 @@ class GenericChartComponent extends GenericComponent {
 		super(props, context);
 
 		this.listener = this.listener.bind(this);
+		this.preCanvasDraw = this.preCanvasDraw.bind(this);
+		this.postCanvasDraw = this.postCanvasDraw.bind(this);
+	}
+	preCanvasDraw(ctx) {
+		ctx.save();
+		var { canvasOriginX, canvasOriginY, width, height } = this.context;
+		var { clip } = this.props;
+
+		ctx.setTransform(1, 0, 0, 1, 0, 0);
+		ctx.translate(canvasOriginX, canvasOriginY);
+
+		if (clip) {
+			ctx.beginPath();
+			ctx.rect(-1, -1, width + 1, height + 1);
+			ctx.clip();
+		}
+	}
+	postCanvasDraw(ctx) {
+		ctx.restore();
 	}
 	listener(type, moreProps, e) {
 		// console.log(type, moreProps, e)

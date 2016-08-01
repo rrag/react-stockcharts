@@ -18,7 +18,7 @@ class CrossHairCursor extends PureComponent {
 		if (isDefined(lines)) {
 
 			var { margin } = this.context;
-			var originX = margin.left;
+			var originX = 0.5 + margin.left;
 			var originY = 0.5 + margin.top;
 
 			ctx.save();
@@ -74,6 +74,7 @@ CrossHairCursor.contextTypes = {
 	height: PropTypes.number.isRequired,
 	width: PropTypes.number.isRequired,
 	margin: PropTypes.object.isRequired,
+	xScale: PropTypes.func.isRequired,
 }
 
 CrossHairCursor.defaultProps = {
@@ -96,7 +97,8 @@ function helper(props, context, { mouseXY, xScale, currentItem, show }) {
 		y2: mouseXY[1],
 		stroke, strokeDasharray, opacity,
 	};
-	var x = snapX ? xScale(xAccessor(currentItem)) : mouseXY[0];
+	var x = snapX ? Math.round(xScale(xAccessor(currentItem))) : mouseXY[0];
+
 	var line2 = {
 		x1: x,
 		x2: x,
@@ -105,10 +107,6 @@ function helper(props, context, { mouseXY, xScale, currentItem, show }) {
 		stroke, strokeDasharray, opacity,
 	};
 	return [line1, line2];
-}
-
-function drawOnCanvasStatic(ctx, context, lines) {
-
 }
 
 export default CrossHairCursor;
