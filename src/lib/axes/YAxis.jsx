@@ -4,8 +4,8 @@ import React, { PropTypes } from "react";
 import Axis from "./Axis";
 
 function YAxis(props, context) {
-	var moreProps = helper(props, context)
-	return <Axis {...props} {...moreProps} />
+	var moreProps = helper(props, context);
+	return <Axis {...props} {...moreProps} />;
 }
 
 YAxis.propTypes = {
@@ -67,6 +67,6 @@ function helper(props, context) {
 		transform: [axisLocation, 0],
 		range: [0, height],
 		getScale: moreProps => moreProps.chartConfig.yScale,
-	}
+	};
 }
 export default YAxis;

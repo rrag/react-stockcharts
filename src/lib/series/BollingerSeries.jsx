@@ -36,7 +36,6 @@ class BollingerSeries extends Component {
 		return scale(yAccessor(d) && yAccessor(d).bottom);
 	}
 	render() {
-		var { xScale, yScale, xAccessor, plotData, type } = this.props;
 		var { calculator, areaClassName, className, opacity } = this.props;
 
 		var stroke = calculator.stroke();
@@ -45,14 +44,11 @@ class BollingerSeries extends Component {
 		return (
 			<g className={className}>
 				<LineSeries yAccessor={this.yAccessorForTop}
-					stroke={stroke.top} fill="none"
-					type={type} />
+					stroke={stroke.top} fill="none" />
 				<LineSeries yAccessor={this.yAccessorForMiddle}
-					stroke={stroke.middle} fill="none"
-					type={type} />
+					stroke={stroke.middle} fill="none" />
 				<LineSeries yAccessor={this.yAccessorForBottom}
-					stroke={stroke.bottom} fill="none"
-					type={type} />
+					stroke={stroke.bottom} fill="none" />
 				<AreaOnlySeries className={areaClassName}
 					yAccessor={this.yAccessorForTop}
 					base={this.yAccessorForScalledBottom}

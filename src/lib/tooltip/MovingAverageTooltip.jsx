@@ -7,8 +7,6 @@ import GenericChartComponent from "../GenericChartComponent";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
-import { first } from "../utils";
-
 class SingleMAToolTip extends Component {
 	constructor(props) {
 		super(props);
@@ -95,7 +93,7 @@ class MovingAverageTooltip extends Component {
 			clip={false}
 			svgDraw={this.renderSVG}
 			drawOnMouseMove
-			/>
+			/>;
 	}
 }
 

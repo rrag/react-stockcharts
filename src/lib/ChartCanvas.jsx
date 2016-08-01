@@ -247,6 +247,7 @@ ChartCanvas.propTypes = {
 	},
 	postCalculator: PropTypes.func.isRequired,
 	flipXScale: PropTypes.bool.isRequired,
+	useCrossHairStyleCursor: PropTypes.bool.isRequired,
 	padding: PropTypes.oneOfType([
 		PropTypes.number,
 		PropTypes.shape({

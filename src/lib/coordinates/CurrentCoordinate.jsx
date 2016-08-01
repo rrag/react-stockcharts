@@ -3,7 +3,7 @@
 import React, { PropTypes, Component } from "react";
 
 import GenericChartComponent from "../GenericChartComponent";
-import { shallowEqual, isDefined, isNotDefined } from "../utils";
+import { isNotDefined } from "../utils";
 
 class CurrentCoordinate extends Component {
 	constructor(props) {
@@ -22,7 +22,6 @@ class CurrentCoordinate extends Component {
 	}
 	renderSVG(moreProps) {
 		var { className } = this.props;
-		var { show, chartConfig, currentItem, xScale } = moreProps;
 
 		var circle = helper(this.props, this.context, moreProps);
 		if (!circle) return null;
@@ -38,7 +37,7 @@ class CurrentCoordinate extends Component {
 			drawOnMouseMove
 			drawOnPan
 			drawOnMouseExitOfCanvas
-			/>
+			/>;
 	}
 }
 
@@ -50,7 +49,7 @@ CurrentCoordinate.propTypes = {
 
 CurrentCoordinate.contextTypes = {
 	xAccessor: PropTypes.func.isRequired,
-}
+};
 
 CurrentCoordinate.defaultProps = {
 	r: 3,
@@ -76,6 +75,6 @@ function helper(props, context, moreProps) {
 	var y = Math.round(yScale(yValue));
 
 	return { x, y, r, fill };
-};
+}
 
-export default CurrentCoordinate
+export default CurrentCoordinate;

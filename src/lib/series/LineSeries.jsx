@@ -3,7 +3,7 @@
 import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
-import GenericChartComponent from "../GenericChartComponent";
+import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 import { first, getClosestItemIndexes } from "../utils";
 
 class LineSeries extends Component {
@@ -26,14 +26,14 @@ class LineSeries extends Component {
 		var [x, y] = mouseXY;
 		const radius = hoverTolerance;
 
-		var { left, right } = getClosestItemIndexes(plotData, xScale.invert(x), xAccessor)
+		var { left, right } = getClosestItemIndexes(plotData, xScale.invert(x), xAccessor);
 		if (left === right) {
 			var cy = yScale(yAccessor(currentItem)) + origin[1];
 			var cx = xScale(xAccessor(currentItem)) + origin[0];
 
-			var hovering1 = Math.pow(x - cx, 2) + Math.pow(y - cy, 2) < Math.pow(radius, 2)
+			var hovering1 = Math.pow(x - cx, 2) + Math.pow(y - cy, 2) < Math.pow(radius, 2);
 
-			return hovering1
+			return hovering1;
 		} else {
 			var l = plotData[left];
 			var r = plotData[right];
@@ -48,9 +48,9 @@ class LineSeries extends Component {
 
 			var desiredY = Math.round(m * x + b);
 
-			var hovering2 = y >= desiredY - radius && y <= desiredY + radius
+			var hovering2 = y >= desiredY - radius && y <= desiredY + radius;
 
-			return hovering2
+			return hovering2;
 		}
 	}
 	drawOnCanvas(ctx, moreProps) {
@@ -91,7 +91,7 @@ class LineSeries extends Component {
 
 		var d = dataSeries(plotData);
 
-		var { stroke, strokeWidth, fill, className } = this.props;
+		var { fill, className } = this.props;
 
 		return <path className={`${className} ${stroke ? "" : " line-stroke"}`}
 			d={d}
@@ -102,14 +102,14 @@ class LineSeries extends Component {
 	}
 	render() {
 		return <GenericChartComponent
-			canvasToDraw={contexts => contexts.axes}
+			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
 			isHover={this.isHover}
 			onClick={this.props.onClick}
 			onDoubleClick={this.props.onDoubleClick}
 			drawOnPan
-			/>
+			/>;
 	}
 }
 function segment(points, ctx) {
@@ -128,23 +128,32 @@ function segment(points, ctx) {
 LineSeries.propTypes = {
 	className: PropTypes.string,
 	strokeWidth: PropTypes.number,
+	stroke: PropTypes.string,
+	hoverStrokeWidth: PropTypes.number,
+	fill: PropTypes.string,
+	defined: PropTypes.func,
+	hoverTolerance: PropTypes.number,
+	hoverHighlight: PropTypes.bool,
+	onClick: PropTypes.func,
+	onDoubleClick: PropTypes.func,
+	yAccessor: PropTypes.func,
 };
+
 LineSeries.contextTypes = {
 	xAccessor: PropTypes.func.isRequired,
-}
+};
 
 LineSeries.defaultProps = {
-	stroke: "#4682B4",
 	className: "line ",
 	strokeWidth: 1,
 	hoverStrokeWidth: 4,
 	fill: "none",
-	stroke: "black",
+	stroke: "#000000",
 	defined: d => !isNaN(d),
 	hoverTolerance: 6,
 	hoverHighlight: true,
-	onClick: e => { console.log("Click", e); },
-	onDoubleClick: e => { console.log("Double Click", e); },
+	onClick: function(e) { console.log("Click", e); },
+	onDoubleClick: function(e) { console.log("Double Click", e); },
 };
 
 export default LineSeries;

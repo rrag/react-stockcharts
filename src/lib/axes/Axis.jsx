@@ -2,8 +2,8 @@
 
 import React, { PropTypes, Component } from "react";
 
-import GenericChartComponent from "../GenericChartComponent";
-import { first, last, hexToRGBA, isNotDefined, isDefined } from "../utils";
+import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
+import { first, last, hexToRGBA, isNotDefined, isDefined, identity } from "../utils";
 
 class Axis extends Component {
 	constructor(props) {
@@ -20,7 +20,7 @@ class Axis extends Component {
 		if (showDomain) drawAxisLine(ctx, this.props, range);
 		if (showTicks) {
 			var tickProps = tickHelper(this.props, getScale(moreProps));
-			drawTicks(ctx, tickProps)
+			drawTicks(ctx, tickProps);
 		}
 
 		ctx.restore();
@@ -29,23 +29,23 @@ class Axis extends Component {
 		var { className } = this.props;
 		var { showDomain, showTicks, transform, range, getScale } = this.props;
 
-		var ticks = showTicks ? axisTicksSVG(this.props, getScale(moreProps)) : null
-		var domain = showDomain ? axisLineSVG(this.props, range) : null
+		var ticks = showTicks ? axisTicksSVG(this.props, getScale(moreProps)) : null;
+		var domain = showDomain ? axisLineSVG(this.props, range) : null;
 
 		return <g className={className}
 			transform={`translate(${ transform[0] }, ${ transform[1] })`}>
 			{ticks}
 			{domain}
-		</g>
+		</g>;
 	}
 	render() {
 		return <GenericChartComponent
-			canvasToDraw={contexts => contexts.axes}
+			canvasToDraw={getAxisCanvas}
 			clip={false}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
 			drawOnPan
-			/>
+			/>;
 	}
 }
 
@@ -57,6 +57,7 @@ Axis.propTypes = {
 	tickSize: PropTypes.number,
 	ticks: PropTypes.number,
 	tickValues: PropTypes.array,
+	showDomain: PropTypes.bool,
 	showTicks: PropTypes.bool,
 	className: PropTypes.string,
 
@@ -125,6 +126,7 @@ function tickHelper(props, scale) {
 	return { ticks, scale, tickTransform, tickStroke, tickStrokeOpacity, dy, canvas_dy, x, y, x2, y2, textAnchor, fontSize, fontFamily, format };
 }
 
+/* eslint-disable react/prop-types */
 function axisLineSVG(props, range) {
 	var { orient, outerTickSize } = props;
 	var { domain: { className, shapeRendering, fill, stroke, strokeWidth, opacity } } = props;
@@ -151,6 +153,8 @@ function axisLineSVG(props, range) {
 		</path>
 	);
 }
+/* eslint-enable react/prop-types */
+
 
 function drawAxisLine(ctx, props, range) {
 	// props = { ...AxisLine.defaultProps, ...props };
@@ -198,6 +202,21 @@ function Tick(props) {
 		</g>
 	);
 }
+
+Tick.propTypes = {
+	children: PropTypes.string.isRequired,
+	x: PropTypes.number.isRequired,
+	y: PropTypes.number.isRequired,
+	x2: PropTypes.number.isRequired,
+	y2: PropTypes.number.isRequired,
+	dy: PropTypes.string.isRequired,
+	transform: PropTypes.array,
+	tickStroke: PropTypes.string,
+	tickStrokeOpacity: PropTypes.number,
+	textAnchor: PropTypes.string,
+	fontSize: PropTypes.number,
+	fontFamily: PropTypes.string,
+};
 
 function axisTicksSVG(props, scale) {
 	var result = tickHelper(props, scale);

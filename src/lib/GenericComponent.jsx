@@ -2,7 +2,7 @@
 
 import React, { PropTypes, Component } from "react";
 import d3 from "d3";
-import { noop, isNotDefined, isDefined } from "./utils";
+import { isNotDefined, isDefined } from "./utils";
 
 var suscriberId = 0;
 
@@ -25,7 +25,7 @@ class GenericComponent extends Component {
 		this.moreProps = {};
 		this.state = {
 			updateCount: 0,
-		}
+		};
 	}
 	updateMoreProps(moreProps) {
 		// console.log(type, moreProps, e)
@@ -33,10 +33,10 @@ class GenericComponent extends Component {
 	}
 	listener(type, moreProps, e) {
 		this.updateMoreProps(moreProps);
-		this.evaluateType(type, e)
+		this.evaluateType(type, e);
 	}
 	executeMouseMove(e) {
-		this.moreProps.hovering = this.isHover(e)
+		this.moreProps.hovering = this.isHover(e);
 		// console.log(this.moreProps.prevHovering, this.moreProps.hovering)
 		if (this.moreProps.hovering
 				|| (this.moreProps.prevHovering && !this.moreProps.hovering)
@@ -47,48 +47,46 @@ class GenericComponent extends Component {
 	}
 	evaluateType(type, e) {
 		switch (type) {
-			case "zoom":
-			case "mouseenter":
+		case "zoom":
+		case "mouseenter":
 				// DO NOT DRAW FOR THESE EVENTS
-				break;
-			case "click": {
-				if (this.moreProps.hovering && this.props.onClick) {
-					this.props.onClick(e);
-				}
-				break;
+			break;
+		case "click": {
+			if (this.moreProps.hovering && this.props.onClick) {
+				this.props.onClick(e);
 			}
-			case "mousemove": {
-				this.executeMouseMove();
-				break;
-			}
-			case "dblclick": {
-				if (this.moreProps.hovering && this.props.onDoubleClick) {
-					this.props.onDoubleClick(e);
-				}
-				break;
-			}
-			case "mouseleave": {
-				if (this.props.drawOnMouseExitOfCanvas) {
-					this.draw();
-				}
-				break;
-			}
-			case "pan": {
-				this.moreProps.hovering = this.isHover(e)
-				if (this.props.drawOnPan) {
-					// console.log("HERE", this.moreProps)
-					this.draw();
-				}
-				this.moreProps.prevHovering = this.moreProps.hovering;
-				break;
-			}
+			break;
 		}
-		if (type !== "mousemove" && type !== "click") this.moreProps.prevHovering = false;
+		case "mousemove": {
+			this.executeMouseMove();
+			break;
+		}
+		case "dblclick": {
+			if (this.moreProps.hovering && this.props.onDoubleClick) {
+				this.props.onDoubleClick(e);
+			}
+			break;
+		}
+		case "mouseleave": {
+			if (this.props.drawOnMouseExitOfCanvas) {
+				this.draw();
+			}
+			break;
+		}
+		case "pan": {
+			this.moreProps.hovering = false;
+			if (this.props.drawOnPan) {
+				this.draw();
+			}
+			break;
+		}
+		}
+		if (type !== "mousemove" && type !== "ff") this.moreProps.prevHovering = false;
 	}
 	isHover(e) {
 		return this.props.isHover(this.moreProps, e);
 	}
-	draw(hovering = false) {
+	draw() {
 		var { chartCanvasType } = this.context;
 		var { canvasDraw } = this.props;
 
@@ -97,7 +95,7 @@ class GenericComponent extends Component {
 
 			this.setState({
 				updateCount: updateCount + 1,
-			})
+			});
 		} else if (!(this.moreProps.prevHovering && !this.moreProps.hovering)) {
 			this.drawOnCanvas();
 		}
@@ -112,7 +110,7 @@ class GenericComponent extends Component {
 		unsubscribe(this.suscriberId);
 	}
 	componentDidMount() {
-		this.componentDidUpdate()
+		this.componentDidUpdate();
 	}
 	componentDidUpdate() {
 		var { chartCanvasType } = this.context;
@@ -127,7 +125,7 @@ class GenericComponent extends Component {
 		this.moreProps = {
 			...this.moreProps,
 			xScale, plotData, chartConfig
-		}
+		};
 	}
 	getMoreProps() {
 		var { xScale, plotData, chartConfig } = this.context;
@@ -135,13 +133,13 @@ class GenericComponent extends Component {
 		var moreProps = {
 			xScale, plotData, chartConfig,
 			...this.moreProps
-		}
+		};
 		return moreProps;
 	}
-	preCanvasDraw(ctx) {
+	preCanvasDraw() {
 		// do nothing
 	}
-	postCanvasDraw(ctx) {
+	postCanvasDraw() {
 		// do nothing
 	}
 	drawOnCanvas() {
@@ -175,6 +173,13 @@ GenericComponent.propTypes = {
 	canvasDraw: PropTypes.func,
 	drawOnMouseMove: PropTypes.bool.isRequired,
 	drawOnPan: PropTypes.bool.isRequired,
+	clip: PropTypes.bool.isRequired,
+	drawOnMouseExitOfCanvas: PropTypes.bool.isRequired,
+	canvasToDraw: PropTypes.func.isRequired,
+	hoverCanvasToDraw: PropTypes.func.isRequired,
+	isHover: PropTypes.func.isRequired,
+	onClick: PropTypes.func,
+	onDoubleClick: PropTypes.func,
 };
 
 GenericComponent.defaultProps = {

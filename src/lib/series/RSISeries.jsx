@@ -7,7 +7,7 @@ import wrap from "./wrap";
 
 class RSISeries extends Component {
 	render() {
-		var { className, xScale, yScale, xAccessor, calculator, plotData, stroke, type } = this.props;
+		var { className, calculator, stroke, type } = this.props;
 		var yAccessor = calculator.accessor();
 		var overSold = calculator.overSold();
 		var middle = calculator.middle();

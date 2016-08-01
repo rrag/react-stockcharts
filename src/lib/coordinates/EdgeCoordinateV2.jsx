@@ -1,9 +1,10 @@
 "use strict";
 
-import React, { PropTypes, Component } from "react";
+import React from "react";
 
 import { hexToRGBA, isDefined } from "../utils";
 
+/* eslint-disable react/prop-types */
 export function renderSVG(props) {
 	var { className } = props;
 
@@ -52,38 +53,7 @@ export function renderSVG(props) {
 		</g>
 	);
 }
-/*
-EdgeCoordinate.propTypes = {
-	className: PropTypes.string,
-	type: PropTypes.oneOf(["vertical", "horizontal"]).isRequired,
-	coordinate: PropTypes.any.isRequired,
-	x1: PropTypes.number.isRequired,
-	y1: PropTypes.number.isRequired,
-	x2: PropTypes.number.isRequired,
-	y2: PropTypes.number.isRequired,
-	orient: PropTypes.oneOf(["bottom", "top", "left", "right"]),
-	rectWidth: PropTypes.number,
-	hideLine: PropTypes.bool,
-	fill: PropTypes.string,
-	opacity: PropTypes.number,
-	fontFamily: PropTypes.string.isRequired,
-	fontSize: PropTypes.number.isRequired,
-};
-
-EdgeCoordinate.defaultProps = {
-	className: "react-stockcharts-edgecoordinate",
-	orient: "left",
-	hideLine: false,
-	fill: "#8a8a8a",
-	opacity: 1,
-	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
-	fontSize: 13,
-	textFill: "#FFFFFF",
-	lineStroke: "#000000",
-	lineOpacity: 0.3,
-	arrowWidth: 10,
-};
-*/
+/* eslint-enable react/prop-types */
 
 function helper(props) {
 	var { coordinate: displayCoordinate, show, type, orient, edgeAt, hideLine } = props;
@@ -176,6 +146,6 @@ export function drawOnCanvas(ctx, props) {
 		ctx.lineTo(edge.line.x2, edge.line.y2);
 		ctx.stroke();
 	}
-};
+}
 
 // export default EdgeCoordinate;

@@ -1,6 +1,6 @@
 "use strict";
 
-import React, { PropTypes, Component } from "react";
+import React, { PropTypes } from "react";
 import GenericComponent from "../GenericComponent";
 import PureComponent from "../utils/PureComponent";
 
@@ -41,14 +41,12 @@ class CrossHairCursor extends PureComponent {
 	}
 	renderSVG(moreProps) {
 		var { className } = this.props;
-		var { show, chartConfig, currentItem, xScale } = moreProps;
-
 		var lines = helper(this.props, this.context, moreProps);
 
 		if (isNotDefined(lines)) return null;
 
 		return (
-			<g className="react-stockcharts-crosshair">
+			<g className={`react-stockcharts-crosshair ${className}`}>
 				{lines.map((each, idx) =>
 					<line key={idx} {...each} />)}
 			</g>
@@ -62,7 +60,7 @@ class CrossHairCursor extends PureComponent {
 			drawOnMouseMove
 			drawOnPan
 			drawOnMouseExitOfCanvas
-			/>
+			/>;
 	}
 }
 
@@ -75,7 +73,7 @@ CrossHairCursor.contextTypes = {
 	width: PropTypes.number.isRequired,
 	margin: PropTypes.object.isRequired,
 	xScale: PropTypes.func.isRequired,
-}
+};
 
 CrossHairCursor.defaultProps = {
 	stroke: "#000000",

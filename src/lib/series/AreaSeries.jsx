@@ -1,6 +1,6 @@
 "use strict";
 
-import React, { PropTypes, Component } from "react";
+import React, { PropTypes } from "react";
 
 import LineSeries from "./LineSeries";
 import AreaOnlySeries from "./AreaOnlySeries";
@@ -31,6 +31,8 @@ AreaSeries.propTypes = {
 	fill: PropTypes.string.isRequired,
 	opacity: PropTypes.number.isRequired,
 	className: PropTypes.string,
+	yAccessor: PropTypes.func.isRequired,
+	baseAt: PropTypes.func,
 };
 
 AreaSeries.defaultProps = {

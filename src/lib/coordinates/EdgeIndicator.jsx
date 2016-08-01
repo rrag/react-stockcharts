@@ -4,9 +4,9 @@ import React, { Component, PropTypes } from "react";
 import d3 from "d3";
 
 import { drawOnCanvas, renderSVG } from "./EdgeCoordinateV2";
-import GenericChartComponent from "../GenericChartComponent";
+import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 
-import { first, last, isDefined, isNotDefined } from "../utils";
+import { first, last, isDefined } from "../utils";
 
 class EdgeIndicator extends Component {
 	constructor(props) {
@@ -19,25 +19,25 @@ class EdgeIndicator extends Component {
 		var props = {
 			...this.props,
 			...edge,
-		}
-		drawOnCanvas(ctx, props)
+		};
+		drawOnCanvas(ctx, props);
 	}
 	renderSVG(moreProps) {
 		var edge = helper(this.props, this.context, moreProps);
 		var props = {
 			...this.props,
 			...edge,
-		}
-		return renderSVG(props)
+		};
+		return renderSVG(props);
 	}
 	render() {
 		return <GenericChartComponent
-			canvasToDraw={contexts => contexts.axes}
+			canvasToDraw={getAxisCanvas}
 			clip={false}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
 			drawOnPan
-			/>
+			/>;
 	}
 }
 
@@ -64,7 +64,7 @@ EdgeIndicator.propTypes = {
 };
 EdgeIndicator.contextTypes = {
 	xAccessor: PropTypes.func.isRequired,
-}
+};
 
 EdgeIndicator.defaultProps = {
 	className: "react-stockcharts-edgeindicator",
@@ -132,6 +132,6 @@ function helper(props, context, moreProps) {
 		};
 	}
 	return edge;
-};
+}
 
 export default EdgeIndicator;

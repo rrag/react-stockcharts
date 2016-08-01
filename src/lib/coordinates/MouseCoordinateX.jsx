@@ -5,7 +5,7 @@ import React, { PropTypes, Component } from "react";
 import { drawOnCanvas, renderSVG } from "./EdgeCoordinateV2";
 import GenericChartComponent from "../GenericChartComponent";
 
-import { isDefined, isNotDefined, shallowEqual } from "../utils";
+import { isNotDefined } from "../utils";
 
 class MouseCoordinateX extends Component {
 	constructor(props) {
@@ -17,13 +17,13 @@ class MouseCoordinateX extends Component {
 		var props = helper(this.props, this.context, moreProps);
 		if (isNotDefined(props)) return null;
 
-		drawOnCanvas(ctx, props)
+		drawOnCanvas(ctx, props);
 	}
 	renderSVG(moreProps) {
 		var props = helper(this.props, this.context, moreProps);
 		if (isNotDefined(props)) return null;
 
-		return renderSVG(props)
+		return renderSVG(props);
 	}
 	render() {
 		return <GenericChartComponent
@@ -33,7 +33,7 @@ class MouseCoordinateX extends Component {
 			drawOnMouseMove
 			drawOnPan
 			drawOnMouseExitOfCanvas
-			/>
+			/>;
 	}
 }
 
@@ -45,7 +45,7 @@ MouseCoordinateX.contextTypes = {
 	xAccessor: PropTypes.func.isRequired,
 	displayXAccessor: PropTypes.func.isRequired,
 	height: PropTypes.number.isRequired,
-}
+};
 
 MouseCoordinateX.defaultProps = {
 	yAxisPad: 0,
@@ -64,7 +64,7 @@ MouseCoordinateX.defaultProps = {
 
 function helper(props, context, moreProps) {
 	var { height, xAccessor, displayXAccessor } = context;
-	var { show, currentCharts, currentItem, xScale, mouseXY } = moreProps;
+	var { show, currentItem, xScale, mouseXY } = moreProps;
 	// var { chartConfig: { yScale, origin } } = moreProps;
 
 	if (isNotDefined(currentItem)) return null;

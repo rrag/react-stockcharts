@@ -3,7 +3,7 @@
 import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
-import GenericChartComponent from "../GenericChartComponent";
+import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 import { hexToRGBA, isDefined, first } from "../utils";
 
 class AreaOnlySeries extends Component {
@@ -64,11 +64,11 @@ class AreaOnlySeries extends Component {
 	}
 	render() {
 		return <GenericChartComponent
-			canvasToDraw={contexts => contexts.axes}
+			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
 			drawOnPan
-			/>
+			/>;
 	}
 }
 
@@ -78,13 +78,14 @@ AreaOnlySeries.propTypes = {
 	stroke: PropTypes.string,
 	fill: PropTypes.string,
 	opacity: PropTypes.number,
+	defined: PropTypes.func,
 	base: PropTypes.oneOfType([
 		PropTypes.func, PropTypes.number
 	]),
 };
 AreaOnlySeries.contextTypes = {
 	xAccessor: PropTypes.func.isRequired,
-}
+};
 
 AreaOnlySeries.defaultProps = {
 	className: "line ",

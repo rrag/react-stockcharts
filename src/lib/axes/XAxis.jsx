@@ -4,8 +4,8 @@ import React, { PropTypes } from "react";
 import Axis from "./Axis";
 
 function XAxis(props, context) {
-	var moreProps = helper(props, context)
-	return <Axis {...props} {...moreProps} />
+	var moreProps = helper(props, context);
+	return <Axis {...props} {...moreProps} />;
 }
 
 XAxis.propTypes = {
@@ -67,6 +67,6 @@ function helper(props, context) {
 		transform: [0, axisLocation],
 		range: [0, width],
 		getScale: moreProps => moreProps.xScale,
-	}
+	};
 }
 export default XAxis;

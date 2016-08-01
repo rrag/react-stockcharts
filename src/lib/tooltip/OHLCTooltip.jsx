@@ -65,7 +65,7 @@ class OHLCTooltip extends Component {
 			clip={false}
 			svgDraw={this.renderSVG}
 			drawOnMouseMove
-			/>
+			/>;
 	}
 }
 
@@ -77,6 +77,7 @@ OHLCTooltip.contextTypes = {
 };
 
 OHLCTooltip.propTypes = {
+	className: PropTypes.string,
 	accessor: PropTypes.func.isRequired,
 	xDisplayFormat: PropTypes.func.isRequired,
 	ohlcFormat: PropTypes.func.isRequired,

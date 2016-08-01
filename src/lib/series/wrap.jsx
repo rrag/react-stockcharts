@@ -3,7 +3,6 @@
 import React, { PropTypes, Component } from "react";
 
 import pure from "../pure";
-import { isDefined } from "../utils";
 
 function getDisplayName(Series) {
 	var name = Series.displayName || Series.name || "Series";
@@ -12,7 +11,7 @@ function getDisplayName(Series) {
 
 function wrap(WrappedSeries) {
 	class BaseCanvasSeries extends Component {
-		/*componentDidMount() {
+		/* componentDidMount() {
 			var callback = WrappedSeries.drawOnCanvas;
 			if (callback) {
 				var { chartCanvasType, getCanvasContexts } = this.props;
@@ -89,7 +88,7 @@ function wrap(WrappedSeries) {
 
 	BaseCanvasSeries.displayName = `wrap(${ getDisplayName(WrappedSeries) })`;
 
-	/*BaseCanvasSeries.baseReStockDrawOnCanvasHelper = (canvasContext, props, callback) => {
+	/* BaseCanvasSeries.baseReStockDrawOnCanvasHelper = (canvasContext, props, callback) => {
 		var { height, width, xAccessor, yAccessor,
 			xScale, chartConfig, yScale, plotData, canvasOriginX, canvasOriginY } = props;
 		var canvasOrigin = [canvasOriginX, canvasOriginY];

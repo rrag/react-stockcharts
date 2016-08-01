@@ -3,7 +3,7 @@
 import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 
-import GenericChartComponent from "../GenericChartComponent";
+import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 import { first, last, hexToRGBA, isDefined } from "../utils";
 
 class CandlestickSeries extends Component {
@@ -30,11 +30,11 @@ class CandlestickSeries extends Component {
 
 	render() {
 		return <GenericChartComponent
-			canvasToDraw={contexts => contexts.axes}
+			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
 			drawOnPan
-			/>
+			/>;
 	}
 }
 
@@ -67,7 +67,7 @@ CandlestickSeries.propTypes = {
 };
 CandlestickSeries.contextTypes = {
 	xAccessor: PropTypes.func.isRequired,
-}
+};
 
 CandlestickSeries.defaultProps = {
 	className: "react-stockcharts-candlestick",
@@ -198,7 +198,7 @@ function drawOnCanvas(ctx, props, context, moreProps) {
 			});
 		});
 	});
-};
+}
 
 function getWickData(props, xAccessor, xScale, yScale, plotData) {
 

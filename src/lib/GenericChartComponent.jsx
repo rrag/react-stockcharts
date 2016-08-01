@@ -1,8 +1,7 @@
 "use strict";
 
-import React, { PropTypes, Component } from "react";
-import d3 from "d3";
-import { noop } from "./utils";
+import { PropTypes } from "react";
+
 import GenericComponent from "./GenericComponent";
 
 class GenericChartComponent extends GenericComponent {
@@ -39,9 +38,9 @@ class GenericChartComponent extends GenericComponent {
 			var { chartId } = this.context;
 			var chartConfig = chartConfigList
 				.filter(each => each.id === chartId)[0];
-			this.moreProps.chartConfig = chartConfig
+			this.moreProps.chartConfig = chartConfig;
 		}
-		this.evaluateType(type, e)
+		this.evaluateType(type, e);
 	}
 }
 
@@ -56,3 +55,7 @@ GenericChartComponent.contextTypes = {
 };
 
 export default GenericChartComponent;
+
+export function getAxisCanvas(contexts) {
+	return contexts.axes;
+}

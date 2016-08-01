@@ -2,7 +2,7 @@
 
 import React, { PropTypes, Component } from "react";
 
-import GenericChartComponent from "../GenericChartComponent";
+import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 
 import StackedBarSeries, { drawOnCanvasHelper, svgHelper } from "./StackedBarSeries";
 import { identity } from "../utils";
@@ -28,11 +28,11 @@ class BarSeries extends Component {
 	}
 	render() {
 		return <GenericChartComponent
-			canvasToDraw={contexts => contexts.axes}
+			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
 			drawOnPan
-			/>
+			/>;
 	}
 }
 
@@ -43,6 +43,7 @@ BarSeries.propTypes = {
 	]).isRequired,
 	stroke: PropTypes.bool.isRequired,
 	widthRatio: PropTypes.number.isRequired,
+	yAccessor: PropTypes.func.isRequired,
 	opacity: PropTypes.number.isRequired,
 	fill: PropTypes.oneOfType([
 		PropTypes.func, PropTypes.string
@@ -54,7 +55,7 @@ BarSeries.propTypes = {
 
 BarSeries.contextTypes = {
 	xAccessor: PropTypes.func.isRequired,
-}
+};
 
 BarSeries.defaultProps = StackedBarSeries.defaultProps;
 

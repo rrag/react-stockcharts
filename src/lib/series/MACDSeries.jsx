@@ -35,10 +35,9 @@ class MACDSeries extends Component {
 		return yScale(0);
 	}
 	render() {
-		var { className, xScale, yScale, xAccessor, plotData, type, opacity, divergenceStroke, calculator } = this.props;
+		var { className, type, opacity, divergenceStroke, calculator } = this.props;
 		var stroke = calculator.stroke();
 		var fill = calculator.fill();
-		// console.log(this.props.yAccessor)
 		return (
 			<g className={className}>
 				<LineSeries

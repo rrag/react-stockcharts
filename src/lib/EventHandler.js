@@ -51,7 +51,7 @@ class EventHandler extends Component {
 		this.setInteractiveState = this.setInteractiveState.bind(this);
 		this.getInteractiveState = this.getInteractiveState.bind(this);
 
-		this.subscriptions = []
+		this.subscriptions = [];
 		this.subscribe = this.subscribe.bind(this);
 		this.unsubscribe = this.unsubscribe.bind(this);
 		// this.canvasDrawCallbackList = [];
@@ -216,7 +216,7 @@ class EventHandler extends Component {
 	subscribe(id, callback) {
 		this.subscriptions = this.subscriptions.concat({
 			id, callback
-		})
+		});
 	}
 	unsubscribe(id) {
 		this.subscriptions = this.subscriptions.filter(each => each.id !== id);
@@ -263,7 +263,7 @@ class EventHandler extends Component {
 			focus: this.state.focus
 		};
 	}
-	/*pushCallbackForCanvasDraw(findThis, replaceWith) {
+	/* pushCallbackForCanvasDraw(findThis, replaceWith) {
 		var { canvasDrawCallbackList } = this;
 		// console.log(findThis, canvasDrawCallbackList.length);
 		if (replaceWith) {
@@ -299,7 +299,7 @@ class EventHandler extends Component {
 		}); */
 		this.triggerEvent("mouseenter", {
 			show: true,
-		}, e)
+		}, e);
 	}
 	handleMouseMove(mouseXY, inputType, e) {
 		var { chartConfig, plotData, xScale } = this.state;
@@ -310,16 +310,14 @@ class EventHandler extends Component {
 		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
 		// optimization oportunity do not change currentItem if it is not the same as prev
 
-		var contexts = this.getCanvasContexts();
-
 		requestAnimationFrame(() => {
 			this.clearMouseCanvas();
 			this.triggerEvent("mousemove", {
 				mouseXY,
 				currentItem,
 				currentCharts,
-			}, e)
-		})
+			}, e);
+		});
 		// console.log(interactiveState === this.state.interactiveState);
 		// if (interactiveState !== this.state.interactiveState) this.clearInteractiveCanvas();
 
@@ -340,7 +338,7 @@ class EventHandler extends Component {
 		if (contexts && contexts.mouseCoord) {
 			clearCanvas([contexts.mouseCoord]);
 		}
-		this.triggerEvent("mouseleave", { show: false }, e)
+		this.triggerEvent("mouseleave", { show: false }, e);
 		/* this.setState({
 			show: false
 		}); */
@@ -439,7 +437,7 @@ class EventHandler extends Component {
 			mouseXY,
 			currentCharts,
 			currentItem,
-		}, e)
+		}, e);
 
 		this.setState({
 			xScale: updatedScale,
@@ -498,7 +496,7 @@ class EventHandler extends Component {
 		this.subscriptions.forEach(each => {
 			// console.log(each)
 			each.callback(type, props, e);
-		})
+		});
 	}
 	handlePan(mousePosition, e) {
 		this.panHappened = true;
@@ -513,16 +511,16 @@ class EventHandler extends Component {
 			// var { show } = this.state;
 			// var { canvasDrawCallbackList } = this;
 
-			requestAnimationFrame(() => {
+		requestAnimationFrame(() => {
 				// this.clearCanvas([axesCanvasContext, mouseContext]);
 				// this.clearCanvas([axesCanvasContext, mouseContext]);
-				this.clearBothCanvas();
-				this.triggerEvent("pan", state, e)
+			this.clearBothCanvas();
+			this.triggerEvent("pan", state, e);
 				// this.clearInteractiveCanvas();
 
 				// console.log(canvasDrawCallbackList.length)
 
-				/*chartConfig.forEach(eachChart => {
+				/* chartConfig.forEach(eachChart => {
 					canvasDrawCallbackList
 						.filter(each => eachChart.id === each.chartId)
 						.forEach(each => {
@@ -562,12 +560,12 @@ class EventHandler extends Component {
 						currentItem
 					}));*/
 
-			});
-		/*} else {
+		});
+		/* } else {
 			this.setState(state);
 		}*/
 	}
-	/*clearCanvasDrawCallbackList() {
+	/* clearCanvasDrawCallbackList() {
 		this.canvasDrawCallbackList = [];
 	}*/
 	handlePanEnd(mousePosition, e) {
@@ -580,14 +578,14 @@ class EventHandler extends Component {
 
 		if (!this.panHappened) {
 			if (this.clicked) {
-				this.triggerEvent("dblclick", {}, e)
+				this.triggerEvent("dblclick", {}, e);
 				this.clicked = false;
 			} else {
-				this.triggerEvent("click", {}, e)
+				this.triggerEvent("click", {}, e);
 				this.clicked = true;
 				this.clickInterval = setTimeout(() => {
 					this.clicked = false;
-				}, 300)
+				}, 300);
 			}
 
 			this.setState({
