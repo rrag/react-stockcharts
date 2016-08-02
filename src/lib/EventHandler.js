@@ -42,6 +42,7 @@ class EventHandler extends Component {
 		this.handlePan = this.handlePan.bind(this);
 		this.handlePanEnd = this.handlePanEnd.bind(this);
 		this.handleFocus = this.handleFocus.bind(this);
+		this.handleContextMenu = this.handleContextMenu.bind(this);
 		this.getCanvasContexts = this.getCanvasContexts.bind(this);
 
 		// this.pushCallbackForCanvasDraw = this.pushCallbackForCanvasDraw.bind(this);
@@ -329,7 +330,24 @@ class EventHandler extends Component {
 			// interactiveState,
 		}); */
 	}
+	handleContextMenu(mouseXY, e) {
+		var { chartConfig, plotData, xScale } = this.state;
+		var { xAccessor } = this.props;
 
+		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
+		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
+
+		this.contextMenuClicked = true;
+		setTimeout(() => {
+			this.contextMenuClicked = false;
+		}, 300);
+
+		this.triggerEvent("contextmenu", {
+			mouseXY,
+			currentItem,
+			currentCharts,
+		}, e);
+	}
 	handleMouseLeave(e) {
 		var contexts = this.getCanvasContexts();
 
@@ -448,16 +466,18 @@ class EventHandler extends Component {
 
 	handlePanStart(panStartDomain, panOrigin, dxy) {
 		// console.log("panStartDomain - ", panStartDomain, ", panOrigin - ", panOrigin);
-		this.setState({
-			panInProgress: true,
-			// panStartDomain: panStartDomain,
-			panStartXScale: this.state.xScale,
-			panOrigin: panOrigin,
-			focus: true,
-			deltaXY: dxy, // used in EventCapture
-			receivedPropsOnPanStart: this.state.receivedProps,
-		});
-		this.panHappened = false;
+		if (!this.state.panInProgress) {
+			this.setState({
+				panInProgress: true,
+				// panStartDomain: panStartDomain,
+				panStartXScale: this.state.xScale,
+				panOrigin: panOrigin,
+				focus: true,
+				deltaXY: dxy, // used in EventCapture
+				receivedPropsOnPanStart: this.state.receivedProps,
+			});
+			this.panHappened = false;
+		}
 	}
 	panHelper(mouseXY) {
 		var { panStartXScale: initialXScale, chartConfig: initialChartConfig } = this.state;
@@ -577,15 +597,18 @@ class EventHandler extends Component {
 		// this.clearCanvasDrawCallbackList();
 
 		if (!this.panHappened) {
-			if (this.clicked) {
-				this.triggerEvent("dblclick", {}, e);
-				this.clicked = false;
-			} else {
-				this.triggerEvent("click", {}, e);
-				this.clicked = true;
-				this.clickInterval = setTimeout(() => {
+
+			if (!this.contextMenuClicked) {
+				if (this.clicked) {
+					this.triggerEvent("dblclick", {}, e);
 					this.clicked = false;
-				}, 300);
+				} else {
+					this.triggerEvent("click", {}, e);
+					this.clicked = true;
+					setTimeout(() => {
+						this.clicked = false;
+					}, 300);
+				}
 			}
 
 			this.setState({
@@ -594,9 +617,18 @@ class EventHandler extends Component {
 			});
 		} else {
 			this.clearThreeCanvas();
+			this.triggerEvent("panend", state, e);
+
+			var {
+				xScale,
+				plotData,
+				chartConfig,
+			} = state;
 
 			this.setState({
-				...state,
+				xScale,
+				plotData,
+				chartConfig,
 				panInProgress: false,
 				panStartXScale: null,
 			});
@@ -630,7 +662,7 @@ class EventHandler extends Component {
 		// var { dimensions } = this.props;
 		return (
 			<g>
-				<EventCapture mouseMove zoom pan />
+				<EventCapture mouseMove zoom pan onContextMenu={this.handleContextMenu}/>
 				<g className="react-stockcharts-avoid-interaction">
 					{this.props.children}
 				</g>

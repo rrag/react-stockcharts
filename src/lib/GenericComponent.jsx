@@ -51,6 +51,12 @@ class GenericComponent extends Component {
 		case "mouseenter":
 				// DO NOT DRAW FOR THESE EVENTS
 			break;
+		case "contextmenu": {
+			if (this.moreProps.hovering && this.props.onContextMenu) {
+				this.props.onContextMenu(e);
+			}
+			break;
+		}
 		case "click": {
 			if (this.moreProps.hovering && this.props.onClick) {
 				this.props.onClick(e);
@@ -180,6 +186,7 @@ GenericComponent.propTypes = {
 	isHover: PropTypes.func.isRequired,
 	onClick: PropTypes.func,
 	onDoubleClick: PropTypes.func,
+	onContextMenu: PropTypes.func,
 };
 
 GenericComponent.defaultProps = {

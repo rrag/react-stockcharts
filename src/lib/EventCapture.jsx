@@ -28,15 +28,16 @@ class EventCapture extends Component {
 		this.handleTouchStart = this.handleTouchStart.bind(this);
 		this.handleTouchMove = this.handleTouchMove.bind(this);
 		this.handleTouchEnd = this.handleTouchEnd.bind(this);
+		this.handleRightClick = this.handleRightClick.bind(this);
 		this.lastTouch = {};
 		this.initialPinch = {};
 		this.mouseInteraction = true;
-	}
+	}/*
 	getChildContext() {
 		return {
 			eventMeta: this.eventMeta,
 		};
-	}
+	}*/
 	componentWillMount() {
 		if (this.context.onFocus) this.context.onFocus(this.props.defaultFocus);
 	}
@@ -90,40 +91,59 @@ class EventCapture extends Component {
 		if (onMouseMove) onMouseMove(newPos, e);
 	}
 	handleMouseDown(e) {
-		var mouseEvent = e || d3.event;
+		var mouseEvent = e;
 		var { pan, eventMeta } = this.props;
 
 		this.eventMeta = eventMeta(mouseEvent, ["mousedown"]);
 
-		var { onPanStart, focus, onFocus, xScale } = this.context;
-		if (this.mouseInteraction && pan && onPanStart) {
-			var mouseXY = mousePosition(mouseEvent);
-			this.panStart = mouseXY;
+		var { onPanStart, focus, onFocus, xScale, panInProgress } = this.context;
+		if (!panInProgress) {
+			if (this.mouseInteraction && pan && onPanStart) {
+				var mouseXY = mousePosition(mouseEvent);
+				this.panStart = mouseXY;
 
-			var dx = mouseEvent.pageX - mouseXY[0],
-				dy = mouseEvent.pageY - mouseXY[1];
+				var dx = mouseEvent.pageX - mouseXY[0],
+					dy = mouseEvent.pageY - mouseXY[1];
 
-			var captureDOM = this.refs.capture;
+				var captureDOM = this.refs.capture;
 
-			var win = d3Window(captureDOM);
-			d3.select(win)
-				.on(MOUSEMOVE, this.handlePan)
-				.on(MOUSEUP, this.handlePanEnd);
+				var win = d3Window(captureDOM);
 
-			onPanStart(xScale.domain(), mouseXY, [dx, dy]);
-		} else {
-			if (!focus && onFocus) onFocus(true);
+				d3.select(win)
+					.on(MOUSEMOVE, this.handlePan)
+					.on(MOUSEUP, this.handlePanEnd);
+
+				onPanStart(xScale.domain(), mouseXY, [dx, dy]);
+			} else {
+				if (!focus && onFocus) onFocus(true);
+			}
 		}
 		mouseEvent.preventDefault();
 	}
 	handleRightClick(e) {
+		e.stopPropagation();
 		e.preventDefault();
-		// console.log("RIGHT CLICK");
+
+		var { panInProgress, onPanEnd, deltaXY: dxdy } = this.context;
+
+		var newPos = [e.pageX - dxdy[0], e.pageY - dxdy[1]];
+
+		// this line below has to be before the trigger of onPanEnd
+		// this is because onPanEnd will trigger a click event incase no pan happened
+		// having this before, will help suppress the click event and send only the
+		// right click event
+		this.props.onContextMenu(newPos, e);
+
+		if (panInProgress) {
+			var win = d3Window(this.refs.capture);
+			d3.select(win)
+				.on(MOUSEMOVE, null)
+				.on(MOUSEUP, null);
+			onPanEnd(newPos, e);
+		}
 	}
 	handlePan() {
-		// console.log("handlePan")
 		var e = d3.event;
-
 		var { eventMeta } = this.props;
 		var { pan: panEnabled, onPan: panListener } = this.props;
 		var { deltaXY: dxdy, xScale, onPan } = this.context;
@@ -143,16 +163,11 @@ class EventCapture extends Component {
 	handlePanEnd() {
 		var e = d3.event;
 
-		var { pan: panEnabled, eventMeta } = this.props;
+		var { pan: panEnabled } = this.props;
 		var { deltaXY: dxdy, onPanEnd } = this.context;
 
-
-		var [startX, startY] = this.panStart;
 		var [x, y] = [e.pageX - dxdy[0], e.pageY - dxdy[1]];
 
-		var eventType = startX === x && startY === y ? ["click"] : [];
-
-		this.eventMeta = eventMeta(e, ["mouseup"].concat(eventType));
 		this.panStart = null;
 
 		var captureDOM = this.refs.capture;
@@ -269,23 +284,19 @@ class EventCapture extends Component {
 	}
 	render() {
 		var className = this.context.panInProgress ? "react-stockcharts-grabbing-cursor" : "react-stockcharts-crosshair-cursor";
-		var clipStyle = { "clipPath": "url(#chart-area-clip)" };
 		return (
-			<g style={clipStyle}>
-				<rect ref="capture"
-					className={className}
-					width={this.context.width} height={this.context.height} style={{ opacity: 0 }}
-					onMouseEnter={this.handleEnter}
-					onMouseLeave={this.handleLeave}
-					onMouseMove={this.handleMouseMove}
-					onWheel={this.handleWheel}
-					onMouseDown={this.handleMouseDown}
-					onContextMenu={this.handleRightClick}
-					onTouchStart={this.handleTouchStart}
-					onTouchEnd={this.handleTouchEnd}
-					onTouchMove={this.handleTouchMove} />
-				{this.props.children}
-			</g>
+			<rect ref="capture"
+				className={className}
+				width={this.context.width} height={this.context.height} style={{ opacity: 0 }}
+				onMouseEnter={this.handleEnter}
+				onMouseLeave={this.handleLeave}
+				onMouseMove={this.handleMouseMove}
+				onWheel={this.handleWheel}
+				onMouseDown={this.handleMouseDown}
+				onContextMenu={this.handleRightClick}
+				onTouchStart={this.handleTouchStart}
+				onTouchEnd={this.handleTouchEnd}
+				onTouchMove={this.handleTouchMove} />
 		);
 	}
 }
@@ -301,6 +312,8 @@ EventCapture.propTypes = {
 	onZoom: PropTypes.func,
 	onPan: PropTypes.func,
 	onMouseMove: PropTypes.func,
+
+	onContextMenu: PropTypes.func,
 	eventMeta: PropTypes.func,
 	children: PropTypes.node,
 };
@@ -337,8 +350,8 @@ EventCapture.contextTypes = {
 	onFocus: PropTypes.func,
 };
 
-EventCapture.childContextTypes = {
+/* EventCapture.childContextTypes = {
 	eventMeta: PropTypes.object,
-};
+};*/
 
 export default EventCapture;

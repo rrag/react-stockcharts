@@ -108,6 +108,7 @@ class LineSeries extends Component {
 			isHover={this.isHover}
 			onClick={this.props.onClick}
 			onDoubleClick={this.props.onDoubleClick}
+			onContextMenu={this.props.onContextMenu}
 			drawOnPan
 			/>;
 	}
@@ -136,6 +137,7 @@ LineSeries.propTypes = {
 	hoverHighlight: PropTypes.bool,
 	onClick: PropTypes.func,
 	onDoubleClick: PropTypes.func,
+	onContextMenu: PropTypes.func,
 	yAccessor: PropTypes.func,
 };
 
@@ -154,6 +156,7 @@ LineSeries.defaultProps = {
 	hoverHighlight: true,
 	onClick: function(e) { console.log("Click", e); },
 	onDoubleClick: function(e) { console.log("Double Click", e); },
+	onContextMenu: function(e) { console.log("Right Click", e); },
 };
 
 export default LineSeries;
