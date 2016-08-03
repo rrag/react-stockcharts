@@ -14,10 +14,16 @@ class GenericChartComponent extends GenericComponent {
 	}
 	preCanvasDraw(ctx) {
 		ctx.save();
-		var { canvasOriginX, canvasOriginY, width, height } = this.context;
-		var { clip } = this.props;
+		var { canvasOriginX, canvasOriginY, width, height, margin } = this.context;
+		var { clip, edgeClip } = this.props;
 
 		ctx.setTransform(1, 0, 0, 1, 0, 0);
+		if (edgeClip) {
+			ctx.beginPath();
+			ctx.rect(-1, canvasOriginY-1, width + margin.left + margin.right + 1, height + 1);
+			ctx.clip();
+		}
+
 		ctx.translate(canvasOriginX, canvasOriginY);
 
 		if (clip) {

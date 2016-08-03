@@ -3,13 +3,18 @@
 import React, { PropTypes, Component } from "react";
 
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
+import AxisZoomCapture from "./AxisZoomCapture";
+
 import { first, last, hexToRGBA, isNotDefined, isDefined, identity } from "../utils";
+import { mousePosition, touchPosition, d3Window, MOUSEMOVE, MOUSEUP } from "../utils";
 
 class Axis extends Component {
 	constructor(props) {
 		super(props);
 		this.renderSVG = this.renderSVG.bind(this);
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+		this.getMoreProps = this.getMoreProps.bind(this);
+
 	}
 	drawOnCanvas(ctx, moreProps) {
 		var { showDomain, showTicks, transform, range, getScale } = this.props;
@@ -32,20 +37,36 @@ class Axis extends Component {
 		var ticks = showTicks ? axisTicksSVG(this.props, getScale(moreProps)) : null;
 		var domain = showDomain ? axisLineSVG(this.props, range) : null;
 
-		return <g className={className}
-			transform={`translate(${ transform[0] }, ${ transform[1] })`}>
+		return <g className={className}>
 			{ticks}
 			{domain}
 		</g>;
 	}
+	getMoreProps() {
+		return this.refs.propProvider.getMoreProps()
+	}
 	render() {
-		return <GenericChartComponent
-			canvasToDraw={getAxisCanvas}
-			clip={false}
-			svgDraw={this.renderSVG}
-			canvasDraw={this.drawOnCanvas}
-			drawOnPan
-			/>;
+		var { className, bg, axisZoomCallback, zoomCursorClassName, zoomEnabled } = this.props;
+		var { showDomain, showTicks, transform, range, getScale } = this.props;
+
+		var zoomCapture = zoomEnabled
+			? <AxisZoomCapture
+				bg={bg}
+				getMoreProps={this.getMoreProps}
+				axisZoomCallback={axisZoomCallback}
+				zoomCursorClassName={zoomCursorClassName} />
+			: null
+
+		return <g transform={`translate(${ transform[0] }, ${ transform[1] })`}>
+			{zoomCapture}
+			<GenericChartComponent ref="propProvider"
+				canvasToDraw={getAxisCanvas}
+				clip={false}
+				svgDraw={this.renderSVG}
+				canvasDraw={this.drawOnCanvas}
+				drawOnPan
+				/>
+		</g>;
 	}
 }
 
@@ -60,11 +81,17 @@ Axis.propTypes = {
 	showDomain: PropTypes.bool,
 	showTicks: PropTypes.bool,
 	className: PropTypes.string,
+	axisZoomCallback: PropTypes.func,
 
 	transform: PropTypes.arrayOf(PropTypes.number).isRequired,
 	range: PropTypes.arrayOf(PropTypes.number).isRequired,
 	getScale: PropTypes.func.isRequired,
 };
+
+Axis.defaultProps = {
+	zoomEnabled: false,
+	zoomCursorClassName: "",
+}
 
 Axis.contextTypes = {
 	height: PropTypes.number.isRequired,

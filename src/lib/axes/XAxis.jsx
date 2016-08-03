@@ -1,11 +1,23 @@
 "use strict";
 
-import React, { PropTypes } from "react";
+import React, { Component, PropTypes } from "react";
 import Axis from "./Axis";
 
-function XAxis(props, context) {
-	var moreProps = helper(props, context);
-	return <Axis {...props} {...moreProps} />;
+class XAxis extends Component {
+	constructor(props, context) {
+		super(props, context);
+		this.axisZoomCallback = this.axisZoomCallback.bind(this);
+	}
+	axisZoomCallback(newXDomain, newYDomain) {
+		var { xAxisZoom } = this.context;
+		xAxisZoom(newXDomain);
+	}
+	render() {
+		var moreProps = helper(this.props, this.context);
+		return <Axis {...this.props} {...moreProps}
+			axisZoomCallback={this.axisZoomCallback}
+			zoomCursorClassName="react-stockcharts-ew-resize-cursor" />;
+	}
 }
 
 XAxis.propTypes = {
@@ -46,27 +58,34 @@ XAxis.defaultProps = {
 	tickStrokeOpacity: 1,
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 12,
+	xZoomHeight: 25,
+	zoomEnabled: true,
 };
 
 XAxis.contextTypes = {
 	height: PropTypes.number.isRequired,
 	width: PropTypes.number.isRequired,
+	xAxisZoom: PropTypes.func.isRequired,
 };
 
 function helper(props, context) {
-	var { axisAt } = props;
-	var { width } = context;
+	var { axisAt, xZoomHeight, orient } = props;
+	var { width, height } = context;
 
-	var axisLocation;
+	var axisLocation, x = 0, w = width, h = xZoomHeight;
+
 	if (axisAt === "top") axisLocation = 0;
-	else if (axisAt === "bottom") axisLocation = context.height;
-	else if (axisAt === "middle") axisLocation = (context.height) / 2;
+	else if (axisAt === "bottom") axisLocation = height;
+	else if (axisAt === "middle") axisLocation = (height) / 2;
 	else axisLocation = axisAt;
+
+	var y = (orient === "top") ? -xZoomHeight : 0;
 
 	return {
 		transform: [0, axisLocation],
 		range: [0, width],
 		getScale: moreProps => moreProps.xScale,
+		bg: { x, y, h, w },
 	};
 }
 export default XAxis;

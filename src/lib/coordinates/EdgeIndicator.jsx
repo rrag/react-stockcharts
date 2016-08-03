@@ -33,6 +33,7 @@ class EdgeIndicator extends Component {
 	render() {
 		return <GenericChartComponent
 			canvasToDraw={getAxisCanvas}
+			edgeClip
 			clip={false}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}

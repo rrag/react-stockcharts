@@ -141,15 +141,6 @@ class ChartCanvas extends Component {
 	}
 	componentWillReceiveProps(nextProps) {
 		var reset = shouldResetChart(this.props, nextProps);
-		// console.log("shouldResetChart =", reset);
-
-		/*
-		plotData,
-		filterData,
-		xScale: xScale.domain(domain),
-		xAccessor,
-		dataAltered: false,
-		lastItem, */
 
 		if (reset) {
 			if (process.env.NODE_ENV !== "production") console.log("RESET CHART, one or more of these props changed", CANDIDATES_FOR_RESET);
@@ -210,11 +201,6 @@ class ChartCanvas extends Component {
 		);
 	}
 }
-
-/*
-							lastItem={last(data)}
-
-*/
 
 ChartCanvas.propTypes = {
 	width: PropTypes.number.isRequired,

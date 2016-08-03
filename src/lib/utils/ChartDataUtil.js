@@ -46,7 +46,7 @@ export function getNewChartConfig(innerDimension, children) {
 		if (each.type === Chart) {
 			var { id, origin, padding, yExtents: yExtentsProp, yScale, flipYScale } = each.props;
 			var { width, height, availableWidth, availableHeight } = getDimensions(innerDimension, each.props);
-			// var { yMousePointerDisplayLocation: at, yMousePointerDisplayFormat: yDisplayFormat } = each.props;
+			var { yPan } = each.props;
 			// var { yMousePointerRectWidth: rectWidth, yMousePointerRectHeight: rectHeight, yMousePointerArrowWidth: arrowWidth } = each.props;
 			// var mouseCoordinates = { at, yDisplayFormat, rectHeight, rectWidth, arrowWidth };
 			var yExtents = (Array.isArray(yExtentsProp) ? yExtentsProp : [yExtentsProp]).map(d3.functor);
@@ -58,6 +58,7 @@ export function getNewChartConfig(innerDimension, children) {
 				yExtents,
 				flipYScale,
 				yScale,
+				yPan,
 				// mouseCoordinates,
 				width,
 				height
@@ -90,26 +91,38 @@ function setRange(scale, height, padding, flipYScale) {
 	return scale;
 }
 
-export function getChartConfigWithUpdatedYScales(chartConfig, plotData) {
+export function getChartConfigWithUpdatedYScales(chartConfig, plotData, dy, yPanEnabled = false) {
 
 	var yDomains = chartConfig
-		.map(({ yExtents, yScale }) => {
-			var yValues = yExtents.map(eachExtent =>
-				plotData.map(values(eachExtent)));
-			yValues = flattenDeep(yValues);
+		.map(({ yExtents, yScale, yPan, yPanEnabled }) => {
+			if (yPan && yPanEnabled) {
+				return isDefined(dy)
+					? yScale.range().map(each => each - dy).map(yScale.invert)
+					: yScale.domain()
+			} else {
+				var yValues = yExtents.map(eachExtent =>
+					plotData.map(values(eachExtent)));
+				yValues = flattenDeep(yValues);
 
-			var yDomains = (yScale.invert)
-				? d3.extent(yValues)
-				: d3.set(yValues).values();
+				var yDomain = (yScale.invert)
+					? d3.extent(yValues)
+					: d3.set(yValues).values();
 
-			return yDomains;
+				return yDomain;
+			}
 		});
 
 	var combine = zipper()
 		.combine((config, domain) => {
-			var { padding, height, yScale, flipYScale } = config;
-
-			return { ...config, yScale: setRange(yScale.copy().domain(domain), height, padding, flipYScale) };
+			var { padding, height, yScale, yPan, flipYScale, properYDomain: initialProperYDomain } = config;
+			var properYDomain = (yPan && yPanEnabled)
+				? initialProperYDomain
+				: domain
+			return {
+				...config,
+				yScale: setRange(yScale.copy().domain(domain), height, padding, flipYScale),
+				properYDomain,
+			};
 			// return { ...config, yScale: yScale.copy().domain(domain).range([height - padding, padding]) };
 		});
 

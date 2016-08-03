@@ -180,6 +180,7 @@ GenericComponent.propTypes = {
 	drawOnMouseMove: PropTypes.bool.isRequired,
 	drawOnPan: PropTypes.bool.isRequired,
 	clip: PropTypes.bool.isRequired,
+	edgeClip: PropTypes.bool.isRequired,
 	drawOnMouseExitOfCanvas: PropTypes.bool.isRequired,
 	canvasToDraw: PropTypes.func.isRequired,
 	hoverCanvasToDraw: PropTypes.func.isRequired,
@@ -198,6 +199,7 @@ GenericComponent.defaultProps = {
 	canvasToDraw: contexts => contexts.mouseCoord,
 	hoverCanvasToDraw: contexts => contexts.mouseCoord,
 	clip: true,
+	edgeClip: false,
 	isHover: d3.functor(false),
 };
 

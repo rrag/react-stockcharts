@@ -70,7 +70,7 @@ class CandleStickChartWithEdge extends React.Component {
 						yAccessor={smaVolume70.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume70.fill()}/>
 				</Chart>
 				<Chart id={1}
-						yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
+						yPan yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
 						padding={{ top: 10, bottom: 20 }}>
 
 					<XAxis axisAt="bottom" orient="bottom"/>
