@@ -1,11 +1,16 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
+import d3 from "d3";
 
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 
 import { first, last, hexToRGBA, isNotDefined, isDefined, identity } from "../utils";
 import { mousePosition, touchPosition, d3Window, MOUSEMOVE, MOUSEUP } from "../utils";
+
+function sign(x) {
+	return (x > 0) - (x < 0);
+}
 
 class AxisZoomCapture extends Component {
 	constructor(props) {
@@ -15,7 +20,7 @@ class AxisZoomCapture extends Component {
 		this.handleDragEnd = this.handleDragEnd.bind(this);
 		this.state = {
 			startPosition: null
-		}
+		};
 	}
 	handleDragStart(e) {
 		d3.select(d3Window(this.refs.capture))
@@ -26,7 +31,7 @@ class AxisZoomCapture extends Component {
 		var leftX = e.pageX - startXY[0],
 			topY = e.pageY - startXY[1];
 
-		var { chartConfig: { id, yScale }, xScale } = this.props.getMoreProps()
+		var { chartConfig: { id, yScale }, xScale } = this.props.getMoreProps();
 
 		this.setState({
 			startPosition: {
@@ -36,7 +41,7 @@ class AxisZoomCapture extends Component {
 				startXScale: xScale.copy(),
 				startYScale: yScale.copy(),
 			}
-		})
+		});
 		e.preventDefault();
 	}
 	handleDrag() {
@@ -54,25 +59,26 @@ class AxisZoomCapture extends Component {
 			var dx = startXY[0] - mouseXY[0];
 			var dy = startXY[1] - mouseXY[1];
 
-			var { chartConfig: { id, yScale }, xScale } = this.props.getMoreProps()
+			var { chartConfig: { id, yScale }, xScale } = this.props.getMoreProps();
 
 			var cy = d3.mean(startYScale.range());
 			var cx = d3.mean(startXScale.range());
 
 			var tempYRange = startYScale.range()
-				.map(d => d + ((d - cy) / Math.abs(d - cy)) * dy);
-			var newYDomain = tempYRange.map(startYScale.invert)
+				.map(d => d + sign(d - cy) * dy);
+			var newYDomain = tempYRange.map(startYScale.invert);
 
 			var tempXRange = startXScale.range()
-				.map(d => d + ((d - cx) / Math.abs(d - cx)) * dx);
+				.map(d => d + sign(d - cx) * dx);
 			var newXDomain = tempXRange.map(startXScale.invert);
 
-			// if (Math.abs(last(tempXRange) - first(tempXRange)) < 20) return
-			// if (Math.abs(last(tempYRange) - first(tempYRange)) < 20) return
+			if (sign(last(startYScale.range()) - first(startYScale.range())) === sign(last(tempYRange) - first(tempYRange))
+				&& sign(last(startXScale.range()) - first(startXScale.range())) === sign(last(tempXRange) - first(tempXRange))) {
 
-			var { axisZoomCallback } = this.props;
-			// console.log(startXScale.domain(), newXDomain)
-			axisZoomCallback(newXDomain, newYDomain)
+				var { axisZoomCallback } = this.props;
+				// console.log(startXScale.domain(), newXDomain)
+				axisZoomCallback(newXDomain, newYDomain);				
+			}
 		}
 	}
 	handleDragEnd() {
@@ -81,7 +87,7 @@ class AxisZoomCapture extends Component {
 			.on(MOUSEUP, null);
 		this.setState({
 			startPosition: null,
-		})
+		});
 	}
 	render() {
 		var { bg, zoomCursorClassName } = this.props;
@@ -94,7 +100,7 @@ class AxisZoomCapture extends Component {
 			className={`react-stockcharts-enable-interaction ${cursor}`}
 			ref="capture"
 			x={bg.x} y={bg.y} opacity={0} height={bg.h} width={bg.w}
-			onMouseDown={this.handleDragStart} />
+			onMouseDown={this.handleDragStart} />;
 	}
 }
 

@@ -6,12 +6,6 @@ TODO
 1. change `EventCapture` to use `props` instead of `context`
 1. Update all examples
 
-FIXME
-
-1. Zoom a lot and the axis flips
-1. by default axis zoom is off, create prop to control this
-1. Use properYDomain to set retain yPan on componentWillReceiveProps
-
 1. [Envelope](http://www.investopedia.com/terms/e/envelope.asp?optm=sa_v2)
 1. [ATR Trailing stop](http://www.incrediblecharts.com/indicators/atr_average_true_range_trailing_stops.php)
 1. [Chandelier Exit](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:chandelier_exit)

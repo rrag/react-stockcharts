@@ -43,7 +43,7 @@ class Axis extends Component {
 		</g>;
 	}
 	getMoreProps() {
-		return this.refs.propProvider.getMoreProps()
+		return this.refs.propProvider.getMoreProps();
 	}
 	render() {
 		var { className, bg, axisZoomCallback, zoomCursorClassName, zoomEnabled } = this.props;
@@ -55,7 +55,7 @@ class Axis extends Component {
 				getMoreProps={this.getMoreProps}
 				axisZoomCallback={axisZoomCallback}
 				zoomCursorClassName={zoomCursorClassName} />
-			: null
+			: null;
 
 		return <g transform={`translate(${ transform[0] }, ${ transform[1] })`}>
 			{zoomCapture}
@@ -91,7 +91,7 @@ Axis.propTypes = {
 Axis.defaultProps = {
 	zoomEnabled: false,
 	zoomCursorClassName: "",
-}
+};
 
 Axis.contextTypes = {
 	height: PropTypes.number.isRequired,

@@ -29,6 +29,17 @@ function setXRange(xScale, dimensions, padding, direction = 1) {
 	}
 	return xScale;
 }
+
+function compareArray(a, b) {
+	if (a.length === b.length) {
+		var result = true;
+		for (var i = 0; i < a.length; i++) {
+			result = result && shallowEqual(a[i], b[i])
+		}
+		return result;
+	}
+	return false;
+}
 /*
 function compareChildren(current, after) {
 	var curr = React.Children.toArray(current)
@@ -97,7 +108,6 @@ class EventHandler extends Component {
 			panInProgress: false,
 			currentCharts: [],
 			receivedProps: 0,
-			yPanEnabled: false,
 		};
 	}
 	componentWillMount() {
@@ -119,7 +129,6 @@ class EventHandler extends Component {
 		});
 	}
 	componentWillReceiveProps(nextProps) {
-
 		var { plotData, padding, direction, lastItem, filterData } = nextProps;
 		var { xScale, xAccessor, dimensions, children, postCalculator, dataAltered } = nextProps;
 
@@ -181,7 +190,7 @@ class EventHandler extends Component {
 			plotData = postCalculator(filterData(this.state.xScale.domain(), xAccessor).plotData);
 
 			let chartConfig = getChartConfigWithUpdatedYScales(
-				getNewChartConfig(dimensions, children), plotData, null, true);
+				getNewChartConfig(dimensions, children), plotData);
 
 			newState = {
 				xScale: setXRange(xScale, dimensions, padding, direction).domain(this.state.xScale.domain()),
@@ -196,10 +205,22 @@ class EventHandler extends Component {
 				// this.clearInteractiveCanvas(nextProps);
 				// this.clearCanvasDrawCallbackList();
 			}
+			var { chartConfig: initialChartConfig } = this.state
+
+			var a = newState.chartConfig.map(each => each.realYDomain);
+			var b = initialChartConfig.map(each => each.realYDomain);
+
+			if (compareArray(a, b)) {
+				newState.chartConfig
+					.forEach((each, idx) => {
+						each.yScale.domain(initialChartConfig[idx].yScale.domain())
+						each.yPanEnabled = initialChartConfig[idx].yPanEnabled
+					})
+			}
+
 			this.setState({
 				...newState,
 				receivedProps: this.state.receivedProps + 1,
-				yPanEnabled: false,
 			});
 		}
 	}
@@ -481,7 +502,7 @@ class EventHandler extends Component {
 		var updatedScale = initialXScale.copy().domain(domain);
 		var chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData); */
 
-		var { xScale, plotData, chartConfig } = this.calculateStateForDomain(newDomain)
+		var { xScale, plotData, chartConfig } = this.calculateStateForDomain(newDomain);
 
 		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
 		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
@@ -517,13 +538,13 @@ class EventHandler extends Component {
 			xScale: updatedScale,
 			plotData,
 			chartConfig,
-		}
+		};
 	}
 	xAxisZoom(newDomain) {
-		var { xScale, plotData, chartConfig } = this.calculateStateForDomain(newDomain)
+		var { xScale, plotData, chartConfig } = this.calculateStateForDomain(newDomain);
 		this.clearBothCanvas();
 
-		this.setState({ xScale, plotData, chartConfig })
+		this.setState({ xScale, plotData, chartConfig });
 	}
 	yAxisZoom(chartId, newDomain) {
 		this.clearThreeCanvas();
@@ -536,15 +557,15 @@ class EventHandler extends Component {
 						...each,
 						yScale: yScale.copy().domain(newDomain),
 						yPanEnabled: true,
-					}
+					};
 				} else {
-					return each
+					return each;
 				}
-			})
+			});
 
 		this.setState({
 			chartConfig,
-		})
+		});
 	}
 	handlePanStart(panStartDomain, panOrigin, dxy) {
 		// console.log("panStartDomain - ", panStartDomain, ", panOrigin - ", panOrigin);

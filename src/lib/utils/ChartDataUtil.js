@@ -91,37 +91,38 @@ function setRange(scale, height, padding, flipYScale) {
 	return scale;
 }
 
-export function getChartConfigWithUpdatedYScales(chartConfig, plotData, dy, yPanEnabled = false) {
+export function getChartConfigWithUpdatedYScales(chartConfig, plotData, dy) {
 
 	var yDomains = chartConfig
 		.map(({ yExtents, yScale, yPan, yPanEnabled }) => {
-			if (yPan && yPanEnabled) {
-				return isDefined(dy)
+			var yDomainDY = isDefined(dy)
 					? yScale.range().map(each => each - dy).map(yScale.invert)
-					: yScale.domain()
-			} else {
-				var yValues = yExtents.map(eachExtent =>
-					plotData.map(values(eachExtent)));
-				yValues = flattenDeep(yValues);
+					: yScale.domain();
 
-				var yDomain = (yScale.invert)
+			var yValues = yExtents.map(eachExtent =>
+				plotData.map(values(eachExtent)));
+			yValues = flattenDeep(yValues);
+
+			var realYDomain = (yScale.invert)
 					? d3.extent(yValues)
 					: d3.set(yValues).values();
-
-				return yDomain;
+			return {
+				realYDomain,
+				yDomainDY,
 			}
 		});
 
 	var combine = zipper()
-		.combine((config, domain) => {
-			var { padding, height, yScale, yPan, flipYScale, properYDomain: initialProperYDomain } = config;
-			var properYDomain = (yPan && yPanEnabled)
-				? initialProperYDomain
-				: domain
+		.combine((config, { realYDomain, yDomainDY }) => {
+			var { padding, height, yScale, yPan, flipYScale, properYDomain: initialProperYDomain, yPanEnabled = false } = config;
+			var properYDomain = realYDomain;
+
+			var domain = yPan && yPanEnabled ? yDomainDY : realYDomain
+			// console.log(yPan, yPanEnabled, properYDomain, domain, realYDomain)
 			return {
 				...config,
 				yScale: setRange(yScale.copy().domain(domain), height, padding, flipYScale),
-				properYDomain,
+				realYDomain,
 			};
 			// return { ...config, yScale: yScale.copy().domain(domain).range([height - padding, padding]) };
 		});
