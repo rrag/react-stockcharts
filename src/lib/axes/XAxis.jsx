@@ -8,7 +8,7 @@ class XAxis extends Component {
 		super(props, context);
 		this.axisZoomCallback = this.axisZoomCallback.bind(this);
 	}
-	axisZoomCallback(newXDomain, newYDomain) {
+	axisZoomCallback(newXDomain) {
 		var { xAxisZoom } = this.context;
 		xAxisZoom(newXDomain);
 	}

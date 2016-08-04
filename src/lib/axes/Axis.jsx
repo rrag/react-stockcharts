@@ -6,7 +6,6 @@ import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 import AxisZoomCapture from "./AxisZoomCapture";
 
 import { first, last, hexToRGBA, isNotDefined, isDefined, identity } from "../utils";
-import { mousePosition, touchPosition, d3Window, MOUSEMOVE, MOUSEUP } from "../utils";
 
 class Axis extends Component {
 	constructor(props) {
@@ -32,7 +31,7 @@ class Axis extends Component {
 	}
 	renderSVG(moreProps) {
 		var { className } = this.props;
-		var { showDomain, showTicks, transform, range, getScale } = this.props;
+		var { showDomain, showTicks, range, getScale } = this.props;
 
 		var ticks = showTicks ? axisTicksSVG(this.props, getScale(moreProps)) : null;
 		var domain = showDomain ? axisLineSVG(this.props, range) : null;
@@ -46,8 +45,8 @@ class Axis extends Component {
 		return this.refs.propProvider.getMoreProps();
 	}
 	render() {
-		var { className, bg, axisZoomCallback, zoomCursorClassName, zoomEnabled } = this.props;
-		var { showDomain, showTicks, transform, range, getScale } = this.props;
+		var { bg, axisZoomCallback, zoomCursorClassName, zoomEnabled } = this.props;
+		var { transform } = this.props;
 
 		var zoomCapture = zoomEnabled
 			? <AxisZoomCapture
@@ -82,10 +81,12 @@ Axis.propTypes = {
 	showTicks: PropTypes.bool,
 	className: PropTypes.string,
 	axisZoomCallback: PropTypes.func,
-
+	zoomEnabled: PropTypes.bool,
+	zoomCursorClassName: PropTypes.string,
 	transform: PropTypes.arrayOf(PropTypes.number).isRequired,
 	range: PropTypes.arrayOf(PropTypes.number).isRequired,
 	getScale: PropTypes.func.isRequired,
+	bg: PropTypes.object.isRequired,
 };
 
 Axis.defaultProps = {

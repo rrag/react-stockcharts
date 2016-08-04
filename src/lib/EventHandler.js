@@ -34,7 +34,7 @@ function compareArray(a, b) {
 	if (a.length === b.length) {
 		var result = true;
 		for (var i = 0; i < a.length; i++) {
-			result = result && shallowEqual(a[i], b[i])
+			result = result && shallowEqual(a[i], b[i]);
 		}
 		return result;
 	}
@@ -205,7 +205,7 @@ class EventHandler extends Component {
 				// this.clearInteractiveCanvas(nextProps);
 				// this.clearCanvasDrawCallbackList();
 			}
-			var { chartConfig: initialChartConfig } = this.state
+			var { chartConfig: initialChartConfig } = this.state;
 
 			var a = newState.chartConfig.map(each => each.realYDomain);
 			var b = initialChartConfig.map(each => each.realYDomain);
@@ -213,9 +213,9 @@ class EventHandler extends Component {
 			if (compareArray(a, b)) {
 				newState.chartConfig
 					.forEach((each, idx) => {
-						each.yScale.domain(initialChartConfig[idx].yScale.domain())
-						each.yPanEnabled = initialChartConfig[idx].yPanEnabled
-					})
+						each.yScale.domain(initialChartConfig[idx].yScale.domain());
+						each.yPanEnabled = initialChartConfig[idx].yPanEnabled;
+					});
 			}
 
 			this.setState({
@@ -276,17 +276,9 @@ class EventHandler extends Component {
 		this.subscriptions = this.subscriptions.filter(each => each.id !== id);
 	}
 	getChildContext() {
-		// var { showingInterval } = this.state;
-		// var { fullData } = this.props;
 		return {
 			plotData: this.state.plotData,
-			// data: isDefined(showingInterval) ? fullData[showingInterval] : fullData,
 			chartConfig: this.state.chartConfig,
-			// currentCharts: this.state.currentCharts,
-			// currentItem: this.state.currentItem,
-			// show: this.state.show,
-			// mouseXY: this.state.mouseXY,
-			// interval: this.state.showingInterval,
 			width: this.props.dimensions.width,
 			height: this.props.dimensions.height,
 			chartCanvasType: this.props.type,
@@ -294,11 +286,6 @@ class EventHandler extends Component {
 			xAccessor: this.props.xAccessor,
 			displayXAccessor: this.props.displayXAccessor,
 			margin: this.props.margin,
-			margin: this.props.margin,
-
-			// callbackForCanvasDraw: this.pushCallbackForCanvasDraw,
-			// getAllCanvasDrawCallback: this.getAllCanvasDrawCallback,
-
 			xAxisZoom: this.xAxisZoom,
 			yAxisZoom: this.yAxisZoom,
 			getInteractiveState: this.getInteractiveState,
@@ -320,40 +307,11 @@ class EventHandler extends Component {
 			focus: this.state.focus
 		};
 	}
-	/* pushCallbackForCanvasDraw(findThis, replaceWith) {
-		var { canvasDrawCallbackList } = this;
-		// console.log(findThis, canvasDrawCallbackList.length);
-		if (replaceWith) {
-			canvasDrawCallbackList.forEach((each, idx) => {
-				if (each === findThis) {
-					canvasDrawCallbackList[idx] = replaceWith;
-				}
-			});
-		} else {
-			// console.log(findThis);
-			canvasDrawCallbackList.push(findThis);
-		}
-	}
-	getAllCanvasDrawCallback() {
-		return this.canvasDrawCallbackList;
-	}*/
 	getCanvasContexts() {
 		// console.log(this.state.canvases, this.props.canvasContexts())
 		return this.state.canvases || this.props.canvasContexts();
 	}
 	handleMouseEnter(e) {
-		// if type === svg remove state.canvases
-		// if type !== svg get canvases and set in state if state.canvases is not present already
-		/* var { type, canvasContexts } = this.props;
-		var { canvases } = this.state;
-		if (type === "svg") {
-			canvases = null;
-		} else {
-			canvases = canvasContexts();
-		}*/
-		/* this.setState({
-			show: true,
-		}); */
 		this.triggerEvent("mouseenter", {
 			show: true,
 		}, e);
@@ -485,22 +443,13 @@ class EventHandler extends Component {
 	}
 	handleZoom(zoomDirection, mouseXY, e) {
 		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
-		var { xScale: initialXScale, chartConfig: initialChartConfig, plotData: initialPlotData } = this.state;
-		var { xAccessor, filterData, postCalculator } = this.props;
+		var { xScale: initialXScale, plotData: initialPlotData } = this.state;
+		var { xAccessor } = this.props;
 
 		var item = getCurrentItem(initialXScale, xAccessor, mouseXY, initialPlotData),
 			cx = initialXScale(xAccessor(item)),
 			c = zoomDirection > 0 ? 2 : 0.5,
 			newDomain = initialXScale.range().map(x => cx + (x - cx) * c).map(initialXScale.invert);
-
-		/* var { plotData, domain } = filterData(newDomain,
-			xAccessor,
-			initialPlotData,
-			initialXScale.domain());
-
-		plotData = postCalculator(plotData);
-		var updatedScale = initialXScale.copy().domain(domain);
-		var chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData); */
 
 		var { xScale, plotData, chartConfig } = this.calculateStateForDomain(newDomain);
 
@@ -584,7 +533,7 @@ class EventHandler extends Component {
 	}
 	panHelper(mouseXY) {
 		var { panStartXScale: initialXScale, chartConfig: initialChartConfig } = this.state;
-		var { panOrigin, yPanEnabled } = this.state;
+		var { panOrigin } = this.state;
 		var { xAccessor, filterData, postCalculator } = this.props;
 
 		var dx = mouseXY[0] - panOrigin[0];

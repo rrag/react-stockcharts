@@ -3,10 +3,8 @@
 import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
-import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
-
-import { first, last, hexToRGBA, isNotDefined, isDefined, identity } from "../utils";
-import { mousePosition, touchPosition, d3Window, MOUSEMOVE, MOUSEUP } from "../utils";
+import { first, last, isDefined } from "../utils";
+import { mousePosition, d3Window, MOUSEMOVE, MOUSEUP } from "../utils";
 
 function sign(x) {
 	return (x > 0) - (x < 0);
@@ -31,7 +29,7 @@ class AxisZoomCapture extends Component {
 		var leftX = e.pageX - startXY[0],
 			topY = e.pageY - startXY[1];
 
-		var { chartConfig: { id, yScale }, xScale } = this.props.getMoreProps();
+		var { chartConfig: { yScale }, xScale } = this.props.getMoreProps();
 
 		this.setState({
 			startPosition: {
@@ -59,8 +57,6 @@ class AxisZoomCapture extends Component {
 			var dx = startXY[0] - mouseXY[0];
 			var dy = startXY[1] - mouseXY[1];
 
-			var { chartConfig: { id, yScale }, xScale } = this.props.getMoreProps();
-
 			var cy = d3.mean(startYScale.range());
 			var cx = d3.mean(startXScale.range());
 
@@ -77,7 +73,7 @@ class AxisZoomCapture extends Component {
 
 				var { axisZoomCallback } = this.props;
 				// console.log(startXScale.domain(), newXDomain)
-				axisZoomCallback(newXDomain, newYDomain);				
+				axisZoomCallback(newXDomain, newYDomain);
 			}
 		}
 	}
@@ -118,6 +114,8 @@ AxisZoomCapture.propTypes = {
 	axisZoomCallback: PropTypes.func,
 
 	bg: PropTypes.object.isRequired,
+	zoomCursorClassName: PropTypes.string.isRequired,
+	getMoreProps: PropTypes.func.isRequired,
 };
 
 AxisZoomCapture.contextTypes = {
