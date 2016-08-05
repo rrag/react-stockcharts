@@ -87,6 +87,7 @@ Axis.propTypes = {
 	zoomCursorClassName: PropTypes.string,
 	transform: PropTypes.arrayOf(PropTypes.number).isRequired,
 	range: PropTypes.arrayOf(PropTypes.number).isRequired,
+	getMouseDelta: PropTypes.func.isRequired,
 	getScale: PropTypes.func.isRequired,
 	bg: PropTypes.object.isRequired,
 };

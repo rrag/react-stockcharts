@@ -714,9 +714,7 @@ class EventHandler extends Component {
 		});
 	}
 	render() {
-		var { xScale } = this.state;
-		var { xAccessor, interaction } = this.props;
-		// var { dimensions } = this.props;
+		var { interaction } = this.props;
 		return (
 			<g>
 				<EventCapture
@@ -753,6 +751,7 @@ EventHandler.propTypes = {
 	lastItem: PropTypes.object,
 	displayXAccessor: PropTypes.func,
 	filterData: PropTypes.func,
+	interaction: PropTypes.bool,
 	// showingInterval: PropTypes.string,
 };
 

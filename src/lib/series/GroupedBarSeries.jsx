@@ -13,9 +13,7 @@ class GroupedBarSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { yAccessor } = this.props;
 		var { xAccessor } = this.context;
-		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 		drawOnCanvasHelper(ctx, this.props, moreProps, xAccessor,
 		identity, postProcessor);
@@ -26,7 +24,7 @@ class GroupedBarSeries extends Component {
 		// return <g>{svgHelper(this.props, moreProps, xAccessor, identity)}</g>;
 
 		return <g className="react-stockcharts-grouped-bar-series">
-			{svgHelper(props, moreProps, xAccessor, identity, postProcessor)}
+			{svgHelper(this.props, moreProps, xAccessor, identity, postProcessor)}
 		</g>;
 	}
 	render() {
@@ -68,14 +66,6 @@ GroupedBarSeries.defaultProps = {
 	...StackedBarSeries.defaultProps,
 	widthRatio: 0.8,
 	spaceBetweenBar: 5,
-};
-
-GroupedBarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-
-};
-
-GroupedBarSeries.getBarsSVG = (props) => {
-	return 
 };
 
 function postProcessor(array) {

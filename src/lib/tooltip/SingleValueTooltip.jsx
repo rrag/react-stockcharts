@@ -7,7 +7,7 @@ import GenericChartComponent from "../GenericChartComponent";
 
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
-import { first, isDefined, identity, noop } from "../utils";
+import { isDefined, identity, noop } from "../utils";
 
 class SingleValueTooltip extends Component {
 	constructor(props) {

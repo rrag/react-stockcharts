@@ -16,7 +16,7 @@ class VolumeProfileSeries extends Component {
 		var { xAccessor, width } = this.context;
 		var { rects, sessionBg } = helper(this.props, moreProps, xAccessor, width);
 
-		drawOnCanvas(ctx, this.props, rects, sessionBg)
+		drawOnCanvas(ctx, this.props, rects, sessionBg);
 	}
 	render() {
 		return <GenericChartComponent
@@ -27,7 +27,7 @@ class VolumeProfileSeries extends Component {
 			/>;
 	}
 	renderSVG(moreProps) {
-		var { className, opacity, xScale, yScale, plotData } = this.props;
+		var { className, opacity } = this.props;
 		var { showSessionBackground, sessionBackGround, sessionBackGroundOpacity } = this.props;
 
 		var { xAccessor, width } = this.context;
@@ -243,6 +243,6 @@ function drawOnCanvas(ctx, props, rects, sessionBg) {
 		}
 
 	});
-};
+}
 
 export default VolumeProfileSeries;

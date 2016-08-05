@@ -67,7 +67,7 @@ function getHorizontalLine(props) {
 		stroke={zeroLineStroke} opacity={zeroLineOpacity}
 		yAccessor={yAccessor}
 		yValue={0} />;
-};
+}
 
 MACDSeries.propTypes = {
 	className: PropTypes.string,

@@ -50,7 +50,7 @@ function getHorizontalLine(props, yValue, stroke) {
 		stroke={stroke} opacity={0.3}
 		yAccessor={yAccessor}
 		yValue={yValue} />;
-};
+}
 
 StochasticSeries.propTypes = {
 	className: PropTypes.string,

@@ -12,13 +12,12 @@ class PointAndFigureSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { stroke, className, opacity, yValue, yAccessor } = this.props;
 		var { xAccessor } = this.context;
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 		var columns = getColumns(xScale, xAccessor, yScale, plotData);
 
-		drawOnCanvas(ctx, this.props, columns)
+		drawOnCanvas(ctx, this.props, columns);
 	}
 	render() {
 		return <GenericChartComponent
@@ -32,7 +31,6 @@ class PointAndFigureSeries extends Component {
 		var { xAccessor } = this.context;
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
-		var { yAccessor } = this.props;
 		var { stroke, fill, strokeWidth, className } = this.props;
 
 		var columns = getColumns(xScale, xAccessor, yScale, plotData);
@@ -65,6 +63,14 @@ class PointAndFigureSeries extends Component {
 		);
 	}
 }
+
+PointAndFigureSeries.propTypes = {
+	className: PropTypes.string,
+	yAccessor: PropTypes.func.isRequired,
+	strokeWidth: PropTypes.number.isRequired,
+	stroke: PropTypes.object.isRequired,
+	fill: PropTypes.object.isRequired,
+};
 
 PointAndFigureSeries.contextTypes = {
 	xAccessor: PropTypes.func.isRequired,
@@ -119,7 +125,7 @@ function drawOnCanvas(ctx, props, columns) {
 	});
 
 	ctx.stroke();
-};
+}
 
 function getColumns(xScale, xAccessor, yScale, plotData) {
 
@@ -156,6 +162,6 @@ function getColumns(xScale, xAccessor, yScale, plotData) {
 				};
 			});
 	return columns;
-};
+}
 
 export default PointAndFigureSeries;

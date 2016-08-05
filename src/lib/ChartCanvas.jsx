@@ -176,7 +176,7 @@ class ChartCanvas extends Component {
 		var props = { padding, type, margin, postCalculator };
 		var stateProps = { plotData, filterData, xScale, xAccessor, dataAltered, lastItem, displayXAccessor };
 
-		var interaction = !isNaN(xScale(xAccessor(first(plotData)))) && isDefined(xScale.invert)
+		var interaction = !isNaN(xScale(xAccessor(first(plotData)))) && isDefined(xScale.invert);
 
 		var cursor = getCursorStyle(useCrossHairStyleCursor && interaction);
 

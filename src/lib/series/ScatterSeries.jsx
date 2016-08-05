@@ -13,7 +13,6 @@ class ScatterSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { className, markerProps } = this.props;
 		var { xAccessor } = this.context;
 
 		var points = helper(this.props, moreProps, xAccessor);
@@ -62,7 +61,7 @@ ScatterSeries.defaultProps = {
 
 function helper(props, moreProps, xAccessor) {
 	var { yAccessor, marker: Marker, markerProvider, markerProps } = props;
-	var { xScale, chartConfig: { yScale }, plotData, hovering } = moreProps;
+	var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 	if (!(markerProvider || Marker)) throw new Error("required prop, either marker or markerProvider missing");
 
@@ -84,7 +83,7 @@ function helper(props, moreProps, xAccessor) {
 			marker: Marker,
 		};
 	});
-};
+}
 
 function drawOnCanvas(ctx, props, points) {
 
@@ -103,7 +102,8 @@ function drawOnCanvas(ctx, props, points) {
 		}
 
 		fillValues.forEach(strokeGroup => {
-			var { key: strokeKey, values: strokeValues } = strokeGroup;
+			// var { key: strokeKey, values: strokeValues } = strokeGroup;
+			var { values: strokeValues } = strokeGroup;
 
 			strokeValues.forEach(point => {
 				var { marker } = point;
@@ -111,6 +111,6 @@ function drawOnCanvas(ctx, props, points) {
 			});
 		});
 	});
-};
+}
 
 export default ScatterSeries;

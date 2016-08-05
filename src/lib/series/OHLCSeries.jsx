@@ -13,12 +13,12 @@ class OHLCSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { className, yAccessor } = this.props;
+		var { yAccessor } = this.props;
 		var { xAccessor } = this.context;
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 		var barData = getOHLCBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
-		drawOnCanvas(ctx, barData)
+		drawOnCanvas(ctx, barData);
 	}
 	render() {
 		return <GenericChartComponent
@@ -56,12 +56,9 @@ OHLCSeries.propTypes = {
 		PropTypes.func,
 		PropTypes.string
 	]).isRequired,
-	xAccessor: PropTypes.func,
 	yAccessor: PropTypes.func.isRequired,
-	xScale: PropTypes.func,
-	yScale: PropTypes.func,
-	plotData: PropTypes.array,
 };
+
 OHLCSeries.contextTypes = {
 	xAccessor: PropTypes.func.isRequired,
 };
@@ -101,7 +98,7 @@ function drawOnCanvas(ctx, barData) {
 			ctx.stroke();
 		});
 	});
-};
+}
 
 function getOHLCBars(props, xAccessor, yAccessor, xScale, yScale, plotData) {
 	var { classNames: classNamesProp, stroke: strokeProp } = props;
@@ -134,6 +131,6 @@ function getOHLCBars(props, xAccessor, yAccessor, xScale, yScale, plotData) {
 				return { x, y1, y2, openX1, openX2, openY, closeX1, closeX2, closeY, stroke, className };
 			});
 	return { barWidth, strokeWidth, bars };
-};
+}
 
 export default OHLCSeries;

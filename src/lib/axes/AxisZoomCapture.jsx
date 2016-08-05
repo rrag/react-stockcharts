@@ -113,6 +113,8 @@ AxisZoomCapture.propTypes = {
 	bg: PropTypes.object.isRequired,
 	zoomCursorClassName: PropTypes.string.isRequired,
 	getMoreProps: PropTypes.func.isRequired,
+	getScale: PropTypes.func.isRequired,
+	getMouseDelta: PropTypes.func.isRequired,
 };
 
 AxisZoomCapture.contextTypes = {

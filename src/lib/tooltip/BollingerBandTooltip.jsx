@@ -4,7 +4,7 @@ import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 import GenericChartComponent from "../GenericChartComponent";
 
-import { first, isDefined } from "../utils";
+import { isDefined } from "../utils";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
@@ -14,7 +14,7 @@ class BollingerBandTooltip extends Component {
 		this.renderSVG = this.renderSVG.bind(this);
 	}
 	renderSVG(moreProps) {
-		var { onClick, forChart, displayFormat, calculator } = this.props;
+		var { onClick, displayFormat, calculator } = this.props;
 		var { width, height } = this.context;
 		var { currentItem } = moreProps;
 

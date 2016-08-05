@@ -26,6 +26,7 @@ Circle.propTypes = {
 		datum: PropTypes.object.isRequired,
 	}).isRequired,
 	className: PropTypes.string,
+	strokeWidth: PropTypes.number,
 	r: PropTypes.oneOfType([
 		PropTypes.number,
 		PropTypes.func

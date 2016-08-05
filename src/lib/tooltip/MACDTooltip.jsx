@@ -7,8 +7,6 @@ import GenericChartComponent from "../GenericChartComponent";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
-import { first } from "../utils";
-
 class MACDTooltip extends Component {
 	constructor(props) {
 		super(props);

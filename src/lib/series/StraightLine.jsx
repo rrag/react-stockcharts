@@ -12,7 +12,7 @@ class StraightLine extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { stroke, className, opacity, yValue } = this.props;
+		var { stroke, opacity, yValue } = this.props;
 		var { xAccessor } = this.context;
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 

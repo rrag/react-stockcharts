@@ -4,7 +4,6 @@ import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 import GenericChartComponent from "../GenericChartComponent";
 
-import { first } from "../utils";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 

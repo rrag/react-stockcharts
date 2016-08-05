@@ -14,7 +14,6 @@ class StackedBarSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { yAccessor } = this.props;
 		var { xAccessor } = this.context;
 		// var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 

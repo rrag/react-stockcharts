@@ -5,7 +5,7 @@ import React, { PropTypes, Component } from "react";
 
 import GenericChartComponent from "../GenericChartComponent";
 
-import { first, isDefined } from "../utils";
+import { isDefined } from "../utils";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 

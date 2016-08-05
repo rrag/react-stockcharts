@@ -13,9 +13,7 @@ class KagiSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { stroke, className, opacity, yValue } = this.props;
 		var { xAccessor } = this.context;
-		// var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 		drawOnCanvas(ctx, this.props, moreProps, xAccessor);
 	}
@@ -124,7 +122,7 @@ function drawOnCanvas(ctx, props, moreProps, xAccessor) {
 	ctx.moveTo(x - 10, y2);
 	ctx.lineTo(x, y2);
 	ctx.stroke();
-};
+}
 
 function helper(plotData, xAccessor) {
 	var kagiLine = [];
@@ -164,6 +162,6 @@ function helper(plotData, xAccessor) {
 	// console.log(d.reverseAt);
 
 	return kagiLine;
-};
+}
 
 export default KagiSeries;

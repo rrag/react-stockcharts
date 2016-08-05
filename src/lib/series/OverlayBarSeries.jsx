@@ -130,6 +130,6 @@ function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData) {
 			});
 
 	return d3.merge(bars);
-};
+}
 
 export default OverlayBarSeries;

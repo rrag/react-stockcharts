@@ -19,7 +19,7 @@ class RenkoSeries extends Component {
 
 		var candles = getRenko(this.props, plotData, xScale, xAccessor, yScale, yAccessor);
 
-		drawOnCanvas(ctx, candles)
+		drawOnCanvas(ctx, candles);
 	}
 	render() {
 		return <GenericChartComponent
@@ -66,6 +66,7 @@ RenkoSeries.propTypes = {
 		up: PropTypes.string,
 		down: PropTypes.string
 	}),
+	yAccessor: PropTypes.func.isRequired,
 };
 RenkoSeries.contextTypes = {
 	xAccessor: PropTypes.func.isRequired,
@@ -99,7 +100,7 @@ function drawOnCanvas(ctx, renko) {
 		ctx.closePath();
 		ctx.fill();
 	});
-};
+}
 
 function getRenko(props, plotData, xScale, xAccessor, yScale, yAccessor) {
 	var { classNames, fill } = props;
@@ -130,6 +131,6 @@ function getRenko(props, plotData, xScale, xAccessor, yScale, yAccessor) {
 				};
 			});
 	return candles;
-};
+}
 
 export default RenkoSeries;
