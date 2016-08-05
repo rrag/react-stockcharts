@@ -6,10 +6,13 @@ import React, { PropTypes } from "react";
 import { hexToRGBA } from "../utils";
 
 function Circle(props) {
-	var { className, stroke, opacity, fill, point, r } = props;
+	var { className, stroke, strokeWidth, opacity, fill, point, r } = props;
 	var radius = d3.functor(r)(point.datum);
 	return (
-		<circle className={className} cx={point.x} cy={point.y} stroke={stroke} fillOpacity={opacity} fill={fill} r={radius} />
+		<circle className={className}
+			cx={point.x} cy={point.y}
+			stroke={stroke} strokeWidth={strokeWidth}
+			fillOpacity={opacity} fill={fill} r={radius} />
 	);
 }
 
@@ -31,6 +34,7 @@ Circle.propTypes = {
 
 Circle.defaultProps = {
 	stroke: "#4682B4",
+	strokeWidth: 1,
 	opacity: 0.5,
 	fill: "#4682B4",
 	className: "react-stockcharts-marker-circle",
@@ -38,9 +42,10 @@ Circle.defaultProps = {
 
 Circle.drawOnCanvas = (props, point, ctx) => {
 
-	var { stroke, fill, opacity } = props;
+	var { stroke, fill, opacity, strokeWidth } = props;
 
 	ctx.strokeStyle = stroke;
+	ctx.lineWidth = strokeWidth;
 
 	if (fill !== "none") {
 		ctx.fillStyle = hexToRGBA(fill, opacity);

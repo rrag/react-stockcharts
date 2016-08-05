@@ -5,8 +5,6 @@ import React, { PropTypes, Component } from "react";
 import OverlayBarSeries from "./OverlayBarSeries";
 import StraightLine from "./StraightLine";
 
-import wrap from "./wrap";
-
 class ElderRaySeries extends Component {
 	constructor(props) {
 		super(props);
@@ -92,4 +90,4 @@ ElderRaySeries.defaultProps = {
 	divergenceStroke: false,
 };
 
-export default wrap(ElderRaySeries);
+export default ElderRaySeries;

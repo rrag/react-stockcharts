@@ -15,11 +15,10 @@ class BarSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { yAccessor } = this.props;
 		var { xAccessor } = this.context;
-		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
-		drawOnCanvasHelper(this.props, ctx, xScale, yScale, plotData, xAccessor, yAccessor, identity);
+		drawOnCanvasHelper(ctx, this.props, moreProps, xAccessor, identity);
+
 	}
 	renderSVG(moreProps) {
 		var { xAccessor } = this.context;

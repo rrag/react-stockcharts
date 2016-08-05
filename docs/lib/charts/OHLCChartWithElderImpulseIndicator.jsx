@@ -5,7 +5,7 @@ import d3 from "d3";
 
 import ReStock from "react-stockcharts";
 
-var { ChartCanvas, Chart, EventCapture } = ReStock;
+var { ChartCanvas, Chart } = ReStock;
 
 var { OHLCSeries, BarSeries, LineSeries, AreaSeries, MACDSeries, ElderImpulseBackground } = ReStock.series;
 var { discontinuousTimeScaleProvider } = ReStock.scale;
@@ -13,7 +13,7 @@ var { discontinuousTimeScaleProvider } = ReStock.scale;
 var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeIndicator } = ReStock.coordinates;
 
-var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, MACDTooltip } = ReStock.tooltip;
+var { OHLCTooltip, MovingAverageTooltip, MACDTooltip } = ReStock.tooltip;
 
 var { XAxis, YAxis } = ReStock.axes;
 var { elderImpulse, change, macd, ema } = ReStock.indicator;
@@ -57,7 +57,7 @@ class OHLCChartWithElderImpulseIndicator extends React.Component {
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right" orient="right" ticks={2}/>
 
-					<MouseCoordinateY id={0}
+					<MouseCoordinateY
 						at="right"
 						orient="right"
 						displayFormat={d3.format(".2f")} />
@@ -68,13 +68,17 @@ class OHLCChartWithElderImpulseIndicator extends React.Component {
 
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
+
+					<OHLCTooltip origin={[-40, -10]}/>
+					<MovingAverageTooltip origin={[-38, 5]}
+						calculators={[ema12]} />
 				</Chart>
 				<Chart id={2} height={150}
 						yExtents={d => d.volume}
 						origin={(w, h) => [0, h - 300]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 
-					<MouseCoordinateY id={0}
+					<MouseCoordinateY
 						at="left"
 						orient="left"
 						displayFormat={d3.format(".4s")} />
@@ -89,25 +93,19 @@ class OHLCChartWithElderImpulseIndicator extends React.Component {
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={2} />
 
-					<MouseCoordinateX id={0}
+					<MouseCoordinateX
 						at="bottom"
 						orient="bottom"
 						displayFormat={d3.time.format("%Y-%m-%d")} />
-					<MouseCoordinateY id={0}
+					<MouseCoordinateY
 						at="right"
 						orient="right"
 						displayFormat={d3.format(".2f")} />
 
 					<MACDSeries calculator={macdCalculator} />
+					<MACDTooltip origin={[-38, 15]} calculator={macdCalculator}/>
 				</Chart>
 				<CrossHairCursor />
-				<EventCapture mouseMove zoom pan />
-				<TooltipContainer>
-					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
-					<MovingAverageTooltip forChart={1} origin={[-38, 5]}
-						calculators={[ema12]} />
-					<MACDTooltip forChart={3} origin={[-38, 15]} calculator={macdCalculator}/>
-				</TooltipContainer>
 			</ChartCanvas>
 		);
 	}

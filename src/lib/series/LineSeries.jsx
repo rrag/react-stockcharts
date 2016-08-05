@@ -14,9 +14,9 @@ class LineSeries extends Component {
 		this.isHover = this.isHover.bind(this);
 	}
 	isHover(moreProps) {
-		var { hoverHighlight, yAccessor, hoverTolerance } = this.props;
+		var { highlightOnHover, yAccessor, hoverTolerance } = this.props;
 
-		if (!hoverHighlight) return false;
+		if (!highlightOnHover) return false;
 
 		var { mouseXY, currentItem, xScale, plotData } = moreProps;
 		var { chartConfig: { yScale, origin } } = moreProps;
@@ -134,7 +134,7 @@ LineSeries.propTypes = {
 	fill: PropTypes.string,
 	defined: PropTypes.func,
 	hoverTolerance: PropTypes.number,
-	hoverHighlight: PropTypes.bool,
+	highlightOnHover: PropTypes.bool,
 	onClick: PropTypes.func,
 	onDoubleClick: PropTypes.func,
 	onContextMenu: PropTypes.func,
@@ -150,10 +150,10 @@ LineSeries.defaultProps = {
 	strokeWidth: 1,
 	hoverStrokeWidth: 4,
 	fill: "none",
-	stroke: "#000000",
+	stroke: "#4682B4",
 	defined: d => !isNaN(d),
 	hoverTolerance: 6,
-	hoverHighlight: true,
+	highlightOnHover: false,
 	onClick: function(e) { console.log("Click", e); },
 	onDoubleClick: function(e) { console.log("Double Click", e); },
 	onContextMenu: function(e) { console.log("Right Click", e); },

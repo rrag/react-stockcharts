@@ -5,7 +5,7 @@ import d3 from "d3";
 
 import ReStock from "react-stockcharts";
 
-var { ChartCanvas, Chart, EventCapture } = ReStock;
+var { ChartCanvas, Chart } = ReStock;
 
 var { ScatterSeries, CircleMarker } = ReStock.series;
 
@@ -46,17 +46,17 @@ class BubbleChart extends React.Component {
 						fill={fill}
 						markerProps={{ r: radius, fill: fill }} />
 
-					<MouseCoordinateX id={0} snapX={false}
+					<MouseCoordinateX snapX={false}
 						at="bottom"
 						orient="bottom"
+						rectWidth={50}
 						displayFormat={d3.format(".0f")} />
-					<MouseCoordinateY id={0}
+					<MouseCoordinateY
 						at="left"
 						orient="left"
 						displayFormat={d3.format(".2f")} />
 				</Chart>
 				<CrossHairCursor snapX={false} />
-				<EventCapture mouseMove zoom pan />
 			</ChartCanvas>
 
 		);

@@ -6,8 +6,6 @@ import BarSeries from "./BarSeries";
 import LineSeries from "./LineSeries";
 import StraightLine from "./StraightLine";
 
-import wrap from "./wrap";
-
 class MACDSeries extends Component {
 	constructor(props) {
 		super(props);
@@ -53,23 +51,21 @@ class MACDSeries extends Component {
 					className="macd-divergence"
 					stroke={divergenceStroke} fill={fill.divergence} opacity={opacity}
 					yAccessor={this.yAccessorForDivergence} />
-				{MACDSeries.getHorizontalLine(this.props)}
+				{getHorizontalLine(this.props)}
 			</g>
 		);
 	}
 }
 
-MACDSeries.getHorizontalLine = (props) => {
+function getHorizontalLine(props) {
 
 	/* eslint-disable react/prop-types */
-	var { xScale, yScale, xAccessor, yAccessor, plotData, type, zeroLineStroke, zeroLineOpacity } = props;
+	var { yAccessor, zeroLineStroke, zeroLineOpacity } = props;
 	/* eslint-enable react/prop-types */
 
 	return <StraightLine
-		stroke={zeroLineStroke} opacity={zeroLineOpacity} type={type}
-		xScale={xScale} yScale={yScale}
-		xAccessor={xAccessor} yAccessor={yAccessor}
-		plotData={plotData}
+		stroke={zeroLineStroke} opacity={zeroLineOpacity}
+		yAccessor={yAccessor}
 		yValue={0} />;
 };
 
@@ -93,4 +89,4 @@ MACDSeries.defaultProps = {
 	divergenceStroke: false,
 };
 
-export default wrap(MACDSeries);
+export default MACDSeries;

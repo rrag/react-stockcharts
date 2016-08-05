@@ -8,7 +8,7 @@ class YAxis extends Component {
 		super(props, context);
 		this.axisZoomCallback = this.axisZoomCallback.bind(this);
 	}
-	axisZoomCallback(newXDomain, newYDomain) {
+	axisZoomCallback(newYDomain) {
 		var { chartId, yAxisZoom } = this.context;
 		yAxisZoom(chartId, newYDomain);
 	}
@@ -61,6 +61,7 @@ YAxis.defaultProps = {
 	fontSize: 12,
 	yZoomWidth: 40,
 	zoomEnabled: true,
+	getMouseDelta: (startXY, mouseXY) => startXY[1] - mouseXY[1],
 };
 
 YAxis.contextTypes = {

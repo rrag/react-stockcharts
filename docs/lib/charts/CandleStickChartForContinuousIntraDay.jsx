@@ -5,14 +5,14 @@ import d3 from "d3";
 
 import ReStock from "react-stockcharts";
 
-var { ChartCanvas, Chart, EventCapture } = ReStock;
+var { ChartCanvas, Chart } = ReStock;
 
 var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = ReStock.series;
 
 var { EdgeIndicator } = ReStock.coordinates;
 var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
 
-var { TooltipContainer, OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
+var { OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
 var { XAxis, YAxis } = ReStock.axes;
 var { ema, sma } = ReStock.indicator;
 var { fitWidth } = ReStock.helper;
@@ -51,7 +51,7 @@ class CandleStickChartForContinuousIntraDay extends React.Component {
 						height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 
-					<MouseCoordinateY id={0}
+					<MouseCoordinateY
 						at="left"
 						orient="left"
 						displayFormat={d3.format(".4s")} />
@@ -59,8 +59,8 @@ class CandleStickChartForContinuousIntraDay extends React.Component {
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
 
-					<CurrentCoordinate id={0} yAccessor={smaVolume50.accessor()} fill={smaVolume50.stroke()} />
-					<CurrentCoordinate id={1} yAccessor={d => d.volume} fill="#9B0A47" />
+					<CurrentCoordinate yAccessor={smaVolume50.accessor()} fill={smaVolume50.stroke()} />
+					<CurrentCoordinate yAccessor={d => d.volume} fill="#9B0A47" />
 
 					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
 						yAccessor={d => d.volume} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
@@ -77,12 +77,12 @@ class CandleStickChartForContinuousIntraDay extends React.Component {
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 
-					<MouseCoordinateX id={0}
+					<MouseCoordinateX
 						rectWidth={60}
 						at="bottom"
 						orient="bottom"
 						displayFormat={d3.time.format("%H:%M:%S")} />
-					<MouseCoordinateY id={0}
+					<MouseCoordinateY
 						at="right"
 						orient="right"
 						displayFormat={d3.format(".2f")} />
@@ -91,8 +91,8 @@ class CandleStickChartForContinuousIntraDay extends React.Component {
 					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
 					<LineSeries yAccessor={ema50.accessor()} stroke={ema50.stroke()}/>
 
-					<CurrentCoordinate id={1} yAccessor={ema20.accessor()} fill={ema20.stroke()} />
-					<CurrentCoordinate id={2} yAccessor={ema50.accessor()} fill={ema50.stroke()} />
+					<CurrentCoordinate yAccessor={ema20.accessor()} fill={ema20.stroke()} />
+					<CurrentCoordinate yAccessor={ema50.accessor()} fill={ema50.stroke()} />
 
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={ema20.accessor()} fill={ema20.fill()}/>
@@ -106,15 +106,12 @@ class CandleStickChartForContinuousIntraDay extends React.Component {
 						yAccessor={ema50.accessor()} fill={ema50.fill()}/>
 					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
-				</Chart>
 
-				<CrossHairCursor />
-				<EventCapture mouseMove zoom pan />
-				<TooltipContainer>
-					<OHLCTooltip forChart={1} origin={[-40, 0]} xDisplayFormat={d3.time.format("%Y-%m-%d %H:%M:%S")}/>
-					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 15]} 
+					<OHLCTooltip origin={[-40, 0]} xDisplayFormat={d3.time.format("%Y-%m-%d %H:%M:%S")}/>
+					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]} 
 						calculators={[ema20, ema50]}/>
-				</TooltipContainer>
+				</Chart>
+				<CrossHairCursor />
 			</ChartCanvas>
 		);
 	}

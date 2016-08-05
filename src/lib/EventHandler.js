@@ -714,11 +714,16 @@ class EventHandler extends Component {
 		});
 	}
 	render() {
-		// var { chartConfig } = this.state;
+		var { xScale } = this.state;
+		var { xAccessor, interaction } = this.props;
 		// var { dimensions } = this.props;
 		return (
 			<g>
-				<EventCapture mouseMove zoom pan onContextMenu={this.handleContextMenu}/>
+				<EventCapture
+					mouseMove={interaction}
+					zoom={interaction}
+					pan={interaction}
+					onContextMenu={this.handleContextMenu}/>
 				<g className="react-stockcharts-avoid-interaction">
 					{this.props.children}
 				</g>

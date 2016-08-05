@@ -21,25 +21,27 @@ class AxisZoomCapture extends Component {
 		};
 	}
 	handleDragStart(e) {
-		d3.select(d3Window(this.refs.capture))
-			.on(MOUSEMOVE, this.handleDrag)
-			.on(MOUSEUP, this.handleDragEnd);
+		var { getScale, getMoreProps } = this.props;
+		var startScale = getScale(getMoreProps());
 
-		var startXY = mousePosition(e);
-		var leftX = e.pageX - startXY[0],
-			topY = e.pageY - startXY[1];
+		if (startScale.invert) {
+			d3.select(d3Window(this.refs.capture))
+				.on(MOUSEMOVE, this.handleDrag)
+				.on(MOUSEUP, this.handleDragEnd);
 
-		var { chartConfig: { yScale }, xScale } = this.props.getMoreProps();
+			var startXY = mousePosition(e);
+			var leftX = e.pageX - startXY[0],
+				topY = e.pageY - startXY[1];
 
-		this.setState({
-			startPosition: {
-				startXY,
-				leftX,
-				topY,
-				startXScale: xScale.copy(),
-				startYScale: yScale.copy(),
-			}
-		});
+			this.setState({
+				startPosition: {
+					startXY,
+					leftX,
+					topY,
+					startScale,
+				}
+			});
+		}
 		e.preventDefault();
 	}
 	handleDrag() {
@@ -47,33 +49,28 @@ class AxisZoomCapture extends Component {
 		e.preventDefault();
 
 		var { startPosition } = this.state;
+		var { getMouseDelta } = this.props;
 
 		if (isDefined(startPosition)) {
+			var { startScale } = startPosition;
 			var { startXY, leftX, topY } = startPosition;
-			var { startXScale, startYScale } = startPosition;
 
 			var mouseXY = [e.pageX - leftX, e.pageY - topY];
 
-			var dx = startXY[0] - mouseXY[0];
-			var dy = startXY[1] - mouseXY[1];
+			var diff = getMouseDelta(startXY, mouseXY);
 
-			var cy = d3.mean(startYScale.range());
-			var cx = d3.mean(startXScale.range());
+			var center = d3.mean(startScale.range());
 
-			var tempYRange = startYScale.range()
-				.map(d => d + sign(d - cy) * dy);
-			var newYDomain = tempYRange.map(startYScale.invert);
+			var tempRange = startScale.range()
+				.map(d => d + sign(d - center) * diff);
 
-			var tempXRange = startXScale.range()
-				.map(d => d + sign(d - cx) * dx);
-			var newXDomain = tempXRange.map(startXScale.invert);
+			var newDomain = tempRange.map(startScale.invert);
 
-			if (sign(last(startYScale.range()) - first(startYScale.range())) === sign(last(tempYRange) - first(tempYRange))
-				&& sign(last(startXScale.range()) - first(startXScale.range())) === sign(last(tempXRange) - first(tempXRange))) {
+			if (sign(last(startScale.range()) - first(startScale.range())) === sign(last(tempRange) - first(tempRange))) {
 
 				var { axisZoomCallback } = this.props;
 				// console.log(startXScale.domain(), newXDomain)
-				axisZoomCallback(newXDomain, newYDomain);
+				axisZoomCallback(newDomain);
 			}
 		}
 	}

@@ -2,8 +2,6 @@
 
 import React, { PropTypes, Component } from "react";
 
-import wrap from "./wrap";
-
 import LineSeries from "./LineSeries";
 import StraightLine from "./StraightLine";
 
@@ -34,25 +32,23 @@ class StochasticSeries extends Component {
 				<LineSeries yAccessor={this.yAccessorForK}
 					stroke={seriesStroke.K} fill="none"
 					type={type} />
-				{StochasticSeries.getHorizontalLine(this.props, calculator.overSold(), stroke.top)}
-				{StochasticSeries.getHorizontalLine(this.props, calculator.middle(), stroke.middle)}
-				{StochasticSeries.getHorizontalLine(this.props, calculator.overBought(), stroke.bottom)}
+				{getHorizontalLine(this.props, calculator.overSold(), stroke.top)}
+				{getHorizontalLine(this.props, calculator.middle(), stroke.middle)}
+				{getHorizontalLine(this.props, calculator.overBought(), stroke.bottom)}
 			</g>
 		);
 	}
 }
 
-StochasticSeries.getHorizontalLine = (props, yValue, stroke) => {
+function getHorizontalLine(props, yValue, stroke) {
 
 	/* eslint-disable react/prop-types */
-	var { xScale, yScale, xAccessor, yAccessor, plotData, type } = props;
+	var { yAccessor } = props;
 	/* eslint-enable react/prop-types */
 
 	return <StraightLine
-		stroke={stroke} opacity={0.3} type={type}
-		xScale={xScale} yScale={yScale}
-		xAccessor={xAccessor} yAccessor={yAccessor}
-		plotData={plotData}
+		stroke={stroke} opacity={0.3}
+		yAccessor={yAccessor}
 		yValue={yValue} />;
 };
 
@@ -76,4 +72,4 @@ StochasticSeries.defaultProps = {
 	}
 };
 
-export default wrap(StochasticSeries);
+export default StochasticSeries;

@@ -5,7 +5,7 @@ import d3 from "d3";
 
 import ReStock from "react-stockcharts";
 
-var { ChartCanvas, Chart, EventCapture } = ReStock;
+var { ChartCanvas, Chart } = ReStock;
 
 var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = ReStock.series;
 var { discontinuousTimeScaleProvider } = ReStock.scale;
@@ -14,7 +14,7 @@ var { EdgeIndicator } = ReStock.coordinates;
 var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
 var { Annotate, SvgPathAnnotation, Label, buyPath, sellPath } = ReStock.annotation;
 
-var { TooltipContainer, OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
+var { OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
 var { XAxis, YAxis } = ReStock.axes;
 var { ema, sma } = ReStock.indicator;
 var { fitWidth } = ReStock.helper;
@@ -92,11 +92,11 @@ class MovingAverageCrossOverAlgorithmV2 extends React.Component {
 					<Label x={yAxisLabelX} y={yAxisLabelY}
 						rotate={-90}
 						fontSize="12" text="YAxis Label here" />
-					<MouseCoordinateX id={0}
+					<MouseCoordinateX
 						at="bottom"
 						orient="bottom"
 						displayFormat={d3.time.format("%Y-%m-%d")} />
-					<MouseCoordinateY id={0}
+					<MouseCoordinateY
 						at="right"
 						orient="right"
 						displayFormat={d3.format(".2f")} />
@@ -105,18 +105,17 @@ class MovingAverageCrossOverAlgorithmV2 extends React.Component {
 					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
 					<LineSeries yAccessor={ema50.accessor()} stroke={ema50.stroke()}/>
 
-					<CurrentCoordinate id={1} yAccessor={ema20.accessor()} fill={ema20.stroke()} />
-					<CurrentCoordinate id={2} yAccessor={ema50.accessor()} fill={ema50.stroke()} />
+					<CurrentCoordinate yAccessor={ema20.accessor()} fill={ema20.stroke()} />
+					<CurrentCoordinate yAccessor={ema50.accessor()} fill={ema50.stroke()} />
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
+
+					<OHLCTooltip origin={[-40, 0]}/>
+					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]} 
+						calculators={[ema20, ema50]}/>
+
 				</Chart>
 				<CrossHairCursor />
-				<EventCapture mouseMove zoom pan />
-				<TooltipContainer>
-					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
-					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 15]} 
-						calculators={[ema20, ema50]}/>
-				</TooltipContainer>
 
 				<Annotate id={0} chartId={1} with={SvgPathAnnotation} when={d => d.longShort === "LONG"}
 					usingProps={longAnnotationProps} />

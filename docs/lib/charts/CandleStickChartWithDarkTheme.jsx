@@ -5,14 +5,14 @@ import d3 from "d3";
 
 import ReStock from "../../../src/";
 
-var { ChartCanvas, Chart, EventCapture } = ReStock;
+var { ChartCanvas, Chart } = ReStock;
 
 var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, StochasticSeries, BollingerSeries } = ReStock.series;
 var { discontinuousTimeScaleProvider } = ReStock.scale;
 var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeIndicator } = ReStock.coordinates;
 
-var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, BollingerBandTooltip, StochasticTooltip } = ReStock.tooltip;
+var { OHLCTooltip, MovingAverageTooltip, BollingerBandTooltip, StochasticTooltip } = ReStock.tooltip;
 
 var { XAxis, YAxis } = ReStock.axes;
 var { stochasticOscillator, ema, bollingerBand } = ReStock.indicator;
@@ -83,7 +83,7 @@ class CandleStickChartWithDarkTheme extends React.Component {
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0}
 							stroke="#FFFFFF" opacity={0.5}/>
 
-					<MouseCoordinateY id={0}
+					<MouseCoordinateY
 						at="right"
 						orient="right"
 						displayFormat={d3.format(".2f")} />
@@ -97,11 +97,16 @@ class CandleStickChartWithDarkTheme extends React.Component {
 
 					<BollingerSeries calculator={bb} />
 
-					<CurrentCoordinate id={1} yAccessor={ema20.accessor()} fill={ema20.stroke()} />
-					<CurrentCoordinate id={2} yAccessor={ema50.accessor()} fill={ema50.stroke()} />
+					<CurrentCoordinate yAccessor={ema20.accessor()} fill={ema20.stroke()} />
+					<CurrentCoordinate yAccessor={ema50.accessor()} fill={ema50.stroke()} />
 
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#DB0000"}/>
+
+					<OHLCTooltip origin={[-40, -10]}/>
+					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 10]} 
+						calculators={[ema20, ema50]}/>
+					<BollingerBandTooltip origin={[-38, 60]} calculator={bb} />
 				</Chart>
 				<Chart id={2}
 						yExtents={d => d.volume}
@@ -119,13 +124,14 @@ class CandleStickChartWithDarkTheme extends React.Component {
 							stroke="#FFFFFF" opacity={0.5} />
 					<YAxis axisAt="right" orient="right" ticks={2} tickValues={slowSTO.tickValues()}
 							tickStroke="#FFFFFF"/>
-					<MouseCoordinateY id={0}
+					<MouseCoordinateY
 						at="right"
 						orient="right"
 						displayFormat={d3.format(".2f")} />
 
 					<StochasticSeries calculator={slowSTO}
 							stroke={{ top: "#37a600", middle: "#b8ab00", bottom: "#37a600" }}/>
+					<StochasticTooltip calculator={slowSTO} origin={[-38, 15]}>Fast STO</StochasticTooltip>
 				</Chart>
 				<Chart id={4}
 						yExtents={fastSTO.domain()}
@@ -135,13 +141,14 @@ class CandleStickChartWithDarkTheme extends React.Component {
 					<YAxis axisAt="right" orient="right" ticks={2} tickValues={fastSTO.tickValues()}
 							tickStroke="#FFFFFF"/>
 
-					<MouseCoordinateY id={0}
+					<MouseCoordinateY
 						at="right"
 						orient="right"
 						displayFormat={d3.format(".2f")} />
 
 					<StochasticSeries calculator={fastSTO}
 							stroke={{ top: "#37a600", middle: "#b8ab00", bottom: "#37a600" }}/>
+					<StochasticTooltip calculator={fastSTO} origin={[-38, 15]}>Slow STO</StochasticTooltip>
 				</Chart>
 				<Chart id={5}
 						yExtents={fullSTO.domain()}
@@ -151,29 +158,20 @@ class CandleStickChartWithDarkTheme extends React.Component {
 					<YAxis axisAt="right" orient="right" ticks={2} tickValues={fullSTO.tickValues()}
 							tickStroke="#FFFFFF"/>
 
-					<MouseCoordinateX id={0}
+					<MouseCoordinateX
 						at="bottom"
 						orient="bottom"
 						displayFormat={d3.time.format("%Y-%m-%d")} />
-					<MouseCoordinateY id={0}
+					<MouseCoordinateY
 						at="right"
 						orient="right"
 						displayFormat={d3.format(".2f")} />
 
 					<StochasticSeries calculator={fullSTO}
 							stroke={{ top: "#37a600", middle: "#b8ab00", bottom: "#37a600" }}/>
+					<StochasticTooltip calculator={fullSTO} origin={[-38, 15]}>Full STO</StochasticTooltip>
 				</Chart>
 				<CrossHairCursor stroke="#FFFFFF" />
-				<EventCapture mouseMove zoom pan />
-				<TooltipContainer>
-					<OHLCTooltip forChart={1} origin={[-40, -10]}/>
-					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 10]} 
-						calculators={[ema20, ema50]}/>
-					<BollingerBandTooltip forChart={1} origin={[-38, 60]} calculator={bb} />
-					<StochasticTooltip forChart={3} calculator={slowSTO} origin={[-38, 15]}>Fast STO</StochasticTooltip>
-					<StochasticTooltip forChart={4} calculator={fastSTO} origin={[-38, 15]}>Slow STO</StochasticTooltip>
-					<StochasticTooltip forChart={5} calculator={fullSTO} origin={[-38, 15]}>Full STO</StochasticTooltip>
-				</TooltipContainer>
 			</ChartCanvas>
 		);
 	}

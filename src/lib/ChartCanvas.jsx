@@ -3,7 +3,7 @@
 import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
-import { shallowEqual, identity, isDefined } from "./utils";
+import { first, shallowEqual, identity, isDefined } from "./utils";
 
 import EventHandler from "./EventHandler";
 import CanvasContainer from "./CanvasContainer";
@@ -166,16 +166,20 @@ class ChartCanvas extends Component {
 		}
 	}
 	render() {
-		var cursor = getCursorStyle(this.props.useCrossHairStyleCursor);
 
 		var { type, height, width, margin, className, zIndex, postCalculator, flipXScale } = this.props;
-		var { padding } = this.props;
+		var { padding, useCrossHairStyleCursor } = this.props;
 
 		var { plotData, filterData, xScale, xAccessor, dataAltered, lastItem, displayXAccessor } = this.state;
 		var dimensions = getDimensions(this.props);
 		// var stateProps = { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor, dataAltered };
 		var props = { padding, type, margin, postCalculator };
 		var stateProps = { plotData, filterData, xScale, xAccessor, dataAltered, lastItem, displayXAccessor };
+
+		var interaction = !isNaN(xScale(xAccessor(first(plotData)))) && isDefined(xScale.invert)
+
+		var cursor = getCursorStyle(useCrossHairStyleCursor && interaction);
+
 		return (
 			<div style={{ position: "relative", height: height, width: width }} className={className} >
 				<CanvasContainer ref="canvases" width={width} height={height} type={type} zIndex={zIndex}/>
@@ -192,6 +196,7 @@ class ChartCanvas extends Component {
 							{...stateProps}
 							direction={flipXScale ? -1 : 1}
 							dimensions={dimensions}
+							interaction={interaction}
 							canvasContexts={this.getCanvases}>
 							{this.props.children}
 						</EventHandler>

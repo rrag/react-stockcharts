@@ -5,7 +5,7 @@ import d3 from "d3";
 
 import ReStock from "react-stockcharts";
 
-var { ChartCanvas, Chart, EventCapture } = ReStock;
+var { ChartCanvas, Chart } = ReStock;
 
 var { BarSeries } = ReStock.series;
 
@@ -22,7 +22,8 @@ class HorizontalBarChart extends React.Component {
 					seriesName="Fruits"
 					xExtents={data => [0, d3.max(data, d => d.x)]}
 					data={data}
-					xScale={d3.scale.linear()} flipXScale={false}>
+					xScale={d3.scale.linear()} flipXScale={false}
+					useCrossHairStyleCursor={false}>
 				<Chart id={1}
 						yExtents={data.map(d => d.y)}
 						yScale={d3.scale.ordinal()}

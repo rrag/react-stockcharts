@@ -5,7 +5,7 @@ import d3 from "d3";
 
 import ReStock from "react-stockcharts";
 
-var { ChartCanvas, Chart, EventCapture } = ReStock;
+var { ChartCanvas, Chart } = ReStock;
 
 var { AreaSeries, BarSeries, LineSeries, AreaSeries } = ReStock.series;
 var { discontinuousTimeScaleProvider } = ReStock.scale;
@@ -13,7 +13,7 @@ var { discontinuousTimeScaleProvider } = ReStock.scale;
 var { EdgeIndicator } = ReStock.coordinates;
 var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
 
-var { TooltipContainer, SingleValueTooltip, MovingAverageTooltip } = ReStock.tooltip;
+var { SingleValueTooltip, MovingAverageTooltip } = ReStock.tooltip;
 var { XAxis, YAxis } = ReStock.axes;
 var { fitWidth } = ReStock.helper;
 
@@ -33,23 +33,34 @@ class AreaChartWithEdge extends React.Component {
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 
-					<MouseCoordinateX id={0}
+					<MouseCoordinateX
 						at="bottom"
 						orient="bottom"
 						displayFormat={d3.time.format("%Y-%m-%d")} />
-					<MouseCoordinateY id={0}
+					<MouseCoordinateY
 						at="right"
 						orient="right"
 						displayFormat={d3.format(".2f")} />
 
 					<AreaSeries yAccessor={d => d.close}/>
+
+					<SingleValueTooltip
+						xLabel="Date" /* xLabel is optional, absense will not show the x value */ yLabel="C"
+						yAccessor={d => d.close}
+						xDisplayFormat={d3.time.format("%Y-%m-%d")} yDisplayFormat={d3.format(".2f")}
+						/* valueStroke="green" - optional prop */
+						/* labelStroke="#4682B4" - optional prop */
+						origin={[-40, 0]}/>
+					<SingleValueTooltip
+						yLabel="Volume" yAccessor={(d) => d.volume}
+						origin={[-40, 20]}/>
 				</Chart>
 				<Chart id={2}
 						yExtents={d => d.volume}
 						height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
 
-					<MouseCoordinateY id={0}
+					<MouseCoordinateY
 						at="left"
 						orient="left"
 						displayFormat={d3.format(".4s")} />
@@ -60,20 +71,6 @@ class AreaChartWithEdge extends React.Component {
 						widthRatio={1} />
 				</Chart>
 				<CrossHairCursor />
-
-				<EventCapture mouseMove zoom pan />
-				<TooltipContainer>
-					<SingleValueTooltip forChart={1}
-						xLabel="Date" /* xLabel is optional, absense will not show the x value */ yLabel="C"
-						yAccessor={d => d.close}
-						xDisplayFormat={d3.time.format("%Y-%m-%d")} yDisplayFormat={d3.format(".2f")}
-						/* valueStroke="green" - optional prop */
-						/* labelStroke="#4682B4" - optional prop */
-						origin={[-40, 0]}/>
-					<SingleValueTooltip forChart={1}
-						yLabel="Volume" yAccessor={(d) => d.volume}
-						origin={[-40, 20]}/>
-				</TooltipContainer>
 			</ChartCanvas>
 		);
 	}

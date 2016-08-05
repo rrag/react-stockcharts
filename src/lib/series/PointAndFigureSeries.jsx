@@ -1,17 +1,41 @@
 "use strict";
 
-import React, { Component } from "react";
-import wrap from "./wrap";
+import React, { PropTypes, Component } from "react";
+import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 
 import { isDefined, isNotDefined } from "../utils";
 
 class PointAndFigureSeries extends Component {
-	render() {
-		var { props } = this;
-		var { xScale, xAccessor, yScale, yAccessor, plotData } = props;
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+	}
+	drawOnCanvas(ctx, moreProps) {
+		var { stroke, className, opacity, yValue, yAccessor } = this.props;
+		var { xAccessor } = this.context;
+		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
-		var columns = PointAndFigureSeries.getColumns(xScale, xAccessor, yScale, yAccessor, plotData);
-		var { stroke, fill, strokeWidth, className } = props;
+		var columns = getColumns(xScale, xAccessor, yScale, plotData);
+
+		drawOnCanvas(ctx, this.props, columns)
+	}
+	render() {
+		return <GenericChartComponent
+			canvasToDraw={getAxisCanvas}
+			svgDraw={this.renderSVG}
+			canvasDraw={this.drawOnCanvas}
+			drawOnPan
+			/>;
+	}
+	renderSVG(moreProps) {
+		var { xAccessor } = this.context;
+		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+
+		var { yAccessor } = this.props;
+		var { stroke, fill, strokeWidth, className } = this.props;
+
+		var columns = getColumns(xScale, xAccessor, yScale, plotData);
 
 		return (
 			<g className={className}>
@@ -42,6 +66,10 @@ class PointAndFigureSeries extends Component {
 	}
 }
 
+PointAndFigureSeries.contextTypes = {
+	xAccessor: PropTypes.func.isRequired,
+};
+
 PointAndFigureSeries.defaultProps = {
 	className: "react-stockcharts-point-and-figure",
 	strokeWidth: 1,
@@ -55,12 +83,7 @@ PointAndFigureSeries.defaultProps = {
 	},
 };
 
-PointAndFigureSeries.yAccessor = (d) => ({ open: d.open, high: d.high, low: d.low, close: d.close });
-
-PointAndFigureSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { xAccessor, yAccessor } = props;
-
-	var columns = PointAndFigureSeries.getColumns(xScale, xAccessor, yScale, yAccessor, plotData);
+function drawOnCanvas(ctx, props, columns) {
 	var { stroke, fill, strokeWidth } = props;
 
 	ctx.lineWidth = strokeWidth;
@@ -98,7 +121,7 @@ PointAndFigureSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	ctx.stroke();
 };
 
-PointAndFigureSeries.getColumns = (xScale, xAccessor, yScale, yAccessor, plotData) => {
+function getColumns(xScale, xAccessor, yScale, plotData) {
 
 	var width = xScale(xAccessor(plotData[plotData.length - 1]))
 		- xScale(xAccessor(plotData[0]));
@@ -135,4 +158,4 @@ PointAndFigureSeries.getColumns = (xScale, xAccessor, yScale, yAccessor, plotDat
 	return columns;
 };
 
-export default wrap(PointAndFigureSeries);
+export default PointAndFigureSeries;

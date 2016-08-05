@@ -25,8 +25,6 @@ class OHLCTooltip extends Component {
 
 		displayDate = open = height = low = close = volume = "n/a";
 
-		var config = chartConfig;
-
 		if (isDefined(currentItem)
 				&& isDefined(accessor(currentItem))
 				&& isDefined(accessor(currentItem).close)) {
@@ -43,10 +41,10 @@ class OHLCTooltip extends Component {
 		var { origin: originProp } = this.props;
 		var origin = d3.functor(originProp);
 		var [x, y] = origin(width, height);
-		var [ox, oy] = config.origin;
 
 		return (
-			<g className={`react-stockcharts-toottip-hover ${className}`} transform={`translate(${ ox + x }, ${ oy + y })`} onClick={onClick}>
+			<g className={`react-stockcharts-toottip-hover ${className}`}
+				transform={`translate(${ x }, ${ y })`} onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={fontFamily} fontSize={fontSize}>
 					<ToolTipTSpanLabel key="label" x={0} dy="5">Date: </ToolTipTSpanLabel>

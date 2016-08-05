@@ -3,7 +3,6 @@
 import React, { PropTypes, Component } from "react";
 import LineSeries from "./LineSeries";
 import StraightLine from "./StraightLine";
-import wrap from "./wrap";
 
 class RSISeries extends Component {
 	render() {
@@ -20,24 +19,22 @@ class RSISeries extends Component {
 					yAccessor={yAccessor}
 					stroke={stroke.line} fill="none"
 					type={type} />
-				{RSISeries.getHorizontalLine(this.props, overSold, stroke.top)}
-				{RSISeries.getHorizontalLine(this.props, middle, stroke.middle)}
-				{RSISeries.getHorizontalLine(this.props, overBought, stroke.bottom)}
+				{getHorizontalLine(this.props, overSold, stroke.top)}
+				{getHorizontalLine(this.props, middle, stroke.middle)}
+				{getHorizontalLine(this.props, overBought, stroke.bottom)}
 			</g>
 		);
 	}
 }
 
-RSISeries.getHorizontalLine = (props, yValue, stroke) => {
+function getHorizontalLine(props, yValue, stroke) {
 	/* eslint-disable react/prop-types */
-	let { xScale, yScale, xAccessor, yAccessor, plotData, type } = props;
+	let { yAccessor } = props;
 	/* eslint-enable react/prop-types */
 
 	return <StraightLine
-		stroke={stroke} opacity={0.3} type={type}
-		xScale={xScale} yScale={yScale}
-		xAccessor={xAccessor} yAccessor={yAccessor}
-		plotData={plotData}
+		stroke={stroke} opacity={0.3}
+		yAccessor={yAccessor}
 		yValue={yValue} />;
 };
 
@@ -63,4 +60,4 @@ RSISeries.defaultProps = {
 	}
 };
 
-export default wrap(RSISeries);
+export default RSISeries;

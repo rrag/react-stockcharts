@@ -1,16 +1,41 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import wrap from "./wrap";
+import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 
 import { isDefined } from "../utils";
 
 class RenkoSeries extends Component {
-	render() {
-		var { props } = this;
-		var { plotData, xScale, xAccessor, yScale, yAccessor } = props;
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+	}
+	drawOnCanvas(ctx, moreProps) {
+		var { xAccessor } = this.context;
+		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
-		var candles = RenkoSeries.getRenko(props, plotData, xScale, xAccessor, yScale, yAccessor)
+		var { yAccessor } = this.props;
+
+		var candles = getRenko(this.props, plotData, xScale, xAccessor, yScale, yAccessor);
+
+		drawOnCanvas(ctx, candles)
+	}
+	render() {
+		return <GenericChartComponent
+			canvasToDraw={getAxisCanvas}
+			svgDraw={this.renderSVG}
+			canvasDraw={this.drawOnCanvas}
+			drawOnPan
+			/>;
+	}
+	renderSVG(moreProps) {
+		var { xAccessor } = this.context;
+		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+
+		var { yAccessor } = this.props;
+
+		var candles = getRenko(this.props, plotData, xScale, xAccessor, yScale, yAccessor)
 			.map((each, idx) => (<rect key={idx} className={each.className}
 								fill={each.fill}
 								x={each.x}
@@ -42,6 +67,9 @@ RenkoSeries.propTypes = {
 		down: PropTypes.string
 	}),
 };
+RenkoSeries.contextTypes = {
+	xAccessor: PropTypes.func.isRequired,
+};
 
 RenkoSeries.defaultProps = {
 	classNames: {
@@ -60,10 +88,7 @@ RenkoSeries.defaultProps = {
 	yAccessor: d => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
 };
 
-RenkoSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { xAccessor, yAccessor } = props;
-
-	var renko = RenkoSeries.getRenko(props, plotData, xScale, xAccessor, yScale, yAccessor);
+function drawOnCanvas(ctx, renko) {
 	renko.forEach(d => {
 		ctx.beginPath();
 
@@ -76,7 +101,7 @@ RenkoSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	});
 };
 
-RenkoSeries.getRenko = (props, plotData, xScale, xAccessor, yScale, yAccessor) => {
+function getRenko(props, plotData, xScale, xAccessor, yScale, yAccessor) {
 	var { classNames, fill } = props;
 	var width = xScale(xAccessor(plotData[plotData.length - 1]))
 		- xScale(xAccessor(plotData[0]));
@@ -107,4 +132,4 @@ RenkoSeries.getRenko = (props, plotData, xScale, xAccessor, yScale, yAccessor) =
 	return candles;
 };
 
-export default wrap(RenkoSeries);
+export default RenkoSeries;

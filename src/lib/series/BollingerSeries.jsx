@@ -5,8 +5,6 @@ import React, { PropTypes, Component } from "react";
 import LineSeries from "./LineSeries";
 import AreaOnlySeries from "./AreaOnlySeries";
 
-import wrap from "./wrap";
-
 class BollingerSeries extends Component {
 	constructor(props) {
 		super(props);
@@ -77,4 +75,4 @@ BollingerSeries.defaultProps = {
 	opacity: 0.2
 };
 
-export default wrap(BollingerSeries);
+export default BollingerSeries;

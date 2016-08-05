@@ -2,6 +2,7 @@
 
 import d3 from "d3";
 import React, { PropTypes, Component } from "react";
+import GenericChartComponent from "../GenericChartComponent";
 
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
@@ -9,13 +10,16 @@ import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 import { first } from "../utils";
 
 class MACDTooltip extends Component {
-	render() {
-
-		var { forChart, onClick, fontFamily, fontSize, calculator, displayFormat } = this.props;
-		var { chartConfig, currentItem, width, height } = this.context;
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+	}
+	renderSVG(moreProps) {
+		var { onClick, fontFamily, fontSize, calculator, displayFormat } = this.props;
+		var { width, height } = this.context;
+		var { currentItem } = moreProps;
 
 		var yAccessor = calculator.accessor();
-		var config = first(chartConfig.filter(each => each.id === forChart));
 
 		var macdValue = currentItem && yAccessor(currentItem);
 
@@ -26,10 +30,9 @@ class MACDTooltip extends Component {
 		var { origin: originProp } = this.props;
 		var origin = d3.functor(originProp);
 		var [x, y] = origin(width, height);
-		var [ox, oy] = config.origin;
 
 		return (
-			<g transform={`translate(${ ox + x }, ${ oy + y })`} onClick={onClick}>
+			<g transform={`translate(${ x }, ${ y })`} onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={fontFamily} fontSize={fontSize}>
 					<ToolTipTSpanLabel>MACD (</ToolTipTSpanLabel>
@@ -45,17 +48,21 @@ class MACDTooltip extends Component {
 			</g>
 		);
 	}
+	render() {
+		return <GenericChartComponent
+			clip={false}
+			svgDraw={this.renderSVG}
+			drawOnMouseMove
+			/>;
+	}
 }
 
 MACDTooltip.contextTypes = {
-	chartConfig: PropTypes.array.isRequired,
-	currentItem: PropTypes.object,
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 };
 
 MACDTooltip.propTypes = {
-	forChart: PropTypes.number.isRequired,
 	origin: PropTypes.oneOfType([
 		PropTypes.array,
 		PropTypes.func

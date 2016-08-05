@@ -3,13 +3,28 @@
 import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
-import wrap from "./wrap";
+import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 import { hexToRGBA } from "../utils";
 
 class ScatterSeries extends Component {
-	render() {
-		var { className, markerProps, xScale, yScale, plotData } = this.props;
-		var points = ScatterSeries.helper(this.props, xScale, yScale, plotData);
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+	}
+	drawOnCanvas(ctx, moreProps) {
+		var { className, markerProps } = this.props;
+		var { xAccessor } = this.context;
+
+		var points = helper(this.props, moreProps, xAccessor);
+
+		drawOnCanvas(ctx, this.props, points);
+	}
+	renderSVG(moreProps) {
+		var { className, markerProps } = this.props;
+		var { xAccessor } = this.context;
+
+		var points = helper(this.props, moreProps, xAccessor);
 
 		return <g className={className}>
 			{points.map((point, idx) => {
@@ -18,28 +33,36 @@ class ScatterSeries extends Component {
 			})}
 		</g>;
 	}
+	render() {
+		return <GenericChartComponent
+			canvasToDraw={getAxisCanvas}
+			svgDraw={this.renderSVG}
+			canvasDraw={this.drawOnCanvas}
+			drawOnPan
+			/>;
+	}
 }
 
 ScatterSeries.propTypes = {
 	className: PropTypes.string,
-	xAccessor: PropTypes.func,
 	yAccessor: PropTypes.func.isRequired,
-	xScale: PropTypes.func,
-	yScale: PropTypes.func,
-	plotData: PropTypes.array,
 	marker: PropTypes.func,
 	markerProvider: PropTypes.func,
 	markerProps: PropTypes.object,
 };
 
+ScatterSeries.contextTypes = {
+	xAccessor: PropTypes.func.isRequired,
+};
+
+
 ScatterSeries.defaultProps = {
 	className: "react-stockcharts-scatter",
 };
 
-ScatterSeries.yAccessor = d => d.close;
-
-ScatterSeries.helper = (props, xScale, yScale, plotData) => {
-	var { xAccessor, yAccessor, marker: Marker, markerProvider, markerProps } = props;
+function helper(props, moreProps, xAccessor) {
+	var { yAccessor, marker: Marker, markerProvider, markerProps } = props;
+	var { xScale, chartConfig: { yScale }, plotData, hovering } = moreProps;
 
 	if (!(markerProvider || Marker)) throw new Error("required prop, either marker or markerProvider missing");
 
@@ -63,11 +86,9 @@ ScatterSeries.helper = (props, xScale, yScale, plotData) => {
 	});
 };
 
-ScatterSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
+function drawOnCanvas(ctx, props, points) {
 
 	var { markerProps } = props;
-
-	var points = ScatterSeries.helper(props, xScale, yScale, plotData);
 
 	var nest = d3.nest()
 		.key(d => d.fill)
@@ -84,14 +105,12 @@ ScatterSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 		fillValues.forEach(strokeGroup => {
 			var { key: strokeKey, values: strokeValues } = strokeGroup;
 
-			ctx.strokeStyle = strokeKey;
-
 			strokeValues.forEach(point => {
 				var { marker } = point;
-				marker.drawOnCanvasWithNoStateChange({ ...marker.defaultProps, ...markerProps }, point, ctx);
+				marker.drawOnCanvas({ ...marker.defaultProps, ...markerProps, fill: fillKey }, point, ctx);
 			});
 		});
 	});
 };
 
-export default wrap(ScatterSeries);
+export default ScatterSeries;

@@ -3,16 +3,35 @@
 import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 
-import wrap from "./wrap";
-
+import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 import { identity, hexToRGBA, first, last, isDefined } from "../utils";
 
 
 class StackedBarSeries extends Component {
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+	}
+	drawOnCanvas(ctx, moreProps) {
+		var { yAccessor } = this.props;
+		var { xAccessor } = this.context;
+		// var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+
+		drawOnCanvasHelper(ctx, this.props, moreProps, xAccessor, d3.layout.stack());
+	}
+	renderSVG(moreProps) {
+		var { xAccessor } = this.context;
+
+		return <g>{svgHelper(this.props, moreProps, xAccessor, d3.layout.stack())}</g>;
+	}
 	render() {
-		return <g className="react-stockcharts-bar-series">
-			{svgHelper(this.props, d3.layout.stack())}
-		</g>;
+		return <GenericChartComponent
+			canvasToDraw={getAxisCanvas}
+			svgDraw={this.renderSVG}
+			canvasDraw={this.drawOnCanvas}
+			drawOnPan
+			/>;
 	}
 }
 
@@ -31,15 +50,10 @@ StackedBarSeries.propTypes = {
 	className: PropTypes.oneOfType([
 		PropTypes.func, PropTypes.string
 	]).isRequired,
-	xAccessor: PropTypes.oneOfType([
-		PropTypes.arrayOf(PropTypes.func), PropTypes.func
-	]).isRequired,
-	yAccessor: PropTypes.oneOfType([
-		PropTypes.arrayOf(PropTypes.func), PropTypes.func
-	]).isRequired,
-	xScale: PropTypes.func,
-	yScale: PropTypes.func,
-	plotData: PropTypes.array,
+};
+
+StackedBarSeries.contextTypes = {
+	xAccessor: PropTypes.func.isRequired,
 };
 
 StackedBarSeries.defaultProps = {
@@ -52,14 +66,9 @@ StackedBarSeries.defaultProps = {
 	widthRatio: 0.8,
 };
 
-StackedBarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
+export function drawOnCanvasHelper(ctx, props, moreProps, xAccessor, stackFn, defaultPostAction = identity, postRotateAction = rotateXY) {
+	var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
-	var { yAccessor, xAccessor } = props;
-	drawOnCanvasHelper(props, ctx, xScale, yScale, plotData, xAccessor, yAccessor, d3.layout.stack());
-};
-
-export function drawOnCanvasHelper(props, ctx, xScale, yScale, plotData, xAccessor, yAccessor,
-		stackFn, defaultPostAction = identity, postRotateAction = rotateXY) {
 	var bars = doStuff(props, xAccessor, plotData, xScale, yScale, stackFn, postRotateAction, defaultPostAction);
 	drawOnCanvas2(props, ctx, bars);
 }
@@ -77,7 +86,7 @@ export function svgHelper(props, moreProps, xAccessor, stackFn, defaultPostActio
 function doStuff(props, xAccessor, plotData, xScale, yScale, stackFn, postRotateAction, defaultPostAction) {
 	var { yAccessor, swapScales } = props;
 
-	var modifiedYAccessor = swapScales ? convertToArray(xAccessor) : convertToArray(yAccessor);
+	var modifiedYAccessor = swapScales ? convertToArray(props.xAccessor) : convertToArray(yAccessor);
 	var modifiedXAccessor = swapScales ? yAccessor : xAccessor;
 
 	var modifiedXScale = swapScales ? yScale : xScale;
@@ -193,7 +202,6 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 				fill: getFill(d, i),
 			}))
 		);
-
 	var data = stack(layers);
 
 	var bars = d3.merge(data)
@@ -229,7 +237,9 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 					width: barWidth,
 				};
 			});
+	// console.log(bars)
+
 	return after(bars);
 }
 
-export default wrap(StackedBarSeries);
+export default StackedBarSeries;

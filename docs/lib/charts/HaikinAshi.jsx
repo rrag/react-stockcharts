@@ -5,14 +5,14 @@ import d3 from "d3";
 
 import ReStock from "react-stockcharts";
 
-var { ChartCanvas, Chart, EventCapture } = ReStock;
+var { ChartCanvas, Chart } = ReStock;
 var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = ReStock.series;
 var { discontinuousTimeScaleProvider } = ReStock.scale;
 
 var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
 var { EdgeIndicator } = ReStock.coordinates;
 
-var { TooltipContainer, OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
+var { OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
 var { XAxis, YAxis } = ReStock.axes;
 var { ema, sma, haikinAshi } = ReStock.indicator;
 var { fitWidth } = ReStock.helper;
@@ -53,7 +53,7 @@ class HaikinAshi extends React.Component {
 						padding={{ top: 10, bottom: 20 }}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
-					<MouseCoordinateY id={0}
+					<MouseCoordinateY
 						at="right"
 						orient="right"
 						displayFormat={d3.format(".2f")} />
@@ -62,8 +62,8 @@ class HaikinAshi extends React.Component {
 					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
 					<LineSeries yAccessor={ema50.accessor()} stroke={ema50.stroke()}/>
 
-					<CurrentCoordinate id={1} yAccessor={ema20.accessor()} fill={ema20.stroke()} />
-					<CurrentCoordinate id={2} yAccessor={ema50.accessor()} fill={ema50.stroke()} />
+					<CurrentCoordinate yAccessor={ema20.accessor()} fill={ema20.stroke()} />
+					<CurrentCoordinate yAccessor={ema50.accessor()} fill={ema50.stroke()} />
 
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={ema20.accessor()} fill={ema20.fill()}/>
@@ -77,16 +77,21 @@ class HaikinAshi extends React.Component {
 						yAccessor={ema50.accessor()} fill={ema50.fill()}/>
 					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
+
+					<OHLCTooltip origin={[-40, 0]}/>
+					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]} 
+						calculators={[ema20, ema50]}/>
+
 				</Chart>
 				<Chart id={2}
 						yExtents={[d => d.volume, smaVolume50.accessor()]}
 						height={150} origin={(w, h) => [0, h - 150]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-					<MouseCoordinateX id={0}
+					<MouseCoordinateX
 						at="bottom"
 						orient="bottom"
 						displayFormat={d3.time.format("%Y-%m-%d")} />
-					<MouseCoordinateY id={0}
+					<MouseCoordinateY
 						at="left"
 						orient="left"
 						displayFormat={d3.format(".4s")} />
@@ -94,8 +99,8 @@ class HaikinAshi extends React.Component {
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
 
-					<CurrentCoordinate id={0} yAccessor={smaVolume50.accessor()} fill={smaVolume50.stroke()} />
-					<CurrentCoordinate id={1} yAccessor={d => d.volume} fill="#9B0A47" />
+					<CurrentCoordinate yAccessor={smaVolume50.accessor()} fill={smaVolume50.stroke()} />
+					<CurrentCoordinate yAccessor={d => d.volume} fill="#9B0A47" />
 
 					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
 						yAccessor={d => d.volume} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
@@ -107,12 +112,6 @@ class HaikinAshi extends React.Component {
 						yAccessor={smaVolume50.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume50.fill()}/>
 				</Chart>
 				<CrossHairCursor />
-				<EventCapture mouseMove zoom pan />
-				<TooltipContainer>
-					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
-					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 15]} 
-						calculators={[ema20, ema50]}/>
-				</TooltipContainer>
 			</ChartCanvas>
 		);
 	}

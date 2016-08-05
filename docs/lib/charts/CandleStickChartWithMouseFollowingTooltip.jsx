@@ -5,7 +5,7 @@ import d3 from "d3";
 
 import ReStock from "react-stockcharts";
 
-var { ChartCanvas, Chart, EventCapture } = ReStock;
+var { ChartCanvas, Chart } = ReStock;
 
 var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = ReStock.series;
 var { discontinuousTimeScaleProvider } = ReStock.scale;
@@ -13,7 +13,7 @@ var { discontinuousTimeScaleProvider } = ReStock.scale;
 var { EdgeIndicator } = ReStock.coordinates;
 var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
 
-var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, HoverTooltip } = ReStock.tooltip;
+var { OHLCTooltip, MovingAverageTooltip, HoverTooltip } = ReStock.tooltip;
 var { XAxis, YAxis } = ReStock.axes;
 var { ema, sma } = ReStock.indicator;
 var { fitWidth } = ReStock.helper;
@@ -77,7 +77,7 @@ class CandleStickChartWithMouseFollowingTooltip extends React.Component {
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
 				<HoverTooltip />
-				<EventCapture mouseMove zoom pan useCrossHairStyle={false} />
+				 mouseMove zoom pan useCrossHairStyle={false} />
 			</ChartCanvas>
 		);
 	}

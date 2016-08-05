@@ -2,14 +2,44 @@
 
 import React, { PropTypes, Component } from "react";
 
-import wrap from "./wrap";
 import { hexToRGBA } from "../utils";
+import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 
 class StraightLine extends Component {
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+	}
+	drawOnCanvas(ctx, moreProps) {
+		var { stroke, className, opacity, yValue } = this.props;
+		var { xAccessor } = this.context;
+		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+
+		var first = xAccessor(plotData[0]);
+		var last = xAccessor(plotData[plotData.length - 1]);
+
+		ctx.beginPath();
+
+		ctx.strokeStyle = hexToRGBA(stroke, opacity);
+
+		ctx.moveTo(xScale(first), yScale(yValue));
+		ctx.lineTo(xScale(last), yScale(yValue));
+		ctx.stroke();
+	}
 	render() {
-		var { props } = this;
-		var { stroke, className, opacity } = props;
-		var { xScale, yScale, xAccessor, plotData, yValue } = props;
+		return <GenericChartComponent
+			canvasToDraw={getAxisCanvas}
+			svgDraw={this.renderSVG}
+			canvasDraw={this.drawOnCanvas}
+			drawOnPan
+			/>;
+	}
+	renderSVG(moreProps) {
+		var { xAccessor } = this.context;
+		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+
+		var { stroke, className, opacity, yValue } = this.props;
 
 		var first = xAccessor(plotData[0]);
 		var last = xAccessor(plotData[plotData.length - 1]);
@@ -25,12 +55,12 @@ class StraightLine extends Component {
 
 StraightLine.propTypes = {
 	className: PropTypes.string,
-	xScale: PropTypes.func.isRequired,
-	yScale: PropTypes.func.isRequired,
-	xAccessor: PropTypes.func.isRequired,
 	stroke: PropTypes.string,
 	opacity: PropTypes.number.isRequired,
 	yValue: PropTypes.number.isRequired,
+};
+StraightLine.contextTypes = {
+	xAccessor: PropTypes.func.isRequired,
 };
 
 StraightLine.defaultProps = {
@@ -39,21 +69,4 @@ StraightLine.defaultProps = {
 	opacity: 0.5,
 };
 
-StraightLine.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-
-	var { stroke, opacity } = props;
-	var { xAccessor, yValue } = props;
-
-	var first = xAccessor(plotData[0]);
-	var last = xAccessor(plotData[plotData.length - 1]);
-
-	ctx.beginPath();
-
-	ctx.strokeStyle = hexToRGBA(stroke, opacity);
-
-	ctx.moveTo(xScale(first), yScale(yValue));
-	ctx.lineTo(xScale(last), yScale(yValue));
-	ctx.stroke();
-};
-
-export default wrap(StraightLine);
+export default StraightLine;

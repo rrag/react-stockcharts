@@ -3,16 +3,35 @@
 import React, { PropTypes, Component } from "react";
 import d3 from "d3";
 
-import wrap from "./wrap";
-
+import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 import { head, last, hexToRGBA, accumulatingWindow, identity } from "../utils";
 
 class VolumeProfileSeries extends Component {
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+	}
+	drawOnCanvas(ctx, moreProps) {
+		var { xAccessor, width } = this.context;
+		var { rects, sessionBg } = helper(this.props, moreProps, xAccessor, width);
+
+		drawOnCanvas(ctx, this.props, rects, sessionBg)
+	}
 	render() {
+		return <GenericChartComponent
+			canvasToDraw={getAxisCanvas}
+			svgDraw={this.renderSVG}
+			canvasDraw={this.drawOnCanvas}
+			drawOnPan
+			/>;
+	}
+	renderSVG(moreProps) {
 		var { className, opacity, xScale, yScale, plotData } = this.props;
 		var { showSessionBackground, sessionBackGround, sessionBackGroundOpacity } = this.props;
 
-		var { rects, sessionBg } = helper(this.props, xScale, yScale, plotData);
+		var { xAccessor, width } = this.context;
+		var { rects, sessionBg } = helper(this.props, moreProps, xAccessor, width);
 
 		var sessionBgSvg = showSessionBackground
 			? sessionBg.map((d, idx) => <rect key={idx} {...d} opacity={sessionBackGroundOpacity} fill={sessionBackGround} />)
@@ -43,6 +62,11 @@ VolumeProfileSeries.propTypes = {
 	sessionBackGroundOpacity: PropTypes.number,
 };
 
+VolumeProfileSeries.contextTypes = {
+	xAccessor: PropTypes.func.isRequired,
+	width: PropTypes.number.isRequired,
+};
+
 VolumeProfileSeries.defaultProps = {
 	opacity: 0.5,
 	className: "line ",
@@ -68,8 +92,10 @@ VolumeProfileSeries.defaultProps = {
 	partialEndOK: true,
 };
 
-function helper(props, realXScale, yScale, plotData) {
-	var { xAccessor, width, sessionStart, bySession, partialStartOK, partialEndOK } = props;
+function helper(props, moreProps, xAccessor, width) {
+	var { xScale: realXScale, chartConfig: { yScale }, plotData } = moreProps;
+
+	var { sessionStart, bySession, partialStartOK, partialEndOK } = props;
 	var { bins, maxProfileWidthPercent, source, volume, absoluteChange, orient, fill, stroke } = props;
 
 	var sessionBuilder = accumulatingWindow()
@@ -130,6 +156,7 @@ function helper(props, realXScale, yScale, plotData) {
 					width: d.values * Math.abs(width) / totalVolume,
 				};
 			});
+
 			return { x, ws, totalVolumeX };
 		});
 
@@ -169,10 +196,10 @@ function helper(props, realXScale, yScale, plotData) {
 }
 
 
-VolumeProfileSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
+function drawOnCanvas(ctx, props, rects, sessionBg) {
 	var { opacity, sessionBackGround, sessionBackGroundOpacity, showSessionBackground } = props;
 
-	var { rects, sessionBg } = helper(props, xScale, yScale, plotData);
+	// var { rects, sessionBg } = helper(props, xScale, yScale, plotData);
 
 	if (showSessionBackground) {
 		ctx.fillStyle = hexToRGBA(sessionBackGround, sessionBackGroundOpacity);
@@ -218,4 +245,4 @@ VolumeProfileSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	});
 };
 
-export default wrap(VolumeProfileSeries);
+export default VolumeProfileSeries;

@@ -4,8 +4,6 @@
 import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 
-import wrap from "./wrap";
-
 import { isDefined, isNotDefined, hexToRGBA, first, last } from "../utils";
 
 class HorizontalStackedBarSeries extends Component {
@@ -184,65 +182,4 @@ HorizontalStackedBarSeries.getBars = (props, xAccessor, yAccessor, xScale, yScal
 	return bars;
 };
 
-/*
-
-HorizontalStackedBarSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData) => {
-	var { baseAt, className, fill, stroke, heightRatio, height } = props;
-	var base = baseAt === "left"
-				? xScale.range()[0]
-				: baseAt === "right"
-					? xScale.range()[1]
-					: baseAt === "middle"
-						? (xScale.range()[0] + xScale.range()[1]) / 2
-						: baseAt;
-
-	// console.log(plotData.map(d => d.y), base, yAccessor);
-	var getClassName = d3.functor(className);
-	var getFill = d3.functor(fill);
-	var getBase = d3.functor(base);
-
-	var h = Math.abs(yScale(yAccessor(last(plotData)))
-		- yScale(yAccessor(first(plotData))));
-
-	var bh = (h / (plotData.length - 1) * heightRatio);
-	var barHeight = Math.round(bh);
-	var offset = (barHeight === 1 ? 0 : 0.5 * barHeight);
-
-
-	var bars = plotData
-			.map(d => {
-				var innerBars = xAccessor.map((eachXAccessor, i) => {
-					var xValue = eachXAccessor(d);
-					if (isNotDefined(xValue)) return undefined;
-
-					var y = Math.round(yScale(yAccessor(d))) - offset;
-
-					return {
-						barHeight: barHeight,
-						x: xScale(xValue),
-						y: y,
-						className: getClassName(d, i),
-						stroke: stroke ? getFill(d, i) : "none",
-						fill: getFill(d, i),
-						i,
-					};
-				}).filter(xValue => isDefined(xValue));
-
-				var b = getBase(xScale, yScale, d);
-				var w;
-				for (var i = innerBars.length - 1; i >= 0; i--) {
-					w = b - innerBars[i].x;
-					if (w < 0) {
-						innerBars[i].x = b;
-						w = -1 * w;
-					}
-					innerBars[i].width = w;
-					b = innerBars[i].x;
-				};
-				return innerBars;
-			});
-
-	return d3.merge(bars);
-};
-*/
-export default wrap(HorizontalStackedBarSeries);
+export default HorizontalStackedBarSeries;

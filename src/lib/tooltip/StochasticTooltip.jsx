@@ -2,19 +2,24 @@
 
 import d3 from "d3";
 import React, { PropTypes, Component } from "react";
+import GenericChartComponent from "../GenericChartComponent";
 
 import { first } from "../utils";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
 class StochasticTooltip extends Component {
-	render() {
-		var { forChart, onClick, fontFamily, fontSize, calculator, displayFormat, children } = this.props;
-		var { chartConfig, currentItem, width, height } = this.context;
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+	}
+	renderSVG(moreProps) {
+		var { onClick, fontFamily, fontSize, calculator, displayFormat, children } = this.props;
+		var { width, height } = this.context;
+		var { currentItem } = moreProps;
 
 		var yAccessor = calculator.accessor();
 		var stroke = calculator.stroke();
-		var config = first(chartConfig.filter(each => each.id === forChart));
 		var stochastic = currentItem && yAccessor(currentItem);
 
 		var K = (stochastic && stochastic.K && displayFormat(stochastic.K)) || "n/a";
@@ -24,10 +29,9 @@ class StochasticTooltip extends Component {
 		var { origin: originProp } = this.props;
 		var origin = d3.functor(originProp);
 		var [x, y] = origin(width, height);
-		var [ox, oy] = config.origin;
 
 		return (
-			<g transform={`translate(${ ox + x }, ${ oy + y })`} onClick={onClick}>
+			<g transform={`translate(${ x }, ${ y })`} onClick={onClick}>
 				<ToolTipText x={0} y={0} fontFamily={fontFamily} fontSize={fontSize}>
 					<ToolTipTSpanLabel>{`${ label } %K(`}</ToolTipTSpanLabel>
 					<tspan fill={stroke.K}>{`${ calculator.windowSize() }, ${ calculator.kWindowSize() }`}</tspan>
@@ -41,17 +45,21 @@ class StochasticTooltip extends Component {
 			</g>
 		);
 	}
+	render() {
+		return <GenericChartComponent
+			clip={false}
+			svgDraw={this.renderSVG}
+			drawOnMouseMove
+			/>;
+	}
 }
 
 StochasticTooltip.contextTypes = {
-	chartConfig: PropTypes.array.isRequired,
-	currentItem: PropTypes.object,
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 };
 
 StochasticTooltip.propTypes = {
-	forChart: PropTypes.number.isRequired,
 	origin: PropTypes.oneOfType([
 		PropTypes.array,
 		PropTypes.func
