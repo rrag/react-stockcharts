@@ -78,10 +78,14 @@ export default function() {
 
 	function evaluate(data) {
 
+		if (process.env.NODE_ENV !== "production") console.time("evaluation");
 		var mappedData = data.map(map);
 
 		var composedCalculator = compose(calculator);
+
 		var calculatedData = composedCalculator(mappedData);
+		if (process.env.NODE_ENV !== "production") console.timeEnd("evaluation");
+
 
 		if (isDefined(scaleProvider)) {
 			var {

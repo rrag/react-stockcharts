@@ -15,6 +15,7 @@ class YAxis extends Component {
 	render() {
 		var moreProps = helper(this.props, this.context);
 		return <Axis {...this.props} {...moreProps}
+			edgeClip
 			axisZoomCallback={this.axisZoomCallback}
 			zoomCursorClassName="react-stockcharts-ns-resize-cursor" />;
 	}
@@ -60,7 +61,7 @@ YAxis.defaultProps = {
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 12,
 	yZoomWidth: 40,
-	zoomEnabled: true,
+	// zoomEnabled: true,
 	getMouseDelta: (startXY, mouseXY) => startXY[1] - mouseXY[1],
 };
 
@@ -69,6 +70,7 @@ YAxis.contextTypes = {
 	width: PropTypes.number.isRequired,
 	yAxisZoom: PropTypes.func.isRequired,
 	chartId: PropTypes.number.isRequired,
+	chartConfig: PropTypes.object.isRequired,
 };
 
 function helper(props, context) {
@@ -94,6 +96,7 @@ function helper(props, context) {
 		range: [0, height],
 		getScale: moreProps => moreProps.chartConfig.yScale,
 		bg: { x, y, h, w },
+		zoomEnabled: context.chartConfig.yPan,
 	};
 }
 export default YAxis;

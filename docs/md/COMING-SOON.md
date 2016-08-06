@@ -2,9 +2,8 @@
 
 TODO
 
-1. Delete `wrap`, `TooltipContainer`
-1. change `EventCapture` to use `props` instead of `context`
-1. Update all examples
+1. Update Annotation examples
+1. Update Interactive examples
 
 1. [Envelope](http://www.investopedia.com/terms/e/envelope.asp?optm=sa_v2)
 1. [ATR Trailing stop](http://www.incrediblecharts.com/indicators/atr_average_true_range_trailing_stops.php)
@@ -13,11 +12,10 @@ TODO
 	- With mouse hover highlight
 	- right click context menu
 	- double click listener
-1. Highlight on mouse hover, right click and double click listener
+1. Highlight on mouse hover, right click and double click listener - ![Done][DONE]
 	- line series
-	- Bolinger band
-1. Zoom on y
-1. Pan on y
+1. Zoom on y - ![Done][DONE]
+1. Pan on y - ![Done][DONE]
 1. Support for pan to load more data
 1. Volume Profile (Tentative)
 	- show/hide Point of control

@@ -63,7 +63,7 @@ Chart.defaultProps = {
 	padding: 0,
 	yScale: d3.scale.linear(),
 	flipYScale: false,
-	yPan: false,
+	yPan: true,
 };
 
 Chart.contextTypes = {

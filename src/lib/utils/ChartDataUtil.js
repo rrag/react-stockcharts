@@ -91,7 +91,7 @@ function setRange(scale, height, padding, flipYScale) {
 	return scale;
 }
 
-export function getChartConfigWithUpdatedYScales(chartConfig, plotData, dy) {
+export function getChartConfigWithUpdatedYScales(chartConfig, plotData, dy, chartsToPan) {
 
 	var yDomains = chartConfig
 		.map(({ yExtents, yScale }) => {
@@ -109,14 +109,20 @@ export function getChartConfigWithUpdatedYScales(chartConfig, plotData, dy) {
 			return {
 				realYDomain,
 				yDomainDY,
+				prevYDomain: yScale.domain(),
 			};
 		});
 
 	var combine = zipper()
-		.combine((config, { realYDomain, yDomainDY }) => {
-			var { padding, height, yScale, yPan, flipYScale, yPanEnabled = false } = config;
+		.combine((config, { realYDomain, yDomainDY, prevYDomain }) => {
+			var { id, padding, height, yScale, yPan, flipYScale, yPanEnabled = false } = config;
 
-			var domain = yPan && yPanEnabled ? yDomainDY : realYDomain;
+			var another = isDefined(chartsToPan)
+				? chartsToPan.indexOf(id) > -1
+				: true
+			var domain = yPan && yPanEnabled
+				? another ? yDomainDY : prevYDomain
+				: realYDomain;
 			// console.log(yPan, yPanEnabled, properYDomain, domain, realYDomain)
 			return {
 				...config,

@@ -46,7 +46,7 @@ class Axis extends Component {
 	}
 	render() {
 		var { bg, axisZoomCallback, zoomCursorClassName, zoomEnabled, getScale } = this.props;
-		var { transform, getMouseDelta } = this.props;
+		var { transform, getMouseDelta, edgeClip } = this.props;
 
 		var zoomCapture = zoomEnabled
 			? <AxisZoomCapture
@@ -63,6 +63,7 @@ class Axis extends Component {
 			<GenericChartComponent ref="propProvider"
 				canvasToDraw={getAxisCanvas}
 				clip={false}
+				edgeClip={edgeClip}
 				svgDraw={this.renderSVG}
 				canvasDraw={this.drawOnCanvas}
 				drawOnPan
@@ -95,6 +96,7 @@ Axis.propTypes = {
 Axis.defaultProps = {
 	zoomEnabled: false,
 	zoomCursorClassName: "",
+	edgeClip: false,
 };
 
 Axis.contextTypes = {
@@ -160,7 +162,7 @@ function tickHelper(props, scale) {
 /* eslint-disable react/prop-types */
 function axisLineSVG(props, range) {
 	var { orient, outerTickSize } = props;
-	var { domain: { className, shapeRendering, fill, stroke, strokeWidth, opacity } } = props;
+	var { domainClassName, fill, stroke, strokeWidth, opacity } = props;
 
 	var sign = orient === "top" || orient === "left" ? -1 : 1;
 
@@ -174,8 +176,7 @@ function axisLineSVG(props, range) {
 
 	return (
 		<path
-			className={className}
-			shapeRendering={shapeRendering}
+			className={domainClassName}
 			d={d}
 			fill={fill}
 			opacity={opacity}
@@ -190,7 +191,7 @@ function axisLineSVG(props, range) {
 function drawAxisLine(ctx, props, range) {
 	// props = { ...AxisLine.defaultProps, ...props };
 
-	var { orient, outerTickSize, domain: { stroke, strokeWidth, opacity } } = props;
+	var { orient, outerTickSize, stroke, strokeWidth, opacity } = props;
 
 	var sign = orient === "top" || orient === "left" ? -1 : 1;
 	var xAxis = (orient === "bottom" || orient === "top");

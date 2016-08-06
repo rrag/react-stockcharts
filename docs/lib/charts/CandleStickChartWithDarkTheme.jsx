@@ -79,7 +79,7 @@ class CandleStickChartWithDarkTheme extends React.Component {
 						yExtents={d => [d.high, d.low]}
 						padding={{ top: 10, bottom: 20 }}>
 					<YAxis axisAt="right" orient="right" ticks={5} {...yGrid}
-							tickStroke="#FFFFFF" stroke="#FFFFFF"/>
+							tickStroke="#FFFFFF" />
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0}
 							stroke="#FFFFFF" opacity={0.5}/>
 
