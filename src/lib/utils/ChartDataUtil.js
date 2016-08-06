@@ -119,7 +119,7 @@ export function getChartConfigWithUpdatedYScales(chartConfig, plotData, dy, char
 
 			var another = isDefined(chartsToPan)
 				? chartsToPan.indexOf(id) > -1
-				: true
+				: true;
 			var domain = yPan && yPanEnabled
 				? another ? yDomainDY : prevYDomain
 				: realYDomain;

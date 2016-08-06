@@ -565,7 +565,7 @@ class EventHandler extends Component {
 		return response;
 	}
 	render() {
-		var { xAccessor, interaction } = this.props;
+		var { xAccessor, interaction, defaultFocus } = this.props;
 		var { width, height } = this.props.dimensions;
 		var { xScale, chartConfig } = this.state;
 
@@ -581,6 +581,7 @@ class EventHandler extends Component {
 					chartConfig={chartConfig}
 					xScale={xScale}
 					xAccessor={xAccessor}
+					focus={defaultFocus}
 
 					onContextMenu={this.handleContextMenu}
 					onClick={this.handleClick}
@@ -624,6 +625,7 @@ EventHandler.propTypes = {
 	displayXAccessor: PropTypes.func,
 	filterData: PropTypes.func,
 	interaction: PropTypes.bool,
+	defaultFocus: PropTypes.bool,
 	// showingInterval: PropTypes.string,
 };
 

@@ -91,6 +91,7 @@ Axis.propTypes = {
 	getMouseDelta: PropTypes.func.isRequired,
 	getScale: PropTypes.func.isRequired,
 	bg: PropTypes.object.isRequired,
+	edgeClip: PropTypes.bool.isRequired,
 };
 
 Axis.defaultProps = {
