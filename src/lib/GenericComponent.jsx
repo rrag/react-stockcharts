@@ -37,6 +37,7 @@ class GenericComponent extends Component {
 	}
 	executeMouseMove(e) {
 		this.moreProps.hovering = this.isHover(e);
+		// console.log(this.moreProps.hovering)
 		// console.log(this.moreProps.prevHovering, this.moreProps.hovering)
 		if (this.moreProps.hovering
 				|| (this.moreProps.prevHovering && !this.moreProps.hovering)
@@ -46,6 +47,8 @@ class GenericComponent extends Component {
 		this.moreProps.prevHovering = this.moreProps.hovering;
 	}
 	evaluateType(type, e) {
+		if (this.props.debug) console.log(type);
+
 		switch (type) {
 		case "zoom":
 		case "mouseenter":
@@ -122,6 +125,8 @@ class GenericComponent extends Component {
 		var { chartCanvasType } = this.context;
 		var { canvasDraw } = this.props;
 
+		if (this.props.debug) console.log("updated");
+
 		if (isDefined(canvasDraw) && chartCanvasType !== "svg") {
 			this.drawOnCanvas();
 		}
@@ -188,6 +193,7 @@ GenericComponent.propTypes = {
 	onClick: PropTypes.func,
 	onDoubleClick: PropTypes.func,
 	onContextMenu: PropTypes.func,
+	debug: PropTypes.bool,
 };
 
 GenericComponent.defaultProps = {

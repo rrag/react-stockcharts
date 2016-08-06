@@ -72,6 +72,8 @@ CrossHairCursor.contextTypes = {
 	height: PropTypes.number.isRequired,
 	width: PropTypes.number.isRequired,
 	margin: PropTypes.object.isRequired,
+
+	// xScale for getting update event upon pan end
 	xScale: PropTypes.func.isRequired,
 };
 

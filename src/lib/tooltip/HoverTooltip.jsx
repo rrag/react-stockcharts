@@ -1,53 +1,39 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
+import GenericComponent from "../GenericComponent";
 
-import { first, last, isDefined, isNotDefined, hexToRGBA } from "../utils";
-import pure from "../pure";
+import { first, last, isNotDefined, hexToRGBA } from "../utils";
 
 class HoverTooltip extends Component {
-	componentDidMount() {
-		var { getCanvasContexts, chartCanvasType } = this.props;
-
-		if (chartCanvasType !== "svg" && isDefined(getCanvasContexts)) {
-			var contexts = getCanvasContexts();
-
-			if (contexts) drawOnCanvas(contexts.mouseCoord, this.props);
-		}
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
-	componentDidUpdate() {
-		this.componentDidMount();
-	}
-	componentWillMount() {
-		this.componentWillReceiveProps(this.props);
-	}
-	componentWillReceiveProps(nextProps) {
-		var draw = drawOnCanvasStatic.bind(null, nextProps);
-
-		var temp = nextProps.getAllCanvasDrawCallback().filter(each => each.type === "mouse").filter(each => each.subType === "HoverTooltip");
-		if (temp.length === 0) {
-			nextProps.callbackForCanvasDraw({
-				type: "mouse",
-				subType: "HoverTooltip",
-				draw: draw,
-			});
-		} else {
-			nextProps.callbackForCanvasDraw(temp[0], {
-				type: "mouse",
-				subType: "HoverTooltip",
-				draw: draw,
-			});
-		}
-	}
-	render() {
-		var { backgroundShapeSVG } = this.props;
-		var { chartConfig, currentItem, height, mouseXY } = this.props;
-		var { chartCanvasType, show, xScale, bgFill, bgOpacity } = this.props;
-
-		if (chartCanvasType !== "svg") return null;
-		var pointer = helper(this.props, show, xScale, mouseXY, chartConfig, currentItem);
+	drawOnCanvas(ctx, moreProps) {
+		var pointer = helper(this.props, moreProps, this.context);
 
 		if (isNotDefined(pointer)) return null;
+		drawOnCanvas(ctx, this.props, this.context, pointer);
+	}
+	render() {
+		return <GenericComponent
+			svgDraw={this.renderSVG}
+			canvasDraw={this.drawOnCanvas}
+			drawOnMouseMove
+			drawOnPan
+			drawOnMouseExitOfCanvas
+			/>;
+	}
+	renderSVG(moreProps) {
+		var pointer = helper(this.props, moreProps, this.context);
+
+		if (isNotDefined(pointer)) return null;
+
+		var { bgFill, bgOpacity, backgroundShapeSVG } = this.props;
+		var { height } = this.context;
+
 		var { x, y, content, centerX, drawWidth } = pointer;
 
 		return (
@@ -63,18 +49,6 @@ class HoverTooltip extends Component {
 }
 
 HoverTooltip.propTypes = {
-	// forChart: PropTypes.number.isRequired,
-	getCanvasContexts: PropTypes.func,
-	chartCanvasType: PropTypes.string,
-	chartConfig: PropTypes.array.isRequired,
-	currentItem: PropTypes.object,
-	width: PropTypes.number.isRequired,
-	height: PropTypes.number.isRequired,
-	mouseXY: PropTypes.array,
-	show: PropTypes.bool,
-	xScale: PropTypes.func.isRequired,
-
-
 	backgroundShapeSVG: PropTypes.func,
 	bgwidth: PropTypes.number.isRequired,
 	bgheight: PropTypes.number.isRequired,
@@ -92,6 +66,13 @@ HoverTooltip.propTypes = {
 	fontSize: PropTypes.number,
 };
 
+HoverTooltip.contextTypes = {
+	xAccessor: PropTypes.func.isRequired,
+	displayXAccessor: PropTypes.func.isRequired,
+	height: PropTypes.number.isRequired,
+	width: PropTypes.number.isRequired,
+	margin: PropTypes.object.isRequired,
+};
 
 HoverTooltip.defaultProps = {
 	bgwidth: 150,
@@ -163,7 +144,7 @@ function tooltipCanvas({ fontFamily, fontSize, fontFill }, content, ctx) {
 	}
 }
 
-function origin({ mouseXY, bgheight, bgwidth, xAccessor, currentItem, xScale }) {
+function origin(mouseXY, bgheight, bgwidth, xAccessor, currentItem, xScale) {
 	var y = last(mouseXY);
 
 	var snapX = xScale(xAccessor(currentItem));
@@ -174,22 +155,11 @@ function origin({ mouseXY, bgheight, bgwidth, xAccessor, currentItem, xScale }) 
 	return [originX, originY];
 }
 
-function drawOnCanvas(canvasContext, props) {
-	var { mouseXY, chartConfig, currentItem, xScale, show } = props;
+function drawOnCanvas(ctx, props, context, pointer) {
 
-	// console.log(props.
-	drawOnCanvasStatic(props, canvasContext, show, xScale, mouseXY, null, chartConfig, currentItem);
-}
-
-function drawOnCanvasStatic(props, ctx, show, xScale, mouseXY, currentCharts, chartConfig, currentItem) {
-
-	var { height, margin } = props;
+	var { height, margin } = context;
 	var { bgFill, bgOpacity } = props;
 	var { backgroundShapeCanvas, tooltipCanvas } = props;
-
-	var pointer = helper(props, show, xScale, mouseXY, chartConfig, currentItem);
-
-	if (!pointer) return;
 
 	var originX = 0.5 + margin.left;
 	var originY = 0.5 + margin.top;
@@ -213,10 +183,10 @@ function drawOnCanvasStatic(props, ctx, show, xScale, mouseXY, currentCharts, ch
 	ctx.restore();
 }
 
-function helper(props, show, xScale, mouseXY, chartConfig, currentItem) {
-	var { origin } = props;
-	var { tooltipContent } = props;
-	var { xAccessor, displayXAccessor, plotData } = props;
+function helper(props, moreProps, context) {
+	var { show, xScale, mouseXY, currentItem, plotData } = moreProps;
+	var { bgheight, bgwidth, origin, tooltipContent } = props;
+	var { xAccessor, displayXAccessor } = context;
 
 	if (!show || isNotDefined(currentItem)) return;
 
@@ -224,7 +194,7 @@ function helper(props, show, xScale, mouseXY, chartConfig, currentItem) {
 
 	if (!show || isNotDefined(xValue)) return;
 
-	var [x, y] = origin({ ...props, show, xScale, mouseXY, chartConfig, currentItem });
+	var [x, y] = origin(mouseXY, bgheight, bgwidth, xAccessor, currentItem, xScale);
 
 	var content = tooltipContent({ currentItem, xAccessor: displayXAccessor });
 	var centerX = xScale(xValue);
@@ -233,21 +203,4 @@ function helper(props, show, xScale, mouseXY, chartConfig, currentItem) {
 	return { x, y, content, centerX, drawWidth };
 }
 
-export default pure(HoverTooltip, {
-	margin: PropTypes.object.isRequired,
-	width: PropTypes.number.isRequired,
-	height: PropTypes.number.isRequired,
-
-	getCanvasContexts: PropTypes.func,
-	getAllCanvasDrawCallback: PropTypes.func,
-	chartCanvasType: PropTypes.string,
-	chartConfig: PropTypes.array.isRequired,
-	currentItem: PropTypes.object,
-	mouseXY: PropTypes.array,
-	xScale: PropTypes.func.isRequired,
-	xAccessor: PropTypes.func.isRequired,
-	displayXAccessor: PropTypes.func.isRequired,
-	show: PropTypes.bool,
-	plotData: PropTypes.array,
-	callbackForCanvasDraw: PropTypes.func.isRequired,
-});
+export default HoverTooltip;

@@ -14,6 +14,7 @@ class LineSeries extends Component {
 		this.isHover = this.isHover.bind(this);
 	}
 	isHover(moreProps) {
+		// console.log("HERE")
 		var { highlightOnHover, yAccessor, hoverTolerance } = this.props;
 
 		if (!highlightOnHover) return false;
@@ -153,7 +154,7 @@ LineSeries.defaultProps = {
 	stroke: "#4682B4",
 	defined: d => !isNaN(d),
 	hoverTolerance: 6,
-	highlightOnHover: false,
+	highlightOnHover: true,
 	onClick: function(e) { console.log("Click", e); },
 	onDoubleClick: function(e) { console.log("Double Click", e); },
 	onContextMenu: function(e) { console.log("Right Click", e); },

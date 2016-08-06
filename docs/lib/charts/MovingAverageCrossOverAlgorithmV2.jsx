@@ -114,14 +114,13 @@ class MovingAverageCrossOverAlgorithmV2 extends React.Component {
 					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]} 
 						calculators={[ema20, ema50]}/>
 
+					<Annotate with={SvgPathAnnotation} when={d => d.longShort === "LONG"}
+						usingProps={longAnnotationProps} />
+					<Annotate with={SvgPathAnnotation} when={d => d.longShort === "SHORT"}
+						usingProps={shortAnnotationProps} />
+
 				</Chart>
 				<CrossHairCursor />
-
-				<Annotate id={0} chartId={1} with={SvgPathAnnotation} when={d => d.longShort === "LONG"}
-					usingProps={longAnnotationProps} />
-				<Annotate id={1} chartId={1} with={SvgPathAnnotation} when={d => d.longShort === "SHORT"}
-					usingProps={shortAnnotationProps} />
-
 			</ChartCanvas>
 		);
 	}

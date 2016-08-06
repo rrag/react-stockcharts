@@ -126,6 +126,13 @@ class CandlestickChart extends React.Component {
 					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]}
 						calculators={[ema26, ema12]}/>
 
+					<TrendLine ref="trend"
+						enabled={this.state.enableTrendLine}
+						type="LINE"
+						snap={true} snapTo={d => [d.high, d.low]}
+						onStart={() => console.log("START")}
+						onComplete={this.onTrendLineComplete}
+						/>
 				</Chart>
 				<Chart id={2} height={150}
 						yExtents={[d => d.volume, smaVolume50.accessor()]}
@@ -160,17 +167,6 @@ class CandlestickChart extends React.Component {
 					<MACDTooltip origin={[-38, 15]} calculator={macdCalculator}/>
 				</Chart>
 				<CrossHairCursor />
-
-				<EventCapture mouseMove zoom pan>
-					<TrendLine forChart={1} id={1} ref="trend"
-						enabled={this.state.enableTrendLine}
-						type="LINE"
-						snap={true} snapTo={d => [d.high, d.low]}
-						onStart={() => console.log("START")}
-						onComplete={this.onTrendLineComplete}
-						/>
-				</EventCapture>
-
 			</ChartCanvas>
 		);
 	}

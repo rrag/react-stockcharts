@@ -2,54 +2,28 @@
 
 import React, { PropTypes, Component } from "react";
 
-import pure from "../pure";
+import GenericChartComponent from "../GenericChartComponent";
 
 class Annotate extends Component {
 	constructor(props) {
 		super(props);
-		this.annotate = this.annotate.bind(this);
-	}
-	annotate({ xScale, chartConfig, plotData }) {
-		var { chartId } = this.props;
-
-		var { yScale } = chartConfig.filter(each => each.id === chartId)[0];
-		this.setState({ plotData, xScale, yScale });
-	}
-	componentWillReceiveProps(nextProps) {
-		var { plotData, xScale, chartConfig, chartId } = nextProps;
-		var { yScale } = chartConfig.filter(each => each.id === chartId)[0];
-
-		this.setState({ plotData, xScale, yScale });
-
-		var { id, chartCanvasType, callbackForCanvasDraw, getAllCanvasDrawCallback } = nextProps;
-
-		if (chartCanvasType !== "svg") {
-			var temp = getAllCanvasDrawCallback().filter(each => each.type === "annotation").filter(each => each.id === id);
-			if (temp.length === 0) {
-				callbackForCanvasDraw({
-					id,
-					type: "annotation",
-					draw: this.annotate,
-				});
-			} else {
-				callbackForCanvasDraw(temp[0], {
-					id,
-					type: "annotation",
-					draw: this.annotate,
-				});
-			}
-		}
-	}
-	componentWillMount() {
-		this.componentWillReceiveProps(this.props);
+		this.renderSVG = this.renderSVG.bind(this);
 	}
 	render() {
-		var { yScale, xScale, plotData } = this.state;
-		var { className, xAccessor, usingProps, with: Annotation } = this.props;
+		return <GenericChartComponent
+			svgDraw={this.renderSVG}
+			drawOnPan
+			/>;
+	}
+	renderSVG(moreProps) {
+		var { xAccessor } = this.context;
+		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+
+		var { className, usingProps, with: Annotation } = this.props;
 		var data = helper(this.props, plotData);
 
 		return (
-			<g className={className}>
+			<g className={`react-stockcharts-enable-interaction ${className}`}>
 				{data.map((d, idx) => <Annotation key={idx}
 						{...usingProps}
 						xScale={xScale}
@@ -64,14 +38,13 @@ class Annotate extends Component {
 
 Annotate.propTypes = {
 	className: PropTypes.string.isRequired,
-	id: PropTypes.number.isRequired,
-	chartId: PropTypes.number.isRequired,
-	xAccessor: PropTypes.func.isRequired,
-	xScale: PropTypes.func.isRequired,
-	plotData: PropTypes.array.isRequired,
 	with: PropTypes.func,
 	when: PropTypes.func,
 	usingProps: PropTypes.object,
+};
+
+Annotate.contextTypes = {
+	xAccessor: PropTypes.func.isRequired,
 };
 
 Annotate.defaultProps = {
@@ -82,12 +55,4 @@ function helper({ when }, plotData) {
 	return plotData.filter(when);
 }
 
-export default pure(Annotate, {
-	callbackForCanvasDraw: PropTypes.func.isRequired,
-	getAllCanvasDrawCallback: PropTypes.func,
-	chartConfig: PropTypes.array.isRequired,
-	chartCanvasType: PropTypes.string,
-	xScale: PropTypes.func.isRequired,
-	xAccessor: PropTypes.func.isRequired,
-	plotData: PropTypes.array.isRequired,
-});
+export default Annotate;

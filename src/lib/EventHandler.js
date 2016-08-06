@@ -60,9 +60,6 @@ class EventHandler extends Component {
 		this.yAxisZoom = this.yAxisZoom.bind(this);
 		this.calculateStateForDomain = this.calculateStateForDomain.bind(this);
 
-		// this.pushCallbackForCanvasDraw = this.pushCallbackForCanvasDraw.bind(this);
-		// this.getAllCanvasDrawCallback = this.getAllCanvasDrawCallback.bind(this);
-
 		this.pinchCoordinates = this.pinchCoordinates.bind(this);
 		this.setInteractiveState = this.setInteractiveState.bind(this);
 		this.getInteractiveState = this.getInteractiveState.bind(this);

@@ -23,7 +23,6 @@ class CandleStickChartWithCompare extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
 
-
 		var compareCalculator = compare()
 			.base(d => d.close)
 			.mainKeys(["open", "high", "low", "close"])

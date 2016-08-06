@@ -77,30 +77,31 @@ class EventCapture extends Component {
 		e.stopPropagation();
 		e.preventDefault();
 
-		var { onContextMenu } = this.props;
-		var { dx, dy } = this.panStart;
+		var { onContextMenu, onPanEnd } = this.props;
+		var { dx, dy, panStartXScale, panOrigin, chartsToPan } = this.state.panStart;
 
 		var newPos = [e.pageX - dx, e.pageY - dy];
-		// var newPos = mousePosition(e)
 
-		this.contextMenuClicked = true;
+		if (this.panHappened) {
+			onPanEnd(newPos, panStartXScale, panOrigin, chartsToPan, e);
+		}
 
-		console.log("contextmenu", newPos);
-		// this line below has to be before the trigger of onPanEnd
-		// this is because onPanEnd will trigger a click event incase no pan happened
-		// having this before, will help suppress the click event and send only the
-		// right click event
-		onContextMenu(newPos, e);
+		this.setState({
+			panInProgress: false,
+			panStart: null,
+		}, () => {
+			onContextMenu(newPos, e);
 
-		var win = d3Window(this.refs.capture);
-		d3.select(win)
-			.on(MOUSEMOVE, null)
-			.on(MOUSEUP, null);
+			var win = d3Window(this.refs.capture);
+			d3.select(win)
+				.on(MOUSEMOVE, null)
+				.on(MOUSEUP, null);
+			// this.contextMenuClicked = false;
+		});
 		// onPanEnd(newPos, e);
 	}
 	handleMouseDown(e) {
 		var { pan, xScale, chartConfig } = this.props;
-		console.log("mousedown");
 
 		if (!this.state.panInProgress) {
 			this.focus = true;
@@ -165,7 +166,7 @@ class EventCapture extends Component {
 			panInProgress: false,
 			panStart: null,
 		}, () => {
-			if (!this.panHappened && !this.contextMenuClicked) {
+			if (!this.panHappened) {
 				if (this.clicked) {
 					onDoubleClick(newPos, e);
 				} else {
@@ -179,7 +180,7 @@ class EventCapture extends Component {
 
 			if (this.mouseInteraction
 					&& this.panHappened
-					&& !this.contextMenuClicked
+					// && !this.contextMenuClicked
 					&& panEnabled
 					&& onPanEnd) {
 				var win = d3Window(this.refs.capture);
@@ -189,7 +190,7 @@ class EventCapture extends Component {
 				onPanEnd(newPos, panStartXScale, panOrigin, chartsToPan, e);
 			}
 
-			this.contextMenuClicked = false;
+			// this.contextMenuClicked = false;
 		});
 	}
 	handleTouchStart(e) {

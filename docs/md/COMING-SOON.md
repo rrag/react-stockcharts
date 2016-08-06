@@ -2,8 +2,10 @@
 
 TODO
 
-1. Update Annotation examples
 1. Update Interactive examples
+1. Fix Label
+1. Use d3 v4
+
 
 1. [Envelope](http://www.investopedia.com/terms/e/envelope.asp?optm=sa_v2)
 1. [ATR Trailing stop](http://www.incrediblecharts.com/indicators/atr_average_true_range_trailing_stops.php)

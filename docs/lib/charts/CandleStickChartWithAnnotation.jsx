@@ -96,13 +96,15 @@ class CandleStickChartWithAnnotation extends React.Component {
 					<OHLCTooltip origin={[-40, 0]}/>
 					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]} 
 						calculators={[ema20, ema50]}/>
+
+					<Annotate with={LabelAnnotation}
+						when={d => d.date.getDate() === 1 /* some condition */}
+						usingProps={annotationProps} />
+
 				</Chart>
 				<CrossHairCursor />
 
-				<Annotate id={0} chartId={1} with={LabelAnnotation}
-					when={d => d.date.getDate() === 1 /* some condition */}
-					usingProps={annotationProps} />
-			</ChartCanvas>
+		</ChartCanvas>
 		);
 	}
 }
