@@ -120,16 +120,21 @@ class InteractiveLine extends Component {
 		this.props.onDragComplete(this.props.index, e);
 	}
 	renderSVG(moreProps) {
-		var { x1Value, x2Value, y1Value, y2Value, withEdge } = this.props;
+		var { x1Value, x2Value, y1Value, y2Value, withEdge, type } = this.props;
 		var { defaultClassName, stroke, strokeWidth, opacity } = this.props;
 		var { r, edgeFill, edgeStroke, edgeStrokeWidth } = this.props;
 
-		var { xScale, chartConfig: { yScale } } = moreProps;
+		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+		var { xAccessor } = this.context;
 
-		var x1 = xScale(x1Value);
-		var y1 = yScale(y1Value);
-		var x2 = xScale(x2Value);
-		var y2 = yScale(y2Value);
+		var modLine = generateLine(type,
+			[x1Value, y1Value],
+			[x2Value, y2Value], xAccessor, plotData);
+
+		var x1 = xScale(modLine.x1);
+		var y1 = yScale(modLine.y1);
+		var x2 = xScale(modLine.x2);
+		var y2 = yScale(modLine.y2);
 
 		return <g ref="capture">
 			<line
@@ -171,11 +176,12 @@ function generateLine(type, start, end, xAccessor, plotData) {
 		// vertical line
 		throw new Error("Trendline cannot be a vertical line")
 	} */
-	var m /* slope */ = (end[1] - start[1]) / (end[0] - start[0]);
+	var m /* slope */ = end[0] === start[0] ? 0 : (end[1] - start[1]) / (end[0] - start[0]);
+	// console.log(end[0] - start[0], m)
 	var b /* y intercept */ = -1 * m * end[0] + end[1];
 	// y = m * x + b
 	var x1 = type === "XLINE"
-		? xAccessor(plotData[0])
+		? xAccessor(head(plotData))
 		: start[0]; // RAY or LINE start is the same
 
 	var y1 = m * x1 + b;
@@ -197,7 +203,11 @@ InteractiveLine.propTypes = {
 
 	stroke: PropTypes.string.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
-
+	type: PropTypes.oneOf([
+		"XLINE", // extends from -Infinity to +Infinity
+		"RAY", // extends to +/-Infinity in one direction
+		"LINE", // extends between the set bounds
+	]).isRequired,
 	onDrag: PropTypes.func.isRequired,
 	onDragComplete: PropTypes.func.isRequired,
 	r: PropTypes.number.isRequired,
