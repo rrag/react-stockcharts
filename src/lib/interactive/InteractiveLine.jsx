@@ -3,9 +3,9 @@ import d3 from "d3";
 
 import GenericChartComponent from "../GenericChartComponent";
 
-import { isDefined, mousePosition, touchPosition, d3Window, MOUSEMOVE, MOUSEUP } from "../utils";
-import { noop } from "../utils";
-import { getCurrentCharts, getCurrentItem } from "../utils/ChartDataUtil";
+import { d3Window, MOUSEMOVE, MOUSEUP } from "../utils";
+import { head, last, noop } from "../utils";
+import { getCurrentItem } from "../utils/ChartDataUtil";
 
 class InteractiveLine extends Component {
 	constructor(props) {
@@ -21,9 +21,6 @@ class InteractiveLine extends Component {
 		this.handleEdgeDragEnd = this.handleEdgeDragEnd.bind(this);
 	}
 	handleMouseDown(e) {
-		var { idx, onMouseDown } = this.props;
-		// onMouseDown(idx, e);
-		// console.log("MOUSEDOWN")
 		e.preventDefault();
 
 		var win = d3Window(this.refs.component.getRef("capture"));
@@ -67,7 +64,7 @@ class InteractiveLine extends Component {
 			y1Value: newY1Value,
 			x2Value: newX2Value,
 			y2Value: newY2Value,
-		}, e)
+		}, e);
 	}
 	handleDragEnd() {
 		var e = d3.event;
@@ -82,13 +79,13 @@ class InteractiveLine extends Component {
 		this.props.onDragComplete(this.props.index, e);
 	}
 	handleEdgeDrag1(edge1, e) {
-		var [newCX, newCY] = edge1
+		var [newCX, newCY] = edge1;
 
 		var moreProps = this.refs.component.getMoreProps();
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 		var { xAccessor } = this.context;
 
-		var { x1Value, y1Value, x2Value, y2Value } = this.props;
+		var { x2Value, y2Value } = this.props;
 
 		var newXValue = xAccessor(getCurrentItem(xScale, xAccessor, [newCX, newCY], plotData));
 		var newYValue = yScale.invert(newCY);
@@ -98,16 +95,16 @@ class InteractiveLine extends Component {
 			y1Value: newYValue,
 			x2Value,
 			y2Value,
-		}, e)
+		}, e);
 	}
 	handleEdgeDrag2(edge2, e) {
-		var [newCX, newCY] = edge2
+		var [newCX, newCY] = edge2;
 
 		var moreProps = this.refs.component.getMoreProps();
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 		var { xAccessor } = this.context;
 
-		var { x1Value, y1Value, x2Value, y2Value } = this.props;
+		var { x1Value, y1Value } = this.props;
 
 		var newXValue = xAccessor(getCurrentItem(xScale, xAccessor, [newCX, newCY], plotData));
 		var newYValue = yScale.invert(newCY);
@@ -117,7 +114,7 @@ class InteractiveLine extends Component {
 			y1Value,
 			x2Value: newXValue,
 			y2Value: newYValue,
-		}, e)
+		}, e);
 	}
 	handleEdgeDragEnd(e) {
 		this.props.onDragComplete(this.props.index, e);
@@ -128,7 +125,6 @@ class InteractiveLine extends Component {
 		var { r, edgeFill, edgeStroke, edgeStrokeWidth } = this.props;
 
 		var { xScale, chartConfig: { yScale } } = moreProps;
-		var { xAccessor } = this.context;
 
 		var x1 = xScale(x1Value);
 		var y1 = yScale(y1Value);
@@ -150,7 +146,7 @@ class InteractiveLine extends Component {
 				cx={x1} cy={y1} r={r}
 				fill={edgeFill} stroke={edgeStroke}
 				strokeWidth={edgeStrokeWidth}
-				opacity={1} /> : null }
+				hoverOpacity={1} /> : null }
 			{withEdge ? <ClickableCircle className={defaultClassName}
 				onDrag={this.handleEdgeDrag2}
 				onDragEnd={this.handleEdgeDragEnd}
@@ -158,7 +154,7 @@ class InteractiveLine extends Component {
 				fill={edgeFill} stroke={edgeStroke}
 				strokeWidth={edgeStrokeWidth}
 				hoverOpacity={1} /> : null }
-		</g>
+		</g>;
 
 	}
 	render() {
@@ -170,6 +166,50 @@ class InteractiveLine extends Component {
 	}
 }
 
+function generateLine(type, start, end, xAccessor, plotData) {
+	/* if (end[0] - start[0] === 0) {
+		// vertical line
+		throw new Error("Trendline cannot be a vertical line")
+	} */
+	var m /* slope */ = (end[1] - start[1]) / (end[0] - start[0]);
+	var b /* y intercept */ = -1 * m * end[0] + end[1];
+	// y = m * x + b
+	var x1 = type === "XLINE"
+		? xAccessor(plotData[0])
+		: start[0]; // RAY or LINE start is the same
+
+	var y1 = m * x1 + b;
+
+	var x2 = type === "XLINE"
+		? xAccessor(last(plotData))
+		: type === "RAY"
+			? end[0] > start[0] ? xAccessor(last(plotData)) : xAccessor(head(plotData))
+			: end[0];
+	var y2 = m * x2 + b;
+	return { x1, y1, x2, y2 };
+}
+
+InteractiveLine.propTypes = {
+	x1Value: PropTypes.any.isRequired,
+	x2Value: PropTypes.any.isRequired,
+	y1Value: PropTypes.any.isRequired,
+	y2Value: PropTypes.any.isRequired,
+
+	stroke: PropTypes.string.isRequired,
+	strokeWidth: PropTypes.number.isRequired,
+
+	onDrag: PropTypes.func.isRequired,
+	onDragComplete: PropTypes.func.isRequired,
+	r: PropTypes.number.isRequired,
+	opacity: PropTypes.number.isRequired,
+	edgeFill: PropTypes.string.isRequired,
+	defaultClassName: PropTypes.string,
+	index: PropTypes.number,
+	edgeStroke: PropTypes.string.isRequired,
+	edgeStrokeWidth: PropTypes.number.isRequired,
+	withEdge: PropTypes.bool.isRequired,
+};
+
 InteractiveLine.defaultProps = {
 	onDrag: noop,
 	onDragComplete: noop,
@@ -178,7 +218,7 @@ InteractiveLine.defaultProps = {
 	edgeFill: "#FFFFFF",
 	r: 10,
 	withEdge: false,
-}
+};
 
 InteractiveLine.contextTypes = {
 	xAccessor: PropTypes.func.isRequired,
@@ -194,17 +234,17 @@ class ClickableCircle extends Component {
 		this.handleDragEnd = this.handleDragEnd.bind(this);
 		this.state = {
 			hover: false,
-		}
+		};
 	}
-	handleMouseEnter(e) {
+	handleMouseEnter() {
 		this.setState({
 			hover: true,
-		})
+		});
 	}
-	handleMouseLeave(e) {
+	handleMouseLeave() {
 		this.setState({
 			hover: false,
-		})
+		});
 	}
 	handleMouseDown(e) {
 		e.preventDefault();
@@ -235,7 +275,7 @@ class ClickableCircle extends Component {
 		var newCX = cx - dx;
 		var newCY = cy - dy;
 
-		this.props.onDrag([newCX, newCY], e)
+		this.props.onDrag([newCX, newCY], e);
 	}
 	handleDragEnd() {
 		var e = d3.event;
@@ -263,10 +303,24 @@ class ClickableCircle extends Component {
 	}
 }
 
+ClickableCircle.propTypes = {
+	onDrag: PropTypes.func.isRequired,
+	onDragComplete: PropTypes.func.isRequired,
+	hoverOpacity: PropTypes.number.isRequired,
+	strokeWidth: PropTypes.number.isRequired,
+	stroke: PropTypes.string.isRequired,
+	fill: PropTypes.string.isRequired,
+	r: PropTypes.number.isRequired,
+	cx: PropTypes.number.isRequired,
+	cy: PropTypes.number.isRequired,
+	className: PropTypes.string.isRequired,
+};
+
+
 ClickableCircle.defaultProps = {
 	onDrag: noop,
 	onDragComplete: noop,
-}
+};
 
 
-export default InteractiveLine
+export default InteractiveLine;

@@ -532,7 +532,7 @@ class EventHandler extends Component {
 		this.triggerEvent("pan", state, e);
 		requestAnimationFrame(() => {
 			this.clearBothCanvas();
-			this.draw()
+			this.draw();
 		});
 	}
 	handleMouseDown(mousePosition, currentCharts, e) {
@@ -584,7 +584,7 @@ class EventHandler extends Component {
 		return response;
 	}
 	render() {
-		var { xAccessor, interaction, defaultFocus, mode } = this.props;
+		var { xAccessor, interaction, defaultFocus, drawMode } = this.props;
 		var { width, height } = this.props.dimensions;
 		var { xScale, chartConfig } = this.state;
 
@@ -593,7 +593,7 @@ class EventHandler extends Component {
 				<EventCapture
 					mouseMove={interaction}
 					zoom={interaction}
-					pan={interaction && mode !== "draw"}
+					pan={interaction && !drawMode}
 
 					width={width}
 					height={height}
@@ -625,7 +625,7 @@ class EventHandler extends Component {
 EventHandler.propTypes = {
 	children: PropTypes.node.isRequired,
 	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
-	mode: PropTypes.string.isRequired,
+	drawMode: PropTypes.bool.isRequired,
 	xAccessor: PropTypes.func.isRequired,
 	xScale: PropTypes.func.isRequired,
 	// interval: PropTypes.string,

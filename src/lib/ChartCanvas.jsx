@@ -168,18 +168,17 @@ class ChartCanvas extends Component {
 	render() {
 
 		var { type, height, width, margin, className, zIndex, postCalculator, flipXScale } = this.props;
-		var { padding, useCrossHairStyleCursor, mode } = this.props;
+		var { padding, useCrossHairStyleCursor, drawMode } = this.props;
 
 		var { plotData, filterData, xScale, xAccessor, dataAltered, lastItem, displayXAccessor } = this.state;
 		var dimensions = getDimensions(this.props);
 		// var stateProps = { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor, dataAltered };
-		var props = { padding, type, margin, postCalculator, mode };
+		var props = { padding, type, margin, postCalculator, drawMode };
 		var stateProps = { plotData, filterData, xScale, xAccessor, dataAltered, lastItem, displayXAccessor };
 
 		var interaction = !isNaN(xScale(xAccessor(first(plotData)))) && isDefined(xScale.invert);
 
 		var cursor = getCursorStyle(useCrossHairStyleCursor && interaction);
-
 		return (
 			<div style={{ position: "relative", height: height, width: width }} className={className} >
 				<CanvasContainer ref="canvases" width={width} height={height} type={type} zIndex={zIndex}/>
@@ -239,6 +238,7 @@ ChartCanvas.propTypes = {
 	postCalculator: PropTypes.func.isRequired,
 	flipXScale: PropTypes.bool.isRequired,
 	useCrossHairStyleCursor: PropTypes.bool.isRequired,
+	drawMode: PropTypes.bool.isRequired,
 	padding: PropTypes.oneOfType([
 		PropTypes.number,
 		PropTypes.shape({
@@ -264,7 +264,7 @@ ChartCanvas.defaultProps = {
 	xAccessor: identity,
 	flipXScale: false,
 	useCrossHairStyleCursor: true,
-	mode: "normal",
+	drawMode: false,
 	// initialDisplay: 30
 };
 

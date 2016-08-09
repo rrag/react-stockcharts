@@ -1,10 +1,8 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import d3 from "d3";
 
-import makeInteractive from "./makeInteractive";
-import { isDefined, isNotDefined, head, last, noop, d3Window, getClosestValue, MOUSEMOVE, MOUSEUP } from "../utils";
+import { isDefined, isNotDefined, noop } from "../utils";
 
 import InteractiveLine from "./InteractiveLine";
 import MouseLocationIndicator from "./MouseLocationIndicator";
@@ -21,7 +19,7 @@ class TrendLine extends Component {
 
 		this.state = this.props.init;
 	}
-	removeLast(interactive) {
+	removeLast() {
 		var { trends } = this.state;
 		if (isDefined(trends) && trends.length > 0) {
 			this.setState({
@@ -29,20 +27,20 @@ class TrendLine extends Component {
 			});
 		}
 	}
-	terminate(interactive) {
+	terminate() {
 		this.setState({
 			current: null
-		})
+		});
 	}
-	handleDragLine(index, newXYValue, e) {
+	handleDragLine(index, newXYValue) {
 		this.setState({
 			override: {
 				index,
 				...newXYValue
 			}
-		})
+		});
 	}
-	handleDragLineComplete(index, e) {
+	handleDragLineComplete() {
 		var { trends, override } = this.state;
 		var newTrends = trends
 			.map((each, idx) => idx === override.index
@@ -54,10 +52,10 @@ class TrendLine extends Component {
 		this.setState({
 			trends: newTrends,
 			override: null
-		})
+		});
 	}
-	handleDrawLine(xyValue, e) {
-		var { current, trends } = this.state;
+	handleDrawLine(xyValue) {
+		var { current } = this.state;
 
 		if (isDefined(current) && isDefined(current.start)) {
 			this.setState({
@@ -65,10 +63,10 @@ class TrendLine extends Component {
 					start: current.start,
 					end: xyValue,
 				}
-			})
+			});
 		}
 	}
-	handleStartAndEnd(xyValue, e) {
+	handleStartAndEnd(xyValue) {
 		var { current, trends } = this.state;
 
 		if (isNotDefined(current) || isNotDefined(current.start)) {
@@ -78,52 +76,50 @@ class TrendLine extends Component {
 					end: null,
 				}
 			}, () => {
-				this.props.onStart()
-			})
+				this.props.onStart();
+			});
 		} else {
 			this.setState({
 				trends: trends.concat({ start: current.start, end: xyValue }),
 				current: null,
 			}, () => {
-				this.props.onComplete()
-			})
+				this.props.onComplete();
+			});
 		}
 	}
 	render() {
 		var { stroke, opacity, strokeWidth } = this.props;
-		var { enabled, snap, shouldDisableSnap, snapTo } = this.props;
+		var { enabled, snap, shouldDisableSnap, snapTo, type } = this.props;
 		var { currentPositionRadius, currentPositionStroke } = this.props;
 		var { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
 		var { trends, current, override } = this.state;
 
-		var x1 = 10, y1 = 10, x2 = 200, y2 = 200;
-
 		var tempLine = isDefined(current) && isDefined(current.end)
-			? <InteractiveLine
+			? <InteractiveLine type={type}
 					x1Value={current.start[0]} y1Value={current.start[1]}
 					x2Value={current.end[0]} y2Value={current.end[1]}
 					stroke={stroke} strokeWidth={strokeWidth} opacity={opacity} />
-			: null
+			: null;
 
 		return <g>
-			{trends.map((each, idx) => 
+			{trends.map((each, idx) =>
 				<InteractiveLine key={idx} withEdge
-					index={idx}
+					index={idx} type={type}
 					defaultClassName="react-stockcharts-enable-interaction react-stockcharts-move-cursor"
-					x1Value={getValueFromOverride(override, idx, "x1Value") || each.start[0]}
-					y1Value={getValueFromOverride(override, idx, "y1Value") || each.start[1]}
-					x2Value={getValueFromOverride(override, idx, "x2Value") || each.end[0]}
-					y2Value={getValueFromOverride(override, idx, "y2Value") || each.end[1]}
+					x1Value={getValueFromOverride(override, idx, "x1Value", each.start[0])}
+					y1Value={getValueFromOverride(override, idx, "y1Value", each.start[1])}
+					x2Value={getValueFromOverride(override, idx, "x2Value", each.end[0])}
+					y2Value={getValueFromOverride(override, idx, "y2Value", each.end[1])}
 					stroke={stroke} strokeWidth={strokeWidth} opacity={opacity}
 					onDrag={this.handleDragLine}
 					onDragComplete={this.handleDragLineComplete}
 					/>)
 			}
 			{tempLine}
-			<MouseLocationIndicator 
-				enabled={enabled} 
-				snap={snap} 
-				shouldDisableSnap={shouldDisableSnap} 
+			<MouseLocationIndicator
+				enabled={enabled}
+				snap={snap}
+				shouldDisableSnap={shouldDisableSnap}
 				snapTo={snapTo}
 				r={currentPositionRadius}
 				stroke={currentPositionStroke}
@@ -131,77 +127,14 @@ class TrendLine extends Component {
 				strokeWidth={currentPositionStrokeWidth}
 				onMouseDown={this.handleStartAndEnd}
 				onMouseMove={this.handleDrawLine} />
-		</g>
+		</g>;
 	}
 }
 
-function getValueFromOverride(override, index, key) {
+function getValueFromOverride(override, index, key, defaultValue) {
 	if (isDefined(override) && override.index === index)
-		return override[key]
-}
-
-function getCoordinate(idx, override, coords, key) {
-	if (isDefined(override)) {
-		var { index } = override;
-		if (index === idx) {
-			if (isDefined(override[key])) {
-				return override[key];
-			}
-		}
-	}
-	return coords[key];
-}
-
-function currentPosition({ enabled, snapTo, snap, shouldDisableSnap, xAccessor }, { eventMeta, mouseXY, currentItem, yScale }) {
-	if (enabled && eventMeta && currentItem) {
-
-		return xy(snapTo, snap, shouldDisableSnap, xAccessor, eventMeta, currentItem, mouseXY, yScale);
-	}
-}
-
-function xy(snapTo, snap, shouldDisableSnap, xAccessor, eventMeta, currentItem, mouseXY, yScale) {
-	var yValue = (snap && !shouldDisableSnap(eventMeta))
-		? getClosestValue(snapTo(currentItem), yScale.invert(mouseXY[1]))
-		: yScale.invert(mouseXY[1]);
-	var xValue = xAccessor(currentItem);
-
-	return [xValue, yValue];
-}
-
-function helper(plotData, type, xAccessor, interactive/* , chartConfig */) {
-	var { currentPos, start, trends } = interactive;
-	var temp = trends;
-	if (start && currentPos) {
-		temp = temp.concat({ start, end: currentPos });
-	}
-	var lines = temp
-		.filter(each => each.start[0] !== each.end[0])
-		.map((each) => generateLine(type, each.start, each.end, xAccessor, plotData));
-
-	return lines;
-}
-
-function generateLine(type, start, end, xAccessor, plotData) {
-	/* if (end[0] - start[0] === 0) {
-		// vertical line
-		throw new Error("Trendline cannot be a vertical line")
-	} */
-	var m /* slope */ = (end[1] - start[1]) / (end[0] - start[0]);
-	var b /* y intercept */ = -1 * m * end[0] + end[1];
-	// y = m * x + b
-	var x1 = type === "XLINE"
-		? xAccessor(plotData[0])
-		: start[0]; // RAY or LINE start is the same
-
-	var y1 = m * x1 + b;
-
-	var x2 = type === "XLINE"
-		? xAccessor(last(plotData))
-		: type === "RAY"
-			? end[0] > start[0] ? xAccessor(last(plotData)) : xAccessor(head(plotData))
-			: end[0];
-	var y2 = m * x2 + b;
-	return { x1, y1, x2, y2 };
+		return override[key];
+	return defaultValue;
 }
 
 TrendLine.propTypes = {
@@ -227,6 +160,7 @@ TrendLine.propTypes = {
 	]),
 	endPointCircleFill: PropTypes.string,
 	endPointCircleRadius: PropTypes.number,
+	init: PropTypes.object.isRequired,
 };
 
 TrendLine.contextTypes = {

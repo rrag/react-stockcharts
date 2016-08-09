@@ -136,10 +136,10 @@ class EventCapture extends Component {
 				setTimeout(() => {
 					if (!this.contextMenuClicked) {
 						// console.log("NO RIGHT")
-						onMouseDown(mouseXY, currentCharts, e)
+						onMouseDown(mouseXY, currentCharts, e);
 					}
 					this.contextMenuClicked = false;
-				}, 100)
+				}, 100);
 			}
 		}
 		e.preventDefault();
@@ -360,6 +360,7 @@ EventCapture.propTypes = {
 	onClick: PropTypes.func,
 	onDoubleClick: PropTypes.func,
 	onContextMenu: PropTypes.func,
+	onMouseDown: PropTypes.func,
 	children: PropTypes.node,
 };
 

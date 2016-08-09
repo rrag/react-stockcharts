@@ -3,9 +3,9 @@ import d3 from "d3";
 
 import GenericChartComponent from "../GenericChartComponent";
 
-import { isDefined, mousePosition, getClosestValue, touchPosition, d3Window, MOUSEMOVE, MOUSEUP } from "../utils";
+import { isDefined, getClosestValue } from "../utils";
 import { noop, shallowEqual } from "../utils";
-import { getCurrentCharts } from "../utils/ChartDataUtil";
+// import { getCurrentCharts } from "../utils/ChartDataUtil";
 
 class MouseLocationIndicator extends Component {
 	constructor(props) {
@@ -22,15 +22,15 @@ class MouseLocationIndicator extends Component {
 		var moreProps = this.refs.component.getMoreProps();
 		var pos = this.xy(moreProps, e);
 		if (isDefined(pos)) {
-		 	var { xValue, yValue, x, y } = pos;
-			this.mutableState = { x, y }
+			var { xValue, yValue, x, y } = pos;
+			this.mutableState = { x, y };
 			this.props.onMouseDown([xValue, yValue], e);
 		}
 	}
 	xy(moreProps, e) {
 		var { xAccessor } = this.context;
 		var { mouseXY, currentItem, xScale, chartConfig: { yScale } } = moreProps;
-		var { enabled, snap, shouldDisableSnap, snapTo, onMouseMove } = this.props;
+		var { enabled, snap, shouldDisableSnap, snapTo } = this.props;
 
 		if (enabled && isDefined(currentItem) && isDefined(e)) {
 
@@ -42,7 +42,7 @@ class MouseLocationIndicator extends Component {
 			var x = xScale(xValue);
 			var y = yScale(yValue);
 
-			return { xValue, yValue, x, y }
+			return { xValue, yValue, x, y };
 		}
 	}
 	handleMousePosChange(e) {
@@ -54,8 +54,8 @@ class MouseLocationIndicator extends Component {
 			var pos = this.xy(moreProps, e);
 			// console.log("HERE11", pos)
 			if (isDefined(pos)) {
-		 		var { xValue, yValue, x, y } = pos;
-				this.mutableState = { x, y }
+				var { xValue, yValue, x, y } = pos;
+				this.mutableState = { x, y };
 				this.props.onMouseMove([xValue, yValue], e);
 			}
 		}
@@ -63,8 +63,8 @@ class MouseLocationIndicator extends Component {
 	}
 	renderSVG(moreProps) {
 		var { enabled, r, stroke, strokeWidth, opacity } = this.props;
-		var { x, y } = this.mutableState
-		var { show } = moreProps
+		var { x, y } = this.mutableState;
+		var { show } = moreProps;
 		// console.log("HERE")
 
 		// console.log(stroke, strokeWidth, opacity)
@@ -73,7 +73,7 @@ class MouseLocationIndicator extends Component {
 				className="react-stockcharts-avoid-interaction"
 				cx={x}
 				cy={y}
-				r={r} 
+				r={r}
 				stroke={stroke}
 				opacity={opacity}
 				fill="none"
@@ -98,15 +98,22 @@ MouseLocationIndicator.propTypes = {
 	snap: PropTypes.bool.isRequired,
 	shouldDisableSnap: PropTypes.func.isRequired,
 	snapTo: PropTypes.func.isRequired,
-}
+
+	onMouseMove: PropTypes.func.isRequired,
+	onMouseDown: PropTypes.func.isRequired,
+	r: PropTypes.number.isRequired,
+	stroke: PropTypes.string.isRequired,
+	strokeWidth: PropTypes.number.isRequired,
+	opacity: PropTypes.number.isRequired,
+};
 
 MouseLocationIndicator.contextTypes = {
 	xAccessor: PropTypes.func.isRequired,
-}
+};
 
 MouseLocationIndicator.defaultProps = {
 	onMouseMove: noop,
 	onMouseDown: noop,
-}
+};
 
-export default MouseLocationIndicator
+export default MouseLocationIndicator;

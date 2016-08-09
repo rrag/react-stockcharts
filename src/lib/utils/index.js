@@ -167,13 +167,12 @@ export function touchPosition(touch, e) {
 	return xy;
 }
 
-export function mousePosition(e, log) {
+export function mousePosition(e) {
 	var container = e.currentTarget,
 		rect = container.getBoundingClientRect(),
 		x = e.clientX - rect.left - container.clientLeft,
 		y = e.clientY - rect.top - container.clientTop,
 		xy = [Math.round(x), Math.round(y)];
-	if (log) console.log(e.currentTarget, rect)
 	return xy;
 }
 

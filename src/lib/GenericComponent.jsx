@@ -2,7 +2,7 @@
 
 import React, { PropTypes, Component } from "react";
 import d3 from "d3";
-import { isNotDefined, isDefined, shallowEqual } from "./utils";
+import { isNotDefined, isDefined, noop } from "./utils";
 
 var suscriberId = 0;
 
@@ -31,7 +31,7 @@ class GenericComponent extends Component {
 		};
 	}
 	getRef(ref) {
-		return this.refs[ref]
+		return this.refs[ref];
 	}
 	updateMoreProps(moreProps) {
 		this.prevMoreProps = this.moreProps;
@@ -215,9 +215,13 @@ GenericComponent.propTypes = {
 	canvasToDraw: PropTypes.func.isRequired,
 	hoverCanvasToDraw: PropTypes.func.isRequired,
 	isHover: PropTypes.func.isRequired,
+
 	onClick: PropTypes.func,
 	onDoubleClick: PropTypes.func,
 	onContextMenu: PropTypes.func,
+	onMouseMove: PropTypes.func,
+	onMouseDown: PropTypes.func,
+
 	debug: PropTypes.string,
 };
 
@@ -232,6 +236,8 @@ GenericComponent.defaultProps = {
 	clip: true,
 	edgeClip: false,
 	isHover: d3.functor(false),
+	onMouseMove: noop,
+	onMouseDown: noop,
 };
 
 GenericComponent.contextTypes = {
