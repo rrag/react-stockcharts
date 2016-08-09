@@ -154,7 +154,7 @@ LineSeries.defaultProps = {
 	stroke: "#4682B4",
 	defined: d => !isNaN(d),
 	hoverTolerance: 6,
-	highlightOnHover: true,
+	highlightOnHover: false,
 	onClick: function(e) { console.log("Click", e); },
 	onDoubleClick: function(e) { console.log("Double Click", e); },
 	onContextMenu: function(e) { console.log("Right Click", e); },

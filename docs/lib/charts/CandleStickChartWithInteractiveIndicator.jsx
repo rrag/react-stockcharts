@@ -47,11 +47,11 @@ class CandlestickChart extends React.Component {
 		console.log(keyCode);
 		switch (keyCode) {
 			case 46: { // DEL
-				this.refs.trend.getWrappedComponent().removeLast();
+				this.refs.trend.removeLast();
 				break;
 			}
 			case 27: { // ESC
-				this.refs.trend.getWrappedComponent().terminate();
+				this.refs.trend.terminate();
 				this.setState({
 					enableTrendLine: false
 				})
@@ -100,7 +100,8 @@ class CandlestickChart extends React.Component {
 					seriesName="MSFT"
 					data={data} calculator={[ema26, ema12, smaVolume50, macdCalculator]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
-					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
+					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}
+					mode={this.state.enableTrendLine ? "draw" : "normal"}>
 				<Chart id={1} height={400}
 						yExtents={[d => [d.high, d.low], ema26.accessor(), ema12.accessor()]}
 						padding={{ top: 10, bottom: 20 }}>

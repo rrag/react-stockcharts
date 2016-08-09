@@ -52,6 +52,7 @@ class EventHandler extends Component {
 		this.handlePan = this.handlePan.bind(this);
 		this.handlePanEnd = this.handlePanEnd.bind(this);
 		this.handleClick = this.handleClick.bind(this);
+		this.handleMouseDown = this.handleMouseDown.bind(this);
 		this.handleDoubleClick = this.handleDoubleClick.bind(this);
 		// this.handleFocus = this.handleFocus.bind(this);
 		this.handleContextMenu = this.handleContextMenu.bind(this);
@@ -67,6 +68,7 @@ class EventHandler extends Component {
 		this.subscriptions = [];
 		this.subscribe = this.subscribe.bind(this);
 		this.unsubscribe = this.unsubscribe.bind(this);
+		this.draw = this.draw.bind(this);
 		// this.canvasDrawCallbackList = [];
 		this.interactiveState = [];
 
@@ -286,13 +288,15 @@ class EventHandler extends Component {
 
 		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
 
+		this.triggerEvent("mousemove", {
+			mouseXY,
+			currentItem,
+			currentCharts,
+		}, e);
+
 		requestAnimationFrame(() => {
 			this.clearMouseCanvas();
-			this.triggerEvent("mousemove", {
-				mouseXY,
-				currentItem,
-				currentCharts,
-			}, e);
+			this.draw();
 		});
 	}
 	handleContextMenu(mouseXY, e) {
@@ -307,6 +311,7 @@ class EventHandler extends Component {
 			currentItem,
 			currentCharts,
 		}, e);
+		this.draw();
 	}
 	handleMouseLeave(e) {
 		var contexts = this.getCanvasContexts();
@@ -317,6 +322,7 @@ class EventHandler extends Component {
 			clearCanvas([contexts.mouseCoord]);
 		}
 		this.triggerEvent("mouseleave", { show: false }, e);
+		this.draw();
 		/* this.setState({
 			show: false
 		}); */
@@ -498,6 +504,19 @@ class EventHandler extends Component {
 			currentItem,
 		};
 	}
+	draw() {/*
+		var { chartCanvasType } = this.props;
+		if (chartCanvasType === "svg") {
+			this.setState({
+				random: Math.random()
+			});
+		} else {*/
+		this.subscriptions.forEach(each => {
+			// console.log(each)
+			each.callback("draw");
+		});
+		// }
+	}
 	triggerEvent(type, props, e) {
 		this.subscriptions.forEach(each => {
 			// console.log(each)
@@ -510,14 +529,17 @@ class EventHandler extends Component {
 		this.hackyWayToStopPanBeyondBounds__plotData = state.plotData;
 		this.hackyWayToStopPanBeyondBounds__domain = state.xScale.domain();
 
+		this.triggerEvent("pan", state, e);
 		requestAnimationFrame(() => {
 			this.clearBothCanvas();
-			this.triggerEvent("pan", state, e);
-
+			this.draw()
 		});
 	}
+	handleMouseDown(mousePosition, currentCharts, e) {
+		this.triggerEvent("mousedown", null, e);
+	}
 	handleClick(mousePosition, e) {
-		console.log("clicked");
+		// console.log("clicked", e.shiftKey);
 		this.triggerEvent("click", {}, e);
 	}
 	handleDoubleClick(mousePosition, e) {
@@ -562,7 +584,7 @@ class EventHandler extends Component {
 		return response;
 	}
 	render() {
-		var { xAccessor, interaction, defaultFocus } = this.props;
+		var { xAccessor, interaction, defaultFocus, mode } = this.props;
 		var { width, height } = this.props.dimensions;
 		var { xScale, chartConfig } = this.state;
 
@@ -571,7 +593,7 @@ class EventHandler extends Component {
 				<EventCapture
 					mouseMove={interaction}
 					zoom={interaction}
-					pan={interaction}
+					pan={interaction && mode !== "draw"}
 
 					width={width}
 					height={height}
@@ -583,6 +605,7 @@ class EventHandler extends Component {
 					onContextMenu={this.handleContextMenu}
 					onClick={this.handleClick}
 					onDoubleClick={this.handleDoubleClick}
+					onMouseDown={this.handleMouseDown}
 					onMouseMove={this.handleMouseMove}
 					onMouseEnter={this.handleMouseEnter}
 					onMouseLeave={this.handleMouseLeave}
@@ -602,6 +625,7 @@ class EventHandler extends Component {
 EventHandler.propTypes = {
 	children: PropTypes.node.isRequired,
 	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	mode: PropTypes.string.isRequired,
 	xAccessor: PropTypes.func.isRequired,
 	xScale: PropTypes.func.isRequired,
 	// interval: PropTypes.string,

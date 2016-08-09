@@ -79,8 +79,8 @@ class CandleStickChartWithEdge extends React.Component {
 
 					<CandlestickSeries />
 
-					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
-					<LineSeries yAccessor={ema50.accessor()} stroke={ema50.stroke()}/>
+					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()} highlightOnHover />
+					<LineSeries yAccessor={ema50.accessor()} stroke={ema50.stroke()} highlightOnHover />
 
 					<CurrentCoordinate yAccessor={ema20.accessor()} fill={ema20.stroke()} />
 					<CurrentCoordinate yAccessor={ema50.accessor()} fill={ema50.stroke()} />

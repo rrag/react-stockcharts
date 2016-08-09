@@ -35,9 +35,9 @@ class GenericChartComponent extends GenericComponent {
 	postCanvasDraw(ctx) {
 		ctx.restore();
 	}
-	listener(type, moreProps, e) {
+	updateMoreProps(moreProps) {
 		// console.log(type, moreProps, e)
-		this.updateMoreProps(moreProps);
+		super.updateMoreProps(moreProps);
 		var { chartConfig: chartConfigList } = moreProps;
 
 		if (chartConfigList) {
@@ -46,7 +46,6 @@ class GenericChartComponent extends GenericComponent {
 				.filter(each => each.id === chartId)[0];
 			this.moreProps.chartConfig = chartConfig;
 		}
-		this.evaluateType(type, e);
 	}
 }
 

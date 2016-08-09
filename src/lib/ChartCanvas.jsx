@@ -168,12 +168,12 @@ class ChartCanvas extends Component {
 	render() {
 
 		var { type, height, width, margin, className, zIndex, postCalculator, flipXScale } = this.props;
-		var { padding, useCrossHairStyleCursor } = this.props;
+		var { padding, useCrossHairStyleCursor, mode } = this.props;
 
 		var { plotData, filterData, xScale, xAccessor, dataAltered, lastItem, displayXAccessor } = this.state;
 		var dimensions = getDimensions(this.props);
 		// var stateProps = { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor, dataAltered };
-		var props = { padding, type, margin, postCalculator };
+		var props = { padding, type, margin, postCalculator, mode };
 		var stateProps = { plotData, filterData, xScale, xAccessor, dataAltered, lastItem, displayXAccessor };
 
 		var interaction = !isNaN(xScale(xAccessor(first(plotData)))) && isDefined(xScale.invert);
@@ -264,6 +264,7 @@ ChartCanvas.defaultProps = {
 	xAccessor: identity,
 	flipXScale: false,
 	useCrossHairStyleCursor: true,
+	mode: "normal",
 	// initialDisplay: 30
 };
 
