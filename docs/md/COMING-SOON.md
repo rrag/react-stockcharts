@@ -4,7 +4,9 @@ TODO
 
 1. Update Interactive examples
 1. Fix Label
+1. svg clip by chart - test with bollinger band, fib, trendline
 1. Use d3 v4
+1. Pan to load more (xScale & xScaleProvider)
 
 
 1. [Envelope](http://www.investopedia.com/terms/e/envelope.asp?optm=sa_v2)

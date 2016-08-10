@@ -80,6 +80,10 @@ class CandlestickChart extends React.Component {
 					<OHLCTooltip origin={[-40, 0]}/>
 					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]}
 						calculators={[ema26, ema12]}/>
+
+					<ClickCallback enabled={true}
+						onClick={ e => { console.log(`mouse position = ${e.mouseXY}`, e); } }/>
+
 				</Chart>
 				<Chart id={2} height={150}
 						yExtents={[d => d.volume, smaVolume50.accessor()]}
@@ -112,12 +116,9 @@ class CandlestickChart extends React.Component {
 					<MACDSeries calculator={macdCalculator} />
 
 					<MACDTooltip origin={[-38, 15]} calculator={macdCalculator}/>
+
 				</Chart>
 				<CrossHairCursor />
-				<EventCapture mouseMove zoom pan>
-					<ClickCallback forChart={1} id={0} enabled={true}
-						onClick={ e => { console.log(`mouse position = ${e.mouseXY}`, e); } }/>
-				</EventCapture>
 			</ChartCanvas>
 		);
 	}

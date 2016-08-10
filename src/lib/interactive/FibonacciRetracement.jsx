@@ -2,297 +2,260 @@
 
 import d3 from "d3";
 import React, { PropTypes, Component } from "react";
-import makeInteractive from "./makeInteractive";
-import { isDefined, head, last, d3Window, MOUSEMOVE, MOUSEUP } from "../utils";
+
+import { isDefined, isNotDefined, head, last, noop } from "../utils";
+import { getValueFromOverride } from "./utils"
+
+import InteractiveLine from "./InteractiveLine";
+import MouseLocationIndicator from "./MouseLocationIndicator";
 
 class FibonacciRetracement extends Component {
 	constructor(props) {
 		super(props);
-		this.onMousemove = this.onMousemove.bind(this);
-		this.onClick = this.onClick.bind(this);
-		this.handleMoveStart = this.handleMoveStart.bind(this);
-		this.handleResizeStart = this.handleResizeStart.bind(this);
 
-		this.state = {
-			hover: false,
-		};
+		this.handleStartAndEnd = this.handleStartAndEnd.bind(this);
+		this.handleDrawRetracement = this.handleDrawRetracement.bind(this);
+
+		this.handleEdge1Drag = this.handleEdge1Drag.bind(this);
+		this.handleEdge2Drag = this.handleEdge2Drag.bind(this);
+
+		this.handleDrag = this.handleDrag.bind(this);
+		this.handleDragComplete = this.handleDragComplete.bind(this);
+
+		this.state = this.props.init;
 	}
-	removeLast(interactive) {
-		var { retracements, start } = interactive;
-		if (!start && retracements.length > 0) {
-			return { ...interactive, retracements: retracements.slice(0, retracements.length - 1) };
-		}
-		return interactive;
-	}
-	terminate(interactive) {
-		var { start } = interactive;
-		if (start) {
-			return { ...interactive, start: null };
-		}
-		return interactive;
-	}
-	handleMoveStart(idx, lineIndex, e) {
-		var { mouseXY, chartConfig, xAccessor, currentItem } = this.props;
-		var { yScale } = chartConfig;
-
-		var startY = mouseXY[1];
-
-		this.moveStartPosition = [xAccessor(currentItem), yScale.invert(startY)];
-
-		var win = d3Window(this.refs.fib);
-		d3.select(win)
-			.on(MOUSEMOVE, this.handleMove.bind(this, idx))
-			.on(MOUSEUP, this.handleMoveEnd.bind(this, idx));
-
-		e.preventDefault();
-	}
-	handleResizeStart(idx, line, e) {
-		// var { mouseXY } = this.props;
-
-		console.log(idx, line);
-		e.preventDefault();
-	}
-	handleMove(idx) {
-		var { mouseXY, interactiveState, chartConfig } = this.props;
-		var { type, xAccessor, currentItem, plotData } = this.props;
-
-		var { yScale } = chartConfig;
-		var endY = mouseXY[1];
-
-		var [startXValue, startYValue] = this.moveStartPosition;
-		var [endXValue, endYValue] = [xAccessor(currentItem), yScale.invert(endY)];
-
-		var dx = endXValue - startXValue;
-		var dy = endYValue - startYValue;
-
-		var { start, end } = interactiveState.retracements[idx];
-		var newStart = [start[0] + dx, start[1] + dy];
-		var newEnd = [end[0] + dx, end[1] + dy];
-
-		var retracement = generateLine(type, newStart, newEnd, xAccessor, plotData);
-
-		var override = {
-			index: idx,
-			retracement,
-			start: newStart,
-			end: newEnd,
-		};
-
-		this.setState({
-			override
-		});
-	}
-	handleMoveEnd(idx) {
-		var win = d3Window(this.refs.fib);
-		var { overrideInteractive, interactiveState } = this.props;
-		var { override } = this.state;
-		var { start, end } = override;
-
-		if (isDefined(override)) {
-			var retracements = interactiveState.retracements
-				.map((each, i) => (i === idx) ? { start, end } : each);
-
-			overrideInteractive({ retracements }, () => {
-				this.setState({
-					override: null
-				});
+	removeLast() {
+		var { retracements } = this.state;
+		if (isDefined(retracements) && retracements.length > 0) {
+			this.setState({
+				retracements: retracements.slice(0, retracements.length - 1),
 			});
 		}
-		this.moveStartPosition = null;
-		d3.select(win)
-			.on(MOUSEMOVE, null)
-			.on(MOUSEUP, null);
-
 	}
-	isStart(interactive) {
-		return interactive.status === "start";
+	terminate() {
+		this.setState({
+			current: null,
+			override: null,
+		});
 	}
-	isComplete(interactive) {
-		return interactive.status === "complete";
-	}
-	onMousemove(state) {
-		var {
-			// xScale,
-			// plotData,
-			mouseXY,
-			// currentCharts,
-			currentItem,
-			chartConfig,
-			interactiveState,
-			// eventMeta,
-		} = state;
+	handleStartAndEnd(xyValue) {
+		var { current, retracements } = this.state;
 
-		var { enabled, xAccessor } = this.props;
-		if (enabled) {
-			var { yScale } = chartConfig;
-
-			var yValue = yScale.invert(mouseXY[1]);
-			var xValue = xAccessor(currentItem);
-
-			if (interactiveState.start) {
-				var status =  "inprogress";
-				return { ...interactiveState, tempEnd: [xValue, yValue], status };
-			}
+		if (isNotDefined(current) || isNotDefined(current.x1)) {
+			this.setState({
+				current: {
+					x1: xyValue[0],
+					y1: xyValue[1],
+					x2: null,
+					y2: null,
+				}
+			}, () => {
+				this.props.onStart();
+			});
+		} else {
+			this.setState({
+				retracements: retracements.concat({ ...current, x2: xyValue[0], y2: xyValue[1] }),
+				current: null,
+			}, () => {
+				this.props.onComplete();
+			});
 		}
-		return interactiveState;
 	}
-	onClick(state) {
-		var {
-			// xScale,
-			// plotData,
-			mouseXY,
-			// currentCharts,
-			currentItem,
-			chartConfig,
-			interactiveState,
-			eventMeta,
-		} = state;
+	handleDrawRetracement(xyValue) {
+		var { current } = this.state;
 
-		var { enabled, xAccessor } = this.props;
-		if (enabled) {
-			var { start, retracements } = interactiveState;
-
-			var { yScale } = chartConfig;
-
-			var yValue = yScale.invert(mouseXY[1]);
-			var xValue = xAccessor(currentItem);
-
-			if (start) {
-				return {
-					...interactiveState,
-					start: null,
-					tempEnd: null,
-					retracements: retracements.concat({ start, end: [xValue, yValue] }),
-					status: "complete",
-				};
-			} else if (eventMeta.button === 0) {
-				return {
-					...interactiveState,
-					start: [xValue, yValue],
-					tempEnd: null,
-					status: "start",
-				};
-			}
+		if (isDefined(current) && isDefined(current.x1)) {
+			this.setState({
+				current: {
+					...current,
+					x2: xyValue[0],
+					y2: xyValue[1],
+				}
+			});
 		}
-		return interactiveState;
+	}
+	handleDrag(echo, newXYValue, origXYValue) {
+		var { retracements } = this.state;
+		var { index, idx } = echo;
+		var dy = origXYValue.y1Value - newXYValue.y1Value;
+
+		this.setState({
+			override: {
+				index,
+				x1: newXYValue.x1Value,
+				y1: retracements[index].y1 - dy,
+				x2: newXYValue.x2Value,
+				y2: retracements[index].y2 - dy,
+			}
+		});
+	}
+	handleEdge1Drag(echo, newXYValue, origXYValue) {
+		var { retracements } = this.state;
+		var { index, idx } = echo;
+
+		var dx = origXYValue.x1Value - newXYValue.x1Value;
+
+		this.setState({
+			override: {
+				index,
+				x1: retracements[index].x1 - dx,
+				y1: retracements[index].y1,
+				x2: retracements[index].x2,
+				y2: retracements[index].y2,
+			}
+		});
+	}
+	handleEdge2Drag(echo, newXYValue, origXYValue) {
+		var { retracements } = this.state;
+		var { index, idx } = echo;
+
+		var dx = origXYValue.x2Value - newXYValue.x2Value;
+
+		this.setState({
+			override: {
+				index,
+				x1: retracements[index].x1,
+				y1: retracements[index].y1,
+				x2: retracements[index].x2 - dx,
+				y2: retracements[index].y2,
+			}
+		});
+	}
+	handleDragComplete() {
+		var { retracements, override } = this.state;
+
+		if (isDefined(override)) {
+			var { index, ...rest } = override;
+
+			var newRetracements = retracements
+				.map((each, idx) => idx === index
+					? rest
+					: each)
+
+			this.setState({
+				override: null,
+				retracements: newRetracements
+			})
+		}
 	}
 	render() {
-		var { chartConfig, plotData, xScale, xAccessor, interactiveState } = this.props;
-		var { stroke, opacity, fontFamily, fontSize, fontStroke, type, enabled } = this.props;
+		var { retracements, current, override } = this.state;
+		var { stroke, strokeWidth, opacity, fontFamily, fontSize, fontStroke, type } = this.props;
 
-		var { override } = this.state;
+		var lineType = type === "EXTEND" ? "XLINE" : "LINE"
 
-		var { yScale } = chartConfig;
-		var retracements = helper(plotData, type, xAccessor, interactiveState, chartConfig);
-		var className = enabled || isDefined(override) ? "react-stockcharts-avoid-interaction" : "";
-		return (
-			<g className={className} ref="fib">
-				{retracements.map((eachRetracement, idx) => {
-					if (isDefined(override) && idx === override.index) {
-						eachRetracement = override.retracement;
-					}
-					var dir = eachRetracement[0].y1 > eachRetracement[eachRetracement.length - 1].y1 ? 3 : -1.3;
+		var { enabled } = this.props;
 
-					return <g key={idx}>
-						{eachRetracement.map((line, i) => {
-							var text = `${ line.y.toFixed(2) } (${ line.percent.toFixed(2) }%)`;
+		var currentRetracement = null;
+		if (isDefined(current) && isDefined(current.x2)) {
+			var lines = helper(current);
+			var dir = head(lines).y1 > last(lines).y1 ? 3 : -1.3;
 
-							var { className: cursorClassName, onMouseDown } = enabled
-								? {}
-								: (i === 0 || i === eachRetracement.length - 1)
-									? {
-										className: "react-stockcharts-ns-resize-cursor",
-										onMouseDown: this.handleResizeStart
-									}
-									: {
-										className: "react-stockcharts-move-cursor",
-										onMouseDown: this.handleMoveStart
-									};
+			currentRetracement = lines.map((line, idx) => {
+				var text = `${ line.y.toFixed(2) } (${ line.percent.toFixed(2) }%)`;
 
-							return (<EachRetracement key={i} idx={idx} lineIndex={i}
-										className={cursorClassName}
-										onMouseDown={onMouseDown}
-										x1={xScale(line.x1)}
-										x2={xScale(line.x2)}
-										y={yScale(line.y)}
-										stroke={stroke}
-										opacity={opacity}
-										fontFamily={fontFamily}
-										fontSize={fontSize}
-										fontStroke={fontStroke}
-										text={text}
-										textX={xScale(Math.min(line.x1, line.x2)) + 10}
-										textY={yScale(line.y) + dir * 4}
-										/>);
-						})}
-					</g>;
-				})}
-			</g>
-		);
-	}
-}
+				return <InteractiveLine key={idx}
+					type={lineType}
+					x1Value={line.x1}
+					y1Value={line.y}
+					x2Value={line.x2}
+					y2Value={line.y}
 
-/* eslint-disable react/prop-types */
-class EachRetracement extends Component {
-	constructor(props) {
-		super(props);
-		this.handleMouseDown = this.handleMouseDown.bind(this);
-	}
-	handleMouseDown(e) {
-		var { idx, lineIndex, onMouseDown } = this.props;
-		onMouseDown(idx, lineIndex, e);
-	}
-	render() {
-		var { className, x1, x2, y, stroke, opacity, fontFamily, fontSize, fontStroke } = this.props;
-		var { text, textX, textY } = this.props;
-		return <g className={className}
-				onMouseDown={this.handleMouseDown}>
-			<line
-				x1={x1} y1={y}
-				x2={x2} y2={y}
-				stroke={stroke} opacity={opacity} />
-			<line
-				x1={x1} y1={y}
-				x2={x2} y2={y}
-				stroke={stroke} strokeWidth={7} opacity={0} />
-			<text x={textX} y={textY}
-				fontFamily={fontFamily} fontSize={fontSize} fill={fontStroke}>{text}</text>
+					childProps={{ dir, text, fontFamily, fontSize, fontStroke }}
+
+					stroke={stroke} strokeWidth={strokeWidth} opacity={opacity}>
+					{retracementText}
+				</InteractiveLine>
+			});
+		}
+
+		return <g>
+			{retracements.map((each, idx) => {
+				var lines = helper(isDefined(override) && override.index === idx ? override : each);
+
+				var dir = head(lines).y1 > last(lines).y1 ? 3 : -1.3;
+				return lines.map((line, j) => {
+					var text = `${ line.y.toFixed(2) } (${ line.percent.toFixed(2) }%)`;
+
+					return <InteractiveLine key={`${idx}-${j}`} withEdge
+						echo={{ index: idx, idx: j }} type={lineType}
+						defaultClassName="react-stockcharts-enable-interaction react-stockcharts-move-cursor"
+						x1Value={line.x1}
+						y1Value={line.y}
+						x2Value={line.x2}
+						y2Value={line.y}
+
+						childProps={{ dir, text, fontFamily, fontSize, fontStroke }}
+
+						stroke={stroke} strokeWidth={strokeWidth} opacity={opacity}
+						onEdge1Drag={this.handleEdge1Drag}
+						onEdge2Drag={this.handleEdge2Drag}
+						onDrag={this.handleDrag}
+						onDragComplete={this.handleDragComplete}>
+						{retracementText}
+					</InteractiveLine>
+				});
+			})}
+			{currentRetracement}
+			<MouseLocationIndicator
+				enabled={enabled}
+				snap={false}
+				r={0}
+				onMouseDown={this.handleStartAndEnd}
+				onMouseMove={this.handleDrawRetracement} />
 		</g>;
 	}
 }
-/* eslint-enable react/prop-types */
 
-function helper(plotData, type, xAccessor, interactive/* , chartConfig */) {
-	var { retracements, start, tempEnd } = interactive;
-
-	var temp = retracements;
-
-	if (start && tempEnd) {
-		temp = temp.concat({ start, end: tempEnd });
+class EachRetracement extends Component {
+	constructor(props) {
+		super(props);
 	}
-	var lines = temp
-		.map(each => generateLine(type, each.start, each.end, xAccessor, plotData));
+	render() {
+		return <InteractiveLine
+			index={idx} type={lineType}
+			defaultClassName="react-stockcharts-enable-interaction react-stockcharts-move-cursor"
+			x1Value={line.x1}
+			y1Value={line.y}
+			x2Value={line.x2}
+			y2Value={line.y}
 
-	return lines;
+			childProps={{ dir, text, fontFamily, fontSize, fontStroke }}
+
+			stroke={stroke} strokeWidth={strokeWidth} opacity={opacity}
+			onDrag={this.handleDrag}
+			onDragComplete={this.handleDragComplete}>
+			{retracementText}
+		</InteractiveLine>
+	}
 }
 
-function generateLine(type, start, end, xAccessor, plotData) {
-	var dy = end[1] - start[1];
+function retracementText({ xScale, chartConfig }, props, modLine) {
+	var { text, dir, fontStroke, fontFamily, fontSize } = props.childProps;
+	var { x1, y1, x2 } = modLine;
+	return <text
+		x={xScale(Math.min(x1, x2)) + 10}
+		y={chartConfig.yScale(y1) + dir * 4}
+		fontFamily={fontFamily}
+		fontSize={fontSize}
+		fill={fontStroke}>{text}</text>
+}
+
+function helper({ x1, y1, x2, y2 }) {
+	var dy = y2 - y1;
 	var retracements = [100, 61.8, 50, 38.2, 23.6, 0]
 		.map(each => ({
 			percent: each,
-			x1: type === "EXTEND" ? xAccessor(head(plotData)) : start[0],
-			x2: type === "EXTEND" ? xAccessor(last(plotData)) : end[0],
-			y: (end[1] - (each / 100) * dy),
+			x1,
+			x2,
+			y: (y2 - (each / 100) * dy),
 		}));
 
 	return retracements;
 }
 
 FibonacciRetracement.propTypes = {
-	snap: PropTypes.bool.isRequired,
 	enabled: PropTypes.bool.isRequired,
-	snapTo: PropTypes.func,
 	fontFamily: PropTypes.string.isRequired,
 	fontSize: PropTypes.number.isRequired,
 	chartCanvasType: PropTypes.string,
@@ -318,7 +281,6 @@ FibonacciRetracement.propTypes = {
 };
 
 FibonacciRetracement.defaultProps = {
-	snap: true,
 	enabled: true,
 	stroke: "#000000",
 	opacity: 0.4,
@@ -326,7 +288,9 @@ FibonacciRetracement.defaultProps = {
 	fontSize: 10,
 	fontStroke: "#000000",
 	type: "EXTEND",
-
+	init: { retracements: [] },
+	onStart: noop,
+	onComplete: noop,
 };
 
-export default makeInteractive(FibonacciRetracement, { retracements: [] });
+export default FibonacciRetracement;

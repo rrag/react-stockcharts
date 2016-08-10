@@ -14,6 +14,7 @@ class MouseLocationIndicator extends Component {
 
 		this.handleMousePosChange = this.handleMousePosChange.bind(this);
 		this.handleMouseDown = this.handleMouseDown.bind(this);
+		this.handleClick = this.handleClick.bind(this);
 		this.xy = this.xy.bind(this);
 
 		this.mutableState = {};
@@ -25,6 +26,15 @@ class MouseLocationIndicator extends Component {
 			var { xValue, yValue, x, y } = pos;
 			this.mutableState = { x, y };
 			this.props.onMouseDown([xValue, yValue], e);
+		}
+	}
+	handleClick(e) {
+		var moreProps = this.refs.component.getMoreProps();
+		var pos = this.xy(moreProps, e);
+		if (isDefined(pos)) {
+			var { xValue, yValue, x, y } = pos;
+			this.mutableState = { x, y };
+			this.props.onClick([xValue, yValue], e);
 		}
 	}
 	xy(moreProps, e) {
@@ -87,7 +97,8 @@ class MouseLocationIndicator extends Component {
 			onMouseMove={this.handleMousePosChange}
 			isHover={d3.functor(true)}
 			onMouseDown={this.handleMouseDown}
-			onContextMenu={this.handleClick}
+			onClick={this.handleClick}
+			onContextMenu={this.handleContextMenu}
 			drawOnMouseExitOfCanvas
 			/>;
 	}
@@ -97,10 +108,11 @@ MouseLocationIndicator.propTypes = {
 	enabled: PropTypes.bool.isRequired,
 	snap: PropTypes.bool.isRequired,
 	shouldDisableSnap: PropTypes.func.isRequired,
-	snapTo: PropTypes.func.isRequired,
+	snapTo: PropTypes.func,
 
 	onMouseMove: PropTypes.func.isRequired,
 	onMouseDown: PropTypes.func.isRequired,
+	onClick: PropTypes.func.isRequired,
 	r: PropTypes.number.isRequired,
 	stroke: PropTypes.string.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
@@ -114,6 +126,11 @@ MouseLocationIndicator.contextTypes = {
 MouseLocationIndicator.defaultProps = {
 	onMouseMove: noop,
 	onMouseDown: noop,
+	onClick: noop,
+	shouldDisableSnap: d3.functor(false),
+	stroke: "#000000",
+	strokeWidth: 1,
+	opacity: 1,
 };
 
 export default MouseLocationIndicator;

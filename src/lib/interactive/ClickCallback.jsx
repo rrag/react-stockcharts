@@ -1,15 +1,18 @@
 "use strict";
 
 import { PropTypes, Component } from "react";
-import makeInteractive from "./makeInteractive";
+
 import { noop } from "../utils";
+import GenericChartComponent from "../GenericChartComponent";
 
 class ClickCallback extends Component {
 	constructor(props) {
 		super(props);
-		this.onClick = this.onClick.bind(this);
+		this.handleClick = this.handleClick.bind(this);
 	}
-	onClick(state) {
+	handleClick(e) {
+		var moreProps = this.refs.component.getMoreProps();
+
 		var {
 			// xScale,
 			// plotData,
@@ -17,25 +20,27 @@ class ClickCallback extends Component {
 			// currentCharts,
 			currentItem,
 			chartConfig,
-			interactiveState,
-			eventMeta,
-		} = state;
+		} = moreProps;
 
-		var { onClick, displayXAccessor } = this.props;
+		var { xAccessor, displayXAccessor } = this.context;
 
 		var { yScale } = chartConfig;
 
 		var yValue = yScale.invert(mouseXY[1]);
 		var xValue = displayXAccessor(currentItem);
-		onClick({
+		this.props.onClick({
 			xy: [xValue, yValue],
 			mouseXY,
 			currentItem
-		}, eventMeta);
-		return interactiveState;
+		}, e);
 	}
 	render() {
-		return null;
+		return <GenericChartComponent ref="component"
+			svgDraw={d3.functor(null)}
+			isHover={d3.functor(true)}
+			onClick={this.handleClick}
+			onContextMenu={this.handleContextMenu}
+			/>;
 	}
 }
 
@@ -43,13 +48,14 @@ ClickCallback.drawOnCanvas = noop;
 
 ClickCallback.propTypes = {
 	onClick: PropTypes.func.isRequired,
-	/* comes from pure converted from context to prop - START */
+};
+ClickCallback.contextTypes = {
+	xAccessor: PropTypes.func.isRequired,
 	displayXAccessor: PropTypes.func.isRequired,
-	/* comes from pure converted from context to prop - END */
 };
 
 ClickCallback.defaultProps = {
 	onClick: (e) => { console.log(e); },
 };
 
-export default makeInteractive(ClickCallback);
+export default ClickCallback;

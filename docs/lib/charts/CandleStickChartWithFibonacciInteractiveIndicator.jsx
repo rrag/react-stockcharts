@@ -47,11 +47,11 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 		var keyCode = e.which;
 		switch (keyCode) {
 			case 46: { // DEL
-				this.refs.fib.getWrappedComponent().removeLast();
+				this.refs.fib.removeLast();
 				break;
 			}
 			case 27: { // ESC
-				this.refs.fib.getWrappedComponent().terminate();
+				this.refs.fib.terminate();
 				this.setState({
 					enableFib: false
 				})
@@ -101,7 +101,8 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 					seriesName="MSFT"
 					data={data} calculator={[ema26, ema12, smaVolume50, macdCalculator]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
-					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
+					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}
+					drawMode={this.state.enableFib}>
 				<Chart id={1} height={400}
 						yExtents={[d => [d.high, d.low], ema26.accessor(), ema12.accessor()]}
 						padding={{ top: 10, bottom: 20 }}>
@@ -125,6 +126,11 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 					<OHLCTooltip origin={[-40, 0]}/>
 					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]}
 						calculators={[ema26, ema12]}/>
+
+					<FibonacciRetracement ref="fib"
+						enabled={this.state.enableFib}
+						type="BOUND"
+						onComplete={this.onFibComplete}/>
 				</Chart>
 				<Chart id={2} height={150}
 						yExtents={[d => d.volume, smaVolume50.accessor()]}
@@ -158,14 +164,6 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 					<MACDTooltip origin={[-38, 15]} calculator={macdCalculator}/>
 				</Chart>
 				<CrossHairCursor />
-
-				<EventCapture mouseMove zoom pan>
-					<FibonacciRetracement forChart={1} id={1} ref="fib"
-						enabled={this.state.enableFib}
-						type="BOUND"
-						onComplete={this.onFibComplete}/>
-				</EventCapture>
-
 			</ChartCanvas>
 		);
 	}

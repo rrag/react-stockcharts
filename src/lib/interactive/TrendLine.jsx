@@ -4,6 +4,8 @@ import React, { PropTypes, Component } from "react";
 
 import { isDefined, isNotDefined, noop } from "../utils";
 
+import { getValueFromOverride } from "./utils"
+
 import InteractiveLine from "./InteractiveLine";
 import MouseLocationIndicator from "./MouseLocationIndicator";
 
@@ -29,7 +31,8 @@ class TrendLine extends Component {
 	}
 	terminate() {
 		this.setState({
-			current: null
+			current: null,
+			override: null,
 		});
 	}
 	handleDragLine(index, newXYValue) {
@@ -104,7 +107,7 @@ class TrendLine extends Component {
 		return <g>
 			{trends.map((each, idx) =>
 				<InteractiveLine key={idx} withEdge
-					index={idx} type={type}
+					echo={idx} type={type}
 					defaultClassName="react-stockcharts-enable-interaction react-stockcharts-move-cursor"
 					x1Value={getValueFromOverride(override, idx, "x1Value", each.start[0])}
 					y1Value={getValueFromOverride(override, idx, "y1Value", each.start[1])}
@@ -112,6 +115,8 @@ class TrendLine extends Component {
 					y2Value={getValueFromOverride(override, idx, "y2Value", each.end[1])}
 					stroke={stroke} strokeWidth={strokeWidth} opacity={opacity}
 					onDrag={this.handleDragLine}
+					onEdge1Drag={this.handleDragLine}
+					onEdge2Drag={this.handleDragLine}
 					onDragComplete={this.handleDragLineComplete}
 					/>)
 			}
@@ -131,11 +136,6 @@ class TrendLine extends Component {
 	}
 }
 
-function getValueFromOverride(override, index, key, defaultValue) {
-	if (isDefined(override) && override.index === index)
-		return override[key];
-	return defaultValue;
-}
 
 TrendLine.propTypes = {
 	snap: PropTypes.bool.isRequired,

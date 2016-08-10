@@ -3,7 +3,7 @@ import d3 from "d3";
 
 import GenericChartComponent from "../GenericChartComponent";
 
-import { d3Window, MOUSEMOVE, MOUSEUP } from "../utils";
+import { isDefined, d3Window, MOUSEMOVE, MOUSEUP } from "../utils";
 import { head, last, noop } from "../utils";
 import { getCurrentItem } from "../utils/ChartDataUtil";
 
@@ -59,11 +59,17 @@ class InteractiveLine extends Component {
 		var newX2Value = xAccessor(getCurrentItem(xScale, xAccessor, [x2 - dx, y2 - dy], plotData));
 		var newY2Value = yScale.invert(y2 - dy);
 
-		this.props.onDrag(this.props.index, {
+		this.props.onDrag(this.props.echo, {
 			x1Value: newX1Value,
 			y1Value: newY1Value,
 			x2Value: newX2Value,
 			y2Value: newY2Value,
+			dx, dy
+		}, {
+			x1Value,
+			y1Value,
+			x2Value,
+			y2Value,
 		}, e);
 	}
 	handleDragEnd() {
@@ -76,53 +82,69 @@ class InteractiveLine extends Component {
 			.on(MOUSEMOVE, null)
 			.on(MOUSEUP, null);
 
-		this.props.onDragComplete(this.props.index, e);
+		this.props.onDragComplete(this.props.echo, e);
 	}
-	handleEdgeDrag1(edge1, e) {
-		var [newCX, newCY] = edge1;
+	handleEdgeDrag1(edge, origEdge, e) {
+		var [newCX, newCY] = edge;
+		var [cx, cy] = origEdge;
 
 		var moreProps = this.refs.component.getMoreProps();
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 		var { xAccessor } = this.context;
 
-		var { x2Value, y2Value } = this.props;
+		var { x1Value, y1Value, x2Value, y2Value } = this.props;
 
 		var newXValue = xAccessor(getCurrentItem(xScale, xAccessor, [newCX, newCY], plotData));
 		var newYValue = yScale.invert(newCY);
+		var oldXValue = xAccessor(getCurrentItem(xScale, xAccessor, [cx, cy], plotData));
+		var oldYValue = yScale.invert(cy);
 
-		this.props.onDrag(this.props.index, {
+		this.props.onEdge1Drag(this.props.echo, {
 			x1Value: newXValue,
 			y1Value: newYValue,
 			x2Value,
 			y2Value,
+		}, {
+			x1Value: oldXValue,
+			y1Value: oldYValue,
+			x2Value,
+			y2Value,
 		}, e);
 	}
-	handleEdgeDrag2(edge2, e) {
-		var [newCX, newCY] = edge2;
+	handleEdgeDrag2(edge, origEdge, e) {
+		var [newCX, newCY] = edge;
+		var [cx, cy] = origEdge;
 
 		var moreProps = this.refs.component.getMoreProps();
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 		var { xAccessor } = this.context;
 
-		var { x1Value, y1Value } = this.props;
+		var { x1Value, y1Value, x2Value, y2Value } = this.props;
 
 		var newXValue = xAccessor(getCurrentItem(xScale, xAccessor, [newCX, newCY], plotData));
 		var newYValue = yScale.invert(newCY);
+		var oldXValue = xAccessor(getCurrentItem(xScale, xAccessor, [cx, cy], plotData));
+		var oldYValue = yScale.invert(cy);
 
-		this.props.onDrag(this.props.index, {
+		this.props.onEdge2Drag(this.props.echo, {
 			x1Value,
 			y1Value,
 			x2Value: newXValue,
 			y2Value: newYValue,
+		}, {
+			x1Value,
+			y1Value,
+			x2Value: oldXValue,
+			y2Value: oldYValue,
 		}, e);
 	}
 	handleEdgeDragEnd(e) {
-		this.props.onDragComplete(this.props.index, e);
+		this.props.onDragComplete(this.props.echo, e);
 	}
 	renderSVG(moreProps) {
 		var { x1Value, x2Value, y1Value, y2Value, withEdge, type } = this.props;
 		var { defaultClassName, stroke, strokeWidth, opacity } = this.props;
-		var { r, edgeFill, edgeStroke, edgeStrokeWidth } = this.props;
+		var { r, edgeFill, edgeStroke, edgeStrokeWidth, children } = this.props;
 
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 		var { xAccessor } = this.context;
@@ -135,6 +157,7 @@ class InteractiveLine extends Component {
 		var y1 = yScale(modLine.y1);
 		var x2 = xScale(modLine.x2);
 		var y2 = yScale(modLine.y2);
+		var childrenToRender = isDefined(children) ? children(moreProps, this.props, modLine) : null;
 
 		return <g ref="capture">
 			<line
@@ -147,18 +170,19 @@ class InteractiveLine extends Component {
 				stroke={stroke} strokeWidth={8} opacity={0} />
 			{withEdge ? <ClickableCircle className={defaultClassName}
 				onDrag={this.handleEdgeDrag1}
-				onDragEnd={this.handleEdgeDragEnd}
+				onDragComplete={this.handleEdgeDragEnd}
 				cx={x1} cy={y1} r={r}
 				fill={edgeFill} stroke={edgeStroke}
 				strokeWidth={edgeStrokeWidth}
 				hoverOpacity={1} /> : null }
 			{withEdge ? <ClickableCircle className={defaultClassName}
 				onDrag={this.handleEdgeDrag2}
-				onDragEnd={this.handleEdgeDragEnd}
+				onDragComplete={this.handleEdgeDragEnd}
 				cx={x2} cy={y2} r={r}
 				fill={edgeFill} stroke={edgeStroke}
 				strokeWidth={edgeStrokeWidth}
 				hoverOpacity={1} /> : null }
+			{childrenToRender}
 		</g>;
 
 	}
@@ -209,12 +233,14 @@ InteractiveLine.propTypes = {
 		"LINE", // extends between the set bounds
 	]).isRequired,
 	onDrag: PropTypes.func.isRequired,
+	onEdge1Drag: PropTypes.func.isRequired,
+	onEdge2Drag: PropTypes.func.isRequired,
 	onDragComplete: PropTypes.func.isRequired,
 	r: PropTypes.number.isRequired,
 	opacity: PropTypes.number.isRequired,
 	edgeFill: PropTypes.string.isRequired,
 	defaultClassName: PropTypes.string,
-	index: PropTypes.number,
+	echo: PropTypes.any,
 	edgeStroke: PropTypes.string.isRequired,
 	edgeStrokeWidth: PropTypes.number.isRequired,
 	withEdge: PropTypes.bool.isRequired,
@@ -222,12 +248,15 @@ InteractiveLine.propTypes = {
 
 InteractiveLine.defaultProps = {
 	onDrag: noop,
+	onEdge1Drag: noop,
+	onEdge2Drag: noop,
 	onDragComplete: noop,
 	edgeStrokeWidth: 3,
 	edgeStroke: "#000000",
 	edgeFill: "#FFFFFF",
 	r: 10,
 	withEdge: false,
+	strokeWidth: 1,
 };
 
 InteractiveLine.contextTypes = {
@@ -285,7 +314,7 @@ class ClickableCircle extends Component {
 		var newCX = cx - dx;
 		var newCY = cy - dy;
 
-		this.props.onDrag([newCX, newCY], e);
+		this.props.onDrag([newCX, newCY], [cx, cy], e);
 	}
 	handleDragEnd() {
 		var e = d3.event;
