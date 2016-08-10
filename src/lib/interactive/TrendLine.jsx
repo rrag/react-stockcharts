@@ -4,7 +4,7 @@ import React, { PropTypes, Component } from "react";
 
 import { isDefined, isNotDefined, noop } from "../utils";
 
-import { getValueFromOverride } from "./utils"
+import { getValueFromOverride } from "./utils";
 
 import InteractiveLine from "./InteractiveLine";
 import MouseLocationIndicator from "./MouseLocationIndicator";

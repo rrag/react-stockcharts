@@ -3,7 +3,7 @@ import d3 from "d3";
 
 import GenericChartComponent from "../GenericChartComponent";
 
-import { isDefined, d3Window, MOUSEMOVE, MOUSEUP } from "../utils";
+import { d3Window, MOUSEMOVE, MOUSEUP } from "../utils";
 import { head, last, noop } from "../utils";
 import { getCurrentItem } from "../utils/ChartDataUtil";
 
@@ -92,7 +92,7 @@ class InteractiveLine extends Component {
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 		var { xAccessor } = this.context;
 
-		var { x1Value, y1Value, x2Value, y2Value } = this.props;
+		var { x2Value, y2Value } = this.props;
 
 		var newXValue = xAccessor(getCurrentItem(xScale, xAccessor, [newCX, newCY], plotData));
 		var newYValue = yScale.invert(newCY);
@@ -119,7 +119,7 @@ class InteractiveLine extends Component {
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 		var { xAccessor } = this.context;
 
-		var { x1Value, y1Value, x2Value, y2Value } = this.props;
+		var { x1Value, y1Value } = this.props;
 
 		var newXValue = xAccessor(getCurrentItem(xScale, xAccessor, [newCX, newCY], plotData));
 		var newYValue = yScale.invert(newCY);
@@ -157,7 +157,7 @@ class InteractiveLine extends Component {
 		var y1 = yScale(modLine.y1);
 		var x2 = xScale(modLine.x2);
 		var y2 = yScale(modLine.y2);
-		var childrenToRender = isDefined(children) ? children(moreProps, this.props, modLine) : null;
+		var childrenToRender = children(moreProps, this.props, modLine);
 
 		return <g ref="capture">
 			<line
@@ -244,6 +244,7 @@ InteractiveLine.propTypes = {
 	edgeStroke: PropTypes.string.isRequired,
 	edgeStrokeWidth: PropTypes.number.isRequired,
 	withEdge: PropTypes.bool.isRequired,
+	children: PropTypes.func.isRequired,
 };
 
 InteractiveLine.defaultProps = {
@@ -257,6 +258,7 @@ InteractiveLine.defaultProps = {
 	r: 10,
 	withEdge: false,
 	strokeWidth: 1,
+	children: noop,
 };
 
 InteractiveLine.contextTypes = {

@@ -1,6 +1,7 @@
 "use strict";
 
-import { PropTypes, Component } from "react";
+import d3 from "d3";
+import React, { PropTypes, Component } from "react";
 
 import { noop } from "../utils";
 import GenericChartComponent from "../GenericChartComponent";
@@ -22,7 +23,7 @@ class ClickCallback extends Component {
 			chartConfig,
 		} = moreProps;
 
-		var { xAccessor, displayXAccessor } = this.context;
+		var { displayXAccessor } = this.context;
 
 		var { yScale } = chartConfig;
 

@@ -1,10 +1,8 @@
 "use strict";
 
-import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 
 import { isDefined, isNotDefined, head, last, noop } from "../utils";
-import { getValueFromOverride } from "./utils"
 
 import InteractiveLine from "./InteractiveLine";
 import MouseLocationIndicator from "./MouseLocationIndicator";
@@ -76,7 +74,7 @@ class FibonacciRetracement extends Component {
 	}
 	handleDrag(echo, newXYValue, origXYValue) {
 		var { retracements } = this.state;
-		var { index, idx } = echo;
+		var { index } = echo;
 		var dy = origXYValue.y1Value - newXYValue.y1Value;
 
 		this.setState({
@@ -91,7 +89,7 @@ class FibonacciRetracement extends Component {
 	}
 	handleEdge1Drag(echo, newXYValue, origXYValue) {
 		var { retracements } = this.state;
-		var { index, idx } = echo;
+		var { index } = echo;
 
 		var dx = origXYValue.x1Value - newXYValue.x1Value;
 
@@ -107,7 +105,7 @@ class FibonacciRetracement extends Component {
 	}
 	handleEdge2Drag(echo, newXYValue, origXYValue) {
 		var { retracements } = this.state;
-		var { index, idx } = echo;
+		var { index } = echo;
 
 		var dx = origXYValue.x2Value - newXYValue.x2Value;
 
@@ -130,19 +128,19 @@ class FibonacciRetracement extends Component {
 			var newRetracements = retracements
 				.map((each, idx) => idx === index
 					? rest
-					: each)
+					: each);
 
 			this.setState({
 				override: null,
 				retracements: newRetracements
-			})
+			});
 		}
 	}
 	render() {
 		var { retracements, current, override } = this.state;
 		var { stroke, strokeWidth, opacity, fontFamily, fontSize, fontStroke, type } = this.props;
 
-		var lineType = type === "EXTEND" ? "XLINE" : "LINE"
+		var lineType = type === "EXTEND" ? "XLINE" : "LINE";
 
 		var { enabled } = this.props;
 
@@ -165,7 +163,7 @@ class FibonacciRetracement extends Component {
 
 					stroke={stroke} strokeWidth={strokeWidth} opacity={opacity}>
 					{retracementText}
-				</InteractiveLine>
+				</InteractiveLine>;
 			});
 		}
 
@@ -193,7 +191,7 @@ class FibonacciRetracement extends Component {
 						onDrag={this.handleDrag}
 						onDragComplete={this.handleDragComplete}>
 						{retracementText}
-					</InteractiveLine>
+					</InteractiveLine>;
 				});
 			})}
 			{currentRetracement}
@@ -207,28 +205,7 @@ class FibonacciRetracement extends Component {
 	}
 }
 
-class EachRetracement extends Component {
-	constructor(props) {
-		super(props);
-	}
-	render() {
-		return <InteractiveLine
-			index={idx} type={lineType}
-			defaultClassName="react-stockcharts-enable-interaction react-stockcharts-move-cursor"
-			x1Value={line.x1}
-			y1Value={line.y}
-			x2Value={line.x2}
-			y2Value={line.y}
-
-			childProps={{ dir, text, fontFamily, fontSize, fontStroke }}
-
-			stroke={stroke} strokeWidth={strokeWidth} opacity={opacity}
-			onDrag={this.handleDrag}
-			onDragComplete={this.handleDragComplete}>
-			{retracementText}
-		</InteractiveLine>
-	}
-}
+/* eslint-disable react/prop-types */
 
 function retracementText({ xScale, chartConfig }, props, modLine) {
 	var { text, dir, fontStroke, fontFamily, fontSize } = props.childProps;
@@ -238,8 +215,9 @@ function retracementText({ xScale, chartConfig }, props, modLine) {
 		y={chartConfig.yScale(y1) + dir * 4}
 		fontFamily={fontFamily}
 		fontSize={fontSize}
-		fill={fontStroke}>{text}</text>
+		fill={fontStroke}>{text}</text>;
 }
+/* eslint-enable react/prop-types */
 
 function helper({ x1, y1, x2, y2 }) {
 	var dy = y2 - y1;
@@ -265,6 +243,7 @@ FibonacciRetracement.propTypes = {
 	xScale: PropTypes.func,
 	interactive: PropTypes.object,
 	width: PropTypes.number,
+	strokeWidth: PropTypes.number,
 	stroke: PropTypes.string,
 	opacity: PropTypes.number,
 	fontStroke: PropTypes.string,
@@ -278,11 +257,14 @@ FibonacciRetracement.propTypes = {
 	currentItem: PropTypes.object,
 	interactiveState: PropTypes.object,
 	overrideInteractive: PropTypes.func,
+	childProps: PropTypes.any,
+	init: PropTypes.object.isRequired,
 };
 
 FibonacciRetracement.defaultProps = {
 	enabled: true,
 	stroke: "#000000",
+	strokeWidth: 1,
 	opacity: 0.4,
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 10,
