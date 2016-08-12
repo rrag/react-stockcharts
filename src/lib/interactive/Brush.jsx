@@ -1,154 +1,126 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-
-import makeInteractive from "./makeInteractive";
+import d3 from "d3";
 
 import { isDefined, noop } from "../utils";
+import GenericChartComponent from "../GenericChartComponent";
 
 class Brush extends Component {
 	constructor(props) {
 		super(props);
-		this.onMousemove = this.onMousemove.bind(this);
-		this.onClick = this.onClick.bind(this);
+		this.handleStartAndEnd = this.handleStartAndEnd.bind(this);
+		this.handleDrawBrush = this.handleDrawBrush.bind(this);
+		this.state = {};
 	}
 	terminate() {
-		return {
+		this.setState({
 			x1: null, y1: null,
 			x2: null, y2: null,
 			startItem: null,
 			startClick: null,
-			status: null,
-		};
+			rect: null,
+		});
 	}
-	onMousemove(state) {
+	handleDrawBrush() {
+		var moreProps = this.refs.component.getMoreProps();
+
 		var {
-			// xScale,
-			// plotData,
+			xScale,
 			mouseXY,
-			// currentCharts,
 			currentItem,
 			chartConfig,
-			interactiveState,
-			// eventMeta,
-		} = state;
+		} = moreProps;
 
-		var { enabled, xAccessor } = this.props;
-		var { x1, y1 } = interactiveState;
+		var { enabled } = this.props;
+		var { xAccessor } = this.context;
 
-		var status = "mousemove";
-		if (enabled && isDefined(x1) && isDefined(y1)) {
+		var { startClick, startItem } = this.state;
+
+		if (enabled && isDefined(startItem)) {
 			var { yScale } = chartConfig;
 
-			var x2 = xAccessor(currentItem);
-			var y2 = yScale.invert(mouseXY[1]);
+			var y1Value = yScale.invert(startClick[1]);
+			var y2Value = yScale.invert(mouseXY[1]);
 
-			return { ...interactiveState, x2, y2, status };
+			var x1 = xScale(xAccessor(startItem));
+			var y1 = yScale(y1Value);
+			var x2 = xScale(xAccessor(currentItem));
+			var y2 = yScale(y2Value);
+
+			var height = Math.abs(y2 - y1);
+			var width = Math.abs(x2 - x1);
+
+			this.setState({
+				rect: {
+					x: Math.min(x1, x2),
+					y: Math.min(y1, y2),
+					height,
+					width,
+				}
+			});
 		}
-		return { ...interactiveState, status, callbackProps: null };
 	}
-	onClick(state) {
+	handleStartAndEnd(e) {
+		var moreProps = this.refs.component.getMoreProps();
+
 		var {
-			// xScale,
-			// plotData,
 			mouseXY,
-			// currentCharts,
 			currentItem,
 			chartConfig,
-			interactiveState,
-			eventMeta,
-		} = state;
+		} = moreProps;
 
-		var { displayXAccessor, xAccessor } = this.props;
-		var { enabled } = this.props;
+		var { displayXAccessor } = this.context;
+		var { enabled, onBrush } = this.props;
 
 		if (enabled) {
-			var { x1, y1, startItem, startClick } = interactiveState;
+			var { x1, y1, startItem, startClick } = this.state;
 			var { yScale } = chartConfig;
-
-			var xValue = xAccessor(currentItem);
+			var xValue = displayXAccessor(currentItem);
 			var yValue = yScale.invert(mouseXY[1]);
 
-			if (interactiveState.status === "brush") {
-				return {
-					...interactiveState,
-					status: null,
-				};
-			} else if (isDefined(x1)) {
-				var callbackProps = [{
-					x1: displayXAccessor(startItem),
+			if (isDefined(startItem)) {
+				// brush complete
+				onBrush({
+					x1,
 					y1,
 					x2: displayXAccessor(currentItem),
 					y2: yValue,
 					startItem,
 					currentItem,
 					startClick,
-					mouseXY
-				}, eventMeta];
-
-				var interactive =  {
-					// ...interactiveState,
-					x1: null, y1: null,
-					x2: null, y2: null,
-					startItem: null,
-					startClick: null,
-					status: "brush",
-					callbackProps,
-				};
-				// return { interactive: onCompleteBrushCoords, callback: onCompleteCallback };
-				return interactive;
-			} else if (eventMeta.button === 0) {
-
-				return {
+					mouseXY,
+				}, e);
+				this.terminate();
+			} else {
+				// brush start
+				this.setState({
 					x1: xValue,
 					y1: yValue,
-					startItem: currentItem,
-					startClick: mouseXY,
 					x2: null,
 					y2: null,
-					status: "start",
-				};
+					startItem: currentItem,
+					startClick: mouseXY,
+				});
 			}
 		}
-		return interactiveState;
 	}
 	render() {
-		var { chartConfig, plotData, xScale, xAccessor, interactiveState, enabled } = this.props;
-		var { type, fill, stroke, opacity } = this.props;
+		var { rect } = this.state;
+		var { fill, stroke, opacity } = this.props;
+		var rectProps = { fill, stroke, opacity };
 
-		var { x1, y1, x2, y2 } = interactiveState;
-
-		if (enabled && isDefined(x1) && isDefined(y1) && isDefined(x2) && isDefined(y2)) {
-			var brush = helper(type, plotData, xScale, xAccessor, chartConfig, { x1, y1, x2, y2 });
-			return <rect className="react-stockcharts-avoid-interaction"
-				{...brush} fill={fill} stroke={stroke} fillOpacity={opacity} />;
-		}
-		return null;
+		return <g>
+			{ isDefined(rect) ? <rect {...rect} {...rectProps} /> : null }
+			<GenericChartComponent ref="component"
+				svgDraw={this.renderSVG}
+				isHover={d3.functor(true)}
+				onMouseDown={this.handleStartAndEnd}
+				onMouseMove={this.handleDrawBrush}
+				drawOnMouseExitOfCanvas
+				/>
+		</g>;
 	}
-}
-
-function helper(type, plotData, xScale, xAccessor, chartConfig, { x1, y1, x2, y2 }) {
-	var { yScale } = chartConfig;
-
-	var left = Math.min(x1, x2);
-	var right = Math.max(x1, x2);
-
-	var top = Math.max(y1, y2);
-	var bottom = Math.min(y1, y2);
-
-	var x = xScale(left);
-	var width = xScale(right) - xScale(left);
-
-	var y = type === "1D" ? 0 : yScale(top);
-	var height = type === "1D" ? chartConfig.height : yScale(bottom) - yScale(top);
-
-	// console.log(chartConfig);
-	return {
-		x,
-		y,
-		width,
-		height,
-	};
 }
 
 Brush.propTypes = {
@@ -157,17 +129,14 @@ Brush.propTypes = {
 	onBrush: PropTypes.func.isRequired,
 
 	type: PropTypes.oneOf(["1D", "2D"]),
-	chartCanvasType: PropTypes.string,
-	chartConfig: PropTypes.object,
-	plotData: PropTypes.array,
-	xAccessor: PropTypes.func,
-	xScale: PropTypes.func,
-	interactive: PropTypes.object,
 	stroke: PropTypes.string,
 	fill: PropTypes.string,
 	opacity: PropTypes.number,
-	displayXAccessor: PropTypes.func,
 	interactiveState: PropTypes.object,
+};
+Brush.contextTypes = {
+	xAccessor: PropTypes.func.isRequired,
+	displayXAccessor: PropTypes.func.isRequired,
 };
 
 Brush.defaultProps = {
@@ -179,4 +148,4 @@ Brush.defaultProps = {
 	onStart: noop,
 };
 
-export default makeInteractive(Brush, {});
+export default Brush;

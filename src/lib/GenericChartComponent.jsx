@@ -54,7 +54,7 @@ GenericChartComponent.propTypes = GenericComponent.propTypes;
 GenericChartComponent.defaultProps = GenericComponent.defaultProps;
 
 GenericChartComponent.contextTypes = {
-	...GenericChartComponent.contextTypes,
+	...GenericComponent.contextTypes,
 	chartId: PropTypes.number.isRequired,
 	chartConfig: PropTypes.object.isRequired,
 };

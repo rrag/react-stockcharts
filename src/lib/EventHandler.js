@@ -13,6 +13,7 @@ import {
 import EventCapture from "./EventCapture";
 import { getNewChartConfig, getChartConfigWithUpdatedYScales, getCurrentCharts, getCurrentItem } from "./utils/ChartDataUtil";
 
+var panEnd = 0;
 function setXRange(xScale, dimensions, padding, direction = 1) {
 	if (xScale.rangeRoundPoints) {
 		if (isNaN(padding)) throw new Error("padding has to be a number for ordinal scale");
@@ -552,19 +553,21 @@ class EventHandler extends Component {
 		this.hackyWayToStopPanBeyondBounds__plotData = null;
 		this.hackyWayToStopPanBeyondBounds__domain = null;
 
-		this.clearThreeCanvas();
 		this.triggerEvent("panend", state, e);
-
+		console.log("PANEND", panEnd++);
 		var {
 			xScale,
 			plotData,
 			chartConfig,
 		} = state;
 
-		this.setState({
-			xScale,
-			plotData,
-			chartConfig,
+		requestAnimationFrame(() => {
+			this.clearThreeCanvas();
+			this.setState({
+				xScale,
+				plotData,
+				chartConfig,
+			});
 		});
 	}
 	setInteractiveState(id, chartId, interactive) {

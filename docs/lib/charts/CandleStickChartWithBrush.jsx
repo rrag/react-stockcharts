@@ -58,6 +58,7 @@ class CandlestickChart extends React.Component {
 		this.state = {
 			xExtents: [new Date(2012, 0, 3), new Date(2012, 5, 29)],
 			yExtents: [d => [d.high, d.low], ema26.accessor(), ema12.accessor()],
+			brushEnabled: true,
 		}
 	}
 	componentDidMount() {
@@ -71,7 +72,7 @@ class CandlestickChart extends React.Component {
 		console.log(keyCode);
 		switch (keyCode) {
 			case 27: { // ESC
-				this.refs.brush.getWrappedComponent().terminate();
+				this.refs.brush.terminate();
 			}
 		}
 	}
@@ -87,6 +88,7 @@ class CandlestickChart extends React.Component {
 		this.setState({
 			xExtents: [left, right],
 			yExtents: BRUSH_TYPE === "2D" ? [low, high] : this.state.yExtents,
+			brushEnabled: false,
 		})
 	}
 	render() {
@@ -97,7 +99,8 @@ class CandlestickChart extends React.Component {
 					seriesName="MSFT"
 					data={data} calculator={[ema26, ema12, smaVolume50, macdCalculator]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
-					xExtents={this.state.xExtents}>
+					xExtents={this.state.xExtents}
+					drawMode={this.state.brushEnabled}>
 				<Chart id={1} height={400}
 						yExtents={this.state.yExtents}
 						padding={{ top: 10, bottom: 20 }}>
@@ -122,6 +125,11 @@ class CandlestickChart extends React.Component {
 					<OHLCTooltip origin={[-40, 0]}/>
 					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]}
 						calculators={[ema26, ema12]}/>
+
+					<Brush ref="brush"
+						enabled={true}
+						type={BRUSH_TYPE}
+						onBrush={this.handleBrush}/>
 				</Chart>
 				<Chart id={2} height={150}
 						yExtents={[d => d.volume, smaVolume50.accessor()]}
@@ -155,12 +163,6 @@ class CandlestickChart extends React.Component {
 					<MACDTooltip forChart={3} origin={[-38, 15]} calculator={macdCalculator}/>
 				</Chart>
 				<CrossHairCursor />
-				<EventCapture mouseMove zoom pan>
-					<Brush ref="brush"
-						forChart={1} id={0} enabled={true}
-						type={BRUSH_TYPE}
-						onBrush={this.handleBrush}/>
-				</EventCapture>
 			</ChartCanvas>
 		);
 	}

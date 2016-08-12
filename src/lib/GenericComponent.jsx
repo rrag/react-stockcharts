@@ -155,6 +155,7 @@ class GenericComponent extends Component {
 	}
 	componentWillReceiveProps(nextProps, nextContext) {
 		var { xScale, plotData, chartConfig } = nextContext;
+		if (this.props.debug) console.log(nextContext);
 		this.moreProps = {
 			...this.moreProps,
 			xScale, plotData, chartConfig
@@ -251,7 +252,12 @@ GenericComponent.contextTypes = {
 	xScale: PropTypes.func.isRequired,
 	xAccessor: PropTypes.func.isRequired,
 	plotData: PropTypes.array.isRequired,
-	// chartConfig: PropTypes.object.isRequired,
+
+	chartConfig: PropTypes.oneOfType([
+		PropTypes.array,
+		PropTypes.object,
+	]).isRequired,
+
 	canvasOriginX: PropTypes.number,
 	canvasOriginY: PropTypes.number,
 

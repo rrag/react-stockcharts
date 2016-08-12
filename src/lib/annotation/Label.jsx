@@ -2,28 +2,29 @@
 
 import d3 from "d3";
 import React, { PropTypes, Component } from "react";
+import GenericComponent from "../GenericComponent";
 
-import pure from "../pure";
 import { isDefined, hexToRGBA } from "../utils";
 import LabelAnnotation, { defaultProps, helper } from "./LabelAnnotation";
 
 class Label extends Component {
-
-	componentDidMount() {
-		var { selectCanvas, getCanvasContexts, chartConfig, chartCanvasType } = this.props;
-		if (chartCanvasType !== "svg") {
-			var ctx = selectCanvas(getCanvasContexts());
-			var yScale = getYScale(chartConfig);
-
-			drawOnCanvas2({ ...this.props, yScale, text: getText(this.props) }, ctx);
-		}
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
-	componentDidUpdate() {
-		this.componentDidMount();
+	drawOnCanvas(ctx, moreProps) {
+		drawOnCanvas2(ctx, this.props, this.context, moreProps);
 	}
 	render() {
-		var { chartConfig, chartCanvasType } = this.props;
-		if (chartCanvasType !== "svg") return null;
+		return <GenericComponent
+			canvasToDraw={this.props.selectCanvas}
+			svgDraw={this.renderSVG}
+			canvasDraw={this.drawOnCanvas}
+			/>;
+	}
+	renderSVG(moreProps) {
+		var { chartConfig } = moreProps;
 
 		return <LabelAnnotation yScale={getYScale(chartConfig)} {...this.props} text={getText(this.props)}/>;
 	}
@@ -40,16 +41,18 @@ function getYScale(chartConfig) {
 Label.propTypes = {
 	className: PropTypes.string,
 	selectCanvas: PropTypes.func.isRequired,
-	getCanvasContexts: PropTypes.func,
-	chartCanvasType: PropTypes.string,
-	chartConfig: PropTypes.oneOfType([
-		PropTypes.array,
-		PropTypes.object,
-	]).isRequired,
 	text: PropTypes.oneOfType([
 		PropTypes.string,
 		PropTypes.func
 	]).isRequired,
+};
+
+Label.contextTypes = {
+	xAccessor: PropTypes.func.isRequired,
+	canvasOriginX: PropTypes.number,
+	canvasOriginY: PropTypes.number,
+
+	margin: PropTypes.object.isRequired,
 };
 
 Label.defaultProps = {
@@ -57,27 +60,29 @@ Label.defaultProps = {
 	selectCanvas: canvases => canvases.bg,
 };
 
-function drawOnCanvas2(props, ctx) {
+function drawOnCanvas2(ctx, props, context, moreProps) {
 	ctx.save();
 
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
-	var { canvasOriginX, canvasOriginY, margin } = props;
+	var { canvasOriginX, canvasOriginY, margin } = context;
 
 	if (isDefined(canvasOriginX))
 		ctx.translate(canvasOriginX, canvasOriginY);
 	else
 		ctx.translate(margin.left + 0.5, margin.top + 0.5);
 
-	drawOnCanvas(props, ctx);
+	drawOnCanvas(ctx, props, context, moreProps);
 
 	ctx.restore();
 
 }
 
-function drawOnCanvas(props, ctx) {
-	var { textAnchor, fontFamily, fontSize, opacity, xAccessor, xScale, yScale, rotate } = props;
+function drawOnCanvas(ctx, props, context, moreProps) {
+	var { textAnchor, fontFamily, fontSize, opacity, rotate } = props;
+	var { xScale, chartConfig } = moreProps;
+	var { xAccessor } = context;
 
-	var { xPos, yPos, fill, text } = helper(props, xAccessor, xScale, yScale);
+	var { xPos, yPos, fill, text } = helper(props, xAccessor, xScale, getYScale(chartConfig));
 
 	var radians = (rotate / 180) * Math.PI;
 	ctx.save();
@@ -94,18 +99,4 @@ function drawOnCanvas(props, ctx) {
 }
 
 
-export default pure(Label, {
-	xScale: PropTypes.func,
-	canvasOriginX: PropTypes.number,
-	canvasOriginY: PropTypes.number,
-	xAccessor: PropTypes.func,
-	chartConfig: PropTypes.oneOfType([
-		PropTypes.array,
-		PropTypes.object,
-	]).isRequired,
-	chartCanvasType: PropTypes.string,
-	getCanvasContexts: PropTypes.func,
-	interval: PropTypes.string,
-	plotData: PropTypes.array,
-	margin: PropTypes.object,
-});
+export default Label;
