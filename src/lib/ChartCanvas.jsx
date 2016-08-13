@@ -119,7 +119,7 @@ function resetChart(props, firstCalculation = false) {
 	}
 
 	var state = calculateState(props);
-	var { plotData: initialPlotData, xScale } = state
+	var { plotData: initialPlotData, xScale } = state;
 	var { postCalculator, children, padding, flipXScale } = props;
 
 	var plotData = postCalculator(initialPlotData);
@@ -166,7 +166,7 @@ function updateChart(newState, initialXScale, props, prevLastItem) {
 
 		initialPlotData = filterData([newStart, newEnd], xAccessor).plotData;
 		// if last item was visible, then shift
-		console.log("HERE!!!!!", dx)
+		console.log("HERE!!!!!", dx);
 		updatedXScale.domain([newStart, newEnd]);
 	}
 	// plotData = getDataOfLength(fullData, showingInterval, plotData.length)
@@ -258,7 +258,7 @@ class ChartCanvas extends Component {
 		this.pinchCoordinates = this.pinchCoordinates.bind(this);
 
 		// this.setInteractiveState = this.setInteractiveState.bind(this);
-		//this.getInteractiveState = this.getInteractiveState.bind(this);
+		// this.getInteractiveState = this.getInteractiveState.bind(this);
 
 		this.subscriptions = [];
 		this.subscribe = this.subscribe.bind(this);
@@ -277,20 +277,20 @@ class ChartCanvas extends Component {
 			return this.refs.canvases.getCanvasContexts();
 		}
 	}
-	clearBothCanvas(props) {
+	clearBothCanvas() {
 		var canvases = this.getCanvasContexts();
 		if (canvases && canvases.axes) {
 			// console.log("CLEAR");
 			clearCanvas([canvases.axes, canvases.mouseCoord]);
 		}
 	}
-	clearMouseCanvas(props) {
+	clearMouseCanvas() {
 		var canvases = this.getCanvasContexts();
 		if (canvases && canvases.mouseCoord) {
 			clearCanvas([canvases.mouseCoord]);
 		}
 	}
-	clearThreeCanvas(props) {
+	clearThreeCanvas() {
 		var canvases = this.getCanvasContexts();
 		if (canvases && canvases.axes) {
 			clearCanvas([canvases.axes, canvases.mouseCoord, canvases.bg]);
@@ -653,19 +653,19 @@ class ChartCanvas extends Component {
 					console.log("xExtents changed");
 			}
 			// do reset
-			newState = resetChart(nextProps)
+			newState = resetChart(nextProps);
 		} else {
 			if (process.env.NODE_ENV !== "production") {
 				if (this.props.data !== nextProps.data)
 					console.log("data is changed but seriesName did not, change the seriesName if you wish to reset the chart");
 				else if (!shallowEqual(this.props.calculator, nextProps.calculator))
-					console.log("calculator changed")
+					console.log("calculator changed");
 				else
 					console.log("Trivial change, may be width/height or type changed, but that does not matter");
 			}
 
 			var calculatedState = calculateFullData(nextProps);
-			console.log(calculatedState.xScale.domain())
+			console.log(calculatedState.xScale.domain());
 
 			newState = updateChart(calculatedState, this.state.xScale, nextProps, last(this.state.plotData));
 		}
@@ -685,15 +685,15 @@ class ChartCanvas extends Component {
 
 
 
-		this.clearThreeCanvas(nextProps);
-		this.setState(newState)
+		this.clearThreeCanvas();
+		this.setState(newState);
 	}
 	render() {
 
-		var { type, height, width, margin, className, zIndex, postCalculator, flipXScale, defaultFocus } = this.props;
-		var { padding, useCrossHairStyleCursor, drawMode } = this.props;
+		var { type, height, width, margin, className, zIndex, defaultFocus } = this.props;
+		var { useCrossHairStyleCursor, drawMode } = this.props;
 
-		var { plotData, filterData, xScale, xAccessor, dataAltered, lastItem, displayXAccessor, chartConfig } = this.state;
+		var { plotData, xScale, xAccessor, chartConfig } = this.state;
 		var dimensions = getDimensions(this.props);
 
 		var interaction = isInteractionEnabled(xScale, xAccessor, plotData);

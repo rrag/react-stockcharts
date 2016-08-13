@@ -191,7 +191,7 @@ class EventHandler extends Component {
 			}
 
 			this.clearThreeCanvas(nextProps);
-			this.setState(newState)
+			this.setState(newState);
 
 			// receivedProps: this.state.receivedProps + 1,
 		}
