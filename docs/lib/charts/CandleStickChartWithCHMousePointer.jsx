@@ -3,19 +3,19 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
 
-var { CandlestickSeries, BarSeries } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
 
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY } = ReStock.coordinates;
-var { OHLCTooltip } = ReStock.tooltip;
+var { CandlestickSeries, BarSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { XAxis, YAxis } = ReStock.axes;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY } = coordinates;
+var { OHLCTooltip } = tooltip;
 
-var { fitWidth } = ReStock.helper;
+var { XAxis, YAxis } = axes;
+
+var { fitWidth } = helper;
 
 class CandleStickChartWithCHMousePointer extends React.Component {
 	render() {

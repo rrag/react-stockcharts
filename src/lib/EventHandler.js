@@ -80,7 +80,7 @@ class EventHandler extends Component {
 			// mouseXY: [0, 0],
 			// panInProgress: false,
 			// currentCharts: [],
-			receivedProps: 0,
+			// receivedProps: 0,
 		};
 	}
 	componentWillMount() {
@@ -191,10 +191,9 @@ class EventHandler extends Component {
 			}
 
 			this.clearThreeCanvas(nextProps);
-			this.setState({
-				...newState,
-				receivedProps: this.state.receivedProps + 1,
-			});
+			this.setState(newState)
+
+			// receivedProps: this.state.receivedProps + 1,
 		}
 	}/*
 	shouldComponentUpdate(nextProps, nextState) {

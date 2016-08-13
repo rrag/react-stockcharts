@@ -66,7 +66,6 @@ class PointAndFigureSeries extends Component {
 
 PointAndFigureSeries.propTypes = {
 	className: PropTypes.string,
-	yAccessor: PropTypes.func.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
 	stroke: PropTypes.object.isRequired,
 	fill: PropTypes.object.isRequired,

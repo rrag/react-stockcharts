@@ -3,19 +3,19 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
 
-var { AreaSeries, BarSeries, LineSeries, AreaSeries } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
 
-var { EdgeIndicator } = ReStock.coordinates;
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
+var { AreaSeries, BarSeries, LineSeries, AreaSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { SingleValueTooltip, MovingAverageTooltip } = ReStock.tooltip;
-var { XAxis, YAxis } = ReStock.axes;
-var { fitWidth } = ReStock.helper;
+var { EdgeIndicator } = coordinates;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
+
+var { SingleValueTooltip, MovingAverageTooltip } = tooltip;
+var { XAxis, YAxis } = axes;
+var { fitWidth } = helper;
 
 class AreaChartWithEdge extends React.Component {
 	render() {

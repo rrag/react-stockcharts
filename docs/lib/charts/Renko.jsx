@@ -3,20 +3,20 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
-var { BarSeries, LineSeries, AreaSeries, RenkoSeries } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
 
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
-var { EdgeIndicator } = ReStock.coordinates;
+var { BarSeries, LineSeries, AreaSeries, RenkoSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { OHLCTooltip, MACDTooltip } = ReStock.tooltip;
-var { XAxis, YAxis } = ReStock.axes;
-var { renko } = ReStock.indicator;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
+var { EdgeIndicator } = coordinates;
 
-var { fitWidth } = ReStock.helper;
+var { OHLCTooltip, MACDTooltip } = tooltip;
+var { XAxis, YAxis } = axes;
+var { renko } = indicator;
+
+var { fitWidth } = helper;
 
 class Renko extends React.Component {
 	getChartCanvas() {

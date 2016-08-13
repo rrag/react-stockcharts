@@ -3,19 +3,19 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
-var { BarSeries, LineSeries, AreaSeries, KagiSeries } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
 
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
-var { EdgeIndicator } = ReStock.coordinates;
+var { BarSeries, LineSeries, AreaSeries, KagiSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { OHLCTooltip } = ReStock.tooltip;
-var { XAxis, YAxis } = ReStock.axes;
-var { kagi } = ReStock.indicator;
-var { fitWidth } = ReStock.helper;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
+var { EdgeIndicator } = coordinates;
+
+var { OHLCTooltip } = tooltip;
+var { XAxis, YAxis } = axes;
+var { kagi } = indicator;
+var { fitWidth } = helper;
 
 class Kagi extends React.Component {
 	getChartCanvas() {

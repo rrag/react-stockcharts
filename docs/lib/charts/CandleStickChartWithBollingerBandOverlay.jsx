@@ -3,19 +3,19 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, BollingerSeries } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
-var { EdgeIndicator } = ReStock.coordinates;
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
 
-var { OHLCTooltip, MovingAverageTooltip, BollingerBandTooltip } = ReStock.tooltip;
-var { XAxis, YAxis } = ReStock.axes;
-var { ema, sma, bollingerBand } = ReStock.indicator;
-var { fitWidth } = ReStock.helper;
+var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, BollingerSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
+var { EdgeIndicator } = coordinates;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
+
+var { OHLCTooltip, MovingAverageTooltip, BollingerBandTooltip } = tooltip;
+var { XAxis, YAxis } = axes;
+var { ema, sma, bollingerBand } = indicator;
+var { fitWidth } = helper;
 
 class CandleStickChartWithBollingerBandOverlay extends React.Component {
 	render() {

@@ -3,22 +3,22 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, MACDSeries } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
 
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
-var { EdgeIndicator } = ReStock.coordinates;
+var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, MACDSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { OHLCTooltip, MovingAverageTooltip, MACDTooltip } = ReStock.tooltip;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
+var { EdgeIndicator } = coordinates;
 
-var { XAxis, YAxis } = ReStock.axes;
-var { macd, ema, sma } = ReStock.indicator;
+var { OHLCTooltip, MovingAverageTooltip, MACDTooltip } = tooltip;
 
-var { fitWidth } = ReStock.helper;
+var { XAxis, YAxis } = axes;
+var { macd, ema, sma } = indicator;
+
+var { fitWidth } = helper;
 
 class CandleStickChartWithMACDIndicator extends React.Component {
 	getChartCanvas() {

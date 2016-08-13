@@ -3,14 +3,12 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
+var { StackedBarSeries  } = series;
 
-var { StackedBarSeries  } = ReStock.series;
-
-var { XAxis, YAxis } = ReStock.axes;
-var { fitWidth } = ReStock.helper;
+var { XAxis, YAxis } = axes;
+var { fitWidth } = helper;
 
 class StackedBarChart extends React.Component {
 	render() {

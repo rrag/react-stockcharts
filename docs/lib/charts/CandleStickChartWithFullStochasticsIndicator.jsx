@@ -3,20 +3,18 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "../../../src/";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "../../../src/";
 
-var { ChartCanvas, Chart } = ReStock;
+var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, StochasticSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
+var { EdgeIndicator } = coordinates;
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, StochasticSeries } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
-var { EdgeIndicator } = ReStock.coordinates;
+var { OHLCTooltip, MovingAverageTooltip, StochasticTooltip } = tooltip;
 
-var { OHLCTooltip, MovingAverageTooltip, StochasticTooltip } = ReStock.tooltip;
-
-var { XAxis, YAxis } = ReStock.axes;
-var { stochasticOscillator, ema } = ReStock.indicator;
-var { fitWidth } = ReStock.helper;
+var { XAxis, YAxis } = axes;
+var { stochasticOscillator, ema } = indicator;
+var { fitWidth } = helper;
 
 class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 	render() {

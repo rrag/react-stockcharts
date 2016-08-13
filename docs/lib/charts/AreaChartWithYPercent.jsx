@@ -1,13 +1,11 @@
 "use strict";
 
 import React from "react";
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, axes, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
-
-var { AreaSeries } = ReStock.series;
-var { XAxis, YAxis } = ReStock.axes;
-var { fitWidth } = ReStock.helper;
+var { AreaSeries } = series;
+var { XAxis, YAxis } = axes;
+var { fitWidth } = helper;
 
 class AreaChartWithYPercent extends React.Component {
 	render() {

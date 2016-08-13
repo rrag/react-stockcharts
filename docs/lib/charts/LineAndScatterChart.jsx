@@ -3,18 +3,16 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
+var { BarSeries, LineSeries, AreaSeries, ScatterSeries, CircleMarker } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { BarSeries, LineSeries, AreaSeries, ScatterSeries, CircleMarker } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY } = coordinates;
 
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY } = ReStock.coordinates;
-
-var { OHLCTooltip } = ReStock.tooltip;
-var { XAxis, YAxis } = ReStock.axes;
-var { fitWidth } = ReStock.helper;
+var { OHLCTooltip } = tooltip;
+var { XAxis, YAxis } = axes;
+var { fitWidth } = helper;
 
 class LineAndScatterChart extends React.Component {
 	render() {

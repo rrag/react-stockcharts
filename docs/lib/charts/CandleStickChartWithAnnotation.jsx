@@ -3,21 +3,21 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, annotation, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
 
-var { EdgeIndicator } = ReStock.coordinates;
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
-var { Annotate, LabelAnnotation, Label } = ReStock.annotation;
+var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
-var { XAxis, YAxis } = ReStock.axes;
-var { ema, sma } = ReStock.indicator;
-var { fitWidth } = ReStock.helper;
+var { EdgeIndicator } = coordinates;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
+var { Annotate, LabelAnnotation, Label } = annotation;
+
+var { OHLCTooltip, MovingAverageTooltip } = tooltip;
+var { XAxis, YAxis } = axes;
+var { ema, sma } = indicator;
+var { fitWidth } = helper;
 
 class CandleStickChartWithAnnotation extends React.Component {
 	render() {

@@ -3,20 +3,18 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "../../../src/";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, annotation, indicator, helper } from "../../../src/";
 
-var { ChartCanvas, Chart } = ReStock;
+var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, StochasticSeries, BollingerSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
+var { EdgeIndicator } = coordinates;
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, StochasticSeries, BollingerSeries } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
-var { EdgeIndicator } = ReStock.coordinates;
+var { OHLCTooltip, MovingAverageTooltip, BollingerBandTooltip, StochasticTooltip } = tooltip;
 
-var { OHLCTooltip, MovingAverageTooltip, BollingerBandTooltip, StochasticTooltip } = ReStock.tooltip;
-
-var { XAxis, YAxis } = ReStock.axes;
-var { stochasticOscillator, ema, bollingerBand } = ReStock.indicator;
-var { fitWidth } = ReStock.helper;
+var { XAxis, YAxis } = axes;
+var { stochasticOscillator, ema, bollingerBand } = indicator;
+var { fitWidth } = helper;
 
 class CandleStickChartWithDarkTheme extends React.Component {
 	render() {

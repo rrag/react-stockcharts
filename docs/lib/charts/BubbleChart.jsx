@@ -3,16 +3,14 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, coordinates, axes, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
+var { ScatterSeries, CircleMarker } = series;
 
-var { ScatterSeries, CircleMarker } = ReStock.series;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY } = coordinates;
 
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY } = ReStock.coordinates;
-
-var { XAxis, YAxis } = ReStock.axes;
-var { fitWidth } = ReStock.helper;
+var { XAxis, YAxis } = axes;
+var { fitWidth } = helper;
 
 class BubbleChart extends React.Component {
 	render() {

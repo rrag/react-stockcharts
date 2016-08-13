@@ -3,23 +3,21 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, algorithm, annotation, tooltip, axes, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
+var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
+var { EdgeIndicator } = coordinates;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
+var { Annotate, SvgPathAnnotation, Label, buyPath, sellPath } = annotation;
 
-var { EdgeIndicator } = ReStock.coordinates;
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
-var { Annotate, SvgPathAnnotation, Label, buyPath, sellPath } = ReStock.annotation;
+var { OHLCTooltip, MovingAverageTooltip } = tooltip;
+var { XAxis, YAxis } = axes;
+var { ema, sma } = indicator;
+var { fitWidth } = helper;
 
-var { OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
-var { XAxis, YAxis } = ReStock.axes;
-var { ema, sma } = ReStock.indicator;
-var { fitWidth } = ReStock.helper;
-
-var algorithm = ReStock.algorithm.default;
+var algo = algorithm.default;
 
 class MovingAverageCrossOverAlgorithmV2 extends React.Component {
 	render() {
@@ -37,7 +35,7 @@ class MovingAverageCrossOverAlgorithmV2 extends React.Component {
 			.merge((d, c) => {d.ema50 = c})
 			.accessor(d => d.ema50);
 
-		var buySell = algorithm()
+		var buySell = algo()
 			.windowSize(2)
 			.accumulator(([prev, now]) => {
 				var { ema20: prevShortTerm, ema50: prevLongTerm } = prev;

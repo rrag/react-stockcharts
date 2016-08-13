@@ -69,6 +69,7 @@ export function drawOnCanvasHelper(ctx, props, moreProps, xAccessor, stackFn, de
 	var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 	var bars = doStuff(props, xAccessor, plotData, xScale, yScale, stackFn, postRotateAction, defaultPostAction);
+
 	drawOnCanvas2(props, ctx, bars);
 }
 
@@ -94,6 +95,7 @@ function doStuff(props, xAccessor, plotData, xScale, yScale, stackFn, postRotate
 	var postProcessor =  swapScales ? postRotateAction : defaultPostAction;
 
 	var bars = getBars(props, modifiedXAccessor, modifiedYAccessor, modifiedXScale, modifiedYScale, plotData, stackFn, postProcessor);
+
 	return bars;
 }
 
@@ -184,6 +186,7 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 	var width = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData))));
 	var bw = (width / (plotData.length - 1) * widthRatio);
 	var barWidth = Math.round(bw);
+	// console.log(barWidth)
 
 	var eachBarWidth = (barWidth - spaceBetweenBar * (yAccessor.length - 1)) / yAccessor.length;
 
@@ -212,7 +215,7 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 					? yScale(d.y0) - y
 					: getBase(xScale, yScale, d.datum) - yScale(d.y)*/
 				var h = getBase(xScale, yScale, d.datum) - yScale(d.y);
-
+				// console.log(d.y, yScale.domain(), yScale.range())
 				// let h = ;
 				// if (d.y < 0) h = -h;
 				if (h < 0) {

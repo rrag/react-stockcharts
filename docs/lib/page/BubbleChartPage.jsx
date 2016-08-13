@@ -1,16 +1,14 @@
 'use strict';
 
 import React from "react";
-import ReStock from "react-stockcharts";
+import { helper } from "react-stockcharts";
+var { TypeChooser } = helper;
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 
-var { helper: { TypeChooser } } = ReStock;
-
 import BubbleChart from "lib/charts/BubbleChart";
-
 
 var BubbleChartPage = React.createClass({
 	statics: {

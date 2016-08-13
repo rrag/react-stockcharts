@@ -3,22 +3,22 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
 
-var { OHLCSeries, BarSeries, LineSeries, AreaSeries, ElderRaySeries, StraightLine } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
 
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
-var { EdgeIndicator } = ReStock.coordinates;
+var { OHLCSeries, BarSeries, LineSeries, AreaSeries, ElderRaySeries, StraightLine } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { OHLCTooltip, MovingAverageTooltip, SingleValueTooltip, RSITooltip } = ReStock.tooltip;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
+var { EdgeIndicator } = coordinates;
 
-var { XAxis, YAxis } = ReStock.axes;
-var { elderRay, change } = ReStock.indicator;
+var { OHLCTooltip, MovingAverageTooltip, SingleValueTooltip, RSITooltip } = tooltip;
 
-var { fitWidth } = ReStock.helper;
+var { XAxis, YAxis } = axes;
+var { elderRay, change } = indicator;
+
+var { fitWidth } = helper;
 
 class OHLCChartWithElderRayIndicator extends React.Component {
 	render() {

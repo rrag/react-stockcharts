@@ -3,19 +3,19 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
 
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
-var { EdgeIndicator } = ReStock.coordinates;
+var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
-var { XAxis, YAxis } = ReStock.axes;
-var { ema, sma, haikinAshi } = ReStock.indicator;
-var { fitWidth } = ReStock.helper;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
+var { EdgeIndicator } = coordinates;
+
+var { OHLCTooltip, MovingAverageTooltip } = tooltip;
+var { XAxis, YAxis } = axes;
+var { ema, sma, haikinAshi } = indicator;
+var { fitWidth } = helper;
 
 class HaikinAshi extends React.Component {
 	render() {

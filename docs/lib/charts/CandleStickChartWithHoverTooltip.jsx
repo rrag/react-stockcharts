@@ -3,20 +3,20 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
 
-var { EdgeIndicator } = ReStock.coordinates;
-var { CurrentCoordinate } = ReStock.coordinates;
+var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { OHLCTooltip, MovingAverageTooltip, HoverTooltip } = ReStock.tooltip;
-var { XAxis, YAxis } = ReStock.axes;
-var { ema, sma } = ReStock.indicator;
-var { fitWidth } = ReStock.helper;
+var { EdgeIndicator } = coordinates;
+var { CurrentCoordinate } = coordinates;
+
+var { OHLCTooltip, MovingAverageTooltip, HoverTooltip } = tooltip;
+var { XAxis, YAxis } = axes;
+var { ema, sma } = indicator;
+var { fitWidth } = helper;
 
 var dateFormat = d3.time.format("%Y-%m-%d");
 var numberFormat = d3.format(".2f");

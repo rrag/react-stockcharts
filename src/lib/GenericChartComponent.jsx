@@ -20,7 +20,7 @@ class GenericChartComponent extends GenericComponent {
 		ctx.setTransform(1, 0, 0, 1, 0, 0);
 		if (edgeClip) {
 			ctx.beginPath();
-			ctx.rect(-1, canvasOriginY - 1, width + margin.left + margin.right + 1, height + 1);
+			ctx.rect(-1, canvasOriginY - 10, width + margin.left + margin.right + 1, height + 20);
 			ctx.clip();
 		}
 

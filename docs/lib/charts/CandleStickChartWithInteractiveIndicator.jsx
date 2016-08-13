@@ -3,24 +3,22 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper, interactive } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
+var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, MACDSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, MACDSeries } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
+var { EdgeIndicator } = coordinates;
 
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
-var { EdgeIndicator } = ReStock.coordinates;
+var { OHLCTooltip, MovingAverageTooltip, MACDTooltip } = tooltip;
 
-var { OHLCTooltip, MovingAverageTooltip, MACDTooltip } = ReStock.tooltip;
+var { XAxis, YAxis } = axes;
+var { macd, ema, sma } = indicator;
 
-var { XAxis, YAxis } = ReStock.axes;
-var { macd, ema, sma } = ReStock.indicator;
+var { fitWidth } = helper;
 
-var { fitWidth } = ReStock.helper;
-
-var { Interactive, TrendLine } = ReStock.interactive;
+var { Interactive, TrendLine } = interactive;
 
 class CandlestickChart extends React.Component {
 	constructor(props) {

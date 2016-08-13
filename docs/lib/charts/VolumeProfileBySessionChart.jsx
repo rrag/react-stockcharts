@@ -3,21 +3,21 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, VolumeProfileSeries } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
 
-var { EdgeIndicator } = ReStock.coordinates;
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
+var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, VolumeProfileSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
-var { XAxis, YAxis } = ReStock.axes;
-var { ema, sma, change } = ReStock.indicator;
+var { EdgeIndicator } = coordinates;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
 
-var { fitWidth } = ReStock.helper;
+var { OHLCTooltip, MovingAverageTooltip } = tooltip;
+var { XAxis, YAxis } = axes;
+var { ema, sma, change } = indicator;
+
+var { fitWidth } = helper;
 
 class VolumeProfileChart extends React.Component {
 	render() {

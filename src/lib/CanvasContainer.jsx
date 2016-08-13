@@ -26,11 +26,11 @@ class CanvasContainer extends Component {
 		if (type === "svg") return null;
 		return (
 			<div style={{ zIndex: zIndex }}>
-				<canvas ref="bg" width={width} height={height}
+				<canvas id="bg" ref="bg" width={width} height={height}
 					style={{ position: "absolute", left: 0, top: 0 }} />
-				<canvas ref="canvas_axes" width={width} height={height}
+				<canvas id="axes" ref="canvas_axes" width={width} height={height}
 					style={{ position: "absolute", left: 0, top: 0 }} />
-				<canvas ref="canvas_mouse_coordinates" width={width} height={height}
+				<canvas id="mouse" ref="canvas_mouse_coordinates" width={width} height={height}
 					style={{ position: "absolute", left: 0, top: 0 }} />
 			</div>
 		);

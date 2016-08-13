@@ -3,19 +3,18 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
-var { CandlestickSeries, BarSeries } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
+var { CandlestickSeries, BarSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY } = ReStock.coordinates;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY } = coordinates;
 
-var { OHLCTooltip } = ReStock.tooltip;
+var { OHLCTooltip } = tooltip;
 
-var { XAxis, YAxis } = ReStock.axes;
+var { XAxis, YAxis } = axes;
 
-var { fitWidth } = ReStock.helper;
+var { fitWidth } = helper;
 
 class CandleStickChartWithZoomPan extends React.Component {
 	render() {

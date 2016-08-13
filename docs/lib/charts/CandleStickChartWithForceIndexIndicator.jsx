@@ -3,23 +3,23 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, RSISeries, StraightLine } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
 
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
-var { EdgeIndicator } = ReStock.coordinates;
+var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, RSISeries, StraightLine } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { OHLCTooltip, MovingAverageTooltip, SingleValueTooltip, RSITooltip } = ReStock.tooltip;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
+var { EdgeIndicator } = coordinates;
 
-var { XAxis, YAxis } = ReStock.axes;
-//console.log(ReStock.indicator);
-var { forceIndex, ema } = ReStock.indicator;
+var { OHLCTooltip, MovingAverageTooltip, SingleValueTooltip, RSITooltip } = tooltip;
 
-var { fitWidth } = ReStock.helper;
+var { XAxis, YAxis } = axes;
+//console.log(indicator);
+var { forceIndex, ema } = indicator;
+
+var { fitWidth } = helper;
 
 class CandleStickChartWithForceIndexIndicator extends React.Component {
 	render() {

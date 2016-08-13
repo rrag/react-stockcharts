@@ -3,21 +3,21 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, CompareSeries } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
 
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
-var { EdgeIndicator } = ReStock.coordinates;
+var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, CompareSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { OHLCTooltip, SingleValueTooltip } = ReStock.tooltip;
-var { XAxis, YAxis } = ReStock.axes;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
+var { EdgeIndicator } = coordinates;
 
-var { compare, sma } = ReStock.indicator;
-var { fitWidth } = ReStock.helper;
+var { OHLCTooltip, SingleValueTooltip } = tooltip;
+var { XAxis, YAxis } = axes;
+
+var { compare, sma } = indicator;
+var { fitWidth } = helper;
 
 class CandleStickChartWithCompare extends React.Component {
 	render() {

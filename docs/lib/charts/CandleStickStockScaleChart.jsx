@@ -3,15 +3,15 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
 
-var { CandlestickSeries } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
-var { XAxis, YAxis } = ReStock.axes;
 
-var { fitWidth } = ReStock.helper;
+var { CandlestickSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
+var { XAxis, YAxis } = axes;
+
+var { fitWidth } = helper;
 
 class CandleStickStockScaleChart extends React.Component {
 	render() {

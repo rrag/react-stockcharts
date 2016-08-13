@@ -3,21 +3,21 @@
 import React from "react";
 import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
 var pointAndFigureTransformOptions = { boxSize: 0.25 };
 
-var { ChartCanvas, Chart } = ReStock;
-var { BarSeries, LineSeries, AreaSeries, PointAndFigureSeries } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
 
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
-var { EdgeIndicator } = ReStock.coordinates;
+var { BarSeries, LineSeries, AreaSeries, PointAndFigureSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { OHLCTooltip, MACDTooltip } = ReStock.tooltip;
-var { XAxis, YAxis } = ReStock.axes;
-var { pointAndFigure } = ReStock.indicator;
-var { fitWidth } = ReStock.helper;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
+var { EdgeIndicator } = coordinates;
+
+var { OHLCTooltip, MACDTooltip } = tooltip;
+var { XAxis, YAxis } = axes;
+var { pointAndFigure } = indicator;
+var { fitWidth } = helper;
 
 class PointAndFigure extends React.Component {
 	getChartCanvas() {

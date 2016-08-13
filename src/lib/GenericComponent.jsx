@@ -47,17 +47,14 @@ class GenericComponent extends Component {
 	}
 	executeMouseMove(e) {
 		this.moreProps.hovering = this.isHover(e);
-		// console.log(this.moreProps.hovering)
-		// console.log(this.moreProps.prevHovering, this.moreProps.hovering)
+
 		if (this.moreProps.hovering
-				|| (this.moreProps.prevHovering && !this.moreProps.hovering)
 				|| this.props.drawOnMouseMove) {
 			if (this.props.onMouseMove) this.props.onMouseMove(e);
 			this.drawOnNextTick = true;
 		} else {
 			this.drawOnNextTick = false;
 		}
-		this.moreProps.prevHovering = this.moreProps.hovering;
 	}
 	evaluateType(type, e) {
 		// if (this.props.debug) console.log(this.props.debug, type);
@@ -112,7 +109,7 @@ class GenericComponent extends Component {
 		}
 		if (this.props.debug) console.log(this.props.debug, type, this.drawOnNextTick);
 
-		if (type !== "mousemove" && type !== "ff") this.moreProps.prevHovering = false;
+		// if (type !== "mousemove" && type !== "ff") this.moreProps.prevHovering = false;
 	}
 	isHover(e) {
 		return this.props.isHover(this.moreProps, e);
@@ -127,7 +124,7 @@ class GenericComponent extends Component {
 			this.setState({
 				updateCount: updateCount + 1,
 			});
-		} else if (!(this.moreProps.prevHovering && !this.moreProps.hovering)) {
+		} else {
 			this.drawOnCanvas();
 		}
 	}
@@ -194,12 +191,14 @@ class GenericComponent extends Component {
 		this.postCanvasDraw(ctx);
 	}
 	render() {
-		var { chartCanvasType } = this.context;
+		var { chartCanvasType, chartId } = this.context;
 		var { canvasDraw, clip, svgDraw } = this.props;
 
 		if (isDefined(canvasDraw) && chartCanvasType !== "svg") return null;
 
-		var style = clip ? { "clipPath": "url(#chart-area-clip)" } : null;
+		var suffix = isDefined(chartId) ? "-" + chartId : "";
+
+		var style = clip ? { "clipPath": `url(#chart-area-clip${suffix})` } : null;
 
 		return <g style={style}>{svgDraw(this.getMoreProps())}</g>;
 	}
@@ -245,7 +244,7 @@ GenericComponent.contextTypes = {
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 	margin: PropTypes.object.isRequired,
-	// chartId: PropTypes.number.isRequired,
+	chartId: PropTypes.number,
 	getCanvasContexts: PropTypes.func,
 
 	chartCanvasType: PropTypes.string,

@@ -25,7 +25,7 @@ import * as Utils from "./lib/utils";
 
 const version = "0.5.0";
 
-export default {
+export {
 	ChartCanvas,
 	Chart,
 	BackgroundText,
@@ -42,4 +42,3 @@ export default {
 	version,
 	Utils
 };
-
