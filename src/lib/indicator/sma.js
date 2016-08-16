@@ -29,6 +29,9 @@ export default function() {
 		var newData = mergedAlgorithm(data);
 		return newData;
 	};
+	indicator.undefinedLength = function() {
+		return underlyingAlgorithm.windowSize();
+	};
 
 	base.tooltipLabel(() => `${ALGORITHM_TYPE}(${underlyingAlgorithm.windowSize()})`);
 

@@ -38,7 +38,8 @@ export default function() {
 		windowSize = 10,
 		accumulator = noop,
 		source = identity,
-		skipInitial = 0;
+		skipInitial = 0,
+		misc;
 
 	var slidingWindow = function(data) {
 		var size = d3.functor(windowSize).apply(this, arguments);
@@ -49,14 +50,14 @@ export default function() {
 		return data.map(function(d, i) {
 			// console.log(d, i);
 			if (i < (skipInitial + size - 1)) {
-				return undef(source(d), i);
+				return undef(source(d), i, misc);
 			}
 			if (i >= (skipInitial + size)) {
 				// Treat windowData as FIFO rolling buffer
 				windowData.shift();
 				windowData.push(source(d, i));
 			}
-			return accumulator(windowData, i, accumulatorIdx++);
+			return accumulator(windowData, i, accumulatorIdx++, misc);
 		});
 	};
 
@@ -72,6 +73,13 @@ export default function() {
 			return windowSize;
 		}
 		windowSize = x;
+		return slidingWindow;
+	};
+	slidingWindow.misc = function(x) {
+		if (!arguments.length) {
+			return misc;
+		}
+		misc = x;
 		return slidingWindow;
 	};
 	slidingWindow.accumulator = function(x) {

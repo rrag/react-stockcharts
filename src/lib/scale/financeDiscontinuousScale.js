@@ -66,8 +66,8 @@ export default function financeDiscontinuousScale(index,
 	scale.ticks = function(m) {
 
 		var [domainStart, domainEnd] = backingLinearScale.domain();
-		var start = Math.max(Math.ceil(domainStart), 0);
-		var end = Math.min(Math.floor(domainEnd), index.length - 1);
+		var start = Math.max(Math.ceil(domainStart), head(index).index) + Math.abs(head(index).index);
+		var end = Math.min(Math.floor(domainEnd), last(index).index) + Math.abs(head(index).index);
 
 		// console.log(index.length, domainStart, domainEnd, start, end)
 
@@ -95,20 +95,26 @@ export default function financeDiscontinuousScale(index,
 		// subList.filter(each => each.level >= level).map(d => d.index);
 
 		var ticksSet = d3.set(ticks);
+		// console.log(ticks);
+
+		var d = Math.abs(head(index).index);
 
 		for (let i = 0; i < ticks.length - 1; i++) {
 			for (var j = i + 1; j < ticks.length; j++) {
 				if (ticks[j] - ticks[i] < distance) {
-					ticksSet.remove(index[ticks[i]].level >= index[ticks[j]].level ? ticks[j] : ticks[i]);
+					ticksSet.remove(index[ticks[i] + d].level >= index[ticks[j] + d].level ? ticks[j] : ticks[i]);
 				}
 			}
 		}
 
-		return ticksSet.values().map(d => parseInt(d, 10));
+		var tickValues = ticksSet.values().map(d => parseInt(d, 10));
+		return tickValues;
 	};
 	scale.tickFormat = function() {
 		return function(x) {
-			var { format, date } = index[x];
+			// console.log(x)
+			var d = Math.abs(head(index).index);
+			var { format, date } = index[x + d];
 			return format(date);
 		};
 	};

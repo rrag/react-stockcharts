@@ -3,6 +3,8 @@
 TODO
 
 1. Pan to load more (xScale & xScaleProvider)
+1. add LineSeries interpolation
+1. add AreaSeries gradiant
 1. Use d3 v4
 
 1. [Envelope](http://www.investopedia.com/terms/e/envelope.asp?optm=sa_v2)

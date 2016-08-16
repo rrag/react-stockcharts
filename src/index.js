@@ -21,7 +21,7 @@ import * as tooltip from "./lib/tooltip";
 import * as helper from "./lib/helper";
 
 import * as interactive from "./lib/interactive";
-import * as Utils from "./lib/utils";
+import * as utils from "./lib/utils";
 
 const version = "0.5.0";
 
@@ -40,5 +40,5 @@ export {
 	helper,
 	interactive,
 	version,
-	Utils
+	utils
 };

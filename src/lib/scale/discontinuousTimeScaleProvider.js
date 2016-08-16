@@ -3,16 +3,16 @@
 import d3 from "d3";
 
 import financeDiscontinuousScale from "./financeDiscontinuousScale";
-import { head, last, slidingWindow, zipper } from "../utils";
+import { head, last, slidingWindow, zipper, identity } from "../utils";
 
-const yearFormat = d3.time.format("%Y");
-const quarterFormat = d3.time.format("%b %Y");
-const monthFormat = d3.time.format("%b");
-const weekFormat = d3.time.format("%d %b");
-const dayFormat = d3.time.format("%a %d");
-const hourFormat = d3.time.format("%_I %p");
-const minuteFormat = d3.time.format("%I:%M %p");
-const secondFormat = d3.time.format("%I:%M:%S %p");
+const yearFormat = "%Y";
+const quarterFormat = "%b %Y";
+const monthFormat = "%b";
+const weekFormat = "%d %b";
+const dayFormat = "%a %d";
+const hourFormat = "%_I %p";
+const minuteFormat = "%I:%M %p";
+const secondFormat = "%I:%M:%S %p";
 // const milliSecondFormat = d3.time.format("%L");
 
 var levelDefinition = [
@@ -48,10 +48,10 @@ function evaluateLevel(d, date, i) {
 
 var discontinuousIndexCalculator = slidingWindow()
 	.windowSize(2)
-	.undefinedValue(d => {
-		var i = 0;
+	.undefinedValue((d, idx, di) => {
+		var i = di;
 		var row = {
-			date: d,
+			date: d.getTime(),
 			startOf30Seconds: false,
 			startOfMinute: false,
 			startOf5Minutes: false,
@@ -72,7 +72,7 @@ var discontinuousIndexCalculator = slidingWindow()
 	});
 
 var discontinuousIndexCalculatorLocalTime = discontinuousIndexCalculator
-	.accumulator(([prevDate, nowDate], i) => {
+	.accumulator(([prevDate, nowDate], i, idx, di) => {
 		var startOf30Seconds = nowDate.getSeconds() % 30 === 0;
 
 		var startOfMinute = nowDate.getMinutes() !== prevDate.getMinutes();
@@ -99,7 +99,7 @@ var discontinuousIndexCalculatorLocalTime = discontinuousIndexCalculator
 		var startOfYear = nowDate.getYear() !== prevDate.getYear();
 
 		var row = {
-			date: nowDate,
+			date: nowDate.getTime(),
 			startOf30Seconds,
 			startOfMinute,
 			startOf5Minutes,
@@ -116,60 +116,94 @@ var discontinuousIndexCalculatorLocalTime = discontinuousIndexCalculator
 			startOfYear,
 		};
 		var level = evaluateLevel(row, nowDate, i);
-		return { ...row, index: i, ...level };
+		return { ...row, index: i + di, ...level };
 	});
 
-function discontinuousTimeScaleProvider(data,
-		dateAccessor,
-		indexAccessor,
-		indexMutator) {
+export function discontinuousTimeScaleProviderBuilder() {
+	var initialIndex = 0, realDateAccessor = identity;
 
-	var calculate = discontinuousIndexCalculatorLocalTime.source(dateAccessor);
-	var index = calculate(data);
-	// var interval1 = Math.round((dateAccessor(last(data)) - dateAccessor(head(data))) / data.length)
-	// console.log(interval, interval1);
+	var discontinuousTimeScaleProvider = function(data,
+			inputDateAccessor = d => d.date,
+			indexAccessor = d => d.idx,
+			indexMutator = (d, idx) => ({ ...d, idx })) {
 
-	var map = d3.map();
-	for (var i = 0; i < data.length - 1; i++) {
+		var dateAccessor = realDateAccessor(inputDateAccessor);
+		var calculate = discontinuousIndexCalculatorLocalTime.source(dateAccessor).misc(initialIndex);
+		var index = calculate(data);
+		// var interval1 = Math.round((dateAccessor(last(data)) - dateAccessor(head(data))) / data.length)
+		// console.log(interval, interval1);
 
-		var nextDate = dateAccessor(data[i + 1]);
-		var nowDate = dateAccessor(data[i]);
-		var diff = nextDate - nowDate;
+		var map = d3.map();
+		for (var i = 0; i < data.length - 1; i++) {
 
-		if (map.has(diff)) {
-			var count = parseInt(map.get(diff), 10) + 1;
-			map.set(diff, count);
-		} else {
-			map.set(diff, 1);
+			var nextDate = dateAccessor(data[i + 1]);
+			var nowDate = dateAccessor(data[i]);
+			var diff = nextDate - nowDate;
+
+			if (map.has(diff)) {
+				var count = parseInt(map.get(diff), 10) + 1;
+				map.set(diff, count);
+			} else {
+				map.set(diff, 1);
+			}
 		}
-	}
 
-	var entries = map.entries().sort((a, b) => a.value < b.value);
+		var entries = map.entries().sort((a, b) => a.value < b.value);
 
-	// For Renko/p&f
-	var interval = entries[0].value === 1
-		? Math.round((dateAccessor(last(data)) - dateAccessor(head(data))) / data.length)
-		: parseInt(entries[0].key, 10);
+		// For Renko/p&f
+		var interval = entries[0].value === 1
+			? Math.round((dateAccessor(last(data)) - dateAccessor(head(data))) / data.length)
+			: parseInt(entries[0].key, 10);
 
-	// console.log(interval, entries[0].key);
+		// console.log(interval, entries[0].key);
 
-	var xScale = financeDiscontinuousScale(index, interval);
+		var inputIndex = index.map(each => {
+			var { format } = each;
+			return {
+				...each,
+				date: new Date(each.date),
+				format: d3.time.format(format),
+			};
+		});
 
-	// console.log(index);
-	var mergedData = zipper()
-		.combine(indexMutator);
 
-	var finalData = mergedData(data, index);
+		var xScale = financeDiscontinuousScale(inputIndex, interval);
 
-	return {
-		data: finalData,
-		xScale,
-		xAccessor: d => d && indexAccessor(d).index,
-		displayXAccessor: dateAccessor,
+		var mergedData = zipper()
+			.combine(indexMutator);
+
+		var finalData = mergedData(data, inputIndex);
+
+		return {
+			data: finalData,
+			xScale,
+			xAccessor: d => d && indexAccessor(d).index,
+			displayXAccessor: dateAccessor,
+		};
 	};
+
+	discontinuousTimeScaleProvider.initialIndex = function(x) {
+		if (!arguments.length) {
+			return initialIndex;
+		}
+		initialIndex = x;
+		return discontinuousTimeScaleProvider;
+	};
+	discontinuousTimeScaleProvider.utc = function() {
+		realDateAccessor = dateAccessor => d => {
+			var date = dateAccessor(d);
+			// The getTimezoneOffset() method returns the time-zone offset from UTC, in minutes, for the current locale.
+			var offsetInMillis = date.getTimezoneOffset() * 60 * 1000;
+			return new Date(date.getTime() + offsetInMillis);
+		};
+		return discontinuousTimeScaleProvider;
+	};
+	return discontinuousTimeScaleProvider;
 }
 
-discontinuousTimeScaleProvider.utc = function(data,
+
+
+/* discontinuousTimeScaleProvider.utc = function(data,
 		dateAccessor,
 		indexAccessor,
 		indexMutator) {
@@ -180,6 +214,6 @@ discontinuousTimeScaleProvider.utc = function(data,
 		return new Date(date.getTime() + offsetInMillis);
 	};
 	return discontinuousTimeScaleProvider(data, utcDateAccessor, indexAccessor, indexMutator);
-};
+};*/
 
-export default discontinuousTimeScaleProvider;
+export default discontinuousTimeScaleProviderBuilder();

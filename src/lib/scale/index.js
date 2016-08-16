@@ -1,25 +1,11 @@
 
-/*
-import financeEODCalculator from "./financeEODCalculator";
-import financeEODDiscontinuousScale from "./financeEODDiscontinuousScale";
-import eodIntervalCalculator from "./eodIntervalCalculator";
-import identityIntervalCalculator from "./identityIntervalCalculator";
-import financeIntradayDiscontinuousScale from "./financeIntradayDiscontinuousScale";
-import financeIntradayCalculator from "./financeIntradayCalculator";
-import intradayIntervalCalculator from "./intradayIntervalCalculator";
-*/
-import discontinuousTimeScaleProvider from "./discontinuousTimeScaleProvider";
+import discontinuousTimeScaleProvider, { discontinuousTimeScaleProviderBuilder } from "./discontinuousTimeScaleProvider";
+import financeDiscontinuousScale from "./financeDiscontinuousScale";
 
 export {
-	/* financeEODCalculator,
-	financeEODDiscontinuousScale,
-	identityIntervalCalculator,
-	eodIntervalCalculator,
-	financeIntradayDiscontinuousScale,
-	financeIntradayCalculator,
-	intradayIntervalCalculator,*/
-
-	discontinuousTimeScaleProvider
+	discontinuousTimeScaleProviderBuilder,
+	discontinuousTimeScaleProvider,
+	financeDiscontinuousScale
 };
 
 export function defaultScaleProvider(xScale) {

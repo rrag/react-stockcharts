@@ -101,6 +101,7 @@ export default function() {
 				xAccessor: realXAccessor,
 				displayXAccessor,
 				lastItem: last(finalData),
+				firstItem: first(finalData),
 			};
 		}
 
@@ -110,6 +111,7 @@ export default function() {
 			xAccessor,
 			displayXAccessor: xAccessor,
 			lastItem: last(calculatedData),
+			firstItem: first(calculatedData),
 		};
 	}
 	evaluate.xAccessor = function(x) {

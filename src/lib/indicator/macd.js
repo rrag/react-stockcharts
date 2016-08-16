@@ -33,6 +33,10 @@ export default function() {
 		return mergedAlgorithm(data);
 	};
 
+	indicator.undefinedLength = function() {
+		return underlyingAlgorithm.slow() + underlyingAlgorithm.signal();
+	};
+
 	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
 	d3.rebind(indicator, underlyingAlgorithm, "source", "fast", "slow", "signal");
 	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
