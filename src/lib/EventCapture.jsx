@@ -66,7 +66,7 @@ class EventCapture extends Component {
 
 		if (this.mouseInteraction
 				&& mouseMove
-				&& !this.panInProgress) {
+				&& !this.state.panInProgress) {
 
 			var newPos = mousePosition(e);
 

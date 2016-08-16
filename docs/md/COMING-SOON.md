@@ -2,7 +2,6 @@
 
 TODO
 
-1. Pan to load more (xScale & xScaleProvider)
 1. add LineSeries interpolation
 1. add AreaSeries gradiant
 1. Use d3 v4

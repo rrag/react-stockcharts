@@ -36,9 +36,8 @@ function shouldResetChart(thisProps, nextProps) {
 function getCursorStyle(useCrossHairStyleCursor) {
 	var style = `
 	.react-stockcharts-grabbing-cursor {
+		pointer-events: all;
 		cursor: grabbing;
-		cursor: -moz-grabbing;
-		cursor: -webkit-grabbing;
 	}
 	.react-stockcharts-crosshair-cursor {
 		pointer-events: all;
@@ -223,17 +222,6 @@ function setXRange(xScale, dimensions, padding, direction = 1) {
 		}
 	}
 	return xScale;
-}
-
-function compareArray(a, b) {
-	if (a.length === b.length) {
-		var result = true;
-		for (var i = 0; i < a.length; i++) {
-			result = result && shallowEqual(a[i], b[i]);
-		}
-		return result;
-	}
-	return false;
 }
 
 class ChartCanvas extends Component {
@@ -482,7 +470,18 @@ class ChartCanvas extends Component {
 		var { xScale, plotData, chartConfig } = this.calculateStateForDomain(newDomain);
 		this.clearBothCanvas();
 
-		this.setState({ xScale, plotData, chartConfig });
+		var { firstItem, xAccessor } = this.state;
+		var start = first(xScale.domain());
+		var end = xAccessor(firstItem);
+		var { onLoadMore } = this.props;
+
+		this.setState({
+			xScale,
+			plotData,
+			chartConfig,
+		}, () => {
+			if (start < end) onLoadMore(start, end);
+		});
 	}
 	yAxisZoom(chartId, newDomain) {
 		this.clearThreeCanvas();
@@ -691,18 +690,19 @@ class ChartCanvas extends Component {
 
 		var { chartConfig: initialChartConfig } = this.state;
 
-		var a = newState.chartConfig.map(each => each.realYDomain);
-		var b = initialChartConfig.map(each => each.realYDomain);
+		var a = newState.chartConfig.map(each => each.id);
+		var b = initialChartConfig.map(each => each.id);
 
-		if (compareArray(a, b)) {
+		if (!reset) {
 			newState.chartConfig
 				.forEach((each, idx) => {
-					each.yScale.domain(initialChartConfig[idx].yScale.domain());
-					each.yPanEnabled = initialChartConfig[idx].yPanEnabled;
+					var sourceChartConfig = initialChartConfig.filter(d => d.id === each.id);
+					if (sourceChartConfig.length > 0 && sourceChartConfig[0].yPanEnabled) {
+						each.yScale.domain(sourceChartConfig[0].yScale.domain());
+						each.yPanEnabled = sourceChartConfig[0].yPanEnabled;
+					}
 				});
 		}
-
-
 
 		this.clearThreeCanvas();
 		this.setState(newState);
