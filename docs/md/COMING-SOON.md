@@ -2,10 +2,6 @@
 
 TODO
 
-1. add LineSeries interpolation
-1. add AreaSeries gradiant
-1. Use d3 v4
-
 1. [Envelope](http://www.investopedia.com/terms/e/envelope.asp?optm=sa_v2)
 1. [ATR Trailing stop](http://www.incrediblecharts.com/indicators/atr_average_true_range_trailing_stops.php)
 1. [Chandelier Exit](http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:chandelier_exit)
@@ -17,10 +13,7 @@ TODO
 	- line series
 1. Zoom on y - ![Done][DONE]
 1. Pan on y - ![Done][DONE]
-1. Support for pan to load more data
-1. Volume Profile (Tentative)
-	- show/hide Point of control
-	- show/hide value area
+1. Support for pan to load more data - ![Done][DONE]
 1. Explore refactoring of interactive indicators to use canvas (again)
 1. opensource the demo
 
@@ -35,7 +28,12 @@ Guess this can be `v1.0.0`
 1. Explore removal of svg mode & all svg components completely, so this becomes a canvas only library (Tentative)
 1. Detailed documentation of each component and its props
 1. Explore splitting project into multiple modules, one for each type of indicator, chart type
-1. use d3 v4 individual modules
+1. add LineSeries interpolation
+1. add AreaSeries gradiant
+1. Use d3 v4
+1. Volume Profile (Tentative)
+	- show/hide Point of control
+	- show/hide value area
 
 ## Sometime in the future....
 
