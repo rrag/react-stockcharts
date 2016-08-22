@@ -109,9 +109,9 @@ function calculateFullData(props) {
 		.xScale(xScaleProp)
 		.calculator(calculator);
 
-	var { xAccessor, displayXAccessor, xScale, filterData, firstItem, lastItem } = evaluate(inputData);
+	var { xAccessor, displayXAccessor, xScale, fullData, filterData, firstItem, lastItem } = evaluate(inputData);
 
-	return { xAccessor, displayXAccessor, xScale, filterData, firstItem, lastItem };
+	return { xAccessor, displayXAccessor, xScale, fullData, filterData, firstItem, lastItem };
 }
 function resetChart(props, firstCalculation = false) {
 	if (process.env.NODE_ENV !== "production") {
@@ -192,12 +192,13 @@ function calculateState(props) {
 		? xExtentsProp(data)
 		: d3.extent(xExtentsProp.map(d => d3.functor(d)).map(each => each(data, inputXAccesor)));
 
-	var { xAccessor, displayXAccessor, xScale, filterData, firstItem, lastItem } = calculateFullData(props);
+	var { xAccessor, displayXAccessor, xScale, fullData, filterData, firstItem, lastItem } = calculateFullData(props);
 
 	var { plotData, domain } = filterData(extent, inputXAccesor);
 
 	return {
 		plotData,
+		fullData,
 		xScale: xScale.domain(domain),
 		xAccessor,
 		filterData,
@@ -634,6 +635,7 @@ class ChartCanvas extends Component {
 		var dimensions = getDimensions(this.props);
 
 		return {
+			fullData: this.state.fullData,
 			plotData: this.state.plotData,
 			width: dimensions.width,
 			height: dimensions.height,
@@ -690,12 +692,9 @@ class ChartCanvas extends Component {
 
 		var { chartConfig: initialChartConfig } = this.state;
 
-		var a = newState.chartConfig.map(each => each.id);
-		var b = initialChartConfig.map(each => each.id);
-
 		if (!reset) {
 			newState.chartConfig
-				.forEach((each, idx) => {
+				.forEach((each) => {
 					var sourceChartConfig = initialChartConfig.filter(d => d.id === each.id);
 					if (sourceChartConfig.length > 0 && sourceChartConfig[0].yPanEnabled) {
 						each.yScale.domain(sourceChartConfig[0].yScale.domain());
@@ -841,6 +840,7 @@ ChartCanvas.defaultProps = {
 
 ChartCanvas.childContextTypes = {
 	plotData: PropTypes.array,
+	fullData: PropTypes.array,
 	chartConfig: PropTypes.arrayOf(
 		PropTypes.shape({
 			id: PropTypes.number.isRequired,

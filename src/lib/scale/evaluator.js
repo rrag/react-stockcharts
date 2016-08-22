@@ -97,6 +97,7 @@ export default function() {
 
 			return {
 				filterData: extentsWrapper(finalData, xAccessor, realXAccessor, width, useWholeData || isNotDefined(modifiedXScale.invert)),
+				fullData: finalData,
 				xScale: modifiedXScale,
 				xAccessor: realXAccessor,
 				displayXAccessor,
@@ -107,6 +108,7 @@ export default function() {
 
 		return {
 			filterData: extentsWrapper(calculatedData, xAccessor, xAccessor, width, useWholeData || isNotDefined(xScale.invert)),
+			fullData: calculatedData,
 			xScale,
 			xAccessor,
 			displayXAccessor: xAccessor,

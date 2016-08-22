@@ -13,10 +13,10 @@ var tickLevels = [
 	{ target: 11e5, level: 5 },
 	{ target: 21e5, level: 6 },
 	{ target: 43e5, level: 7 },
-	{ target: 49e5, level: 8 }, // not tested
-	{ target: 50e5, level: 9 }, // not tested
+	{ target: 59e5, level: 8 }, // not tested
+	{ target: 12e6, level: 9 }, // not tested
 	{ target: 58e6, level: 10 }, // not tested
-	{ target: 58e6, level: 11 },
+	{ target: 89e6, level: 11 },
 	{ target: 11e7, level: 12 },
 	{ target: 78e7, level: 13 },
 	{ target: 16e8, level: 14 },
@@ -80,7 +80,7 @@ export default function financeDiscontinuousScale(index,
 		// console.log(target, levelIndex)
 		var { level } = tickLevels[levelIndex];
 
-		// console.log(target, level);
+		// console.log(target.toExponential(), level);
 
 		var backingTicks = backingLinearScale.ticks(m);
 		var distance = backingTicks.length > 0

@@ -4,6 +4,9 @@
 import ChartCanvas from "./lib/ChartCanvas";
 import Chart from "./lib/Chart";
 
+import GenericChartComponent from "./lib/GenericChartComponent";
+import GenericComponent from "./lib/GenericComponent";
+
 import BackgroundText from "./lib/BackgroundText";
 
 // chart types & Series
@@ -28,6 +31,8 @@ const version = "0.5.0";
 export {
 	ChartCanvas,
 	Chart,
+	GenericChartComponent,
+	GenericComponent,
 	BackgroundText,
 	series,
 	coordinates,
