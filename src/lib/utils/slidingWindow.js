@@ -30,32 +30,35 @@ THE SOFTWARE.
 
 import d3 from "d3";
 import noop from "./noop";
-import identity from "./identity";
+import { path } from "./index";
 
 export default function() {
 
 	var undefinedValue = undefined,
 		windowSize = 10,
 		accumulator = noop,
-		source = identity,
+		sourcePath,
+		source,
 		skipInitial = 0,
 		misc;
 
 	var slidingWindow = function(data) {
+		var sourceFunction = source || path(sourcePath);
+
 		var size = d3.functor(windowSize).apply(this, arguments);
-		var windowData = data.slice(skipInitial, size + skipInitial).map(source);
+		var windowData = data.slice(skipInitial, size + skipInitial).map(sourceFunction);
 		var accumulatorIdx = 0;
 		var undef = d3.functor(undefinedValue);
 		// console.log(skipInitial, size, data.length, windowData.length);
 		return data.map(function(d, i) {
 			// console.log(d, i);
 			if (i < (skipInitial + size - 1)) {
-				return undef(source(d), i, misc);
+				return undef(sourceFunction(d), i, misc);
 			}
 			if (i >= (skipInitial + size)) {
 				// Treat windowData as FIFO rolling buffer
 				windowData.shift();
-				windowData.push(source(d, i));
+				windowData.push(sourceFunction(d, i));
 			}
 			return accumulator(windowData, i, accumulatorIdx++, misc);
 		});
@@ -94,6 +97,13 @@ export default function() {
 			return skipInitial;
 		}
 		skipInitial = x;
+		return slidingWindow;
+	};
+	slidingWindow.sourcePath = function(x) {
+		if (!arguments.length) {
+			return sourcePath;
+		}
+		sourcePath = x;
 		return slidingWindow;
 	};
 	slidingWindow.source = function(x) {

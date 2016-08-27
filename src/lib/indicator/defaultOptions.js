@@ -2,7 +2,8 @@
 
 export const BollingerBand = {
 	period: 20,
-	source: d => d.close, // "high", "low", "open", "close"
+	// source: d => d.close, // "high", "low", "open", "close"
+	sourcePath: "close",
 	multiplier: 2,
 	movingAverageType: "sma"
 };
@@ -19,7 +20,8 @@ export const ForceIndex = {
 
 export const ElderRay = {
 	period: 13,
-	source: d => d.close, // "high", "low", "open", "close"
+	// source: d => d.close, // "high", "low", "open", "close"
+	sourcePath: "close", // "high", "low", "open", "close"
 	movingAverageType: "sma",
 	ohlc: d => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
 };
@@ -36,7 +38,8 @@ export const MACD = {
 	fast: 12,
 	slow: 26,
 	signal: 9,
-	source: d => d.close, // "high", "low", "open", "close"
+	// source: d => d.close, // "high", "low", "open", "close"
+	sourcePath: "close",
 	fill: {
 		divergence: "#4682B4"
 	},
@@ -62,19 +65,22 @@ export const FullStochasticOscillator = {
 
 export const RSI = {
 	period: 14,
-	source: d => d.close, // "high", "low", "open", "close"
+	// source: d => d.close, // "high", "low", "open", "close"
+	sourcePath: "close", // "high", "low", "open", "close"
 	overSold: 70,
 	middle: 50,
 	overBought: 30,
 };
 
 export const EMA = {
-	source: d => d.close, // "high", "low", "open", "close"
+	// source: d => d.close, // "high", "low", "open", "close"
+	sourcePath: "close",
 	period: 10,
 };
 
 export const SMA = {
-	source: d => d.close, // "high", "low", "open", "close"
+	// source: d => d.close, // "high", "low", "open", "close"
+	sourcePath: "close",
 	period: 10,
 };
 
@@ -82,7 +88,7 @@ export const Kagi = {
 	reversalType: "ATR", // "ATR", "FIXED"
 	period: 14,
 	reversal: 2,
-	source: d => d.close, // "high", "low", "open", "close"
+	sourcePath: "close", // "high", "low", "open", "close"
 	dateAccessor: d => d.date,
 	dateMutator: (d, date) => { d.date = date; },
 	indexMutator: (d, idx) => { d.idx = idx; },

@@ -3,7 +3,7 @@
 import d3 from "d3";
 
 import financeDiscontinuousScale from "./financeDiscontinuousScale";
-import { head, last, slidingWindow, zipper, identity } from "../utils";
+import { head, last, slidingWindow, zipper, identity, isNotDefined } from "../utils";
 
 const yearFormat = "%Y";
 const quarterFormat = "%b %Y";
@@ -119,19 +119,11 @@ var discontinuousIndexCalculatorLocalTime = discontinuousIndexCalculator
 		return { ...row, index: i + di, ...level };
 	});
 
-export function discontinuousTimeScaleProviderBuilder() {
-	var initialIndex = 0, realDateAccessor = identity;
-
-	var discontinuousTimeScaleProvider = function(data,
-			inputDateAccessor = d => d.date,
-			indexAccessor = d => d.idx,
-			indexMutator = (d, idx) => ({ ...d, idx })) {
-
+function doStuff(realDateAccessor, inputDateAccessor, initialIndex) {
+	return function(data) {
 		var dateAccessor = realDateAccessor(inputDateAccessor);
 		var calculate = discontinuousIndexCalculatorLocalTime.source(dateAccessor).misc(initialIndex);
 		var index = calculate(data);
-		// var interval1 = Math.round((dateAccessor(last(data)) - dateAccessor(head(data))) / data.length)
-		// console.log(interval, interval1);
 
 		var map = d3.map();
 		for (var i = 0; i < data.length - 1; i++) {
@@ -155,6 +147,26 @@ export function discontinuousTimeScaleProviderBuilder() {
 			? Math.round((dateAccessor(last(data)) - dateAccessor(head(data))) / data.length)
 			: parseInt(entries[0].key, 10);
 
+		return { index, interval };
+	};
+}
+
+export function discontinuousTimeScaleProviderBuilder() {
+	var initialIndex = 0, realDateAccessor = identity;
+	var inputDateAccessor = d => d.date,
+		indexAccessor = d => d.idx,
+		indexMutator = (d, idx) => ({ ...d, idx }),
+		withIndex, withInterval;
+
+	var discontinuousTimeScaleProvider = function(data) {
+
+		var index = withIndex;
+		var interval = withInterval;
+		if (isNotDefined(index)) {
+			const response = doStuff(realDateAccessor, inputDateAccessor, initialIndex)(data);
+			index = response.index;
+			interval = response.interval;
+		}
 		// console.log(interval, entries[0].key);
 
 		var inputIndex = index.map(each => {
@@ -165,7 +177,6 @@ export function discontinuousTimeScaleProviderBuilder() {
 				format: d3.time.format(format),
 			};
 		});
-
 
 		var xScale = financeDiscontinuousScale(inputIndex, interval);
 
@@ -178,7 +189,7 @@ export function discontinuousTimeScaleProviderBuilder() {
 			data: finalData,
 			xScale,
 			xAccessor: d => d && indexAccessor(d).index,
-			displayXAccessor: dateAccessor,
+			displayXAccessor: realDateAccessor(inputDateAccessor),
 		};
 	};
 
@@ -187,6 +198,41 @@ export function discontinuousTimeScaleProviderBuilder() {
 			return initialIndex;
 		}
 		initialIndex = x;
+		return discontinuousTimeScaleProvider;
+	};
+	discontinuousTimeScaleProvider.inputDateAccessor = function(x) {
+		if (!arguments.length) {
+			return inputDateAccessor;
+		}
+		inputDateAccessor = x;
+		return discontinuousTimeScaleProvider;
+	};
+	discontinuousTimeScaleProvider.indexAccessor = function(x) {
+		if (!arguments.length) {
+			return indexAccessor;
+		}
+		indexAccessor = x;
+		return discontinuousTimeScaleProvider;
+	};
+	discontinuousTimeScaleProvider.indexMutator = function(x) {
+		if (!arguments.length) {
+			return indexMutator;
+		}
+		indexMutator = x;
+		return discontinuousTimeScaleProvider;
+	};
+	discontinuousTimeScaleProvider.withIndex = function(x) {
+		if (!arguments.length) {
+			return withIndex;
+		}
+		withIndex = x;
+		return discontinuousTimeScaleProvider;
+	};
+	discontinuousTimeScaleProvider.withInterval = function(x) {
+		if (!arguments.length) {
+			return withInterval;
+		}
+		withInterval = x;
 		return discontinuousTimeScaleProvider;
 	};
 	discontinuousTimeScaleProvider.utc = function() {
@@ -198,6 +244,10 @@ export function discontinuousTimeScaleProviderBuilder() {
 		};
 		return discontinuousTimeScaleProvider;
 	};
+	discontinuousTimeScaleProvider.indexCalculator = function() {
+		return doStuff(realDateAccessor, inputDateAccessor, initialIndex);
+	};
+
 	return discontinuousTimeScaleProvider;
 }
 

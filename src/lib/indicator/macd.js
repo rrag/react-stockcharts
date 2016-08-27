@@ -22,7 +22,7 @@ export default function() {
 		.fast(defaultOptions.fast)
 		.slow(defaultOptions.slow)
 		.signal(defaultOptions.signal)
-		.source(defaultOptions.source);
+		.sourcePath(defaultOptions.sourcePath);
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
@@ -38,7 +38,7 @@ export default function() {
 	};
 
 	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
-	d3.rebind(indicator, underlyingAlgorithm, "source", "fast", "slow", "signal");
+	d3.rebind(indicator, underlyingAlgorithm, "sourcePath", "fast", "slow", "signal", "options");
 	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;

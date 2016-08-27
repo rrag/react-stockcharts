@@ -88,12 +88,16 @@ export default function() {
 
 
 		if (isDefined(scaleProvider)) {
+			var scaleProvider2 = scaleProvider
+				.inputDateAccessor(xAccessor)
+				.indexAccessor(indexAccessor)
+				.indexMutator(indexMutator);
 			var {
 				data: finalData,
 				xScale: modifiedXScale,
 				xAccessor: realXAccessor,
 				displayXAccessor
-			} = scaleProvider(calculatedData, xAccessor, indexAccessor, indexMutator);
+			} = scaleProvider2(calculatedData);
 
 			return {
 				filterData: extentsWrapper(finalData, xAccessor, realXAccessor, width, useWholeData || isNotDefined(modifiedXScale.invert)),

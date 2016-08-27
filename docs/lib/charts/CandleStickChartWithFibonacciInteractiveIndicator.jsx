@@ -89,7 +89,7 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 		var smaVolume50 = sma()
 			.id(3)
 			.windowSize(10)
-			.source(d => d.volume)
+			.sourcePath("volume")
 			.merge((d, c) => {d.smaVolume50 = c})
 			.accessor(d => d.smaVolume50);
 

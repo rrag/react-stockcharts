@@ -23,7 +23,7 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 
 		var ema20 = ema()
 			.windowSize(20) // optional will default to 10
-			.source(d => d.close) // optional will default to close as the source
+			.sourcePath("close") // optional will default to close as the source
 			.skipUndefined(true) // defaults to true
 			.merge((d, c) => {d.ema20 = c}) // Required, if not provided, log a error
 			.accessor(d => d.ema20) // Required, if not provided, log an error during calculation
@@ -31,19 +31,19 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 
 		var sma20 = sma()
 			.windowSize(20)
-			.source(d => d.close)
+			.sourcePath("close")
 			.merge((d, c) => {d.sma20 = c})
 			.accessor(d => d.sma20)
 
 		var ema50 = ema()
 			.windowSize(50)
-			.source(d => d.close)
+			.sourcePath("close")
 			.merge((d, c) => {d.ema50 = c})
 			.accessor(d => d.ema50)
 
 		var smaVolume50 = sma()
 			.windowSize(50)
-			.source(d => d.volume)
+			.sourcePath("volume")
 			.merge((d, c) => {d.smaVolume50 = c})
 			.accessor(d => d.smaVolume50)
 			.stroke("#4682B4")
@@ -85,7 +85,7 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 
 
 					<OHLCTooltip origin={[-40, 0]}/>
-					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]} 
+					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]}
 						calculators={[sma20, ema20, ema50]}/>
 					<BollingerBandTooltip origin={[-38, 60]} calculator={bb} />
 
@@ -100,7 +100,7 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 						orient="left"
 						displayFormat={d3.format(".4s")} />
 
-					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "red"} />
+					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000" } />
 					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
 					<CurrentCoordinate yAccessor={smaVolume50.accessor()} fill={smaVolume50.stroke()} />
 					<CurrentCoordinate yAccessor={d => d.volume} fill="#9B0A47" />

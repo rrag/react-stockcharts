@@ -17,7 +17,7 @@ export default function() {
 
 	var underlyingAlgorithm = slidingWindow()
 		.windowSize(defaultOptions.period)
-		.source(defaultOptions.source)
+		.sourcePath(defaultOptions.sourcePath)
 		.accumulator(values => d3.mean(values));
 
 	var mergedAlgorithm = merge()
@@ -36,7 +36,7 @@ export default function() {
 	base.tooltipLabel(() => `${ALGORITHM_TYPE}(${underlyingAlgorithm.windowSize()})`);
 
 	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
-	d3.rebind(indicator, underlyingAlgorithm, "windowSize", "source", "undefinedValue", "skipInitial");
+	d3.rebind(indicator, underlyingAlgorithm, "windowSize", "undefinedValue", "sourcePath", "skipInitial");
 	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 

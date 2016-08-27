@@ -28,16 +28,17 @@ THE SOFTWARE.
 
 import d3 from "d3";
 
-import { isDefined, last, identity, slidingWindow } from "../../utils";
+import { isDefined, last, slidingWindow, path } from "../../utils";
 import { RSI as defaultOptions } from "../defaultOptions";
 
 export default function() {
 
 	var { period: windowSize } = defaultOptions;
-	var source = identity;
+	var sourcePath;
 
 	function calculator(data) {
 
+		var source = path(sourcePath);
 		var prevAvgGain, prevAvgLoss;
 		var rsiAlgorithm = slidingWindow()
 			.windowSize(windowSize)
@@ -87,11 +88,11 @@ export default function() {
 		windowSize = x;
 		return calculator;
 	};
-	calculator.source = function(x) {
+	calculator.sourcePath = function(x) {
 		if (!arguments.length) {
-			return source;
+			return sourcePath;
 		}
-		source = x;
+		sourcePath = x;
 		return calculator;
 	};
 

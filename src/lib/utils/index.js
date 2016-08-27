@@ -23,6 +23,19 @@ export {
 	zipper,
 };
 
+export function path(path = []) {
+	var key = Array.isArray(path) ? path : [path];
+	var length = key.length;
+
+	return function(obj, defaultValue) {
+		var index = 0;
+		while (obj != null && index < length) {
+			obj = obj[key[index++]];
+		}
+		return (index === length) ? obj : defaultValue;
+	};
+}
+
 export function getClosestItemIndexes2(array, value, accessor) {
 	var left = d3.bisector(accessor).left(array, value);
 	left = Math.max(left - 1, 0);

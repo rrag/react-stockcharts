@@ -29,21 +29,21 @@ THE SOFTWARE.
 import d3 from "d3";
 
 import ema from "./ema";
-import { last, identity, slidingWindow, zipper } from "../../utils";
+import { last, slidingWindow, zipper, path } from "../../utils";
 
 import { BollingerBand as defaultOptions } from "../defaultOptions";
 
 export default function() {
 
 	var { period: windowSize, multiplier, movingAverageType } = defaultOptions;
-	var source = identity;
+	var sourcePath;
 
 	function calculator(data) {
-
+		var source = path(sourcePath);
 		var meanAlgorithm = movingAverageType === "ema"
-			? ema().windowSize(windowSize).source(source)
+			? ema().windowSize(windowSize).sourcePath(sourcePath)
 			: slidingWindow().windowSize(windowSize)
-				.accumulator(values => d3.mean(values)).source(source);
+				.accumulator(values => d3.mean(values)).sourcePath(sourcePath);
 
 		var bollingerBandAlgorithm = slidingWindow()
 			.windowSize(windowSize)
@@ -88,11 +88,11 @@ export default function() {
 		return calculator;
 	};
 
-	calculator.source = function(x) {
+	calculator.sourcePath = function(x) {
 		if (!arguments.length) {
-			return source;
+			return sourcePath;
 		}
-		source = x;
+		sourcePath = x;
 		return calculator;
 	};
 

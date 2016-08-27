@@ -37,7 +37,7 @@ class CandleStickChartWithEdge extends React.Component {
 		var smaVolume70 = sma()
 			.id(3)
 			.windowSize(70)
-			.source(d => d.volume)
+			.sourcePath("volume")
 			.merge((d, c) => {d.smaVolume70 = c})
 			.accessor(d => d.smaVolume70);
 

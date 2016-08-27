@@ -17,7 +17,7 @@ export default function() {
 
 	var underlyingAlgorithm = ema()
 		.windowSize(defaultOptions.period)
-		.source(defaultOptions.source);
+		.sourcePath(defaultOptions.sourcePath);
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
@@ -28,12 +28,13 @@ export default function() {
 		return mergedAlgorithm(data);
 	};
 	base.tooltipLabel(() => `${ALGORITHM_TYPE}(${underlyingAlgorithm.windowSize()})`);
+
 	indicator.undefinedLength = function() {
 		return underlyingAlgorithm.windowSize();
 	};
 
 	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
-	d3.rebind(indicator, underlyingAlgorithm, "windowSize", "source");
+	d3.rebind(indicator, underlyingAlgorithm, "windowSize", "sourcePath");
 	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;

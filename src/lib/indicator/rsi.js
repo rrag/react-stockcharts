@@ -19,7 +19,7 @@ export default function() {
 
 	var underlyingAlgorithm = rsi()
 		.windowSize(defaultOptions.period)
-		.source(defaultOptions.source);
+		.sourcePath(defaultOptions.sourcePath);
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
@@ -54,7 +54,7 @@ export default function() {
 	};
 
 	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel", "domain", "tickValues");
-	d3.rebind(indicator, underlyingAlgorithm, "source", "windowSize");
+	d3.rebind(indicator, underlyingAlgorithm, "sourcePath", "windowSize");
 	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;

@@ -26,7 +26,7 @@ export default function() {
 		.windowSize(defaultOptions.period)
 		.movingAverageType(defaultOptions.movingAverageType)
 		.multiplier(defaultOptions.multiplier)
-		.source(defaultOptions.source);
+		.sourcePath(defaultOptions.sourcePath);
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
@@ -43,7 +43,7 @@ export default function() {
 		+ `, ${underlyingAlgorithm.movingAverageType()}): `);
 
 	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
-	d3.rebind(indicator, underlyingAlgorithm, "windowSize", "movingAverageType", "multiplier", "source");
+	d3.rebind(indicator, underlyingAlgorithm, "windowSize", "movingAverageType", "multiplier", "sourcePath");
 	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;

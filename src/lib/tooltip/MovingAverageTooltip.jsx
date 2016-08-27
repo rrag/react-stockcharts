@@ -71,7 +71,7 @@ class MovingAverageTooltip extends Component {
 						var options = {
 							maType: each.type(),
 							period: each.windowSize(),
-							source: each.source(),
+							sourcePath: each.sourcePath(),
 							echo: each.echo()
 						};
 						var yDisplayValue = yValue ? displayFormat(yValue) : "n/a";

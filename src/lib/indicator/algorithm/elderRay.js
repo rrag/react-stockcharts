@@ -35,14 +35,13 @@ import { isDefined, zipper, slidingWindow } from "../../utils";
 
 export default function() {
 
-	var { period: windowSize, source: src, movingAverageType, ohlc } = defaultOptions;
-	var source = d3.functor(src);
+	var { period: windowSize, sourcePath, movingAverageType, ohlc } = defaultOptions;
 
 	function calculator(data) {
 
 		var meanAlgorithm = movingAverageType === "ema"
-			? ema().windowSize(windowSize).source(source)
-			: slidingWindow().windowSize(windowSize).accumulator(values => d3.mean(values)).source(source);
+			? ema().windowSize(windowSize).sourcePath(sourcePath)
+			: slidingWindow().windowSize(windowSize).accumulator(values => d3.mean(values)).sourcePath(sourcePath);
 
 		var zip = zipper()
 			.combine((datum, mean) => {
@@ -79,11 +78,11 @@ export default function() {
 		return calculator;
 	};
 
-	calculator.source = function(x) {
+	calculator.sourcePath = function(x) {
 		if (!arguments.length) {
-			return source;
+			return sourcePath;
 		}
-		source = x;
+		sourcePath = x;
 		return calculator;
 	};
 
