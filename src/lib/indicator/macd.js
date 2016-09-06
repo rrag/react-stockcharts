@@ -6,7 +6,7 @@ import { merge } from "../utils";
 import { macd } from "./algorithm";
 
 import baseIndicator from "./baseIndicator";
-import { MACD as defaultOptions } from "./defaultOptions";
+import { MACD as appearanceOptions } from "./defaultOptionsForAppearance";
 
 const ALGORITHM_TYPE = "MACD";
 
@@ -14,15 +14,11 @@ export default function() {
 
 	var base = baseIndicator()
 		.type(ALGORITHM_TYPE)
-		.fill(defaultOptions.fill)
-		.stroke(defaultOptions.stroke)
+		.fill(appearanceOptions.fill)
+		.stroke(appearanceOptions.stroke)
 		.accessor(d => d.macd);
 
-	var underlyingAlgorithm = macd()
-		.fast(defaultOptions.fast)
-		.slow(defaultOptions.slow)
-		.signal(defaultOptions.signal)
-		.sourcePath(defaultOptions.sourcePath);
+	var underlyingAlgorithm = macd();
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)

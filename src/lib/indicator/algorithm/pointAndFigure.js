@@ -1,7 +1,7 @@
 "use strict";
 
 import { isNotDefined } from "../../utils";
-import { PointAndFigure as defaultOptions } from "../defaultOptions";
+import { PointAndFigure as defaultOptions } from "../defaultOptionsForComputation";
 
 function createBox(d, dateAccessor, dateMutator) {
 	var box = {

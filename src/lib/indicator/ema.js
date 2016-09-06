@@ -3,7 +3,6 @@
 import d3 from "d3";
 import { merge } from "../utils";
 
-import { EMA as defaultOptions } from "./defaultOptions";
 import { ema } from "./algorithm";
 import baseIndicator from "./baseIndicator";
 
@@ -15,9 +14,7 @@ export default function() {
 		.type(ALGORITHM_TYPE)
 		.accessor(d => d.ema);
 
-	var underlyingAlgorithm = ema()
-		.windowSize(defaultOptions.period)
-		.sourcePath(defaultOptions.sourcePath);
+	var underlyingAlgorithm = ema();
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)

@@ -6,7 +6,6 @@ import { merge } from "../utils";
 import { forceIndex } from "./algorithm";
 
 import baseIndicator from "./baseIndicator";
-import { ForceIndex as defaultOptions } from "./defaultOptions";
 
 const ALGORITHM_TYPE = "ForceIndex";
 
@@ -16,9 +15,7 @@ export default function() {
 		.type(ALGORITHM_TYPE)
 		.accessor(d => d.forceIndex);
 
-	var underlyingAlgorithm = forceIndex()
-		.volume(defaultOptions.volume)
-		.close(defaultOptions.close);
+	var underlyingAlgorithm = forceIndex();
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
@@ -30,7 +27,7 @@ export default function() {
 	};
 
 	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type");
-	d3.rebind(indicator, underlyingAlgorithm, "close", "volume");
+	d3.rebind(indicator, underlyingAlgorithm, "sourcePath");
 	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;

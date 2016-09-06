@@ -2,6 +2,7 @@
 // import merge from "./merge";
 // import zipper from "./zipper";
 import ema from "./ema";
+import sma from "./sma";
 import bollingerband from "./bollingerband";
 import haikinAshi from "./haikinAshi";
 import kagi from "./kagi";
@@ -21,6 +22,7 @@ export {
 	// merge,
 	// zipper
 	ema,
+	sma,
 	bollingerband,
 	haikinAshi,
 	kagi,

@@ -54,6 +54,7 @@ MouseCoordinateY.defaultProps = {
 	rectHeight: 20,
 	orient: "left",
 	at: "left",
+	dx: 0,
 	arrowWidth: 10,
 	fill: "#525252",
 	opacity: 1,
@@ -70,7 +71,7 @@ function helper(props, context, moreProps) {
 
 	if (currentCharts.indexOf(chartId) < 0) return null;
 
-	var { orient, at, rectWidth, rectHeight, displayFormat } = props;
+	var { orient, at, rectWidth, rectHeight, displayFormat, dx } = props;
 	var { fill, opacity, fontFamily, fontSize, textFill, arrowWidth } = props;
 
 	var x1 = 0, x2 = width;
@@ -94,6 +95,7 @@ function helper(props, context, moreProps) {
 		rectWidth,
 		rectHeight,
 		arrowWidth,
+		dx,
 		x1,
 		x2,
 		y1: y,

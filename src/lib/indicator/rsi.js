@@ -6,20 +6,19 @@ import { merge } from "../utils";
 import { rsi } from "./algorithm";
 
 import baseIndicator from "./baseIndicator";
-import { RSI as defaultOptions } from "./defaultOptions";
 
 const ALGORITHM_TYPE = "RSI";
 
 export default function() {
-	var { overSold, middle, overBought } = defaultOptions;
+	var overSold = 70,
+		middle = 50,
+		overBought = 30;
 
 	var base = baseIndicator()
 		.type(ALGORITHM_TYPE)
 		.accessor(d => d.rsi);
 
-	var underlyingAlgorithm = rsi()
-		.windowSize(defaultOptions.period)
-		.sourcePath(defaultOptions.sourcePath);
+	var underlyingAlgorithm = rsi();
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)

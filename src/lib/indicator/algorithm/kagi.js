@@ -5,7 +5,7 @@ import d3 from "d3";
 import { merge, isNotDefined, path } from "../../utils";
 import atr from "./atr";
 
-import { Kagi as defaultOptions } from "../defaultOptions";
+import { Kagi as defaultOptions } from "../defaultOptionsForComputation";
 
 export default function() {
 

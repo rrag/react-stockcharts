@@ -27,11 +27,11 @@ THE SOFTWARE.
 */
 
 import { isNotDefined, path } from "../../utils";
+import { EMA as defaultOptions } from "../defaultOptionsForComputation";
 
 export default function() {
 
-	var windowSize = 9,
-		sourcePath;
+	var { windowSize, sourcePath } = defaultOptions;
 
 	function calculator(data) {
 

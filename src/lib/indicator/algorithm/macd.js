@@ -29,12 +29,11 @@ THE SOFTWARE.
 import ema from "./ema";
 
 import { isDefined, zipper } from "../../utils";
-import { MACD as defaultOptions } from "../defaultOptions";
+import { MACD as defaultOptions } from "../defaultOptionsForComputation";
 
 export default function() {
 
-	var { fast, slow, signal } = defaultOptions;
-	var sourcePath;
+	var { fast, slow, signal, sourcePath } = defaultOptions;
 
 	function calculator(data) {
 
@@ -45,7 +44,8 @@ export default function() {
 			.windowSize(slow)
 			.sourcePath(sourcePath);
 		var signalEMA = ema()
-			.windowSize(signal);
+			.windowSize(signal)
+			.sourcePath(undefined);
 
 		var macdCalculator = zipper()
 			.combine((fastEMA, slowEMA) => (isDefined(fastEMA) && isDefined(slowEMA)) ? fastEMA - slowEMA : undefined);

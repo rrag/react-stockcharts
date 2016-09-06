@@ -59,7 +59,7 @@ function helper(props) {
 	var { coordinate: displayCoordinate, show, type, orient, edgeAt, hideLine } = props;
 	var { fill, opacity, fontFamily, fontSize, textFill, lineStroke, lineOpacity, arrowWidth } = props;
 	var { rectWidth, rectHeight } = props;
-	var { x1, y1, x2, y2 } = props;
+	var { x1, y1, x2, y2, dx } = props;
 
 	if (!show) return null;
 
@@ -69,9 +69,9 @@ function helper(props) {
 
 	if (type === "horizontal") {
 
-		edgeXRect = (orient === "right") ? edgeAt + 1 : edgeAt - rectWidth - arrowWidth - 1;
+		edgeXRect = dx + ((orient === "right") ? edgeAt + 1 : edgeAt - rectWidth - arrowWidth - 1);
 		edgeYRect = y1 - (rectHeight / 2);
-		edgeXText = (orient === "right") ? edgeAt + (rectWidth / 2) + arrowWidth : edgeAt - (rectWidth / 2) - arrowWidth;
+		edgeXText = dx + ((orient === "right") ? edgeAt + (rectWidth / 2) + arrowWidth : edgeAt - (rectWidth / 2) - arrowWidth);
 		edgeYText = y1;
 	} else {
 		edgeXRect = x1 - (rectWidth / 2);

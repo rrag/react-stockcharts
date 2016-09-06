@@ -51,7 +51,7 @@ class OHLCChartWithElderImpulseIndicator extends React.Component {
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 
-				<Chart id={1} height={300} 
+				<Chart id={1} height={300}
 						yExtents={d => [d.high, d.low]}
 						padding={{ top: 10, bottom: 10 }} >
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
@@ -64,7 +64,7 @@ class OHLCChartWithElderImpulseIndicator extends React.Component {
 
 					<LineSeries yAccessor={ema12.accessor()} stroke={ema12.stroke()}/>
 
-					<OHLCSeries stroke={elderImpulseCalculator.stroke()} />
+					<OHLCSeries stroke={d => elderImpulseCalculator.stroke()[d.elderImpulse]} />
 
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>

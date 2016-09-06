@@ -29,12 +29,13 @@ THE SOFTWARE.
 import d3 from "d3";
 
 import { last, slidingWindow, zipper } from "../../utils";
-import { FullStochasticOscillator as defaultOptions } from "../defaultOptions";
+import { FullStochasticOscillator as defaultOptions } from "../defaultOptionsForComputation";
 
 export default function() {
 
-	var { period: windowSize, K: kWindowSize, D: dWindowSize, source } = defaultOptions;
+	var { period: windowSize, K: kWindowSize, D: dWindowSize } = defaultOptions;
 
+	var source = d => ({ open: d.open, high: d.high, low: d.low, close: d.close });
 	var high = d => source(d).high,
 		low = d => source(d).low,
 		close = d => source(d).close;

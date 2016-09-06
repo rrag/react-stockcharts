@@ -1,6 +1,4 @@
 
-import * as defaultOptions from "./defaultOptions";
-
 import ema from "./ema";
 import sma from "./sma";
 import bollingerBand from "./bollingerBand";
@@ -17,6 +15,9 @@ import elderRay from "./elderRay";
 import change from "./change";
 import elderImpulse from "./elderImpulse";
 import compare from "./compare";
+
+import * as defaultOptionsForComputation from "./defaultOptionsForComputation";
+import * as defaultOptionsForAppearance from "./defaultOptionsForAppearance";
 
 export {
 	ema,
@@ -35,5 +36,6 @@ export {
 	change,
 	elderImpulse,
 	compare,
-	defaultOptions
+	defaultOptionsForComputation,
+	defaultOptionsForAppearance,
 };

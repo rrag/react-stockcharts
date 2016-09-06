@@ -29,12 +29,11 @@ THE SOFTWARE.
 import d3 from "d3";
 
 import { isDefined, last, slidingWindow, path } from "../../utils";
-import { RSI as defaultOptions } from "../defaultOptions";
+import { RSI as defaultOptions } from "../defaultOptionsForComputation";
 
 export default function() {
 
-	var { period: windowSize } = defaultOptions;
-	var sourcePath;
+	var { period: windowSize, sourcePath } = defaultOptions;
 
 	function calculator(data) {
 

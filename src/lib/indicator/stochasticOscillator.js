@@ -6,23 +6,21 @@ import { merge } from "../utils";
 import { sto } from "./algorithm";
 
 import baseIndicator from "./baseIndicator";
-import { FullStochasticOscillator as defaultOptions } from "./defaultOptions";
+import { FullStochasticOscillator as appearanceOptions } from "./defaultOptionsForAppearance";
 
 const ALGORITHM_TYPE = "RSI";
 
 export default function() {
-	var { K, D, source, period, overSold, overBought, middle, stroke } = defaultOptions;
+	var overSold = 80,
+		overBought = 20,
+		middle = 50;
 
 	var base = baseIndicator()
 		.type(ALGORITHM_TYPE)
-		.stroke(stroke)
+		.stroke(appearanceOptions.stroke)
 		.accessor(d => d.sto);
 
-	var underlyingAlgorithm = sto()
-		.windowSize(period)
-		.kWindowSize(K)
-		.dWindowSize(D)
-		.source(source);
+	var underlyingAlgorithm = sto();
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
@@ -58,7 +56,7 @@ export default function() {
 	};
 
 	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel", "domain", "tickValues");
-	d3.rebind(indicator, underlyingAlgorithm, "source", "windowSize", "kWindowSize", "dWindowSize");
+	d3.rebind(indicator, underlyingAlgorithm, "windowSize", "kWindowSize", "dWindowSize");
 	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;

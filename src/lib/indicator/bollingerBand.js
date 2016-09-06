@@ -4,7 +4,7 @@ import d3 from "d3";
 
 import { merge } from "../utils";
 
-import { BollingerBand as defaultOptions } from "./defaultOptions";
+import { BollingerBand as appearanceOptions } from "./defaultOptionsForAppearance";
 import baseIndicator from "./baseIndicator";
 import { bollingerband } from "./algorithm";
 
@@ -15,18 +15,10 @@ export default function() {
 	var base = baseIndicator()
 		.type(ALGORITHM_TYPE)
 		.accessor(d => d.bollingerBand)
-		.stroke({
-			top: "#964B00",
-			middle: "#000000",
-			bottom: "#964B00",
-		})
-		.fill("#4682B4");
+		.stroke(appearanceOptions.stroke)
+		.fill(appearanceOptions.fill);
 
-	var underlyingAlgorithm = bollingerband()
-		.windowSize(defaultOptions.period)
-		.movingAverageType(defaultOptions.movingAverageType)
-		.multiplier(defaultOptions.multiplier)
-		.sourcePath(defaultOptions.sourcePath);
+	var underlyingAlgorithm = bollingerband();
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)

@@ -4,7 +4,8 @@ import d3 from "d3";
 
 import { merge, slidingWindow } from "../utils";
 
-import { SMA as defaultOptions } from "./defaultOptions";
+import { sma } from "./algorithm";
+
 import baseIndicator from "./baseIndicator";
 
 const ALGORITHM_TYPE = "SMA";
@@ -15,10 +16,7 @@ export default function() {
 		.type(ALGORITHM_TYPE)
 		.accessor(d => d.sma);
 
-	var underlyingAlgorithm = slidingWindow()
-		.windowSize(defaultOptions.period)
-		.sourcePath(defaultOptions.sourcePath)
-		.accumulator(values => d3.mean(values));
+	var underlyingAlgorithm = sma();
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)

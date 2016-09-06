@@ -31,12 +31,11 @@ import d3 from "d3";
 import ema from "./ema";
 import { last, slidingWindow, zipper, path } from "../../utils";
 
-import { BollingerBand as defaultOptions } from "../defaultOptions";
+import { BollingerBand as defaultOptions } from "../defaultOptionsForComputation";
 
 export default function() {
 
-	var { period: windowSize, multiplier, movingAverageType } = defaultOptions;
-	var sourcePath;
+	var { period: windowSize, multiplier, movingAverageType, sourcePath } = defaultOptions;
 
 	function calculator(data) {
 		var source = path(sourcePath);

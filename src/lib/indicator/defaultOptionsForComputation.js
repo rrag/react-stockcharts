@@ -10,12 +10,10 @@ export const BollingerBand = {
 
 export const ATR = {
 	period: 14,
-	source: d => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
 };
 
 export const ForceIndex = {
-	close: d => d.close, // "high", "low", "open", "close"
-	volume: d => d.volume
+	sourcePath: "close", // "high", "low", "open", "close"
 };
 
 export const ElderRay = {
@@ -23,15 +21,10 @@ export const ElderRay = {
 	// source: d => d.close, // "high", "low", "open", "close"
 	sourcePath: "close", // "high", "low", "open", "close"
 	movingAverageType: "sma",
-	ohlc: d => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
 };
 
 export const ElderImpulse = {
-	stroke: {
-		up: "#6BA583",
-		down: "#FF0000",
-		neutral: "#0000FF",
-	}
+	sourcePath: "close", // "high", "low", "open", "close"
 };
 
 export const MACD = {
@@ -53,23 +46,12 @@ export const FullStochasticOscillator = {
 	period: 12,
 	K: 3,
 	D: 3,
-	source: (d) => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
-	stroke: {
-		D: "#17becf",
-		K: "#ff7f0e",
-	},
-	overSold: 80,
-	middle: 50,
-	overBought: 20,
 };
 
 export const RSI = {
 	period: 14,
 	// source: d => d.close, // "high", "low", "open", "close"
 	sourcePath: "close", // "high", "low", "open", "close"
-	overSold: 70,
-	middle: 50,
-	overBought: 30,
 };
 
 export const EMA = {

@@ -63,7 +63,7 @@ class CandleStickChartPanToLoadMore extends React.Component {
 			macdCalculator,
 			smaVolume50
 		]);
-
+		/* SERVER - START */
 		var dataToCalculate = inputData.slice(-LENGTH_TO_SHOW - maxWindowSize)
 
 		var calculatedData = ema26(ema12(macdCalculator(smaVolume50(dataToCalculate))));
@@ -71,6 +71,7 @@ class CandleStickChartPanToLoadMore extends React.Component {
 
 		// console.log(inputData.length, dataToCalculate.length, maxWindowSize)
 		var { index, interval } = indexCalculator(calculatedData);
+		/* SERVER - END */
 
 		var xScaleProvider = discontinuousTimeScaleProviderBuilder().withIndex(index).withInterval(interval);
 		var { data: linearData, xScale, xAccessor, displayXAccessor } = xScaleProvider(calculatedData.slice(-LENGTH_TO_SHOW))

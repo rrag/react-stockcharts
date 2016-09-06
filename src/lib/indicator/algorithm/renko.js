@@ -5,7 +5,7 @@ import { merge, isNotDefined } from "../../utils";
 
 import atr from "./atr";
 
-import { Renko as defaultOptions } from "../defaultOptions";
+import { Renko as defaultOptions } from "../defaultOptionsForComputation";
 
 export default function() {
 
