@@ -1,7 +1,7 @@
 "use strict";
 
 export const BollingerBand = {
-	period: 20,
+	windowSize: 20,
 	// source: d => d.close, // "high", "low", "open", "close"
 	sourcePath: "close",
 	multiplier: 2,
@@ -9,7 +9,7 @@ export const BollingerBand = {
 };
 
 export const ATR = {
-	period: 14,
+	windowSize: 14,
 };
 
 export const ForceIndex = {
@@ -17,7 +17,7 @@ export const ForceIndex = {
 };
 
 export const ElderRay = {
-	period: 13,
+	windowSize: 13,
 	// source: d => d.close, // "high", "low", "open", "close"
 	sourcePath: "close", // "high", "low", "open", "close"
 	movingAverageType: "sma",
@@ -43,13 +43,13 @@ export const MACD = {
 };
 
 export const FullStochasticOscillator = {
-	period: 12,
-	K: 3,
-	D: 3,
+	windowSize: 12,
+	kWindowSize: 3,
+	dWindowSize: 3,
 };
 
 export const RSI = {
-	period: 14,
+	windowSize: 14,
 	// source: d => d.close, // "high", "low", "open", "close"
 	sourcePath: "close", // "high", "low", "open", "close"
 };
@@ -57,18 +57,18 @@ export const RSI = {
 export const EMA = {
 	// source: d => d.close, // "high", "low", "open", "close"
 	sourcePath: "close",
-	period: 10,
+	windowSize: 10,
 };
 
 export const SMA = {
 	// source: d => d.close, // "high", "low", "open", "close"
 	sourcePath: "close",
-	period: 10,
+	windowSize: 10,
 };
 
 export const Kagi = {
 	reversalType: "ATR", // "ATR", "FIXED"
-	period: 14,
+	windowSize: 14,
 	reversal: 2,
 	sourcePath: "close", // "high", "low", "open", "close"
 	dateAccessor: d => d.date,
@@ -78,7 +78,7 @@ export const Kagi = {
 
 export const Renko = {
 	reversalType: "ATR", // "ATR", "FIXED"
-	period: 14,
+	windowSize: 14,
 	fixedBrickSize: 2,
 	source: d => ({ high: d.high, low: d.low }), // "close", "hi/lo"
 	dateAccessor: d => d.date,

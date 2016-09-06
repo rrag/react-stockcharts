@@ -33,7 +33,7 @@ import { RSI as defaultOptions } from "../defaultOptionsForComputation";
 
 export default function() {
 
-	var { period: windowSize, sourcePath } = defaultOptions;
+	var { windowSize, sourcePath } = defaultOptions;
 
 	function calculator(data) {
 

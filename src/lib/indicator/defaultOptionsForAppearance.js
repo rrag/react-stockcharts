@@ -7,7 +7,7 @@ export const BollingerBand = {
 		bottom: "#964B00",
 	},
 	fill: "#4682B4",
-}
+};
 
 export const ElderImpulse = {
 	stroke: {

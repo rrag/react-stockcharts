@@ -15,7 +15,7 @@ export default function() {
 
 	var base = baseIndicator()
 		.type(ALGORITHM_TYPE)
-		//.stroke(d => stroke[d.elderImpulse])
+		// .stroke(d => stroke[d.elderImpulse])
 		.stroke(appearanceOptions.stroke)
 		.fill(undefined);
 

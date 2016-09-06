@@ -9,7 +9,7 @@ import { Renko as defaultOptions } from "../defaultOptionsForComputation";
 
 export default function() {
 
-	var { reversalType, fixedBrickSize, source, period: windowSize } = defaultOptions;
+	var { reversalType, fixedBrickSize, source, windowSize } = defaultOptions;
 	var { dateAccessor, dateMutator } = defaultOptions;
 
 	function calculator(rawData) {

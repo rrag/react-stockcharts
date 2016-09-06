@@ -33,7 +33,7 @@ import { FullStochasticOscillator as defaultOptions } from "../defaultOptionsFor
 
 export default function() {
 
-	var { period: windowSize, K: kWindowSize, D: dWindowSize } = defaultOptions;
+	var { windowSize, kWindowSize, dWindowSize } = defaultOptions;
 
 	var source = d => ({ open: d.open, high: d.high, low: d.low, close: d.close });
 	var high = d => source(d).high,

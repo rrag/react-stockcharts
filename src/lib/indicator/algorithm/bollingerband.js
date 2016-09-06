@@ -35,7 +35,7 @@ import { BollingerBand as defaultOptions } from "../defaultOptionsForComputation
 
 export default function() {
 
-	var { period: windowSize, multiplier, movingAverageType, sourcePath } = defaultOptions;
+	var { windowSize, multiplier, movingAverageType, sourcePath } = defaultOptions;
 
 	function calculator(data) {
 		var source = path(sourcePath);

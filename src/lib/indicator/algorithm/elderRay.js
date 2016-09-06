@@ -35,7 +35,7 @@ import { isDefined, zipper, slidingWindow } from "../../utils";
 
 export default function() {
 
-	var { period: windowSize, sourcePath, movingAverageType } = defaultOptions;
+	var { windowSize, sourcePath, movingAverageType } = defaultOptions;
 	var ohlc = d => ({ open: d.open, high: d.high, low: d.low, close: d.close });
 
 	function calculator(data) {

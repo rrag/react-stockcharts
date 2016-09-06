@@ -9,7 +9,7 @@ import { Kagi as defaultOptions } from "../defaultOptionsForComputation";
 
 export default function() {
 
-	var { reversalType, period: windowSize, reversal, sourcePath } = defaultOptions;
+	var { reversalType, windowSize, reversal, sourcePath } = defaultOptions;
 	var { dateAccessor, dateMutator } = defaultOptions;
 
 	function calculator(data) {
