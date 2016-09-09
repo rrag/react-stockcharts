@@ -21,7 +21,9 @@ export default function() {
 
 		return forceIndex;
 	}
-
+	calculator.undefinedLength = function() {
+		return 2;
+	};
 	calculator.sourcePath = function(x) {
 		if (!arguments.length) {
 			return sourcePath;

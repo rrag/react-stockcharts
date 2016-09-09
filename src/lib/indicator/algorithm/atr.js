@@ -9,7 +9,7 @@ export default function() {
 	var windowSize = 9,
 		source = d => ({ open: d.open, high: d.high, low: d.low, close: d.close });
 
-	function atr(data) {
+	function calculator(data) {
 
 		var trueRangeAlgorithm = slidingWindow()
 			.windowSize(2)
@@ -42,22 +42,24 @@ export default function() {
 
 		return newData;
 	}
-
-	atr.windowSize = function(x) {
+	calculator.undefinedLength = function() {
+		return windowSize;
+	};
+	calculator.windowSize = function(x) {
 		if (!arguments.length) {
 			return windowSize;
 		}
 		windowSize = x;
-		return atr;
+		return calculator;
 	};
 
-	atr.source = function(x) {
+	calculator.source = function(x) {
 		if (!arguments.length) {
 			return source;
 		}
 		source = x;
-		return atr;
+		return calculator;
 	};
 
-	return atr;
+	return calculator;
 }

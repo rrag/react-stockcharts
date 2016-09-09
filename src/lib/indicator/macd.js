@@ -29,12 +29,8 @@ export default function() {
 		return mergedAlgorithm(data);
 	};
 
-	indicator.undefinedLength = function() {
-		return underlyingAlgorithm.slow() + underlyingAlgorithm.signal();
-	};
-
 	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
-	d3.rebind(indicator, underlyingAlgorithm, "sourcePath", "fast", "slow", "signal", "options");
+	d3.rebind(indicator, underlyingAlgorithm, "sourcePath", "fast", "slow", "signal", "undefinedLength");
 	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;

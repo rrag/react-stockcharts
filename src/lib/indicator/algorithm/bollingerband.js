@@ -62,7 +62,9 @@ export default function() {
 		var tuples = zip(data, meanAlgorithm(data));
 		return bollingerBandAlgorithm(tuples);
 	}
-
+	calculator.undefinedLength = function() {
+		return windowSize;
+	};
 	calculator.windowSize = function(x) {
 		if (!arguments.length) {
 			return windowSize;

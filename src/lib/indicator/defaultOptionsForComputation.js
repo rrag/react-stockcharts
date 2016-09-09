@@ -33,13 +33,6 @@ export const MACD = {
 	signal: 9,
 	// source: d => d.close, // "high", "low", "open", "close"
 	sourcePath: "close",
-	fill: {
-		divergence: "#4682B4"
-	},
-	stroke: {
-		macd: "#FF0000",
-		signal: "#00F300",
-	},
 };
 
 export const FullStochasticOscillator = {

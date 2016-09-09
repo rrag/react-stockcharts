@@ -79,7 +79,9 @@ export default function() {
 
 		return rsiData;
 	}
-
+	calculator.undefinedLength = function() {
+		return windowSize;
+	};
 	calculator.windowSize = function(x) {
 		if (!arguments.length) {
 			return windowSize;

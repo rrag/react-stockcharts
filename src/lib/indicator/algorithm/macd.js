@@ -67,6 +67,9 @@ export default function() {
 		return macd;
 	}
 
+	calculator.undefinedLength = function() {
+		return slow + signal;
+	};
 	calculator.fast = function(x) {
 		if (!arguments.length) {
 			return fast;

@@ -74,7 +74,9 @@ export default function() {
 
 		return newData;
 	}
-
+	calculator.undefinedLength = function() {
+		return Math.min(windowSize + kWindowSize, dWindowSize);
+	};
 	calculator.windowSize = function(x) {
 		if (!arguments.length) {
 			return windowSize;

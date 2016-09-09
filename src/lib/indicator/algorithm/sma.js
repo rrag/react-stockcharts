@@ -18,7 +18,9 @@ export default function() {
 
 		return mean(data);
 	}
-
+	calculator.undefinedLength = function() {
+		return windowSize;
+	};
 	calculator.windowSize = function(x) {
 		if (!arguments.length) {
 			return windowSize;

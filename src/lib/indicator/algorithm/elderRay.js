@@ -54,7 +54,9 @@ export default function() {
 		var newData = zip(data, meanAlgorithm(data));
 		return newData;
 	}
-
+	calculator.undefinedLength = function() {
+		return windowSize;
+	};
 	calculator.windowSize = function(x) {
 		if (!arguments.length) {
 			return windowSize;
@@ -62,7 +64,6 @@ export default function() {
 		windowSize = x;
 		return calculator;
 	};
-
 	calculator.ohlc = function(x) {
 		if (!arguments.length) {
 			return ohlc;
