@@ -206,7 +206,7 @@ function getWickData(props, xAccessor, xScale, yScale, plotData) {
 	var wickStroke = d3.functor(wickStrokeProp);
 	var className = d3.functor(classNameProp);
 	var wickData = plotData
-			.filter(d => isDefined(d.close))
+			.filter(d => isDefined(yAccessor(d).close))
 			.map(d => {
 				// console.log(yAccessor);
 				var ohlc = yAccessor(d);
@@ -243,7 +243,7 @@ function getCandleData(props, xAccessor, xScale, yScale, plotData) {
 
 	var offset = (candleWidth === 1 ? 0 : 0.5 * cw);
 	var candles = plotData
-			.filter(d => isDefined(d.close))
+			.filter(d => isDefined(yAccessor(d).close))
 			.map(d => {
 				var ohlc = yAccessor(d);
 				var x = Math.round(xScale(xAccessor(d)) - offset),
