@@ -109,7 +109,7 @@ function getRenko(props, plotData, xScale, xAccessor, yScale, yAccessor) {
 
 	var candleWidth = (width / (plotData.length - 1));
 	var candles = plotData
-			.filter(d => isDefined(d.close))
+			.filter(d => isDefined(yAccessor(d).close))
 			.map(d => {
 				var ohlc = yAccessor(d);
 				var x = xScale(xAccessor(d)) - 0.5 * candleWidth,
