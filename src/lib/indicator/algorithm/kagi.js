@@ -10,7 +10,8 @@ import { Kagi as defaultOptions } from "../defaultOptionsForComputation";
 export default function() {
 
 	var { reversalType, windowSize, reversal, sourcePath } = defaultOptions;
-	var { dateAccessor, dateMutator } = defaultOptions;
+	var dateAccessor = d => d.date;
+	var dateMutator = (d, date) => { d.date = date; };
 
 	function calculator(data) {
 		var source = path(sourcePath);

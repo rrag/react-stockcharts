@@ -64,28 +64,26 @@ export const Kagi = {
 	windowSize: 14,
 	reversal: 2,
 	sourcePath: "close", // "high", "low", "open", "close"
-	dateAccessor: d => d.date,
-	dateMutator: (d, date) => { d.date = date; },
-	indexMutator: (d, idx) => { d.idx = idx; },
+	/* dateAccessor: d => d.date,
+	dateMutator: (d, date) => { d.date = date; }, */
 };
 
 export const Renko = {
 	reversalType: "ATR", // "ATR", "FIXED"
 	windowSize: 14,
 	fixedBrickSize: 2,
-	source: d => ({ high: d.high, low: d.low }), // "close", "hi/lo"
+	sourcePath: "high/low", // "close", "high/low"
+	/* source: d => ({ high: d.high, low: d.low }),
 	dateAccessor: d => d.date,
-	dateMutator: (d, date) => { d.date = date; },
-	indexMutator: (d, idx) => { d.idx = idx; },
-	indexAccessor: d => d.idx,
+	dateMutator: (d, date) => { d.date = date; }, */
 };
 
 export const PointAndFigure = {
 	boxSize: 0.5,
 	reversal: 3,
-	source: d => ({ high: d.high, low: d.low }), // "close", "hi/lo"
+	sourcePath: "high/low", // "close", "high/low"
+
+	/* source: d => ({ high: d.high, low: d.low }), // "close", "hi/lo"
 	dateAccessor: d => d.date,
-	dateMutator: (d, date) => { d.date = date; },
-	indexMutator: (d, idx) => { d.idx = idx; },
-	indexAccessor: d => d.idx,
+	dateMutator: (d, date) => { d.date = date; }, */
 };

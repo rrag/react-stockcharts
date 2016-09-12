@@ -49,6 +49,7 @@ class MACDSeries extends Component {
 				<BarSeries
 					baseAt={this.yAccessorForDivergenceBase}
 					className="macd-divergence"
+					widthRatio={0.5}
 					stroke={divergenceStroke} fill={fill.divergence} opacity={opacity}
 					yAccessor={this.yAccessorForDivergence} />
 				{getHorizontalLine(this.props)}
@@ -60,12 +61,11 @@ class MACDSeries extends Component {
 function getHorizontalLine(props) {
 
 	/* eslint-disable react/prop-types */
-	var { yAccessor, zeroLineStroke, zeroLineOpacity } = props;
+	var { zeroLineStroke, zeroLineOpacity } = props;
 	/* eslint-enable react/prop-types */
 
 	return <StraightLine
 		stroke={zeroLineStroke} opacity={zeroLineOpacity}
-		yAccessor={yAccessor}
 		yValue={0} />;
 }
 
@@ -74,7 +74,10 @@ MACDSeries.propTypes = {
 	xScale: PropTypes.func,
 	yScale: PropTypes.func,
 	xAccessor: PropTypes.func,
-	calculator: PropTypes.func.isRequired,
+	calculator: PropTypes.oneOfType([
+		PropTypes.func,
+		PropTypes.object,
+	]).isRequired,
 	plotData: PropTypes.array,
 	type: PropTypes.string,
 	opacity: PropTypes.number,

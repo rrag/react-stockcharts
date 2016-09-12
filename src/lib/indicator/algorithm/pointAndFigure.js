@@ -73,13 +73,16 @@ function updateColumns(columnData, dateAccessor, dateMutator) {
 
 
 export default function() {
-	var { reversal, boxSize, source } = defaultOptions;
-	var { dateAccessor, dateMutator } = defaultOptions;
+	var { reversal, boxSize, sourcePath } = defaultOptions;
+	var dateAccessor = d => d.date;
+	var dateMutator = (d, date) => { d.date = date; };
 
 	function calculator(rawData) {
+		var source = sourcePath === "high/low"
+			? d => ({ high: d.high, low: d.low })
+			: d => ({ high: d.close, low: d.close })
+
 		var pricingMethod = source;
-
-
 		var columnData = [];
 
 		var column = {

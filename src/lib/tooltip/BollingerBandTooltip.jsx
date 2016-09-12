@@ -61,7 +61,10 @@ BollingerBandTooltip.contextTypes = {
 };
 BollingerBandTooltip.propTypes = {
 	className: PropTypes.string,
-	calculator: PropTypes.func.isRequired,
+	calculator: PropTypes.oneOfType([
+		PropTypes.func,
+		PropTypes.object,
+	]).isRequired,
 	displayFormat: PropTypes.func.isRequired,
 	origin: PropTypes.array.isRequired,
 	onClick: PropTypes.func,

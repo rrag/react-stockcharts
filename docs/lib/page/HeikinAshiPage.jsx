@@ -7,7 +7,7 @@ import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 
-import HaikinAshi from "lib/charts/HaikinAshi";
+import HeikinAshi from "lib/charts/HeikinAshi";
 
 var { TypeChooser } = helper;
 
@@ -26,7 +26,7 @@ var HeikinAshiPage = React.createClass({
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser>
-							{(type) => <HaikinAshi data={this.props.someData} type={type} />}
+							{(type) => <HeikinAshi data={this.props.someData} type={type} />}
 						</TypeChooser>
 					</Section>
 				</Row>

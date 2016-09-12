@@ -9,10 +9,15 @@ import { Renko as defaultOptions } from "../defaultOptionsForComputation";
 
 export default function() {
 
-	var { reversalType, fixedBrickSize, source, windowSize } = defaultOptions;
-	var { dateAccessor, dateMutator } = defaultOptions;
+	var { reversalType, fixedBrickSize, sourcePath, windowSize } = defaultOptions;
+	var dateAccessor = d => d.date;
+	var dateMutator = (d, date) => { d.date = date; };
 
 	function calculator(rawData) {
+		var source = sourcePath === "high/low"
+			? d => ({ high: d.high, low: d.low })
+			: d => ({ high: d.close, low: d.close })
+
 		var pricingMethod = source, brickSize;
 
 		if (reversalType === "ATR") {

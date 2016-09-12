@@ -142,6 +142,13 @@ export function head(array, accessor) {
 	return array ? array[0] : undefined;
 }
 
+export function tail(array, accessor) {
+	if (accessor && array) {
+		return array.map(accessor).slice(1)
+	}
+	return array ? array.slice(1) : undefined;
+}
+
 export const first = head;
 
 export function last(array, accessor) {

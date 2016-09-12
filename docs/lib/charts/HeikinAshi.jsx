@@ -14,14 +14,14 @@ var { EdgeIndicator } = coordinates;
 
 var { OHLCTooltip, MovingAverageTooltip } = tooltip;
 var { XAxis, YAxis } = axes;
-var { ema, sma, haikinAshi } = indicator;
+var { ema, sma, heikinAshi } = indicator;
 var { fitWidth } = helper;
 
 class HaikinAshi extends React.Component {
 	render() {
 		var { data, type, width } = this.props;
 
-		var ha = haikinAshi();
+		var ha = heikinAshi();
 		var ema20 = ema()
 			.id(0)
 			.windowSize(20)
@@ -79,7 +79,7 @@ class HaikinAshi extends React.Component {
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 
 					<OHLCTooltip origin={[-40, 0]}/>
-					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]} 
+					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]}
 						calculators={[ema20, ema50]}/>
 
 				</Chart>

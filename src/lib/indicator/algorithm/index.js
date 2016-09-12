@@ -4,7 +4,7 @@
 import ema from "./ema";
 import sma from "./sma";
 import bollingerband from "./bollingerband";
-import haikinAshi from "./haikinAshi";
+import heikinAshi from "./heikinAshi";
 import kagi from "./kagi";
 import pointAndFigure from "./pointAndFigure";
 import renko from "./renko";
@@ -16,6 +16,7 @@ import atr from "./atr";
 import forceIndex from "./forceIndex";
 import elderRay from "./elderRay";
 import compare from "./compare";
+import change from "./change";
 
 export {
 	// slidingWindow,
@@ -24,7 +25,7 @@ export {
 	ema,
 	sma,
 	bollingerband,
-	haikinAshi,
+	heikinAshi,
 	kagi,
 	pointAndFigure,
 	renko,
@@ -36,4 +37,5 @@ export {
 	forceIndex,
 	elderRay,
 	compare,
+	change,
 };

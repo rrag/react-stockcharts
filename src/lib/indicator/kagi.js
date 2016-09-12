@@ -14,9 +14,7 @@ export default function() {
 
 	var underlyingAlgorithm = kagi();
 
-	var indicator = function(data) {
-		return underlyingAlgorithm(data);
-	};
+	var indicator = underlyingAlgorithm;
 
 	d3.rebind(indicator, base, "id", "stroke", "fill", "echo", "type");
 	d3.rebind(indicator, underlyingAlgorithm, "dateAccessor", "dateMutator", "indexMutator");

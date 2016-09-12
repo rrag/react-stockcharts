@@ -69,8 +69,8 @@ class MovingAverageTooltip extends Component {
 					.map((each, idx) => {
 						var yValue = currentItem && each.accessor()(currentItem);
 						var options = {
-							maType: each.type(),
-							period: each.windowSize(),
+							type: each.type(),
+							windowSize: each.windowSize(),
 							sourcePath: each.sourcePath(),
 							echo: each.echo()
 						};

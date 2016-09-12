@@ -309,6 +309,7 @@ class ChartCanvas extends Component {
 		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
 
 		this.triggerEvent("mousemove", {
+			show: true,
 			mouseXY,
 			currentItem,
 			currentCharts,
