@@ -4,6 +4,7 @@ import React, { PropTypes } from "react";
 import d3 from "d3";
 
 import PureComponent from "./utils/PureComponent";
+import { isNotDefined } from "./utils";
 
 class Chart extends PureComponent {
 	constructor(props, context) {
@@ -43,7 +44,12 @@ Chart.propTypes = {
 	yExtents: PropTypes.oneOfType([
 		PropTypes.array,
 		PropTypes.func
-	]).isRequired,
+	]),
+	yExtentsCalculator: function(props, propName, componentName) {
+		if (isNotDefined(props.yExtents) && typeof props.yExtentsCalculator !== "function")
+			return new Error("yExtents or yExtentsCalculator must"
+				+ ` be present on ${componentName}. Validation failed.`);
+	},
 	yScale: PropTypes.func.isRequired,
 	yMousePointerDisplayLocation: PropTypes.oneOf(["left", "right"]),
 	yMousePointerDisplayFormat: PropTypes.func,

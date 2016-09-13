@@ -39,7 +39,7 @@
 		"space-before-blocks": 2,
 		"space-before-function-paren": [2, "never"],
 		"space-infix-ops": [2, { "int32Hint": false}],
-		"spaced-comment": [2, "always", { exceptions: ["-"] }],
+		"spaced-comment": [2, "always", { "exceptions": ["-"] }],
 		"react/jsx-pascal-case": 1,
 		"react/jsx-uses-react": 1,
 		"react/jsx-uses-vars": 1,

@@ -44,18 +44,21 @@ export function getNewChartConfig(innerDimension, children) {
 
 	return React.Children.map(children, (each) => {
 		if (each.type === Chart) {
-			var { id, origin, padding, yExtents: yExtentsProp, yScale, flipYScale } = each.props;
+			var { id, origin, padding, yExtents: yExtentsProp, yScale, flipYScale, yExtentsCalculator } = each.props;
 			var { width, height, availableWidth, availableHeight } = getDimensions(innerDimension, each.props);
 			var { yPan } = each.props;
 			// var { yMousePointerRectWidth: rectWidth, yMousePointerRectHeight: rectHeight, yMousePointerArrowWidth: arrowWidth } = each.props;
 			// var mouseCoordinates = { at, yDisplayFormat, rectHeight, rectWidth, arrowWidth };
-			var yExtents = (Array.isArray(yExtentsProp) ? yExtentsProp : [yExtentsProp]).map(d3.functor);
+			var yExtents = isDefined(yExtentsProp)
+				? (Array.isArray(yExtentsProp) ? yExtentsProp : [yExtentsProp]).map(d3.functor)
+				: undefined;
 			// console.log(yExtentsProp, yExtents);
 			return {
 				id,
 				origin: d3.functor(origin)(availableWidth, availableHeight),
 				padding,
 				yExtents,
+				yExtentsCalculator,
 				flipYScale,
 				yScale,
 				yPan,
@@ -91,21 +94,32 @@ function setRange(scale, height, padding, flipYScale) {
 	return scale;
 }
 
+function yDomainFromYExtents(yExtents, yScale, plotData) {
+	var yValues = yExtents.map(eachExtent =>
+		plotData.map(values(eachExtent)));
+
+	var allYValues = flattenDeep(yValues);
+
+	var realYDomain =  (yScale.invert)
+		? d3.extent(allYValues)
+		: d3.set(allYValues).values();
+
+	return realYDomain;
+}
+
+
 export function getChartConfigWithUpdatedYScales(chartConfig, plotData, dy, chartsToPan) {
 
 	var yDomains = chartConfig
-		.map(({ yExtents, yScale }) => {
+		.map(({ yExtentsCalculator, yExtents, yScale }) => {
+
+			var realYDomain = isDefined(yExtentsCalculator)
+				? yExtentsCalculator(plotData)
+				: yDomainFromYExtents(yExtents, yScale, plotData);
+
 			var yDomainDY = isDefined(dy)
 					? yScale.range().map(each => each - dy).map(yScale.invert)
 					: yScale.domain();
-
-			var yValues = yExtents.map(eachExtent =>
-				plotData.map(values(eachExtent)));
-			yValues = flattenDeep(yValues);
-
-			var realYDomain = (yScale.invert)
-					? d3.extent(yValues)
-					: d3.set(yValues).values();
 			return {
 				realYDomain,
 				yDomainDY,

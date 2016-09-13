@@ -853,7 +853,8 @@ ChartCanvas.childContextTypes = {
 					bottom: PropTypes.number,
 				})
 			]),
-			yExtents: PropTypes.arrayOf(PropTypes.func).isRequired,
+			yExtents: PropTypes.arrayOf(PropTypes.func),
+			yExtentsProvider: PropTypes.func,
 			yScale: PropTypes.func.isRequired,
 			mouseCoordinates: PropTypes.shape({
 				at: PropTypes.string,
