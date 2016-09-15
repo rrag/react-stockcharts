@@ -25,7 +25,7 @@ class HaikinAshi extends React.Component {
 		var ema20 = ema()
 			.id(0)
 			.windowSize(20)
-			.merge((d, c) => {d.ema20 = c})
+			.merge((d, c) => { d.ema20 = c; })
 			.accessor(d => d.ema20);
 
 		var ema50 = ema()
@@ -49,16 +49,16 @@ class HaikinAshi extends React.Component {
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1}
-						yExtents={[ha.accessor(), ema20.accessor(), ema50.accessor()]}
+						yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
 						padding={{ top: 10, bottom: 20 }}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<MouseCoordinateY
 						at="right"
 						orient="right"
-						displayFormat={d3.format(".2f")} />
+						displayFormat={d3.format(".1f")} />
 
-					<CandlestickSeries yAccessor={ha.accessor()}/>
+					<CandlestickSeries />
 					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
 					<LineSeries yAccessor={ema50.accessor()} stroke={ema50.stroke()}/>
 
@@ -127,6 +127,4 @@ HaikinAshi.defaultProps = {
 	type: "svg",
 };
 
-HaikinAshi = fitWidth(HaikinAshi);
-
-export default HaikinAshi;
+export default fitWidth(HaikinAshi);
