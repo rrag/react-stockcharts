@@ -120,17 +120,16 @@ function resetChart(props, firstCalculation = false) {
 
 	var state = calculateState(props);
 	var { plotData: initialPlotData, xScale } = state;
-	var { postCalculator, children, padding, flipXScale } = props;
+	var { postCalculator, children } = props;
 
 	var plotData = postCalculator(initialPlotData);
-	var dimensions = getDimensions(props);
-	var direction = getXScaleDirection(flipXScale);
 
+	var dimensions = getDimensions(props);
 	var chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData);
 
 	return {
 		...state,
-		xScale: setXRange(xScale, dimensions, padding, direction),
+		xScale,
 		plotData,
 		chartConfig,
 	};
@@ -157,7 +156,7 @@ function updateChart(newState, initialXScale, props, prevLastItem) {
 	var initialPlotData;
 	if (!lastItemVisible || end >= xAccessor(lastItem)) {
 		// get plotData between [start, end] and do not change the domain
-		initialPlotData = filterData([start, end], xAccessor).plotData;
+		initialPlotData = filterData([start, end], xAccessor, updatedXScale).plotData;
 		updatedXScale.domain([start, end]);
 		// console.log("HERE!!!!!", start, end);
 	} else {
@@ -165,7 +164,7 @@ function updateChart(newState, initialXScale, props, prevLastItem) {
 		var dx = updatedXScale(xAccessor(lastItem)) - updatedXScale.range()[1];
 		var [newStart, newEnd] = updatedXScale.range().map(x => x + dx).map(updatedXScale.invert);
 
-		initialPlotData = filterData([newStart, newEnd], xAccessor).plotData;
+		initialPlotData = filterData([newStart, newEnd], xAccessor, updatedXScale).plotData;
 		// if last item was visible, then shift
 		updatedXScale.domain([newStart, newEnd]);
 	}
@@ -186,20 +185,24 @@ function updateChart(newState, initialXScale, props, prevLastItem) {
 
 function calculateState(props) {
 
-	var { xAccessor: inputXAccesor, xExtents: xExtentsProp, data } = props;
+	var { xAccessor: inputXAccesor, xExtents: xExtentsProp, data, padding, flipXScale } = props;
+
+	var direction = getXScaleDirection(flipXScale);
+	var dimensions = getDimensions(props);
 
 	var extent = typeof xExtentsProp === "function"
 		? xExtentsProp(data)
 		: d3.extent(xExtentsProp.map(d => d3.functor(d)).map(each => each(data, inputXAccesor)));
 
 	var { xAccessor, displayXAccessor, xScale, fullData, filterData, firstItem, lastItem } = calculateFullData(props);
+	var updatedXScale = setXRange(xScale, dimensions, padding, direction);
 
-	var { plotData, domain } = filterData(extent, inputXAccesor);
+	var { plotData, domain } = filterData(extent, inputXAccesor, updatedXScale);
 
 	return {
 		plotData,
 		fullData,
-		xScale: xScale.domain(domain),
+		xScale: updatedXScale.domain(domain),
 		xAccessor,
 		filterData,
 		firstItem,
@@ -387,6 +390,7 @@ class ChartCanvas extends Component {
 
 		var { plotData, domain } = filterData(newDomain,
 			xAccessor,
+			initialPinchXScale,
 			initialPlotData,
 			initialXScale.domain());
 
@@ -455,6 +459,7 @@ class ChartCanvas extends Component {
 
 		var { plotData, domain } = filterData(newDomain,
 			xAccessor,
+			initialXScale,
 			initialPlotData,
 			initialXScale.domain());
 
@@ -521,6 +526,7 @@ class ChartCanvas extends Component {
 
 		var { plotData, domain } = filterData(newDomain,
 			xAccessor,
+			initialXScale,
 			this.hackyWayToStopPanBeyondBounds__plotData,
 			this.hackyWayToStopPanBeyondBounds__domain);
 
@@ -562,6 +568,9 @@ class ChartCanvas extends Component {
 		});
 	}
 	handlePan(mousePosition, panStartXScale, panOrigin, chartsToPan, e) {
+		this.hackyWayToStopPanBeyondBounds__plotData = this.hackyWayToStopPanBeyondBounds__plotData || this.state.plotData;
+		this.hackyWayToStopPanBeyondBounds__domain = this.hackyWayToStopPanBeyondBounds__domain || this.state.xScale.domain();
+
 		var state = this.panHelper(mousePosition, panStartXScale, panOrigin, chartsToPan);
 
 		this.hackyWayToStopPanBeyondBounds__plotData = state.plotData;
