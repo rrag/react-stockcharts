@@ -29,7 +29,7 @@ function extentsWrapper(data, inputXAccessor, realXAccessor, useWholeData) {
 
 		var plotData, domain;
 
-		var chartWidth = xScale.range()[1] - xScale.range()[0]
+		var chartWidth = xScale.range()[1] - xScale.range()[0];
 
 		console.debug(`Trying to show ${filteredData.length} in ${width}px while the chart width is ${chartWidth}px`);
 
@@ -60,7 +60,7 @@ function canShowTheseManyPeriods(width, arrayLength) {
 }
 
 function showMax(width) {
-	var threshold = 0.75; // number of datapoints per 1 px
+	var threshold = 0.99; // number of datapoints per 1 px
 	return Math.floor(width * threshold);
 }
 

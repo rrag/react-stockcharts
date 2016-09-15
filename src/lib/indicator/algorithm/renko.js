@@ -16,7 +16,7 @@ export default function() {
 	function calculator(rawData) {
 		var source = sourcePath === "high/low"
 			? d => ({ high: d.high, low: d.low })
-			: d => ({ high: d.close, low: d.close })
+			: d => ({ high: d.close, low: d.close });
 
 		var pricingMethod = source, brickSize;
 
@@ -172,9 +172,9 @@ export default function() {
 		fixedBrickSize = x;
 		return calculator;
 	};
-	calculator.source = function(x) {
-		if (!arguments.length) return source;
-		source = x;
+	calculator.sourcePath = function(x) {
+		if (!arguments.length) return sourcePath;
+		sourcePath = x;
 		return calculator;
 	};
 	calculator.windowSize = function(x) {

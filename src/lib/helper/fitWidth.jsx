@@ -12,10 +12,14 @@ export default function fitWidth(WrappedComponent, withRef = true) {
 			super(props);
 			this.handleWindowResize = this.handleWindowResize.bind(this);
 			this.getWrappedInstance = this.getWrappedInstance.bind(this);
+			this.saveNode = this.saveNode.bind(this);
+		}
+		saveNode(node) {
+			this.node = node;
 		}
 		componentDidMount() {
 			window.addEventListener("resize", this.handleWindowResize);
-			var el = ReactDOM.findDOMNode(this);
+			var el = this.node;
 			var w = el.parentNode.clientWidth;
 
 			/* eslint-disable react/no-did-mount-set-state */
@@ -28,22 +32,23 @@ export default function fitWidth(WrappedComponent, withRef = true) {
 			window.removeEventListener("resize", this.handleWindowResize);
 		}
 		handleWindowResize() {
-			var el = ReactDOM.findDOMNode(this);
+			var el = ReactDOM.findDOMNode(this.node); // eslint-disable-line react/no-find-dom-node
 			var w = el.parentNode.clientWidth;
+
 			this.setState({
 				width: w
 			});
 		}
 		getWrappedInstance() {
-			return this.refs.component;
+			return this.node;
 		}
 		render() {
-			var ref = withRef ? { ref: "component" } : {};
+			var ref = withRef ? { ref: this.saveNode } : {};
 
 			if (this.state && this.state.width) {
 				return <WrappedComponent width={this.state.width} {...this.props} {...ref} />;
 			} else {
-				return <div />;
+				return <div {...ref} />;
 			}
 		}
 	}

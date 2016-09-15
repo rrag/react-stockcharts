@@ -61,6 +61,7 @@ Chart.propTypes = {
 			bottom: PropTypes.number,
 		})
 	]).isRequired,
+	children: PropTypes.node,
 };
 
 Chart.defaultProps = {

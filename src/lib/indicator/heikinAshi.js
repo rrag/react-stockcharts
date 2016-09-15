@@ -20,7 +20,7 @@ export default function() {
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
 		.merge((datum, indicator) => {
-			return { ...datum, ...indicator }
+			return { ...datum, ...indicator };
 		});
 
 	var indicator = function(data) {

@@ -144,7 +144,7 @@ export function head(array, accessor) {
 
 export function tail(array, accessor) {
 	if (accessor && array) {
-		return array.map(accessor).slice(1)
+		return array.map(accessor).slice(1);
 	}
 	return array ? array.slice(1) : undefined;
 }

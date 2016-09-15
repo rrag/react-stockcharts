@@ -65,6 +65,7 @@ class CrossHairCursor extends PureComponent {
 }
 
 CrossHairCursor.propTypes = {
+	className: PropTypes.string,
 };
 
 CrossHairCursor.contextTypes = {

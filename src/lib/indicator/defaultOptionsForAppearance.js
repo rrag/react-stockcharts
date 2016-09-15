@@ -65,7 +65,7 @@ export const themes = {
 			},
 		},
 	}
-}
+};
 
 export const BollingerBand = themes.light.BollingerBand;
 export const ElderImpulse = themes.light.ElderImpulse;

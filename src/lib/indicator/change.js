@@ -2,7 +2,7 @@
 
 import d3 from "d3";
 
-import { merge, slidingWindow } from "../utils";
+import { merge } from "../utils";
 import { change } from "./algorithm";
 
 import baseIndicator from "./baseIndicator";

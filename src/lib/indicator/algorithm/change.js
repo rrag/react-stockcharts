@@ -1,7 +1,5 @@
 "use strict";
 
-import d3 from "d3";
-
 import { slidingWindow } from "../../utils";
 
 export default function() {
