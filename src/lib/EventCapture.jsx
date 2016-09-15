@@ -262,12 +262,12 @@ class EventCapture extends Component {
 		if (e.touches.length === 1) {
 			// pan
 			var touch = this.lastTouch = getTouchProps(e.touches[0]);
-			var { dx, dy, panStartXScale, panOrigin } = panStart;
+			var { dx, dy, panStartXScale, panOrigin, chartsToPan } = panStart;
 
 			var newPos = [touch.pageX - dx, touch.pageY - dy];
 
 			if (panInProgress && panEnabled && onPan) {
-				onPan(newPos, panStartXScale, panOrigin, e);
+				onPan(newPos, panStartXScale, panOrigin, chartsToPan, e);
 			}
 		} else if (e.touches.length === 2) {
 			// pinch zoom
@@ -304,14 +304,14 @@ class EventCapture extends Component {
 		var { panInProgress, panStart } = this.state;
 
 		if (this.lastTouch && isDefined(panStart)) {
-			var { dx, dy, panStartXScale, panOrigin } = panStart;
+			var { dx, dy, panStartXScale, panOrigin, chartsToPan } = panStart;
 			var newPos = [this.lastTouch.pageX - dx, this.lastTouch.pageY - dy];
 
 			this.initialPinch = null;
 
 			if (panInProgress && panEnabled && onPanEnd) {
 
-				onPanEnd(newPos, panStartXScale, panOrigin, e);
+				onPanEnd(newPos, panStartXScale, panOrigin, chartsToPan, e);
 			}
 		}
 		// console.log("handleTouchEnd", dxdy, newPos, e);
