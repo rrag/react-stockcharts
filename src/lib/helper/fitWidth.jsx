@@ -6,7 +6,7 @@ function getDisplayName(Series) {
 	return name;
 }
 
-export default function fitWidth(WrappedComponent, withRef = true) {
+export default function fitWidth(WrappedComponent, withRef = true, minWidth = 25) {
 	class ResponsiveComponent extends Component {
 		constructor(props) {
 			super(props);
@@ -24,7 +24,7 @@ export default function fitWidth(WrappedComponent, withRef = true) {
 
 			/* eslint-disable react/no-did-mount-set-state */
 			this.setState({
-				width: w
+				width: Math.max(w, minWidth)
 			});
 			/* eslint-enable react/no-did-mount-set-state */
 		}
@@ -36,7 +36,7 @@ export default function fitWidth(WrappedComponent, withRef = true) {
 			var w = el.parentNode.clientWidth;
 
 			this.setState({
-				width: w
+				width: Math.max(w, minWidth)
 			});
 		}
 		getWrappedInstance() {
