@@ -6,14 +6,16 @@ function getExternalAssets(mode) {
 		<script src="react/dist/react.js"></script>
 		<script src="react-dom/dist/react-dom.js"></script>
 
-		<link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">`;
+		<link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+		<link href="prismjs/themes/prism.css" rel="stylesheet">`;
 	}
 	default:
-		return `<script src="//cdnjs.cloudflare.com/ajax/libs/react/0.14.3/react.min.js"></script>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/react/0.14.3/react-dom.min.js"></script>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.12/d3.min.js"></script>
+		return `<script src="//cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-dom.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
 
 		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.css" rel="stylesheet">
 		<script>
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -69,7 +71,7 @@ function getIndexContent() {
 function getDocumentationContent() {
 	return `<span id="debug_here">.</span>
 		<span id="iconPreload" class="glyphicon glyphicon-arrow-down"></span>
-		<div id="chart-goes-here"></div>`
+		<div id="chart-goes-here"></div>`;
 }
 
 module.exports = function(params) {
@@ -101,8 +103,7 @@ module.exports = function(params) {
 			.light {
 				color: #FFFFFF;
 			}
-		</style>` : '<link href="prismjs/themes/prism.css" rel="stylesheet">'}
-
+		</style>` : ""}
 	</head>
 	<body class="${page === "index" ? "dark" : ""}">
 
