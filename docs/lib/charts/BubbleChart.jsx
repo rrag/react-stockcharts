@@ -14,7 +14,7 @@ var { fitWidth } = helper;
 
 class BubbleChart extends React.Component {
 	render() {
-		var { data: unsortedData, type, width } = this.props;
+		var { data: unsortedData, type, width, ratio } = this.props;
 
 		var data = unsortedData.slice().sort((a, b) => a.income - b.income);
 		var r = d3.scale.linear()
@@ -27,8 +27,8 @@ class BubbleChart extends React.Component {
 		var fill = d => f(d.region);
 		var radius = d => r(d.population);
 		return (
-			<ChartCanvas width={width} height={400}
-					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
+			<ChartCanvas ratio={ratio} width={width} height={400}
+					margin={{ left: 70, right: 70, top: 20, bottom: 30 }} type={type}
 					seriesName="Wealth & Health of Nations"
 					data={data}
 					xAccessor={d => d.income} xScale={d3.scale.log()}
@@ -64,6 +64,7 @@ class BubbleChart extends React.Component {
 BubbleChart.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

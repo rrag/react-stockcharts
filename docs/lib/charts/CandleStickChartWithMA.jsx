@@ -18,7 +18,7 @@ var { fitWidth } = helper;
 
 class CandleStickChartWithMA extends React.Component {
 	render() {
-		var { data, type, width } = this.props;
+		var { data, type, width, ratio } = this.props;
 
 		var ema20 = ema()
 			.windowSize(20) // optional will default to 10
@@ -49,7 +49,7 @@ class CandleStickChartWithMA extends React.Component {
 			.fill("#4682B4");
 
 		return (
-			<ChartCanvas width={width} height={400}
+			<ChartCanvas ratio={ratio} width={width} height={400}
 					margin={{left: 70, right: 70, top:10, bottom: 30}} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[sma20, ema20, ema50, smaVolume50]}
@@ -106,6 +106,7 @@ class CandleStickChartWithMA extends React.Component {
 CandleStickChartWithMA.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

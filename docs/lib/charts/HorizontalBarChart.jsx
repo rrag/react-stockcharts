@@ -12,10 +12,10 @@ var { fitWidth } = helper;
 
 class HorizontalBarChart extends React.Component {
 	render() {
-		var { data, type, width } = this.props;
+		var { data, type, width, ratio } = this.props;
 
 		return (
-			<ChartCanvas width={width} height={400}
+			<ChartCanvas ratio={ratio} width={width} height={400}
 					margin={{left: 90, right: 10, top:20, bottom: 30}} type={type}
 					seriesName="Fruits"
 					xExtents={data => [0, d3.max(data, d => d.x)]}
@@ -38,6 +38,7 @@ class HorizontalBarChart extends React.Component {
 HorizontalBarChart.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

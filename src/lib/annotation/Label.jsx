@@ -53,6 +53,7 @@ Label.contextTypes = {
 	canvasOriginY: PropTypes.number,
 
 	margin: PropTypes.object.isRequired,
+	ratio: PropTypes.number.isRequired,
 };
 
 Label.defaultProps = {
@@ -63,13 +64,15 @@ Label.defaultProps = {
 function drawOnCanvas2(ctx, props, context, moreProps) {
 	ctx.save();
 
+	var { canvasOriginX, canvasOriginY, margin, ratio } = context;
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
-	var { canvasOriginX, canvasOriginY, margin } = context;
+	ctx.scale(ratio, ratio);
+
 
 	if (isDefined(canvasOriginX))
 		ctx.translate(canvasOriginX, canvasOriginY);
 	else
-		ctx.translate(margin.left + 0.5, margin.top + 0.5);
+		ctx.translate(margin.left + (0.5 * ratio), margin.top + (0.5 * ratio));
 
 	drawOnCanvas(ctx, props, context, moreProps);
 

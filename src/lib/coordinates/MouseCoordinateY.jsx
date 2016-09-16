@@ -104,25 +104,4 @@ function helper(props, context, moreProps) {
 	return coordinateProps;
 }
 
-/* function drawOnCanvas(canvasContext, props) {
-	var { chartConfig, currentItem, xScale, mouseXY, show, currentCharts } = props;
-
-	drawOnCanvasStatic(props, canvasContext, show, xScale, mouseXY, currentCharts, chartConfig, currentItem);
-}
-
-// mouseContext, show, xScale, mouseXY, currentCharts, chartConfig, currentItem
-function drawOnCanvasStatic(props, ctx, show, xScale, mouseXY, currentCharts, chartConfig, currentItem) {
-	var { canvasOriginX, canvasOriginY } = props;
-
-	var edgeProps = helper(props, xScale, chartConfig, mouseXY, currentCharts, currentItem);
-
-	ctx.save();
-	ctx.setTransform(1, 0, 0, 1, 0, 0);
-	ctx.translate(canvasOriginX, canvasOriginY);
-
-	EdgeCoordinate.drawOnCanvasStatic(ctx, edgeProps);
-
-	ctx.restore();
-}
-*/
 export default MouseCoordinateY;

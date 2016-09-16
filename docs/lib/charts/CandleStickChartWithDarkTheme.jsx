@@ -19,7 +19,7 @@ var { fitWidth } = helper;
 class CandleStickChartWithDarkTheme extends React.Component {
 	render() {
 		var height = 750;
-		var { data, type, width } = this.props;
+		var { data, type, width, ratio } = this.props;
 
 		var margin = {left: 70, right: 70, top:20, bottom: 30};
 
@@ -67,14 +67,14 @@ class CandleStickChartWithDarkTheme extends React.Component {
 			.fill("#adffaf");
 
 		return (
-			<ChartCanvas width={width} height={750}
+			<ChartCanvas ratio={ratio} width={width} height={750}
 					margin={margin} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50, slowSTO, fastSTO, fullSTO, bb]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1} height={325}
-						yExtents={d => [d.high, d.low]}
+						yExtents={[d => [d.high, d.low], bb.accessor(), ema20.accessor(), ema50.accessor()]}
 						padding={{ top: 10, bottom: 20 }}>
 					<YAxis axisAt="right" orient="right" ticks={5} {...yGrid}
 							tickStroke="#FFFFFF" />
@@ -177,6 +177,7 @@ class CandleStickChartWithDarkTheme extends React.Component {
 CandleStickChartWithDarkTheme.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

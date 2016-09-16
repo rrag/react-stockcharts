@@ -21,7 +21,7 @@ var { fitWidth } = helper;
 
 class VolumeProfileChart extends React.Component {
 	render() {
-		var { data, type, width } = this.props;
+		var { data, type, width, ratio } = this.props;
 
 		var ema20 = ema()
 			.id(0)
@@ -38,7 +38,7 @@ class VolumeProfileChart extends React.Component {
 		var changeCalculator = change();
 
 		return (
-			<ChartCanvas width={width} height={400}
+			<ChartCanvas ratio={ratio} width={width} height={400}
 					margin={{left: 80, right: 80, top:10, bottom: 30}} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50, changeCalculator]}
@@ -92,6 +92,7 @@ class VolumeProfileChart extends React.Component {
 VolumeProfileChart.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

@@ -11,9 +11,9 @@ var { fitWidth } = helper;
 
 class AreaChart extends React.Component {
 	render() {
-		var { data, type, width } = this.props;
+		var { data, type, width, ratio } = this.props;
 		return (
-			<ChartCanvas width={width} height={400}
+			<ChartCanvas ratio={ratio} width={width} height={400}
 					margin={{left: 50, right: 50, top:10, bottom: 30}}
 					seriesName="MSFT"
 					data={data} type={type}
@@ -36,6 +36,7 @@ class AreaChart extends React.Component {
 AreaChart.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

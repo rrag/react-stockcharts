@@ -17,12 +17,14 @@ class CrossHairCursor extends PureComponent {
 
 		if (isDefined(lines)) {
 
-			var { margin } = this.context;
-			var originX = 0.5 + margin.left;
-			var originY = 0.5 + margin.top;
+			var { margin, ratio } = this.context;
+			var originX = 0.5 * ratio + margin.left;
+			var originY = 0.5 * ratio + margin.top;
 
 			ctx.save();
 			ctx.setTransform(1, 0, 0, 1, 0, 0);
+			ctx.scale(ratio, ratio);
+
 			ctx.translate(originX, originY);
 
 			lines.forEach(line => {
@@ -73,6 +75,7 @@ CrossHairCursor.contextTypes = {
 	height: PropTypes.number.isRequired,
 	width: PropTypes.number.isRequired,
 	margin: PropTypes.object.isRequired,
+	ratio: PropTypes.number.isRequired,
 
 	// xScale for getting update event upon pan end
 	xScale: PropTypes.func.isRequired,

@@ -14,10 +14,11 @@ class GenericChartComponent extends GenericComponent {
 	}
 	preCanvasDraw(ctx) {
 		ctx.save();
-		var { canvasOriginX, canvasOriginY, width, height, margin } = this.context;
+		var { canvasOriginX, canvasOriginY, width, height, margin, ratio } = this.context;
 		var { clip, edgeClip } = this.props;
 
 		ctx.setTransform(1, 0, 0, 1, 0, 0);
+		ctx.scale(ratio, ratio);
 		if (edgeClip) {
 			ctx.beginPath();
 			ctx.rect(-1, canvasOriginY - 10, width + margin.left + margin.right + 1, height + 20);
@@ -57,6 +58,7 @@ GenericChartComponent.contextTypes = {
 	...GenericComponent.contextTypes,
 	chartId: PropTypes.number.isRequired,
 	chartConfig: PropTypes.object.isRequired,
+	ratio: PropTypes.number.isRequired,
 };
 
 export default GenericChartComponent;

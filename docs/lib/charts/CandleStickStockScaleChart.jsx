@@ -15,11 +15,11 @@ var { fitWidth } = helper;
 
 class CandleStickStockScaleChart extends React.Component {
 	render() {
-		var { type, data, width } = this.props;
+		var { type, data, width, ratio } = this.props;
 
 		return (
-			<ChartCanvas width={width} height={400}
-					margin={{left: 50, right: 50, top:10, bottom: 30}} type={type}
+			<ChartCanvas ratio={ratio} width={width} height={400}
+					margin={{ left: 50, right: 50, top: 10, bottom: 30 }} type={type}
 					seriesName="MSFT"
 					data={data}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
@@ -38,6 +38,7 @@ class CandleStickStockScaleChart extends React.Component {
 CandleStickStockScaleChart.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

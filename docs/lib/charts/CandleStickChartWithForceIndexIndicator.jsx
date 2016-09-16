@@ -23,7 +23,7 @@ var { fitWidth } = helper;
 
 class CandleStickChartWithForceIndexIndicator extends React.Component {
 	render() {
-		var { data, type, width } = this.props;
+		var { data, type, width, ratio } = this.props;
 
 		var fi = forceIndex()
 			.merge((d, c) => {d.fi = c})
@@ -37,7 +37,7 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 			.accessor(d => d.fiEMA13);
 
 		return (
-			<ChartCanvas width={width} height={550}
+			<ChartCanvas ratio={ratio} width={width} height={550}
 					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[fi, fiEMA13]}
@@ -128,6 +128,7 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 CandleStickChartWithForceIndexIndicator.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

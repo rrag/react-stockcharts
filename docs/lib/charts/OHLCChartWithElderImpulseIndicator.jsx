@@ -22,7 +22,7 @@ var { fitWidth } = helper;
 
 class OHLCChartWithElderImpulseIndicator extends React.Component {
 	render() {
-		var { data, type, width } = this.props;
+		var { data, type, width, ratio } = this.props;
 
 		var changeCalculator = change();
 
@@ -44,7 +44,7 @@ class OHLCChartWithElderImpulseIndicator extends React.Component {
 			.emaSource(ema12.accessor());
 
 		return (
-			<ChartCanvas width={width} height={500}
+			<ChartCanvas ratio={ratio} width={width} height={500}
 					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[changeCalculator, ema12, macdCalculator, elderImpulseCalculator]}
@@ -113,6 +113,7 @@ class OHLCChartWithElderImpulseIndicator extends React.Component {
 OHLCChartWithElderImpulseIndicator.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

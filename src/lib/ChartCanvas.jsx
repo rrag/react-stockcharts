@@ -276,19 +276,19 @@ class ChartCanvas extends Component {
 		var canvases = this.getCanvasContexts();
 		if (canvases && canvases.axes) {
 			// console.log("CLEAR");
-			clearCanvas([canvases.axes, canvases.mouseCoord]);
+			clearCanvas([canvases.axes, canvases.mouseCoord], this.props.ratio);
 		}
 	}
 	clearMouseCanvas() {
 		var canvases = this.getCanvasContexts();
 		if (canvases && canvases.mouseCoord) {
-			clearCanvas([canvases.mouseCoord]);
+			clearCanvas([canvases.mouseCoord], this.props.ratio);
 		}
 	}
 	clearThreeCanvas() {
 		var canvases = this.getCanvasContexts();
 		if (canvases && canvases.axes) {
-			clearCanvas([canvases.axes, canvases.mouseCoord, canvases.bg]);
+			clearCanvas([canvases.axes, canvases.mouseCoord, canvases.bg], this.props.ratio);
 		}
 	}
 	subscribe(id, callback) {
@@ -342,7 +342,7 @@ class ChartCanvas extends Component {
 		// this.clearInteractiveCanvas();
 
 		if (contexts && contexts.mouseCoord) {
-			clearCanvas([contexts.mouseCoord]);
+			clearCanvas([contexts.mouseCoord], this.props.ratio);
 		}
 		this.triggerEvent("mouseleave", { show: false }, e);
 		this.draw();
@@ -655,6 +655,7 @@ class ChartCanvas extends Component {
 			displayXAccessor: this.props.displayXAccessor || this.state.displayXAccessor,
 			chartCanvasType: this.props.type,
 			margin: this.props.margin,
+			ratio: this.props.ratio,
 			xAxisZoom: this.xAxisZoom,
 			yAxisZoom: this.yAxisZoom,
 			// getInteractiveState: this.getInteractiveState,
@@ -718,7 +719,7 @@ class ChartCanvas extends Component {
 	}
 	render() {
 
-		var { type, height, width, margin, className, zIndex, defaultFocus } = this.props;
+		var { type, height, width, margin, className, zIndex, defaultFocus, ratio } = this.props;
 		var { useCrossHairStyleCursor, drawMode } = this.props;
 
 		var { plotData, xScale, xAccessor, chartConfig } = this.state;
@@ -729,7 +730,7 @@ class ChartCanvas extends Component {
 		var cursor = getCursorStyle(useCrossHairStyleCursor && interaction);
 		return (
 			<div style={{ position: "relative", height: height, width: width }} className={className} >
-				<CanvasContainer ref="canvases" width={width} height={height} type={type} zIndex={zIndex}/>
+				<CanvasContainer ref="canvases" width={width} height={height} ratio={ratio} type={type} zIndex={zIndex}/>
 				<svg className={className} width={width} height={height} style={{ position: "absolute", zIndex: (zIndex + 5) }}>
 					{cursor}
 					<defs>
@@ -786,6 +787,7 @@ ChartCanvas.propTypes = {
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 	margin: PropTypes.object,
+	ratio: PropTypes.number.isRequired,
 	// interval: PropTypes.oneOf(["D", "W", "M"]), // ,"m1", "m5", "m15", "W", "M"
 	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 	data: PropTypes.array.isRequired,
@@ -846,6 +848,7 @@ ChartCanvas.defaultProps = {
 	drawMode: false,
 	defaultFocus: true,
 	onLoadMore: noop,
+	// ratio: 2,
 };
 
 ChartCanvas.childContextTypes = {
@@ -880,6 +883,7 @@ ChartCanvas.childContextTypes = {
 	height: PropTypes.number.isRequired,
 	chartCanvasType: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 	margin: PropTypes.object.isRequired,
+	ratio: PropTypes.number.isRequired,
 	getCanvasContexts: PropTypes.func,
 	xAxisZoom: PropTypes.func,
 	yAxisZoom: PropTypes.func,

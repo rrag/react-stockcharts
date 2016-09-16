@@ -20,7 +20,7 @@ var { fitWidth } = helper;
 
 class CandleStickChartWithEdge extends React.Component {
 	render() {
-		var { data, type, width } = this.props;
+		var { data, type, width, ratio } = this.props;
 
 		var ema20 = ema()
 			.id(0)
@@ -42,7 +42,7 @@ class CandleStickChartWithEdge extends React.Component {
 			.accessor(d => d.smaVolume70);
 
 		return (
-			<ChartCanvas width={width} height={450}
+			<ChartCanvas ratio={ratio} width={width} height={450}
 					margin={{left: 90, right: 90, top:70, bottom: 30}} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50, smaVolume70]}
@@ -135,6 +135,7 @@ class CandleStickChartWithEdge extends React.Component {
 CandleStickChartWithEdge.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

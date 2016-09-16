@@ -262,11 +262,11 @@ class EventCapture extends Component {
 		if (e.touches.length === 1) {
 			// pan
 			var touch = this.lastTouch = getTouchProps(e.touches[0]);
-			var { dx, dy, panStartXScale, panOrigin, chartsToPan } = panStart;
-
-			var newPos = [touch.pageX - dx, touch.pageY - dy];
 
 			if (panInProgress && panEnabled && onPan) {
+				var { dx, dy, panStartXScale, panOrigin, chartsToPan } = panStart;
+
+				var newPos = [touch.pageX - dx, touch.pageY - dy];
 				onPan(newPos, panStartXScale, panOrigin, chartsToPan, e);
 			}
 		} else if (e.touches.length === 2) {

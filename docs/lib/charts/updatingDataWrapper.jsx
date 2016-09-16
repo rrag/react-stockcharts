@@ -86,7 +86,7 @@ export default function updatingDataWrapper(ChartComponent) {
 			var { type } = this.props;
 			var { data } = this.state;
 
-			return <ChartComponent ref="component" data={data} type={type}/>;
+			return <ChartComponent ref="component" data={data} type={type} />;
 		}
 	}
 	UpdatingComponentHOC.defaultProps = {
@@ -94,5 +94,5 @@ export default function updatingDataWrapper(ChartComponent) {
 	};
 	UpdatingComponentHOC.displayName = `updatingDataWrapper(${ getDisplayName(ChartComponent) })`;
 
-	return UpdatingComponentHOC
+	return UpdatingComponentHOC;
 }

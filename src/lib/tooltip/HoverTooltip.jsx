@@ -72,6 +72,7 @@ HoverTooltip.contextTypes = {
 	height: PropTypes.number.isRequired,
 	width: PropTypes.number.isRequired,
 	margin: PropTypes.object.isRequired,
+	ratio: PropTypes.number.isRequired,
 };
 
 HoverTooltip.defaultProps = {
@@ -157,16 +158,18 @@ function origin(mouseXY, bgheight, bgwidth, xAccessor, currentItem, xScale) {
 
 function drawOnCanvas(ctx, props, context, pointer) {
 
-	var { height, margin } = context;
+	var { height, margin, ratio } = context;
 	var { bgFill, bgOpacity } = props;
 	var { backgroundShapeCanvas, tooltipCanvas } = props;
 
-	var originX = 0.5 + margin.left;
-	var originY = 0.5 + margin.top;
+	var originX = 0.5 * ratio + margin.left;
+	var originY = 0.5 * ratio + margin.top;
 
 	ctx.save();
 
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
+	ctx.scale(ratio, ratio);
+
 	ctx.translate(originX, originY);
 
 	var { x, y, content, centerX, drawWidth } = pointer;

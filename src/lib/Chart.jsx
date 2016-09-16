@@ -17,11 +17,12 @@ class Chart extends PureComponent {
 	}
 	getChildContext() {
 		var { id: chartId } = this.props;
+		var { ratio, margin } = this.context;
 		var chartConfig = this.context.chartConfig.filter((each) => each.id === chartId)[0];
 
 		var { width, height } = chartConfig;
-		var canvasOriginX = 0.5 + chartConfig.origin[0] + this.context.margin.left;
-		var canvasOriginY = 0.5 + chartConfig.origin[1] + this.context.margin.top;
+		var canvasOriginX = (0.5 * ratio) + chartConfig.origin[0] + margin.left;
+		var canvasOriginY = (0.5 * ratio) + chartConfig.origin[1] + margin.top;
 
 		return { chartId, chartConfig, canvasOriginX, canvasOriginY, width, height };
 	}
@@ -78,6 +79,7 @@ Chart.contextTypes = {
 	height: PropTypes.number.isRequired,
 	chartConfig: PropTypes.array,
 	margin: PropTypes.object.isRequired,
+	ratio: PropTypes.number.isRequired,
 
 	// adding here even when this is not used by Chart, refer to https://github.com/facebook/react/issues/2517
 	// used by CurrentCoordinate

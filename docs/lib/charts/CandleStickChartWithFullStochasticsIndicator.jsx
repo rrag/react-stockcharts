@@ -19,7 +19,7 @@ var { fitWidth } = helper;
 class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 	render() {
 		var height = 750;
-		var { data, type, width } = this.props;
+		var { data, type, width, ratio } = this.props;
 
 		var margin = {left: 70, right: 70, top:20, bottom: 30};
 
@@ -60,7 +60,7 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 			.accessor(d => d.fullSTO);
 
 		return (
-			<ChartCanvas width={width} height={750}
+			<ChartCanvas ratio={ratio} width={width} height={750}
 					margin={margin} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50, slowSTO, fastSTO, fullSTO]}
@@ -157,6 +157,7 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 CandleStickChartWithFullStochasticsIndicator.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

@@ -21,7 +21,7 @@ var algo = algorithm.default;
 
 class MovingAverageCrossOverAlgorithmV2 extends React.Component {
 	render() {
-		var { data, type, width } = this.props;
+		var { data, type, width, ratio } = this.props;
 
 		var ema20 = ema()
 			.id(0)
@@ -70,7 +70,7 @@ class MovingAverageCrossOverAlgorithmV2 extends React.Component {
 
 		var [yAxisLabelX, yAxisLabelY] = [width -margin.left - 40, margin.top + (height - margin.top - margin.bottom) / 2]
 		return (
-			<ChartCanvas width={width} height={height}
+			<ChartCanvas ratio={ratio} width={width} height={height}
 					margin={margin} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50, buySell]}
@@ -132,6 +132,7 @@ class MovingAverageCrossOverAlgorithmV2 extends React.Component {
 MovingAverageCrossOverAlgorithmV2.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

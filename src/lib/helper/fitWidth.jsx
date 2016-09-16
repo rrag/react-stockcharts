@@ -1,21 +1,45 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 
+import { isDefined } from "../utils";
+
 function getDisplayName(Series) {
 	var name = Series.displayName || Series.name || "Series";
 	return name;
 }
 
-export default function fitWidth(WrappedComponent, withRef = true, minWidth = 25) {
+export default function fitWidth(WrappedComponent, withRef = true) {
 	class ResponsiveComponent extends Component {
 		constructor(props) {
 			super(props);
 			this.handleWindowResize = this.handleWindowResize.bind(this);
 			this.getWrappedInstance = this.getWrappedInstance.bind(this);
 			this.saveNode = this.saveNode.bind(this);
+			this.setTestCanvas = this.setTestCanvas.bind(this);
+			this.state = {};
 		}
 		saveNode(node) {
 			this.node = node;
+		}
+		setTestCanvas(node) {
+			this.testCanvas = node;
+		}
+		getRatio() {
+			if (isDefined(this.testCanvas)) {
+				var context = this.testCanvas.getContext("2d");
+
+				var devicePixelRatio = window.devicePixelRatio || 1;
+				var backingStoreRatio = context.webkitBackingStorePixelRatio ||
+								context.mozBackingStorePixelRatio ||
+								context.msBackingStorePixelRatio ||
+								context.oBackingStorePixelRatio ||
+								context.backingStorePixelRatio || 1;
+
+				var ratio = devicePixelRatio / backingStoreRatio;
+				// console.log("ratio = ", ratio);
+				return ratio;
+			}
+			return 1;
 		}
 		componentDidMount() {
 			window.addEventListener("resize", this.handleWindowResize);
@@ -24,7 +48,8 @@ export default function fitWidth(WrappedComponent, withRef = true, minWidth = 25
 
 			/* eslint-disable react/no-did-mount-set-state */
 			this.setState({
-				width: Math.max(w, minWidth)
+				width: w,
+				ratio: this.getRatio(),
 			});
 			/* eslint-enable react/no-did-mount-set-state */
 		}
@@ -36,7 +61,7 @@ export default function fitWidth(WrappedComponent, withRef = true, minWidth = 25
 			var w = el.parentNode.clientWidth;
 
 			this.setState({
-				width: Math.max(w, minWidth)
+				width: w
 			});
 		}
 		getWrappedInstance() {
@@ -45,10 +70,12 @@ export default function fitWidth(WrappedComponent, withRef = true, minWidth = 25
 		render() {
 			var ref = withRef ? { ref: this.saveNode } : {};
 
-			if (this.state && this.state.width) {
-				return <WrappedComponent width={this.state.width} {...this.props} {...ref} />;
+			if (this.state.width) {
+				return <WrappedComponent width={this.state.width} ratio={this.state.ratio} {...this.props} {...ref} />;
 			} else {
-				return <div {...ref} />;
+				return <div {...ref}>
+					<canvas ref={this.setTestCanvas}  />
+				</div>;
 			}
 		}
 	}

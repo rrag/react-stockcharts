@@ -22,7 +22,7 @@ var { fitWidth } = helper;
 
 class CandleStickChartWithRSIIndicator extends React.Component {
 	render() {
-		var { data, type, width } = this.props;
+		var { data, type, width, ratio } = this.props;
 		var ema26 = ema()
 			.id(0)
 			.windowSize(26)
@@ -53,7 +53,7 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 			.accessor(d => d.atr14);
 
 		return (
-			<ChartCanvas width={width} height={600}
+			<ChartCanvas ratio={ratio} width={width} height={600}
 					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[ema26, ema12, smaVolume50, rsiCalculator, atr14]}
@@ -145,6 +145,7 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 CandleStickChartWithRSIIndicator.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

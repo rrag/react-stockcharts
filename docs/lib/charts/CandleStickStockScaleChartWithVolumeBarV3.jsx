@@ -15,10 +15,10 @@ var { fitWidth } = helper;
 
 class CandleStickStockScaleChartWithVolumeBarV3 extends React.Component {
 	render() {
-		var { data, type, width } = this.props;
+		var { data, type, width, ratio } = this.props;
 
 		return (
-			<ChartCanvas width={width} height={600}
+			<ChartCanvas ratio={ratio} width={width} height={600}
 					margin={{left: 50, right: 50, top:10, bottom: 30}} type={type}
 					seriesName="MSFT"
 					data={data}
@@ -41,6 +41,7 @@ class CandleStickStockScaleChartWithVolumeBarV3 extends React.Component {
 CandleStickStockScaleChartWithVolumeBarV3.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

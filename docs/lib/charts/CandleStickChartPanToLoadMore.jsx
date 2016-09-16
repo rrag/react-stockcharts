@@ -129,16 +129,16 @@ class CandleStickChartPanToLoadMore extends React.Component {
 				xScale,
 				xAccessor,
 				displayXAccessor,
-			})
+			});
 		}, 300);
 	}
 	render() {
-		var { type, width } = this.props;
+		var { type, width, ratio } = this.props;
 		var { data, ema26, ema12, macdCalculator, smaVolume50, xScale, xAccessor, displayXAccessor } = this.state;
 
 		return (
-			<ChartCanvas width={width} height={600}
-					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
+			<ChartCanvas ratio={ratio} width={width} height={600}
+					margin={{ left: 70, right: 70, top: 20, bottom: 30 }} type={type}
 					seriesName="MSFT"
 					data={data}
 					xScale={xScale} xAccessor={xAccessor} displayXAccessor={displayXAccessor}
@@ -212,6 +212,7 @@ class CandleStickChartPanToLoadMore extends React.Component {
 CandleStickChartPanToLoadMore.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
