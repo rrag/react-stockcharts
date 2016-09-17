@@ -77,7 +77,8 @@
     "postversion": "git push origin `git rev-parse --abbrev-ref HEAD` && git push origin `git describe`",
     "npm:publish:next": "npm run release && cd build && npm publish --tag next",
     "npm:publish:latest": "npm run release && cd build && npm publish",
-    "info": "npm info react-stockcharts"
+    "info": "npm info react-stockcharts",
+    "sourcemap:visualize": "source-map-explorer build/dist/react-stockcharts.min.js build/dist/react-stockcharts.min.js.map"
   },
   "browserify": {
     "transform": [

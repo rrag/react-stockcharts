@@ -102,7 +102,7 @@ function buildConfig(mode) {
 		externals: {
 			"react": "React",
 			"react-dom": "ReactDOM",
-			"d3": "d3",
+			// "d3": "d3",
 		},
 		resolve: Object.assign({
 			extensions: ["", ".js", ".jsx", ".scss", ".md"]
