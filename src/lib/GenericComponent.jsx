@@ -1,8 +1,7 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import d3 from "d3";
-import { isNotDefined, isDefined, noop } from "./utils";
+import { isNotDefined, isDefined, noop, functor } from "./utils";
 
 var suscriberId = 0;
 
@@ -226,7 +225,7 @@ GenericComponent.propTypes = {
 };
 
 GenericComponent.defaultProps = {
-	svgDraw: d3.functor(null),
+	svgDraw: functor(null),
 	drawOnMouseMove: false,
 	drawOnPan: false,
 	drawOnHover: false,
@@ -235,7 +234,7 @@ GenericComponent.defaultProps = {
 	hoverCanvasToDraw: contexts => contexts.mouseCoord,
 	clip: true,
 	edgeClip: false,
-	isHover: d3.functor(false),
+	isHover: functor(false),
 	onMouseMove: noop,
 	onMouseDown: noop,
 };

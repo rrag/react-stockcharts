@@ -1,7 +1,7 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import d3 from "d3";
+import { functor } from "../utils";
 
 class SvgPathAnnotation extends Component {
 	constructor(props) {
@@ -32,16 +32,16 @@ class SvgPathAnnotation extends Component {
 function helper(props, xAccessor, xScale, yScale) {
 	var { x, y, datum, fill, tooltip, plotData } = props;
 
-	var xFunc = d3.functor(x);
-	var yFunc = d3.functor(y);
+	var xFunc = functor(x);
+	var yFunc = functor(y);
 
 	var [xPos, yPos] = [xFunc({ xScale, xAccessor, datum, plotData }), yFunc({ yScale, datum, plotData })];
 
 	return {
 		x: xPos,
 		y: yPos,
-		fill: d3.functor(fill)(datum),
-		tooltip: d3.functor(tooltip)(datum),
+		fill: functor(fill)(datum),
+		tooltip: functor(tooltip)(datum),
 	};
 }
 

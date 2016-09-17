@@ -1,7 +1,8 @@
 "use strict";
 
 
-import d3 from "d3";
+import { scaleOrdinal, schemeCategory10 } from  "d3-scale";
+import { bisector } from "d3-array";
 
 import zipper from "./zipper";
 import merge from "./merge";
@@ -36,8 +37,12 @@ export function path(path = []) {
 	};
 }
 
+export function functor(v) {
+	return typeof v === "function" ? v : () => v;
+}
+
 export function getClosestItemIndexes2(array, value, accessor) {
-	var left = d3.bisector(accessor).left(array, value);
+	var left = bisector(accessor).left(array, value);
 	left = Math.max(left - 1, 0);
 	var right = Math.min(left + 1, array.length - 1);
 
@@ -109,26 +114,7 @@ export function getClosestItem(array, value, accessor, log) {
 	return closest;
 }
 
-
-export const overlayColors = d3.scale.category10();
-
-export function rebind(target, source, mappings) {
-	if (typeof(mappings) !== "object") {
-		return d3.rebind.apply(d3, arguments);
-	}
-	Object.keys(mappings)
-		.forEach(function(targetName) {
-			var method = source[mappings[targetName]];
-			if (typeof method !== "function") {
-				throw new Error(`The method ${mappings[targetName]} does not exist on the source object`);
-			}
-			target[targetName] = function() {
-				var value = method.apply(source, arguments);
-				return value === source ? target : value;
-			};
-		});
-	return target;
-}
+export const overlayColors = scaleOrdinal(schemeCategory10);
 
 export function head(array, accessor) {
 	if (accessor && array) {

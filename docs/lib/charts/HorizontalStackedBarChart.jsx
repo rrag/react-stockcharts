@@ -1,11 +1,12 @@
 "use strict";
 
+import { scaleOrdinal, schemeCategory10, scaleLinear, scalePoint } from  "d3-scale";
+import { set } from "d3-collection";
+import { max } from "d3-array";
+
 import React from "react";
-import d3 from "d3";
 
 import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
-
-
 
 var { StackedBarSeries  } = series;
 
@@ -16,20 +17,20 @@ class HorizontalStackedBarChart extends React.Component {
 	render() {
 		var { data, type, width, ratio } = this.props;
 
-		var f = d3.scale.category10()
-			.domain(d3.set(data.map(d => d.region)));
+		var f = scaleOrdinal(schemeCategory10)
+			.domain(set(data.map(d => d.region)));
 
 		var fill = (d, i) => f(i);
 		return (
 			<ChartCanvas ratio={ratio} width={width} height={400}
-					margin={{left: 90, right: 10, top:20, bottom: 30}} type={type}
+					margin={{ left: 90, right: 10, top: 20, bottom: 30 }} type={type}
 					seriesName="Fruits"
-					xExtents={data => [0, d3.max(data, d => d.x1 + d.x2 + d.x3 + d.x4)]}
+					xExtents={data => [0, max(data, d => d.x1 + d.x2 + d.x3 + d.x4)]}
 					data={data}
-					xScale={d3.scale.linear()} flipXScale={false}>
+					xScale={scaleLinear()} flipXScale={false}>
 				<Chart id={1}
 						yExtents={data.map(d => d.y)}
-						yScale={d3.scale.ordinal()}
+						yScale={scalePoint()}
 						padding={1}>
 					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="left" orient="left" />

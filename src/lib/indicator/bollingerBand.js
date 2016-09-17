@@ -1,6 +1,6 @@
 "use strict";
 
-import d3 from "d3";
+import { rebind } from "d3fc-rebind";
 
 import { merge } from "../utils";
 
@@ -34,9 +34,9 @@ export default function() {
 	base.tooltipLabel(() => `BB (${underlyingAlgorithm.windowSize()}, ${underlyingAlgorithm.multiplier()}`
 		+ `, ${underlyingAlgorithm.movingAverageType()}): `);
 
-	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
-	d3.rebind(indicator, underlyingAlgorithm, "windowSize", "movingAverageType", "multiplier", "sourcePath");
-	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
+	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
+	rebind(indicator, underlyingAlgorithm, "windowSize", "movingAverageType", "multiplier", "sourcePath");
+	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;
 }

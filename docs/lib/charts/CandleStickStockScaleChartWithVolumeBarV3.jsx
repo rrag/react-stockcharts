@@ -1,7 +1,7 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
 
 import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
@@ -31,7 +31,7 @@ class CandleStickStockScaleChartWithVolumeBarV3 extends React.Component {
 				</Chart>
 				<Chart id={2} origin={(w, h) => [0, h - 150]} height={150} yExtents={d => d.volume}>
 					<XAxis axisAt="bottom" orient="bottom"/>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format("s")}/>
 					<BarSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
 				</Chart>
 			</ChartCanvas>

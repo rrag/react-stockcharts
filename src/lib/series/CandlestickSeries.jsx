@@ -1,10 +1,11 @@
 "use strict";
 
-import d3 from "d3";
+import { nest } from "d3-collection";
+
 import React, { PropTypes, Component } from "react";
 
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
-import { first, last, hexToRGBA, isDefined } from "../utils";
+import { first, last, hexToRGBA, isDefined, functor } from "../utils";
 
 class CandlestickSeries extends Component {
 	constructor(props) {
@@ -140,7 +141,7 @@ function drawOnCanvas(ctx, props, context, moreProps) {
 	var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 	var wickData = getWickData(props, xAccessor, xScale, yScale, plotData);
 
-	var wickNest = d3.nest()
+	var wickNest = nest()
 		.key(d => d.stroke)
 		.entries(wickData);
 
@@ -160,7 +161,7 @@ function drawOnCanvas(ctx, props, context, moreProps) {
 
 	var candleData = getCandleData(props, xAccessor, xScale, yScale, plotData);
 
-	var candleNest = d3.nest()
+	var candleNest = nest()
 		.key(d => d.stroke)
 		.key(d => d.fill)
 		.entries(candleData);
@@ -203,8 +204,8 @@ function drawOnCanvas(ctx, props, context, moreProps) {
 function getWickData(props, xAccessor, xScale, yScale, plotData) {
 
 	var { classNames: classNameProp, wickStroke: wickStrokeProp, yAccessor } = props;
-	var wickStroke = d3.functor(wickStrokeProp);
-	var className = d3.functor(classNameProp);
+	var wickStroke = functor(wickStrokeProp);
+	var className = functor(classNameProp);
 	var wickData = plotData
 			.filter(d => isDefined(yAccessor(d).close))
 			.map(d => {
@@ -233,8 +234,8 @@ function getWickData(props, xAccessor, xScale, yScale, plotData) {
 
 function getCandleData(props, xAccessor, xScale, yScale, plotData) {
 	var { classNames, fill: fillProp, stroke: strokeProp, widthRatio, yAccessor } = props;
-	var fill = d3.functor(fillProp);
-	var stroke = d3.functor(strokeProp);
+	var fill = functor(fillProp);
+	var stroke = functor(strokeProp);
 	// console.log(plotData);
 	var width = xScale(xAccessor(last(plotData)))
 		- xScale(xAccessor(first(plotData)));

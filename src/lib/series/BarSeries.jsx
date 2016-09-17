@@ -4,9 +4,7 @@ import React, { PropTypes, Component } from "react";
 
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 
-import StackedBarSeries, { drawOnCanvasHelper, svgHelper } from "./StackedBarSeries";
-import { identity } from "../utils";
-
+import StackedBarSeries, { drawOnCanvasHelper, svgHelper, identityStack } from "./StackedBarSeries";
 
 class BarSeries extends Component {
 	constructor(props) {
@@ -17,13 +15,13 @@ class BarSeries extends Component {
 	drawOnCanvas(ctx, moreProps) {
 		var { xAccessor } = this.context;
 
-		drawOnCanvasHelper(ctx, this.props, moreProps, xAccessor, identity);
+		drawOnCanvasHelper(ctx, this.props, moreProps, xAccessor, identityStack);
 
 	}
 	renderSVG(moreProps) {
 		var { xAccessor } = this.context;
 
-		return <g>{svgHelper(this.props, moreProps, xAccessor, identity)}</g>;
+		return <g>{svgHelper(this.props, moreProps, xAccessor, identityStack)}</g>;
 	}
 	render() {
 		return <GenericChartComponent

@@ -1,7 +1,7 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import d3 from "d3";
+import { extent as d3Extent, min, max } from "d3-array";
 
 import {
 	first,
@@ -12,6 +12,7 @@ import {
 	shallowEqual,
 	identity,
 	noop,
+	functor,
 } from "./utils";
 
 import { getNewChartConfig, getChartConfigWithUpdatedYScales, getCurrentCharts, getCurrentItem } from "./utils/ChartDataUtil";
@@ -192,7 +193,7 @@ function calculateState(props) {
 
 	var extent = typeof xExtentsProp === "function"
 		? xExtentsProp(data)
-		: d3.extent(xExtentsProp.map(d => d3.functor(d)).map(each => each(data, inputXAccesor)));
+		: d3Extent(xExtentsProp.map(d => functor(d)).map(each => each(data, inputXAccesor)));
 
 	var { xAccessor, displayXAccessor, xScale, fullData, filterData, firstItem, lastItem } = calculateFullData(props);
 	var updatedXScale = setXRange(xScale, dimensions, padding, direction);
@@ -215,6 +216,10 @@ function setXRange(xScale, dimensions, padding, direction = 1) {
 	if (xScale.rangeRoundPoints) {
 		if (isNaN(padding)) throw new Error("padding has to be a number for ordinal scale");
 		xScale.rangeRoundPoints([0, dimensions.width], padding);
+	} else if (xScale.padding) {
+		if (isNaN(padding)) throw new Error("padding has to be a number for ordinal scale");
+		xScale.range([0, dimensions.width]);
+		xScale.padding(padding / 2);
 	} else {
 		var { left, right } = isNaN(padding)
 			? padding
@@ -838,7 +843,7 @@ ChartCanvas.defaultProps = {
 	calculator: [],
 	className: "react-stockchart",
 	zIndex: 1,
-	xExtents: [d3.min, d3.max],
+	xExtents: [min, max],
 	// dataEvaluator: evaluator,
 	postCalculator: identity,
 	padding: 0,

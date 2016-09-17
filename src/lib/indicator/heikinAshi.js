@@ -1,6 +1,6 @@
 "use strict";
 
-import d3 from "d3";
+import { rebind } from "d3fc-rebind";
 
 import { heikinAshi } from "./algorithm";
 import baseIndicator from "./baseIndicator";
@@ -28,9 +28,9 @@ export default function() {
 		return mergedAlgorithm(data);
 	};
 
-	d3.rebind(indicator, base, "accessor", "stroke", "fill", "echo", "type");
-	// d3.rebind(indicator, underlyingAlgorithm, "windowSize", "source");
-	d3.rebind(indicator, mergedAlgorithm, "merge");
+	rebind(indicator, base, "accessor", "stroke", "fill", "echo", "type");
+	// rebind(indicator, underlyingAlgorithm, "windowSize", "source");
+	rebind(indicator, mergedAlgorithm, "merge");
 
 	return indicator;
 }

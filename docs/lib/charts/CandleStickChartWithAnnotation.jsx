@@ -1,7 +1,8 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
+import { timeFormat } from "d3-time-format";
 
 import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, annotation, indicator, helper } from "react-stockcharts";
 
@@ -43,14 +44,14 @@ class CandleStickChartWithAnnotation extends React.Component {
 			text: "\ue182",
 			y: ({ yScale }) => yScale.range()[0],
 			onClick: console.log.bind(console),
-			tooltip: d => d3.time.format("%B")(d.date),
+			tooltip: d => timeFormat("%B")(d.date),
 			// onMouseOver: console.log.bind(console),
 		};
 
-		var margin = {left: 80, right: 80, top:30, bottom: 50};
+		var margin = { left: 80, right: 80, top: 30, bottom: 50 };
 		var height = 400;
 
-		var [yAxisLabelX, yAxisLabelY] = [width -margin.left - 40, margin.top + (height - margin.top - margin.bottom) / 2]
+		var [yAxisLabelX, yAxisLabelY] = [width - margin.left - 40, margin.top + (height - margin.top - margin.bottom) / 2]
 		return (
 			<ChartCanvas ratio={ratio} width={width} height={height}
 					margin={margin} type={type}
@@ -59,7 +60,7 @@ class CandleStickChartWithAnnotation extends React.Component {
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2015, 0, 1), new Date(2015, 5, 8)]}>
 
-				<Label x={(width -margin.left - margin.right)/ 2} y={30}
+				<Label x={(width - margin.left - margin.right) / 2} y={30}
 					fontSize="30" text="Chart title here" />
 
 				<Chart id={1}
@@ -69,13 +70,13 @@ class CandleStickChartWithAnnotation extends React.Component {
 					<MouseCoordinateX
 						at="bottom"
 						orient="bottom"
-						displayFormat={d3.time.format("%Y-%m-%d")} />
+						displayFormat={timeFormat("%Y-%m-%d")} />
 					<MouseCoordinateY
 						at="right"
 						orient="right"
-						displayFormat={d3.format(".2f")} />
+						displayFormat={format(".2f")} />
 
-					<Label x={(width -margin.left - margin.right)/ 2} y={height - 45}
+					<Label x={(width - margin.left - margin.right) / 2} y={height - 45}
 						fontSize="12" text="XAxis Label here" />
 
 					<YAxis axisAt="right" orient="right" ticks={5} />

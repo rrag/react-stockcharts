@@ -1,7 +1,7 @@
 "use strict";
 
+import { scalePoint } from  "d3-scale";
 import React from "react";
-import d3 from "d3";
 
 import { ChartCanvas, Chart, series, axes, helper } from "react-stockcharts";
 
@@ -22,7 +22,7 @@ class BarChart extends React.Component {
 					seriesName="Fruits"
 					xExtents={list => list.map(d => d.x)}
 					data={data}
-					xAccessor={d => d.x} xScale={d3.scale.ordinal()}
+					xAccessor={d => d.x} xScale={scalePoint()}
 					padding={1}>
 				<Chart id={1}
 						yExtents={d => [0, d.y]}>

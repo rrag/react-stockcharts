@@ -1,13 +1,13 @@
 "use strict";
 
-import d3 from "d3";
 import React, { PropTypes, Component } from "react";
+import { format } from "d3-format";
 
 import GenericChartComponent from "../GenericChartComponent";
 
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
-import { isDefined, identity, noop } from "../utils";
+import { isDefined, identity, noop, functor } from "../utils";
 
 class SingleValueTooltip extends Component {
 	constructor(props) {
@@ -26,7 +26,7 @@ class SingleValueTooltip extends Component {
 		var yDisplayValue = isDefined(currentItem) && isDefined(yAccessor(currentItem)) ? yDisplayFormat(yAccessor(currentItem)) : "n/a";
 
 		var { origin: originProp } = this.props;
-		var origin = d3.functor(originProp);
+		var origin = functor(originProp);
 		var [x, y] = origin(width, height);
 
 		return (
@@ -80,7 +80,7 @@ SingleValueTooltip.defaultProps = {
 	origin: [0, 0],
 	labelStroke: "#4682B4",
 	valueStroke: "#000000",
-	yDisplayFormat: d3.format(".2f"),
+	yDisplayFormat: format(".2f"),
 	xAccessor: noop,
 	yAccessor: identity,
 };

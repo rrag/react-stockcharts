@@ -2,15 +2,17 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
-import d3 from "d3";
+
+import { csvParse, tsvParse } from  "d3-dsv";
+import { merge } from "d3-array";
+import { timeParse } from "d3-time-format";
 
 import ReStock from "react-stockcharts";
 
-var parseDate = d3.time.format("%Y-%m-%d").parse;
-var parseDateTime = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
+var parseDate = timeParse("%Y-%m-%d");
+var parseDateTime = timeParse("%Y-%m-%d %H:%M:%S");
 
 import "stylesheets/re-stock";
-
 
 import Nav from "lib/navbar";
 import Sidebar from "lib/sidebar";
@@ -121,7 +123,7 @@ var ALL_PAGES = [
 	// CUSTOMIZATION, TODO
 ];
 
-var pages = d3.merge(ALL_PAGES.map(_ => _.pages));
+var pages = merge(ALL_PAGES.map(_ => _.pages));
 
 function compressString(string) {
 	string = string.replace(/\s+/g, "_");
@@ -160,19 +162,19 @@ if (!window.Modernizr.fetch || !window.Modernizr.promises) {
 function loadPage() {
 	var promiseMSFT = fetch("data/MSFT.tsv")
 		.then(response => response.text())
-		.then(data => d3.tsv.parse(data, parseData(parseDate)));
+		.then(data => tsvParse(data, parseData(parseDate)));
 	var promiseMSFTfull = fetch("data/MSFT_full.tsv")
 		.then(response => response.text())
-		.then(data => d3.tsv.parse(data, parseData(parseDate)));
+		.then(data => tsvParse(data, parseData(parseDate)));
 	var promiseIntraDayContinuous = fetch("data/bitfinex_xbtusd_1m.csv")
 		.then(response => response.text())
-		.then(data => d3.csv.parse(data, parseData(parseDateTime)));
+		.then(data => csvParse(data, parseData(parseDateTime)));
 	var promiseIntraDayDiscontinuous = fetch("data/MSFT_INTRA_DAY.tsv")
 		.then(response => response.text())
-		.then(data => d3.tsv.parse(data, parseData(d => new Date(+d))));
+		.then(data => tsvParse(data, parseData(d => new Date(+d))));
 	var promiseCompare = fetch("data/comparison.tsv")
 		.then(response => response.text())
-		.then(data => d3.tsv.parse(data, d => {
+		.then(data => tsvParse(data, d => {
 			d = parseData(parseDate)(d);
 			d.SP500Close = +d.SP500Close;
 			d.AAPLClose = +d.AAPLClose;

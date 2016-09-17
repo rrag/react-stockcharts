@@ -2,8 +2,9 @@
 
 var React = require("react");
 var ReactServer = require("react-dom/server");
-var d3 = require("d3");
-var parseDate = d3.time.format("%Y-%m-%d").parse
+var { timeParse } = "d3-time-format";
+
+var parseDate = timeParse("%Y-%m-%d");
 
 require("babel/register");
 

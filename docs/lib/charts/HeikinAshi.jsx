@@ -1,7 +1,8 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
+import { timeFormat } from "d3-time-format";
 
 import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
@@ -56,7 +57,7 @@ class HaikinAshi extends React.Component {
 					<MouseCoordinateY
 						at="right"
 						orient="right"
-						displayFormat={d3.format(".1f")} />
+						displayFormat={format(".1f")} />
 
 					<CandlestickSeries />
 					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
@@ -86,15 +87,15 @@ class HaikinAshi extends React.Component {
 				<Chart id={2}
 						yExtents={[d => d.volume, smaVolume50.accessor()]}
 						height={150} origin={(w, h) => [0, h - 150]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format("s")}/>
 					<MouseCoordinateX
 						at="bottom"
 						orient="bottom"
-						displayFormat={d3.time.format("%Y-%m-%d")} />
+						displayFormat={timeFormat("%Y-%m-%d")} />
 					<MouseCoordinateY
 						at="left"
 						orient="left"
-						displayFormat={d3.format(".4s")} />
+						displayFormat={format(".4s")} />
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
@@ -103,13 +104,13 @@ class HaikinAshi extends React.Component {
 					<CurrentCoordinate yAccessor={d => d.volume} fill="#9B0A47" />
 
 					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
-						yAccessor={d => d.volume} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
+						yAccessor={d => d.volume} displayFormat={format(".4s")} fill="#0F0F0F"/>
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
-						yAccessor={d => d.volume} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
+						yAccessor={d => d.volume} displayFormat={format(".4s")} fill="#0F0F0F"/>
 					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
-						yAccessor={smaVolume50.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume50.fill()}/>
+						yAccessor={smaVolume50.accessor()} displayFormat={format(".4s")} fill={smaVolume50.fill()}/>
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
-						yAccessor={smaVolume50.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume50.fill()}/>
+						yAccessor={smaVolume50.accessor()} displayFormat={format(".4s")} fill={smaVolume50.fill()}/>
 				</Chart>
 				<CrossHairCursor />
 			</ChartCanvas>

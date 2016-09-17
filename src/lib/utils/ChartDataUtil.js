@@ -1,7 +1,8 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { extent } from "d3-array";
+import { set } from "d3-collection";
 import flattenDeep from "lodash.flattendeep";
 
 import Chart from "../Chart";
@@ -11,6 +12,7 @@ import {
 	getClosestItem,
 	zipper,
 	isDefined,
+	functor,
 } from "./index";
 
 export function getChartOrigin(origin, contextWidth, contextHeight) {
@@ -50,12 +52,12 @@ export function getNewChartConfig(innerDimension, children) {
 			// var { yMousePointerRectWidth: rectWidth, yMousePointerRectHeight: rectHeight, yMousePointerArrowWidth: arrowWidth } = each.props;
 			// var mouseCoordinates = { at, yDisplayFormat, rectHeight, rectWidth, arrowWidth };
 			var yExtents = isDefined(yExtentsProp)
-				? (Array.isArray(yExtentsProp) ? yExtentsProp : [yExtentsProp]).map(d3.functor)
+				? (Array.isArray(yExtentsProp) ? yExtentsProp : [yExtentsProp]).map(functor)
 				: undefined;
 			// console.log(yExtentsProp, yExtents);
 			return {
 				id,
-				origin: d3.functor(origin)(availableWidth, availableHeight),
+				origin: functor(origin)(availableWidth, availableHeight),
 				padding,
 				yExtents,
 				yExtentsCalculator,
@@ -101,8 +103,8 @@ function yDomainFromYExtents(yExtents, yScale, plotData) {
 	var allYValues = flattenDeep(yValues);
 
 	var realYDomain =  (yScale.invert)
-		? d3.extent(allYValues)
-		: d3.set(allYValues).values();
+		? extent(allYValues)
+		: set(allYValues).values();
 
 	return realYDomain;
 }

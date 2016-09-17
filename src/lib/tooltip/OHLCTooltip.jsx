@@ -1,11 +1,12 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import d3 from "d3";
+import { format } from "d3-format";
+import { timeFormat } from "d3-time-format";
 
 import GenericChartComponent from "../GenericChartComponent";
 
-import { isDefined } from "../utils";
+import { isDefined, functor } from "../utils";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
@@ -39,7 +40,7 @@ class OHLCTooltip extends Component {
 		}
 
 		var { origin: originProp } = this.props;
-		var origin = d3.functor(originProp);
+		var origin = functor(originProp);
 		var [x, y] = origin(width, height);
 
 		return (
@@ -89,9 +90,9 @@ OHLCTooltip.propTypes = {
 
 OHLCTooltip.defaultProps = {
 	accessor: (d) => { return { date: d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume }; },
-	xDisplayFormat: d3.time.format("%Y-%m-%d"),
-	volumeFormat: d3.format(".4s"),
-	ohlcFormat: d3.format(".2f"),
+	xDisplayFormat: timeFormat("%Y-%m-%d"),
+	volumeFormat: format(".4s"),
+	ohlcFormat: format(".2f"),
 	origin: [0, 0],
 };
 

@@ -1,7 +1,9 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
+import { timeFormat } from "d3-time-format";
+
 
 import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
@@ -43,19 +45,19 @@ class CandleStickChartForDiscontinuousIntraDay extends React.Component {
 
 		return (
 			<ChartCanvas ratio={ratio} width={width} height={400}
-					margin={{left: 80, right: 80, top:10, bottom: 30}} type={type}
+					margin={{ left: 80, right: 80, top: 10, bottom: 30 }} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50, smaVolume50]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}>
 				<Chart id={2}
 						yExtents={[d => d.volume, smaVolume50.accessor()]}
 						height={150} origin={(w, h) => [0, h - 150]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format("s")}/>
 
 					<MouseCoordinateY
 						at="left"
 						orient="left"
-						displayFormat={d3.format(".4s")} />
+						displayFormat={format(".4s")} />
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
@@ -64,13 +66,13 @@ class CandleStickChartForDiscontinuousIntraDay extends React.Component {
 					<CurrentCoordinate yAccessor={d => d.volume} fill="#9B0A47" />
 
 					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
-						yAccessor={d => d.volume} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
+						yAccessor={d => d.volume} displayFormat={format(".4s")} fill="#0F0F0F"/>
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
-						yAccessor={d => d.volume} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
+						yAccessor={d => d.volume} displayFormat={format(".4s")} fill="#0F0F0F"/>
 					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
-						yAccessor={smaVolume50.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume50.fill()}/>
+						yAccessor={smaVolume50.accessor()} displayFormat={format(".4s")} fill={smaVolume50.fill()}/>
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
-						yAccessor={smaVolume50.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume50.fill()}/>
+						yAccessor={smaVolume50.accessor()} displayFormat={format(".4s")} fill={smaVolume50.fill()}/>
 				</Chart>
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
@@ -82,11 +84,11 @@ class CandleStickChartForDiscontinuousIntraDay extends React.Component {
 						rectWidth={60}
 						at="bottom"
 						orient="bottom"
-						displayFormat={d3.time.format("%H:%M:%S")} />
+						displayFormat={timeFormat("%H:%M:%S")} />
 					<MouseCoordinateY
 						at="right"
 						orient="right"
-						displayFormat={d3.format(".2f")} />
+						displayFormat={format(".2f")} />
 
 					<CandlestickSeries />
 					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
@@ -108,8 +110,8 @@ class CandleStickChartForDiscontinuousIntraDay extends React.Component {
 					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 
-					<OHLCTooltip origin={[-40, 0]} xDisplayFormat={d3.time.format("%Y-%m-%d %H:%M:%S")}/>
-					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]} 
+					<OHLCTooltip origin={[-40, 0]} xDisplayFormat={timeFormat("%Y-%m-%d %H:%M:%S")}/>
+					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]}
 						calculators={[ema20, ema50]}/>
 				</Chart>
 				<CrossHairCursor />

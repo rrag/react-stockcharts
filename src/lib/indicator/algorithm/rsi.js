@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import d3 from "d3";
+import { mean } from "d3-array";
 
 import { isDefined, last, slidingWindow, path } from "../../utils";
 import { RSI as defaultOptions } from "../defaultOptionsForComputation";
@@ -45,11 +45,11 @@ export default function() {
 
 				var avgGain = isDefined(prevAvgGain)
 					? (prevAvgGain * (windowSize - 1) + last(values).gain) / windowSize
-					: d3.mean(values, (each) => each.gain);
+					: mean(values, (each) => each.gain);
 
 				var avgLoss = isDefined(prevAvgLoss)
 					? (prevAvgLoss * (windowSize - 1) + last(values).loss) / windowSize
-					: d3.mean(values, (each) => each.loss);
+					: mean(values, (each) => each.loss);
 
 				var relativeStrength = avgGain / avgLoss;
 				var rsi = 100 - (100 / (1 + relativeStrength));

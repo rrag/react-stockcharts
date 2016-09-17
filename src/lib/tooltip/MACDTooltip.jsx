@@ -1,11 +1,12 @@
 "use strict";
 
-import d3 from "d3";
+import { format } from "d3-format";
 import React, { PropTypes, Component } from "react";
 import GenericChartComponent from "../GenericChartComponent";
 
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
+import { functor } from "../utils";
 
 class MACDTooltip extends Component {
 	constructor(props) {
@@ -26,7 +27,7 @@ class MACDTooltip extends Component {
 		var divergence = (macdValue && macdValue.divergence && displayFormat(macdValue.divergence)) || "n/a";
 
 		var { origin: originProp } = this.props;
-		var origin = d3.functor(originProp);
+		var origin = functor(originProp);
 		var [x, y] = origin(width, height);
 
 		return (
@@ -77,7 +78,7 @@ MACDTooltip.propTypes = {
 
 MACDTooltip.defaultProps = {
 	origin: [0, 0],
-	displayFormat: d3.format(".2f"),
+	displayFormat: format(".2f"),
 };
 
 export default MACDTooltip;

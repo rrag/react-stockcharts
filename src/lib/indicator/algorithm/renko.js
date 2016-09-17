@@ -1,7 +1,6 @@
 "use strict";
 
-import d3 from "d3";
-import { merge, isNotDefined } from "../../utils";
+import { merge, isNotDefined, functor } from "../../utils";
 
 import atr from "./atr";
 
@@ -31,7 +30,7 @@ export default function() {
 			atrCalculator(rawData);
 			brickSize = d => d["atr" + windowSize];
 		} else {
-			brickSize = d3.functor(fixedBrickSize);
+			brickSize = functor(fixedBrickSize);
 		}
 
 		var renkoData = [];

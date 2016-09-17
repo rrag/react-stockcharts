@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import d3 from "d3";
+import { mean, deviation } from "d3-array";
 
 import ema from "./ema";
 import { last, slidingWindow, zipper, path } from "../../utils";
@@ -42,13 +42,13 @@ export default function() {
 		var meanAlgorithm = movingAverageType === "ema"
 			? ema().windowSize(windowSize).sourcePath(sourcePath)
 			: slidingWindow().windowSize(windowSize)
-				.accumulator(values => d3.mean(values)).sourcePath(sourcePath);
+				.accumulator(values => mean(values)).sourcePath(sourcePath);
 
 		var bollingerBandAlgorithm = slidingWindow()
 			.windowSize(windowSize)
 			.accumulator((values) => {
 				var avg = last(values).mean;
-				var stdDev = d3.deviation(values, (each) => source(each.datum));
+				var stdDev = deviation(values, (each) => source(each.datum));
 				return {
 					top: avg + multiplier * stdDev,
 					middle: avg,

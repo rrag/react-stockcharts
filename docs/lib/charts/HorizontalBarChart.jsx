@@ -1,7 +1,9 @@
 "use strict";
 
+import { max } from "d3-array";
+import { scaleLinear, scalePoint } from  "d3-scale";
+
 import React from "react";
-import d3 from "d3";
 
 import { ChartCanvas, Chart, series, axes, helper } from "react-stockcharts";
 
@@ -16,15 +18,15 @@ class HorizontalBarChart extends React.Component {
 
 		return (
 			<ChartCanvas ratio={ratio} width={width} height={400}
-					margin={{left: 90, right: 10, top:20, bottom: 30}} type={type}
+					margin={{ left: 90, right: 10, top: 20, bottom: 30 }} type={type}
 					seriesName="Fruits"
-					xExtents={data => [0, d3.max(data, d => d.x)]}
+					xExtents={data => [0, max(data, d => d.x)]}
 					data={data}
-					xScale={d3.scale.linear()} flipXScale={false}
+					xScale={scaleLinear()} flipXScale={false}
 					useCrossHairStyleCursor={false}>
 				<Chart id={1}
 						yExtents={data.map(d => d.y)}
-						yScale={d3.scale.ordinal()}
+						yScale={scalePoint()}
 						padding={1}>
 					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="left" orient="left" />

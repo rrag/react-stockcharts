@@ -1,6 +1,6 @@
 "use strict";
 
-import d3 from "d3";
+import { sum } from "d3-array";
 
 import { slidingWindow, last, isDefined } from "../../utils";
 
@@ -32,7 +32,7 @@ export default function() {
 				var tr = last(values);
 				var atr = isDefined(prevATR)
 					? ((prevATR * (windowSize - 1)) + tr) / windowSize
-					: d3.sum(values) / windowSize;
+					: sum(values) / windowSize;
 
 				prevATR = atr;
 				return atr;

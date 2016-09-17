@@ -1,7 +1,8 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
+import { timeFormat } from "d3-time-format";
 
 import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
@@ -29,7 +30,7 @@ class PointAndFigure extends React.Component {
 
 		return (
 			<ChartCanvas ref="chartCanvas" ratio={ratio} width={width} height={400}
-					margin={{left: 80, right: 80, top:10, bottom: 30}} type={type}
+					margin={{ left: 80, right: 80, top: 10, bottom: 30 }} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[pAndF]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}>
@@ -41,7 +42,7 @@ class PointAndFigure extends React.Component {
 					<MouseCoordinateY
 						at="left"
 						orient="left"
-						displayFormat={d3.format(".4s")} />
+						displayFormat={format(".4s")} />
 
 					<PointAndFigureSeries />
 					<OHLCTooltip origin={[-40, 0]}/>
@@ -49,16 +50,16 @@ class PointAndFigure extends React.Component {
 				<Chart id={2}
 						yExtents={d => d.volume}
 						height={150} origin={(w, h) => [0, h - 150]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format("s")}/>
 
 					<MouseCoordinateX
 						at="bottom"
 						orient="bottom"
-						displayFormat={d3.time.format("%Y-%m-%d")} />
+						displayFormat={timeFormat("%Y-%m-%d")} />
 					<MouseCoordinateY
 						at="left"
 						orient="left"
-						displayFormat={d3.format(".4s")} />
+						displayFormat={format(".4s")} />
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>

@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from "react";
-import d3 from "d3";
+
+import { select, event as d3Event } from "d3-selection";
 
 import GenericChartComponent from "../GenericChartComponent";
 
@@ -24,7 +25,7 @@ class InteractiveLine extends Component {
 		e.preventDefault();
 
 		var win = d3Window(this.refs.component.getRef("capture"));
-		d3.select(win)
+		select(win)
 			.on(MOUSEMOVE, this.handleDrag)
 			.on(MOUSEUP, this.handleDragEnd);
 
@@ -38,7 +39,7 @@ class InteractiveLine extends Component {
 		};
 	}
 	handleDrag() {
-		var e = d3.event;
+		var e = d3Event;
 		var moreProps = this.refs.component.getMoreProps();
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 		var { xAccessor } = this.context;
@@ -73,12 +74,12 @@ class InteractiveLine extends Component {
 		}, e);
 	}
 	handleDragEnd() {
-		var e = d3.event;
+		var e = d3Event;
 		this.moveStartPosition = null;
 
 		var win = d3Window(this.refs.component.getRef("capture"));
 
-		d3.select(win)
+		select(win)
 			.on(MOUSEMOVE, null)
 			.on(MOUSEUP, null);
 
@@ -291,7 +292,7 @@ class ClickableCircle extends Component {
 		e.preventDefault();
 
 		var win = d3Window(this.refs.edge);
-		d3.select(win)
+		select(win)
 			.on(MOUSEMOVE, this.handleDrag)
 			.on(MOUSEUP, this.handleDragEnd);
 
@@ -305,7 +306,7 @@ class ClickableCircle extends Component {
 		};
 	}
 	handleDrag() {
-		var e = d3.event;
+		var e = d3Event;
 		var newPos = [e.pageX, e.pageY];
 
 		var { mouseXY, cx, cy } = this.moveStartPosition;
@@ -319,12 +320,12 @@ class ClickableCircle extends Component {
 		this.props.onDrag([newCX, newCY], [cx, cy], e);
 	}
 	handleDragEnd() {
-		var e = d3.event;
+		var e = d3Event;
 		this.moveStartPosition = null;
 
 		var win = d3Window(this.refs.edge);
 
-		d3.select(win)
+		select(win)
 			.on(MOUSEMOVE, null)
 			.on(MOUSEUP, null);
 

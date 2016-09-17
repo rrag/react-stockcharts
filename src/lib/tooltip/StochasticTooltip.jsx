@@ -1,8 +1,10 @@
 "use strict";
 
-import d3 from "d3";
+import { format } from "d3-format";
 import React, { PropTypes, Component } from "react";
 import GenericChartComponent from "../GenericChartComponent";
+
+import { functor } from "../utils";
 
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
@@ -26,7 +28,7 @@ class StochasticTooltip extends Component {
 		var label = children || "Stochastic";
 
 		var { origin: originProp } = this.props;
-		var origin = d3.functor(originProp);
+		var origin = functor(originProp);
 		var [x, y] = origin(width, height);
 
 		return (
@@ -72,7 +74,7 @@ StochasticTooltip.propTypes = {
 };
 
 StochasticTooltip.defaultProps = {
-	displayFormat: d3.format(".2f"),
+	displayFormat: format(".2f"),
 	origin: [0, 0]
 };
 

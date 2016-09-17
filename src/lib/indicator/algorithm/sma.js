@@ -1,6 +1,6 @@
 "use strict";
 
-import d3 from "d3";
+import { mean } from "d3-array";
 
 import { slidingWindow } from "../../utils";
 import { SMA as defaultOptions } from "../defaultOptionsForComputation";
@@ -11,12 +11,12 @@ export default function() {
 
 	function calculator(data) {
 
-		var mean = slidingWindow()
+		var average = slidingWindow()
 			.windowSize(windowSize)
 			.sourcePath(sourcePath)
-			.accumulator(values => d3.mean(values));
+			.accumulator(values => mean(values));
 
-		return mean(data);
+		return average(data);
 	}
 	calculator.undefinedLength = function() {
 		return windowSize;

@@ -1,11 +1,9 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { scaleTime } from "d3-scale";
 
 import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
-
-
 
 var { CandlestickSeries } = series;
 var { XAxis, YAxis } = axes;
@@ -19,7 +17,7 @@ class CandleStickChart extends React.Component {
 					margin={{ left: 50, right: 50, top: 10, bottom: 30 }} type={type}
 					seriesName="MSFT"
 					data={data}
-					xAccessor={d => d.date} xScale={d3.time.scale()}
+					xAccessor={d => d.date} xScale={scaleTime()}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 1)]}>
 
 				<Chart id={1} yExtents={d => [d.high, d.low]}>

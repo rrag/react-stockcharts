@@ -1,10 +1,8 @@
 import React, { PropTypes, Component } from "react";
-import d3 from "d3";
 
 import GenericChartComponent from "../GenericChartComponent";
 
-import { isDefined, getClosestValue } from "../utils";
-import { noop, shallowEqual } from "../utils";
+import { isDefined, getClosestValue, noop, shallowEqual, functor } from "../utils";
 // import { getCurrentCharts } from "../utils/ChartDataUtil";
 
 class MouseLocationIndicator extends Component {
@@ -95,7 +93,7 @@ class MouseLocationIndicator extends Component {
 		return <GenericChartComponent ref="component"
 			svgDraw={this.renderSVG}
 			onMouseMove={this.handleMousePosChange}
-			isHover={d3.functor(true)}
+			isHover={functor(true)}
 			onMouseDown={this.handleMouseDown}
 			onClick={this.handleClick}
 			onContextMenu={this.handleContextMenu}
@@ -127,7 +125,7 @@ MouseLocationIndicator.defaultProps = {
 	onMouseMove: noop,
 	onMouseDown: noop,
 	onClick: noop,
-	shouldDisableSnap: d3.functor(false),
+	shouldDisableSnap: functor(false),
 	stroke: "#000000",
 	strokeWidth: 1,
 	opacity: 1,

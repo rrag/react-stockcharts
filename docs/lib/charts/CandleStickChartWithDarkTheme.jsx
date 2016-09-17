@@ -1,7 +1,8 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
+import { timeFormat } from "d3-time-format";
 
 import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, annotation, indicator, helper } from "../../../src/";
 
@@ -84,7 +85,7 @@ class CandleStickChartWithDarkTheme extends React.Component {
 					<MouseCoordinateY
 						at="right"
 						orient="right"
-						displayFormat={d3.format(".2f")} />
+						displayFormat={format(".2f")} />
 
 					<CandlestickSeries
 							wickStroke={d => d.close > d.open ? "#6BA583" : "#DB0000"}
@@ -109,7 +110,7 @@ class CandleStickChartWithDarkTheme extends React.Component {
 				<Chart id={2}
 						yExtents={d => d.volume}
 						height={100} origin={(w, h) => [0, h - 475]} >
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format("s")}
 							tickStroke="#FFFFFF"/>
 					<BarSeries
 							yAccessor={d => d.volume}
@@ -125,7 +126,7 @@ class CandleStickChartWithDarkTheme extends React.Component {
 					<MouseCoordinateY
 						at="right"
 						orient="right"
-						displayFormat={d3.format(".2f")} />
+						displayFormat={format(".2f")} />
 
 					<StochasticSeries calculator={slowSTO}
 							stroke={{ top: "#37a600", middle: "#b8ab00", bottom: "#37a600" }}/>
@@ -142,7 +143,7 @@ class CandleStickChartWithDarkTheme extends React.Component {
 					<MouseCoordinateY
 						at="right"
 						orient="right"
-						displayFormat={d3.format(".2f")} />
+						displayFormat={format(".2f")} />
 
 					<StochasticSeries calculator={fastSTO}
 							stroke={{ top: "#37a600", middle: "#b8ab00", bottom: "#37a600" }}/>
@@ -159,11 +160,11 @@ class CandleStickChartWithDarkTheme extends React.Component {
 					<MouseCoordinateX
 						at="bottom"
 						orient="bottom"
-						displayFormat={d3.time.format("%Y-%m-%d")} />
+						displayFormat={timeFormat("%Y-%m-%d")} />
 					<MouseCoordinateY
 						at="right"
 						orient="right"
-						displayFormat={d3.format(".2f")} />
+						displayFormat={format(".2f")} />
 
 					<StochasticSeries calculator={fullSTO}
 							stroke={{ top: "#37a600", middle: "#b8ab00", bottom: "#37a600" }}/>

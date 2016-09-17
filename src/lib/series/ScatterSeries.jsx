@@ -1,10 +1,10 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import d3 from "d3";
+import { nest as d3Nest } from "d3-collection";
 
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
-import { hexToRGBA } from "../utils";
+import { hexToRGBA, functor } from "../utils";
 
 class ScatterSeries extends Component {
 	constructor(props) {
@@ -71,8 +71,8 @@ function helper(props, moreProps, xAccessor) {
 
 		var mProps = { ...Marker.defaultProps, ...markerProps };
 
-		var fill = d3.functor(mProps.fill);
-		var stroke = d3.functor(mProps.stroke);
+		var fill = functor(mProps.fill);
+		var stroke = functor(mProps.stroke);
 
 		return {
 			x: xScale(xAccessor(d)),
@@ -89,7 +89,7 @@ function drawOnCanvas(ctx, props, points) {
 
 	var { markerProps } = props;
 
-	var nest = d3.nest()
+	var nest = d3Nest()
 		.key(d => d.fill)
 		.key(d => d.stroke)
 		.entries(points);

@@ -1,6 +1,6 @@
 "use strict";
 
-import d3 from "d3";
+import { rebind } from "d3fc-rebind";
 
 import { merge } from "../utils";
 import { elderRay } from "./algorithm";
@@ -28,9 +28,9 @@ export default function() {
 
 	base.tooltipLabel(`${ALGORITHM_TYPE}: `);
 
-	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
-	d3.rebind(indicator, underlyingAlgorithm, "windowSize", "movingAverageType", "sourcePath");
-	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
+	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
+	rebind(indicator, underlyingAlgorithm, "windowSize", "movingAverageType", "sourcePath");
+	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;
 }

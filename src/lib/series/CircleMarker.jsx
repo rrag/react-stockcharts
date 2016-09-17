@@ -1,13 +1,12 @@
 "use strict";
 
-import d3 from "d3";
 import React, { PropTypes } from "react";
 
-import { hexToRGBA } from "../utils";
+import { hexToRGBA, functor } from "../utils";
 
 function Circle(props) {
 	var { className, stroke, strokeWidth, opacity, fill, point, r } = props;
-	var radius = d3.functor(r)(point.datum);
+	var radius = functor(r)(point.datum);
 	return (
 		<circle className={className}
 			cx={point.x} cy={point.y}
@@ -59,7 +58,7 @@ Circle.drawOnCanvas = (props, point, ctx) => {
 Circle.drawOnCanvasWithNoStateChange = (props, point, ctx) => {
 
 	var { r } = props;
-	var radius = d3.functor(r)(point.datum);
+	var radius = functor(r)(point.datum);
 
 	ctx.moveTo(point.x, point.y);
 	ctx.beginPath();

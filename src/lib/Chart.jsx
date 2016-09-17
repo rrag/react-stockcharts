@@ -1,7 +1,7 @@
 "use strict";
 
 import React, { PropTypes } from "react";
-import d3 from "d3";
+import { scaleLinear } from "d3-scale";
 
 import PureComponent from "./utils/PureComponent";
 import { isNotDefined } from "./utils";
@@ -69,7 +69,7 @@ Chart.defaultProps = {
 	id: 0,
 	origin: [0, 0],
 	padding: 0,
-	yScale: d3.scale.linear(),
+	yScale: scaleLinear(),
 	flipYScale: false,
 	yPan: true,
 };

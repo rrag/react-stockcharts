@@ -1,12 +1,12 @@
 "use strict";
 
 import React, { Component, PropTypes } from "react";
-import d3 from "d3";
+import { format } from "d3-format";
 
 import { drawOnCanvas, renderSVG } from "./EdgeCoordinateV2";
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 
-import { first, last, isDefined } from "../utils";
+import { first, last, isDefined, functor } from "../utils";
 
 class EdgeIndicator extends Component {
 	constructor(props) {
@@ -74,7 +74,7 @@ EdgeIndicator.defaultProps = {
 	orient: "left",
 	edgeAt: "left",
 	textFill: "#FFFFFF",
-	displayFormat: d3.format(".2f"),
+	displayFormat: format(".2f"),
 	yAxisPad: 0,
 	rectHeight: 20,
 	rectWidth: 50,
@@ -122,9 +122,9 @@ function helper(props, context, moreProps) {
 			type: edgeType,
 			orient,
 			edgeAt: edgeX,
-			fill: d3.functor(fill)(item),
+			fill: functor(fill)(item),
 			fontFamily, fontSize,
-			textFill: d3.functor(textFill)(item),
+			textFill: functor(textFill)(item),
 			rectHeight, rectWidth, arrowWidth,
 			x1,
 			y1,

@@ -1,6 +1,6 @@
 "use strict";
 
-import d3 from "d3";
+import { rebind } from "d3fc-rebind";
 
 import { renko } from "./algorithm";
 import baseIndicator from "./baseIndicator";
@@ -18,9 +18,9 @@ export default function() {
 		return underlyingAlgorithm(data);
 	};
 
-	d3.rebind(indicator, base, "id", "stroke", "fill", "echo", "type", "tooltipLabel");
-	d3.rebind(indicator, underlyingAlgorithm, "dateAccessor", "dateMutator", "indexMutator", "indexAccessor");
-	d3.rebind(indicator, underlyingAlgorithm, "reversal", "boxSize", "source");
+	rebind(indicator, base, "id", "stroke", "fill", "echo", "type", "tooltipLabel");
+	rebind(indicator, underlyingAlgorithm, "dateAccessor", "dateMutator");
+	rebind(indicator, underlyingAlgorithm, "reversalType", "fixedBrickSize", "sourcePath", "windowSize");
 
 	return indicator;
 }

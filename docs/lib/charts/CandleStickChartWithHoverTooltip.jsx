@@ -1,11 +1,10 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
+import { timeFormat } from "d3-time-format";
 
 import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
-
-
 
 var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = series;
 var { discontinuousTimeScaleProvider } = scale;
@@ -18,8 +17,8 @@ var { XAxis, YAxis } = axes;
 var { ema, sma } = indicator;
 var { fitWidth } = helper;
 
-var dateFormat = d3.time.format("%Y-%m-%d");
-var numberFormat = d3.format(".2f");
+var dateFormat = timeFormat("%Y-%m-%d");
+var numberFormat = format(".2f");
 
 function tooltipContent(calculators) {
 	return ({currentItem, xAccessor}) => {
@@ -94,7 +93,7 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 				<Chart id={2}
 						yExtents={[d => d.volume]}
 						height={150} origin={(w, h) => [0, h - 150]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format("s")}/>
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>

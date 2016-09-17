@@ -1,9 +1,8 @@
 "use strict";
 
-import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 
-import { noop } from "../utils";
+import { noop, functor } from "../utils";
 import GenericChartComponent from "../GenericChartComponent";
 
 class ClickCallback extends Component {
@@ -37,8 +36,8 @@ class ClickCallback extends Component {
 	}
 	render() {
 		return <GenericChartComponent ref="component"
-			svgDraw={d3.functor(null)}
-			isHover={d3.functor(true)}
+			svgDraw={functor(null)}
+			isHover={functor(true)}
 			onClick={this.handleClick}
 			onContextMenu={this.handleContextMenu}
 			/>;

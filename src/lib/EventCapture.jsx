@@ -1,7 +1,7 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import d3 from "d3";
+import { select, event as d3Event } from "d3-selection";
 
 import { isDefined, mousePosition, touchPosition, d3Window, MOUSEMOVE, MOUSEUP } from "./utils";
 import { getCurrentCharts } from "./utils/ChartDataUtil";
@@ -89,7 +89,7 @@ class EventCapture extends Component {
 		onContextMenu(newPos, e);
 
 		var win = d3Window(this.refs.capture);
-		d3.select(win)
+		select(win)
 			.on(MOUSEMOVE, null)
 			.on(MOUSEUP, null);
 
@@ -126,7 +126,7 @@ class EventCapture extends Component {
 
 			if (pan) {
 				var win = d3Window(this.refs.capture);
-				d3.select(win)
+				select(win)
 					.on(MOUSEMOVE, this.handlePan)
 					.on(MOUSEUP, this.handlePanEnd);
 			}
@@ -145,7 +145,7 @@ class EventCapture extends Component {
 		e.preventDefault();
 	}
 	handlePan() {
-		var e = d3.event;
+		var e = d3Event;
 		var { pan: panEnabled, onPan } = this.props;
 
 		// console.log("moved from- ", startXY, " to ", newPos);
@@ -164,7 +164,7 @@ class EventCapture extends Component {
 		}
 	}
 	handlePanEnd() {
-		var e = d3.event;
+		var e = d3Event;
 
 		var { pan: panEnabled, onPanEnd, onClick, onDoubleClick } = this.props;
 
@@ -191,7 +191,7 @@ class EventCapture extends Component {
 					&& panEnabled
 					&& onPanEnd) {
 				var win = d3Window(this.refs.capture);
-				d3.select(win)
+				select(win)
 					.on(MOUSEMOVE, null)
 					.on(MOUSEUP, null);
 				onPanEnd(newPos, panStartXScale, panOrigin, chartsToPan, e);

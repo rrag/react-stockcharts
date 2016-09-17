@@ -1,7 +1,8 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
+import { timeFormat } from "d3-time-format";
 
 import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper, interactive } from "react-stockcharts";
 
@@ -109,7 +110,7 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 					<MouseCoordinateY
 						at="right"
 						orient="right"
-						displayFormat={d3.format(".2f")} />
+						displayFormat={format(".2f")} />
 
 					<CandlestickSeries />
 					<LineSeries yAccessor={ema26.accessor()} stroke={ema26.stroke()}/>
@@ -133,12 +134,12 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 				<Chart id={2} height={150}
 						yExtents={[d => d.volume, smaVolume50.accessor()]}
 						origin={(w, h) => [0, h - 300]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format("s")}/>
 
 					<MouseCoordinateY
 						at="left"
 						orient="left"
-						displayFormat={d3.format(".4s")} />
+						displayFormat={format(".4s")} />
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
@@ -151,11 +152,11 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 					<MouseCoordinateX
 						at="bottom"
 						orient="bottom"
-						displayFormat={d3.time.format("%Y-%m-%d")} />
+						displayFormat={timeFormat("%Y-%m-%d")} />
 					<MouseCoordinateY
 						at="right"
 						orient="right"
-						displayFormat={d3.format(".2f")} />
+						displayFormat={format(".2f")} />
 
 					<MACDSeries calculator={macdCalculator} />
 

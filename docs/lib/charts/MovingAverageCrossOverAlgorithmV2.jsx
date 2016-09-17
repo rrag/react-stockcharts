@@ -1,7 +1,8 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
+import { timeFormat } from "d3-time-format";
 
 import { ChartCanvas, Chart, series, scale, coordinates, algorithm, annotation, tooltip, axes, indicator, helper } from "react-stockcharts";
 
@@ -93,11 +94,11 @@ class MovingAverageCrossOverAlgorithmV2 extends React.Component {
 					<MouseCoordinateX
 						at="bottom"
 						orient="bottom"
-						displayFormat={d3.time.format("%Y-%m-%d")} />
+						displayFormat={timeFormat("%Y-%m-%d")} />
 					<MouseCoordinateY
 						at="right"
 						orient="right"
-						displayFormat={d3.format(".2f")} />
+						displayFormat={format(".2f")} />
 
 					<CandlestickSeries />
 					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>

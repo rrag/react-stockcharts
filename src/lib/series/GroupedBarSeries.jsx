@@ -3,8 +3,7 @@
 import React, { PropTypes, Component } from "react";
 
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
-import StackedBarSeries, { drawOnCanvasHelper, svgHelper } from "./StackedBarSeries";
-import { identity } from "../utils";
+import StackedBarSeries, { drawOnCanvasHelper, svgHelper, identityStack } from "./StackedBarSeries";
 
 class GroupedBarSeries extends Component {
 	constructor(props) {
@@ -16,15 +15,15 @@ class GroupedBarSeries extends Component {
 		var { xAccessor } = this.context;
 
 		drawOnCanvasHelper(ctx, this.props, moreProps, xAccessor,
-		identity, postProcessor);
+		identityStack, postProcessor);
 	}
 	renderSVG(moreProps) {
 		var { xAccessor } = this.context;
 
-		// return <g>{svgHelper(this.props, moreProps, xAccessor, identity)}</g>;
+		// return <g>{svgHelper(this.props, moreProps, xAccessor, identityStack)}</g>;
 
 		return <g className="react-stockcharts-grouped-bar-series">
-			{svgHelper(this.props, moreProps, xAccessor, identity, postProcessor)}
+			{svgHelper(this.props, moreProps, xAccessor, identityStack, postProcessor)}
 		</g>;
 	}
 	render() {

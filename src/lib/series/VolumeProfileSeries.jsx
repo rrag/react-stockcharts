@@ -1,10 +1,13 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import d3 from "d3";
+
+import { ascending, descending, sum, max, merge, zip, histogram as d3Histogram } from "d3-array";
+import { nest } from "d3-collection";
+import { scaleLinear } from "d3-scale";
 
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
-import { head, last, hexToRGBA, accumulatingWindow, identity } from "../utils";
+import { head, last, hexToRGBA, accumulatingWindow, identity, functor } from "../utils";
 
 class VolumeProfileSeries extends Component {
 	constructor(props) {
@@ -81,7 +84,7 @@ VolumeProfileSeries.defaultProps = {
 	/* eslint-enable no-unused-vars */
 	orient: "left",
 	fill: ({ type }) => type === "up" ? "#6BA583" : "#FF0000",
-	// fill: ({ type }) => { var c = type === "up" ? "#6BA583" : "#FF0000"; console.log(type, c); return c },
+	// // fill: ({ type }) => { var c = type === "up" ? "#6BA583" : "#FF0000"; console.log(type, c); return c },
 	// stroke: ({ type }) =>  type === "up" ? "#6BA583" : "#FF0000",
 	// stroke: "none",
 	stroke: "#FFFFFF",
@@ -116,36 +119,51 @@ function helper(props, moreProps, xAccessor, width) {
 		var finish = bySession ? realXScale(xAccessor(last(session))) : width;
 		var sessionWidth = finish - begin + dx;
 
-		var histogram = d3.layout.histogram()
+		// console.log(session)
+
+		/* var histogram = d3.layout.histogram()
 				.value(source)
-				.bins(bins);
+				.bins(bins);*/
 
-		var rollup = d3.nest()
+		var histogram2 = d3Histogram()
+				// .domain(xScale.domain())
+				.value(source)
+				.thresholds(bins);
+
+		// console.log(bins, histogram(session))
+		// console.log(bins, histogram2(session))
+		var rollup = nest()
 				.key(d => d.direction)
-				.sortKeys(orient === "right" ? d3.descending : d3.ascending)
-				.rollup(leaves => d3.sum(leaves, d => d.volume));
+				.sortKeys(orient === "right" ? descending : ascending)
+				.rollup(leaves => sum(leaves, d => d.volume));
 
-		var values = histogram(session);
+		var values = histogram2(session);
+		// console.log("values", values)
+
 		var volumeInBins = values
 				.map(arr => arr.map(d => absoluteChange(d) > 0 ? { direction: "up", volume: volume(d) } : { direction: "down", volume: volume(d) }))
 				.map(arr => rollup.entries(arr));
 
+		// console.log("volumeInBins", volumeInBins)
 		var volumeValues = volumeInBins
-				.map(each => d3.sum(each.map(d => d.values)));
+				.map(each => sum(each.map(d => d.value)));
 
+		// console.log("volumeValues", volumeValues)
 		var base = xScale => head(xScale.range());
 
 		var [start, end] = orient === "right"
 				? [begin, begin + sessionWidth * maxProfileWidthPercent / 100]
 				: [finish, finish - sessionWidth * (100 - maxProfileWidthPercent) / 100];
 
-		var xScale = d3.scale.linear()
-				.domain([0, d3.max(volumeValues)])
+		var xScale = scaleLinear()
+				.domain([0, max(volumeValues)])
 				.range([start, end]);
+
+		// console.log(xScale.domain())
 
 		var totalVolumes = volumeInBins.map(volumes => {
 
-			var totalVolume = d3.sum(volumes, d => d.values);
+			var totalVolume = sum(volumes, d => d.value);
 			var totalVolumeX = xScale(totalVolume);
 			var width = base(xScale) - totalVolumeX;
 			var x = width < 0 ? totalVolumeX + width : totalVolumeX;
@@ -153,31 +171,36 @@ function helper(props, moreProps, xAccessor, width) {
 			var ws = volumes.map(d => {
 				return {
 					type: d.key,
-					width: d.values * Math.abs(width) / totalVolume,
+					width: d.value * Math.abs(width) / totalVolume,
 				};
 			});
 
 			return { x, ws, totalVolumeX };
 		});
+		// console.log("totalVolumes", totalVolumes)
 
-		var rects = d3.zip(values, totalVolumes)
+		var rects = zip(values, totalVolumes)
 				.map(([d, { x, ws }]) => {
 					var w1 = ws[0] || { type: "up", width: 0 };
 					var w2 = ws[1] || { type: "down", width: 0 };
 
 					return {
-						y: yScale(d.x + d.dx),
-						height: yScale(d.x - d.dx) - yScale(d.x),
+						// y: yScale(d.x + d.dx),
+						y: yScale(d.x1),
+						// height: yScale(d.x - d.dx) - yScale(d.x),
+						height: yScale(d.x1) - yScale(d.x0),
 						x,
 						width,
 						w1: w1.width,
 						w2: w2.width,
-						stroke1: d3.functor(stroke)(w1),
-						stroke2: d3.functor(stroke)(w2),
-						fill1: d3.functor(fill)(w1),
-						fill2: d3.functor(fill)(w2),
+						stroke1: functor(stroke)(w1),
+						stroke2: functor(stroke)(w2),
+						fill1: functor(fill)(w1),
+						fill2: functor(fill)(w2),
 					};
 				});
+
+		// console.log("rects", rects)
 
 		var sessionBg = {
 			x: begin,
@@ -190,7 +213,7 @@ function helper(props, moreProps, xAccessor, width) {
 	});
 
 	return {
-		rects: d3.merge(allRects.map(d => d.rects)),
+		rects: merge(allRects.map(d => d.rects)),
 		sessionBg: allRects.map(d => d.sessionBg),
 	};
 }

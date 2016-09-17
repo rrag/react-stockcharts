@@ -1,8 +1,6 @@
 "use strict";
 
-import d3 from "d3";
-
-import { merge, isNotDefined, path } from "../../utils";
+import { merge, isNotDefined, path, functor } from "../../utils";
 import atr from "./atr";
 
 import { Kagi as defaultOptions } from "../defaultOptionsForComputation";
@@ -28,7 +26,7 @@ export default function() {
 			atrCalculator(data);
 			reversalThreshold = d => d["atr" + windowSize];
 		} else {
-			reversalThreshold = d3.functor(reversal);
+			reversalThreshold = functor(reversal);
 		}
 
 		var kagiData = [];

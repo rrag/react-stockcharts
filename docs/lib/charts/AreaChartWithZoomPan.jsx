@@ -1,7 +1,8 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
+import { timeFormat } from "d3-time-format";
 
 import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
@@ -36,18 +37,18 @@ class AreaChartWithEdge extends React.Component {
 					<MouseCoordinateX
 						at="bottom"
 						orient="bottom"
-						displayFormat={d3.time.format("%Y-%m-%d")} />
+						displayFormat={timeFormat("%Y-%m-%d")} />
 					<MouseCoordinateY
 						at="right"
 						orient="right"
-						displayFormat={d3.format(".2f")} />
+						displayFormat={format(".2f")} />
 
 					<AreaSeries yAccessor={d => d.close}/>
 
 					<SingleValueTooltip
 						xLabel="Date" /* xLabel is optional, absense will not show the x value */ yLabel="C"
 						yAccessor={d => d.close}
-						xDisplayFormat={d3.time.format("%Y-%m-%d")} yDisplayFormat={d3.format(".2f")}
+						xDisplayFormat={timeFormat("%Y-%m-%d")} yDisplayFormat={format(".2f")}
 						/* valueStroke="green" - optional prop */
 						/* labelStroke="#4682B4" - optional prop */
 						origin={[-40, 0]}/>
@@ -58,12 +59,12 @@ class AreaChartWithEdge extends React.Component {
 				<Chart id={2}
 						yExtents={d => d.volume}
 						height={150} origin={(w, h) => [0, h - 150]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format("s")}/>
 
 					<MouseCoordinateY
 						at="left"
 						orient="left"
-						displayFormat={d3.format(".4s")} />
+						displayFormat={format(".4s")} />
 
 					<BarSeries yAccessor={d => d.volume}
 						stroke fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"}

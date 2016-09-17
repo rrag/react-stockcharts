@@ -1,10 +1,10 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import d3 from "d3";
+import { area as d3Area } from "d3-shape";
 
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
-import { hexToRGBA, isDefined, first } from "../utils";
+import { hexToRGBA, isDefined, first, functor } from "../utils";
 
 class AreaOnlySeries extends Component {
 	constructor(props) {
@@ -19,7 +19,7 @@ class AreaOnlySeries extends Component {
 
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
-		var newBase = d3.functor(base);
+		var newBase = functor(base);
 
 		ctx.fillStyle = hexToRGBA(fill, opacity);
 		ctx.strokeStyle = stroke;
@@ -49,8 +49,8 @@ class AreaOnlySeries extends Component {
 
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
-		var newBase = d3.functor(base);
-		var areaSeries = d3.svg.area()
+		var newBase = functor(base);
+		var areaSeries = d3Area()
 			.defined(d => defined(yAccessor(d)))
 			.x((d) => xScale(xAccessor(d)))
 			.y0(newBase.bind(null, yScale))

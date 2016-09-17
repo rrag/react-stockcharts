@@ -1,7 +1,6 @@
 'use strict';
 
 import React from "react";
-import d3 from "d3";
 
 import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 

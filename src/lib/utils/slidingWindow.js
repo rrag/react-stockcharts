@@ -28,9 +28,8 @@ THE SOFTWARE.
 
 */
 
-import d3 from "d3";
 import noop from "./noop";
-import { path } from "./index";
+import { path, functor } from "./index";
 
 export default function() {
 
@@ -45,10 +44,10 @@ export default function() {
 	var slidingWindow = function(data) {
 		var sourceFunction = source || path(sourcePath);
 
-		var size = d3.functor(windowSize).apply(this, arguments);
+		var size = functor(windowSize).apply(this, arguments);
 		var windowData = data.slice(skipInitial, size + skipInitial).map(sourceFunction);
 		var accumulatorIdx = 0;
-		var undef = d3.functor(undefinedValue);
+		var undef = functor(undefinedValue);
 		// console.log(skipInitial, size, data.length, windowData.length);
 		return data.map(function(d, i) {
 			// console.log(d, i);

@@ -1,11 +1,10 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
+import { timeFormat } from "d3-time-format";
 
 import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
-
-
 
 var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = series;
 var { discontinuousTimeScaleProvider } = scale;
@@ -51,7 +50,7 @@ class CandleStickChartWithEdge extends React.Component {
 				<Chart id={2}
 						yExtents={[d => d.volume, smaVolume70.accessor()]}
 						height={150} origin={(w, h) => [0, h - 150]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format("s")}/>
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 					<AreaSeries yAccessor={smaVolume70.accessor()} stroke={smaVolume70.stroke()} fill={smaVolume70.fill()}/>
@@ -60,13 +59,13 @@ class CandleStickChartWithEdge extends React.Component {
 					<CurrentCoordinate yAccessor={d => d.volume} fill="#9B0A47" />
 
 					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
-						yAccessor={d => d.volume} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
+						yAccessor={d => d.volume} displayFormat={format(".4s")} fill="#0F0F0F"/>
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
-						yAccessor={d => d.volume} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
+						yAccessor={d => d.volume} displayFormat={format(".4s")} fill="#0F0F0F"/>
 					<EdgeIndicator itemType="first" orient="left" edgeAt="left"
-						yAccessor={smaVolume70.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume70.fill()}/>
+						yAccessor={smaVolume70.accessor()} displayFormat={format(".4s")} fill={smaVolume70.fill()}/>
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
-						yAccessor={smaVolume70.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume70.fill()}/>
+						yAccessor={smaVolume70.accessor()} displayFormat={format(".4s")} fill={smaVolume70.fill()}/>
 				</Chart>
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
@@ -78,19 +77,19 @@ class CandleStickChartWithEdge extends React.Component {
 					<MouseCoordinateX
 						at="top"
 						orient="top"
-						displayFormat={d3.time.format("%Y-%m-%d")} />
+						displayFormat={timeFormat("%Y-%m-%d")} />
 					<MouseCoordinateX
 						at="bottom"
 						orient="bottom"
-						displayFormat={d3.time.format("%Y-%m-%d")} />
+						displayFormat={timeFormat("%Y-%m-%d")} />
 					<MouseCoordinateY
 						at="right"
 						orient="right"
-						displayFormat={d3.format(".2f")} />
+						displayFormat={format(".2f")} />
 					<MouseCoordinateY id={1}
 						at="left"
 						orient="left"
-						displayFormat={d3.format(".2f")} />
+						displayFormat={format(".2f")} />
 
 					<CandlestickSeries />
 					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
@@ -128,7 +127,7 @@ class CandleStickChartWithEdge extends React.Component {
 					<MouseCoordinateY
 						at="right"
 						orient="right"
-						displayFormat={d3.format(".2f")} />
+						displayFormat={format(".2f")} />
 
 */
 

@@ -1,10 +1,11 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import d3 from "d3";
+import { format } from "d3-format";
+
 import GenericChartComponent from "../GenericChartComponent";
 
-import { isDefined } from "../utils";
+import { isDefined, functor } from "../utils";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
@@ -31,9 +32,9 @@ class BollingerBandTooltip extends Component {
 		}
 
 		var { origin: originProp } = this.props;
-		var origin = d3.functor(originProp);
+		var origin = functor(originProp);
 		var [x, y] = origin(width, height);
-		var tooltipLabel = d3.functor(calculator.tooltipLabel());
+		var tooltipLabel = functor(calculator.tooltipLabel());
 
 		return (
 			<g transform={`translate(${ x }, ${ y })`}
@@ -75,7 +76,7 @@ BollingerBandTooltip.propTypes = {
 
 BollingerBandTooltip.defaultProps = {
 	className: "react-stockcharts-bollingerband-tooltip",
-	displayFormat: d3.format(".2f"),
+	displayFormat: format(".2f"),
 	origin: [0, 10],
 };
 

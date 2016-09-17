@@ -1,10 +1,13 @@
 "use strict";
 
-import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 
+import { nest as d3Nest } from "d3-collection";
+import { merge } from "d3-array";
+import { stack as d3Stack } from "d3-shape";
+
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
-import { identity, hexToRGBA, first, last, isDefined } from "../utils";
+import { identity, hexToRGBA, first, last, functor } from "../utils";
 
 
 class StackedBarSeries extends Component {
@@ -17,12 +20,12 @@ class StackedBarSeries extends Component {
 		var { xAccessor } = this.context;
 		// var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
-		drawOnCanvasHelper(ctx, this.props, moreProps, xAccessor, d3.layout.stack());
+		drawOnCanvasHelper(ctx, this.props, moreProps, xAccessor, d3Stack);
 	}
 	renderSVG(moreProps) {
 		var { xAccessor } = this.context;
 
-		return <g>{svgHelper(this.props, moreProps, xAccessor, d3.layout.stack())}</g>;
+		return <g>{svgHelper(this.props, moreProps, xAccessor, d3Stack)}</g>;
 	}
 	render() {
 		return <GenericChartComponent
@@ -64,6 +67,33 @@ StackedBarSeries.defaultProps = {
 	opacity: 0.5,
 	widthRatio: 0.8,
 };
+
+export function identityStack() {
+	var keys = [];
+	function stack(data) {
+		var response = keys.map((key, i) => {
+			var arrays = data.map(d => {
+
+				var array = [0, d[key]];
+				array.data = d;
+				return array;
+			});
+			arrays.key = key;
+			arrays.index = i;
+			return arrays;
+		});
+		return response;
+	}
+	stack.keys = function(x) {
+		if (!arguments.length) {
+			return keys;
+		}
+		keys = x;
+		return stack;
+	};
+	return stack;
+}
+
 
 export function drawOnCanvasHelper(ctx, props, moreProps, xAccessor, stackFn, defaultPostAction = identity, postRotateAction = rotateXY) {
 	var { xScale, chartConfig: { yScale }, plotData } = moreProps;
@@ -135,7 +165,7 @@ export function getBarsSVG2(props, bars) {
 export function drawOnCanvas2(props, ctx, bars) {
 	var { stroke } = props;
 
-	var nest = d3.nest()
+	var nest = d3Nest()
 		.key(d => d.fill)
 		.entries(bars);
 
@@ -176,12 +206,12 @@ export function drawOnCanvas2(props, ctx, bars) {
 	});
 }
 
-export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, stack = identity, after = identity) {
+export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, stack = identityStack, after = identity) {
 	var { baseAt, className, fill, stroke, widthRatio, spaceBetweenBar = 0 } = props;
 
-	var getClassName = d3.functor(className);
-	var getFill = d3.functor(fill);
-	var getBase = d3.functor(baseAt);
+	var getClassName = functor(className);
+	var getFill = functor(fill);
+	var getBase = functor(baseAt);
 
 	var width = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData))));
 	var bw = (width / (plotData.length - 1) * widthRatio);
@@ -192,47 +222,75 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 
 	var offset = (barWidth === 1 ? 0 : 0.5 * bw);
 
-	var layers = yAccessor
-		.map((eachYAccessor, i) => plotData
-			.map(d => ({
-				series: xAccessor(d),
-				datum: d,
-				x: i,
-				y: eachYAccessor(d),
-				className: getClassName(d, i),
-				stroke: stroke ? getFill(d, i) : "none",
-				fill: getFill(d, i),
-			}))
-		);
-	var data = stack(layers);
+	var ds = plotData.map(each => {
+		var d = {
+			appearance: {
+			},
+			x: xAccessor(each),
+		};
+		yAccessor.forEach((eachYAccessor, i) => {
+			var key = `y${i}`;
+			d[key] = eachYAccessor(each);
+			var appearance = {
+				className: getClassName(each, i),
+				stroke: stroke ? getFill(each, i) : "none",
+				fill: getFill(each, i),
+			};
+			d.appearance[key] = appearance;
+		});
+		return d;
+	});
 
-	var bars = d3.merge(data)
-			.filter(d => isDefined(d.y))
+	var keys = yAccessor.map((_, i) => `y${i}`);
+
+	// console.log(ds);
+
+	var data = stack().keys(keys)(ds);
+
+	// console.log(data);
+
+	var newData = data.map((each, i) => {
+		var key = each.key;
+		return each.map((d) => {
+			var array = [d[0], d[1]];
+			array.data = {
+				x: d.data.x,
+				i,
+				appearance: d.data.appearance[key]
+			};
+			return array;
+		});
+	});
+	// console.log(newData);
+	// console.log(merge(newData));
+
+	var bars = merge(newData)
+			// .filter(d => isDefined(d.y))
 			.map(d => {
 				// let baseValue = yScale.invert(getBase(xScale, yScale, d.datum));
-				let y = yScale(d.y + (d.y0 || 0));
+				let y = yScale(d[1]);
 				/* let h = isDefined(d.y0) && d.y0 !== 0 && !isNaN(d.y0)
 					? yScale(d.y0) - y
 					: getBase(xScale, yScale, d.datum) - yScale(d.y)*/
-				var h = getBase(xScale, yScale, d.datum) - yScale(d.y);
+				var h = getBase(xScale, yScale, d.data) - yScale(d[1] - d[0]);
 				// console.log(d.y, yScale.domain(), yScale.range())
 				// let h = ;
 				// if (d.y < 0) h = -h;
+				// console.log(d, y, h)
 				if (h < 0) {
 					y = y + h;
 					h = -h;
 				}
+				// console.log(d.data.i, Math.round(offset - (d.data.i > 0 ? (eachBarWidth + spaceBetweenBar) * d.data.i : 0)))
 				/* console.log(d.series, d.datum.date, d.x,
 					getBase(xScale, yScale, d.datum), `d.y=${d.y}, d.y0=${d.y0}, y=${y}, h=${h}`)*/
 				return {
-					className: d.className,
-					stroke: d.stroke,
-					fill: d.fill,
+					...d.data.appearance,
 					// series: d.series,
 					// i: d.x,
-					x: Math.round(xScale(d.series) - bw / 2),
+					x: Math.round(xScale(d.data.x) - bw / 2),
 					y: y,
-					groupOffset: Math.round(offset - (d.x > 0 ? (eachBarWidth + spaceBetweenBar) * d.x : 0)),
+					groupOffset: Math.round(offset - (d.data.i > 0 ? (eachBarWidth + spaceBetweenBar) * d.data.i : 0)),
 					groupWidth: Math.round(eachBarWidth),
 					offset: Math.round(offset),
 					height: h,

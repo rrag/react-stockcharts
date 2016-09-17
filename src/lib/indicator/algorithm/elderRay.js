@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import d3 from "d3";
+import { mean } from "d3-array";
 
 import ema from "./ema";
 
@@ -42,7 +42,7 @@ export default function() {
 
 		var meanAlgorithm = movingAverageType === "ema"
 			? ema().windowSize(windowSize).sourcePath(sourcePath)
-			: slidingWindow().windowSize(windowSize).accumulator(values => d3.mean(values)).sourcePath(sourcePath);
+			: slidingWindow().windowSize(windowSize).accumulator(values => mean(values)).sourcePath(sourcePath);
 
 		var zip = zipper()
 			.combine((datum, mean) => {

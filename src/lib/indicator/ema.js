@@ -1,6 +1,6 @@
 "use strict";
 
-import d3 from "d3";
+import { rebind } from "d3fc-rebind";
 import { merge } from "../utils";
 
 import { ema } from "./algorithm";
@@ -30,9 +30,9 @@ export default function() {
 		return underlyingAlgorithm.windowSize();
 	};
 
-	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
-	d3.rebind(indicator, underlyingAlgorithm, "windowSize", "sourcePath");
-	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
+	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
+	rebind(indicator, underlyingAlgorithm, "windowSize", "sourcePath");
+	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;
 }

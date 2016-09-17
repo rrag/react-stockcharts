@@ -13,10 +13,12 @@ date       | open     | high | low | close
 
 
 ```js
-var d3 = require('d3');
-var parseDate = d3.time.format("%Y-%m-%d").parse;
+import { timeParse } from "d3-time-format";
+import { tsv } from "d3-request";
 
-d3.tsv("path/to/data.tsv", function(err, data) {
+var parseDate = timeParse("%Y-%m-%d");
+
+tsv("path/to/data.tsv", function(err, data) {
 	data.forEach((d, i) => {
 		d.date = new Date(parseDate(d.date).getTime());
 		d.open = +d.open;

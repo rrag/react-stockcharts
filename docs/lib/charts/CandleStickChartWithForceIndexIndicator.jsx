@@ -1,11 +1,10 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
+import { timeFormat } from "d3-time-format";
 
 import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
-
-
 
 var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, RSISeries, StraightLine } = series;
 var { discontinuousTimeScaleProvider } = scale;
@@ -51,7 +50,7 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 					<MouseCoordinateY
 						at="right"
 						orient="right"
-						displayFormat={d3.format(".2f")} />
+						displayFormat={format(".2f")} />
 
 					<CandlestickSeries />
 
@@ -63,11 +62,11 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 				<Chart id={2} height={150}
 						yExtents={d => d.volume}
 						origin={(w, h) => [0, h - 350]} >
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format("s")}/>
 					<MouseCoordinateY
 						at="left"
 						orient="left"
-						displayFormat={d3.format(".4s")} />
+						displayFormat={format(".4s")} />
 
 					<BarSeries
 						yAccessor={d => d.volume}
@@ -79,11 +78,11 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 						origin={(w, h) => [0, h - 200]}
 						padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
-					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={d3.format("s")}/>
+					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={format("s")}/>
 					<MouseCoordinateY
 						at="right"
 						orient="right"
-						displayFormat={d3.format(".4s")} />
+						displayFormat={format(".4s")} />
 
 					<AreaSeries baseAt={scale => scale(0)} yAccessor={fi.accessor()} />
 					<StraightLine yValue={0} />
@@ -91,7 +90,7 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 					<SingleValueTooltip
 						yAccessor={fi.accessor()}
 						yLabel="ForceIndex (1)"
-						yDisplayFormat={d3.format(".4s")}
+						yDisplayFormat={format(".4s")}
 						origin={[-40, 15]}/>
 				</Chart>
 				<Chart id={4} height={100}
@@ -99,16 +98,16 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 						origin={(w, h) => [0, h - 100]}
 						padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
 					<XAxis axisAt="bottom" orient="bottom" />
-					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={d3.format("s")}/>
+					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={format("s")}/>
 
 					<MouseCoordinateX
 						at="bottom"
 						orient="bottom"
-						displayFormat={d3.time.format("%Y-%m-%d")} />
+						displayFormat={timeFormat("%Y-%m-%d")} />
 					<MouseCoordinateY
 						at="right"
 						orient="right"
-						displayFormat={d3.format(".4s")} />
+						displayFormat={format(".4s")} />
 
 					<AreaSeries baseAt={scale => scale(0)} yAccessor={fiEMA13.accessor()} />
 					<StraightLine yValue={0} />
@@ -116,7 +115,7 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 					<SingleValueTooltip
 						yAccessor={fiEMA13.accessor()}
 						yLabel={`ForceIndex (${fiEMA13.windowSize()})`}
-						yDisplayFormat={d3.format(".4s")}
+						yDisplayFormat={format(".4s")}
 						origin={[-40, 15]}/>
 				</Chart>
 				<CrossHairCursor />

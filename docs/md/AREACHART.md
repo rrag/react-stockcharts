@@ -13,10 +13,14 @@ date       | close
 
 
 ```js
-var d3 = require('d3');
-var parseDate = d3.time.format("%Y-%m-%d").parse
+import { timeParse } from "d3-time-format";
+import { tsv } from "d3-request";
+import { scaleTime } from "d3-scale";
+import { format } from "d3-format";
 
-d3.tsv("path/to/data.tsv", function(err, data) {
+var parseDate = timeParse("%Y-%m-%d");
+
+tsv("path/to/data.tsv", function(err, data) {
 	data.forEach((d, i) => {
 		d.date = new Date(parseDate(d.date).getTime());
 		d.close = +d.close;
@@ -30,7 +34,7 @@ d3.tsv("path/to/data.tsv", function(err, data) {
 		margin={{ left: 50, right: 50, top:10, bottom: 30 }}
 		seriesName="MSFT"
 		data={data} type="svg"
-		xAccessor={d => d.date} xScale={d3.time.scale()}
+		xAccessor={d => d.date} xScale={scaleTime()}
 		xExtents={[new Date(2011, 0, 1), new Date(2013, 0, 2)]}>
 	<Chart id={0} yExtents={d => d.close}>
 		<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
@@ -47,14 +51,14 @@ Let us review each line
 		margin={{ left: 50, right: 50, top:10, bottom: 30 }}
 		seriesName="MSFT"
 		data={data} type="svg"
-		xAccessor={d => d.date} xScale={d3.time.scale()}
+		xAccessor={d => d.date} xScale={scaleTime()}
 		xExtents={[new Date(2011, 0, 1), new Date(2013, 0, 2)]}>
 ```
 
 Creates an `svg` element with the provided `height` and `width` and creates a `svg:g` element with the provided `margin`. and `data` is used to plot.
 
 - `xAccessor` is self explanatory
-- `xScale` knowledge of d3 [scales](https://github.com/mbostock/d3/wiki/Scales) will certainly help. For starters, it is easier to understand scale as a function which converts a `domain` say 2011-01-01 to 2013-01-02 to a `range` say 0 to 500 pixels. This scale can now interpolate an input date to a value in pixels. `d3.time.scale()` is a linear time scale
+- `xScale` knowledge of d3 [scales](https://github.com/mbostock/d3/wiki/Scales) will certainly help. For starters, it is easier to understand scale as a function which converts a `domain` say 2011-01-01 to 2013-01-02 to a `range` say 0 to 500 pixels. This scale can now interpolate an input date to a value in pixels. `d3.scaleTime()` is a linear time scale
 - `xExtents` is the start and end points to show on initial render. This is an optional prop
 - `seriesName` this does not add value to this simple chart, you will see its use explained better later in the [zoom and pan](#/zoom_and_pan) section
 - `type` can take 2 values `svg` or `hybrid`.
@@ -70,7 +74,7 @@ Creates an `svg` element with the provided `height` and `width` and creates a `s
 
 There can be one or more `Chart`s in each `ChartCanvas` and hence the need for an `id` attribute.
 
-`Chart` also takes an optional prop `yScale` which defaults to `d3.scale.linear()`
+`Chart` also takes an optional prop `yScale` which defaults to `d3.scaleLinear()`
 
 With SVG & Canvas it is important to understand the coordinate system and where the origin `(0, 0)` is located. for a SVG of size 300x100, the 
 
@@ -89,7 +93,7 @@ A Linear scale converts a `domain` say 10 - 45 to a `range` say 0 to 300 pixels.
 ```jsx
 <XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 ```
-The `ticks` attribute simple passes on the value to the [d3.axis](https://github.com/mbostock/d3/wiki/SVG-Axes#ticks), the `XAxis` also has the following optional attributes `innerTickSize, outerTickSize, tickFormat, tickPadding, tickSize, ticks, tickValues` all of which correspond to a function with the same name in d3.axis.
+The `ticks` attribute simple passes on the value to the scale, the `XAxis` also has the following optional attributes `innerTickSize, outerTickSize, tickFormat, tickPadding, tickSize, ticks, tickValues` all of which correspond to a function with the same name in [d3-axis](https://github.com/d3/d3-axis).
 
 `axisAt` takes on possible values as `top, middle, bottom` for advanced cases, you can also pass in a number indicating the pixel position where the axis has to be drawn.
 

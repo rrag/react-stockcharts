@@ -1,7 +1,8 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import d3 from "d3";
+import { select, event as d3Event } from "d3-selection";
+import { mean } from "d3-array";
 
 import { first, last, isDefined } from "../utils";
 import { mousePosition, d3Window, MOUSEMOVE, MOUSEUP } from "../utils";
@@ -25,7 +26,7 @@ class AxisZoomCapture extends Component {
 		var startScale = getScale(getMoreProps());
 
 		if (startScale.invert) {
-			d3.select(d3Window(this.refs.capture))
+			select(d3Window(this.refs.capture))
 				.on(MOUSEMOVE, this.handleDrag)
 				.on(MOUSEUP, this.handleDragEnd);
 
@@ -45,7 +46,7 @@ class AxisZoomCapture extends Component {
 		e.preventDefault();
 	}
 	handleDrag() {
-		var e = d3.event;
+		var e = d3Event;
 		e.preventDefault();
 
 		var { startPosition } = this.state;
@@ -59,7 +60,7 @@ class AxisZoomCapture extends Component {
 
 			var diff = getMouseDelta(startXY, mouseXY);
 
-			var center = d3.mean(startScale.range());
+			var center = mean(startScale.range());
 
 			var tempRange = startScale.range()
 				.map(d => d + sign(d - center) * diff);
@@ -75,7 +76,7 @@ class AxisZoomCapture extends Component {
 		}
 	}
 	handleDragEnd() {
-		d3.select(d3Window(this.refs.capture))
+		select(d3Window(this.refs.capture))
 			.on(MOUSEMOVE, null)
 			.on(MOUSEUP, null);
 		this.setState({

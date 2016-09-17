@@ -1,6 +1,6 @@
 "use strict";
 
-import d3 from "d3";
+import { rebind } from "d3fc-rebind";
 
 import { isDefined, isNotDefined, merge, slidingWindow } from "../utils";
 
@@ -60,9 +60,9 @@ export default function() {
 		emaSource = x;
 		return indicator;
 	};
-	d3.rebind(indicator, base, "id", "echo", "type", "stroke");
-	// d3.rebind(indicator, underlyingAlgorithm, "windowSize", "movingAverageType", "multiplier", "source");
-	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
+	rebind(indicator, base, "id", "echo", "type", "stroke");
+	// rebind(indicator, underlyingAlgorithm, "windowSize", "movingAverageType", "multiplier", "source");
+	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;
 }

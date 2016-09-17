@@ -1,7 +1,8 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
+import { timeFormat } from "d3-time-format";
 
 import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
@@ -50,7 +51,7 @@ class CandleStickChartWithMA extends React.Component {
 
 		return (
 			<ChartCanvas ratio={ratio} width={width} height={400}
-					margin={{left: 70, right: 70, top:10, bottom: 30}} type={type}
+					margin={{ left: 70, right: 70, top: 10, bottom: 30 }} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[sma20, ema20, ema50, smaVolume50]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
@@ -64,7 +65,7 @@ class CandleStickChartWithMA extends React.Component {
 					<MouseCoordinateY
 						at="right"
 						orient="right"
-						displayFormat={d3.format(".2f")} />
+						displayFormat={format(".2f")} />
 
 					<CandlestickSeries />
 					<LineSeries yAccessor={sma20.accessor()} stroke={sma20.stroke()}/>
@@ -81,16 +82,16 @@ class CandleStickChartWithMA extends React.Component {
 				<Chart id={2}
 						yExtents={[d => d.volume, smaVolume50.accessor()]}
 						height={150} origin={(w, h) => [0, h - 150]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format("s")}/>
 
 					<MouseCoordinateX
 						at="bottom"
 						orient="bottom"
-						displayFormat={d3.time.format("%Y-%m-%d")} />
+						displayFormat={timeFormat("%Y-%m-%d")} />
 					<MouseCoordinateY
 						at="left"
 						orient="left"
-						displayFormat={d3.format(".4s")} />
+						displayFormat={format(".4s")} />
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "red"} />
 					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>

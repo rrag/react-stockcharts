@@ -2,8 +2,7 @@ function getExternalAssets(mode) {
 	switch (mode) {
 	case "dev":
 	case "watch": {
-		return `<script src="d3/d3.js"></script>
-		<script src="react/dist/react.js"></script>
+		return `<script src="react/dist/react.js"></script>
 		<script src="react-dom/dist/react-dom.js"></script>
 
 		<link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -12,7 +11,6 @@ function getExternalAssets(mode) {
 	default:
 		return `<script src="//cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-dom.min.js"></script>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
 
 		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.css" rel="stylesheet">

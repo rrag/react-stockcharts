@@ -1,6 +1,7 @@
 "use strict";
 
-import d3 from "d3";
+import { timeFormat } from "d3-time-format";
+import { map as d3Map } from "d3-collection";
 
 import financeDiscontinuousScale from "./financeDiscontinuousScale";
 import { head, last, slidingWindow, zipper, identity, isNotDefined } from "../utils";
@@ -13,7 +14,7 @@ const dayFormat = "%a %d";
 const hourFormat = "%_I %p";
 const minuteFormat = "%I:%M %p";
 const secondFormat = "%I:%M:%S %p";
-// const milliSecondFormat = d3.time.format("%L");
+// const milliSecondFormat = "%L";
 
 var levelDefinition = [
 
@@ -125,7 +126,7 @@ function doStuff(realDateAccessor, inputDateAccessor, initialIndex) {
 		var calculate = discontinuousIndexCalculatorLocalTime.source(dateAccessor).misc(initialIndex);
 		var index = calculate(data);
 
-		var map = d3.map();
+		var map = d3Map();
 		for (var i = 0; i < data.length - 1; i++) {
 
 			var nextDate = dateAccessor(data[i + 1]);
@@ -174,7 +175,7 @@ export function discontinuousTimeScaleProviderBuilder() {
 			return {
 				...each,
 				date: new Date(each.date),
-				format: d3.time.format(format),
+				format: timeFormat(format),
 			};
 		});
 

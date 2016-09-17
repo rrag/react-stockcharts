@@ -26,7 +26,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import d3 from "d3";
+import { max, min, mean } from "d3-array";
 
 import { last, slidingWindow, zipper } from "../../utils";
 import { FullStochasticOscillator as defaultOptions } from "../defaultOptionsForComputation";
@@ -45,8 +45,8 @@ export default function() {
 			.windowSize(windowSize)
 			.accumulator(values => {
 
-				var highestHigh = d3.max(values, high);
-				var lowestLow = d3.min(values, low);
+				var highestHigh = max(values, high);
+				var lowestLow = min(values, low);
 
 				var currentClose = close(last(values));
 				var k = (currentClose - lowestLow) / (highestHigh - lowestLow) * 100;
@@ -57,12 +57,12 @@ export default function() {
 		var kSmoothed = slidingWindow()
 			.skipInitial(windowSize - 1)
 			.windowSize(kWindowSize)
-			.accumulator(values => d3.mean(values));
+			.accumulator(values => mean(values));
 
 		var dWindow = slidingWindow()
 			.skipInitial(windowSize - 1 + kWindowSize - 1)
 			.windowSize(dWindowSize)
-			.accumulator(values => d3.mean(values));
+			.accumulator(values => mean(values));
 
 		var stoAlgorithm = zipper()
 			.combine((K, D) => ({ K, D }));

@@ -1,6 +1,8 @@
 "use strict";
 
-import d3 from "d3";
+import { set } from "d3-collection";
+import { bisector } from "d3-array";
+import { scaleLinear } from "d3-scale";
 
 import { isNotDefined, head, last } from "../utils";
 
@@ -24,11 +26,11 @@ var tickLevels = [
 	{ target: 10e20, level: 16 },
 ];
 
-var tickLevelBisector = d3.bisector(function(d) { return d.target; }).left;
+var tickLevelBisector = bisector(function(d) { return d.target; }).left;
 
 export default function financeDiscontinuousScale(index,
 		interval,
-		backingLinearScale = d3.scale.linear()) {
+		backingLinearScale = scaleLinear()) {
 
 	if (isNotDefined(index) || isNotDefined(interval))
 		throw new Error("Use the discontinuousTimeScaleProvider to create financeDiscontinuousScale");
@@ -94,7 +96,7 @@ export default function financeDiscontinuousScale(index,
 
 		// subList.filter(each => each.level >= level).map(d => d.index);
 
-		var ticksSet = d3.set(ticks);
+		var ticksSet = set(ticks);
 		// console.log(ticks);
 
 		var d = Math.abs(head(index).index);

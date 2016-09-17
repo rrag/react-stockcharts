@@ -1,10 +1,10 @@
 "use strict";
 
-import d3 from "d3";
+import { nest } from "d3-collection";
 import React, { PropTypes, Component } from "react";
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 
-import { isDefined } from "../utils";
+import { isDefined, functor } from "../utils";
 
 class OHLCSeries extends Component {
 	constructor(props) {
@@ -75,7 +75,7 @@ function drawOnCanvas(ctx, barData) {
 
 	var { strokeWidth, bars } = barData;
 
-	var wickNest = d3.nest()
+	var wickNest = nest()
 		.key(d => d.stroke)
 		.entries(bars);
 
@@ -103,8 +103,8 @@ function drawOnCanvas(ctx, barData) {
 function getOHLCBars(props, xAccessor, yAccessor, xScale, yScale, plotData) {
 	var { classNames: classNamesProp, stroke: strokeProp } = props;
 
-	var strokeFunc = d3.functor(strokeProp);
-	var classNameFunc = d3.functor(classNamesProp);
+	var strokeFunc = functor(strokeProp);
+	var classNameFunc = functor(classNamesProp);
 
 	var width = xScale(xAccessor(plotData[plotData.length - 1]))
 		- xScale(xAccessor(plotData[0]));

@@ -1,9 +1,8 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import d3 from "d3";
 
-import { isDefined, noop } from "../utils";
+import { isDefined, noop, functor } from "../utils";
 import GenericChartComponent from "../GenericChartComponent";
 
 class Brush extends Component {
@@ -114,7 +113,7 @@ class Brush extends Component {
 			{ isDefined(rect) ? <rect {...rect} {...rectProps} /> : null }
 			<GenericChartComponent ref="component"
 				svgDraw={this.renderSVG}
-				isHover={d3.functor(true)}
+				isHover={functor(true)}
 				onMouseDown={this.handleStartAndEnd}
 				onMouseMove={this.handleDrawBrush}
 				drawOnMouseExitOfCanvas

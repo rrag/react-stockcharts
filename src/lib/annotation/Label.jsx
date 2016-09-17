@@ -1,10 +1,9 @@
 "use strict";
 
-import d3 from "d3";
 import React, { PropTypes, Component } from "react";
 import GenericComponent from "../GenericComponent";
 
-import { isDefined, hexToRGBA } from "../utils";
+import { isDefined, hexToRGBA, functor } from "../utils";
 import LabelAnnotation, { defaultProps, helper } from "./LabelAnnotation";
 
 class Label extends Component {
@@ -31,7 +30,7 @@ class Label extends Component {
 }
 
 function getText(props) {
-	return d3.functor(props.text)(props);
+	return functor(props.text)(props);
 }
 
 function getYScale(chartConfig) {

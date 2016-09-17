@@ -1,11 +1,13 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import d3 from "d3";
+import { format } from "d3-format";
 import GenericChartComponent from "../GenericChartComponent";
 
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
+
+import { functor } from "../utils";
 
 class SingleMAToolTip extends Component {
 	constructor(props) {
@@ -59,7 +61,7 @@ class MovingAverageTooltip extends Component {
 
 		var config = chartConfig;
 
-		var origin = d3.functor(originProp);
+		var origin = functor(originProp);
 		var [x, y] = origin(width, height);
 		var [ox, oy] = config.origin;
 
@@ -116,7 +118,7 @@ MovingAverageTooltip.propTypes = {
 
 MovingAverageTooltip.defaultProps = {
 	className: "react-stockcharts-moving-average-tooltip",
-	displayFormat: d3.format(".2f"),
+	displayFormat: format(".2f"),
 	origin: [0, 10],
 	width: 65,
 };

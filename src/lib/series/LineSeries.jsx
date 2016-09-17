@@ -1,7 +1,7 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import d3 from "d3";
+import { line as d3Line } from "d3-shape";
 
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 import { first, getClosestItemIndexes } from "../utils";
@@ -85,7 +85,7 @@ class LineSeries extends Component {
 
 		var { xScale, chartConfig: { yScale }, plotData, hovering } = moreProps;
 
-		var dataSeries = d3.svg.line()
+		var dataSeries = d3Line()
 			.defined(d => defined(yAccessor(d)))
 			.x(d => xScale(xAccessor(d)))
 			.y(d => yScale(yAccessor(d)));

@@ -1,7 +1,7 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { scaleTime } from "d3-scale";
 
 import { ChartCanvas, Chart, series, axes, helper } from "react-stockcharts";
 
@@ -14,10 +14,10 @@ class AreaChart extends React.Component {
 		var { data, type, width, ratio } = this.props;
 		return (
 			<ChartCanvas ratio={ratio} width={width} height={400}
-					margin={{left: 50, right: 50, top:10, bottom: 30}}
+					margin={{ left: 50, right: 50, top: 10, bottom: 30 }}
 					seriesName="MSFT"
 					data={data} type={type}
-					xAccessor={d => d.date} xScale={d3.time.scale()}
+					xAccessor={d => d.date} xScale={scaleTime()}
 					xExtents={[new Date(2011, 0, 1), new Date(2013, 0, 2)]}>
 				<Chart id={0} yExtents={d => d.close}>
 					<XAxis axisAt="bottom" orient="bottom" ticks={6}/>

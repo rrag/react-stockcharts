@@ -1,11 +1,12 @@
 "use strict";
 
-import d3 from "d3";
+import { merge } from "d3-array";
+
 import React, { PropTypes, Component } from "react";
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 
 import { drawOnCanvas2, getBarsSVG2 } from "./StackedBarSeries";
-import { isDefined, isNotDefined, first, last } from "../utils";
+import { isDefined, isNotDefined, first, last, functor } from "../utils";
 
 class OverlayBarSeries extends Component {
 	constructor(props) {
@@ -81,9 +82,9 @@ OverlayBarSeries.defaultProps = {
 function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData) {
 	var { baseAt, className, fill, stroke, widthRatio } = props;
 
-	var getClassName = d3.functor(className);
-	var getFill = d3.functor(fill);
-	var getBase = d3.functor(baseAt);
+	var getClassName = functor(className);
+	var getFill = functor(fill);
+	var getBase = functor(baseAt);
 
 	var width = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData))));
 
@@ -129,7 +130,7 @@ function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData) {
 				return innerBars;
 			});
 
-	return d3.merge(bars);
+	return merge(bars);
 }
 
 export default OverlayBarSeries;
