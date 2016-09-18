@@ -9,6 +9,8 @@ import {
 	identity,
 } from "../utils";
 
+const debug = false;
+
 function extentsWrapper(data, inputXAccessor, realXAccessor, useWholeData) {
 	function domain(inputDomain, xAccessor, initialXScale, currentPlotData, currentDomain) {
 		if (useWholeData) {
@@ -31,12 +33,12 @@ function extentsWrapper(data, inputXAccessor, realXAccessor, useWholeData) {
 
 		var chartWidth = xScale.range()[1] - xScale.range()[0];
 
-		console.debug(`Trying to show ${filteredData.length} in ${width}px while the chart width is ${chartWidth}px`);
+		if (debug) console.debug(`Trying to show ${filteredData.length} in ${width}px while the chart width is ${chartWidth}px`);
 
 		if (canShowTheseManyPeriods(width, filteredData.length)) {
 			plotData = filteredData;
 			domain = realInputDomain;
-			console.debug("AND IT WORKED");
+			if (debug)console.debug("AND IT WORKED");
 		} else {
 			plotData = currentPlotData || filteredData.slice(filteredData.length - showMax(width));
 			domain = currentDomain || [realXAccessor(first(plotData)), realXAccessor(last(plotData))];
@@ -45,7 +47,7 @@ function extentsWrapper(data, inputXAccessor, realXAccessor, useWholeData) {
 			var newWidth = Math.floor(newXScale(realXAccessor(last(plotData)))
 				- newXScale(realXAccessor(first(plotData))));
 
-			console.debug(`and ouch, that is too much, so instead showing ${plotData.length} in ${newWidth}px`);
+			if (debug) console.debug(`and ouch, that is too much, so instead showing ${plotData.length} in ${newWidth}px`);
 		}
 
 		return { plotData, domain };

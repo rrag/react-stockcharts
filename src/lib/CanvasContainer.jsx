@@ -23,7 +23,7 @@ class CanvasContainer extends Component {
 	render() {
 		var { height, width, type, zIndex, ratio } = this.props;
 		if (type === "svg") return null;
-		console.log("using ratio ", ratio);
+		// console.log("using ratio ", ratio);
 		return (
 			<div style={{ zIndex: zIndex }}>
 				<canvas id="bg" ref={this.setDrawCanvas} width={width * ratio} height={height * ratio}

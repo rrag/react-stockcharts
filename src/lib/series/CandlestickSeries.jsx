@@ -139,6 +139,7 @@ function drawOnCanvas(ctx, props, context, moreProps) {
 	var { opacity, candleStrokeWidth } = props;
 	var { xAccessor } = context;
 	var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+
 	var wickData = getWickData(props, xAccessor, xScale, yScale, plotData);
 
 	var wickNest = nest()

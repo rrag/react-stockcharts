@@ -1,7 +1,7 @@
 "use strict";
 
-import React, { PropTypes, Component } from "react";
-import { isNotDefined, isDefined, noop, functor } from "./utils";
+import React, { PropTypes, Component, Children } from "react";
+import { isNotDefined, isDefined, noop, functor, identity } from "./utils";
 
 var suscriberId = 0;
 
@@ -27,6 +27,11 @@ class GenericComponent extends Component {
 		this.moreProps = {};
 		this.state = {
 			updateCount: 0,
+		};
+	}
+	getChildContext() {
+		return {
+			morePropsDecorator: this.props.morePropsDecorator,
 		};
 	}
 	getRef(ref) {
@@ -115,11 +120,11 @@ class GenericComponent extends Component {
 	}
 	draw() {
 		var { chartCanvasType } = this.context;
-		var { canvasDraw } = this.props;
+		var { canvasDraw, children } = this.props;
 
-		if (isNotDefined(canvasDraw) || chartCanvasType === "svg") {
+		if (isNotDefined(canvasDraw) && isNotDefined(children)
+				|| chartCanvasType === "svg") {
 			var { updateCount } = this.state;
-
 			this.setState({
 				updateCount: updateCount + 1,
 			});
@@ -141,11 +146,12 @@ class GenericComponent extends Component {
 	}
 	componentDidUpdate() {
 		var { chartCanvasType } = this.context;
-		var { canvasDraw } = this.props;
+		var { canvasDraw, children } = this.props;
 
 		if (this.props.debug) console.log(this.props.debug, "updated");
 
-		if (isDefined(canvasDraw) && chartCanvasType !== "svg") {
+		if ((isDefined(canvasDraw) || isDefined(children))
+				&& chartCanvasType !== "svg") {
 			this.drawOnCanvas();
 		}
 	}
@@ -158,13 +164,16 @@ class GenericComponent extends Component {
 		};
 	}
 	getMoreProps() {
-		var { xScale, plotData, chartConfig } = this.context;
+		var { xScale, plotData, chartConfig, morePropsDecorator } = this.context;
 
 		var moreProps = {
 			xScale, plotData, chartConfig,
 			...this.moreProps
 		};
-		return moreProps;
+
+		return isDefined(morePropsDecorator)
+			? morePropsDecorator(moreProps)
+			: moreProps;
 	}
 	getPrevMoreProps() {
 		return this.prevMoreProps;
@@ -176,7 +185,7 @@ class GenericComponent extends Component {
 		// do nothing
 	}
 	drawOnCanvas() {
-		var { canvasDraw, canvasToDraw, hoverCanvasToDraw } = this.props;
+		var { canvasDraw, canvasToDraw, hoverCanvasToDraw, children } = this.props;
 		var { getCanvasContexts } = this.context;
 		var { hovering } = this.moreProps;
 
@@ -184,16 +193,23 @@ class GenericComponent extends Component {
 			? hoverCanvasToDraw(getCanvasContexts())
 			: canvasToDraw(getCanvasContexts());
 
-		this.preCanvasDraw(ctx);
-		canvasDraw(ctx, this.getMoreProps());
+		var moreProps = this.getMoreProps();
 
-		this.postCanvasDraw(ctx);
+
+		if (isDefined(canvasDraw)) {
+			this.preCanvasDraw(ctx);
+			canvasDraw(ctx, moreProps);
+			this.postCanvasDraw(ctx);
+		}
 	}
 	render() {
 		var { chartCanvasType, chartId } = this.context;
-		var { canvasDraw, clip, svgDraw } = this.props;
+		var { canvasDraw, clip, svgDraw, children } = this.props;
 
-		if (isDefined(canvasDraw) && chartCanvasType !== "svg") return null;
+		if (isDefined(canvasDraw) && chartCanvasType !== "svg" && isNotDefined(children)) return null;
+		if (isDefined(children)) {
+			return Children.only(children);
+		}
 
 		var suffix = isDefined(chartId) ? "-" + chartId : "";
 
@@ -220,8 +236,10 @@ GenericComponent.propTypes = {
 	onContextMenu: PropTypes.func,
 	onMouseMove: PropTypes.func,
 	onMouseDown: PropTypes.func,
+	morePropsDecorator: PropTypes.func,
 
 	debug: PropTypes.string,
+	children: PropTypes.node,
 };
 
 GenericComponent.defaultProps = {
@@ -237,6 +255,11 @@ GenericComponent.defaultProps = {
 	isHover: functor(false),
 	onMouseMove: noop,
 	onMouseDown: noop,
+	// morePropsDecorator: identity,
+};
+
+GenericComponent.childContextTypes = {
+	morePropsDecorator: PropTypes.func,
 };
 
 GenericComponent.contextTypes = {
@@ -258,6 +281,7 @@ GenericComponent.contextTypes = {
 
 	canvasOriginX: PropTypes.number,
 	canvasOriginY: PropTypes.number,
+	morePropsDecorator: PropTypes.func,
 
 	subscribe: PropTypes.func.isRequired,
 	unsubscribe: PropTypes.func.isRequired,

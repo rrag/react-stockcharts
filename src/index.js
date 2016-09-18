@@ -4,7 +4,7 @@
 import ChartCanvas from "./lib/ChartCanvas";
 import Chart from "./lib/Chart";
 
-import GenericChartComponent from "./lib/GenericChartComponent";
+import GenericChartComponent, { getAxisCanvas } from "./lib/GenericChartComponent";
 import GenericComponent from "./lib/GenericComponent";
 
 import BackgroundText from "./lib/BackgroundText";
@@ -45,5 +45,6 @@ export {
 	helper,
 	interactive,
 	version,
-	utils
+	utils,
+	getAxisCanvas,
 };

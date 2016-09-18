@@ -126,7 +126,7 @@ function resetChart(props, firstCalculation = false) {
 	var plotData = postCalculator(initialPlotData);
 
 	var dimensions = getDimensions(props);
-	var chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData);
+	var chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData, xScale.domain());
 
 	return {
 		...state,
@@ -171,7 +171,7 @@ function updateChart(newState, initialXScale, props, prevLastItem) {
 	}
 	// plotData = getDataOfLength(fullData, showingInterval, plotData.length)
 	var plotData = postCalculator(initialPlotData);
-	let chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData);
+	let chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData, updatedXScale.domain());
 
 	return {
 		firstItem,
@@ -402,7 +402,7 @@ class ChartCanvas extends Component {
 		plotData = postCalculator(plotData);
 		var updatedScale = initialXScale.copy().domain(domain);
 
-		var chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData);
+		var chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData, updatedScale.domain());
 
 		requestAnimationFrame(() => {
 			this.clearThreeCanvas();
@@ -470,7 +470,7 @@ class ChartCanvas extends Component {
 
 		plotData = postCalculator(plotData);
 		var updatedScale = initialXScale.copy().domain(domain);
-		var chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData);
+		var chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData, updatedScale.domain());
 
 		return {
 			xScale: updatedScale,
@@ -540,7 +540,7 @@ class ChartCanvas extends Component {
 		// console.log(last(plotData));
 		var currentItem = getCurrentItem(updatedScale, xAccessor, mouseXY, plotData);
 
-		var chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData, dy, chartsToPan);
+		var chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData, updatedScale.domain(), dy, chartsToPan);
 
 		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
 
