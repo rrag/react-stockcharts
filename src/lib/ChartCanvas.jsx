@@ -26,6 +26,8 @@ const CANDIDATES_FOR_RESET = ["seriesName", /* "data",*/
 	"xScaleProvider", /* "xAccessor",*/"map",
 	"indexAccessor", "indexMutator"];
 
+const debug = false;
+
 function shouldResetChart(thisProps, nextProps) {
 	return !CANDIDATES_FOR_RESET.every(key => {
 		var result = shallowEqual(thisProps[key], nextProps[key]);
@@ -444,7 +446,6 @@ class ChartCanvas extends Component {
 			currentItem,
 		}, e);
 
-
 		var { firstItem } = this.state;
 		var start = first(xScale.domain());
 		var end = xAccessor(firstItem);
@@ -455,7 +456,9 @@ class ChartCanvas extends Component {
 			plotData,
 			chartConfig,
 		}, () => {
-			if (start < end) onLoadMore(start, end);
+			if (start < end) {
+				onLoadMore(start, end);
+			}
 		});
 	}
 	calculateStateForDomain(newDomain) {

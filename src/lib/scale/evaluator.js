@@ -9,7 +9,7 @@ import {
 	identity,
 } from "../utils";
 
-const debug = false;
+const debug = true;
 
 function extentsWrapper(data, inputXAccessor, realXAccessor, useWholeData) {
 	function domain(inputDomain, xAccessor, initialXScale, currentPlotData, currentDomain) {
@@ -31,7 +31,7 @@ function extentsWrapper(data, inputXAccessor, realXAccessor, useWholeData) {
 
 		var plotData, domain;
 
-		var chartWidth = xScale.range()[1] - xScale.range()[0];
+		var chartWidth = last(xScale.range()) - first(xScale.range());
 
 		if (debug) console.debug(`Trying to show ${filteredData.length} in ${width}px while the chart width is ${chartWidth}px`);
 
@@ -57,12 +57,12 @@ function extentsWrapper(data, inputXAccessor, realXAccessor, useWholeData) {
 }
 
 function canShowTheseManyPeriods(width, arrayLength) {
-	var threshold = 1; // number of datapoints per 1 px
-	return arrayLength < width * threshold && arrayLength > 1;
+	var threshold = 1.05; // number of datapoints per 1 px
+	return arrayLength > 1 && arrayLength < width * threshold;
 }
 
 function showMax(width) {
-	var threshold = 0.99; // number of datapoints per 1 px
+	var threshold = 0.95; // number of datapoints per 1 px
 	return Math.floor(width * threshold);
 }
 
@@ -98,13 +98,18 @@ export default function() {
 
 	function evaluate(data) {
 
-		if (process.env.NODE_ENV !== "production") console.time("evaluation");
+		if (process.env.NODE_ENV !== "production") {
+			if (debug) console.time("evaluation");
+		}
 		var mappedData = data.map(map);
 
 		var composedCalculator = compose(calculator);
 
 		var calculatedData = composedCalculator(mappedData);
-		if (process.env.NODE_ENV !== "production") console.timeEnd("evaluation");
+
+		if (process.env.NODE_ENV !== "production") {
+			if (debug) console.timeEnd("evaluation");
+		}
 
 
 		if (isDefined(scaleProvider)) {

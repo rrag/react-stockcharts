@@ -92,9 +92,11 @@ class CandleStickChartPanToLoadMore extends React.Component {
 		this.handleDownloadMore = this.handleDownloadMore.bind(this);
 	}
 	handleDownloadMore(start, end) {
+		if (Math.ceil(start) === end) return;
 		// console.log("rows to download", rowsToDownload, start, end)
 		var { data: prevData, ema26, ema12, macdCalculator, smaVolume50 } = this.state;
 		var { data: inputData } = this.props;
+
 
 		if (inputData.length === prevData.length) return;
 

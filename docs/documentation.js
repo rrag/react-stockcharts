@@ -7,7 +7,7 @@ import { csvParse, tsvParse } from  "d3-dsv";
 import { merge } from "d3-array";
 import { timeParse } from "d3-time-format";
 
-import ReStock from "react-stockcharts";
+import { helper } from "react-stockcharts";
 
 var parseDate = timeParse("%Y-%m-%d");
 var parseDateTime = timeParse("%Y-%m-%d %H:%M:%S");
@@ -311,7 +311,7 @@ function renderPartialPage(data, dataFull, intraDayContinuous, intraDayDiscontin
 	// PointAndFigure
 	// Renko
 	var Chart = require("./lib/charts/CandleStickChartForDiscontinuousIntraDay").default;
-	var TypeChooser = ReStock.helper.TypeChooser;
+	var { TypeChooser } = helper;
 
 	// data, dataFull, compareData
 	class ExamplesPage extends React.Component {
