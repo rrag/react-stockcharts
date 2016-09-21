@@ -9,7 +9,7 @@ import {
 	identity,
 } from "../utils";
 
-const debug = true;
+const debug = false;
 
 function extentsWrapper(data, inputXAccessor, realXAccessor, useWholeData) {
 	function domain(inputDomain, xAccessor, initialXScale, currentPlotData, currentDomain) {
@@ -38,7 +38,7 @@ function extentsWrapper(data, inputXAccessor, realXAccessor, useWholeData) {
 		if (canShowTheseManyPeriods(width, filteredData.length)) {
 			plotData = filteredData;
 			domain = realInputDomain;
-			if (debug)console.debug("AND IT WORKED");
+			if (debug) console.debug("AND IT WORKED");
 		} else {
 			plotData = currentPlotData || filteredData.slice(filteredData.length - showMax(width));
 			domain = currentDomain || [realXAccessor(first(plotData)), realXAccessor(last(plotData))];
@@ -57,12 +57,12 @@ function extentsWrapper(data, inputXAccessor, realXAccessor, useWholeData) {
 }
 
 function canShowTheseManyPeriods(width, arrayLength) {
-	var threshold = 1.05; // number of datapoints per 1 px
+	var threshold = 1; // number of datapoints per 1 px
 	return arrayLength > 1 && arrayLength < width * threshold;
 }
 
 function showMax(width) {
-	var threshold = 0.95; // number of datapoints per 1 px
+	var threshold = 0.80; // number of datapoints per 1 px
 	return Math.floor(width * threshold);
 }
 

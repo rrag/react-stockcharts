@@ -117,8 +117,10 @@ function calculateFullData(props) {
 	return { xAccessor, displayXAccessor, xScale, fullData, filterData, firstItem, lastItem };
 }
 function resetChart(props, firstCalculation = false) {
-	if (process.env.NODE_ENV !== "production") {
-		if (!firstCalculation) console.log("CHART RESET");
+	if (debug) {
+		if (process.env.NODE_ENV !== "production") {
+			if (!firstCalculation) console.log("CHART RESET");
+		}
 	}
 
 	var state = calculateState(props);
@@ -142,12 +144,15 @@ function updateChart(newState, initialXScale, props, prevLastItem) {
 
 	var { firstItem, lastItem, xScale, xAccessor, filterData } = newState;
 	var lastItemVisible = lastItem === prevLastItem;
-	if (process.env.NODE_ENV !== "production") {
-		if (lastItemVisible)
-			console.log("DATA CHANGED AND LAST ITEM VISIBLE");
-		else
-			console.log("TRIVIAL CHANGE");
+	if (debug) {
+		if (process.env.NODE_ENV !== "production") {
+			if (lastItemVisible)
+				console.log("DATA CHANGED AND LAST ITEM VISIBLE");
+			else
+				console.log("TRIVIAL CHANGE");
+		}
 	}
+
 	var { postCalculator, children, padding, flipXScale } = props;
 	var direction = getXScaleDirection(flipXScale);
 	var dimensions = getDimensions(props);
@@ -272,7 +277,7 @@ class ChartCanvas extends Component {
 		this.state = {};
 	}
 	getDataInfo() {
-		return this.refs.chartContainer.getDataInfo();
+		return this.state;
 	}
 	getCanvasContexts() {
 		if (this.refs && this.refs.canvases) {
@@ -598,7 +603,7 @@ class ChartCanvas extends Component {
 		this.triggerEvent("click", {}, e);
 	}
 	handleDoubleClick(mousePosition, e) {
-		console.log("double clicked");
+		if (debug) console.log("double clicked");
 		this.triggerEvent("dblclick", {}, e);
 	}
 	handlePanEnd(mousePosition, panStartXScale, panOrigin, chartsToPan, e) {
@@ -684,24 +689,28 @@ class ChartCanvas extends Component {
 
 		var newState;
 		if (!interaction || reset || !shallowEqual(this.props.xExtents, nextProps.xExtents)) {
-			if (process.env.NODE_ENV !== "production") {
-				if (!interaction)
-					console.log("RESET CHART, changes to a non interactive chart");
-				else if (reset)
-					console.log("RESET CHART, one or more of these props changed", CANDIDATES_FOR_RESET);
-				else
-					console.log("xExtents changed");
+			if (debug) {
+				if (process.env.NODE_ENV !== "production") {
+					if (!interaction)
+						console.log("RESET CHART, changes to a non interactive chart");
+					else if (reset)
+						console.log("RESET CHART, one or more of these props changed", CANDIDATES_FOR_RESET);
+					else
+						console.log("xExtents changed");
+				}
 			}
 			// do reset
 			newState = resetChart(nextProps);
 		} else {
-			if (process.env.NODE_ENV !== "production") {
-				if (this.props.data !== nextProps.data)
-					console.log("data is changed but seriesName did not, change the seriesName if you wish to reset the chart");
-				else if (!shallowEqual(this.props.calculator, nextProps.calculator))
-					console.log("calculator changed");
-				else
-					console.log("Trivial change, may be width/height or type changed, but that does not matter");
+			if (debug) {
+				if (process.env.NODE_ENV !== "production") {
+					if (this.props.data !== nextProps.data)
+						console.log("data is changed but seriesName did not, change the seriesName if you wish to reset the chart");
+					else if (!shallowEqual(this.props.calculator, nextProps.calculator))
+						console.log("calculator changed");
+					else
+						console.log("Trivial change, may be width/height or type changed, but that does not matter");
+				}
 			}
 
 			var calculatedState = calculateFullData(nextProps);
