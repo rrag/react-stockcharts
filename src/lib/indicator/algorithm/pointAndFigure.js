@@ -79,8 +79,9 @@ export default function() {
 
 	function calculator(rawData) {
 		var source = sourcePath === "high/low"
-			? d => ({ high: d.high, low: d.low })
-			: d => ({ high: d.close, low: d.close });
+			? d => { return { high: d.high, low: d.low }; }
+			: d => { return { high: d.close, low: d.close }; };
+
 
 		var pricingMethod = source;
 		var columnData = [];

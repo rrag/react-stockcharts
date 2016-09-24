@@ -28,13 +28,9 @@ class RSISeries extends Component {
 }
 
 function getHorizontalLine(props, yValue, stroke) {
-	/* eslint-disable react/prop-types */
-	let { yAccessor } = props;
-	/* eslint-enable react/prop-types */
 
 	return <StraightLine
 		stroke={stroke} opacity={0.3}
-		yAccessor={yAccessor}
 		yValue={yValue} />;
 }
 
