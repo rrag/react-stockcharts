@@ -1,0 +1,3 @@
+Coming soon...
+
+[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickChartWithDarkTheme.jsx), [block](http://bl.ocks.org/rrag/23dd469fe32d7fc1977c), [plunker](http://plnkr.co/edit/gist:23dd469fe32d7fc1977c?p=preview) of this example

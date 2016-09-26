@@ -68,6 +68,7 @@ var CHART_FEATURES = {
 		require("./lib/page/UpdatingDataPage").default,
 		require("./lib/page/LoadMoreDataPage").default,
 		require("./lib/page/DarkThemePage").default,
+		require("./lib/page/ViewFinderPage").default,
 	]
 };
 
