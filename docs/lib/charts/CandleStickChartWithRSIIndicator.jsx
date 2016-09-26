@@ -86,7 +86,7 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 				<Chart id={2} height={150} 
 						yExtents={[d => d.volume, smaVolume50.accessor()]}
 						origin={(w, h) => [0, h - 400]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format("s")}/>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
 
 					<MouseCoordinateY
 						at="left"

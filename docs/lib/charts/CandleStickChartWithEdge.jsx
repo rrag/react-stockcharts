@@ -51,7 +51,7 @@ class CandleStickChartWithEdge extends React.Component {
 				<Chart id={2}
 						yExtents={[d => d.volume, smaVolume70.accessor()]}
 						height={150} origin={(w, h) => [0, h - 150]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format("s")}/>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 					<AreaSeries yAccessor={smaVolume70.accessor()} stroke={smaVolume70.stroke()} fill={smaVolume70.fill()}/>

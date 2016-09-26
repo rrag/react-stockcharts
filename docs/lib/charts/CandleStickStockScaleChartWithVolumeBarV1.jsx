@@ -31,7 +31,7 @@ class CandleStickStockScaleChartWithVolumeBarV1 extends React.Component {
 					<CandlestickSeries />
 				</Chart>
 				<Chart id={2} yExtents={d => d.volume}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format("s")}/>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
 					<BarSeries yAccessor={d => d.volume} />
 				</Chart>
 			</ChartCanvas>

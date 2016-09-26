@@ -75,7 +75,7 @@ class OHLCChartWithElderImpulseIndicator extends React.Component {
 				<Chart id={2} height={150}
 						yExtents={d => d.volume}
 						origin={(w, h) => [0, h - 300]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format("s")}/>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
 
 					<MouseCoordinateY
 						at="left"
