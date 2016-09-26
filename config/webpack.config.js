@@ -29,6 +29,7 @@ function buildConfig(mode) {
 		port: process.env.PORT,
 	};
 
+	const context = rootPath;
 	const loadersForDocs = [
 		{ test: /\.jpg$/, loader: "file-loader" },
 		{ test: /\.(png|svg)$/, loader: "url-loader?mimetype=image/png" },
@@ -37,7 +38,7 @@ function buildConfig(mode) {
 	];
 
 	return {
-		context: rootPath,
+		context,
 		entry: Object.assign({
 			"react-stockcharts": "./src/index.js"
 		}, (docsOrWatch ? docsEntry : {})),
@@ -49,7 +50,6 @@ function buildConfig(mode) {
 			libraryTarget: "umd",
 			pathinfo: ifWatch(true, false), // since we have eval as devtool for watch, pathinfo gives line numbers which are close enough
 		},
-		debug: true,
 		devtool: "sourcemap", // ifWatch("cheap-module-eval-source-map", "sourcemap"),
 		module: {
 			loaders: removeEmpty([
@@ -83,6 +83,7 @@ function buildConfig(mode) {
 				},
 				sourceMap: true,
 			})),
+
 			...(docsOrWatch ? [new HtmlWebpackPlugin({
 				template: "./docs/pageTemplate.js",
 				inject: false,
@@ -95,17 +96,18 @@ function buildConfig(mode) {
 				page: "documentation",
 				mode,
 				filename: "documentation.html"
+			}), new webpack.LoaderOptionsPlugin({
+				options: { remarkable: getRemarkable(docsOrWatch), context }
 			})] : []),
 		]),
 		devServer,
-		remarkable: getRemarkable(docsOrWatch),
 		externals: {
 			"react": "React",
 			"react-dom": "ReactDOM",
 			// "d3": "d3",
 		},
 		resolve: Object.assign({
-			extensions: ["", ".js", ".jsx", ".scss", ".md"]
+			extensions: [".js", ".jsx", ".scss", ".md"]
 		}, (docsOrWatch ? {
 			alias: { "react-stockcharts": path.join(rootPath, "src") },
 			modules: ["docs", "node_modules"]
