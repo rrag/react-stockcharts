@@ -201,4 +201,3 @@ export default function makeInteractive(InteractiveComponent, initialState) {
 		displayXAccessor: PropTypes.func.isRequired,
 	});
 }
-export default makeInteractive;
