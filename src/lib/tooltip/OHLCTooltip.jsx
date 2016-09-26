@@ -30,7 +30,9 @@ class OHLCTooltip extends Component {
 				&& isDefined(accessor(currentItem))
 				&& isDefined(accessor(currentItem).close)) {
 			var item = accessor(currentItem);
-			volume = volumeFormat(item.volume);
+			volume = isDefined(item.volume)
+				? volumeFormat(item.volume)
+				: "n/a";
 
 			displayDate = xDisplayFormat(item.date);
 			open = ohlcFormat(item.open);

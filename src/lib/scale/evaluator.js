@@ -33,7 +33,7 @@ function extentsWrapper(data, inputXAccessor, realXAccessor, useWholeData) {
 
 		var chartWidth = last(xScale.range()) - first(xScale.range());
 
-		if (debug) console.debug(`Trying to show ${filteredData.length} in ${width}px while the chart width is ${chartWidth}px`);
+		if (debug) console.debug(`Trying to show ${filteredData.length} in ${width}px, I can show up to ${showMax(width)} in that width. Also FYI the entire chart width is ${chartWidth}px`);
 
 		if (canShowTheseManyPeriods(width, filteredData.length)) {
 			plotData = filteredData;
@@ -62,7 +62,7 @@ function canShowTheseManyPeriods(width, arrayLength) {
 }
 
 function showMax(width) {
-	var threshold = 0.80; // number of datapoints per 1 px
+	var threshold = 0.90; // number of datapoints per 1 px
 	return Math.floor(width * threshold);
 }
 
