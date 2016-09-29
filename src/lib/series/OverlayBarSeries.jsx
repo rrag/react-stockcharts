@@ -16,7 +16,7 @@ class OverlayBarSeries extends Component {
 	}
 	drawOnCanvas(ctx, moreProps) {
 		var { yAccessor } = this.props;
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 		var bars = getBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
@@ -25,7 +25,7 @@ class OverlayBarSeries extends Component {
 	}
 	renderSVG(moreProps) {
 		var { yAccessor } = this.props;
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 		var bars = getBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
@@ -63,10 +63,6 @@ OverlayBarSeries.propTypes = {
 	xScale: PropTypes.func,
 	yScale: PropTypes.func,
 	plotData: PropTypes.array,
-};
-
-OverlayBarSeries.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
 };
 
 OverlayBarSeries.defaultProps = {

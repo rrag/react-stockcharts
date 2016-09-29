@@ -13,13 +13,13 @@ class BarSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 
 		drawOnCanvasHelper(ctx, this.props, moreProps, xAccessor, identityStack);
 
 	}
 	renderSVG(moreProps) {
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 
 		return <g>{svgHelper(this.props, moreProps, xAccessor, identityStack)}</g>;
 	}
@@ -50,9 +50,6 @@ BarSeries.propTypes = {
 	]).isRequired,
 };
 
-BarSeries.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
-};
 
 BarSeries.defaultProps = StackedBarSeries.defaultProps;
 

@@ -47,7 +47,6 @@ Label.propTypes = {
 };
 
 Label.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
 	canvasOriginX: PropTypes.number,
 	canvasOriginY: PropTypes.number,
 
@@ -73,16 +72,15 @@ function drawOnCanvas2(ctx, props, context, moreProps) {
 	else
 		ctx.translate(margin.left + (0.5 * ratio), margin.top + (0.5 * ratio));
 
-	drawOnCanvas(ctx, props, context, moreProps);
+	drawOnCanvas(ctx, props, moreProps);
 
 	ctx.restore();
 
 }
 
-function drawOnCanvas(ctx, props, context, moreProps) {
+function drawOnCanvas(ctx, props, moreProps) {
 	var { textAnchor, fontFamily, fontSize, opacity, rotate } = props;
-	var { xScale, chartConfig } = moreProps;
-	var { xAccessor } = context;
+	var { xScale, chartConfig, xAccessor } = moreProps;
 
 	var { xPos, yPos, fill, text } = helper(props, xAccessor, xScale, getYScale(chartConfig));
 

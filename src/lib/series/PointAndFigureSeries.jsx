@@ -12,7 +12,7 @@ class PointAndFigureSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 		var columns = getColumns(xScale, xAccessor, yScale, plotData);
@@ -28,7 +28,7 @@ class PointAndFigureSeries extends Component {
 			/>;
 	}
 	renderSVG(moreProps) {
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 		var { stroke, fill, strokeWidth, className } = this.props;
@@ -69,10 +69,6 @@ PointAndFigureSeries.propTypes = {
 	strokeWidth: PropTypes.number.isRequired,
 	stroke: PropTypes.object.isRequired,
 	fill: PropTypes.object.isRequired,
-};
-
-PointAndFigureSeries.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
 };
 
 PointAndFigureSeries.defaultProps = {

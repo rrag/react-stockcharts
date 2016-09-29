@@ -16,7 +16,7 @@ class RSITooltip extends Component {
 	}
 	renderSVG(moreProps) {
 		var { onClick, fontFamily, fontSize, calculator, displayFormat } = this.props;
-		var { width, height } = this.context;
+		var { width, height } = moreProps;
 		var { currentItem } = moreProps;
 
 		var yAccessor = calculator.accessor();
@@ -46,11 +46,6 @@ class RSITooltip extends Component {
 			/>;
 	}
 }
-
-RSITooltip.contextTypes = {
-	width: PropTypes.number.isRequired,
-	height: PropTypes.number.isRequired,
-};
 
 RSITooltip.propTypes = {
 	origin: PropTypes.oneOfType([

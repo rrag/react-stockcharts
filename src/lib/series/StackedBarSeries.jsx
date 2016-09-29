@@ -17,13 +17,13 @@ class StackedBarSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 		// var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 		drawOnCanvasHelper(ctx, this.props, moreProps, xAccessor, d3Stack);
 	}
 	renderSVG(moreProps) {
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 
 		return <g>{svgHelper(this.props, moreProps, xAccessor, d3Stack)}</g>;
 	}
@@ -52,10 +52,6 @@ StackedBarSeries.propTypes = {
 	className: PropTypes.oneOfType([
 		PropTypes.func, PropTypes.string
 	]).isRequired,
-};
-
-StackedBarSeries.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
 };
 
 StackedBarSeries.defaultProps = {

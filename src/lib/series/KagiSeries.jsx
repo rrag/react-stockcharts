@@ -13,7 +13,7 @@ class KagiSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 
 		drawOnCanvas(ctx, this.props, moreProps, xAccessor);
 	}
@@ -26,7 +26,7 @@ class KagiSeries extends Component {
 			/>;
 	}
 	renderSVG(moreProps) {
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 		var { className, stroke, fill, strokeWidth } = this.props;
@@ -51,13 +51,6 @@ KagiSeries.propTypes = {
 	stroke: PropTypes.object,
 	fill: PropTypes.object,
 	strokeWidth: PropTypes.number.isRequired,
-	xAccessor: PropTypes.func,
-	xScale: PropTypes.func,
-	yScale: PropTypes.func,
-	plotData: PropTypes.array,
-};
-KagiSeries.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
 };
 
 KagiSeries.defaultProps = {

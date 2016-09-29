@@ -12,7 +12,7 @@ class RenkoSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 		var { yAccessor } = this.props;
@@ -30,7 +30,7 @@ class RenkoSeries extends Component {
 			/>;
 	}
 	renderSVG(moreProps) {
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 		var { yAccessor } = this.props;
@@ -67,9 +67,6 @@ RenkoSeries.propTypes = {
 		down: PropTypes.string
 	}),
 	yAccessor: PropTypes.func.isRequired,
-};
-RenkoSeries.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
 };
 
 RenkoSeries.defaultProps = {

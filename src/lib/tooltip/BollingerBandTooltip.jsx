@@ -16,7 +16,7 @@ class BollingerBandTooltip extends Component {
 	}
 	renderSVG(moreProps) {
 		var { onClick, displayFormat, calculator } = this.props;
-		var { width, height } = this.context;
+		var { width, height } = moreProps;
 		var { currentItem } = moreProps;
 
 		var top, middle, bottom;
@@ -56,10 +56,6 @@ class BollingerBandTooltip extends Component {
 	}
 }
 
-BollingerBandTooltip.contextTypes = {
-	width: PropTypes.number.isRequired,
-	height: PropTypes.number.isRequired,
-};
 BollingerBandTooltip.propTypes = {
 	className: PropTypes.string,
 	calculator: PropTypes.oneOfType([

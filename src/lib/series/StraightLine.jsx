@@ -13,7 +13,7 @@ class StraightLine extends Component {
 	}
 	drawOnCanvas(ctx, moreProps) {
 		var { stroke, opacity, yValue } = this.props;
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 		var first = xAccessor(plotData[0]);
@@ -36,7 +36,7 @@ class StraightLine extends Component {
 			/>;
 	}
 	renderSVG(moreProps) {
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 		var { stroke, className, opacity, yValue } = this.props;
@@ -59,9 +59,7 @@ StraightLine.propTypes = {
 	opacity: PropTypes.number.isRequired,
 	yValue: PropTypes.number.isRequired,
 };
-StraightLine.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
-};
+
 
 StraightLine.defaultProps = {
 	className: "line ",

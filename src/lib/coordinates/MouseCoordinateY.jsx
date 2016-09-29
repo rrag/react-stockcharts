@@ -14,13 +14,13 @@ class MouseCoordinateY extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var props = helper(this.props, this.context, moreProps);
+		var props = helper(this.props, moreProps);
 		if (isNotDefined(props)) return null;
 
 		drawOnCanvas(ctx, props);
 	}
 	renderSVG(moreProps) {
-		var props = helper(this.props, this.context, moreProps);
+		var props = helper(this.props, moreProps);
 		if (isNotDefined(props)) return null;
 
 		return renderSVG(props);
@@ -41,13 +41,6 @@ MouseCoordinateY.propTypes = {
 	displayFormat: PropTypes.func.isRequired,
 };
 
-MouseCoordinateY.contextTypes = {
-	width: PropTypes.number.isRequired,
-	// height: PropTypes.number.isRequired,
-	// margin: PropTypes.object.isRequired,
-	chartId: PropTypes.number.isRequired,
-};
-
 MouseCoordinateY.defaultProps = {
 	yAxisPad: 0,
 	rectWidth: 50,
@@ -63,8 +56,8 @@ MouseCoordinateY.defaultProps = {
 	textFill: "#FFFFFF",
 };
 
-function helper(props, context, moreProps) {
-	var { chartId, width } = context;
+function helper(props, moreProps) {
+	var { chartId, width } = moreProps;
 	var { show, currentCharts, chartConfig: { yScale, origin }, mouseXY } = moreProps;
 
 	if (isNotDefined(mouseXY)) return null;

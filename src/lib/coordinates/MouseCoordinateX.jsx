@@ -14,13 +14,13 @@ class MouseCoordinateX extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var props = helper(this.props, this.context, moreProps);
+		var props = helper(this.props, moreProps);
 		if (isNotDefined(props)) return null;
 
 		drawOnCanvas(ctx, props);
 	}
 	renderSVG(moreProps) {
-		var props = helper(this.props, this.context, moreProps);
+		var props = helper(this.props, moreProps);
 		if (isNotDefined(props)) return null;
 
 		return renderSVG(props);
@@ -41,11 +41,6 @@ MouseCoordinateX.propTypes = {
 	displayFormat: PropTypes.func.isRequired,
 };
 
-MouseCoordinateX.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
-	displayXAccessor: PropTypes.func.isRequired,
-	height: PropTypes.number.isRequired,
-};
 
 MouseCoordinateX.defaultProps = {
 	yAxisPad: 0,
@@ -62,8 +57,8 @@ MouseCoordinateX.defaultProps = {
 	snapX: true,
 };
 
-function helper(props, context, moreProps) {
-	var { height, xAccessor, displayXAccessor } = context;
+function helper(props, moreProps) {
+	var { height, xAccessor, displayXAccessor } = moreProps;
 	var { show, currentItem, xScale, mouseXY } = moreProps;
 	// var { chartConfig: { yScale, origin } } = moreProps;
 

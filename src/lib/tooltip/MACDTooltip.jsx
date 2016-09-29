@@ -15,7 +15,7 @@ class MACDTooltip extends Component {
 	}
 	renderSVG(moreProps) {
 		var { onClick, fontFamily, fontSize, calculator, displayFormat } = this.props;
-		var { width, height } = this.context;
+		var { width, height } = moreProps;
 		var { currentItem } = moreProps;
 
 		var yAccessor = calculator.accessor();
@@ -55,11 +55,6 @@ class MACDTooltip extends Component {
 			/>;
 	}
 }
-
-MACDTooltip.contextTypes = {
-	width: PropTypes.number.isRequired,
-	height: PropTypes.number.isRequired,
-};
 
 MACDTooltip.propTypes = {
 	origin: PropTypes.oneOfType([

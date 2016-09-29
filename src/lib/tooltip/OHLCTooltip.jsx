@@ -17,7 +17,7 @@ class OHLCTooltip extends Component {
 	}
 	renderSVG(moreProps) {
 		var { className } = this.props;
-		var { width, height } = this.context;
+		var { width, height } = moreProps;
 		var { currentItem } = moreProps;
 
 		var { onClick, xDisplayFormat, fontFamily, fontSize, accessor, volumeFormat, ohlcFormat } = this.props;
@@ -69,11 +69,6 @@ class OHLCTooltip extends Component {
 			/>;
 	}
 }
-
-OHLCTooltip.contextTypes = {
-	width: PropTypes.number.isRequired,
-	height: PropTypes.number.isRequired,
-};
 
 OHLCTooltip.propTypes = {
 	className: PropTypes.string,

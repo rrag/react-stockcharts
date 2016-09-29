@@ -36,7 +36,7 @@ class MouseLocationIndicator extends Component {
 		}
 	}
 	xy(moreProps, e) {
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 		var { mouseXY, currentItem, xScale, chartConfig: { yScale } } = moreProps;
 		var { enabled, snap, shouldDisableSnap, snapTo } = this.props;
 
@@ -115,10 +115,6 @@ MouseLocationIndicator.propTypes = {
 	stroke: PropTypes.string.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
 	opacity: PropTypes.number.isRequired,
-};
-
-MouseLocationIndicator.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
 };
 
 MouseLocationIndicator.defaultProps = {

@@ -29,10 +29,10 @@ class Brush extends Component {
 			mouseXY,
 			currentItem,
 			chartConfig,
+			xAccessor,
 		} = moreProps;
 
 		var { enabled } = this.props;
-		var { xAccessor } = this.context;
 
 		var { startClick, startItem } = this.state;
 
@@ -67,9 +67,9 @@ class Brush extends Component {
 			mouseXY,
 			currentItem,
 			chartConfig,
+			displayXAccessor,
 		} = moreProps;
 
-		var { displayXAccessor } = this.context;
 		var { enabled, onBrush } = this.props;
 
 		if (enabled) {
@@ -132,10 +132,6 @@ Brush.propTypes = {
 	fill: PropTypes.string,
 	opacity: PropTypes.number,
 	interactiveState: PropTypes.object,
-};
-Brush.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
-	displayXAccessor: PropTypes.func.isRequired,
 };
 
 Brush.defaultProps = {

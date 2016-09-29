@@ -13,7 +13,7 @@ class CrossHairCursor extends PureComponent {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var lines = helper(this.props, this.context, moreProps);
+		var lines = helper(this.props, moreProps);
 
 		if (isDefined(lines)) {
 
@@ -43,7 +43,7 @@ class CrossHairCursor extends PureComponent {
 	}
 	renderSVG(moreProps) {
 		var { className } = this.props;
-		var lines = helper(this.props, this.context, moreProps);
+		var lines = helper(this.props, moreProps);
 
 		if (isNotDefined(lines)) return null;
 
@@ -71,13 +71,10 @@ CrossHairCursor.propTypes = {
 };
 
 CrossHairCursor.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
-	height: PropTypes.number.isRequired,
-	width: PropTypes.number.isRequired,
 	margin: PropTypes.object.isRequired,
 	ratio: PropTypes.number.isRequired,
 
-	// xScale for getting update event upon pan end
+	// xScale for getting update event upon pan end, this is needed to get past the PureComponent shouldComponentUpdate
 	xScale: PropTypes.func.isRequired,
 };
 
@@ -88,8 +85,7 @@ CrossHairCursor.defaultProps = {
 	snapX: true,
 };
 
-function helper(props, context, { mouseXY, xScale, currentItem, show }) {
-	var { height, width, xAccessor } = context;
+function helper(props, { mouseXY, xScale, currentItem, show, height, width, xAccessor }) {
 	var { snapX, stroke, opacity, strokeDasharray } = props;
 
 	if (!show || isNotDefined(currentItem)) return null;

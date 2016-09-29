@@ -15,7 +15,7 @@ class EdgeIndicator extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var edge = helper(this.props, this.context, moreProps);
+		var edge = helper(this.props, moreProps);
 		var props = {
 			...this.props,
 			...edge,
@@ -23,7 +23,7 @@ class EdgeIndicator extends Component {
 		drawOnCanvas(ctx, props);
 	}
 	renderSVG(moreProps) {
-		var edge = helper(this.props, this.context, moreProps);
+		var edge = helper(this.props, moreProps);
 		var props = {
 			...this.props,
 			...edge,
@@ -63,9 +63,6 @@ EdgeIndicator.propTypes = {
 	rectWidth: PropTypes.number.isRequired,
 	arrowWidth: PropTypes.number.isRequired,
 };
-EdgeIndicator.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
-};
 
 EdgeIndicator.defaultProps = {
 	className: "react-stockcharts-edgeindicator",
@@ -89,13 +86,12 @@ EdgeIndicator.defaultProps = {
 	lineOpacity: 0.3,
 };
 
-function helper(props, context, moreProps) {
+function helper(props, moreProps) {
 	var { type: edgeType, displayFormat, itemType, edgeAt, yAxisPad, orient } = props;
 	var { yAccessor, fill, textFill, rectHeight, rectWidth, arrowWidth } = props;
 	var { fontFamily, fontSize } = props;
-	var { xAccessor } = context;
 
-	var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+	var { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
 
 	// var currentItem = ChartDataUtil.getCurrentItemForChartNew(currentItems, forChart);
 	var edge = null;

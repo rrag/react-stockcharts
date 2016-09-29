@@ -22,7 +22,7 @@ class LineSeries extends Component {
 		var { mouseXY, currentItem, xScale, plotData } = moreProps;
 		var { chartConfig: { yScale, origin } } = moreProps;
 
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 
 		var [x, y] = mouseXY;
 		const radius = hoverTolerance;
@@ -56,7 +56,7 @@ class LineSeries extends Component {
 	}
 	drawOnCanvas(ctx, moreProps) {
 		var { yAccessor, stroke, strokeWidth, hoverStrokeWidth, defined } = this.props;
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 
 		var { xScale, chartConfig: { yScale }, plotData, hovering } = moreProps;
 
@@ -81,7 +81,7 @@ class LineSeries extends Component {
 	}
 	renderSVG(moreProps) {
 		var { yAccessor, stroke, strokeWidth, hoverStrokeWidth, defined } = this.props;
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 
 		var { xScale, chartConfig: { yScale }, plotData, hovering } = moreProps;
 
@@ -140,10 +140,6 @@ LineSeries.propTypes = {
 	onDoubleClick: PropTypes.func,
 	onContextMenu: PropTypes.func,
 	yAccessor: PropTypes.func,
-};
-
-LineSeries.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
 };
 
 LineSeries.defaultProps = {

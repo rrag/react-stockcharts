@@ -15,9 +15,8 @@ class AreaOnlySeries extends Component {
 	drawOnCanvas(ctx, moreProps) {
 		var { yAccessor, defined, base } = this.props;
 		var { fill, stroke, opacity } = this.props;
-		var { xAccessor } = this.context;
 
-		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+		var { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
 
 		var newBase = functor(base);
 
@@ -45,9 +44,7 @@ class AreaOnlySeries extends Component {
 		var { yAccessor, defined, base } = this.props;
 		var { stroke, fill, className, opacity } = this.props;
 
-		var { xAccessor } = this.context;
-
-		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+		var { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
 
 		var newBase = functor(base);
 		var areaSeries = d3Area()
@@ -82,9 +79,6 @@ AreaOnlySeries.propTypes = {
 	base: PropTypes.oneOfType([
 		PropTypes.func, PropTypes.number
 	]),
-};
-AreaOnlySeries.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
 };
 
 AreaOnlySeries.defaultProps = {

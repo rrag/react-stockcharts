@@ -14,17 +14,17 @@ class CandlestickSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		drawOnCanvas(ctx, this.props, this.context, moreProps);
+		drawOnCanvas(ctx, this.props, moreProps);
 	}
 	renderSVG(moreProps) {
 		var { className, wickClassName, candleClassName } = this.props;
 
 		return <g className={className}>
 			<g className={wickClassName} key="wicks">
-				{getWicksSVG(this.props, this.context, moreProps)}
+				{getWicksSVG(this.props, moreProps)}
 			</g>
 			<g className={candleClassName} key="candles">
-				{getCandlesSVG(this.props, this.context, moreProps)}
+				{getCandlesSVG(this.props, moreProps)}
 			</g>
 		</g>;
 	}
@@ -66,9 +66,6 @@ CandlestickSeries.propTypes = {
 	yScale: PropTypes.func,
 	plotData: PropTypes.array,
 };
-CandlestickSeries.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
-};
 
 CandlestickSeries.defaultProps = {
 	className: "react-stockcharts-candlestick",
@@ -87,11 +84,10 @@ CandlestickSeries.defaultProps = {
 	opacity: 0.5,
 };
 
-function getWicksSVG(props, context, moreProps) {
+function getWicksSVG(props, moreProps) {
 
 	/* eslint-disable react/prop-types */
-	var { xAccessor } = context;
-	var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+	var { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
 	/* eslint-enable react/prop-types */
 
 	var wickData = getWickData(props, xAccessor, xScale, yScale, plotData);
@@ -103,12 +99,11 @@ function getWicksSVG(props, context, moreProps) {
 	return wicks;
 }
 
-function getCandlesSVG(props, context, moreProps) {
+function getCandlesSVG(props, moreProps) {
 
 	/* eslint-disable react/prop-types */
 	var { opacity, candleStrokeWidth } = props;
-	var { xAccessor } = context;
-	var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+	var { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
 	/* eslint-enable react/prop-types */
 
 	var candleData = getCandleData(props, xAccessor, xScale, yScale, plotData);
@@ -135,10 +130,9 @@ function getCandlesSVG(props, context, moreProps) {
 	return candles;
 }
 
-function drawOnCanvas(ctx, props, context, moreProps) {
+function drawOnCanvas(ctx, props, moreProps) {
 	var { opacity, candleStrokeWidth } = props;
-	var { xAccessor } = context;
-	var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+	var { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
 
 	var wickData = getWickData(props, xAccessor, xScale, yScale, plotData);
 

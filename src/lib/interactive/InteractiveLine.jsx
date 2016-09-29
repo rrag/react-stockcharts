@@ -42,7 +42,7 @@ class InteractiveLine extends Component {
 		var e = d3Event;
 		var moreProps = this.refs.component.getMoreProps();
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 
 		var { mouseXY, x1Value, x2Value, y1Value, y2Value } = this.moveStartPosition;
 		var x1 = xScale(x1Value);
@@ -91,7 +91,7 @@ class InteractiveLine extends Component {
 
 		var moreProps = this.refs.component.getMoreProps();
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 
 		var { x2Value, y2Value } = this.props;
 
@@ -118,7 +118,7 @@ class InteractiveLine extends Component {
 
 		var moreProps = this.refs.component.getMoreProps();
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 
 		var { x1Value, y1Value } = this.props;
 
@@ -148,7 +148,7 @@ class InteractiveLine extends Component {
 		var { r, edgeFill, edgeStroke, edgeStrokeWidth, children } = this.props;
 
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 
 		var modLine = generateLine(type,
 			[x1Value, y1Value],
@@ -260,10 +260,6 @@ InteractiveLine.defaultProps = {
 	withEdge: false,
 	strokeWidth: 1,
 	children: noop,
-};
-
-InteractiveLine.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
 };
 
 class ClickableCircle extends Component {

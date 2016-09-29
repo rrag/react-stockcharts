@@ -16,7 +16,7 @@ class Annotate extends Component {
 			/>;
 	}
 	renderSVG(moreProps) {
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 		var { className, usingProps, with: Annotation } = this.props;
@@ -41,10 +41,6 @@ Annotate.propTypes = {
 	with: PropTypes.func,
 	when: PropTypes.func,
 	usingProps: PropTypes.object,
-};
-
-Annotate.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
 };
 
 Annotate.defaultProps = {

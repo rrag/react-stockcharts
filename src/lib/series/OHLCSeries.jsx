@@ -14,7 +14,7 @@ class OHLCSeries extends Component {
 	}
 	drawOnCanvas(ctx, moreProps) {
 		var { yAccessor } = this.props;
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 		var barData = getOHLCBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
@@ -30,7 +30,7 @@ class OHLCSeries extends Component {
 	}
 	renderSVG(moreProps) {
 		var { className, yAccessor } = this.props;
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 
@@ -57,10 +57,6 @@ OHLCSeries.propTypes = {
 		PropTypes.string
 	]).isRequired,
 	yAccessor: PropTypes.func.isRequired,
-};
-
-OHLCSeries.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
 };
 
 OHLCSeries.defaultProps = {

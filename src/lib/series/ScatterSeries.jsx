@@ -13,7 +13,7 @@ class ScatterSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 
 		var points = helper(this.props, moreProps, xAccessor);
 
@@ -21,7 +21,7 @@ class ScatterSeries extends Component {
 	}
 	renderSVG(moreProps) {
 		var { className, markerProps } = this.props;
-		var { xAccessor } = this.context;
+		var { xAccessor } = moreProps;
 
 		var points = helper(this.props, moreProps, xAccessor);
 
@@ -49,11 +49,6 @@ ScatterSeries.propTypes = {
 	markerProvider: PropTypes.func,
 	markerProps: PropTypes.object,
 };
-
-ScatterSeries.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
-};
-
 
 ScatterSeries.defaultProps = {
 	className: "react-stockcharts-scatter",

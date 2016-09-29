@@ -19,7 +19,7 @@ class SingleValueTooltip extends Component {
 		var { onClick, fontFamily, fontSize, labelStroke, valueStroke } = this.props;
 		var { xDisplayFormat, yDisplayFormat, xLabel, yLabel, xAccessor, yAccessor } = this.props;
 
-		var { width, height } = this.context;
+		var { width, height } = moreProps;
 		var { currentItem } = moreProps;
 
 		var xDisplayValue = isDefined(currentItem) && isDefined(xAccessor(currentItem)) ? xDisplayFormat(xAccessor(currentItem)) : "n/a";
@@ -49,11 +49,6 @@ class SingleValueTooltip extends Component {
 			/>;
 	}
 }
-
-SingleValueTooltip.contextTypes = {
-	width: PropTypes.number.isRequired,
-	height: PropTypes.number.isRequired,
-};
 
 SingleValueTooltip.propTypes = {
 	xDisplayFormat: PropTypes.func,

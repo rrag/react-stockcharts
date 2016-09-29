@@ -12,10 +12,11 @@ class HoverTooltip extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var pointer = helper(this.props, moreProps, this.context);
+		var pointer = helper(this.props, moreProps);
+		var { height } = moreProps;
 
 		if (isNotDefined(pointer)) return null;
-		drawOnCanvas(ctx, this.props, this.context, pointer);
+		drawOnCanvas(ctx, this.props, this.context, pointer, height);
 	}
 	render() {
 		return <GenericComponent
@@ -27,12 +28,12 @@ class HoverTooltip extends Component {
 			/>;
 	}
 	renderSVG(moreProps) {
-		var pointer = helper(this.props, moreProps, this.context);
+		var pointer = helper(this.props, moreProps);
 
 		if (isNotDefined(pointer)) return null;
 
 		var { bgFill, bgOpacity, backgroundShapeSVG } = this.props;
-		var { height } = this.context;
+		var { height } = moreProps;
 
 		var { x, y, content, centerX, drawWidth } = pointer;
 
@@ -67,10 +68,6 @@ HoverTooltip.propTypes = {
 };
 
 HoverTooltip.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
-	displayXAccessor: PropTypes.func.isRequired,
-	height: PropTypes.number.isRequired,
-	width: PropTypes.number.isRequired,
 	margin: PropTypes.object.isRequired,
 	ratio: PropTypes.number.isRequired,
 };
@@ -156,9 +153,9 @@ function origin(mouseXY, bgheight, bgwidth, xAccessor, currentItem, xScale) {
 	return [originX, originY];
 }
 
-function drawOnCanvas(ctx, props, context, pointer) {
+function drawOnCanvas(ctx, props, context, pointer, height) {
 
-	var { height, margin, ratio } = context;
+	var { margin, ratio } = context;
 	var { bgFill, bgOpacity } = props;
 	var { backgroundShapeCanvas, tooltipCanvas } = props;
 
@@ -186,10 +183,10 @@ function drawOnCanvas(ctx, props, context, pointer) {
 	ctx.restore();
 }
 
-function helper(props, moreProps, context) {
+function helper(props, moreProps) {
 	var { show, xScale, mouseXY, currentItem, plotData } = moreProps;
 	var { bgheight, bgwidth, origin, tooltipContent } = props;
-	var { xAccessor, displayXAccessor } = context;
+	var { xAccessor, displayXAccessor } = moreProps;
 
 	if (!show || isNotDefined(currentItem)) return;
 

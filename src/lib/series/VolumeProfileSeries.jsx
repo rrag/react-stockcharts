@@ -16,7 +16,7 @@ class VolumeProfileSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { xAccessor, width } = this.context;
+		var { xAccessor, width } = moreProps;
 		var { rects, sessionBg } = helper(this.props, moreProps, xAccessor, width);
 
 		drawOnCanvas(ctx, this.props, rects, sessionBg);
@@ -33,7 +33,7 @@ class VolumeProfileSeries extends Component {
 		var { className, opacity } = this.props;
 		var { showSessionBackground, sessionBackGround, sessionBackGroundOpacity } = this.props;
 
-		var { xAccessor, width } = this.context;
+		var { xAccessor, width } = moreProps;
 		var { rects, sessionBg } = helper(this.props, moreProps, xAccessor, width);
 
 		var sessionBgSvg = showSessionBackground
@@ -65,10 +65,6 @@ VolumeProfileSeries.propTypes = {
 	sessionBackGroundOpacity: PropTypes.number,
 };
 
-VolumeProfileSeries.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
-	width: PropTypes.number.isRequired,
-};
 
 VolumeProfileSeries.defaultProps = {
 	opacity: 0.5,

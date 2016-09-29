@@ -12,7 +12,7 @@ class CurrentCoordinate extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var circle = helper(this.props, this.context, moreProps);
+		var circle = helper(this.props, moreProps);
 		if (!circle) return null;
 
 		ctx.fillStyle = circle.fill;
@@ -23,7 +23,7 @@ class CurrentCoordinate extends Component {
 	renderSVG(moreProps) {
 		var { className } = this.props;
 
-		var circle = helper(this.props, this.context, moreProps);
+		var circle = helper(this.props, moreProps);
 		if (!circle) return null;
 
 		return (
@@ -47,20 +47,16 @@ CurrentCoordinate.propTypes = {
 	className: PropTypes.string,
 };
 
-CurrentCoordinate.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
-};
 
 CurrentCoordinate.defaultProps = {
 	r: 3,
 	className: "react-stockcharts-current-coordinate",
 };
 
-function helper(props, context, moreProps) {
+function helper(props, moreProps) {
 	var { fill, yAccessor, r } = props;
-	var { xAccessor } = context;
 
-	var { show, xScale, chartConfig: { yScale }, currentItem } = moreProps;
+	var { show, xScale, chartConfig: { yScale }, currentItem, xAccessor } = moreProps;
 
 	// console.log(show);
 	if (!show || isNotDefined(currentItem)) return null;

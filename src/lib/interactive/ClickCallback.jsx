@@ -20,9 +20,8 @@ class ClickCallback extends Component {
 			// currentCharts,
 			currentItem,
 			chartConfig,
+			displayXAccessor,
 		} = moreProps;
-
-		var { displayXAccessor } = this.context;
 
 		var { yScale } = chartConfig;
 
@@ -48,10 +47,6 @@ ClickCallback.drawOnCanvas = noop;
 
 ClickCallback.propTypes = {
 	onClick: PropTypes.func.isRequired,
-};
-ClickCallback.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
-	displayXAccessor: PropTypes.func.isRequired,
 };
 
 ClickCallback.defaultProps = {

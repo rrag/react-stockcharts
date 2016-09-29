@@ -111,7 +111,7 @@ class GenericComponent extends Component {
 		// if (type !== "mousemove" && type !== "ff") this.moreProps.prevHovering = false;
 	}
 	isHover(e) {
-		return this.props.isHover(this.moreProps, e);
+		return this.props.isHover(this.getMoreProps(), e);
 	}
 	draw() {
 		var { chartCanvasType } = this.context;
@@ -157,10 +157,14 @@ class GenericComponent extends Component {
 		};
 	}
 	getMoreProps() {
-		var { xScale, plotData, chartConfig, morePropsDecorator } = this.context;
+		var { xScale, plotData, chartConfig, morePropsDecorator, xAccessor, displayXAccessor, width, height } = this.context;
+		var { chartId } = this.context;
 
 		var moreProps = {
 			xScale, plotData, chartConfig,
+			xAccessor, displayXAccessor,
+			width, height,
+			chartId,
 			...this.moreProps
 		};
 
@@ -178,13 +182,14 @@ class GenericComponent extends Component {
 	drawOnCanvas() {
 		var { canvasDraw, canvasToDraw, hoverCanvasToDraw } = this.props;
 		var { getCanvasContexts } = this.context;
-		var { hovering } = this.moreProps;
+
+		var moreProps = this.getMoreProps();
+
+		var { hovering } = moreProps;
 
 		var ctx = hovering
 			? hoverCanvasToDraw(getCanvasContexts())
 			: canvasToDraw(getCanvasContexts());
-
-		var moreProps = this.getMoreProps();
 
 		this.preCanvasDraw(ctx);
 		canvasDraw(ctx, moreProps);
@@ -254,6 +259,7 @@ GenericComponent.contextTypes = {
 	chartCanvasType: PropTypes.string,
 	xScale: PropTypes.func.isRequired,
 	xAccessor: PropTypes.func.isRequired,
+	displayXAccessor: PropTypes.func.isRequired,
 	plotData: PropTypes.array.isRequired,
 
 	chartConfig: PropTypes.oneOfType([

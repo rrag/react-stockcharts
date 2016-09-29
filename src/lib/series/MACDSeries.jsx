@@ -38,6 +38,12 @@ class MACDSeries extends Component {
 		var fill = calculator.fill();
 		return (
 			<g className={className}>
+				<BarSeries
+					baseAt={this.yAccessorForDivergenceBase}
+					className="macd-divergence"
+					widthRatio={0.5}
+					stroke={divergenceStroke} fill={fill.divergence} opacity={opacity}
+					yAccessor={this.yAccessorForDivergence} />
 				<LineSeries
 					yAccessor={this.yAccessorForMACD}
 					stroke={stroke.macd} fill="none"
@@ -46,12 +52,6 @@ class MACDSeries extends Component {
 					yAccessor={this.yAccessorForSignal}
 					stroke={stroke.signal} fill="none"
 					type={type} />
-				<BarSeries
-					baseAt={this.yAccessorForDivergenceBase}
-					className="macd-divergence"
-					widthRatio={0.5}
-					stroke={divergenceStroke} fill={fill.divergence} opacity={opacity}
-					yAccessor={this.yAccessorForDivergence} />
 				{getHorizontalLine(this.props)}
 			</g>
 		);
