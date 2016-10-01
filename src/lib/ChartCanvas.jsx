@@ -40,7 +40,7 @@ function getCursorStyle(useCrossHairStyleCursor) {
 	var style = `
 	.react-stockcharts-grabbing-cursor {
 		pointer-events: all;
-		cursor: grabbing;
+		cursor: -webkit-grabbing;
 	}
 	.react-stockcharts-crosshair-cursor {
 		pointer-events: all;
