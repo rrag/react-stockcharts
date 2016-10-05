@@ -12,6 +12,7 @@ import noop from "./noop";
 import shallowEqual from "./shallowEqual";
 import mappedSlidingWindow from "./mappedSlidingWindow";
 import accumulatingWindow from "./accumulatingWindow";
+import PureComponent from "./PureComponent";
 
 export {
 	accumulatingWindow,
@@ -22,6 +23,7 @@ export {
 	shallowEqual,
 	slidingWindow,
 	zipper,
+	PureComponent,
 };
 
 export function path(path = []) {

@@ -87,9 +87,10 @@ export default function financeDiscontinuousScale(index,
 		var backingTicks = backingLinearScale.ticks(m);
 
 		// ignore ticks within this distance
-		var distance = Math.ceil((backingTicks.length > 0
-			? (last(backingTicks) - head(backingTicks)) / (backingTicks.length - 1) / 4
-			: 1) * 1.5);
+		var distance = Math.ceil(
+			(backingTicks.length > 0
+				? (last(backingTicks) - head(backingTicks)) / (backingTicks.length)
+				: 1) * 1.5);
 
 		var ticks = [];
 		for (let i = start; i < end + 1; i++) {

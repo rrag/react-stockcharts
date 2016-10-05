@@ -26,7 +26,7 @@ const CANDIDATES_FOR_RESET = ["seriesName", /* "data",*/
 	"xScaleProvider", /* "xAccessor",*/"map",
 	"indexAccessor", "indexMutator"];
 
-const debug = false;
+const debug = true;
 
 function shouldResetChart(thisProps, nextProps) {
 	return !CANDIDATES_FOR_RESET.every(key => {
@@ -737,7 +737,7 @@ class ChartCanvas extends Component {
 	render() {
 
 		var { type, height, width, margin, className, zIndex, defaultFocus, ratio } = this.props;
-		var { useCrossHairStyleCursor, drawMode } = this.props;
+		var { useCrossHairStyleCursor, drawMode, onSelect } = this.props;
 
 		var { plotData, xScale, xAccessor, chartConfig } = this.state;
 		var dimensions = getDimensions(this.props);
@@ -746,7 +746,7 @@ class ChartCanvas extends Component {
 
 		var cursor = getCursorStyle(useCrossHairStyleCursor && interaction);
 		return (
-			<div style={{ position: "relative", height: height, width: width }} className={className} >
+			<div style={{ position: "relative", height: height, width: width }} className={className} onClick={onSelect}>
 				<CanvasContainer ref="canvases" width={width} height={height} ratio={ratio} type={type} zIndex={zIndex}/>
 				<svg className={className} width={width} height={height} style={{ position: "absolute", zIndex: (zIndex + 5) }}>
 					{cursor}
@@ -844,6 +844,7 @@ ChartCanvas.propTypes = {
 	defaultFocus: PropTypes.bool,
 	onLoadMore: PropTypes.func,
 	displayXAccessor: PropTypes.func,
+	onSelect: PropTypes.func,
 };
 
 ChartCanvas.defaultProps = {
@@ -865,6 +866,7 @@ ChartCanvas.defaultProps = {
 	drawMode: false,
 	defaultFocus: true,
 	onLoadMore: noop,
+	onSelect: noop,
 	// ratio: 2,
 };
 

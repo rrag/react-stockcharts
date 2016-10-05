@@ -1,7 +1,7 @@
 {
 	"presets": [
 		"react",
-		"stage-2"
+		"stage-3"
 	],
 	"plugins": [
 		"transform-flow-strip-types",
