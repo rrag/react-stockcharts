@@ -44,16 +44,12 @@ and it is simple to create your own indicator too
 
 ### Installation
 ```sh
-npm install react-stockcharts --save
+npm install react-stockcharts@next --save
 ```
 
 ### Documentation
 
 [Getting started](http://rrag.github.io/react-stockcharts/documentation.html#/getting_started)
-
-### Examples
-
-Refer to some [quick start examples](http://rrag.github.io/react-stockcharts/documentation.html#/quick_start_examples)
 
 ### Demo
 
