@@ -26,15 +26,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import { identity, isNotDefined } from "../../utils";
+import { isNotDefined, path } from "../../utils";
+import { EMA as defaultOptions } from "../defaultOptionsForComputation";
 
 export default function() {
 
-	var windowSize = 9,
-		source = identity;
+	var { windowSize, sourcePath } = defaultOptions;
 
 	function calculator(data) {
 
+		var source = path(sourcePath);
 		var alpha = 2 / (windowSize + 1);
 		var previous;
 		var initialAccumulator = 0;
@@ -60,7 +61,9 @@ export default function() {
 			}
 		});
 	}
-
+	calculator.undefinedLength = function() {
+		return windowSize;
+	};
 	calculator.windowSize = function(x) {
 		if (!arguments.length) {
 			return windowSize;
@@ -69,11 +72,11 @@ export default function() {
 		return calculator;
 	};
 
-	calculator.source = function(x) {
+	calculator.sourcePath = function(x) {
 		if (!arguments.length) {
-			return source;
+			return sourcePath;
 		}
-		source = x;
+		sourcePath = x;
 		return calculator;
 	};
 

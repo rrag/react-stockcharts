@@ -1,8 +1,9 @@
 "use strict";
 
-import d3 from "d3";
+import { rebind } from "d3fc-rebind";
 
-import { merge, slidingWindow } from "../utils";
+import { merge } from "../utils";
+import { change } from "./algorithm";
 
 import baseIndicator from "./baseIndicator";
 
@@ -14,14 +15,7 @@ export default function() {
 		.type(ALGORITHM_TYPE)
 		.accessor(d => d.elderRay);
 
-	var underlyingAlgorithm = slidingWindow()
-		.windowSize(2)
-		.source(d => d.close)
-		.accumulator(([prev, curr]) => {
-			var absoluteChange = curr - prev;
-			var percentChange = absoluteChange * 100 / prev;
-			return { absoluteChange, percentChange };
-		});
+	var underlyingAlgorithm = change();
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
@@ -35,9 +29,9 @@ export default function() {
 		return mergedAlgorithm(data);
 	};
 
-	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type");
-	d3.rebind(indicator, underlyingAlgorithm, "windowSize", "source");
-	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
+	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type");
+	rebind(indicator, underlyingAlgorithm, "sourcePath");
+	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;
 }

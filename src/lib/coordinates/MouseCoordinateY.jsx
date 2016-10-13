@@ -2,79 +2,43 @@
 
 import React, { PropTypes, Component } from "react";
 
-import EdgeCoordinate from "./EdgeCoordinate";
-import pure from "../pure";
+import { drawOnCanvas, renderSVG } from "./EdgeCoordinateV2";
+import GenericChartComponent from "../GenericChartComponent";
 
-import { isDefined, isNotDefined, shallowEqual } from "../utils";
+import { isNotDefined } from "../utils";
 
 class MouseCoordinateY extends Component {
-	componentDidMount() {
-		var { chartCanvasType, getCanvasContexts } = this.props;
-
-		if (chartCanvasType !== "svg" && isDefined(getCanvasContexts)) {
-			var contexts = getCanvasContexts();
-			if (contexts) drawOnCanvas(contexts.mouseCoord, this.props);
-		}
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
-	componentDidUpdate() {
-		this.componentDidMount();
-	}
-	componentWillMount() {
-		this.componentWillReceiveProps(this.props);
-	}
-	componentWillReceiveProps(nextProps) {
-		var draw = drawOnCanvasStatic.bind(null, nextProps);
-		var { id, chartId } = nextProps;
-
-		if (!shallowEqual(this.props, nextProps)) {
-			var temp = nextProps.getAllCanvasDrawCallback()
-				.filter(each => each.type === "mouse")
-				.filter(each => each.subType === "MouseCoordinateY")
-				.filter(each => each.chartId === chartId)
-				.filter(each => each.id === id);
-
-			if (temp.length === 0) {
-				nextProps.callbackForCanvasDraw({
-					type: "mouse",
-					subType: "MouseCoordinateY",
-					id, chartId, draw,
-				});
-			} else {
-				nextProps.callbackForCanvasDraw(temp[0], {
-					type: "mouse",
-					subType: "MouseCoordinateY",
-					id, chartId, draw,
-				});
-			}
-		}
-	}
-	render() {
-		var { chartCanvasType, chartConfig, mouseXY, xScale, currentCharts, currentItem } = this.props;
-		if (chartCanvasType !== "svg") return null;
-
-		var props = helper(this.props, xScale, chartConfig, mouseXY, currentCharts, currentItem);
+	drawOnCanvas(ctx, moreProps) {
+		var props = helper(this.props, moreProps);
 		if (isNotDefined(props)) return null;
 
-		return (
-			<EdgeCoordinate
-				className="vertical"
-				{...props}
-				/>
-		);
+		drawOnCanvas(ctx, props);
+	}
+	renderSVG(moreProps) {
+		var props = helper(this.props, moreProps);
+		if (isNotDefined(props)) return null;
+
+		return renderSVG(props);
+	}
+	render() {
+		return <GenericChartComponent
+			svgDraw={this.renderSVG}
+			canvasDraw={this.drawOnCanvas}
+			clip={false}
+			drawOnMouseMove
+			drawOnPan
+			drawOnMouseExitOfCanvas
+			/>;
 	}
 }
 
 MouseCoordinateY.propTypes = {
-	id: PropTypes.number.isRequired,
 	displayFormat: PropTypes.func.isRequired,
-
-	chartCanvasType: PropTypes.string.isRequired,
-	getCanvasContexts: PropTypes.func,
-	chartConfig: PropTypes.object.isRequired,
-	mouseXY: PropTypes.array,
-	xScale: PropTypes.func.isRequired,
-	currentCharts: PropTypes.arrayOf(PropTypes.number),
-	currentItem: PropTypes.object,
 };
 
 MouseCoordinateY.defaultProps = {
@@ -83,6 +47,7 @@ MouseCoordinateY.defaultProps = {
 	rectHeight: 20,
 	orient: "left",
 	at: "left",
+	dx: 0,
 	arrowWidth: 10,
 	fill: "#525252",
 	opacity: 1,
@@ -91,14 +56,16 @@ MouseCoordinateY.defaultProps = {
 	textFill: "#FFFFFF",
 };
 
-function helper(props, xScale, { id, yScale, origin }, mouseXY, currentCharts/* , currentItem */) {
+function helper(props, moreProps) {
+	var { chartId, width } = moreProps;
+	var { show, currentCharts, chartConfig: { yScale, origin }, mouseXY } = moreProps;
+
 	if (isNotDefined(mouseXY)) return null;
-	if (currentCharts.indexOf(id) < 0) return null;
 
-	var { width, show } = props;
+	if (currentCharts.indexOf(chartId) < 0) return null;
 
-	var { orient, at, rectWidth, rectHeight, displayFormat } = props;
-	var { fill, opacity, fontFamily, fontSize, textFill } = props;
+	var { orient, at, rectWidth, rectHeight, displayFormat, dx } = props;
+	var { fill, opacity, fontFamily, fontSize, textFill, arrowWidth } = props;
 
 	var x1 = 0, x2 = width;
 	var edgeAt = (at === "right")
@@ -120,6 +87,8 @@ function helper(props, xScale, { id, yScale, origin }, mouseXY, currentCharts/* 
 		fill, opacity, fontFamily, fontSize, textFill,
 		rectWidth,
 		rectHeight,
+		arrowWidth,
+		dx,
 		x1,
 		x2,
 		y1: y,
@@ -128,45 +97,4 @@ function helper(props, xScale, { id, yScale, origin }, mouseXY, currentCharts/* 
 	return coordinateProps;
 }
 
-function drawOnCanvas(canvasContext, props) {
-	var { chartConfig, currentItem, xScale, mouseXY, show, currentCharts } = props;
-
-	drawOnCanvasStatic(props, canvasContext, show, xScale, mouseXY, currentCharts, chartConfig, currentItem);
-}
-
-// mouseContext, show, xScale, mouseXY, currentCharts, chartConfig, currentItem
-function drawOnCanvasStatic(props, ctx, show, xScale, mouseXY, currentCharts, chartConfig, currentItem) {
-	var { canvasOriginX, canvasOriginY } = props;
-
-	var edgeProps = helper(props, xScale, chartConfig, mouseXY, currentCharts, currentItem);
-
-	ctx.save();
-	ctx.setTransform(1, 0, 0, 1, 0, 0);
-	ctx.translate(canvasOriginX, canvasOriginY);
-
-	EdgeCoordinate.drawOnCanvasStatic(ctx, edgeProps);
-
-	ctx.restore();
-}
-
-export default pure(MouseCoordinateY, {
-	show: PropTypes.bool.isRequired,
-	currentItem: PropTypes.object,
-	chartConfig: PropTypes.object.isRequired,
-	mouseXY: PropTypes.array,
-	canvasOriginX: PropTypes.number,
-	canvasOriginY: PropTypes.number,
-
-	width: PropTypes.number.isRequired,
-	displayXAccessor: PropTypes.func.isRequired,
-	currentCharts: PropTypes.arrayOf(PropTypes.number),
-
-	xAccessor: PropTypes.func.isRequired,
-	xScale: PropTypes.func.isRequired,
-	chartId: PropTypes.number.isRequired,
-	getCanvasContexts: PropTypes.func,
-	margin: PropTypes.object.isRequired,
-	callbackForCanvasDraw: PropTypes.func.isRequired,
-	getAllCanvasDrawCallback: PropTypes.func,
-	chartCanvasType: PropTypes.string.isRequired,
-});
+export default MouseCoordinateY;

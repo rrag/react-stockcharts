@@ -1,9 +1,10 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import d3 from "d3";
+import { select, event as d3Event } from "d3-selection";
 
-import { mousePosition, touchPosition, d3Window, MOUSEMOVE, MOUSEUP } from "./utils";
+import { isDefined, mousePosition, touchPosition, d3Window, MOUSEMOVE, MOUSEUP } from "./utils";
+import { getCurrentCharts } from "./utils/ChartDataUtil";
 
 function getTouchProps(touch) {
 	if (!touch) return {};
@@ -14,8 +15,6 @@ function getTouchProps(touch) {
 		clientY: touch.clientY
 	};
 }
-
-
 
 class EventCapture extends Component {
 	constructor(props) {
@@ -30,198 +29,245 @@ class EventCapture extends Component {
 		this.handleTouchStart = this.handleTouchStart.bind(this);
 		this.handleTouchMove = this.handleTouchMove.bind(this);
 		this.handleTouchEnd = this.handleTouchEnd.bind(this);
+		this.handleRightClick = this.handleRightClick.bind(this);
 		this.lastTouch = {};
 		this.initialPinch = {};
 		this.mouseInteraction = true;
-	}
-	getChildContext() {
-		return {
-			eventMeta: this.eventMeta,
+		this.state = {
+			panInProgress: false,
 		};
 	}
+
 	componentWillMount() {
-		if (this.context.onFocus) this.context.onFocus(this.props.defaultFocus);
+		this.focus = this.props.focus;
 	}
 	handleEnter(e) {
-		var { eventMeta } = this.props;
-		this.eventMeta = eventMeta(e, ["enter"]);
-
-		if (this.context.onMouseEnter) {
-			this.context.onMouseEnter(e);
-		}
+		var { onMouseEnter } = this.props;
+		onMouseEnter(e);
 	}
 	handleLeave(e) {
-		var { eventMeta } = this.props;
-		this.eventMeta = eventMeta(e, ["exit"]);
-
-		if (this.context.onMouseLeave)
-			this.context.onMouseLeave(e);
+		var { onMouseLeave } = this.props;
+		onMouseLeave(e);
 	}
 	handleWheel(e) {
-		var { zoom, onZoom, zoomMultiplier, eventMeta } = this.props;
+		var { zoom, onZoom, zoomMultiplier } = this.props;
 
-		if (zoom && this.context.onZoom
-				&& this.context.focus) {
-			// e.stopPropagation();
+		if (zoom && this.focus) {
 			e.preventDefault();
+
 			var newPos = mousePosition(e);
 			var zoomDir = e.deltaY > 0 ? zoomMultiplier : -zoomMultiplier;
 
-			this.eventMeta = eventMeta(e, ["zoom"]);
-
-			this.context.onZoom(zoomDir, newPos, e);
-
-			if (onZoom) {
-				onZoom(newPos, e);
-			}
+			onZoom(zoomDir, newPos, e);
 		}
-
 	}
 	handleMouseMove(e) {
-		var { eventMeta, onMouseMove } = this.props;
-		this.eventMeta = eventMeta(e, ["mousemove"]);
-
-		var newPos = mousePosition(e);
+		var { onMouseMove, mouseMove } = this.props;
 
 		if (this.mouseInteraction
-				&& this.context.onMouseMove
-				&& this.props.mouseMove
-				&& !this.context.panInProgress) {
-			this.context.onMouseMove(newPos, "mouse", e);
+				&& mouseMove
+				&& !this.state.panInProgress) {
+
+			var newPos = mousePosition(e);
+
+			onMouseMove(newPos, "mouse", e);
 		}
-		if (onMouseMove) onMouseMove(newPos, e);
-	}
-	handleMouseDown(e) {
-		var mouseEvent = e || d3.event;
-		var { pan, eventMeta } = this.props;
-
-		this.eventMeta = eventMeta(mouseEvent, ["mousedown"]);
-
-		var { onPanStart, focus, onFocus, xScale } = this.context;
-		if (this.mouseInteraction && pan && onPanStart) {
-			var mouseXY = mousePosition(mouseEvent);
-			this.panStart = mouseXY;
-
-			var dx = mouseEvent.pageX - mouseXY[0],
-				dy = mouseEvent.pageY - mouseXY[1];
-
-			var captureDOM = this.refs.capture;
-
-			var win = d3Window(captureDOM);
-			d3.select(win)
-				.on(MOUSEMOVE, this.handlePan)
-				.on(MOUSEUP, this.handlePanEnd);
-
-			onPanStart(xScale.domain(), mouseXY, [dx, dy]);
-		} else {
-			if (!focus && onFocus) onFocus(true);
-		}
-		mouseEvent.preventDefault();
 	}
 	handleRightClick(e) {
+		e.stopPropagation();
 		e.preventDefault();
-		// console.log("RIGHT CLICK");
+
+		var { onContextMenu, onPanEnd } = this.props;
+		var { dx, dy, panStartXScale, panOrigin, chartsToPan } = this.state.panStart;
+
+		var newPos = [e.pageX - dx, e.pageY - dy];
+
+		if (this.panHappened) {
+			onPanEnd(newPos, panStartXScale, panOrigin, chartsToPan, e);
+		}
+
+		onContextMenu(newPos, e);
+
+		var win = d3Window(this.refs.capture);
+		select(win)
+			.on(MOUSEMOVE, null)
+			.on(MOUSEUP, null);
+
+		this.contextMenuClicked = true;
+		this.setState({
+			panInProgress: false,
+			panStart: null,
+		});
+		// onPanEnd(newPos, e);
+	}
+	handleMouseDown(e) {
+		var { pan, xScale, chartConfig, onMouseDown } = this.props;
+		this.panHappened = false;
+		this.focus = true;
+
+		if (!this.state.panInProgress && this.mouseInteraction) {
+
+			var mouseXY = mousePosition(e);
+
+			var dx = e.pageX - mouseXY[0],
+				dy = e.pageY - mouseXY[1];
+
+			var currentCharts = getCurrentCharts(chartConfig, mouseXY);
+
+			this.setState({
+				panInProgress: pan,
+				panStart: {
+					panStartXScale: xScale,
+					panOrigin: mouseXY,
+					dx, dy,
+					chartsToPan: currentCharts
+				},
+			});
+
+			if (pan) {
+				var win = d3Window(this.refs.capture);
+				select(win)
+					.on(MOUSEMOVE, this.handlePan)
+					.on(MOUSEUP, this.handlePanEnd);
+			}
+
+			if (!pan) {
+				e.persist();
+				setTimeout(() => {
+					if (!this.contextMenuClicked) {
+						// console.log("NO RIGHT")
+						onMouseDown(mouseXY, currentCharts, e);
+					}
+					this.contextMenuClicked = false;
+				}, 100);
+			}
+		}
+		e.preventDefault();
 	}
 	handlePan() {
-		// console.log("handlePan")
-		var e = d3.event;
+		var e = d3Event;
+		var { pan: panEnabled, onPan } = this.props;
 
-		var { eventMeta } = this.props;
-		var { pan: panEnabled, onPan: panListener } = this.props;
-		var { deltaXY: dxdy, xScale, onPan } = this.context;
-
-		var newPos = [e.pageX - dxdy[0], e.pageY - dxdy[1]];
-
-		this.eventMeta = eventMeta(e, ["pan"]);
 		// console.log("moved from- ", startXY, " to ", newPos);
-		if (this.mouseInteraction && panEnabled && onPan) {
 
-			onPan(newPos, xScale.domain(), e);
-			if (panListener) {
-				panListener(newPos, e);
-			}
+		if (this.mouseInteraction
+				&& panEnabled
+				&& onPan
+				&& isDefined(this.state.panStart)) {
+
+			this.panHappened = true;
+
+			var { dx, dy, panStartXScale, panOrigin, chartsToPan } = this.state.panStart;
+			var newPos = [e.pageX - dx, e.pageY - dy];
+
+			onPan(newPos, panStartXScale, panOrigin, chartsToPan, e);
 		}
 	}
 	handlePanEnd() {
-		var e = d3.event;
+		var e = d3Event;
 
-		var { pan: panEnabled, eventMeta } = this.props;
-		var { deltaXY: dxdy, onPanEnd } = this.context;
+		var { pan: panEnabled, onPanEnd, onClick, onDoubleClick } = this.props;
 
+		if (isDefined(this.state.panStart)) {
+			var { dx, dy, panStartXScale, panOrigin, chartsToPan } = this.state.panStart;
 
-		var [startX, startY] = this.panStart;
-		var [x, y] = [e.pageX - dxdy[0], e.pageY - dxdy[1]];
+			var newPos = [e.pageX - dx, e.pageY - dy];
 
-		var eventType = startX === x && startY === y ? ["click"] : [];
+			if (!this.panHappened) {
+				if (this.clicked) {
+					onDoubleClick(newPos, e);
+				} else {
+					this.clicked = true;
+					setTimeout(() => {
+						this.clicked = false;
+					}, 300);
+					onClick(newPos, e);
+				}
+			}
 
-		this.eventMeta = eventMeta(e, ["mouseup"].concat(eventType));
-		this.panStart = null;
+			if (this.mouseInteraction
+					&& this.panHappened
+					// && !this.contextMenuClicked
+					&& panEnabled
+					&& onPanEnd) {
+				var win = d3Window(this.refs.capture);
+				select(win)
+					.on(MOUSEMOVE, null)
+					.on(MOUSEUP, null);
+				onPanEnd(newPos, panStartXScale, panOrigin, chartsToPan, e);
+			}
 
-		var captureDOM = this.refs.capture;
-
-		var win = d3Window(captureDOM);
-
-		if (this.mouseInteraction && panEnabled && onPanEnd) {
-			d3.select(win)
-				.on(MOUSEMOVE, null)
-				.on(MOUSEUP, null);
-			onPanEnd([x, y], e);
+			this.setState({
+				panInProgress: false,
+				panStart: null,
+			});
 		}
-		// e.preventDefault();
 	}
 	handleTouchStart(e) {
 		this.mouseInteraction = false;
 
 		var { pan: panEnabled } = this.props;
-		var { deltaXY: dxdy } = this.context;
 
-		var { onPanStart, onMouseMove, xScale, onPanEnd, panInProgress } = this.context;
+		var { xScale, onPanEnd } = this.props;
 
 		if (e.touches.length === 1) {
 			var touch = getTouchProps(e.touches[0]);
-			this.lastTouch = touch;
 			var touchXY = touchPosition(touch, e);
-			onMouseMove(touchXY, "touch", e);
-			if (panEnabled && onPanStart) {
-				var dx = touch.pageX - touchXY[0],
+			this.lastTouch = touch;
+			// onMouseMove(touchXY, "touch", e);
+			if (panEnabled) {
+				const dx = touch.pageX - touchXY[0],
 					dy = touch.pageY - touchXY[1];
 
-				onPanStart(xScale.domain(), touchXY, [dx, dy]);
+				this.setState({
+					panInProgress: true,
+					panStart: {
+						panStartXScale: xScale,
+						panOrigin: touchXY,
+						dx, dy
+					}
+				});
 			}
 		} else if (e.touches.length === 2) {
 			// pinch zoom begin
 			// do nothing pinch zoom is handled in handleTouchMove
 			var touch1 = getTouchProps(e.touches[0]);
+			var { panInProgress, panStart } = this.state;
 
 			if (panInProgress && panEnabled && onPanEnd) {
+				const { dx, dy, panStartXScale, panOrigin } = panStart;
+
 				// end pan first
-				var newPos = [touch1.pageX - dxdy[0], touch1.pageY - dxdy[1]];
-				onPanEnd(newPos, e);
+				var newPos = [touch1.pageX - dx, touch1.pageY - dy];
 				this.lastTouch = null;
+
+				this.setState({
+					panInProgress: false,
+					panStart: null,
+				});
+				onPanEnd(newPos, panStartXScale, panOrigin, e);
 			}
 		}
 
 		if (e.touches.length !== 2) this.initialPinch = null;
-		// var newPos = mousePosition(e);
+
 		// console.log("handleTouchStart", e);
 		e.preventDefault();
-		// e.stopPropagation();
-		// this.context.onMouseMove(newPos, e);
 	}
 	handleTouchMove(e) {
-		var { pan: panEnabled, onPan: panListener, zoom: zoomEnabled } = this.props;
-		var { deltaXY: dxdy, xScale, onPan, onPinchZoom, focus, panInProgress } = this.context;
+		var { pan: panEnabled, zoom: zoomEnabled } = this.props;
+		var { xScale, onPan, onPinchZoom } = this.props;
+		var { panInProgress, panStart } = this.state;
 
 		if (e.touches.length === 1) {
 			// pan
 			var touch = this.lastTouch = getTouchProps(e.touches[0]);
 
-			var newPos = [touch.pageX - dxdy[0], touch.pageY - dxdy[1]];
 			if (panInProgress && panEnabled && onPan) {
-				onPan(newPos, xScale.domain());
-				if (panListener) {
-					panListener(e);
-				}
+				var { dx, dy, panStartXScale, panOrigin, chartsToPan } = panStart;
+
+				var newPos = [touch.pageX - dx, touch.pageY - dy];
+				onPan(newPos, panStartXScale, panOrigin, chartsToPan, e);
 			}
 		} else if (e.touches.length === 2) {
 			// pinch zoom
@@ -254,15 +300,18 @@ class EventCapture extends Component {
 	}
 	handleTouchEnd(e) {
 		// TODO enableMouseInteraction
-		var { pan: panEnabled } = this.props;
-		var { deltaXY: dxdy, onPanEnd, panInProgress } = this.context;
+		var { pan: panEnabled, onPanEnd } = this.props;
+		var { panInProgress, panStart } = this.state;
 
-		if (this.lastTouch) {
-			var newPos = [this.lastTouch.pageX - dxdy[0], this.lastTouch.pageY - dxdy[1]];
+		if (this.lastTouch && isDefined(panStart)) {
+			var { dx, dy, panStartXScale, panOrigin, chartsToPan } = panStart;
+			var newPos = [this.lastTouch.pageX - dx, this.lastTouch.pageY - dy];
 
 			this.initialPinch = null;
+
 			if (panInProgress && panEnabled && onPanEnd) {
-				onPanEnd(newPos, e);
+
+				onPanEnd(newPos, panStartXScale, panOrigin, chartsToPan, e);
 			}
 		}
 		// console.log("handleTouchEnd", dxdy, newPos, e);
@@ -270,24 +319,21 @@ class EventCapture extends Component {
 		e.preventDefault();
 	}
 	render() {
-		var className = this.context.panInProgress ? "react-stockcharts-grabbing-cursor" : "react-stockcharts-crosshair-cursor";
-		var clipStyle = { "clipPath": "url(#chart-area-clip)" };
+		var { height, width } = this.props;
+		var className = this.state.panInProgress ? "react-stockcharts-grabbing-cursor" : "react-stockcharts-crosshair-cursor";
 		return (
-			<g style={clipStyle}>
-				<rect ref="capture"
-					className={className}
-					width={this.context.width} height={this.context.height} style={{ opacity: 0 }}
-					onMouseEnter={this.handleEnter}
-					onMouseLeave={this.handleLeave}
-					onMouseMove={this.handleMouseMove}
-					onWheel={this.handleWheel}
-					onMouseDown={this.handleMouseDown}
-					onContextMenu={this.handleRightClick}
-					onTouchStart={this.handleTouchStart}
-					onTouchEnd={this.handleTouchEnd}
-					onTouchMove={this.handleTouchMove} />
-				{this.props.children}
-			</g>
+			<rect ref="capture"
+				className={className}
+				width={width} height={height} style={{ opacity: 0 }}
+				onMouseEnter={this.handleEnter}
+				onMouseLeave={this.handleLeave}
+				onMouseMove={this.handleMouseMove}
+				onWheel={this.handleWheel}
+				onMouseDown={this.handleMouseDown}
+				onContextMenu={this.handleRightClick}
+				onTouchStart={this.handleTouchStart}
+				onTouchEnd={this.handleTouchEnd}
+				onTouchMove={this.handleTouchMove} />
 		);
 	}
 }
@@ -298,12 +344,26 @@ EventCapture.propTypes = {
 	zoomMultiplier: PropTypes.number.isRequired,
 	pan: PropTypes.bool.isRequired,
 	panSpeedMultiplier: PropTypes.number.isRequired,
-	defaultFocus: PropTypes.bool.isRequired,
-	useCrossHairStyle: PropTypes.bool.isRequired,
-	onZoom: PropTypes.func,
-	onPan: PropTypes.func,
+	focus: PropTypes.bool.isRequired,
+
+	width: PropTypes.number.isRequired,
+	height: PropTypes.number.isRequired,
+	chartConfig: PropTypes.array,
+	xScale: PropTypes.func.isRequired,
+	xAccessor: PropTypes.func.isRequired,
+
 	onMouseMove: PropTypes.func,
-	eventMeta: PropTypes.func,
+	onMouseEnter: PropTypes.func,
+	onMouseLeave: PropTypes.func,
+	onZoom: PropTypes.func,
+	onPinchZoom: PropTypes.func,
+	onPan: PropTypes.func,
+	onPanEnd: PropTypes.func,
+
+	onClick: PropTypes.func,
+	onDoubleClick: PropTypes.func,
+	onContextMenu: PropTypes.func,
+	onMouseDown: PropTypes.func,
 	children: PropTypes.node,
 };
 
@@ -313,34 +373,7 @@ EventCapture.defaultProps = {
 	zoomMultiplier: 1,
 	pan: false,
 	panSpeedMultiplier: 1,
-	defaultFocus: false,
-	useCrossHairStyle: true,
-	eventMeta: (e, type) => { var { button, shiftKey } = e; return { button, shiftKey, type }; },
-};
-
-EventCapture.contextTypes = {
-	width: PropTypes.number.isRequired,
-	height: PropTypes.number.isRequired,
-	panInProgress: PropTypes.bool,
-	focus: PropTypes.bool.isRequired,
-	chartConfig: PropTypes.array,
-	xScale: PropTypes.func.isRequired,
-	xAccessor: PropTypes.func.isRequired,
-	deltaXY: PropTypes.arrayOf(Number),
-
-	onMouseMove: PropTypes.func,
-	onMouseEnter: PropTypes.func,
-	onMouseLeave: PropTypes.func,
-	onZoom: PropTypes.func,
-	onPinchZoom: PropTypes.func,
-	onPanStart: PropTypes.func,
-	onPan: PropTypes.func,
-	onPanEnd: PropTypes.func,
-	onFocus: PropTypes.func,
-};
-
-EventCapture.childContextTypes = {
-	eventMeta: PropTypes.object,
+	focus: false,
 };
 
 export default EventCapture;

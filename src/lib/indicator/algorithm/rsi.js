@@ -26,18 +26,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import d3 from "d3";
+import { mean } from "d3-array";
 
-import { isDefined, last, identity, slidingWindow } from "../../utils";
-import { RSI as defaultOptions } from "../defaultOptions";
+import { isDefined, last, slidingWindow, path } from "../../utils";
+import { RSI as defaultOptions } from "../defaultOptionsForComputation";
 
 export default function() {
 
-	var { period: windowSize } = defaultOptions;
-	var source = identity;
+	var { windowSize, sourcePath } = defaultOptions;
 
 	function calculator(data) {
 
+		var source = path(sourcePath);
 		var prevAvgGain, prevAvgLoss;
 		var rsiAlgorithm = slidingWindow()
 			.windowSize(windowSize)
@@ -45,11 +45,11 @@ export default function() {
 
 				var avgGain = isDefined(prevAvgGain)
 					? (prevAvgGain * (windowSize - 1) + last(values).gain) / windowSize
-					: d3.mean(values, (each) => each.gain);
+					: mean(values, (each) => each.gain);
 
 				var avgLoss = isDefined(prevAvgLoss)
 					? (prevAvgLoss * (windowSize - 1) + last(values).loss) / windowSize
-					: d3.mean(values, (each) => each.loss);
+					: mean(values, (each) => each.loss);
 
 				var relativeStrength = avgGain / avgLoss;
 				var rsi = 100 - (100 / (1 + relativeStrength));
@@ -79,7 +79,9 @@ export default function() {
 
 		return rsiData;
 	}
-
+	calculator.undefinedLength = function() {
+		return windowSize;
+	};
 	calculator.windowSize = function(x) {
 		if (!arguments.length) {
 			return windowSize;
@@ -87,11 +89,11 @@ export default function() {
 		windowSize = x;
 		return calculator;
 	};
-	calculator.source = function(x) {
+	calculator.sourcePath = function(x) {
 		if (!arguments.length) {
-			return source;
+			return sourcePath;
 		}
-		source = x;
+		sourcePath = x;
 		return calculator;
 	};
 

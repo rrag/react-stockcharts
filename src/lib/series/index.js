@@ -1,4 +1,5 @@
 import AreaSeries from "./AreaSeries";
+import AreaOnlySeries from "./AreaOnlySeries";
 import ScatterSeries from "./ScatterSeries";
 import CircleMarker from "./CircleMarker";
 import LineSeries from "./LineSeries";
@@ -16,19 +17,13 @@ import RSISeries from "./RSISeries";
 import StochasticSeries from "./StochasticSeries";
 import ElderRaySeries from "./ElderRaySeries";
 import VolumeProfileSeries from "./VolumeProfileSeries";
-
-// import ElderImpulseBackground from "./ElderImpulseBackground";
-
-import Area from "./Area";
-import Line from "./Line";
 import StraightLine from "./StraightLine";
-
-import wrap from "./wrap";
 
 export {
 	ScatterSeries,
 	CircleMarker,
 	AreaSeries,
+	AreaOnlySeries,
 	LineSeries,
 	CandlestickSeries,
 	OHLCSeries,
@@ -44,8 +39,5 @@ export {
 	StochasticSeries,
 	ElderRaySeries,
 	VolumeProfileSeries,
-	Area,
-	Line,
 	StraightLine,
-	wrap
 };

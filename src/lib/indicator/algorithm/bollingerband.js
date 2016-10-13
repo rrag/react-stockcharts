@@ -26,30 +26,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import d3 from "d3";
+import { mean, deviation } from "d3-array";
 
 import ema from "./ema";
-import { last, identity, slidingWindow, zipper } from "../../utils";
+import { last, slidingWindow, zipper, path } from "../../utils";
 
-import { BollingerBand as defaultOptions } from "../defaultOptions";
+import { BollingerBand as defaultOptions } from "../defaultOptionsForComputation";
 
 export default function() {
 
-	var { period: windowSize, multiplier, movingAverageType } = defaultOptions;
-	var source = identity;
+	var { windowSize, multiplier, movingAverageType, sourcePath } = defaultOptions;
 
 	function calculator(data) {
-
+		var source = path(sourcePath);
 		var meanAlgorithm = movingAverageType === "ema"
-			? ema().windowSize(windowSize).source(source)
+			? ema().windowSize(windowSize).sourcePath(sourcePath)
 			: slidingWindow().windowSize(windowSize)
-				.accumulator(values => d3.mean(values)).source(source);
+				.accumulator(values => mean(values)).sourcePath(sourcePath);
 
 		var bollingerBandAlgorithm = slidingWindow()
 			.windowSize(windowSize)
 			.accumulator((values) => {
 				var avg = last(values).mean;
-				var stdDev = d3.deviation(values, (each) => source(each.datum));
+				var stdDev = deviation(values, (each) => source(each.datum));
 				return {
 					top: avg + multiplier * stdDev,
 					middle: avg,
@@ -63,7 +62,9 @@ export default function() {
 		var tuples = zip(data, meanAlgorithm(data));
 		return bollingerBandAlgorithm(tuples);
 	}
-
+	calculator.undefinedLength = function() {
+		return windowSize;
+	};
 	calculator.windowSize = function(x) {
 		if (!arguments.length) {
 			return windowSize;
@@ -88,11 +89,11 @@ export default function() {
 		return calculator;
 	};
 
-	calculator.source = function(x) {
+	calculator.sourcePath = function(x) {
 		if (!arguments.length) {
-			return source;
+			return sourcePath;
 		}
-		source = x;
+		sourcePath = x;
 		return calculator;
 	};
 

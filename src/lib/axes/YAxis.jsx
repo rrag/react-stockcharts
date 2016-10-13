@@ -1,32 +1,23 @@
 "use strict";
 
-import React, { PropTypes } from "react";
-
+import React, { Component, PropTypes } from "react";
 import Axis from "./Axis";
-import PureComponent from "../utils/PureComponent";
 
-class YAxis extends PureComponent {
+class YAxis extends Component {
+	constructor(props, context) {
+		super(props, context);
+		this.axisZoomCallback = this.axisZoomCallback.bind(this);
+	}
+	axisZoomCallback(newYDomain) {
+		var { chartId, yAxisZoom } = this.context;
+		yAxisZoom(chartId, newYDomain);
+	}
 	render() {
-		var { axisAt, tickFormat, ticks, percentScale, tickValues } = this.props;
-		var { chartConfig } = this.context;
-		var yScale = (percentScale) ? chartConfig.yScale.copy().domain([0, 1]) : chartConfig.yScale;
-
-		tickValues = tickValues || chartConfig.yTicks;
-
-		var axisLocation;
-
-		if (axisAt === "left") axisLocation = 0;
-		else if (axisAt === "right") axisLocation = this.context.width;
-		else if (axisAt === "middle") axisLocation = (this.context.width) / 2;
-		else axisLocation = axisAt;
-
-		return (
-			<Axis {...this.props}
-				transform={[axisLocation, 0]}
-				range={[0, this.context.height]}
-				tickFormat={tickFormat} ticks={[ticks]} tickValues={tickValues}
-				scale={yScale} />
-		);
+		var moreProps = helper(this.props, this.context);
+		return <Axis {...this.props} {...moreProps}
+			edgeClip
+			axisZoomCallback={this.axisZoomCallback}
+			zoomCursorClassName="react-stockcharts-ns-resize-cursor" />;
 	}
 }
 
@@ -42,22 +33,67 @@ YAxis.propTypes = {
 	tickPadding: PropTypes.number,
 	tickSize: PropTypes.number,
 	ticks: PropTypes.number,
+	yZoomWidth: PropTypes.number,
 	tickValues: PropTypes.array,
-	percentScale: PropTypes.bool,
 	showTicks: PropTypes.bool,
-	showDomain: PropTypes.bool,
 	className: PropTypes.string,
 };
+
 YAxis.defaultProps = {
 	showGrid: false,
-	showDomain: false,
+	showTicks: true,
+	showDomain: true,
 	className: "react-stockcharts-y-axis",
 	ticks: 10,
-};
-YAxis.contextTypes = {
-	chartConfig: PropTypes.object.isRequired,
-	xScale: PropTypes.func.isRequired,
-	width: PropTypes.number.isRequired,
+	outerTickSize: 0,
+	domainClassName: "react-stockcharts-axis-domain",
+	fill: "none",
+	stroke: "#FFFFFF",
+	strokeWidth: 1,
+	opacity: 1,
+	innerTickSize: 5,
+	tickPadding: 6,
+	tickStroke: "#000000",
+	tickStrokeOpacity: 1,
+	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
+	fontSize: 12,
+	yZoomWidth: 40,
+	// zoomEnabled: true,
+	getMouseDelta: (startXY, mouseXY) => startXY[1] - mouseXY[1],
 };
 
+YAxis.contextTypes = {
+	height: PropTypes.number.isRequired,
+	width: PropTypes.number.isRequired,
+	yAxisZoom: PropTypes.func.isRequired,
+	chartId: PropTypes.number.isRequired,
+	chartConfig: PropTypes.object.isRequired,
+};
+
+function helper(props, context) {
+	var { axisAt, yZoomWidth, orient } = props;
+	var { width, height } = context;
+
+	var axisLocation, y = 0, w = yZoomWidth, h = height;
+
+	if (axisAt === "left") {
+		axisLocation = 0;
+	} else if (axisAt === "right") {
+		axisLocation = width;
+	} else if (axisAt === "middle") {
+		axisLocation = (width) / 2;
+	} else {
+		axisLocation = axisAt;
+	}
+
+	var x = (orient === "left") ? -yZoomWidth : 0;
+
+	return {
+		transform: [axisLocation, 0],
+		range: [0, height],
+		getScale: moreProps => moreProps.chartConfig.yScale,
+		bg: { x, y, h, w },
+		zoomEnabled: context.chartConfig.yPan,
+	};
+}
 export default YAxis;

@@ -1,5 +1,10 @@
 [source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickChartWithCHMousePointer.jsx), [block](http://bl.ocks.org/rrag/261fa4bc7b67536eb789), [plunker](http://plnkr.co/edit/gist:261fa4bc7b67536eb789?p=preview)
 
+```js
+import { timeFormat } from "d3-time-format";
+import { format } from "d3-format";
+```
+
 ```jsx
 <ChartCanvas width={width} height={400}
 		margin={{left: 70, right: 70, top:10, bottom: 30}} type={type}
@@ -11,33 +16,30 @@
 			yExtents={[d => [d.high, d.low]]}>
 		<XAxis axisAt="bottom" orient="bottom"/>
 		<YAxis axisAt="right" orient="right" ticks={5} />
-		<MouseCoordinateY id={0}
+		<MouseCoordinateY
 			at="right"
 			orient="right"
-			displayFormat={d3.format(".2f")} />
+			displayFormat={format(".2f")} />
 		<CandlestickSeries />
+		<OHLCTooltip origin={[-40, 0]}/>
 	</Chart>
 	<Chart id={2} height={150}
 			yExtents={d => d.volume}
 			origin={(w, h) => [0, h - 150]}>
-		<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+		<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
 
-		<MouseCoordinateX id={0}
+		<MouseCoordinateX
 			at="bottom"
 			orient="bottom"
-			displayFormat={d3.time.format("%Y-%m-%d")} />
-		<MouseCoordinateY id={0}
+			displayFormat={timeFormat("%Y-%m-%d")} />
+		<MouseCoordinateY
 			at="left"
 			orient="left"
-			displayFormat={d3.format(".4s")} />
+			displayFormat={format(".4s")} />
 
 		<BarSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"} />
 	</Chart>
 	<CrossHairCursor />
-	<EventCapture mouseMove />
-	<TooltipContainer>
-		<OHLCTooltip forChart={1} origin={[-40, 0]}/>
-	</TooltipContainer>
 </ChartCanvas>
 ```
 

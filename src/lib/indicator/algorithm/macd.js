@@ -28,24 +28,24 @@ THE SOFTWARE.
 
 import ema from "./ema";
 
-import { isDefined, identity, zipper } from "../../utils";
-import { MACD as defaultOptions } from "../defaultOptions";
+import { isDefined, zipper } from "../../utils";
+import { MACD as defaultOptions } from "../defaultOptionsForComputation";
 
 export default function() {
 
-	var { fast, slow, signal } = defaultOptions;
-	var source = identity;
+	var { fast, slow, signal, sourcePath } = defaultOptions;
 
 	function calculator(data) {
 
 		var fastEMA = ema()
 			.windowSize(fast)
-			.source(source);
+			.sourcePath(sourcePath);
 		var slowEMA = ema()
 			.windowSize(slow)
-			.source(source);
+			.sourcePath(sourcePath);
 		var signalEMA = ema()
-			.windowSize(signal);
+			.windowSize(signal)
+			.sourcePath(undefined);
 
 		var macdCalculator = zipper()
 			.combine((fastEMA, slowEMA) => (isDefined(fastEMA) && isDefined(slowEMA)) ? fastEMA - slowEMA : undefined);
@@ -67,6 +67,9 @@ export default function() {
 		return macd;
 	}
 
+	calculator.undefinedLength = function() {
+		return slow + signal;
+	};
 	calculator.fast = function(x) {
 		if (!arguments.length) {
 			return fast;
@@ -91,13 +94,27 @@ export default function() {
 		return calculator;
 	};
 
-	calculator.source = function(x) {
+	calculator.sourcePath = function(x) {
 		if (!arguments.length) {
-			return source;
+			return sourcePath;
 		}
-		source = x;
+		sourcePath = x;
 		return calculator;
 	};
+
+	/* calculator.options = function(options) {
+		if (options) {
+			var { fast, slow, signal, source } = options;
+			underlyingAlgorithm
+				.fast(fast)
+				.slow(slow)
+				.signal(signal)
+				.source()
+		}
+		return {
+
+		}
+	}; */
 
 	return calculator;
 }

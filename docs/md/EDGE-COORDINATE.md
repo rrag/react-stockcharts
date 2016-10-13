@@ -4,7 +4,13 @@
 
 The edge values are updated on zoom and pan also
 
+
+
 ```jsx
+import { format } from "d3-format";
+
+...
+
 <Chart id={1} ...>
 	...
 	<EdgeIndicator itemType="last" orient="right" edgeAt="right"
@@ -23,12 +29,12 @@ The edge values are updated on zoom and pan also
 <Chart id={2} ...>
 	...
 	<EdgeIndicator itemType="first" orient="left" edgeAt="left"
-		yAccessor={d => d.volume} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
+		yAccessor={d => d.volume} displayFormat={format(".4s")} fill="#0F0F0F"/>
 	<EdgeIndicator itemType="last" orient="right" edgeAt="right"
-		yAccessor={d => d.volume} displayFormat={d3.format(".4s")} fill="#0F0F0F"/>
+		yAccessor={d => d.volume} displayFormat={format(".4s")} fill="#0F0F0F"/>
 	<EdgeIndicator itemType="first" orient="left" edgeAt="left"
-		yAccessor={smaVolume50.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume50.fill()}/>
+		yAccessor={smaVolume50.accessor()} displayFormat={format(".4s")} fill={smaVolume50.fill()}/>
 	<EdgeIndicator itemType="last" orient="right" edgeAt="right"
-		yAccessor={smaVolume50.accessor()} displayFormat={d3.format(".4s")} fill={smaVolume50.fill()}/>
+		yAccessor={smaVolume50.accessor()} displayFormat={format(".4s")} fill={smaVolume50.fill()}/>
 </Chart>
 ```

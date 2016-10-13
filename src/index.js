@@ -4,10 +4,10 @@
 import ChartCanvas from "./lib/ChartCanvas";
 import Chart from "./lib/Chart";
 
-import BackgroundText from "./lib/BackgroundText";
+import GenericChartComponent, { getAxisCanvas } from "./lib/GenericChartComponent";
+import GenericComponent from "./lib/GenericComponent";
 
-// interaction components
-import EventCapture from "./lib/EventCapture";
+import BackgroundText from "./lib/BackgroundText";
 
 // chart types & Series
 import * as series from "./lib/series";
@@ -24,14 +24,15 @@ import * as tooltip from "./lib/tooltip";
 import * as helper from "./lib/helper";
 
 import * as interactive from "./lib/interactive";
-import * as Utils from "./lib/utils";
+import * as utils from "./lib/utils";
 
-const version = "0.5.0";
+const version = "0.6.0-beta.1";
 
-export default {
+export {
 	ChartCanvas,
 	Chart,
-	EventCapture,
+	GenericChartComponent,
+	GenericComponent,
 	BackgroundText,
 	series,
 	coordinates,
@@ -44,6 +45,6 @@ export default {
 	helper,
 	interactive,
 	version,
-	Utils
+	utils,
+	getAxisCanvas,
 };
-

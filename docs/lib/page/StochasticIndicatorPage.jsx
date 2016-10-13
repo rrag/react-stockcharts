@@ -1,7 +1,7 @@
 "use strict";
 
 import React from "react";
-import ReStock from "react-stockcharts";
+import { helper } from "react-stockcharts";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -9,7 +9,7 @@ import Section from "lib/section";
 
 import CandleStickChartWithFullStochasticsIndicator from "lib/charts/CandleStickChartWithFullStochasticsIndicator";
 
-var { helper: { TypeChooser, SaveChartAsImage } } = ReStock;
+var { TypeChooser, SaveChartAsImage } = helper;
 
 var StochasticIndicatorPage = React.createClass({
 	statics: {

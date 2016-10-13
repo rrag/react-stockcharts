@@ -1,27 +1,28 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
+import { timeFormat } from "d3-time-format";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, annotation, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart, EventCapture } = ReStock;
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
 
-var { EdgeIndicator } = ReStock.coordinates;
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
-var { Annotate, LabelAnnotation, Label } = ReStock.annotation;
+var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { TooltipContainer, OHLCTooltip, MovingAverageTooltip } = ReStock.tooltip;
-var { XAxis, YAxis } = ReStock.axes;
-var { ema, sma } = ReStock.indicator;
-var { fitWidth } = ReStock.helper;
+var { EdgeIndicator } = coordinates;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
+var { Annotate, LabelAnnotation, Label } = annotation;
+
+var { OHLCTooltip, MovingAverageTooltip } = tooltip;
+var { XAxis, YAxis } = axes;
+var { ema, sma } = indicator;
+var { fitWidth } = helper;
 
 class CandleStickChartWithAnnotation extends React.Component {
 	render() {
-		var { data, type, width } = this.props;
+		var { data, type, width, ratio } = this.props;
 
 		var ema20 = ema()
 			.id(0)
@@ -43,39 +44,39 @@ class CandleStickChartWithAnnotation extends React.Component {
 			text: "\ue182",
 			y: ({ yScale }) => yScale.range()[0],
 			onClick: console.log.bind(console),
-			tooltip: d => d3.time.format("%B")(d.date),
+			tooltip: d => timeFormat("%B")(d.date),
 			// onMouseOver: console.log.bind(console),
 		};
 
-		var margin = {left: 80, right: 80, top:30, bottom: 50};
+		var margin = { left: 80, right: 80, top: 30, bottom: 50 };
 		var height = 400;
 
-		var [yAxisLabelX, yAxisLabelY] = [width -margin.left - 40, margin.top + (height - margin.top - margin.bottom) / 2]
+		var [yAxisLabelX, yAxisLabelY] = [width - margin.left - 40, margin.top + (height - margin.top - margin.bottom) / 2]
 		return (
-			<ChartCanvas width={width} height={height}
+			<ChartCanvas ratio={ratio} width={width} height={height}
 					margin={margin} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2015, 0, 1), new Date(2015, 5, 8)]}>
 
-				<Label x={(width -margin.left - margin.right)/ 2} y={30}
+				<Label x={(width - margin.left - margin.right) / 2} y={30}
 					fontSize="30" text="Chart title here" />
 
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
 						padding={{ top: 10, bottom: 20 }}>
 					<XAxis axisAt="bottom" orient="bottom"/>
-					<MouseCoordinateX id={0}
+					<MouseCoordinateX
 						at="bottom"
 						orient="bottom"
-						displayFormat={d3.time.format("%Y-%m-%d")} />
-					<MouseCoordinateY id={0}
+						displayFormat={timeFormat("%Y-%m-%d")} />
+					<MouseCoordinateY
 						at="right"
 						orient="right"
-						displayFormat={d3.format(".2f")} />
+						displayFormat={format(".2f")} />
 
-					<Label x={(width -margin.left - margin.right)/ 2} y={height - 45}
+					<Label x={(width - margin.left - margin.right) / 2} y={height - 45}
 						fontSize="12" text="XAxis Label here" />
 
 					<YAxis axisAt="right" orient="right" ticks={5} />
@@ -88,24 +89,23 @@ class CandleStickChartWithAnnotation extends React.Component {
 					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
 					<LineSeries yAccessor={ema50.accessor()} stroke={ema50.stroke()}/>
 
-					<CurrentCoordinate id={1} yAccessor={ema20.accessor()} fill={ema20.stroke()} />
-					<CurrentCoordinate id={2} yAccessor={ema50.accessor()} fill={ema50.stroke()} />
+					<CurrentCoordinate yAccessor={ema20.accessor()} fill={ema20.stroke()} />
+					<CurrentCoordinate yAccessor={ema50.accessor()} fill={ema50.stroke()} />
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
+
+					<OHLCTooltip origin={[-40, 0]}/>
+					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]} 
+						calculators={[ema20, ema50]}/>
+
+					<Annotate with={LabelAnnotation}
+						when={d => d.date.getDate() === 1 /* some condition */}
+						usingProps={annotationProps} />
+
 				</Chart>
 				<CrossHairCursor />
 
-				<EventCapture mouseMove zoom pan />
-				<TooltipContainer>
-					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
-					<MovingAverageTooltip forChart={1} onClick={(e) => console.log(e)} origin={[-38, 15]} 
-						calculators={[ema20, ema50]}/>
-				</TooltipContainer>
-
-				<Annotate id={0} chartId={1} with={LabelAnnotation}
-					when={d => d.date.getDate() === 1 /* some condition */}
-					usingProps={annotationProps} />
-			</ChartCanvas>
+		</ChartCanvas>
 		);
 	}
 }
@@ -118,6 +118,7 @@ class CandleStickChartWithAnnotation extends React.Component {
 CandleStickChartWithAnnotation.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

@@ -1,13 +1,13 @@
 "use strict";
 
 import React from "react";
-import ReStock from "react-stockcharts";
+import { helper } from "react-stockcharts";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 
-var { helper: { TypeChooser } } = ReStock;
+var { TypeChooser } = helper;
 
 import CandleStickChartWithFibonacciInteractiveIndicator from "lib/charts/CandleStickChartWithFibonacciInteractiveIndicator";
 

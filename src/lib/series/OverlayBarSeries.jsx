@@ -1,19 +1,45 @@
 "use strict";
 
-import d3 from "d3";
-import React, { PropTypes, Component } from "react";
+import { merge } from "d3-array";
 
-import wrap from "./wrap";
+import React, { PropTypes, Component } from "react";
+import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 
 import { drawOnCanvas2, getBarsSVG2 } from "./StackedBarSeries";
-import { isDefined, isNotDefined, first, last } from "../utils";
+import { isDefined, isNotDefined, first, last, functor } from "../utils";
 
 class OverlayBarSeries extends Component {
-	render() {
-		var { props } = this;
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+	}
+	drawOnCanvas(ctx, moreProps) {
+		var { yAccessor } = this.props;
+		var { xAccessor } = moreProps;
+		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+
+		var bars = getBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
+
+		drawOnCanvas2(this.props, ctx, bars);
+	}
+	renderSVG(moreProps) {
+		var { yAccessor } = this.props;
+		var { xAccessor } = moreProps;
+		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+
+		var bars = getBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
 		return <g className="react-stockcharts-bar-series">
-			{OverlayBarSeries.getBarsSVG(props)}
+			{getBarsSVG2(this.props, bars)}
 		</g>;
+	}
+	render() {
+		return <GenericChartComponent
+			canvasToDraw={getAxisCanvas}
+			svgDraw={this.renderSVG}
+			canvasDraw={this.drawOnCanvas}
+			drawOnPan
+			/>;
 	}
 }
 
@@ -49,31 +75,12 @@ OverlayBarSeries.defaultProps = {
 	widthRatio: 0.5,
 };
 
-OverlayBarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { xAccessor, yAccessor } = props;
-
-	var bars = OverlayBarSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
-
-	// console.log(bars);
-	drawOnCanvas2(props, ctx, bars);
-};
-
-OverlayBarSeries.getBarsSVG = (props) => {
-
-	/* eslint-disable react/prop-types */
-	var { xAccessor, yAccessor, xScale, yScale, plotData } = props;
-	/* eslint-enable react/prop-types */
-
-	var bars = OverlayBarSeries.getBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
-	return getBarsSVG2(props, bars);
-};
-
-OverlayBarSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotData) => {
+function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData) {
 	var { baseAt, className, fill, stroke, widthRatio } = props;
 
-	var getClassName = d3.functor(className);
-	var getFill = d3.functor(fill);
-	var getBase = d3.functor(baseAt);
+	var getClassName = functor(className);
+	var getFill = functor(fill);
+	var getBase = functor(baseAt);
 
 	var width = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData))));
 
@@ -119,8 +126,7 @@ OverlayBarSeries.getBars = (props, xAccessor, yAccessor, xScale, yScale, plotDat
 				return innerBars;
 			});
 
-	return d3.merge(bars);
-};
+	return merge(bars);
+}
 
-// export { OverlayBarSeries };
-export default wrap(OverlayBarSeries);
+export default OverlayBarSeries;

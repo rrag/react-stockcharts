@@ -1,22 +1,41 @@
 "use strict";
 
-import d3 from "d3";
+import { nest } from "d3-collection";
+
 import React, { PropTypes, Component } from "react";
 
-import wrap from "./wrap";
-import { first, last, hexToRGBA, isDefined } from "../utils";
+import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
+import { first, last, hexToRGBA, isDefined, functor } from "../utils";
 
 class CandlestickSeries extends Component {
-	render() {
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+	}
+	drawOnCanvas(ctx, moreProps) {
+		drawOnCanvas(ctx, this.props, moreProps);
+	}
+	renderSVG(moreProps) {
 		var { className, wickClassName, candleClassName } = this.props;
+
 		return <g className={className}>
 			<g className={wickClassName} key="wicks">
-				{getWicksSVG(this.props)}
+				{getWicksSVG(this.props, moreProps)}
 			</g>
 			<g className={candleClassName} key="candles">
-				{getCandlesSVG(this.props)}
+				{getCandlesSVG(this.props, moreProps)}
 			</g>
 		</g>;
+	}
+
+	render() {
+		return <GenericChartComponent
+			canvasToDraw={getAxisCanvas}
+			svgDraw={this.renderSVG}
+			canvasDraw={this.drawOnCanvas}
+			drawOnPan
+			/>;
 	}
 }
 
@@ -54,40 +73,40 @@ CandlestickSeries.defaultProps = {
 	candleClassName: "react-stockcharts-candlestick-candle",
 	yAccessor: d => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
 	classNames: d => d.close > d.open ? "up" : "down",
-	widthRatio: 0.5,
+	widthRatio: 0.8,
 	wickStroke: "#000000",
 	// wickStroke: d => d.close > d.open ? "#6BA583" : "#FF0000",
 	fill: d => d.close > d.open ? "#6BA583" : "#FF0000",
 	// stroke: d => d.close > d.open ? "#6BA583" : "#FF0000",
-	// stroke: "#000000",
-	stroke: "none",
-	opacity: 1,
+	stroke: "#000000",
+	candleStrokeWidth: 0.5,
+	// stroke: "none",
+	opacity: 0.5,
 };
 
-function getWicksSVG(props) {
+function getWicksSVG(props, moreProps) {
 
 	/* eslint-disable react/prop-types */
-	var { xAccessor, yAccessor, xScale, yScale, plotData } = props;
+	var { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
 	/* eslint-enable react/prop-types */
 
-
-	var wickData = getWickData(props, xAccessor, yAccessor, xScale, yScale, plotData);
+	var wickData = getWickData(props, xAccessor, xScale, yScale, plotData);
 	var wicks = wickData
-		.map((d, idx) => <line key={idx}
+		.map((d, idx) => <path key={idx}
 			className={d.className} stroke={d.stroke} style={{ shapeRendering: "crispEdges" }}
-			x1={d.x1} y1={d.y1}
-			x2={d.x2} y2={d.y2} />
+			d={`M${d.x},${d.y1} L${d.x},${d.y2} M${d.x},${d.y3} L${d.x},${d.y4}`} />
 		);
 	return wicks;
 }
 
-function getCandlesSVG(props) {
+function getCandlesSVG(props, moreProps) {
 
 	/* eslint-disable react/prop-types */
-	var { xAccessor, yAccessor, xScale, yScale, plotData, opacity } = props;
+	var { opacity, candleStrokeWidth } = props;
+	var { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
 	/* eslint-enable react/prop-types */
 
-	var candleData = getCandleData(props, xAccessor, yAccessor, xScale, yScale, plotData);
+	var candleData = getCandleData(props, xAccessor, xScale, yScale, plotData);
 	var candles = candleData.map((d, idx) => {
 		if (d.width < 0)
 			return (
@@ -105,17 +124,19 @@ function getCandlesSVG(props) {
 			<rect key={idx} className={d.className}
 				fillOpacity={opacity}
 				x={d.x} y={d.y} width={d.width} height={d.height}
-				fill={d.fill} stroke={d.stroke} />
+				fill={d.fill} stroke={d.stroke} strokeWidth={candleStrokeWidth} />
 		);
 	});
 	return candles;
 }
 
-CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { xAccessor, yAccessor, opacity } = props;
-	var wickData = getWickData(props, xAccessor, yAccessor, xScale, yScale, plotData);
+function drawOnCanvas(ctx, props, moreProps) {
+	var { opacity, candleStrokeWidth } = props;
+	var { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
 
-	var wickNest = d3.nest()
+	var wickData = getWickData(props, xAccessor, xScale, yScale, plotData);
+
+	var wickNest = nest()
 		.key(d => d.stroke)
 		.entries(wickData);
 
@@ -124,22 +145,28 @@ CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 		ctx.strokeStyle = key;
 		values.forEach(d => {
 			ctx.beginPath();
-			ctx.moveTo(d.x1, d.y1);
-			ctx.lineTo(d.x2, d.y2);
+			ctx.moveTo(d.x, d.y1);
+			ctx.lineTo(d.x, d.y2);
+
+			ctx.moveTo(d.x, d.y3);
+			ctx.lineTo(d.x, d.y4);
 			ctx.stroke();
 		});
 	});
 
-	var candleData = getCandleData(props, xAccessor, yAccessor, xScale, yScale, plotData);
+	var candleData = getCandleData(props, xAccessor, xScale, yScale, plotData);
 
-	var candleNest = d3.nest()
+	var candleNest = nest()
 		.key(d => d.stroke)
 		.key(d => d.fill)
 		.entries(candleData);
 
 	candleNest.forEach(outer => {
 		var { key: strokeKey, values: strokeValues } = outer;
-		if (strokeKey !== "none") ctx.strokeStyle = strokeKey;
+		if (strokeKey !== "none") {
+			ctx.strokeStyle = strokeKey;
+			ctx.lineWidth = candleStrokeWidth;
+		}
 		strokeValues.forEach(inner => {
 			var { key, values } = inner;
 			ctx.fillStyle = hexToRGBA(key, opacity);
@@ -167,29 +194,31 @@ CandlestickSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 			});
 		});
 	});
-};
+}
 
-function getWickData(props, xAccessor, yAccessor, xScale, yScale, plotData) {
+function getWickData(props, xAccessor, xScale, yScale, plotData) {
 
-	var { classNames: classNameProp, wickStroke: wickStrokeProp } = props;
-	var wickStroke = d3.functor(wickStrokeProp);
-	var className = d3.functor(classNameProp);
+	var { classNames: classNameProp, wickStroke: wickStrokeProp, yAccessor } = props;
+	var wickStroke = functor(wickStrokeProp);
+	var className = functor(classNameProp);
 	var wickData = plotData
-			.filter(d => isDefined(d.close))
+			.filter(d => isDefined(yAccessor(d).close))
 			.map(d => {
 				// console.log(yAccessor);
 				var ohlc = yAccessor(d);
 
-				var x1 = Math.round(xScale(xAccessor(d))),
+				var x = Math.round(xScale(xAccessor(d))),
 					y1 = yScale(ohlc.high),
-					x2 = x1,
-					y2 = yScale(ohlc.low);
+					y2 = yScale(Math.max(ohlc.open, ohlc.close)),
+					y3 = yScale(Math.min(ohlc.open, ohlc.close)),
+					y4 = yScale(ohlc.low);
 
 				return {
-					x1: x1,
-					y1: y1,
-					x2: x2,
-					y2: y2,
+					x,
+					y1,
+					y2,
+					y3,
+					y4,
 					className: className(ohlc),
 					direction: (ohlc.close - ohlc.open),
 					stroke: wickStroke(ohlc),
@@ -198,21 +227,22 @@ function getWickData(props, xAccessor, yAccessor, xScale, yScale, plotData) {
 	return wickData;
 }
 
-function getCandleData(props, xAccessor, yAccessor, xScale, yScale, plotData) {
-	var { classNames, fill: fillProp, stroke: strokeProp, widthRatio } = props;
-	var fill = d3.functor(fillProp);
-	var stroke = d3.functor(strokeProp);
+function getCandleData(props, xAccessor, xScale, yScale, plotData) {
+	var { classNames, fill: fillProp, stroke: strokeProp, widthRatio, yAccessor } = props;
+	var fill = functor(fillProp);
+	var stroke = functor(strokeProp);
 	// console.log(plotData);
 	var width = xScale(xAccessor(last(plotData)))
 		- xScale(xAccessor(first(plotData)));
-	var cw = (width / (plotData.length - 1)) * widthRatio;
+	var cw = (width / (plotData.length - 1) * widthRatio);
 	var candleWidth = Math.round(cw); // Math.floor(cw) % 2 === 0 ? Math.floor(cw) : Math.round(cw);
-	var offset = (candleWidth === 1 ? 0 : 0.5 * candleWidth);
+
+	var offset = (candleWidth === 1 ? 0 : 0.5 * cw);
 	var candles = plotData
-			.filter(d => isDefined(d.close))
+			.filter(d => isDefined(yAccessor(d).close))
 			.map(d => {
 				var ohlc = yAccessor(d);
-				var x = Math.round(xScale(xAccessor(d))) - offset,
+				var x = Math.round(xScale(xAccessor(d)) - offset),
 					y = yScale(Math.max(ohlc.open, ohlc.close)),
 					height = Math.abs(yScale(ohlc.open) - yScale(ohlc.close)),
 					className = (ohlc.open <= ohlc.close) ? classNames.up : classNames.down;
@@ -231,4 +261,4 @@ function getCandleData(props, xAccessor, yAccessor, xScale, yScale, plotData) {
 	return candles;
 }
 
-export default wrap(CandlestickSeries);
+export default CandlestickSeries;

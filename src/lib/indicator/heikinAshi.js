@@ -1,13 +1,13 @@
 "use strict";
 
-import d3 from "d3";
+import { rebind } from "d3fc-rebind";
 
-import { haikinAshi } from "./algorithm";
+import { heikinAshi } from "./algorithm";
 import baseIndicator from "./baseIndicator";
 
 import { merge } from "../utils";
 
-const ALGORITHM_TYPE = "HaikinAshi";
+const ALGORITHM_TYPE = "HeikinAshi";
 
 export default function() {
 
@@ -15,20 +15,22 @@ export default function() {
 		.type(ALGORITHM_TYPE)
 		.accessor(d => d.ha);
 
-	var underlyingAlgorithm = haikinAshi();
+	var underlyingAlgorithm = heikinAshi();
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
-		.merge((datum, indicator) => { datum.ha = indicator; });
+		.merge((datum, indicator) => {
+			return { ...datum, ...indicator };
+		});
 
 	var indicator = function(data) {
 		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
 		return mergedAlgorithm(data);
 	};
 
-	d3.rebind(indicator, base, "accessor", "stroke", "fill", "echo", "type");
-	// d3.rebind(indicator, underlyingAlgorithm, "windowSize", "source");
-	d3.rebind(indicator, mergedAlgorithm, "merge");
+	rebind(indicator, base, "accessor", "stroke", "fill", "echo", "type");
+	// rebind(indicator, underlyingAlgorithm, "windowSize", "source");
+	rebind(indicator, mergedAlgorithm, "merge");
 
 	return indicator;
 }

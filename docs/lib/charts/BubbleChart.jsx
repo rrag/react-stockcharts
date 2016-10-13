@@ -1,62 +1,64 @@
 "use strict";
 
+import { set } from "d3-collection";
+import { scaleOrdinal, schemeCategory10, scaleLinear, scaleLog } from  "d3-scale";
+import { format } from "d3-format";
+import { extent } from "d3-array";
+
 import React from "react";
-import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, coordinates, axes, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart, EventCapture } = ReStock;
+var { ScatterSeries, CircleMarker } = series;
 
-var { ScatterSeries, CircleMarker } = ReStock.series;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY } = coordinates;
 
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY } = ReStock.coordinates;
-
-var { XAxis, YAxis } = ReStock.axes;
-var { fitWidth } = ReStock.helper;
+var { XAxis, YAxis } = axes;
+var { fitWidth } = helper;
 
 class BubbleChart extends React.Component {
 	render() {
-		var { data: unsortedData, type, width } = this.props;
+		var { data: unsortedData, type, width, ratio } = this.props;
 
 		var data = unsortedData.slice().sort((a, b) => a.income - b.income);
-		var r = d3.scale.linear()
+		var r = scaleLinear()
 			.range([2, 20])
-			.domain(d3.extent(data, d => d.population));
+			.domain(extent(data, d => d.population));
 
-		var f = d3.scale.category10()
-			.domain(d3.set(data.map(d => d.region)));
+		var f = scaleOrdinal(schemeCategory10)
+			.domain(set(data.map(d => d.region)));
 
 		var fill = d => f(d.region);
 		var radius = d => r(d.population);
 		return (
-			<ChartCanvas width={width} height={400}
-					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
+			<ChartCanvas ratio={ratio} width={width} height={400}
+					margin={{ left: 70, right: 70, top: 20, bottom: 30 }} type={type}
 					seriesName="Wealth & Health of Nations"
 					data={data}
-					xAccessor={d => d.income} xScale={d3.scale.log()}
+					xAccessor={d => d.income} xScale={scaleLog()}
 					padding={{ left: 20, right: 20 }}
 					>
 				<Chart id={1}
 						yExtents={d => d.lifeExpectancy}
 						yMousePointerRectWidth={45}
 						padding={{ top: 20, bottom: 20 }}>
-					<XAxis axisAt="bottom" orient="bottom" ticks={2} tickFormat={d3.format(",d")}/>
+					<XAxis axisAt="bottom" orient="bottom" ticks={2} tickFormat={format(",d")}/>
 					<YAxis axisAt="left" orient="left" />
 					<ScatterSeries yAccessor={d => d.lifeExpectancy} marker={CircleMarker}
 						fill={fill}
 						markerProps={{ r: radius, fill: fill }} />
 
-					<MouseCoordinateX id={0} snapX={false}
+					<MouseCoordinateX snapX={false}
 						at="bottom"
 						orient="bottom"
-						displayFormat={d3.format(".0f")} />
-					<MouseCoordinateY id={0}
+						rectWidth={50}
+						displayFormat={format(".0f")} />
+					<MouseCoordinateY
 						at="left"
 						orient="left"
-						displayFormat={d3.format(".2f")} />
+						displayFormat={format(".2f")} />
 				</Chart>
 				<CrossHairCursor snapX={false} />
-				<EventCapture mouseMove zoom pan />
 			</ChartCanvas>
 
 		);
@@ -66,6 +68,7 @@ class BubbleChart extends React.Component {
 BubbleChart.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

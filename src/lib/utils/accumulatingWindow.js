@@ -28,13 +28,13 @@ THE SOFTWARE.
 
 */
 
-import d3 from "d3";
 import noop from "./noop";
 import identity from "./identity";
+import { functor } from "./index";
 
 export default function() {
 
-	var accumulateTill = d3.functor(false),
+	var accumulateTill = functor(false),
 		accumulator = noop,
 		value = identity,
 		discardTillStart = false,
@@ -63,7 +63,7 @@ export default function() {
 		if (!arguments.length) {
 			return accumulateTill;
 		}
-		accumulateTill = d3.functor(x);
+		accumulateTill = functor(x);
 		return accumulatingWindow;
 	};
 	accumulatingWindow.accumulator = function(x) {

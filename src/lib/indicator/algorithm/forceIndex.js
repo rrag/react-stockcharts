@@ -1,36 +1,42 @@
 "use strict";
 
-import { slidingWindow } from "../../utils";
-import { ForceIndex as defaultOptions } from "../defaultOptions";
+import { slidingWindow, path } from "../../utils";
+import { ForceIndex as defaultOptions } from "../defaultOptionsForComputation";
 
 export default function() {
 
-	var { close, volume } = defaultOptions;
+	var { sourcePath } = defaultOptions;
+	var volumePath = "volume";
 
 	function calculator(data) {
 
+		var source = path(sourcePath);
+		var volume = path(volumePath);
+
 		var forceIndexCalulator = slidingWindow()
 			.windowSize(2)
-			.accumulator(([prev, curr]) => (close(curr) - close(prev)) * volume(curr));
+			.accumulator(([prev, curr]) => (source(curr) - source(prev)) * volume(curr));
 
 		var forceIndex = forceIndexCalulator(data);
 
 		return forceIndex;
 	}
-
-	calculator.close = function(x) {
+	calculator.undefinedLength = function() {
+		return 2;
+	};
+	calculator.sourcePath = function(x) {
 		if (!arguments.length) {
-			return close;
+			return sourcePath;
 		}
-		close = x;
+		sourcePath = x;
 		return calculator;
 	};
 
-	calculator.volume = function(x) {
+	calculator.volumePath = function(x) {
 		if (!arguments.length) {
-			return volume;
+			return volumePath;
 		}
-		volume = x;
+		volumePath = x;
 		return calculator;
 	};
 

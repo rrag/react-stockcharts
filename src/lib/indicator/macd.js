@@ -1,12 +1,12 @@
 "use strict";
 
-import d3 from "d3";
+import { rebind } from "d3fc-rebind";
 
 import { merge } from "../utils";
 import { macd } from "./algorithm";
 
 import baseIndicator from "./baseIndicator";
-import { MACD as defaultOptions } from "./defaultOptions";
+import { MACD as appearanceOptions } from "./defaultOptionsForAppearance";
 
 const ALGORITHM_TYPE = "MACD";
 
@@ -14,15 +14,11 @@ export default function() {
 
 	var base = baseIndicator()
 		.type(ALGORITHM_TYPE)
-		.fill(defaultOptions.fill)
-		.stroke(defaultOptions.stroke)
+		.fill(appearanceOptions.fill)
+		.stroke(appearanceOptions.stroke)
 		.accessor(d => d.macd);
 
-	var underlyingAlgorithm = macd()
-		.fast(defaultOptions.fast)
-		.slow(defaultOptions.slow)
-		.signal(defaultOptions.signal)
-		.source(defaultOptions.source);
+	var underlyingAlgorithm = macd();
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
@@ -33,9 +29,9 @@ export default function() {
 		return mergedAlgorithm(data);
 	};
 
-	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
-	d3.rebind(indicator, underlyingAlgorithm, "source", "fast", "slow", "signal");
-	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
+	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
+	rebind(indicator, underlyingAlgorithm, "sourcePath", "fast", "slow", "signal", "undefinedLength");
+	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;
 }

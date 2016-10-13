@@ -1,7 +1,7 @@
 "use strict";
 
 import React from "react";
-import ReStock from "react-stockcharts";
+import { helper } from "react-stockcharts";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -9,7 +9,7 @@ import Section from "lib/section";
 
 import CandleStickChartWithForceIndexIndicator from "lib/charts/CandleStickChartWithForceIndexIndicator";
 
-var { helper: { TypeChooser } } = ReStock;
+var { TypeChooser } = helper;
 
 var ForceIndexIndicatorPage = React.createClass({
 	statics: {
@@ -20,7 +20,7 @@ var ForceIndexIndicatorPage = React.createClass({
 			<ContentSection title={ForceIndexIndicatorPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require("md/FORCE-INDEX-INDICATOR")}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/FORCE-INDEX-INDICATOR") }}></aside>
 					</Section>
 				</Row>
 				<Row>

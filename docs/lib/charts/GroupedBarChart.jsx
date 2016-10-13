@@ -1,32 +1,31 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { scaleOrdinal, schemeCategory10, scalePoint } from  "d3-scale";
+import { set } from "d3-collection";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, axes, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart, EventCapture } = ReStock;
+var { GroupedBarSeries  } = series;
 
-var { GroupedBarSeries  } = ReStock.series;
-
-var { XAxis, YAxis } = ReStock.axes;
-var { fitWidth } = ReStock.helper;
+var { XAxis, YAxis } = axes;
+var { fitWidth } = helper;
 
 class GroupedBarChart extends React.Component {
 	render() {
-		var { data, type, width } = this.props;
+		var { data, type, width, ratio } = this.props;
 
-		var f = d3.scale.category10()
-			.domain(d3.set(data.map(d => d.region)));
+		var f = scaleOrdinal(schemeCategory10)
+			.domain(set(data.map(d => d.region)));
 
 		var fill = (d, i) => f(i);
 		return (
-			<ChartCanvas width={width} height={400}
-					margin={{left: 40, right: 10, top:20, bottom: 30}} type={type}
+			<ChartCanvas ratio={ratio} width={width} height={400}
+					margin={{ left: 40, right: 10, top: 20, bottom: 30 }} type={type}
 					seriesName="Fruits"
 					xExtents={list => list.map(d => d.x)}
 					data={data}
-					xAccessor={d => d.x} xScale={d3.scale.ordinal()}
+					xAccessor={d => d.x} xScale={scalePoint()}
 					padding={1}>
 				<Chart id={1}
 						yExtents={[0, d => [d.y1, d.y2, d.y3, d.y4]]}>
@@ -44,6 +43,7 @@ class GroupedBarChart extends React.Component {
 GroupedBarChart.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

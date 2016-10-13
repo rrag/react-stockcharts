@@ -3,10 +3,8 @@
 import React, { PropTypes, Component } from "react";
 
 import BarSeries from "./BarSeries";
-import Line from "./Line";
+import LineSeries from "./LineSeries";
 import StraightLine from "./StraightLine";
-
-import wrap from "./wrap";
 
 class MACDSeries extends Component {
 	constructor(props) {
@@ -35,55 +33,51 @@ class MACDSeries extends Component {
 		return yScale(0);
 	}
 	render() {
-		var { className, xScale, yScale, xAccessor, plotData, type, opacity, divergenceStroke, calculator } = this.props;
+		var { className, type, opacity, divergenceStroke, calculator } = this.props;
 		var stroke = calculator.stroke();
 		var fill = calculator.fill();
-		// console.log(this.props.yAccessor)
 		return (
 			<g className={className}>
-				<Line
-					xScale={xScale} yScale={yScale}
-					xAccessor={xAccessor} yAccessor={this.yAccessorForMACD}
-					plotData={plotData}
-					stroke={stroke.macd} fill="none"
-					type={type} />
-				<Line
-					xScale={xScale} yScale={yScale}
-					xAccessor={xAccessor} yAccessor={this.yAccessorForSignal}
-					plotData={plotData}
-					stroke={stroke.signal} fill="none"
-					type={type} />
 				<BarSeries
 					baseAt={this.yAccessorForDivergenceBase}
 					className="macd-divergence"
+					widthRatio={0.5}
 					stroke={divergenceStroke} fill={fill.divergence} opacity={opacity}
 					yAccessor={this.yAccessorForDivergence} />
-				{MACDSeries.getHorizontalLine(this.props)}
+				<LineSeries
+					yAccessor={this.yAccessorForMACD}
+					stroke={stroke.macd} fill="none"
+					type={type} />
+				<LineSeries
+					yAccessor={this.yAccessorForSignal}
+					stroke={stroke.signal} fill="none"
+					type={type} />
+				{getHorizontalLine(this.props)}
 			</g>
 		);
 	}
 }
 
-MACDSeries.getHorizontalLine = (props) => {
+function getHorizontalLine(props) {
 
 	/* eslint-disable react/prop-types */
-	var { xScale, yScale, xAccessor, yAccessor, plotData, type, zeroLineStroke, zeroLineOpacity } = props;
+	var { zeroLineStroke, zeroLineOpacity } = props;
 	/* eslint-enable react/prop-types */
 
 	return <StraightLine
-		stroke={zeroLineStroke} opacity={zeroLineOpacity} type={type}
-		xScale={xScale} yScale={yScale}
-		xAccessor={xAccessor} yAccessor={yAccessor}
-		plotData={plotData}
+		stroke={zeroLineStroke} opacity={zeroLineOpacity}
 		yValue={0} />;
-};
+}
 
 MACDSeries.propTypes = {
 	className: PropTypes.string,
 	xScale: PropTypes.func,
 	yScale: PropTypes.func,
 	xAccessor: PropTypes.func,
-	calculator: PropTypes.func.isRequired,
+	calculator: PropTypes.oneOfType([
+		PropTypes.func,
+		PropTypes.object,
+	]).isRequired,
 	plotData: PropTypes.array,
 	type: PropTypes.string,
 	opacity: PropTypes.number,
@@ -98,4 +92,4 @@ MACDSeries.defaultProps = {
 	divergenceStroke: false,
 };
 
-export default wrap(MACDSeries);
+export default MACDSeries;

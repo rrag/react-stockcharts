@@ -1,18 +1,18 @@
 "use strict";
 
-import d3 from "d3";
-
-import { merge, isNotDefined } from "../../utils";
+import { merge, isNotDefined, path, functor } from "../../utils";
 import atr from "./atr";
 
-import { Kagi as defaultOptions } from "../defaultOptions";
+import { Kagi as defaultOptions } from "../defaultOptionsForComputation";
 
 export default function() {
 
-	var { reversalType, period: windowSize, reversal, source } = defaultOptions;
-	var { dateAccessor, dateMutator } = defaultOptions;
+	var { reversalType, windowSize, reversal, sourcePath } = defaultOptions;
+	var dateAccessor = d => d.date;
+	var dateMutator = (d, date) => { d.date = date; };
 
 	function calculator(data) {
+		var source = path(sourcePath);
 		var reversalThreshold;
 
 		if (reversalType === "ATR") {
@@ -26,7 +26,7 @@ export default function() {
 			atrCalculator(data);
 			reversalThreshold = d => d["atr" + windowSize];
 		} else {
-			reversalThreshold = d3.functor(reversal);
+			reversalThreshold = functor(reversal);
 		}
 
 		var kagiData = [];

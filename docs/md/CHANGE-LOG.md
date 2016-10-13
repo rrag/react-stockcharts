@@ -1,3 +1,22 @@
+## v0.6.0
+
+#### Breaking Changes
+
+1. `EventCapture` is now removed. This is because starting `0.6` zoom actions can happen by drag on the x/y axis also, and that is a separate container, so having a single `EventCapture` is not possible
+1. `CurrentCoordinate`, `MouseCoordinateX`, `MouseCoordinateY` no longer require an `id` prop
+1. `TooltipContainer` is removed and all the tooltips (`OHLCTooltip`, `MovingAverageTooltip`)  are now moved inside the `Chart` relative to which you specify the origin. This also makes the `forChart` prop on the different `XXXTooltip` unnecessary
+
+#### New features
+
+1. Zoom on y
+1. Pan on y
+1. Support for pan to load more data
+1. Click, Right click, Doubleclick handlers on `LineSeries` - This can serve as a model for other series
+
+#### Internal Changes
+
+1. Upgrade to `d3` individual modules
+
 ## v0.5.0
 
 #### Breaking Changes

@@ -1,6 +1,8 @@
 "use strict";
 
-import d3 from "d3";
+import { set, map } from "d3-collection";
+import { bisector, ascending } from "d3-array";
+import { scaleLinear } from "d3-scale";
 
 import { isNotDefined, head, last } from "../utils";
 
@@ -13,10 +15,10 @@ var tickLevels = [
 	{ target: 11e5, level: 5 },
 	{ target: 21e5, level: 6 },
 	{ target: 43e5, level: 7 },
-	{ target: 49e5, level: 8 }, // not tested
-	{ target: 50e5, level: 9 }, // not tested
+	{ target: 59e5, level: 8 }, // not tested
+	{ target: 12e6, level: 9 }, // not tested
 	{ target: 58e6, level: 10 }, // not tested
-	{ target: 58e6, level: 11 },
+	{ target: 89e6, level: 11 },
 	{ target: 11e7, level: 12 },
 	{ target: 78e7, level: 13 },
 	{ target: 16e8, level: 14 },
@@ -24,11 +26,13 @@ var tickLevels = [
 	{ target: 10e20, level: 16 },
 ];
 
-var tickLevelBisector = d3.bisector(function(d) { return d.target; }).left;
+var MAX_LEVEL = 17;
+
+var tickLevelBisector = bisector(function(d) { return d.target; }).left;
 
 export default function financeDiscontinuousScale(index,
 		interval,
-		backingLinearScale = d3.scale.linear()) {
+		backingLinearScale = scaleLinear()) {
 
 	if (isNotDefined(index) || isNotDefined(interval))
 		throw new Error("Use the discontinuousTimeScaleProvider to create financeDiscontinuousScale");
@@ -63,11 +67,77 @@ export default function financeDiscontinuousScale(index,
 		backingLinearScale.interpolate(x);
 		return scale;
 	};
-	scale.ticks = function(m) {
+	scale.ticks = function(m, flexTicks) {
+		var backingTicks = backingLinearScale.ticks(m);
+		var ticksMap = map();
 
 		var [domainStart, domainEnd] = backingLinearScale.domain();
-		var start = Math.max(Math.ceil(domainStart), 0);
-		var end = Math.min(Math.floor(domainEnd), index.length - 1);
+
+		var start = Math.max(Math.ceil(domainStart), head(index).index) + Math.abs(head(index).index);
+		var end = Math.min(Math.floor(domainEnd), last(index).index) + Math.abs(head(index).index);
+
+		var desiredTickCount = Math.ceil((end - start) / (domainEnd - domainStart) * backingTicks.length);
+
+		for (let i = MAX_LEVEL; i >= 0; i--) {
+			var ticksAtLevel = ticksMap.get(i);
+			var temp = isNotDefined(ticksAtLevel)
+				? []
+				: ticksAtLevel.slice();
+
+			for (let j = start; j <= end; j++) {
+				if (index[j].level === i) {
+					temp.push(index[j]);
+				}
+			}
+
+			ticksMap.set(i, temp);
+		}
+
+		var unsortedTicks = [];
+		for (let i = MAX_LEVEL; i >= 0; i--) {
+			if ((ticksMap.get(i).length + unsortedTicks.length) > desiredTickCount * 1.5) break;
+			unsortedTicks = unsortedTicks.concat(ticksMap.get(i).map(d => d.index));
+		}
+
+		var ticks = unsortedTicks.sort(ascending);
+
+		// console.log(backingTicks.length, desiredTickCount, ticks, ticksMap);
+
+		if (!flexTicks && end - start > ticks.length) {
+			var ticksSet = set(ticks);
+
+			var d = Math.abs(head(index).index);
+
+			// ignore ticks within this distance
+			var distance = Math.ceil(
+				(backingTicks.length > 0
+					? (last(backingTicks) - head(backingTicks)) / (backingTicks.length) / 4
+					: 1) * 1.5);
+
+			for (let i = 0; i < ticks.length - 1; i++) {
+				for (let j = i + 1; j < ticks.length; j++) {
+					if (ticks[j] - ticks[i] <= distance) {
+						ticksSet.remove(index[ticks[i] + d].level >= index[ticks[j] + d].level ? ticks[j] : ticks[i]);
+					}
+				}
+			}
+
+			var tickValues = ticksSet.values().map(d => parseInt(d, 10));
+
+			// console.log(ticks.length, tickValues, level);
+			// console.log(ticks, tickValues, distance);
+
+			return tickValues;
+		}
+
+		return ticks;
+	};
+	scale.ticksv1 = function(m) {
+
+		var [domainStart, domainEnd] = backingLinearScale.domain();
+
+		var start = Math.max(Math.ceil(domainStart), head(index).index) + Math.abs(head(index).index);
+		var end = Math.min(Math.floor(domainEnd), last(index).index) + Math.abs(head(index).index);
 
 		// console.log(index.length, domainStart, domainEnd, start, end)
 
@@ -77,15 +147,14 @@ export default function financeDiscontinuousScale(index,
 
 		// var subList = index.slice(start, end + 1);
 		var levelIndex = tickLevelBisector(tickLevels, target);
-		// console.log(target, levelIndex)
 		var { level } = tickLevels[levelIndex];
+		// console.log(target, level, levelIndex)
 
-		// console.log(target, level);
+		// console.log(target.toExponential(), level);
 
 		var backingTicks = backingLinearScale.ticks(m);
-		var distance = backingTicks.length > 0
-			? (last(backingTicks) - head(backingTicks)) / (backingTicks.length - 1) / 4
-			: 1;
+
+		// console.log(backingTicks.length, ratio, distance, level)
 
 		var ticks = [];
 		for (let i = start; i < end + 1; i++) {
@@ -94,21 +163,34 @@ export default function financeDiscontinuousScale(index,
 
 		// subList.filter(each => each.level >= level).map(d => d.index);
 
-		var ticksSet = d3.set(ticks);
+		var ticksSet = set(ticks);
+		// console.log(ticks);
+
+		var d = Math.abs(head(index).index);
+
+		// ignore ticks within this distance
+		var distance = Math.ceil(
+			(backingTicks.length > 0
+				? (last(backingTicks) - head(backingTicks)) / (backingTicks.length) / 4
+				: 1) * 1.5);
 
 		for (let i = 0; i < ticks.length - 1; i++) {
 			for (var j = i + 1; j < ticks.length; j++) {
 				if (ticks[j] - ticks[i] < distance) {
-					ticksSet.remove(index[ticks[i]].level >= index[ticks[j]].level ? ticks[j] : ticks[i]);
+					ticksSet.remove(index[ticks[i] + d].level >= index[ticks[j] + d].level ? ticks[j] : ticks[i]);
 				}
 			}
 		}
 
-		return ticksSet.values().map(d => parseInt(d, 10));
+		var tickValues = ticksSet.values().map(d => parseInt(d, 10));
+		// console.log(ticks.length, tickValues, level, distance);
+		return tickValues;
 	};
 	scale.tickFormat = function() {
 		return function(x) {
-			var { format, date } = index[x];
+			// console.log(x)
+			var d = Math.abs(head(index).index);
+			var { format, date } = index[x + d];
 			return format(date);
 		};
 	};

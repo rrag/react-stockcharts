@@ -9,8 +9,10 @@ import {
 	identity,
 } from "../utils";
 
-function extentsWrapper(data, inputXAccessor, realXAccessor, width, useWholeData) {
-	function domain(inputDomain, xAccessor, currentPlotData, currentDomain) {
+const debug = false;
+
+function extentsWrapper(data, inputXAccessor, realXAccessor, useWholeData) {
+	function domain(inputDomain, xAccessor, initialXScale, currentPlotData, currentDomain) {
 		if (useWholeData) {
 			return { plotData: data, domain: inputDomain };
 		}
@@ -20,14 +22,32 @@ function extentsWrapper(data, inputXAccessor, realXAccessor, width, useWholeData
 
 		var filteredData = getFilteredResponse(data, left, right, xAccessor);
 
+		var realInputDomain = realXAccessor === xAccessor ? inputDomain : [realXAccessor(first(filteredData)), realXAccessor(last(filteredData))];
+
+		var xScale = initialXScale.copy().domain(realInputDomain);
+
+		var width = Math.floor(xScale(realXAccessor(last(filteredData)))
+			- xScale(realXAccessor(first(filteredData))));
+
 		var plotData, domain;
+
+		var chartWidth = last(xScale.range()) - first(xScale.range());
+
+		if (debug) console.debug(`Trying to show ${filteredData.length} in ${width}px, I can show up to ${showMax(width)} in that width. Also FYI the entire chart width is ${chartWidth}px`);
+
 		if (canShowTheseManyPeriods(width, filteredData.length)) {
 			plotData = filteredData;
-			// domain = subsequent ? inputDomain : [realXAccessor(first(plotData)), realXAccessor(last(plotData))]
-			domain = realXAccessor === xAccessor ? inputDomain : [realXAccessor(first(plotData)), realXAccessor(last(plotData))];
+			domain = realInputDomain;
+			if (debug) console.debug("AND IT WORKED");
 		} else {
 			plotData = currentPlotData || filteredData.slice(filteredData.length - showMax(width));
 			domain = currentDomain || [realXAccessor(first(plotData)), realXAccessor(last(plotData))];
+
+			var newXScale = xScale.copy().domain(domain);
+			var newWidth = Math.floor(newXScale(realXAccessor(last(plotData)))
+				- newXScale(realXAccessor(first(plotData))));
+
+			if (debug) console.debug(`and ouch, that is too much, so instead showing ${plotData.length} in ${newWidth}px`);
 		}
 
 		return { plotData, domain };
@@ -37,12 +57,12 @@ function extentsWrapper(data, inputXAccessor, realXAccessor, width, useWholeData
 }
 
 function canShowTheseManyPeriods(width, arrayLength) {
-	var threshold = 0.75; // number of datapoints per 1 px
-	return arrayLength < width * threshold && arrayLength > 1;
+	var threshold = 2; // number of datapoints per 1 px
+	return arrayLength > 1 && arrayLength < width * threshold;
 }
 
 function showMax(width) {
-	var threshold = 0.75; // number of datapoints per 1 px
+	var threshold = 1.80; // number of datapoints per 1 px
 	return Math.floor(width * threshold);
 }
 
@@ -78,34 +98,51 @@ export default function() {
 
 	function evaluate(data) {
 
+		if (process.env.NODE_ENV !== "production") {
+			if (debug) console.time("evaluation");
+		}
 		var mappedData = data.map(map);
 
 		var composedCalculator = compose(calculator);
+
 		var calculatedData = composedCalculator(mappedData);
 
+		if (process.env.NODE_ENV !== "production") {
+			if (debug) console.timeEnd("evaluation");
+		}
+
+
 		if (isDefined(scaleProvider)) {
+			var scaleProvider2 = scaleProvider
+				.inputDateAccessor(xAccessor)
+				.indexAccessor(indexAccessor)
+				.indexMutator(indexMutator);
 			var {
 				data: finalData,
 				xScale: modifiedXScale,
 				xAccessor: realXAccessor,
 				displayXAccessor
-			} = scaleProvider(calculatedData, xAccessor, indexAccessor, indexMutator);
+			} = scaleProvider2(calculatedData);
 
 			return {
-				filterData: extentsWrapper(finalData, xAccessor, realXAccessor, width, useWholeData || isNotDefined(modifiedXScale.invert)),
+				filterData: extentsWrapper(finalData, xAccessor, realXAccessor, useWholeData || isNotDefined(modifiedXScale.invert)),
+				fullData: finalData,
 				xScale: modifiedXScale,
 				xAccessor: realXAccessor,
 				displayXAccessor,
 				lastItem: last(finalData),
+				firstItem: first(finalData),
 			};
 		}
 
 		return {
-			filterData: extentsWrapper(calculatedData, xAccessor, xAccessor, width, useWholeData || isNotDefined(xScale.invert)),
+			filterData: extentsWrapper(calculatedData, xAccessor, xAccessor, useWholeData || isNotDefined(xScale.invert)),
+			fullData: calculatedData,
 			xScale,
 			xAccessor,
 			displayXAccessor: xAccessor,
 			lastItem: last(calculatedData),
+			firstItem: first(calculatedData),
 		};
 	}
 	evaluate.xAccessor = function(x) {

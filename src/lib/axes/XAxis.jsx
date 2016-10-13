@@ -1,32 +1,25 @@
 "use strict";
 
-import React, { PropTypes } from "react";
+import React, { Component, PropTypes } from "react";
 import Axis from "./Axis";
-import PureComponent from "../utils/PureComponent";
 
-class XAxis extends PureComponent {
+class XAxis extends Component {
+	constructor(props, context) {
+		super(props, context);
+		this.axisZoomCallback = this.axisZoomCallback.bind(this);
+	}
+	axisZoomCallback(newXDomain) {
+		var { xAxisZoom } = this.context;
+		xAxisZoom(newXDomain);
+	}
 	render() {
-		var { axisAt, showTicks, tickFormat, ticks } = this.props;
+		var { showTicks } = this.props;
+		var moreProps = helper(this.props, this.context);
 
-		var axisLocation;
-		if (axisAt === "top") axisLocation = 0;
-		else if (axisAt === "bottom") axisLocation = this.context.height;
-		else if (axisAt === "middle") axisLocation = (this.context.height) / 2;
-		else axisLocation = axisAt;
-
-		if (tickFormat && this.context.xScale.isPolyLinear && this.context.xScale.isPolyLinear()) {
-			console.warn("Cannot set tickFormat on a poly linear scale, ignoring tickFormat on XAxis");
-			tickFormat = undefined;
-		}
-
-		if (ticks) ticks = [ticks];
-		return (
-			<Axis {...this.props}
-				range={[0, this.context.width]}
-				transform={[0, axisLocation]}
-				showTicks={showTicks} tickFormat={tickFormat} ticks={ticks}
-				scale={this.context.xScale} />
-		);
+		return <Axis {...this.props} {...moreProps} x
+			axisZoomCallback={this.axisZoomCallback}
+			zoomEnabled={showTicks}
+			zoomCursorClassName="react-stockcharts-ew-resize-cursor" />;
 	}
 }
 
@@ -46,18 +39,53 @@ XAxis.propTypes = {
 	showTicks: PropTypes.bool,
 	className: PropTypes.string,
 };
+
 XAxis.defaultProps = {
 	showGrid: false,
 	showTicks: true,
+	showDomain: true,
 	className: "react-stockcharts-x-axis",
 	ticks: 10,
+	outerTickSize: 0,
+	fill: "none",
+	stroke: "#000000",
+	strokeWidth: 1,
+	opacity: 1,
+	domainClassName: "react-stockcharts-axis-domain",
+	innerTickSize: 5,
+	tickPadding: 6,
+	tickStroke: "#000000",
+	tickStrokeOpacity: 1,
+	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
+	fontSize: 12,
+	xZoomHeight: 25,
+	getMouseDelta: (startXY, mouseXY) => startXY[0] - mouseXY[0],
 };
 
 XAxis.contextTypes = {
-	xScale: PropTypes.func.isRequired,
-	chartConfig: PropTypes.object.isRequired,
 	height: PropTypes.number.isRequired,
 	width: PropTypes.number.isRequired,
+	xAxisZoom: PropTypes.func.isRequired,
 };
 
+function helper(props, context) {
+	var { axisAt, xZoomHeight, orient } = props;
+	var { width, height } = context;
+
+	var axisLocation, x = 0, w = width, h = xZoomHeight;
+
+	if (axisAt === "top") axisLocation = 0;
+	else if (axisAt === "bottom") axisLocation = height;
+	else if (axisAt === "middle") axisLocation = (height) / 2;
+	else axisLocation = axisAt;
+
+	var y = (orient === "top") ? -xZoomHeight : 0;
+
+	return {
+		transform: [0, axisLocation],
+		range: [0, width],
+		getScale: moreProps => moreProps.xScale,
+		bg: { x, y, h, w },
+	};
+}
 export default XAxis;

@@ -1,7 +1,7 @@
 "use strict";
 
 import { isNotDefined } from "../../utils";
-import { PointAndFigure as defaultOptions } from "../defaultOptions";
+import { PointAndFigure as defaultOptions } from "../defaultOptionsForComputation";
 
 function createBox(d, dateAccessor, dateMutator) {
 	var box = {
@@ -73,13 +73,17 @@ function updateColumns(columnData, dateAccessor, dateMutator) {
 
 
 export default function() {
-	var { reversal, boxSize, source } = defaultOptions;
-	var { dateAccessor, dateMutator } = defaultOptions;
+	var { reversal, boxSize, sourcePath } = defaultOptions;
+	var dateAccessor = d => d.date;
+	var dateMutator = (d, date) => { d.date = date; };
 
 	function calculator(rawData) {
+		var source = sourcePath === "high/low"
+			? d => { return { high: d.high, low: d.low }; }
+			: d => { return { high: d.close, low: d.close }; };
+
+
 		var pricingMethod = source;
-
-
 		var columnData = [];
 
 		var column = {
@@ -210,9 +214,9 @@ export default function() {
 		boxSize = x;
 		return calculator;
 	};
-	calculator.source = function(x) {
-		if (!arguments.length) return source;
-		source = x;
+	calculator.sourcePath = function(x) {
+		if (!arguments.length) return sourcePath;
+		sourcePath = x;
 		return calculator;
 	};
 	calculator.dateMutator = function(x) {

@@ -1,9 +1,10 @@
 "use strict";
 
 import React, { PropTypes } from "react";
-import d3 from "d3";
+import { scaleLinear } from "d3-scale";
 
 import PureComponent from "./utils/PureComponent";
+import { isNotDefined } from "./utils";
 
 class Chart extends PureComponent {
 	constructor(props, context) {
@@ -16,11 +17,12 @@ class Chart extends PureComponent {
 	}
 	getChildContext() {
 		var { id: chartId } = this.props;
+		var { ratio, margin } = this.context;
 		var chartConfig = this.context.chartConfig.filter((each) => each.id === chartId)[0];
 
 		var { width, height } = chartConfig;
-		var canvasOriginX = 0.5 + chartConfig.origin[0] + this.context.margin.left;
-		var canvasOriginY = 0.5 + chartConfig.origin[1] + this.context.margin.top;
+		var canvasOriginX = (0.5 * ratio) + chartConfig.origin[0] + margin.left;
+		var canvasOriginY = (0.5 * ratio) + chartConfig.origin[1] + margin.top;
 
 		return { chartId, chartConfig, canvasOriginX, canvasOriginY, width, height };
 	}
@@ -43,7 +45,12 @@ Chart.propTypes = {
 	yExtents: PropTypes.oneOfType([
 		PropTypes.array,
 		PropTypes.func
-	]).isRequired,
+	]),
+	yExtentsCalculator: function(props, propName, componentName) {
+		if (isNotDefined(props.yExtents) && typeof props.yExtentsCalculator !== "function")
+			return new Error("yExtents or yExtentsCalculator must"
+				+ ` be present on ${componentName}. Validation failed.`);
+	},
 	yScale: PropTypes.func.isRequired,
 	yMousePointerDisplayLocation: PropTypes.oneOf(["left", "right"]),
 	yMousePointerDisplayFormat: PropTypes.func,
@@ -55,17 +62,16 @@ Chart.propTypes = {
 			bottom: PropTypes.number,
 		})
 	]).isRequired,
+	children: PropTypes.node,
 };
 
 Chart.defaultProps = {
 	id: 0,
 	origin: [0, 0],
 	padding: 0,
-	yScale: d3.scale.linear(),
-	yMousePointerRectWidth: 50,
-	yMousePointerRectHeight: 20,
-	yMousePointerArrowWidth: 10,
+	yScale: scaleLinear(),
 	flipYScale: false,
+	yPan: true,
 };
 
 Chart.contextTypes = {
@@ -73,12 +79,13 @@ Chart.contextTypes = {
 	height: PropTypes.number.isRequired,
 	chartConfig: PropTypes.array,
 	margin: PropTypes.object.isRequired,
+	ratio: PropTypes.number.isRequired,
 
 	// adding here even when this is not used by Chart, refer to https://github.com/facebook/react/issues/2517
 	// used by CurrentCoordinate
-	currentItem: PropTypes.object,
-	mouseXY: PropTypes.array,
-	show: PropTypes.bool,
+	// currentItem: PropTypes.object,
+	// mouseXY: PropTypes.array,
+	// show: PropTypes.bool,
 };
 
 Chart.childContextTypes = {

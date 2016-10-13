@@ -1,8 +1,8 @@
 "use strict";
 
-import d3 from "d3";
 import noop from "./noop";
 import identity from "./identity";
+import { functor } from "./index";
 
 export default function() {
 
@@ -13,10 +13,10 @@ export default function() {
 		skipInitial = 0;
 
 	var mappedSlidingWindow = function(data) {
-		var size = d3.functor(windowSize).apply(this, arguments);
+		var size = functor(windowSize).apply(this, arguments);
 		var windowData = [];
 		var accumulatorIdx = 0;
-		var undef = d3.functor(undefinedValue);
+		var undef = functor(undefinedValue);
 		// console.log(skipInitial, size, data.length, windowData.length);
 		var result = [];
 		data.forEach(function(d, i) {

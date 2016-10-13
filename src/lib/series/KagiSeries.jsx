@@ -1,19 +1,38 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import d3 from "d3";
+import { line as d3Line } from "d3-shape";
 
-import wrap from "./wrap";
-
+import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 import { isDefined, isNotDefined } from "../utils";
 
 class KagiSeries extends Component {
-	render() {
-		var { className, stroke, fill, strokeWidth } = this.props;
-		var { xAccessor, xScale, yScale, plotData } = this.props;
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+	}
+	drawOnCanvas(ctx, moreProps) {
+		var { xAccessor } = moreProps;
 
-		var paths = KagiSeries.helper(plotData, xAccessor).map((each, i) => {
-			var dataSeries = d3.svg.line()
+		drawOnCanvas(ctx, this.props, moreProps, xAccessor);
+	}
+	render() {
+		return <GenericChartComponent
+			canvasToDraw={getAxisCanvas}
+			svgDraw={this.renderSVG}
+			canvasDraw={this.drawOnCanvas}
+			drawOnPan
+			/>;
+	}
+	renderSVG(moreProps) {
+		var { xAccessor } = moreProps;
+		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+
+		var { className, stroke, fill, strokeWidth } = this.props;
+
+		var paths = helper(plotData, xAccessor).map((each, i) => {
+			var dataSeries = d3Line()
 				.x((item) => xScale(item[0]))
 				.y((item) => yScale(item[1]))
 				.interpolate("step-before");
@@ -29,13 +48,9 @@ class KagiSeries extends Component {
 }
 KagiSeries.propTypes = {
 	className: PropTypes.string,
-	stroke: PropTypes.string,
-	fill: PropTypes.string,
+	stroke: PropTypes.object,
+	fill: PropTypes.object,
 	strokeWidth: PropTypes.number.isRequired,
-	xAccessor: PropTypes.func,
-	xScale: PropTypes.func,
-	yScale: PropTypes.func,
-	plotData: PropTypes.array,
 };
 
 KagiSeries.defaultProps = {
@@ -52,13 +67,13 @@ KagiSeries.defaultProps = {
 	currentValueStroke: "#000000",
 };
 
-KagiSeries.yAccessor = (d) => ({ open: d.open, high: d.high, low: d.low, close: d.close });
+function drawOnCanvas(ctx, props, moreProps, xAccessor) {
+	var { stroke, strokeWidth, currentValueStroke } = props;
+	var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
-KagiSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { xAccessor, stroke, strokeWidth, currentValueStroke } = props;
+	var paths = helper(plotData, xAccessor);
+
 	var begin = true;
-
-	var paths = KagiSeries.helper(plotData, xAccessor);
 
 	paths.forEach((each) => {
 		ctx.strokeStyle = stroke[each.type];
@@ -100,9 +115,9 @@ KagiSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 	ctx.moveTo(x - 10, y2);
 	ctx.lineTo(x, y2);
 	ctx.stroke();
-};
+}
 
-KagiSeries.helper = (plotData, xAccessor) => {
+function helper(plotData, xAccessor) {
 	var kagiLine = [];
 	var kagi = {};
 	var d = plotData[0];
@@ -140,6 +155,6 @@ KagiSeries.helper = (plotData, xAccessor) => {
 	// console.log(d.reverseAt);
 
 	return kagiLine;
-};
+}
 
-export default wrap(KagiSeries);
+export default KagiSeries;

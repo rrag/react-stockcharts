@@ -1,5 +1,9 @@
 [source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickStockScaleChartWithVolumeBarV2.jsx), [block](http://bl.ocks.org/rrag/0a54ca33b05001f17f8f), [plunker](http://plnkr.co/edit/gist:0a54ca33b05001f17f8f?p=preview)
 
+```js
+import { format } from "d3-format";
+```
+
 ```jsx
 <ChartCanvas width={width} height={400}
 		margin={{left: 50, right: 50, top:10, bottom: 30}} type={type}
@@ -13,7 +17,7 @@
 		<CandlestickSeries />
 	</Chart>
 	<Chart id={2} origin={(w, h) => [0, h - 150]} height={150} yExtents={d => d.volume}>
-		<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+		<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
 		<BarSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
 	</Chart>
 </ChartCanvas>

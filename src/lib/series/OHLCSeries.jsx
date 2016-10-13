@@ -1,17 +1,40 @@
 "use strict";
 
-import d3 from "d3";
+import { nest } from "d3-collection";
 import React, { PropTypes, Component } from "react";
+import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 
-import wrap from "./wrap";
-import { isDefined } from "../utils";
+import { isDefined, functor } from "../utils";
 
 class OHLCSeries extends Component {
-	render() {
-		var { className } = this.props;
-		var { xAccessor, yAccessor, xScale, yScale, plotData } = this.props;
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+	}
+	drawOnCanvas(ctx, moreProps) {
+		var { yAccessor } = this.props;
+		var { xAccessor } = moreProps;
+		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
-		var barData = OHLCSeries.getOHLCBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
+		var barData = getOHLCBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
+		drawOnCanvas(ctx, barData);
+	}
+	render() {
+		return <GenericChartComponent
+			canvasToDraw={getAxisCanvas}
+			svgDraw={this.renderSVG}
+			canvasDraw={this.drawOnCanvas}
+			drawOnPan
+			/>;
+	}
+	renderSVG(moreProps) {
+		var { className, yAccessor } = this.props;
+		var { xAccessor } = moreProps;
+		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+
+
+		var barData = getOHLCBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
 
 		var { strokeWidth, bars } = barData;
 
@@ -33,11 +56,7 @@ OHLCSeries.propTypes = {
 		PropTypes.func,
 		PropTypes.string
 	]).isRequired,
-	xAccessor: PropTypes.func,
 	yAccessor: PropTypes.func.isRequired,
-	xScale: PropTypes.func,
-	yScale: PropTypes.func,
-	plotData: PropTypes.array,
 };
 
 OHLCSeries.defaultProps = {
@@ -48,14 +67,11 @@ OHLCSeries.defaultProps = {
 	opacity: 1,
 };
 
-OHLCSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { xAccessor, yAccessor } = props;
-
-	var barData = OHLCSeries.getOHLCBars(props, xAccessor, yAccessor, xScale, yScale, plotData);
+function drawOnCanvas(ctx, barData) {
 
 	var { strokeWidth, bars } = barData;
 
-	var wickNest = d3.nest()
+	var wickNest = nest()
 		.key(d => d.stroke)
 		.entries(bars);
 
@@ -78,13 +94,13 @@ OHLCSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
 			ctx.stroke();
 		});
 	});
-};
+}
 
-OHLCSeries.getOHLCBars = (props, xAccessor, yAccessor, xScale, yScale, plotData) => {
+function getOHLCBars(props, xAccessor, yAccessor, xScale, yScale, plotData) {
 	var { classNames: classNamesProp, stroke: strokeProp } = props;
 
-	var strokeFunc = d3.functor(strokeProp);
-	var classNameFunc = d3.functor(classNamesProp);
+	var strokeFunc = functor(strokeProp);
+	var classNameFunc = functor(classNamesProp);
 
 	var width = xScale(xAccessor(plotData[plotData.length - 1]))
 		- xScale(xAccessor(plotData[0]));
@@ -93,7 +109,7 @@ OHLCSeries.getOHLCBars = (props, xAccessor, yAccessor, xScale, yScale, plotData)
 	var strokeWidth = Math.min(barWidth, 6);
 
 	var bars = plotData
-			.filter(d => isDefined(d.close))
+			.filter(d => isDefined(yAccessor(d).close))
 			.map(d => {
 				var ohlc = yAccessor(d),
 					x = Math.round(xScale(xAccessor(d))),
@@ -111,6 +127,6 @@ OHLCSeries.getOHLCBars = (props, xAccessor, yAccessor, xScale, yScale, plotData)
 				return { x, y1, y2, openX1, openX2, openY, closeX1, closeX2, closeY, stroke, className };
 			});
 	return { barWidth, strokeWidth, bars };
-};
+}
 
-export default wrap(OHLCSeries);
+export default OHLCSeries;

@@ -1,6 +1,6 @@
 "use strict";
 
-import d3 from "d3";
+import { rebind } from "d3fc-rebind";
 
 import { pointAndFigure } from "./algorithm";
 import baseIndicator from "./baseIndicator";
@@ -18,10 +18,10 @@ export default function() {
 		return underlyingAlgorithm(data);
 	};
 
-	d3.rebind(indicator, base, "id", "stroke", "fill", "echo", "type", "tooltipLabel");
-	d3.rebind(indicator, underlyingAlgorithm, "dateAccessor", "dateMutator", "indexMutator", "indexAccessor");
-	d3.rebind(indicator, underlyingAlgorithm, "reversal", "boxSize", "source");
-	// d3.rebind(indicator, mergedAlgorithm, "merge"/*, "skipUndefined"*/);
+	rebind(indicator, base, "id", "stroke", "fill", "echo", "type", "tooltipLabel");
+	rebind(indicator, underlyingAlgorithm, "dateAccessor", "dateMutator");
+	rebind(indicator, underlyingAlgorithm, "reversal", "boxSize", "sourcePath");
+	// rebind(indicator, mergedAlgorithm, "merge"/*, "skipUndefined"*/);
 
 	return indicator;
 }

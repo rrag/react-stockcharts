@@ -1,10 +1,11 @@
 "use strict";
 
-import d3 from "d3";
+import { rebind } from "d3fc-rebind";
 
-import { merge, slidingWindow } from "../utils";
+import { merge } from "../utils";
 
-import { SMA as defaultOptions } from "./defaultOptions";
+import { sma } from "./algorithm";
+
 import baseIndicator from "./baseIndicator";
 
 const ALGORITHM_TYPE = "SMA";
@@ -15,10 +16,7 @@ export default function() {
 		.type(ALGORITHM_TYPE)
 		.accessor(d => d.sma);
 
-	var underlyingAlgorithm = slidingWindow()
-		.windowSize(defaultOptions.period)
-		.source(defaultOptions.source)
-		.accumulator(values => d3.mean(values));
+	var underlyingAlgorithm = sma();
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
@@ -29,12 +27,15 @@ export default function() {
 		var newData = mergedAlgorithm(data);
 		return newData;
 	};
+	indicator.undefinedLength = function() {
+		return underlyingAlgorithm.windowSize();
+	};
 
 	base.tooltipLabel(() => `${ALGORITHM_TYPE}(${underlyingAlgorithm.windowSize()})`);
 
-	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
-	d3.rebind(indicator, underlyingAlgorithm, "windowSize", "source", "undefinedValue", "skipInitial");
-	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
+	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
+	rebind(indicator, underlyingAlgorithm, "windowSize", "undefinedLength", "sourcePath");
+	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 
 	return indicator;

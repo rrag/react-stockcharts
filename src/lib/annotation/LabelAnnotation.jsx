@@ -1,7 +1,7 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import d3 from "d3";
+import { functor } from "../utils";
 
 class LabelAnnotation extends Component {
 	constructor(props) {
@@ -38,17 +38,17 @@ class LabelAnnotation extends Component {
 export function helper(props, xAccessor, xScale, yScale) {
 	var { x, y, datum, fill, text, tooltip, plotData } = props;
 
-	var xFunc = d3.functor(x);
-	var yFunc = d3.functor(y);
+	var xFunc = functor(x);
+	var yFunc = functor(y);
 
 	var [xPos, yPos] = [xFunc({ xScale, xAccessor, datum, plotData }), yFunc({ yScale, datum, plotData })];
 
 	return {
 		xPos,
 		yPos,
-		text: d3.functor(text)(datum),
-		fill: d3.functor(fill)(datum),
-		tooltip: d3.functor(tooltip)(datum),
+		text: functor(text)(datum),
+		fill: functor(fill)(datum),
+		tooltip: functor(tooltip)(datum),
 	};
 }
 

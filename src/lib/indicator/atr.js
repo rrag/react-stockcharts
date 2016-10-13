@@ -1,12 +1,12 @@
 "use strict";
 
-import d3 from "d3";
+import { rebind } from "d3fc-rebind";
 
 import { merge } from "../utils";
 import { atr } from "./algorithm";
 
 import baseIndicator from "./baseIndicator";
-import { ATR as defaultOptions } from "./defaultOptions";
+import { ATR as defaultOptions } from "./defaultOptionsForComputation";
 
 const ALGORITHM_TYPE = "ATR";
 
@@ -17,8 +17,7 @@ export default function() {
 		.accessor(d => d.atr);
 
 	var underlyingAlgorithm = atr()
-		.windowSize(defaultOptions.period)
-		.source(defaultOptions.source);
+		.windowSize(defaultOptions.period);
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
@@ -31,9 +30,9 @@ export default function() {
 
 	base.tooltipLabel(() => `${ALGORITHM_TYPE}(${underlyingAlgorithm.windowSize()})`);
 
-	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
-	d3.rebind(indicator, underlyingAlgorithm, "source", "windowSize");
-	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
+	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
+	rebind(indicator, underlyingAlgorithm, "windowSize");
+	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;
 }

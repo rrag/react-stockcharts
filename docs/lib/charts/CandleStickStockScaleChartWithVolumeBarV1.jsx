@@ -1,24 +1,24 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
-var { CandlestickSeries, BarSeries } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
 
-var { XAxis, YAxis } = ReStock.axes;
+var { CandlestickSeries, BarSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { fitWidth } = ReStock.helper;
+var { XAxis, YAxis } = axes;
+
+var { fitWidth } = helper;
 
 class CandleStickStockScaleChartWithVolumeBarV1 extends React.Component {
 	render() {
-		var { data, type, width } = this.props;
+		var { data, type, width, ratio } = this.props;
 
 		return (
-			<ChartCanvas width={width} height={400}
+			<ChartCanvas ratio={ratio} width={width} height={400}
 					margin={{left: 50, right: 50, top:10, bottom: 30}} type={type}
 					seriesName="MSFT"
 					data={data}
@@ -31,7 +31,7 @@ class CandleStickStockScaleChartWithVolumeBarV1 extends React.Component {
 					<CandlestickSeries />
 				</Chart>
 				<Chart id={2} yExtents={d => d.volume}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
 					<BarSeries yAccessor={d => d.volume} />
 				</Chart>
 			</ChartCanvas>
@@ -42,6 +42,7 @@ class CandleStickStockScaleChartWithVolumeBarV1 extends React.Component {
 CandleStickStockScaleChartWithVolumeBarV1.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

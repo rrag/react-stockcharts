@@ -1,13 +1,12 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import Line from "./Line";
+import LineSeries from "./LineSeries";
 import StraightLine from "./StraightLine";
-import wrap from "./wrap";
 
 class RSISeries extends Component {
 	render() {
-		var { className, xScale, yScale, xAccessor, calculator, plotData, stroke, type } = this.props;
+		var { className, calculator, stroke, type } = this.props;
 		var yAccessor = calculator.accessor();
 		var overSold = calculator.overSold();
 		var middle = calculator.middle();
@@ -15,38 +14,33 @@ class RSISeries extends Component {
 
 		return (
 			<g className={className}>
-				<Line
+				<LineSeries
 					className={className}
-					xScale={xScale} yScale={yScale}
-					xAccessor={xAccessor} yAccessor={yAccessor}
-					plotData={plotData}
+					yAccessor={yAccessor}
 					stroke={stroke.line} fill="none"
 					type={type} />
-				{RSISeries.getHorizontalLine(this.props, overSold, stroke.top)}
-				{RSISeries.getHorizontalLine(this.props, middle, stroke.middle)}
-				{RSISeries.getHorizontalLine(this.props, overBought, stroke.bottom)}
+				{getHorizontalLine(this.props, overSold, stroke.top)}
+				{getHorizontalLine(this.props, middle, stroke.middle)}
+				{getHorizontalLine(this.props, overBought, stroke.bottom)}
 			</g>
 		);
 	}
 }
 
-RSISeries.getHorizontalLine = (props, yValue, stroke) => {
-	/* eslint-disable react/prop-types */
-	let { xScale, yScale, xAccessor, yAccessor, plotData, type } = props;
-	/* eslint-enable react/prop-types */
+function getHorizontalLine(props, yValue, stroke) {
 
 	return <StraightLine
-		stroke={stroke} opacity={0.3} type={type}
-		xScale={xScale} yScale={yScale}
-		xAccessor={xAccessor} yAccessor={yAccessor}
-		plotData={plotData}
+		stroke={stroke} opacity={0.3}
 		yValue={yValue} />;
-};
+}
 
 RSISeries.propTypes = {
 	className: PropTypes.string,
 
-	calculator: PropTypes.func.isRequired,
+	calculator: PropTypes.oneOfType([
+		PropTypes.func,
+		PropTypes.object,
+	]).isRequired,
 	xScale: PropTypes.func,
 	yScale: PropTypes.func,
 	xAccessor: PropTypes.func,
@@ -65,4 +59,4 @@ RSISeries.defaultProps = {
 	}
 };
 
-export default wrap(RSISeries);
+export default RSISeries;

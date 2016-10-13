@@ -1,32 +1,36 @@
 "use strict";
 
-import d3 from "d3";
 import React, { PropTypes, Component } from "react";
+import { format } from "d3-format";
+
+import GenericChartComponent from "../GenericChartComponent";
 
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
-import { first, isDefined, identity, noop } from "../utils";
+import { isDefined, identity, noop, functor } from "../utils";
 
 class SingleValueTooltip extends Component {
-	render() {
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+	}
+	renderSVG(moreProps) {
 
-		var { forChart, onClick, fontFamily, fontSize, labelStroke, valueStroke } = this.props;
+		var { onClick, fontFamily, fontSize, labelStroke, valueStroke } = this.props;
 		var { xDisplayFormat, yDisplayFormat, xLabel, yLabel, xAccessor, yAccessor } = this.props;
 
-		var { chartConfig, currentItem, width, height } = this.context;
-
-		var config = first(chartConfig.filter(each => each.id === forChart));
+		var { width, height } = moreProps;
+		var { currentItem } = moreProps;
 
 		var xDisplayValue = isDefined(currentItem) && isDefined(xAccessor(currentItem)) ? xDisplayFormat(xAccessor(currentItem)) : "n/a";
 		var yDisplayValue = isDefined(currentItem) && isDefined(yAccessor(currentItem)) ? yDisplayFormat(yAccessor(currentItem)) : "n/a";
 
 		var { origin: originProp } = this.props;
-		var origin = d3.functor(originProp);
+		var origin = functor(originProp);
 		var [x, y] = origin(width, height);
-		var [ox, oy] = config.origin;
 
 		return (
-			<g transform={`translate(${ ox + x }, ${ oy + y })`} onClick={onClick}>
+			<g transform={`translate(${ x }, ${ y })`} onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={fontFamily} fontSize={fontSize}>
 					{ xLabel ? <ToolTipTSpanLabel x={0} dy="5" fill={labelStroke}>{`${xLabel}: `}</ToolTipTSpanLabel> : null}
@@ -37,17 +41,16 @@ class SingleValueTooltip extends Component {
 			</g>
 		);
 	}
+	render() {
+		return <GenericChartComponent
+			clip={false}
+			svgDraw={this.renderSVG}
+			drawOnMouseMove
+			/>;
+	}
 }
 
-SingleValueTooltip.contextTypes = {
-	chartConfig: PropTypes.array.isRequired,
-	currentItem: PropTypes.object,
-	width: PropTypes.number.isRequired,
-	height: PropTypes.number.isRequired,
-};
-
 SingleValueTooltip.propTypes = {
-	forChart: PropTypes.number.isRequired,
 	xDisplayFormat: PropTypes.func,
 	yDisplayFormat: PropTypes.func.isRequired,
 	xLabel: PropTypes.string,
@@ -72,7 +75,7 @@ SingleValueTooltip.defaultProps = {
 	origin: [0, 0],
 	labelStroke: "#4682B4",
 	valueStroke: "#000000",
-	yDisplayFormat: d3.format(".2f"),
+	yDisplayFormat: format(".2f"),
 	xAccessor: noop,
 	yAccessor: identity,
 };

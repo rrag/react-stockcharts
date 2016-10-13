@@ -54,6 +54,12 @@ BackgroundText.propTypes = {
 	y: PropTypes.number.isRequired,
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number.isRequired,
+	fill: PropTypes.string,
+	stroke: PropTypes.string,
+	opacity: PropTypes.number,
+	strokeOpacity: PropTypes.number,
+	textAnchor: PropTypes.string,
+	children: PropTypes.func,
 };
 
 BackgroundText.defaultProps = {

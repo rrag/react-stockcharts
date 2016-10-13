@@ -1,26 +1,24 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart, EventCapture } = ReStock;
+var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = ReStock.series;
-var { discontinuousTimeScaleProvider } = ReStock.scale;
+var { EdgeIndicator } = coordinates;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
 
-var { EdgeIndicator } = ReStock.coordinates;
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = ReStock.coordinates;
-
-var { TooltipContainer, OHLCTooltip, MovingAverageTooltip, HoverTooltip } = ReStock.tooltip;
-var { XAxis, YAxis } = ReStock.axes;
-var { ema, sma } = ReStock.indicator;
-var { fitWidth } = ReStock.helper;
+var { OHLCTooltip, MovingAverageTooltip, HoverTooltip } = tooltip;
+var { XAxis, YAxis } = axes;
+var { ema, sma } = indicator;
+var { fitWidth } = helper;
 
 class CandleStickChartWithMouseFollowingTooltip extends React.Component {
 	render() {
-		var { data, type, width } = this.props;
+		var { data, type, width, ratio } = this.props;
 
 		var ema20 = ema()
 			.id(0)
@@ -48,7 +46,7 @@ class CandleStickChartWithMouseFollowingTooltip extends React.Component {
 
 		var [yAxisLabelX, yAxisLabelY] = [width -margin.left - 40, margin.top + (height - margin.top - margin.bottom) / 2]
 		return (
-			<ChartCanvas width={width} height={height}
+			<ChartCanvas ratio={ratio} width={width} height={height}
 					margin={margin} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50]}
@@ -72,12 +70,12 @@ class CandleStickChartWithMouseFollowingTooltip extends React.Component {
 				<Chart id={2}
 						yExtents={[d => d.volume]}
 						height={150} origin={(w, h) => [0, h - 150]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
 				<HoverTooltip />
-				<EventCapture mouseMove zoom pan useCrossHairStyle={false} />
+				 mouseMove zoom pan useCrossHairStyle={false} />
 			</ChartCanvas>
 		);
 	}
@@ -96,6 +94,7 @@ class CandleStickChartWithMouseFollowingTooltip extends React.Component {
 CandleStickChartWithMouseFollowingTooltip.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

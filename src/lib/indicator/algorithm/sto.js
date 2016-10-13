@@ -26,15 +26,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import d3 from "d3";
+import { max, min, mean } from "d3-array";
 
 import { last, slidingWindow, zipper } from "../../utils";
-import { FullStochasticOscillator as defaultOptions } from "../defaultOptions";
+import { FullStochasticOscillator as defaultOptions } from "../defaultOptionsForComputation";
 
 export default function() {
 
-	var { period: windowSize, K: kWindowSize, D: dWindowSize, source } = defaultOptions;
+	var { windowSize, kWindowSize, dWindowSize } = defaultOptions;
 
+	var source = d => ({ open: d.open, high: d.high, low: d.low, close: d.close });
 	var high = d => source(d).high,
 		low = d => source(d).low,
 		close = d => source(d).close;
@@ -44,8 +45,8 @@ export default function() {
 			.windowSize(windowSize)
 			.accumulator(values => {
 
-				var highestHigh = d3.max(values, high);
-				var lowestLow = d3.min(values, low);
+				var highestHigh = max(values, high);
+				var lowestLow = min(values, low);
 
 				var currentClose = close(last(values));
 				var k = (currentClose - lowestLow) / (highestHigh - lowestLow) * 100;
@@ -56,12 +57,12 @@ export default function() {
 		var kSmoothed = slidingWindow()
 			.skipInitial(windowSize - 1)
 			.windowSize(kWindowSize)
-			.accumulator(values => d3.mean(values));
+			.accumulator(values => mean(values));
 
 		var dWindow = slidingWindow()
 			.skipInitial(windowSize - 1 + kWindowSize - 1)
 			.windowSize(dWindowSize)
-			.accumulator(values => d3.mean(values));
+			.accumulator(values => mean(values));
 
 		var stoAlgorithm = zipper()
 			.combine((K, D) => ({ K, D }));
@@ -73,7 +74,9 @@ export default function() {
 
 		return newData;
 	}
-
+	calculator.undefinedLength = function() {
+		return Math.min(windowSize + kWindowSize, dWindowSize);
+	};
 	calculator.windowSize = function(x) {
 		if (!arguments.length) {
 			return windowSize;
