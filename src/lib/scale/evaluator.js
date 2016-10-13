@@ -57,12 +57,12 @@ function extentsWrapper(data, inputXAccessor, realXAccessor, useWholeData) {
 }
 
 function canShowTheseManyPeriods(width, arrayLength) {
-	var threshold = 1; // number of datapoints per 1 px
+	var threshold = 2; // number of datapoints per 1 px
 	return arrayLength > 1 && arrayLength < width * threshold;
 }
 
 function showMax(width) {
-	var threshold = 0.90; // number of datapoints per 1 px
+	var threshold = 1.80; // number of datapoints per 1 px
 	return Math.floor(width * threshold);
 }
 

@@ -125,6 +125,6 @@ next to the existing `YAxis`
 
 Want to add a `YAxis` with a percent scale on the right? add
 ```jsx
-<YAxis axisAt="right" orient="right" percentScale={true} tickFormat={d3.format(".0%")}/>
+<YAxis axisAt="right" orient="right" percentScale={true} tickFormat={format(".0%")}/>
 ```
 and you get.

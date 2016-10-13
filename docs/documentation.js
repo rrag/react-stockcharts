@@ -306,7 +306,7 @@ function renderPartialPage(data, dataFull, intraDayContinuous, intraDayDiscontin
 	// CandleStickChartWithDarkTheme
 	// AreaChartWithZoomPan
 	// AreaChartWithPointsAndEdge
-	// HaikinAshi
+	// HeikinAshi
 	// Kagi
 	// PointAndFigure
 	// Renko

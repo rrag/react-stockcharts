@@ -1,11 +1,12 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
+import { forceSimulation, forceX, forceCollide } from "d3-force";
 
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 import AxisZoomCapture from "./AxisZoomCapture";
 
-import { first, last, hexToRGBA, isNotDefined, isDefined, identity } from "../utils";
+import { first, last, hexToRGBA, isNotDefined, isDefined, identity, zipper } from "../utils";
 
 class Axis extends Component {
 	constructor(props) {
@@ -105,28 +106,20 @@ Axis.contextTypes = {
 	width: PropTypes.number.isRequired,
 };
 
-function tickTransform_svg_axisX(scale, tick) {
-	return [Math.round(scale(tick)), 0];
-}
-
-function tickTransform_svg_axisY(scale, tick) {
-	return [0, Math.round(scale(tick))];
-}
-
 function tickHelper(props, scale) {
-	var { orient, innerTickSize, tickFormat, tickPadding, fontSize, fontFamily } = props;
-	var { ticks: tickArguments, tickValues, tickStroke, tickStrokeOpacity } = props;
+	var { orient, innerTickSize, tickFormat, tickPadding, fontSize, fontFamily, showTicks, flexTicks } = props;
+	var { ticks: tickArguments, tickValues: tickValuesProp, tickStroke, tickStrokeOpacity } = props;
 
-	if (tickArguments) tickArguments = [tickArguments];
+	// if (tickArguments) tickArguments = [tickArguments];
 
-	var ticks = isNotDefined(tickValues)
+	var tickValues = isNotDefined(tickValuesProp)
 		? (isDefined(scale.ticks)
-			? scale.ticks.apply(scale, tickArguments)
+			? scale.ticks(tickArguments, flexTicks)
 			: scale.domain())
-		: tickValues;
+		: tickValuesProp;
 
 	var baseFormat = scale.tickFormat
-			? scale.tickFormat.apply(scale, tickArguments)
+			? scale.tickFormat(tickArguments)
 			: identity;
 
 	var format = isNotDefined(tickFormat)
@@ -136,28 +129,76 @@ function tickHelper(props, scale) {
 	var sign = orient === "top" || orient === "left" ? -1 : 1;
 	var tickSpacing = Math.max(innerTickSize, 0) + tickPadding;
 
-	var tickTransform, x, y, x2, y2, dy, canvas_dy, textAnchor;
+	var ticks, dy, canvas_dy, textAnchor;
 
 	if (orient === "bottom" || orient === "top") {
-		tickTransform = tickTransform_svg_axisX;
-		x2 = 0;
-		y2 = sign * innerTickSize;
-		x = 0;
-		y = sign * tickSpacing;
 		dy = sign < 0 ? "0em" : ".71em";
 		canvas_dy = sign < 0 ? 0 : (fontSize * .71);
 		textAnchor = "middle";
+
+		ticks = tickValues.map(d => {
+			var x = scale(d);
+			return {
+				value: d,
+				x1: x,
+				y1: 0,
+				x2: x,
+				y2: sign * innerTickSize,
+				labelX: x,
+				labelY: sign * tickSpacing,
+			};
+		});
+
+		if (showTicks && flexTicks) {
+			// console.log(ticks, showTicks);
+
+			var nodes = ticks.map(d => ({ id: d.value, value: d.value, fy: d.y2, origX: d.x1 }));
+
+			var simulation = forceSimulation(nodes)
+				.force("x", forceX(d => d.origX).strength(1))
+				.force("collide", forceCollide(22))
+				// .force("center", forceCenter())
+				.stop();
+
+			for (var i = 0; i < 100; ++i) simulation.tick();
+			// console.log(nodes);
+
+			var zip = zipper()
+				.combine((a, b) => {
+					if (Math.abs(b.x - b.origX) > 0.01) {
+						return {
+							...a,
+							x2: b.x,
+							labelX: b.x
+						};
+					}
+					return a;
+				});
+
+			ticks = zip(ticks, nodes);
+		}
+
+
 	} else {
-		tickTransform = tickTransform_svg_axisY;
-		x2 = sign * innerTickSize;
-		y2 = 0;
-		x = sign * tickSpacing;
-		y = 0;
+		ticks = tickValues.map(d => {
+			var y = scale(d);
+			return {
+				value: d,
+				x1: 0,
+				y1: y,
+				x2: sign * innerTickSize,
+				y2: y,
+				labelX: sign * tickSpacing,
+				labelY: y,
+			};
+		});
+
 		dy = ".32em";
 		canvas_dy = (fontSize * .32);
 		textAnchor = sign < 0 ? "end" : "start";
 	}
-	return { ticks, scale, tickTransform, tickStroke, tickStrokeOpacity, dy, canvas_dy, x, y, x2, y2, textAnchor, fontSize, fontFamily, format };
+
+	return { ticks, scale, tickStroke, tickStrokeOpacity, dy, canvas_dy, textAnchor, fontSize, fontFamily, format };
 }
 
 /* eslint-disable react/prop-types */
@@ -219,13 +260,15 @@ function drawAxisLine(ctx, props, range) {
 }
 
 function Tick(props) {
-	var { transform, tickStroke, tickStrokeOpacity, textAnchor, fontSize, fontFamily } = props;
-	var { x, y, x2, y2, dy } = props;
+	var { tickStroke, tickStrokeOpacity, textAnchor, fontSize, fontFamily } = props;
+	var { x1, y1, x2, y2, labelX, labelY, dy } = props;
 	return (
-		<g className="tick" transform={`translate(${ transform[0] }, ${ transform[1] })`} >
-			<line shapeRendering="crispEdges" opacity={tickStrokeOpacity} stroke={tickStroke} x2={x2} y2={y2} />
+		<g className="tick">
+			<line shapeRendering="crispEdges" opacity={tickStrokeOpacity} stroke={tickStroke}
+				x1={x1} y1={y1}
+				x2={x2} y2={y2} />
 			<text
-				dy={dy} x={x} y={y}
+				dy={dy} x={labelX} y={labelY}
 				fill={tickStroke}
 				fontSize={fontSize}
 				fontFamily={fontFamily}
@@ -238,12 +281,13 @@ function Tick(props) {
 
 Tick.propTypes = {
 	children: PropTypes.string.isRequired,
-	x: PropTypes.number.isRequired,
-	y: PropTypes.number.isRequired,
+	x1: PropTypes.number.isRequired,
+	y1: PropTypes.number.isRequired,
 	x2: PropTypes.number.isRequired,
 	y2: PropTypes.number.isRequired,
+	labelX: PropTypes.number.isRequired,
+	labelY: PropTypes.number.isRequired,
 	dy: PropTypes.string.isRequired,
-	transform: PropTypes.array,
 	tickStroke: PropTypes.string,
 	tickStrokeOpacity: PropTypes.number,
 	textAnchor: PropTypes.string,
@@ -254,20 +298,23 @@ Tick.propTypes = {
 function axisTicksSVG(props, scale) {
 	var result = tickHelper(props, scale);
 
-	var { tickStroke, tickStrokeOpacity, textAnchor, tickTransform } = result;
+	var { tickStroke, tickStrokeOpacity, textAnchor } = result;
 	var { fontSize, fontFamily, ticks, format } = result;
 
-	var { dy, x, y, x2, y2 } = result;
+	var { dy } = result;
 
 	return (
 		<g>
 			{ticks.map((tick, idx) => {
 				return (
-					<Tick key={idx} transform={tickTransform(scale, tick)}
+					<Tick key={idx}
 						tickStroke={tickStroke} tickStrokeOpacity={tickStrokeOpacity}
-						dy={dy} x={x} y={y}
-						x2={x2} y2={y2} textAnchor={textAnchor}
-						fontSize={fontSize} fontFamily={fontFamily}>{format(tick)}</Tick>
+						dy={dy}
+						x1={tick.x1} y1={tick.y1}
+						x2={tick.x2} y2={tick.y2}
+						labelX={tick.labelX} labelY={tick.labelY}
+						textAnchor={textAnchor}
+						fontSize={fontSize} fontFamily={fontFamily}>{format(tick.value)}</Tick>
 				);
 			})}
 		</g>
@@ -291,17 +338,15 @@ function drawTicks(ctx, result) {
 }
 
 function drawEachTick(ctx, tick, result) {
-	var { scale, tickTransform, canvas_dy, x, y, x2, y2, format } = result;
-
-	var origin = tickTransform(scale, tick);
+	var { canvas_dy, format } = result;
 
 	ctx.beginPath();
 
-	ctx.moveTo(origin[0], origin[1]);
-	ctx.lineTo(origin[0] + x2, origin[1] + y2);
+	ctx.moveTo(tick.x1, tick.y1);
+	ctx.lineTo(tick.x2, tick.y2);
 	ctx.stroke();
 
-	ctx.fillText(format(tick), origin[0] + x, origin[1] + y + canvas_dy);
+	ctx.fillText(format(tick.value), tick.labelX, tick.labelY + canvas_dy);
 }
 
 export default Axis;

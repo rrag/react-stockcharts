@@ -72,8 +72,8 @@ class CandleStickChartWithEdge extends React.Component {
 						yPan yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
 						padding={{ top: 10, bottom: 20 }}>
 
-					<XAxis axisAt="bottom" orient="bottom"/>
-					<XAxis axisAt="top" orient="top"/>
+					<XAxis axisAt="bottom" orient="bottom" />
+					<XAxis axisAt="top" orient="top" flexTicks />
 					<YAxis axisAt="right" orient="right" ticks={5} />
 
 					<CandlestickSeries />

@@ -23,27 +23,27 @@ var { Brush } = interactive;
 var ema26 = ema()
 	.id(0)
 	.windowSize(26)
-	.merge((d, c) => {d.ema26 = c})
+	.merge((d, c) => { d.ema26 = c })
 	.accessor(d => d.ema26);
 
 var ema12 = ema()
 	.id(1)
 	.windowSize(12)
-	.merge((d, c) => {d.ema12 = c})
+	.merge((d, c) => { d.ema12 = c })
 	.accessor(d => d.ema12);
 
 var macdCalculator = macd()
 	.fast(12)
 	.slow(26)
 	.signal(9)
-	.merge((d, c) => {d.macd = c})
+	.merge((d, c) => { d.macd = c })
 	.accessor(d => d.macd);
 
 var smaVolume50 = sma()
 	.id(3)
 	.windowSize(10)
 	.sourcePath("volume")
-	.merge((d, c) => {d.smaVolume50 = c})
+	.merge((d, c) => { d.smaVolume50 = c })
 	.accessor(d => d.smaVolume50);
 
 const BRUSH_TYPE = "2D"; // Valid values = "2D", "1D"

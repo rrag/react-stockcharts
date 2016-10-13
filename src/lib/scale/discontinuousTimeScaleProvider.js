@@ -38,7 +38,6 @@ var levelDefinition = [
 	/*  1 */(d, date, i) => d.startOf30Seconds && secondFormat,
 	/*  0 */(d, date, i) => secondFormat,
 	/* eslint-enable no-unused-vars */
-
 ];
 
 function evaluateLevel(d, date, i) {

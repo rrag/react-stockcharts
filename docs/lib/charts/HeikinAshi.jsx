@@ -18,7 +18,7 @@ var { XAxis, YAxis } = axes;
 var { ema, sma, heikinAshi } = indicator;
 var { fitWidth } = helper;
 
-class HaikinAshi extends React.Component {
+class HeikinAshi extends React.Component {
 	render() {
 		var { data, type, width, ratio } = this.props;
 
@@ -118,15 +118,15 @@ class HaikinAshi extends React.Component {
 	}
 }
 
-HaikinAshi.propTypes = {
+HeikinAshi.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
 	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
-HaikinAshi.defaultProps = {
+HeikinAshi.defaultProps = {
 	type: "svg",
 };
 
-export default fitWidth(HaikinAshi);
+export default fitWidth(HeikinAshi);

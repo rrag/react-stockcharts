@@ -15,7 +15,7 @@ var ReStock = require("../../../src/");
 // CandleStickChart
 // CandleStickStockScaleChart
 // CandleStickChartWithEdge
-// HaikinAshi
+// HeikinAshi
 // Kagi
 // PointAndFigure
 // Renko

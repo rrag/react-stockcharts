@@ -16,7 +16,7 @@ class XAxis extends Component {
 		var { showTicks } = this.props;
 		var moreProps = helper(this.props, this.context);
 
-		return <Axis {...this.props} {...moreProps}
+		return <Axis {...this.props} {...moreProps} x
 			axisZoomCallback={this.axisZoomCallback}
 			zoomEnabled={showTicks}
 			zoomCursorClassName="react-stockcharts-ew-resize-cursor" />;

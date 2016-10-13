@@ -143,7 +143,7 @@ function resetChart(props, firstCalculation = false) {
 function updateChart(newState, initialXScale, props, prevLastItem) {
 
 	var { firstItem, lastItem, xScale, xAccessor, filterData } = newState;
-	var lastItemVisible = lastItem === prevLastItem;
+	var lastItemVisible = xAccessor(lastItem) === xAccessor(prevLastItem);
 	if (debug) {
 		if (process.env.NODE_ENV !== "production") {
 			if (lastItemVisible)

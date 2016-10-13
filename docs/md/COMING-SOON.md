@@ -1,6 +1,4 @@
-## v0.6
-
-TODO
+## v0.7
 
 1. [Envelope](http://www.investopedia.com/terms/e/envelope.asp?optm=sa_v2)
 1. [ATR Trailing stop](http://www.incrediblecharts.com/indicators/atr_average_true_range_trailing_stops.php)
@@ -9,19 +7,13 @@ TODO
 	- With mouse hover highlight
 	- right click context menu
 	- double click listener
-1. Highlight on mouse hover, right click and double click listener - ![Done][DONE]
-	- line series
-1. Zoom on y - ![Done][DONE]
-1. Pan on y - ![Done][DONE]
-1. Support for pan to load more data - ![Done][DONE]
 1. Explore refactoring of interactive indicators to use canvas (again)
-1. opensource the demo
 
 #### New Chart types
 1. Line break
 1. Better Renko/Mean Renko (Tentative)
 
-## v0.7
+## v0.8
 
 Guess this can be `v1.0.0`
 
@@ -30,14 +22,14 @@ Guess this can be `v1.0.0`
 1. Explore splitting project into multiple modules, one for each type of indicator, chart type
 1. add LineSeries interpolation
 1. add AreaSeries gradiant
-1. Use d3 v4
-1. Volume Profile (Tentative)
-	- show/hide Point of control
-	- show/hide value area
 
 ## Sometime in the future....
 
+
 #### Features
+1. Volume Profile (Tentative)
+	- show/hide Point of control
+	- show/hide value area
 1. Automatic Support & Resistance trendlines (Tentative)
 1. Add a playground to see live updates (Tentative)
 
