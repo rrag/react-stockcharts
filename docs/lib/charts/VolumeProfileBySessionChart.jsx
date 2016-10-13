@@ -20,7 +20,7 @@ var { ema, sma, change } = indicator;
 
 var { fitWidth } = helper;
 
-class VolumeProfileChart extends React.Component {
+class VolumeProfileBySessionChart extends React.Component {
 	render() {
 		var { data, type, width, ratio } = this.props;
 
@@ -92,16 +92,16 @@ class VolumeProfileChart extends React.Component {
 	}
 }
 
-VolumeProfileChart.propTypes = {
+VolumeProfileBySessionChart.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
 	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
-VolumeProfileChart.defaultProps = {
+VolumeProfileBySessionChart.defaultProps = {
 	type: "svg",
 };
-VolumeProfileChart = fitWidth(VolumeProfileChart);
+VolumeProfileBySessionChart = fitWidth(VolumeProfileBySessionChart);
 
-export default VolumeProfileChart;
+export default VolumeProfileBySessionChart;

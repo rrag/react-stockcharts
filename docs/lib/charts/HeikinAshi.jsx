@@ -129,4 +129,6 @@ HeikinAshi.defaultProps = {
 	type: "svg",
 };
 
-export default fitWidth(HeikinAshi);
+HeikinAshi = fitWidth(HeikinAshi);
+
+export default HeikinAshi;
