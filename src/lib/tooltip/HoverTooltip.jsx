@@ -16,7 +16,7 @@ class HoverTooltip extends Component {
 		var { height } = moreProps;
 
 		if (isNotDefined(pointer)) return null;
-		drawOnCanvas(ctx, this.props, this.context, pointer, height);
+		drawOnCanvas(ctx, this.props, this.context, pointer, height, moreProps);
 	}
 	render() {
 		return <GenericComponent
@@ -32,10 +32,22 @@ class HoverTooltip extends Component {
 
 		if (isNotDefined(pointer)) return null;
 
-		var { bgFill, bgOpacity, backgroundShapeSVG } = this.props;
-		var { height } = moreProps;
+		var { chartId, yAccessor, bgFill, bgOpacity, bgwidth, bgheight, backgroundShapeSVG } = this.props;
+		var { height, xAccessor, xScale, chartConfig, currentItem } = moreProps;
 
 		var { x, y, content, centerX, drawWidth } = pointer;
+
+		if (chartId && yAccessor) {
+			var xValue = xAccessor(currentItem);
+			var yValue = yAccessor(currentItem);
+			var chartIndex = chartConfig.findIndex(x => x.id === chartId)
+
+			x = Math.round(xScale(xValue));
+			y = Math.round(chartConfig[chartIndex].yScale(yValue));
+
+			x = (x - bgwidth  - PADDING * 2 < 0) ? x + PADDING : x - bgwidth - PADDING;
+			y = (y - bgheight < 0) ? y + PADDING : y - bgheight - PADDING;
+		}
 
 		return (
 			<g>
@@ -50,6 +62,8 @@ class HoverTooltip extends Component {
 }
 
 HoverTooltip.propTypes = {
+	chartId: PropTypes.number,
+	yAccessor: PropTypes.func,
 	backgroundShapeSVG: PropTypes.func,
 	bgwidth: PropTypes.number.isRequired,
 	bgheight: PropTypes.number.isRequired,
@@ -153,11 +167,12 @@ function origin(mouseXY, bgheight, bgwidth, xAccessor, currentItem, xScale) {
 	return [originX, originY];
 }
 
-function drawOnCanvas(ctx, props, context, pointer, height) {
+function drawOnCanvas(ctx, props, context, pointer, height, moreProps) {
 
 	var { margin, ratio } = context;
-	var { bgFill, bgOpacity } = props;
+	var { bgwidth, bgheight, bgFill, bgOpacity, chartId, yAccessor } = props;
 	var { backgroundShapeCanvas, tooltipCanvas } = props;
+	var { xAccessor, xScale, chartConfig, currentItem } = moreProps;
 
 	var originX = 0.5 * ratio + margin.left;
 	var originY = 0.5 * ratio + margin.top;
@@ -170,6 +185,18 @@ function drawOnCanvas(ctx, props, context, pointer, height) {
 	ctx.translate(originX, originY);
 
 	var { x, y, content, centerX, drawWidth } = pointer;
+
+	if (chartId && yAccessor) {
+		var xValue = xAccessor(currentItem);
+		var yValue = yAccessor(currentItem);
+		var chartIndex = chartConfig.findIndex(x => x.id === chartId)
+
+		x = Math.round(xScale(xValue));
+		y = Math.round(chartConfig[chartIndex].yScale(yValue));
+
+		x = (x - bgwidth  - PADDING * 2 < 0) ? x + PADDING : x - bgwidth - PADDING;
+		y = (y - bgheight < 0) ? y + PADDING : y - bgheight - PADDING;
+	}
 
 	ctx.fillStyle = hexToRGBA(bgFill, bgOpacity);
 	ctx.beginPath();
