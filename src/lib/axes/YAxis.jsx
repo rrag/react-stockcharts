@@ -37,6 +37,8 @@ YAxis.propTypes = {
 	tickValues: PropTypes.array,
 	showTicks: PropTypes.bool,
 	className: PropTypes.string,
+	onContextMenu: PropTypes.func,
+	onDoubleClick: PropTypes.func,
 };
 
 YAxis.defaultProps = {

@@ -37,6 +37,7 @@ function buildConfig(mode) {
 		{ test: /\.scss$/, loaders: ["style", "css", "autoprefixer", "sass?outputStyle=expanded"] }
 	];
 
+	console.log("MODE", mode)
 	return {
 		context,
 		entry: Object.assign({

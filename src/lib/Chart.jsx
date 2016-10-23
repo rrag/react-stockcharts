@@ -4,12 +4,34 @@ import React, { PropTypes } from "react";
 import { scaleLinear } from "d3-scale";
 
 import PureComponent from "./utils/PureComponent";
-import { isNotDefined } from "./utils";
+import { isNotDefined, noop } from "./utils";
 
 class Chart extends PureComponent {
 	constructor(props, context) {
 		super(props, context);
 		this.yScale = this.yScale.bind(this);
+		this.listener = this.listener.bind(this);
+	}
+	componentWillMount() {
+		var { id } = this.props;
+		var { subscribe } = this.context;
+		subscribe("chart_" + id, this.listener);
+	}
+	componentWillUnmount() {
+		var { id } = this.props;
+		var { unsubscribe } = this.context;
+		unsubscribe("chart_" + id);
+	}
+	listener(type, moreProps, e) {
+		var { id, onContextMenu } = this.props;
+
+		if (type === "contextmenu") {
+			var { currentCharts } = moreProps;
+			if (currentCharts.indexOf(id) > -1) {
+				// console.log(moreProps, e, e.nativeEvent);
+				onContextMenu(moreProps, e);
+			}
+		}
 	}
 	yScale() {
 		var chartConfig = this.context.chartConfig.filter((each) => each.id === this.props.id)[0];
@@ -51,6 +73,7 @@ Chart.propTypes = {
 			return new Error("yExtents or yExtentsCalculator must"
 				+ ` be present on ${componentName}. Validation failed.`);
 	},
+	onContextMenu: PropTypes.func.isRequired,
 	yScale: PropTypes.func.isRequired,
 	yMousePointerDisplayLocation: PropTypes.oneOf(["left", "right"]),
 	yMousePointerDisplayFormat: PropTypes.func,
@@ -72,6 +95,7 @@ Chart.defaultProps = {
 	yScale: scaleLinear(),
 	flipYScale: false,
 	yPan: true,
+	onContextMenu: noop,
 };
 
 Chart.contextTypes = {
@@ -81,6 +105,8 @@ Chart.contextTypes = {
 	margin: PropTypes.object.isRequired,
 	ratio: PropTypes.number.isRequired,
 
+	subscribe: PropTypes.func.isRequired,
+	unsubscribe: PropTypes.func.isRequired,
 	// adding here even when this is not used by Chart, refer to https://github.com/facebook/react/issues/2517
 	// used by CurrentCoordinate
 	// currentItem: PropTypes.object,

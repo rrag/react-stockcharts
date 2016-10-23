@@ -48,6 +48,7 @@ class Axis extends Component {
 	render() {
 		var { bg, axisZoomCallback, zoomCursorClassName, zoomEnabled, getScale } = this.props;
 		var { transform, getMouseDelta, edgeClip } = this.props;
+		var { onContextMenu, onDoubleClick } = this.props;
 
 		var zoomCapture = zoomEnabled
 			? <AxisZoomCapture
@@ -56,7 +57,10 @@ class Axis extends Component {
 				getMoreProps={this.getMoreProps}
 				getMouseDelta={getMouseDelta}
 				axisZoomCallback={axisZoomCallback}
-				zoomCursorClassName={zoomCursorClassName} />
+				zoomCursorClassName={zoomCursorClassName}
+				onContextMenu={onContextMenu}
+				onDoubleClick={onDoubleClick}
+				/>
 			: null;
 
 		return <g transform={`translate(${ transform[0] }, ${ transform[1] })`}>
@@ -93,6 +97,8 @@ Axis.propTypes = {
 	getScale: PropTypes.func.isRequired,
 	bg: PropTypes.object.isRequired,
 	edgeClip: PropTypes.bool.isRequired,
+	onContextMenu: PropTypes.func,
+	onDoubleClick: PropTypes.func,
 };
 
 Axis.defaultProps = {

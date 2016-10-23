@@ -60,9 +60,14 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], sma20.accessor(), ema20.accessor(), ema50.accessor(), bb.accessor()]}
-						padding={{ top: 10, bottom: 20 }}>
+						padding={{ top: 10, bottom: 20 }}
+						onContextMenu={(...rest) => { console.log("chart - context menu", rest); }}
+						>
 					<XAxis axisAt="bottom" orient="bottom"/>
-					<YAxis axisAt="right" orient="right" ticks={5} />
+					<YAxis axisAt="right" orient="right" ticks={5}
+						onDoubleClick={(...rest) => { console.log("yAxis - double click", rest); }}
+						onContextMenu={(...rest) => { console.log("yAxis - context menu", rest); }}
+						/>
 
 					<MouseCoordinateX
 						at="bottom"

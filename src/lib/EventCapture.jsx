@@ -30,6 +30,7 @@ class EventCapture extends Component {
 		this.handleTouchMove = this.handleTouchMove.bind(this);
 		this.handleTouchEnd = this.handleTouchEnd.bind(this);
 		this.handleRightClick = this.handleRightClick.bind(this);
+		this.saveNode = this.saveNode.bind(this);
 		this.lastTouch = {};
 		this.initialPinch = {};
 		this.mouseInteraction = true;
@@ -37,7 +38,9 @@ class EventCapture extends Component {
 			panInProgress: false,
 		};
 	}
-
+	saveNode(node) {
+		this.node = node;
+	}
 	componentWillMount() {
 		this.focus = this.props.focus;
 	}
@@ -78,27 +81,28 @@ class EventCapture extends Component {
 		e.preventDefault();
 
 		var { onContextMenu, onPanEnd } = this.props;
-		var { dx, dy, panStartXScale, panOrigin, chartsToPan } = this.state.panStart;
 
-		var newPos = [e.pageX - dx, e.pageY - dy];
+		var mouseXY = mousePosition(e, this.node.getBoundingClientRect());
 
-		if (this.panHappened) {
-			onPanEnd(newPos, panStartXScale, panOrigin, chartsToPan, e);
+		if (isDefined(this.state.panStart)) {
+			var { panStartXScale, panOrigin, chartsToPan } = this.state.panStart;
+			if (this.panHappened) {
+				onPanEnd(mouseXY, panStartXScale, panOrigin, chartsToPan, e);
+			}
+			var win = d3Window(this.node);
+			select(win)
+				.on(MOUSEMOVE, null)
+				.on(MOUSEUP, null);
+
+			this.setState({
+				panInProgress: false,
+				panStart: null,
+			});
 		}
 
-		onContextMenu(newPos, e);
-
-		var win = d3Window(this.refs.capture);
-		select(win)
-			.on(MOUSEMOVE, null)
-			.on(MOUSEUP, null);
+		onContextMenu(mouseXY, e);
 
 		this.contextMenuClicked = true;
-		this.setState({
-			panInProgress: false,
-			panStart: null,
-		});
-		// onPanEnd(newPos, e);
 	}
 	handleMouseDown(e) {
 		var { pan, xScale, chartConfig, onMouseDown } = this.props;
@@ -125,13 +129,16 @@ class EventCapture extends Component {
 			});
 
 			if (pan) {
-				var win = d3Window(this.refs.capture);
+				var win = d3Window(this.node);
 				select(win)
 					.on(MOUSEMOVE, this.handlePan)
 					.on(MOUSEUP, this.handlePanEnd);
 			}
 
 			if (!pan) {
+				// This block of code gets executed when
+				// drawMode is enabled,
+				// pan is disabled in draw mode
 				e.persist();
 				setTimeout(() => {
 					if (!this.contextMenuClicked) {
@@ -190,7 +197,7 @@ class EventCapture extends Component {
 					// && !this.contextMenuClicked
 					&& panEnabled
 					&& onPanEnd) {
-				var win = d3Window(this.refs.capture);
+				var win = d3Window(this.node);
 				select(win)
 					.on(MOUSEMOVE, null)
 					.on(MOUSEUP, null);
@@ -322,7 +329,7 @@ class EventCapture extends Component {
 		var { height, width } = this.props;
 		var className = this.state.panInProgress ? "react-stockcharts-grabbing-cursor" : "react-stockcharts-crosshair-cursor";
 		return (
-			<rect ref="capture"
+			<rect ref={this.saveNode}
 				className={className}
 				width={width} height={height} style={{ opacity: 0 }}
 				onMouseEnter={this.handleEnter}

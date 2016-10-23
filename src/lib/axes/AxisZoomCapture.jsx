@@ -4,7 +4,7 @@ import React, { PropTypes, Component } from "react";
 import { select, event as d3Event } from "d3-selection";
 import { mean } from "d3-array";
 
-import { first, last, isDefined } from "../utils";
+import { first, last, isDefined, noop } from "../utils";
 import { mousePosition, d3Window, MOUSEMOVE, MOUSEUP } from "../utils";
 
 function sign(x) {
@@ -17,16 +17,41 @@ class AxisZoomCapture extends Component {
 		this.handleDragStart = this.handleDragStart.bind(this);
 		this.handleDrag = this.handleDrag.bind(this);
 		this.handleDragEnd = this.handleDragEnd.bind(this);
+		this.handleRightClick = this.handleRightClick.bind(this);
+		this.saveNode = this.saveNode.bind(this);
 		this.state = {
 			startPosition: null
 		};
 	}
+	saveNode(node) {
+		this.node = node;
+	}
+	handleRightClick(e) {
+		e.stopPropagation();
+		e.preventDefault();
+
+		var { onContextMenu } = this.props;
+
+		var mouseXY = mousePosition(e, this.node.getBoundingClientRect());
+
+		select(d3Window(this.node))
+			.on(MOUSEMOVE, null)
+			.on(MOUSEUP, null);
+		this.setState({
+			startPosition: null,
+		});
+
+		onContextMenu(mouseXY, e);
+
+		this.contextMenuClicked = true;
+	}
 	handleDragStart(e) {
 		var { getScale, getMoreProps } = this.props;
 		var startScale = getScale(getMoreProps());
+		this.dragHappened = false;
 
 		if (startScale.invert) {
-			select(d3Window(this.refs.capture))
+			select(d3Window(this.node))
 				.on(MOUSEMOVE, this.handleDrag)
 				.on(MOUSEUP, this.handleDragEnd);
 
@@ -52,6 +77,7 @@ class AxisZoomCapture extends Component {
 		var { startPosition } = this.state;
 		var { getMouseDelta } = this.props;
 
+		this.dragHappened = true;
 		if (isDefined(startPosition)) {
 			var { startScale } = startPosition;
 			var { startXY, leftX, topY } = startPosition;
@@ -76,7 +102,23 @@ class AxisZoomCapture extends Component {
 		}
 	}
 	handleDragEnd() {
-		select(d3Window(this.refs.capture))
+
+		if (!this.dragHappened) {
+			if (this.clicked) {
+				var e = d3Event;
+				var mouseXY = mousePosition(e, this.node.getBoundingClientRect());
+				var { onDoubleClick } = this.props;
+
+				onDoubleClick(mouseXY, e);
+			} else {
+				this.clicked = true;
+				setTimeout(() => {
+					this.clicked = false;
+				}, 300);
+			}
+		}
+
+		select(d3Window(this.node))
 			.on(MOUSEMOVE, null)
 			.on(MOUSEUP, null);
 		this.setState({
@@ -92,9 +134,11 @@ class AxisZoomCapture extends Component {
 
 		return <rect
 			className={`react-stockcharts-enable-interaction ${cursor}`}
-			ref="capture"
+			ref={this.saveNode}
 			x={bg.x} y={bg.y} opacity={0} height={bg.h} width={bg.w}
-			onMouseDown={this.handleDragStart} />;
+			onContextMenu={this.handleRightClick}
+			onMouseDown={this.handleDragStart}
+			/>;
 	}
 }
 
@@ -116,6 +160,13 @@ AxisZoomCapture.propTypes = {
 	getMoreProps: PropTypes.func.isRequired,
 	getScale: PropTypes.func.isRequired,
 	getMouseDelta: PropTypes.func.isRequired,
+	onDoubleClick: PropTypes.func.isRequired,
+	onContextMenu: PropTypes.func.isRequired,
+};
+
+AxisZoomCapture.defaultProps = {
+	onDoubleClick: noop,
+	onContextMenu: noop,
 };
 
 AxisZoomCapture.contextTypes = {
