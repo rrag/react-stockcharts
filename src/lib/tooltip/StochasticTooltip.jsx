@@ -16,6 +16,7 @@ class StochasticTooltip extends Component {
 	}
 	renderSVG(moreProps) {
 		var { onClick, fontFamily, fontSize, calculator, displayFormat, children } = this.props;
+		var { className } = this.props;
 		var { width, height } = moreProps;
 		var { currentItem } = moreProps;
 
@@ -32,7 +33,7 @@ class StochasticTooltip extends Component {
 		var [x, y] = origin(width, height);
 
 		return (
-			<g transform={`translate(${ x }, ${ y })`} onClick={onClick}>
+			<g className={className} transform={`translate(${ x }, ${ y })`} onClick={onClick}>
 				<ToolTipText x={0} y={0} fontFamily={fontFamily} fontSize={fontSize}>
 					<ToolTipTSpanLabel>{`${ label } %K(`}</ToolTipTSpanLabel>
 					<tspan fill={stroke.K}>{`${ calculator.windowSize() }, ${ calculator.kWindowSize() }`}</tspan>
@@ -60,6 +61,7 @@ StochasticTooltip.propTypes = {
 		PropTypes.array,
 		PropTypes.func
 	]).isRequired,
+	className: PropTypes.string,
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
 	onClick: PropTypes.func,
@@ -70,7 +72,8 @@ StochasticTooltip.propTypes = {
 
 StochasticTooltip.defaultProps = {
 	displayFormat: format(".2f"),
-	origin: [0, 0]
+	origin: [0, 0],
+	className: "react-stockcharts-toottip",
 };
 
 export default StochasticTooltip;

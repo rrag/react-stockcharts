@@ -113,9 +113,6 @@ class EventCapture extends Component {
 
 			var mouseXY = mousePosition(e);
 
-			var dx = e.pageX - mouseXY[0],
-				dy = e.pageY - mouseXY[1];
-
 			var currentCharts = getCurrentCharts(chartConfig, mouseXY);
 
 			this.setState({
@@ -123,7 +120,6 @@ class EventCapture extends Component {
 				panStart: {
 					panStartXScale: xScale,
 					panOrigin: mouseXY,
-					dx, dy,
 					chartsToPan: currentCharts
 				},
 			});
@@ -164,8 +160,10 @@ class EventCapture extends Component {
 
 			this.panHappened = true;
 
-			var { dx, dy, panStartXScale, panOrigin, chartsToPan } = this.state.panStart;
-			var newPos = [e.pageX - dx, e.pageY - dy];
+			var { panStartXScale, panOrigin, chartsToPan } = this.state.panStart;
+
+			var rect = this.node.getBoundingClientRect();
+			var newPos = [Math.round(e.pageX - rect.left), Math.round(e.pageY - rect.top)];
 
 			onPan(newPos, panStartXScale, panOrigin, chartsToPan, e);
 		}
@@ -176,9 +174,10 @@ class EventCapture extends Component {
 		var { pan: panEnabled, onPanEnd, onClick, onDoubleClick } = this.props;
 
 		if (isDefined(this.state.panStart)) {
-			var { dx, dy, panStartXScale, panOrigin, chartsToPan } = this.state.panStart;
+			var { panStartXScale, panOrigin, chartsToPan } = this.state.panStart;
 
-			var newPos = [e.pageX - dx, e.pageY - dy];
+			var rect = this.node.getBoundingClientRect();
+			var newPos = [Math.round(e.pageX - rect.left), Math.round(e.pageY - rect.top)];
 
 			if (!this.panHappened) {
 				if (this.clicked) {

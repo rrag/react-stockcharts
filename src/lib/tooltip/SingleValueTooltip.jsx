@@ -16,7 +16,7 @@ class SingleValueTooltip extends Component {
 	}
 	renderSVG(moreProps) {
 
-		var { onClick, fontFamily, fontSize, labelStroke, valueStroke } = this.props;
+		var { onClick, fontFamily, fontSize, labelStroke, valueStroke, className } = this.props;
 		var { xDisplayFormat, yDisplayFormat, xLabel, yLabel, xAccessor, yAccessor } = this.props;
 
 		var { width, height } = moreProps;
@@ -30,7 +30,7 @@ class SingleValueTooltip extends Component {
 		var [x, y] = origin(width, height);
 
 		return (
-			<g transform={`translate(${ x }, ${ y })`} onClick={onClick}>
+			<g className={className} transform={`translate(${ x }, ${ y })`} onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={fontFamily} fontSize={fontSize}>
 					{ xLabel ? <ToolTipTSpanLabel x={0} dy="5" fill={labelStroke}>{`${xLabel}: `}</ToolTipTSpanLabel> : null}
@@ -64,6 +64,7 @@ SingleValueTooltip.propTypes = {
 		PropTypes.array,
 		PropTypes.func
 	]).isRequired,
+	className: PropTypes.string,
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
 	onClick: PropTypes.func,
@@ -78,6 +79,7 @@ SingleValueTooltip.defaultProps = {
 	yDisplayFormat: format(".2f"),
 	xAccessor: noop,
 	yAccessor: identity,
+	className: "react-stockcharts-toottip",
 };
 
 export default SingleValueTooltip;

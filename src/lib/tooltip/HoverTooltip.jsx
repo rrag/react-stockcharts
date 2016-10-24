@@ -40,7 +40,7 @@ class HoverTooltip extends Component {
 		if (chartId && yAccessor) {
 			var xValue = xAccessor(currentItem);
 			var yValue = yAccessor(currentItem);
-			var chartIndex = chartConfig.findIndex(x => x.id === chartId)
+			var chartIndex = chartConfig.findIndex(x => x.id === chartId);
 
 			x = Math.round(xScale(xValue));
 			y = Math.round(chartConfig[chartIndex].yScale(yValue));
@@ -189,7 +189,7 @@ function drawOnCanvas(ctx, props, context, pointer, height, moreProps) {
 	if (chartId && yAccessor) {
 		var xValue = xAccessor(currentItem);
 		var yValue = yAccessor(currentItem);
-		var chartIndex = chartConfig.findIndex(x => x.id === chartId)
+		var chartIndex = chartConfig.findIndex(x => x.id === chartId);
 
 		x = Math.round(xScale(xValue));
 		y = Math.round(chartConfig[chartIndex].yScale(yValue));

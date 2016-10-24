@@ -176,8 +176,8 @@ export function touchPosition(touch, e) {
 }
 
 export function mousePosition(e, defaultRect) {
-	var container = e.currentTarget,
-		rect = defaultRect || container.getBoundingClientRect(),
+	var container = e.currentTarget;
+	var rect = defaultRect || container.getBoundingClientRect(),
 		x = e.clientX - rect.left - container.clientLeft,
 		y = e.clientY - rect.top - container.clientTop,
 		xy = [Math.round(x), Math.round(y)];

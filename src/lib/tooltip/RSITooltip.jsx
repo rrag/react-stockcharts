@@ -15,7 +15,7 @@ class RSITooltip extends Component {
 		this.renderSVG = this.renderSVG.bind(this);
 	}
 	renderSVG(moreProps) {
-		var { onClick, fontFamily, fontSize, calculator, displayFormat } = this.props;
+		var { onClick, fontFamily, fontSize, calculator, displayFormat, className } = this.props;
 		var { width, height } = moreProps;
 		var { currentItem } = moreProps;
 
@@ -29,7 +29,7 @@ class RSITooltip extends Component {
 		var [x, y] = origin(width, height);
 
 		return (
-			<g transform={`translate(${ x }, ${ y })`} onClick={onClick}>
+			<g className={className} transform={`translate(${ x }, ${ y })`} onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={fontFamily} fontSize={fontSize}>
 					<ToolTipTSpanLabel>{calculator.tooltipLabel()}</ToolTipTSpanLabel>
@@ -52,6 +52,7 @@ RSITooltip.propTypes = {
 		PropTypes.array,
 		PropTypes.func
 	]).isRequired,
+	className: PropTypes.string,
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
 	onClick: PropTypes.func,
@@ -61,7 +62,8 @@ RSITooltip.propTypes = {
 
 RSITooltip.defaultProps = {
 	displayFormat: format(".2f"),
-	origin: [0, 0]
+	origin: [0, 0],
+	className: "react-stockcharts-toottip",
 };
 
 export default RSITooltip;

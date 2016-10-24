@@ -1,5 +1,3 @@
-'use strict';
-
 import React from "react";
 import { helper } from "react-stockcharts";
 
@@ -14,40 +12,36 @@ import RenkoWithUpdatingData from "lib/charts/RenkoWithUpdatingData";
 
 var { TypeChooser } = helper;
 
-
-var UpdatingDataPage = React.createClass({
-	statics: {
-		title: 'Updating Data'
-	},
+class UpdatingDataPageForCandleStick extends React.Component {
 	render() {
 		return (
-			<ContentSection title={UpdatingDataPage.title}>
-				{/*<Row>
-					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/UPDATING-DATA')}}></aside>
-					</Section>
-				</Row>
+			<ContentSection title={UpdatingDataPageForCandleStick.title}>
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser>
-							{(type) => <CandleStickChartWithUpdatingData data={this.props.someData} type={type} />}
+							{(type) => <CandleStickChartWithUpdatingData data={this.props.lotsOfData} type={type} />}
 						</TypeChooser>
 					</Section>
 				</Row>
 				<Row>
+					<Section colSpan={2}>
+						<aside dangerouslySetInnerHTML={{ __html: require('md/UPDATING-DATA') }}></aside>
+					</Section>
+				</Row>
+				{/* <Row>
 					<Section colSpan={2}>
 						<TypeChooser>
 							{(type) => <KagiWithUpdatingData data={this.props.someData} type={type} />}
 						</TypeChooser>
 					</Section>
-				</Row>*/}
+				</Row>
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser>
 							{(type) => <PointAndFigureWithUpdatingData data={this.props.someData} type={type} />}
 						</TypeChooser>
 					</Section>
-				</Row>{/*
+				</Row>
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser>
@@ -58,6 +52,8 @@ var UpdatingDataPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
 
-export default UpdatingDataPage;
+UpdatingDataPageForCandleStick.title = "Updating Data";
+
+export default UpdatingDataPageForCandleStick;

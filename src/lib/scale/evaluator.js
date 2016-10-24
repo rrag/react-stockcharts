@@ -11,8 +11,8 @@ import {
 
 const debug = false;
 
-function extentsWrapper(data, inputXAccessor, realXAccessor, useWholeData) {
-	function domain(inputDomain, xAccessor, initialXScale, currentPlotData, currentDomain) {
+function extentsWrapper(inputXAccessor, realXAccessor, useWholeData) {
+	function domain(data, inputDomain, xAccessor, initialXScale, currentPlotData, currentDomain) {
 		if (useWholeData) {
 			return { plotData: data, domain: inputDomain };
 		}
@@ -125,24 +125,20 @@ export default function() {
 			} = scaleProvider2(calculatedData);
 
 			return {
-				filterData: extentsWrapper(finalData, xAccessor, realXAccessor, useWholeData || isNotDefined(modifiedXScale.invert)),
+				filterData: extentsWrapper(xAccessor, realXAccessor, useWholeData || isNotDefined(modifiedXScale.invert)),
 				fullData: finalData,
 				xScale: modifiedXScale,
 				xAccessor: realXAccessor,
 				displayXAccessor,
-				lastItem: last(finalData),
-				firstItem: first(finalData),
 			};
 		}
 
 		return {
-			filterData: extentsWrapper(calculatedData, xAccessor, xAccessor, useWholeData || isNotDefined(xScale.invert)),
+			filterData: extentsWrapper(xAccessor, xAccessor, useWholeData || isNotDefined(xScale.invert)),
 			fullData: calculatedData,
 			xScale,
 			xAccessor,
 			displayXAccessor: xAccessor,
-			lastItem: last(calculatedData),
-			firstItem: first(calculatedData),
 		};
 	}
 	evaluate.xAccessor = function(x) {
