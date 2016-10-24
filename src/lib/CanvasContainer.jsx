@@ -25,13 +25,13 @@ class CanvasContainer extends Component {
 		if (type === "svg") return null;
 		// console.log("using ratio ", ratio);
 		return (
-			<div style={{ zIndex: zIndex }}>
+			<div style={{ position: "absolute", zIndex: zIndex }}>
 				<canvas id="bg" ref={this.setDrawCanvas} width={width * ratio} height={height * ratio}
-					style={{ position: "absolute", left: 0, top: 0, width: width, height: height }} />
+					style={{ position: "absolute", width: width, height: height }} />
 				<canvas id="axes" ref={this.setDrawCanvas} width={width * ratio} height={height * ratio}
-					style={{ position: "absolute", left: 0, top: 0, width: width, height: height }} />
+					style={{ position: "absolute", width: width, height: height }} />
 				<canvas id="mouseCoord" ref={this.setDrawCanvas} width={width * ratio} height={height * ratio}
-					style={{ position: "absolute", left: 0, top: 0, width: width, height: height }} />
+					style={{ position: "absolute", width: width, height: height }} />
 			</div>
 		);
 	}

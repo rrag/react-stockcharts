@@ -73,11 +73,6 @@ function getCursorStyle(useCrossHairStyleCursor) {
 	.react-stockcharts-ew-resize-cursor {
 		cursor: ew-resize;
 	}`;
-	/* return (<style
-		type="text/css"
-		dangerouslySetInnerHTML={{
-			__html: shouldShowCrossHairStyle(children) ? style + tooltipStyle : tooltipStyle
-		}}></style>);*/
 	return (<style type="text/css">{useCrossHairStyleCursor ? style + tooltipStyle : tooltipStyle}</style>);
 }
 
@@ -153,17 +148,13 @@ function updateChart(newState, initialXScale, props, lastItemWasVisible) {
 
 	if (debug) {
 		if (process.env.NODE_ENV !== "production") {
-			if (lastItemWasVisible)
-				console.log("DATA CHANGED AND LAST ITEM WAS VISIBLE");
-			else
-				console.log("TRIVIAL CHANGE");
+			console.log("TRIVIAL CHANGE");
 		}
 	}
 
 	var { postCalculator, children, padding, flipXScale } = props;
 	var direction = getXScaleDirection(flipXScale);
 	var dimensions = getDimensions(props);
-
 
 	var updatedXScale = setXRange(xScale, dimensions, padding, direction);
 
@@ -265,6 +256,7 @@ class ChartCanvas extends Component {
 		this.handleContextMenu = this.handleContextMenu.bind(this);
 		this.xAxisZoom = this.xAxisZoom.bind(this);
 		this.yAxisZoom = this.yAxisZoom.bind(this);
+		this.resetYDomain = this.resetYDomain.bind(this);
 		this.calculateStateForDomain = this.calculateStateForDomain.bind(this);
 
 		this.pinchCoordinates = this.pinchCoordinates.bind(this);
@@ -760,6 +752,30 @@ class ChartCanvas extends Component {
 		}
 		this.fullData = fullData;
 	}
+	resetYDomain(chartId) {
+		var { chartConfig } = this.state;
+		var changed = false;
+		var newChartConfig = chartConfig
+			.map(each => {
+				if ((isNotDefined(chartId) || each.id === chartId)
+						&& !shallowEqual(each.yScale.domain(), each.realYDomain)) {
+					changed = true;
+					return {
+						...each,
+						yScale: each.yScale.domain(each.realYDomain),
+						yPanEnabled: false,
+					};
+				}
+				return each;
+			});
+
+		if (changed) {
+			this.clearThreeCanvas();
+			this.setState({
+				chartConfig: newChartConfig
+			});
+		}
+	}
 	shouldComponentUpdate() {
 		return !this.panInProgress;
 	}
@@ -775,7 +791,7 @@ class ChartCanvas extends Component {
 
 		var cursor = getCursorStyle(useCrossHairStyleCursor && interaction);
 		return (
-			<div style={{ position: "relative", height: height, width: width }} className={className} onClick={onSelect}>
+			<div style={{ position: "relative" }} className={className} onClick={onSelect}>
 				<CanvasContainer ref="canvases" width={width} height={height} ratio={ratio} type={type} zIndex={zIndex}/>
 				<svg className={className} width={width} height={height} style={{ position: "absolute", zIndex: (zIndex + 5) }}>
 					{cursor}

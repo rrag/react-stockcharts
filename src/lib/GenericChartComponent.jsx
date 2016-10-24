@@ -56,6 +56,8 @@ GenericChartComponent.defaultProps = GenericComponent.defaultProps;
 
 GenericChartComponent.contextTypes = {
 	...GenericComponent.contextTypes,
+	canvasOriginX: PropTypes.number,
+	canvasOriginY: PropTypes.number,
 	chartId: PropTypes.number.isRequired,
 	chartConfig: PropTypes.object.isRequired,
 	ratio: PropTypes.number.isRequired,

@@ -267,8 +267,6 @@ GenericComponent.contextTypes = {
 		PropTypes.object,
 	]).isRequired,
 
-	canvasOriginX: PropTypes.number,
-	canvasOriginY: PropTypes.number,
 	morePropsDecorator: PropTypes.func,
 
 	subscribe: PropTypes.func.isRequired,
