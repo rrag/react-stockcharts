@@ -793,7 +793,7 @@ class ChartCanvas extends Component {
 		return (
 			<div style={{ position: "relative" }} className={className} onClick={onSelect}>
 				<CanvasContainer ref="canvases" width={width} height={height} ratio={ratio} type={type} zIndex={zIndex}/>
-				<svg className={className} width={width} height={height} style={{ position: "absolute", zIndex: (zIndex + 5) }}>
+				<svg className={className} width={width} height={height} style={{ zIndex: (zIndex + 5) }}>
 					{cursor}
 					<defs>
 						<clipPath id="chart-area-clip">
