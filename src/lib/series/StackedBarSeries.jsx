@@ -167,14 +167,14 @@ export function drawOnCanvas2(props, ctx, bars) {
 
 	nest.forEach(outer => {
 		var { key, values } = outer;
-		if (values[0].width < 1) {
-			ctx.strokeStyle = key;
+		if (values[0].width <= 1) {
+			ctx.strokeStyle = hexToRGBA(key, props.opacity);
 		} else {
 			ctx.strokeStyle = key;
 			ctx.fillStyle = hexToRGBA(key, props.opacity);
 		}
 		values.forEach(d => {
-			if (d.width < 1) {
+			if (d.width <= 1) {
 				/* <line key={idx} className={d.className}
 							stroke={stroke}
 							fill={fill}
