@@ -430,13 +430,13 @@ class ChartCanvas extends Component {
 		// document.getElementById("debug_here").innerHTML = `${id[1] - id[0]} = ${initial.left - id[0]} + ${initial.right - initial.left} + ${id[1] - initial.right}`;
 		// document.getElementById("debug_here").innerHTML = `${range[1] - range[0]}, ${i1[0]}, ${i2[0]}`;
 	}
-	handleZoom(zoomDirection, mouseXY, e) {
+	handleZoom(zoomDirection,zoomMultiplier , mouseXY, e) {
 		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
 		var { xAccessor, xScale: initialXScale, plotData: initialPlotData } = this.state;
 
 		var item = getCurrentItem(initialXScale, xAccessor, mouseXY, initialPlotData),
 			cx = initialXScale(xAccessor(item)),
-			c = zoomDirection > 0 ? 2 : 0.5,
+			c = zoomDirection > 0 ? 1 * zoomMultiplier : 1 / zoomMultiplier,
 			newDomain = initialXScale.range().map(x => cx + (x - cx) * c).map(initialXScale.invert);
 
 		var { xScale, plotData, chartConfig } = this.calculateStateForDomain(newDomain);
