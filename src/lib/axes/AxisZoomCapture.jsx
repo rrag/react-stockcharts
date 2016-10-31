@@ -75,7 +75,7 @@ class AxisZoomCapture extends Component {
 		e.preventDefault();
 
 		var { startPosition } = this.state;
-		var { getMouseDelta } = this.props;
+		var { getMouseDelta,inverted } = this.props;
 
 		this.dragHappened = true;
 		if (isDefined(startPosition)) {
@@ -89,7 +89,7 @@ class AxisZoomCapture extends Component {
 			var center = mean(startScale.range());
 
 			var tempRange = startScale.range()
-				.map(d => d + sign(d - center) * diff);
+				.map(d => inverted?d - sign(d - center) * diff:d + sign(d - center) * diff);
 
 			var newDomain = tempRange.map(startScale.invert);
 
@@ -154,7 +154,7 @@ AxisZoomCapture.propTypes = {
 	showTicks: PropTypes.bool,
 	className: PropTypes.string,
 	axisZoomCallback: PropTypes.func,
-
+	inverted: PropTypes.bool,
 	bg: PropTypes.object.isRequired,
 	zoomCursorClassName: PropTypes.string.isRequired,
 	getMoreProps: PropTypes.func.isRequired,
@@ -167,6 +167,7 @@ AxisZoomCapture.propTypes = {
 AxisZoomCapture.defaultProps = {
 	onDoubleClick: noop,
 	onContextMenu: noop,
+	inverted: true
 };
 
 AxisZoomCapture.contextTypes = {
