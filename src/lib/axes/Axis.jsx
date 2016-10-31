@@ -46,7 +46,7 @@ class Axis extends Component {
 		return this.refs.propProvider.getMoreProps();
 	}
 	render() {
-		var { bg, axisZoomCallback, zoomCursorClassName, zoomEnabled, getScale } = this.props;
+		var { bg, axisZoomCallback, zoomCursorClassName, zoomEnabled, getScale,inverted } = this.props;
 		var { transform, getMouseDelta, edgeClip } = this.props;
 		var { onContextMenu, onDoubleClick } = this.props;
 
@@ -59,6 +59,7 @@ class Axis extends Component {
 				axisZoomCallback={axisZoomCallback}
 				zoomCursorClassName={zoomCursorClassName}
 				onContextMenu={onContextMenu}
+				inverted={inverted}
 				onDoubleClick={onDoubleClick}
 				/>
 			: null;
@@ -90,6 +91,7 @@ Axis.propTypes = {
 	className: PropTypes.string,
 	axisZoomCallback: PropTypes.func,
 	zoomEnabled: PropTypes.bool,
+	inverted: PropTypes.bool,
 	zoomCursorClassName: PropTypes.string,
 	transform: PropTypes.arrayOf(PropTypes.number).isRequired,
 	range: PropTypes.arrayOf(PropTypes.number).isRequired,

@@ -77,7 +77,7 @@ class CandleStickChartWithDarkTheme extends React.Component {
 				<Chart id={1} height={325}
 						yExtents={[d => [d.high, d.low], bb.accessor(), ema20.accessor(), ema50.accessor()]}
 						padding={{ top: 10, bottom: 20 }}>
-					<YAxis axisAt="right" orient="right" ticks={5} {...yGrid}
+					<YAxis axisAt="right" orient="right" ticks={5} {...yGrid} inverted={true}
 							tickStroke="#FFFFFF" />
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0}
 							stroke="#FFFFFF" opacity={0.5}/>
@@ -103,7 +103,7 @@ class CandleStickChartWithDarkTheme extends React.Component {
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#DB0000"}/>
 
 					<OHLCTooltip origin={[-40, -10]}/>
-					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 10]} 
+					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 10]}
 						calculators={[ema20, ema50]}/>
 					<BollingerBandTooltip origin={[-38, 60]} calculator={bb} />
 				</Chart>
