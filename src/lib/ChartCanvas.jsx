@@ -781,7 +781,7 @@ class ChartCanvas extends Component {
 	}
 	render() {
 
-		var { type, height, width, margin, className, zIndex, defaultFocus, ratio } = this.props;
+		var { type, height, width, margin, className, zIndex, defaultFocus, ratio, disableMouseMoveEvent, disablePanEvent, disableZoomEvent } = this.props;
 		var { useCrossHairStyleCursor, drawMode, onSelect } = this.props;
 
 		var { plotData, xScale, xAccessor, chartConfig } = this.state;
@@ -806,9 +806,9 @@ class ChartCanvas extends Component {
 					</defs>
 					<g transform={`translate(${margin.left + 0.5}, ${margin.top + 0.5})`}>
 						<EventCapture
-							mouseMove={interaction}
-							zoom={interaction}
-							pan={interaction && !drawMode}
+							mouseMove={!disableMouseMoveEvent && interaction}
+							zoom={!disableZoomEvent && interaction}
+							pan={!disablePanEvent && interaction && !drawMode}
 
 							width={dimensions.width}
 							height={dimensions.height}
@@ -889,6 +889,9 @@ ChartCanvas.propTypes = {
 	defaultFocus: PropTypes.bool,
 	onLoadMore: PropTypes.func,
 	displayXAccessor: PropTypes.func,
+	disableMouseMoveEvent: PropTypes.bool.isRequired,
+	disablePanEvent: PropTypes.bool.isRequired,
+	disableZoomEvent: PropTypes.bool.isRequired,
 	onSelect: PropTypes.func,
 };
 
@@ -912,6 +915,9 @@ ChartCanvas.defaultProps = {
 	defaultFocus: true,
 	onLoadMore: noop,
 	onSelect: noop,
+	disableMouseMoveEvent: false,
+	disablePanEvent: false,
+	disableZoomEvent: false,
 	// ratio: 2,
 };
 

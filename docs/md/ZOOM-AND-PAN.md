@@ -3,10 +3,17 @@
 
 [source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickChartWithZoomPan.jsx), [block](http://bl.ocks.org/rrag/a8465abe0061df1b7976), [plunker](http://plnkr.co/edit/gist:a8465abe0061df1b7976?p=preview)
 
-The only change is enabling `zoom` and `pan`
+
+`MouseMove`, `Pan` and `Zoom` are enabled by default. To disable them you can use `disableMouseMoveEvent`, `disablePanEvent` and `disableZoomEvent` props.
+
 ```jsx
-<EventCapture mouseMove zoom pan />
+<ChartCanvas 
+    ...
+    disableMouseMoveEvent={false}
+    disablePanEvent={false}
+    disableZoomEvent={false}
+    ...
+/>
 ```
-enabling `zoom` and `pan` to `true`
 
 By default the chart is not focused. meaning. you have to click on the chart to get focus, and only then will the scroll events trigger a zoom.
