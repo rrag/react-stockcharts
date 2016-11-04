@@ -19,12 +19,15 @@ var { fitWidth } = helper;
 
 class CandleStickChartWithZoomPan extends React.Component {
 	render() {
-		var { data, type, width, ratio } = this.props;
+		var { data, type, width, ratio, disableMouseMoveEvent, disablePanEvent, disableZoomEvent } = this.props;
 		return (
 			<ChartCanvas ratio={ratio} width={width} height={400}
 					margin={{ left: 70, right: 70, top: 10, bottom: 30 }} type={type}
 					seriesName="MSFT"
 					data={data}
+					disableMouseMoveEvent={disableMouseMoveEvent}
+					disablePanEvent={disablePanEvent}
+					disableZoomEvent={disableZoomEvent}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1}
