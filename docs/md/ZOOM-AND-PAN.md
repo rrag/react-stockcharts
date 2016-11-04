@@ -15,5 +15,3 @@
     ...
 />
 ```
-
-By default the chart is not focused. meaning. you have to click on the chart to get focus, and only then will the scroll events trigger a zoom.
