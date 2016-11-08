@@ -17,8 +17,8 @@ class XAxis extends Component {
 		var moreProps = helper(this.props, this.context);
 
 		return <Axis {...this.props} {...moreProps} x
+			zoomEnabled={this.props.zoomEnabled && showTicks}
 			axisZoomCallback={this.axisZoomCallback}
-			zoomEnabled={showTicks}
 			zoomCursorClassName="react-stockcharts-ew-resize-cursor" />;
 	}
 }
@@ -38,6 +38,7 @@ XAxis.propTypes = {
 	tickValues: PropTypes.array,
 	showTicks: PropTypes.bool,
 	className: PropTypes.string,
+	zoomEnabled: PropTypes.bool.isRequired,
 	onContextMenu: PropTypes.func,
 	onDoubleClick: PropTypes.func,
 };
@@ -61,6 +62,7 @@ XAxis.defaultProps = {
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 12,
 	xZoomHeight: 25,
+	zoomEnabled: true,
 	getMouseDelta: (startXY, mouseXY) => startXY[0] - mouseXY[0],
 };
 

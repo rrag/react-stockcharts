@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import React from "react";
 import { helper } from "react-stockcharts";
@@ -13,7 +13,7 @@ var { TypeChooser } = helper;
 
 var ZoomAndPanPage = React.createClass({
 	statics: {
-		title: 'Zoom and Pan'
+		title: "Zoom and Pan"
 	},
 	getInitialState () {
 		return {
@@ -50,23 +50,23 @@ var ZoomAndPanPage = React.createClass({
 					</Section>
 				</Row>
 				<Row>
-					<div style={{ textAlign: 'center' }}>
-						<button type="button" onClick={this.toggleState.bind(this, 'disableMouseMoveEvent')}>
-							{disableMouseMoveEvent? 'Enable' : 'Disable'} Mouse Moves
+					<div style={{ textAlign: "center" }}>
+						<button type="button" onClick={this.toggleState.bind(this, "disableMouseMoveEvent")}>
+							{disableMouseMoveEvent ? "Enable" : "Disable"} Mouse Moves
 						</button>
-						{' '}
-						<button type="button" onClick={this.toggleState.bind(this, 'disablePanEvent')}>
-							{disablePanEvent? 'Enable' : 'Disable'} Pan
+						{" "}
+						<button type="button" onClick={this.toggleState.bind(this, "disablePanEvent")}>
+							{disablePanEvent ? "Enable" : "Disable"} Pan
 						</button>
-						{' '}
-						<button type="button" onClick={this.toggleState.bind(this, 'disableZoomEvent')}>
-							{disableZoomEvent? 'Enable' : 'Disable'} Zoom
+						{" "}
+						<button type="button" onClick={this.toggleState.bind(this, "disableZoomEvent")}>
+							{disableZoomEvent ? "Enable" : "Disable"} Zoom
 						</button>
 					</div>
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/ZOOM-AND-PAN')}}></aside>
+						<aside dangerouslySetInnerHTML={{__html: require("md/ZOOM-AND-PAN")}}></aside>
 					</Section>
 				</Row>
 			</ContentSection>

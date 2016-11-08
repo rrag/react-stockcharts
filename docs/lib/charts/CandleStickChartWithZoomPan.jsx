@@ -32,8 +32,8 @@ class CandleStickChartWithZoomPan extends React.Component {
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low]]}>
-					<XAxis axisAt="bottom" orient="bottom"/>
-					<YAxis axisAt="right" orient="right" ticks={5} />
+					<XAxis axisAt="bottom" orient="bottom" zoomEnabled={!disableZoomEvent} />
+					<YAxis axisAt="right" orient="right" ticks={5} zoomEnabled={!disableZoomEvent} />
 
 					<MouseCoordinateY
 						at="right"
@@ -46,7 +46,7 @@ class CandleStickChartWithZoomPan extends React.Component {
 				<Chart id={2}
 						yExtents={d => d.volume}
 						height={150} origin={(w, h) => [0, h - 150]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")} zoomEnabled={!disableZoomEvent} />
 
 					<MouseCoordinateX
 						at="bottom"
