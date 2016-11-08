@@ -74,7 +74,11 @@ CandleStickChartWithZoomPan.propTypes = {
 
 CandleStickChartWithZoomPan.defaultProps = {
 	type: "svg",
+	disableMouseMoveEvent: false,
+	disablePanEvent: false,
+	disableZoomEvent: false,
 };
+
 CandleStickChartWithZoomPan = fitWidth(CandleStickChartWithZoomPan);
 
 
