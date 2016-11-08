@@ -4,8 +4,16 @@ import React, { PropTypes, Component } from "react";
 import { select, event as d3Event } from "d3-selection";
 import { mean } from "d3-array";
 
-import { first, last, isDefined, noop } from "../utils";
-import { mousePosition, d3Window, MOUSEMOVE, MOUSEUP } from "../utils";
+import {
+	first,
+	last,
+	isDefined,
+	noop,
+	mousePosition,
+	d3Window,
+	MOUSEMOVE,
+	MOUSEUP,
+} from "../utils";
 
 function sign(x) {
 	return (x > 0) - (x < 0);
@@ -75,7 +83,7 @@ class AxisZoomCapture extends Component {
 		e.preventDefault();
 
 		var { startPosition } = this.state;
-		var { getMouseDelta,inverted } = this.props;
+		var { getMouseDelta, inverted } = this.props;
 
 		this.dragHappened = true;
 		if (isDefined(startPosition)) {
@@ -89,7 +97,7 @@ class AxisZoomCapture extends Component {
 			var center = mean(startScale.range());
 
 			var tempRange = startScale.range()
-				.map(d => inverted?d - sign(d - center) * diff:d + sign(d - center) * diff);
+				.map(d => inverted ? d - sign(d - center) * diff : d + sign(d - center) * diff);
 
 			var newDomain = tempRange.map(startScale.invert);
 

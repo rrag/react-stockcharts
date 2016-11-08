@@ -1,7 +1,6 @@
 "use strict";
 
-import { merge, slidingWindow } from "../utils";
-import { identity } from "../utils";
+import { merge, slidingWindow, identity } from "../utils";
 
 export default function() {
 

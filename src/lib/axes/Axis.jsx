@@ -46,7 +46,7 @@ class Axis extends Component {
 		return this.refs.propProvider.getMoreProps();
 	}
 	render() {
-		var { bg, axisZoomCallback, zoomCursorClassName, zoomEnabled, getScale,inverted } = this.props;
+		var { bg, axisZoomCallback, zoomCursorClassName, zoomEnabled, getScale, inverted } = this.props;
 		var { transform, getMouseDelta, edgeClip } = this.props;
 		var { onContextMenu, onDoubleClick } = this.props;
 

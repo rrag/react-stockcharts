@@ -4,8 +4,7 @@ import { select, event as d3Event } from "d3-selection";
 
 import GenericChartComponent from "../GenericChartComponent";
 
-import { d3Window, MOUSEMOVE, MOUSEUP } from "../utils";
-import { head, last, noop } from "../utils";
+import { d3Window, MOUSEMOVE, MOUSEUP, head, last, noop } from "../utils";
 import { getCurrentItem } from "../utils/ChartDataUtil";
 
 class InteractiveLine extends Component {
