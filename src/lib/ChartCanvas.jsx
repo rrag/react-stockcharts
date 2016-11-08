@@ -430,9 +430,10 @@ class ChartCanvas extends Component {
 		// document.getElementById("debug_here").innerHTML = `${id[1] - id[0]} = ${initial.left - id[0]} + ${initial.right - initial.left} + ${id[1] - initial.right}`;
 		// document.getElementById("debug_here").innerHTML = `${range[1] - range[0]}, ${i1[0]}, ${i2[0]}`;
 	}
-	handleZoom(zoomDirection, zoomMultiplier, mouseXY, e) {
+	handleZoom(zoomDirection, mouseXY, e) {
 		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
 		var { xAccessor, xScale: initialXScale, plotData: initialPlotData } = this.state;
+		var { zoomMultiplier } = this.props;
 
 		var item = getCurrentItem(initialXScale, xAccessor, mouseXY, initialPlotData),
 			cx = initialXScale(xAccessor(item)),
@@ -887,6 +888,7 @@ ChartCanvas.propTypes = {
 		})
 	]).isRequired,
 	defaultFocus: PropTypes.bool,
+	zoomMultiplier: PropTypes.number.isRequired,
 	onLoadMore: PropTypes.func,
 	displayXAccessor: PropTypes.func,
 	disableMouseMoveEvent: PropTypes.bool.isRequired,
@@ -918,6 +920,7 @@ ChartCanvas.defaultProps = {
 	disableMouseMoveEvent: false,
 	disablePanEvent: false,
 	disableZoomEvent: false,
+	zoomMultiplier: 1.1,
 	// ratio: 2,
 };
 

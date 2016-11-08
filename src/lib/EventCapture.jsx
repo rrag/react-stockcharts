@@ -53,7 +53,7 @@ class EventCapture extends Component {
 		onMouseLeave(e);
 	}
 	handleWheel(e) {
-		var { zoom, onZoom, zoomMultiplier } = this.props;
+		var { zoom, onZoom } = this.props;
 
 		if (zoom && this.focus && e.deltaY !== 0) {
 			e.preventDefault();
@@ -61,7 +61,7 @@ class EventCapture extends Component {
 			var newPos = mousePosition(e);
 			var zoomDir = e.deltaY > 0 ? 1 : -1;
 
-			onZoom(zoomDir, zoomMultiplier, newPos, e);
+			onZoom(zoomDir, newPos, e);
 		}
 	}
 	handleMouseMove(e) {
@@ -347,7 +347,6 @@ class EventCapture extends Component {
 EventCapture.propTypes = {
 	mouseMove: PropTypes.bool.isRequired,
 	zoom: PropTypes.bool.isRequired,
-	zoomMultiplier: PropTypes.number.isRequired,
 	pan: PropTypes.bool.isRequired,
 	panSpeedMultiplier: PropTypes.number.isRequired,
 	focus: PropTypes.bool.isRequired,
@@ -376,7 +375,6 @@ EventCapture.propTypes = {
 EventCapture.defaultProps = {
 	mouseMove: false,
 	zoom: false,
-	zoomMultiplier: 1.1,
 	pan: false,
 	panSpeedMultiplier: 1,
 	focus: false,
