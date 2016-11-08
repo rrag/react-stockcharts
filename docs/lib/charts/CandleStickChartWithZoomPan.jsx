@@ -18,10 +18,22 @@ var { XAxis, YAxis } = axes;
 var { fitWidth } = helper;
 
 class CandleStickChartWithZoomPan extends React.Component {
+	constructor(props) {
+		super(props);
+		this.saveNode = this.saveNode.bind(this);
+		this.resetYDomain = this.resetYDomain.bind(this);
+	}
+	saveNode(node) {
+		this.node = node;
+	}
+	resetYDomain() {
+		this.node.resetYDomain();
+	}
 	render() {
 		var { data, type, width, ratio, disableMouseMoveEvent, disablePanEvent, disableZoomEvent } = this.props;
 		return (
-			<ChartCanvas ratio={ratio} width={width} height={400}
+			<ChartCanvas ref={this.saveNode}
+					ratio={ratio} width={width} height={400}
 					margin={{ left: 70, right: 70, top: 10, bottom: 30 }} type={type}
 					seriesName="MSFT"
 					data={data}
