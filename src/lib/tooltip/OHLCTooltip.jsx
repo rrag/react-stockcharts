@@ -58,6 +58,7 @@ class OHLCTooltip extends Component {
 					<ToolTipTSpanLabel key="label_C"> C: </ToolTipTSpanLabel><tspan key="value_C">{close}</tspan>
 					<ToolTipTSpanLabel key="label_Vol"> Vol: </ToolTipTSpanLabel><tspan key="value_Vol">{volume}</tspan>
 				</ToolTipText>
+				<circle r={10} fill="white" />
 			</g>
 		);
 	}

@@ -54,7 +54,10 @@ function getHorizontalLine(props, yValue, stroke) {
 
 StochasticSeries.propTypes = {
 	className: PropTypes.string,
-	calculator: PropTypes.func.isRequired,
+	calculator: PropTypes.oneOfType([
+		PropTypes.func,
+		PropTypes.object,
+	]).isRequired,
 	xScale: PropTypes.func,
 	yScale: PropTypes.func,
 	xAccessor: PropTypes.func,

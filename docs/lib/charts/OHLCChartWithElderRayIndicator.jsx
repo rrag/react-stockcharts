@@ -76,7 +76,7 @@ class OHLCChartWithElderRayIndicator extends React.Component {
 						orient="right"
 						displayFormat={format(".2f")} />
 
-					<ElderRaySeries calculator={elder} />
+					<ElderRaySeries yAccessor={elder.accessor()} />
 					<SingleValueTooltip
 						yAccessor={elder.accessor()}
 						yLabel="Elder Ray"

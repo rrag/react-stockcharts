@@ -56,7 +56,7 @@ export default function() {
 	};
 
 	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel", "domain", "tickValues");
-	rebind(indicator, underlyingAlgorithm, "windowSize", "kWindowSize", "dWindowSize");
+	rebind(indicator, underlyingAlgorithm, "windowSize", "kWindowSize", "dWindowSize", "undefinedLength");
 	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;

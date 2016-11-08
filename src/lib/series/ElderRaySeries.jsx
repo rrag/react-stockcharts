@@ -8,6 +8,7 @@ import StraightLine from "./StraightLine";
 class ElderRaySeries extends Component {
 	constructor(props) {
 		super(props);
+		this.fillForEachBar = this.fillForEachBar.bind(this);
 		this.yAccessorTop = this.yAccessorTop.bind(this);
 		this.yAccessorBullTop = this.yAccessorBullTop.bind(this);
 		this.yAccessorBearTop = this.yAccessorBearTop.bind(this);
@@ -16,55 +17,53 @@ class ElderRaySeries extends Component {
 		this.yAccessorForBarBase = this.yAccessorForBarBase.bind(this);
 	}
 	yAccessorTop(d) {
-		var { calculator } = this.props;
-		var yAccessor = calculator.accessor();
+		var { yAccessor } = this.props;
 		return yAccessor(d) && Math.max(yAccessor(d).bullPower, 0);
 	}
 	yAccessorBullTop(d) {
-		var { calculator } = this.props;
-		var yAccessor = calculator.accessor();
+		var { yAccessor } = this.props;
 		return yAccessor(d) && (yAccessor(d).bullPower > 0 ? yAccessor(d).bullPower : undefined);
 	}
 	yAccessorBearTop(d) {
-		var { calculator } = this.props;
-		var yAccessor = calculator.accessor();
+		var { yAccessor } = this.props;
 		return yAccessor(d) && (yAccessor(d).bearPower > 0 ? yAccessor(d).bearPower : undefined);
 	}
 	yAccessorBullBottom(d) {
-		var { calculator } = this.props;
-		var yAccessor = calculator.accessor();
+		var { yAccessor } = this.props;
 		return yAccessor(d) && (yAccessor(d).bullPower < 0 ? 0 : undefined);
 	}
 	yAccessorBearBottom(d) {
-		var { calculator } = this.props;
-		var yAccessor = calculator.accessor();
+		var { yAccessor } = this.props;
 		return yAccessor(d) && (yAccessor(d).bullPower < 0
 				|| yAccessor(d).bullPower * yAccessor(d).bearPower < 0 // bullPower is +ve and bearPower is -ve
 			? Math.min(0, yAccessor(d).bullPower) : undefined);
 	}
 	yAccessorForBarBase(xScale, yScale, d) {
-		var { calculator } = this.props;
-		var yAccessor = calculator.accessor();
+		var { yAccessor } = this.props;
 		var y = yAccessor(d) && Math.min(yAccessor(d).bearPower, 0);
 		return yScale(y);
 	}
 	fillForEachBar(d, yAccessorNumber) {
-		return yAccessorNumber % 2 === 0 ? "#6BA583" : "#FF0000";
+		var { bullPowerFill, bearPowerFill } = this.props;
+		return yAccessorNumber % 2 === 0 ? bullPowerFill : bearPowerFill;
 	}
 	render() {
-		var { className, xScale, yScale, plotData, opacity } = this.props;
+		var { className, opacity, stroke, straightLineStroke, widthRatio } = this.props;
 
 		return (
 			<g className={className}>
 				<OverlayBarSeries
-					xScale={xScale} yScale={yScale}
 					baseAt={this.yAccessorForBarBase}
-					className="elderray-bar"
-					stroke={false} fill={this.fillForEachBar}
+					className="react-stockcharts-elderray-bar"
+					stroke={stroke}
+					fill={this.fillForEachBar}
 					opacity={opacity}
-					plotData={plotData}
+					widthRatio={widthRatio}
 					yAccessor={[this.yAccessorBullTop, this.yAccessorBearTop, this.yAccessorBullBottom, this.yAccessorBearBottom]} />
-				<StraightLine yValue={0} />
+				<StraightLine
+					className="react-stockcharts-elderray-straight-line"
+					yValue={0}
+					stroke={straightLineStroke} />
 			</g>
 		);
 	}
@@ -72,22 +71,24 @@ class ElderRaySeries extends Component {
 
 ElderRaySeries.propTypes = {
 	className: PropTypes.string,
-	xScale: PropTypes.func,
-	yScale: PropTypes.func,
-	xAccessor: PropTypes.func,
-	calculator: PropTypes.func.isRequired,
-	plotData: PropTypes.array,
-	type: PropTypes.string,
+	yAccessor: PropTypes.func,
 	opacity: PropTypes.number,
-	divergenceStroke: PropTypes.bool,
+	stroke: PropTypes.bool,
+	bullPowerFill: PropTypes.string,
+	bearPowerFill: PropTypes.string,
+	straightLineStroke: PropTypes.string,
+	widthRatio: PropTypes.number,
 };
 
 ElderRaySeries.defaultProps = {
 	className: "react-stockcharts-elderray-series",
 	zeroLineStroke: "#000000",
 	zeroLineOpacity: 0.3,
-	opacity: 1,
-	divergenceStroke: false,
+	opacity: 0.5,
+	stroke: true,
+	bullPowerFill: "#6BA583",
+	bearPowerFill: "#FF0000",
+	widthRatio: 0.8,
 };
 
 export default ElderRaySeries;

@@ -87,7 +87,7 @@ function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData) {
 
 	var bw = (width / (plotData.length - 1) * widthRatio);
 	var barWidth = Math.round(bw);
-	var offset = (barWidth === 1 ? 0 : 0.5 * barWidth);
+	var offset = (barWidth === 1 ? 0 : 0.5 * bw);
 
 	// console.log(xScale.domain(), yScale.domain());
 

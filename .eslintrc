@@ -32,7 +32,13 @@
 			"onlyFilesWithFlowAnnotation": true
 		}
 	},
-	"extends": ["eslint:recommended", "plugin:react/recommended", "plugin:flowtype/recommended"],
+	"extends": [
+		"eslint:recommended",
+		"plugin:react/recommended",
+		"plugin:flowtype/recommended",
+		"plugin:import/errors",
+		"plugin:import/warnings"
+	],
 	"rules": {
 		"jsx-a11y/aria-role": "warn",
 		"jsx-a11y/img-has-alt": "warn",
