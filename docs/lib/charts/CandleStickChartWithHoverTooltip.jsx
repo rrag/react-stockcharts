@@ -25,22 +25,42 @@ function tooltipContent(calculators) {
 		return {
 			x: dateFormat(xAccessor(currentItem)),
 			y: [
-				{ label: "open", value: numberFormat(currentItem.open) },
-				{ label: "high", value: numberFormat(currentItem.high) },
-				{ label: "low", value: numberFormat(currentItem.low) },
-				{ label: "close", value: numberFormat(currentItem.close) },
-			].concat(calculators.map(each => ({
+				{ label: "open", value: currentItem.open && numberFormat(currentItem.open) },
+				{ label: "high", value: currentItem.high && numberFormat(currentItem.high) },
+				{ label: "low", value: currentItem.low && numberFormat(currentItem.low) },
+				{ label: "close", value: currentItem.close && numberFormat(currentItem.close) },
+			]
+			.concat(calculators.map(each => ({
 				label: each.tooltipLabel(),
 				value: numberFormat(each.accessor()(currentItem)),
 				stroke: each.stroke()
 			})))
+			.filter(line => line.value)
 		}
 	}
 }
 
+const keyValues = ['high', 'low', 'open'];
+
 class CandleStickChartWithHoverTooltip extends React.Component {
+
+	removeRandomValues(data) {
+		return data.map((item) => {
+			const numberOfDeletion = Math.floor(Math.random() * keyValues.length) + 1;
+			for (let i = 0; i < numberOfDeletion; i += 1){
+				const randomKey = keyValues[Math.floor(Math.random() * keyValues.length)];
+				item[randomKey] = undefined;
+			}
+			return item;
+		});
+	}
+
 	render() {
 		var { data, type, width, ratio } = this.props;
+
+		// remove some of the data to be able to see
+		// the tooltip resize
+		data = this.removeRandomValues(data);
 
 		var ema20 = ema()
 			.id(0)
@@ -97,7 +117,7 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
-        <HoverTooltip chartId={1} yAccessor={ema50.accessor()} tooltipContent={tooltipContent([ema20, ema50])} bgwidth={120} bgheight={95} />
+				<HoverTooltip chartId={1} yAccessor={ema50.accessor()} tooltipContent={tooltipContent([ema20, ema50])} fontSize={15} />
 			</ChartCanvas>
 		);
 	}

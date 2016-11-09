@@ -105,6 +105,8 @@ HoverTooltip.defaultProps = {
 };
 
 const PADDING = 5;
+const X = 10;
+const Y = 10;
 
 
 /* eslint-disable react/prop-types */
@@ -127,27 +129,47 @@ function tooltipSVG({ fontFamily, fontSize, fontFill }, content) {
 }
 /* eslint-enable react/prop-types */
 
-function backgroundShapeCanvas({ bgheight, bgwidth, fill, stroke, opacity }, ctx) {
+function calculateTooltipSize({ fontFamily, fontSize, fontFill }, content) {
+	const canvas = document.createElement('canvas');
+	let ctx = canvas.getContext('2d');
+	let width = 0;
+	let height = content.y.length * fontSize + fontSize;
+
+	ctx.font = `${fontSize}px ${fontFamily}`;
+	ctx.fillStyle = fontFill;
+	ctx.textAlign = "left";
+	for (let i = 0; i < content.y.length; i++) {
+		let y = content.y[i];
+		const textWidth = ctx.measureText(`${y.label}: ${y.value}`).width;
+		if (textWidth > width) width = textWidth;
+	}
+	return {
+		width: width + 2 * X,
+		height: height + 2 * Y
+	};
+}
+
+function backgroundShapeCanvas(props, content, ctx) {
+	const { fill, stroke, opacity } = props;
+	const { width, height } = calculateTooltipSize(props, content);
 	ctx.fillStyle = hexToRGBA(fill, opacity);
 	ctx.strokeStyle = stroke;
 	ctx.beginPath();
-	ctx.rect(0, 0, bgwidth, bgheight);
+	ctx.rect(0, 0, width, height);
 	ctx.fill();
 	ctx.stroke();
 }
 
 function tooltipCanvas({ fontFamily, fontSize, fontFill }, content, ctx) {
+	const startY = Y + fontSize * 0.9;
 	ctx.font = `${fontSize}px ${fontFamily}`;
 	ctx.fillStyle = fontFill;
 	ctx.textAlign = "left";
-
-	const X = 10;
-	const Y = 15;
-	ctx.fillText(content.x, X, Y);
+	ctx.fillText(content.x, X, startY);
 
 	for (var i = 0; i < content.y.length; i++) {
 		let y = content.y[i];
-		let textY = Y + (fontSize * (i + 1));
+		let textY = startY + (fontSize * (i + 1));
 		ctx.fillStyle = y.stroke || fontFill;
 		ctx.fillText(y.label, X, textY);
 
@@ -204,7 +226,7 @@ function drawOnCanvas(ctx, props, context, pointer, height, moreProps) {
 	ctx.fill();
 
 	ctx.translate(x, y);
-	backgroundShapeCanvas(props, ctx);
+	backgroundShapeCanvas(props, content, ctx);
 	tooltipCanvas(props, content, ctx);
 
 	ctx.restore();
