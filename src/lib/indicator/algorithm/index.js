@@ -14,6 +14,7 @@ import rsi from "./rsi";
 import sto from "./sto";
 import atr from "./atr";
 import forceIndex from "./forceIndex";
+import smoothedForceIndex from "./smoothedForceIndex";
 import elderRay from "./elderRay";
 import compare from "./compare";
 import change from "./change";
@@ -35,6 +36,7 @@ export {
 	sto,
 	atr,
 	forceIndex,
+	smoothedForceIndex,
 	elderRay,
 	compare,
 	change,

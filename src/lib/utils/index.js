@@ -31,6 +31,8 @@ export function path(path = []) {
 	var length = key.length;
 
 	return function(obj, defaultValue) {
+		if (length === 0) return isDefined(obj) ? obj : defaultValue;
+
 		var index = 0;
 		while (obj != null && index < length) {
 			obj = obj[key[index++]];

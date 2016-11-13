@@ -56,7 +56,10 @@ RSITooltip.propTypes = {
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
 	onClick: PropTypes.func,
-	calculator: PropTypes.func.isRequired,
+	calculator: PropTypes.oneOfType([
+		PropTypes.func,
+		PropTypes.object,
+	]).isRequired,
 	displayFormat: PropTypes.func.isRequired,
 };
 
