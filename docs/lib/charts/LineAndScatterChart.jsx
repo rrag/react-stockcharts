@@ -6,7 +6,7 @@ import { timeFormat } from "d3-time-format";
 
 import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, helper } from "react-stockcharts";
 
-var { BarSeries, LineSeries, AreaSeries, ScatterSeries, CircleMarker } = series;
+var { BarSeries, LineSeries, AreaSeries, ScatterSeries, CircleMarker, SquareMarker, TriangleMarker } = series;
 var { discontinuousTimeScaleProvider } = scale;
 
 var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY } = coordinates;
@@ -26,7 +26,7 @@ class LineAndScatterChart extends React.Component {
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 2, 2)]}>
 				<Chart id={1}
-						yExtents={d => [d.high, d.low]}>
+						yExtents={d => [d.high, d.low, d.AAPLClose, d.GEClose]}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<MouseCoordinateX
@@ -38,10 +38,24 @@ class LineAndScatterChart extends React.Component {
 						orient="right"
 						displayFormat={format(".2f")} />
 
+					<LineSeries yAccessor={d => d.AAPLClose} stroke="#ff7f0e" />
+					<ScatterSeries
+						yAccessor={d => d.AAPLClose}
+						marker={SquareMarker}
+						markerProps={{ width: 6, stroke: "#ff7f0e", fill: "#ff7f0e" }} />
+					<LineSeries yAccessor={d => d.GEClose} stroke="#2ca02c" />
+					<ScatterSeries
+						yAccessor={d => d.GEClose}
+						marker={TriangleMarker}
+						markerProps={{ width: 8, stroke: "#2ca02c", fill: "#2ca02c" }} />
 					<LineSeries yAccessor={d => d.close} />
-					<ScatterSeries yAccessor={d => d.close} marker={CircleMarker} markerProps={{ r: 3 }} />
+					<ScatterSeries
+						yAccessor={d => d.close}
+						marker={CircleMarker}
+						markerProps={{ r: 3 }} />
 					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
 				</Chart>
+
 				<CrossHairCursor />
 			</ChartCanvas>
 
