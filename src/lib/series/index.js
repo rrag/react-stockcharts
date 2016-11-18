@@ -2,6 +2,8 @@ import AreaSeries from "./AreaSeries";
 import AreaOnlySeries from "./AreaOnlySeries";
 import ScatterSeries from "./ScatterSeries";
 import CircleMarker from "./CircleMarker";
+import TriangleMarker from "./TriangleMarker";
+import SquareMarker from "./SquareMarker";
 import LineSeries from "./LineSeries";
 import CandlestickSeries from "./CandlestickSeries";
 import OHLCSeries from "./OHLCSeries";
@@ -22,6 +24,8 @@ import StraightLine from "./StraightLine";
 export {
 	ScatterSeries,
 	CircleMarker,
+	TriangleMarker,
+	SquareMarker,
 	AreaSeries,
 	AreaOnlySeries,
 	LineSeries,
