@@ -26,15 +26,15 @@ function buildConfig(mode) {
 			path.join(rootPath, "node_modules"),
 		],
 		host: process.env.IP, // "10.0.0.106", "localhost"
-		port: process.env.PORT,
+		port: parseInt(process.env.PORT),
 	};
 
 	const context = rootPath;
 	const loadersForDocs = [
 		{ test: /\.jpg$/, loader: "file-loader" },
 		{ test: /\.(png|svg)$/, loader: "url-loader?mimetype=image/png" },
-		{ test: /\.md/, loaders: ["html", "remarkable"] },
-		{ test: /\.scss$/, loaders: ["style", "css", "autoprefixer", "sass?outputStyle=expanded"] }
+		{ test: /\.md/, loaders: ["html-loader", "remarkable-loader"] },
+		{ test: /\.scss$/, loaders: ["style-loader", "css-loader", "autoprefixer-loader", "sass-loader?outputStyle=expanded"] }
 	];
 
 	console.log("MODE", mode)
@@ -55,7 +55,7 @@ function buildConfig(mode) {
 		module: {
 			loaders: removeEmpty([
 				// { test: /\.json$/, loader: "json" },
-				{ test: /\.(js|jsx)$/, loaders: ["babel"], exclude: /node_modules/ },
+				{ test: /\.(js|jsx)$/, loaders: ["babel-loader"], exclude: /node_modules/ },
 				...(docsOrWatch ? loadersForDocs : []),
 			])
 		},
