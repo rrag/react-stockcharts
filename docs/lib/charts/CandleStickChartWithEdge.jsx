@@ -46,7 +46,7 @@ class CandleStickChartWithEdge extends React.Component {
 					seriesName="MSFT"
 					data={data} calculator={[ema20, ema50, smaVolume70]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
-					xExtents={[new Date(2015, 0, 1), new Date(2015, 2, 1)]}>
+					xExtents={[new Date(2016, 0, 1), new Date(2016, 9, 11)]}>
 
 				<Chart id={2}
 						yExtents={[d => d.volume, smaVolume70.accessor()]}

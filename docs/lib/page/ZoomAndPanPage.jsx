@@ -17,7 +17,8 @@ class ZoomAndPanPage extends React.Component {
 		this.state = {
 			disableMouseMoveEvent: false,
 			disablePanEvent: false,
-			disableZoomEvent: false
+			disableZoomEvent: false,
+			clamp: false,
 		};
 		this.toggleState = this.toggleState.bind(this);
 		this.saveNode = this.saveNode.bind(this);
@@ -39,7 +40,8 @@ class ZoomAndPanPage extends React.Component {
 		const {
 			disableMouseMoveEvent,
 			disablePanEvent,
-			disableZoomEvent
+			disableZoomEvent,
+			clamp,
 		} = this.state;
 
 		return (
@@ -53,6 +55,7 @@ class ZoomAndPanPage extends React.Component {
 								disableMouseMoveEvent={disableMouseMoveEvent}
 								disablePanEvent={disablePanEvent}
 								disableZoomEvent={disableZoomEvent}
+								clamp={clamp}
 								type={type} />)}
 						</TypeChooser>
 					</Section>
@@ -69,6 +72,10 @@ class ZoomAndPanPage extends React.Component {
 						{" "}
 						<button type="button" onClick={this.toggleState.bind(this, "disableZoomEvent")}>
 							{disableZoomEvent ? "Enable" : "Disable"} Zoom
+						</button>
+						{" "}
+						<button type="button" onClick={this.toggleState.bind(this, "clamp")}>
+							{clamp ? "Disable" : "Enable"} Clamp
 						</button>
 						{" "}
 						<button type="button" onClick={this.resetYDomain}>

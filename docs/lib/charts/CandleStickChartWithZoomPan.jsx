@@ -30,7 +30,9 @@ class CandleStickChartWithZoomPan extends React.Component {
 		this.node.resetYDomain();
 	}
 	render() {
-		var { data, type, width, ratio, disableMouseMoveEvent, disablePanEvent, disableZoomEvent } = this.props;
+		var { data, type, width, ratio } = this.props;
+		var { disableMouseMoveEvent, disablePanEvent, disableZoomEvent } = this.props;
+		var { clamp } = this.props;
 		return (
 			<ChartCanvas ref={this.saveNode}
 					ratio={ratio} width={width} height={400}
@@ -40,8 +42,9 @@ class CandleStickChartWithZoomPan extends React.Component {
 					disableMouseMoveEvent={disableMouseMoveEvent}
 					disablePanEvent={disablePanEvent}
 					disableZoomEvent={disableZoomEvent}
+					clamp={clamp}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
-					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
+					xExtents={[new Date(2016, 0, 1), new Date(2016, 9, 11)]}>
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low]]}>
 					<XAxis axisAt="bottom" orient="bottom" zoomEnabled={!disableZoomEvent} />
@@ -89,9 +92,9 @@ CandleStickChartWithZoomPan.defaultProps = {
 	disableMouseMoveEvent: false,
 	disablePanEvent: false,
 	disableZoomEvent: false,
+	clamp: false,
 };
 
 CandleStickChartWithZoomPan = fitWidth(CandleStickChartWithZoomPan);
-
 
 export default CandleStickChartWithZoomPan;

@@ -75,7 +75,7 @@ function buildConfig(mode) {
 				minChunks: Infinity
 			}) : undefined),
 
-			ifProd(new webpack.optimize.DedupePlugin()),
+			// ifProd(new webpack.optimize.DedupePlugin()),
 			ifProd(new webpack.optimize.UglifyJsPlugin({
 				compress: {
 					screw_ie8: true,

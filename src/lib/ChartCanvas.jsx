@@ -88,7 +88,7 @@ function getXScaleDirection(flipXScale) {
 }
 
 function calculateFullData(props) {
-	var { data: inputData, calculator, plotFull, xScale: xScaleProp } = props;
+	var { data: inputData, calculator, plotFull, xScale: xScaleProp, clamp } = props;
 	var { xAccessor: inputXAccesor, map, xScaleProvider, indexAccessor, indexMutator } = props;
 
 	var wholeData = isDefined(plotFull)
@@ -109,6 +109,7 @@ function calculateFullData(props) {
 		.width(dimensions.width)
 		.scaleProvider(xScaleProvider)
 		.xScale(xScaleProp)
+		.clamp(clamp)
 		.calculator(calculator);
 
 	var { xAccessor, displayXAccessor, xScale, fullData, filterData } = evaluate(inputData);

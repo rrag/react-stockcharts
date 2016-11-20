@@ -11,7 +11,7 @@ import {
 
 const debug = false;
 
-function extentsWrapper(inputXAccessor, realXAccessor, useWholeData) {
+function extentsWrapper(inputXAccessor, realXAccessor, useWholeData, clamp) {
 	function domain(data, inputDomain, xAccessor, initialXScale, currentPlotData, currentDomain) {
 		if (useWholeData) {
 			return { plotData: data, domain: inputDomain };
@@ -21,8 +21,14 @@ function extentsWrapper(inputXAccessor, realXAccessor, useWholeData) {
 		var right = last(inputDomain);
 
 		var filteredData = getFilteredResponse(data, left, right, xAccessor);
+		var clampedDomain = [
+			Math.max(left, realXAccessor(first(data))),
+			Math.min(right, realXAccessor(last(data)))
+		];
 
-		var realInputDomain = realXAccessor === xAccessor ? inputDomain : [realXAccessor(first(filteredData)), realXAccessor(last(filteredData))];
+		var realInputDomain = realXAccessor === xAccessor
+			? (clamp ? clampedDomain : inputDomain)
+			: [realXAccessor(first(filteredData)), realXAccessor(last(filteredData))];
 
 		var xScale = initialXScale.copy().domain(realInputDomain);
 
@@ -94,7 +100,7 @@ export default function() {
 
 	var xAccessor, useWholeData, width, xScale,
 		map, calculator = [], scaleProvider,
-		indexAccessor, indexMutator;
+		indexAccessor, indexMutator, clamp;
 
 	function evaluate(data) {
 
@@ -125,7 +131,7 @@ export default function() {
 			} = scaleProvider2(calculatedData);
 
 			return {
-				filterData: extentsWrapper(xAccessor, realXAccessor, useWholeData || isNotDefined(modifiedXScale.invert)),
+				filterData: extentsWrapper(xAccessor, realXAccessor, useWholeData || isNotDefined(modifiedXScale.invert), clamp),
 				fullData: finalData,
 				xScale: modifiedXScale,
 				xAccessor: realXAccessor,
@@ -134,13 +140,18 @@ export default function() {
 		}
 
 		return {
-			filterData: extentsWrapper(xAccessor, xAccessor, useWholeData || isNotDefined(xScale.invert)),
+			filterData: extentsWrapper(xAccessor, xAccessor, useWholeData || isNotDefined(xScale.invert), clamp),
 			fullData: calculatedData,
 			xScale,
 			xAccessor,
 			displayXAccessor: xAccessor,
 		};
 	}
+	evaluate.clamp = function(x) {
+		if (!arguments.length) return clamp;
+		clamp = x;
+		return evaluate;
+	};
 	evaluate.xAccessor = function(x) {
 		if (!arguments.length) return xAccessor;
 		xAccessor = x;

@@ -6,12 +6,15 @@ Click and drag the axis, to zoom on y & x. Once y axis is zoomed you can pan the
 
 `mousemove`, `pan` and `zoom` are enabled by default. To disable them you can use `disableMouseMoveEvent`, `disablePanEvent` and `disableZoomEvent` props.
 
+`clamp` is disabled by default
+
 ```jsx
 <ChartCanvas 
     ...
     disableMouseMoveEvent={false}
     disablePanEvent={false}
     disableZoomEvent={false}
+    clamp={false}
     ...
 />
 ```
