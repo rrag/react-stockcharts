@@ -1,6 +1,7 @@
 "use strict";
 
 import React from "react";
+import ReactDOM from "react-dom";
 import { helper } from "react-stockcharts";
 
 import ContentSection from "lib/content-section";
@@ -11,14 +12,19 @@ import CandleStickChartWithFullStochasticsIndicator from "lib/charts/CandleStick
 
 var { TypeChooser, SaveChartAsImage } = helper;
 
-var StochasticIndicatorPage = React.createClass({
-	statics: {
-		title: "Stochastic Oscillator"
-	},
-	saveChartAsImage(e) {
-		var container = React.findDOMNode(this.refs.container);
+class StochasticIndicatorPage extends React.Component {
+	constructor(props) {
+		super(props);
+		this.saveNode = this.saveNode.bind(this);
+		this.saveChartAsImage = this.saveChartAsImage.bind(this);
+	}
+	saveNode(node) {
+		this.chart = node;
+	}
+	saveChartAsImage() {
+		var container = ReactDOM.findDOMNode(this.chart); // eslint-disable-line react/no-find-dom-node
 		SaveChartAsImage.saveChartAsImage(container);
-	},
+	}
 	render() {
 		return (
 			<ContentSection title={StochasticIndicatorPage.title}>
@@ -27,19 +33,21 @@ var StochasticIndicatorPage = React.createClass({
 						<button type="button" className="btn btn-success btn-lg pull-right" onClick={this.saveChartAsImage} >
 							<span className="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
 						</button>
-						<TypeChooser ref="container">
-							{(type) => (<CandleStickChartWithFullStochasticsIndicator data={this.props.someData} type={type} />)}
+						<TypeChooser>
+							{(type) => (<CandleStickChartWithFullStochasticsIndicator ref={this.saveNode} data={this.props.someData} type={type} />)}
 						</TypeChooser>
 					</Section>
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require("md/STOCHASTIC-INDICATOR")}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/STOCHASTIC-INDICATOR") }}></aside>
 					</Section>
 				</Row>
 			</ContentSection>
 		);
 	}
-});
+}
+
+StochasticIndicatorPage.title = "Stochastic Oscillator";
 
 export default StochasticIndicatorPage;
