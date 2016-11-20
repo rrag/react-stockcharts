@@ -275,7 +275,10 @@ class ChartCanvas extends Component {
 		this.state = {};
 	}
 	getDataInfo() {
-		return this.state;
+		return {
+			...this.state,
+			fullData: this.fullData,
+		};
 	}
 	getCanvasContexts() {
 		if (this.refs && this.refs.canvases) {

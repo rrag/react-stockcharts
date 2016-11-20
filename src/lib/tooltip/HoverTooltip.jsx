@@ -130,8 +130,8 @@ function tooltipSVG({ fontFamily, fontSize, fontFill }, content) {
 /* eslint-enable react/prop-types */
 
 function calculateTooltipSize({ fontFamily, fontSize, fontFill }, content) {
-	const canvas = document.createElement('canvas');
-	let ctx = canvas.getContext('2d');
+	const canvas = document.createElement("canvas");
+	let ctx = canvas.getContext("2d");
 	let width = 0;
 	let height = content.y.length * fontSize + fontSize;
 
