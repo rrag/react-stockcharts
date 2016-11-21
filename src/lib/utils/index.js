@@ -29,7 +29,7 @@ export {
 export function getLogger(prefix) {
 	return (process.env.NODE_ENV !== "production")
 		? require("debug")("react-stockcharts:" + prefix)
-		: console.log("PROD MODE") && noop;
+		: noop;
 }
 
 export function path(path = []) {
