@@ -2,7 +2,7 @@
 
 import React, { PropTypes, Component } from "react";
 
-import { hexToRGBA } from "../utils";
+import { hexToRGBA, isDefined, isNotDefined } from "../utils";
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 
 class StraightLine extends Component {
@@ -12,19 +12,21 @@ class StraightLine extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { stroke, opacity, yValue } = this.props;
-		var { xAccessor } = moreProps;
-		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
-
-		var first = xAccessor(plotData[0]);
-		var last = xAccessor(plotData[plotData.length - 1]);
+		var { type, stroke, strokeWidth, opacity, strokeDasharray } = this.props;
+		var { yValue, xValue } = this.props;
+		var { width, height } = moreProps;
+		var { xScale, chartConfig: { yScale } } = moreProps;
 
 		ctx.beginPath();
 
 		ctx.strokeStyle = hexToRGBA(stroke, opacity);
+		ctx.lineWidth = strokeWidth;
 
-		ctx.moveTo(xScale(first), yScale(yValue));
-		ctx.lineTo(xScale(last), yScale(yValue));
+		var { x1, y1, x2, y2 } = getLineCoordinates(type, xScale, yScale, xValue, yValue, width, height);
+
+		if (isDefined(strokeDasharray)) ctx.setLineDash(strokeDasharray.split(","));
+		ctx.moveTo(x1, y1);
+		ctx.lineTo(x2, y2);
 		ctx.stroke();
 	}
 	render() {
@@ -36,35 +38,60 @@ class StraightLine extends Component {
 			/>;
 	}
 	renderSVG(moreProps) {
-		var { xAccessor } = moreProps;
-		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+		var { width, height } = moreProps;
+		var { xScale, chartConfig: { yScale } } = moreProps;
 
-		var { stroke, className, opacity, yValue } = this.props;
+		var { className } = this.props;
+		var { type, stroke, strokeWidth, opacity, strokeDasharray } = this.props;
+		var { yValue, xValue } = this.props;
 
-		var first = xAccessor(plotData[0]);
-		var last = xAccessor(plotData[plotData.length - 1]);
+		var lineCoordinates = getLineCoordinates(type, xScale, yScale, xValue, yValue, width, height);
+
+		/*
+		type === "horizontal"
+			? { x1: xScale(first), y1: yScale(yValue), x2: xScale(last), y2: yScale(yValue) }
+			: { x1: xScale(xValue), y1: yScale(0), x2: xScale(xValue), y2: yScale(height) };*/
 
 		return (
-			<line className={className}
-				stroke={stroke} opacity={opacity}
-				x1={xScale(first)} y1={yScale(yValue)}
-				x2={xScale(last)} y2={yScale(yValue)} />
+			<line className={className} strokeDasharray={strokeDasharray}
+				stroke={stroke} strokeWidth={strokeWidth}
+				opacity={opacity} {...lineCoordinates} />
 		);
 	}
 }
 
+function getLineCoordinates(type, xScale, yScale, xValue, yValue, width, height) {
+	return type === "horizontal"
+		? { x1: 0, y1: yScale(yValue), x2: width, y2: yScale(yValue) }
+		: { x1: xScale(xValue), y1: 0, x2: xScale(xValue), y2: height };
+}
+
 StraightLine.propTypes = {
 	className: PropTypes.string,
+	type: PropTypes.oneOf(["vertical", "horizontal"]),
 	stroke: PropTypes.string,
+	strokeWidth: PropTypes.number,
+	strokeDasharray: PropTypes.string,
 	opacity: PropTypes.number.isRequired,
-	yValue: PropTypes.number.isRequired,
+	yValue: function(props, propName/* , componentName */) {
+		if (props.type === "vertical" && isDefined(props[propName])) return new Error("Do not define `yValue` when type is `vertical`, define the `xValue` prop");
+		if (props.type === "horizontal" && isNotDefined(props[propName])) return new Error("when type = `horizontal` `yValue` is required");
+		if (isDefined(props[propName]) && typeof props[propName] !== "number") return new Error("prop `yValue` accepts a number");
+	},
+	xValue: function(props, propName/* , componentName */) {
+		if (props.type === "horizontal" && isDefined(props[propName])) return new Error("Do not define `xValue` when type is `horizontal`, define the `yValue` prop");
+		if (props.type === "vertical" && isNotDefined(props[propName])) return new Error("when type = `vertical` `xValue` is required");
+		if (isDefined(props[propName]) && typeof props[propName] !== "number") return new Error("prop `xValue` accepts a number");
+	},
 };
-
 
 StraightLine.defaultProps = {
 	className: "line ",
+	type: "horizontal",
 	stroke: "#000000",
 	opacity: 0.5,
+	strokeWidth: 1,
+	// strokeDasharray: "4, 2",
 };
 
 export default StraightLine;

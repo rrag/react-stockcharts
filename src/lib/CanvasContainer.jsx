@@ -3,7 +3,7 @@
 import React, { PropTypes, Component } from "react";
 import { isDefined, getLogger } from "./utils";
 
-const log = getLogger("ChartCanvas");
+const log = getLogger("CanvasContainer");
 
 class CanvasContainer extends Component {
 	constructor(props) {

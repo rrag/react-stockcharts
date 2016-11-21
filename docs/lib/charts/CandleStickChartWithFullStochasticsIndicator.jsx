@@ -6,7 +6,7 @@ import { timeFormat } from "d3-time-format";
 
 import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "../../../src/";
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, StochasticSeries } = series;
+var { CandlestickSeries, BarSeries, LineSeries, StraightLine, StochasticSeries } = series;
 var { discontinuousTimeScaleProvider } = scale;
 var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
 var { EdgeIndicator } = coordinates;
@@ -89,8 +89,10 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 
+					<StraightLine type="vertical" xValue={608} />;
+
 					<OHLCTooltip origin={[-40, -10]}/>
-					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]} 
+					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]}
 						calculators={[ema20, ema50]}/>
 				</Chart>
 				<Chart id={2}
