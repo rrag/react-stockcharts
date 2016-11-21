@@ -41,6 +41,7 @@
     "d3-shape": "^1.0.3",
     "d3-time-format": "^2.0.2",
     "d3fc-rebind": "^4.1.1",
+    "debug": "^2.3.3",
     "lodash.flattendeep": "^4.4.0",
     "save-svg-as-png": "^1.0.3"
   },

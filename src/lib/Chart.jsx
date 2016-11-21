@@ -28,7 +28,6 @@ class Chart extends PureComponent {
 		if (type === "contextmenu") {
 			var { currentCharts } = moreProps;
 			if (currentCharts.indexOf(id) > -1) {
-				// console.log(moreProps, e, e.nativeEvent);
 				onContextMenu(moreProps, e);
 			}
 		}

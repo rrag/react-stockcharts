@@ -1,7 +1,9 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import { isDefined } from "./utils";
+import { isDefined, getLogger } from "./utils";
+
+const log = getLogger("ChartCanvas");
 
 class CanvasContainer extends Component {
 	constructor(props) {
@@ -23,7 +25,9 @@ class CanvasContainer extends Component {
 	render() {
 		var { height, width, type, zIndex, ratio } = this.props;
 		if (type === "svg") return null;
-		// console.log("using ratio ", ratio);
+
+		log("using ratio ", ratio);
+
 		return (
 			<div style={{ position: "absolute", zIndex: zIndex }}>
 				<canvas id="bg" ref={this.setDrawCanvas} width={width * ratio} height={height * ratio}
@@ -36,11 +40,6 @@ class CanvasContainer extends Component {
 		);
 	}
 }
-
-/*
-				<canvas ref="canvas_interactive" width={width} height={height}
-					style={{ position: "absolute", left: 0, top: 0 }} />
-*/
 
 CanvasContainer.propTypes = {
 	width: PropTypes.number.isRequired,
