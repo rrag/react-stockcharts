@@ -315,9 +315,11 @@ class ChartCanvas extends Component {
 		this.subscriptions = this.subscriptions.filter(each => each.id !== id);
 	}
 	handleMouseEnter(e) {
-		this.triggerEvent("mouseenter", {
-			show: true,
-		}, e);
+		requestAnimationFrame(() => {
+			this.triggerEvent("mouseenter", {
+				show: true,
+			}, e);
+		});
 	}
 	handleMouseMove(mouseXY, inputType, e) {
 		var { chartConfig, plotData, xScale, xAccessor } = this.state;
@@ -342,15 +344,20 @@ class ChartCanvas extends Component {
 		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
 		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
 
-		this.triggerEvent("contextmenu", {
-			mouseXY,
-			currentItem,
-			currentCharts,
-		}, e);
+		requestAnimationFrame(() => {
+			this.triggerEvent("contextmenu", {
+				mouseXY,
+				currentItem,
+				currentCharts,
+			}, e);
+		});
 	}
 	handleMouseLeave(e) {
-		this.clearMouseCanvas();
-		this.triggerEvent("mouseleave", { show: false }, e);
+		requestAnimationFrame(() => {
+			this.clearMouseCanvas();
+			this.triggerEvent("mouseleave", { show: false }, e);
+		});
+
 	}
 	pinchCoordinates(pinch) {
 		var { touch1Pos, touch2Pos } = pinch;
@@ -422,46 +429,6 @@ class ChartCanvas extends Component {
 		// document.getElementById("debug_here").innerHTML = `${id[1] - id[0]} = ${initial.left - id[0]} + ${initial.right - initial.left} + ${id[1] - initial.right}`;
 		// document.getElementById("debug_here").innerHTML = `${range[1] - range[0]}, ${i1[0]}, ${i2[0]}`;
 	}
-	handleZoom(zoomDirection, mouseXY, e) {
-		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
-		var { xAccessor, xScale: initialXScale, plotData: initialPlotData } = this.state;
-		var { zoomMultiplier } = this.props;
-
-		var item = getCurrentItem(initialXScale, xAccessor, mouseXY, initialPlotData),
-			cx = initialXScale(xAccessor(item)),
-			c = zoomDirection > 0 ? 1 * zoomMultiplier : 1 / zoomMultiplier,
-			newDomain = initialXScale.range().map(x => cx + (x - cx) * c).map(initialXScale.invert);
-
-		var { xScale, plotData, chartConfig } = this.calculateStateForDomain(newDomain);
-
-		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
-		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
-		this.clearBothCanvas();
-		// this.clearInteractiveCanvas();
-
-		this.triggerEvent("zoom", {
-			mouseXY,
-			currentCharts,
-			currentItem,
-		}, e);
-
-		var { fullData } = this;
-		var firstItem = first(fullData);
-
-		var start = first(xScale.domain());
-		var end = xAccessor(firstItem);
-		var { onLoadMore } = this.props;
-
-		this.setState({
-			xScale,
-			plotData,
-			chartConfig,
-		}, () => {
-			if (start < end) {
-				onLoadMore(start, end);
-			}
-		});
-	}
 	calculateStateForDomain(newDomain) {
 		var { xAccessor, xScale: initialXScale, chartConfig: initialChartConfig, plotData: initialPlotData } = this.state;
 		var { filterData } = this.state;
@@ -484,6 +451,46 @@ class ChartCanvas extends Component {
 			plotData,
 			chartConfig,
 		};
+	}
+	handleZoom(zoomDirection, mouseXY, e) {
+		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
+		var { xAccessor, xScale: initialXScale, plotData: initialPlotData } = this.state;
+		var { zoomMultiplier } = this.props;
+
+		var item = getCurrentItem(initialXScale, xAccessor, mouseXY, initialPlotData),
+			cx = initialXScale(xAccessor(item)),
+			c = zoomDirection > 0 ? 1 * zoomMultiplier : 1 / zoomMultiplier,
+			newDomain = initialXScale.range().map(x => cx + (x - cx) * c).map(initialXScale.invert);
+
+		var { xScale, plotData, chartConfig } = this.calculateStateForDomain(newDomain);
+
+		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
+		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
+		this.clearBothCanvas();
+		// this.clearInteractiveCanvas();
+
+		var { fullData } = this;
+		var firstItem = first(fullData);
+
+		var start = first(xScale.domain());
+		var end = xAccessor(firstItem);
+		var { onLoadMore } = this.props;
+
+		this.setState({
+			xScale,
+			plotData,
+			chartConfig,
+		}, () => {
+			this.triggerEvent("zoom", {
+				mouseXY,
+				currentCharts,
+				currentItem,
+			}, e);
+
+			if (start < end) {
+				onLoadMore(start, end);
+			}
+		});
 	}
 	xAxisZoom(newDomain) {
 		var { xScale, plotData, chartConfig } = this.calculateStateForDomain(newDomain);
@@ -569,7 +576,12 @@ class ChartCanvas extends Component {
 	triggerEvent(type, props, e) {
 		this.subscriptions.forEach(each => {
 			// console.log(each)
-			each.callback(type, props, e);
+			each.callback(type, {
+				...this.state,
+				fullData: this.fullData,
+				subscriptions: this.subscriptions,
+				...props,
+			}, e);
 		});
 	}
 	handlePan(mousePosition, panStartXScale, panOrigin, chartsToPan, e) {
@@ -589,16 +601,19 @@ class ChartCanvas extends Component {
 		});
 	}
 	handleMouseDown(mousePosition, currentCharts, e) {
-		this.triggerEvent("mousedown", null, e);
+		requestAnimationFrame(() => {
+			this.triggerEvent("mousedown", null, e);
+		});
 	}
 	handleClick(mousePosition, e) {
-		// console.log("clicked", e.shiftKey);
-		this.triggerEvent("click", {}, e);
+		requestAnimationFrame(() => {
+			this.triggerEvent("click", {}, e);
+		});
 	}
 	handleDoubleClick(mousePosition, e) {
-		// if (debug) console.log("double clicked");
-		log("double clicked");
-		this.triggerEvent("dblclick", {}, e);
+		requestAnimationFrame(() => {
+			this.triggerEvent("dblclick", {}, e);
+		});
 	}
 	handlePanEnd(mousePosition, panStartXScale, panOrigin, chartsToPan, e) {
 		var state = this.panHelper(mousePosition, panStartXScale, panOrigin, chartsToPan);
@@ -608,7 +623,6 @@ class ChartCanvas extends Component {
 
 		this.panInProgress = false;
 
-		this.triggerEvent("panend", state, e);
 		// console.log("PANEND", panEnd++);
 		var {
 			xScale,
@@ -632,6 +646,7 @@ class ChartCanvas extends Component {
 				plotData,
 				chartConfig,
 			}, () => {
+				this.triggerEvent("panend", state, e);
 				if (start < end) onLoadMore(start, end);
 			});
 		});
@@ -689,7 +704,7 @@ class ChartCanvas extends Component {
 			var [start, end] = this.state.xScale.domain();
 			var prevLastItem = last(this.fullData);
 
-			let calculatedState = calculateFullData(nextProps);
+			var calculatedState = calculateFullData(nextProps);
 			var { xAccessor } = calculatedState;
 			var lastItemWasVisible = xAccessor(prevLastItem) <= end && xAccessor(prevLastItem) >= start;
 

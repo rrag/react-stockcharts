@@ -98,6 +98,10 @@ class GenericComponent extends Component {
 			}
 			break;
 		}
+		case "draw": {
+			this.draw();
+			break;
+		}
 		}
 
 		// if (type !== "mousemove" && type !== "ff") this.moreProps.prevHovering = false;
