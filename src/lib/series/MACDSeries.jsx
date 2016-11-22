@@ -71,14 +71,10 @@ function getHorizontalLine(props) {
 
 MACDSeries.propTypes = {
 	className: PropTypes.string,
-	xScale: PropTypes.func,
-	yScale: PropTypes.func,
-	xAccessor: PropTypes.func,
 	calculator: PropTypes.oneOfType([
 		PropTypes.func,
 		PropTypes.object,
 	]).isRequired,
-	plotData: PropTypes.array,
 	type: PropTypes.string,
 	opacity: PropTypes.number,
 	divergenceStroke: PropTypes.bool,

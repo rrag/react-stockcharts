@@ -48,11 +48,7 @@ GroupedBarSeries.propTypes = {
 	className: PropTypes.oneOfType([
 		PropTypes.func, PropTypes.string
 	]).isRequired,
-	xAccessor: PropTypes.func,
 	yAccessor: PropTypes.arrayOf(PropTypes.func),
-	xScale: PropTypes.func,
-	yScale: PropTypes.func,
-	plotData: PropTypes.array,
 };
 
 GroupedBarSeries.defaultProps = {

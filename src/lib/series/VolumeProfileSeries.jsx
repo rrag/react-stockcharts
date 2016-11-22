@@ -57,9 +57,6 @@ class VolumeProfileSeries extends Component {
 VolumeProfileSeries.propTypes = {
 	className: PropTypes.string,
 	opacity: PropTypes.number,
-	xScale: PropTypes.func,
-	yScale: PropTypes.func,
-	plotData: PropTypes.array,
 	showSessionBackground: PropTypes.bool,
 	sessionBackGround: PropTypes.string,
 	sessionBackGroundOpacity: PropTypes.number,

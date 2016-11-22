@@ -53,10 +53,6 @@ StochasticSeries.propTypes = {
 		PropTypes.func,
 		PropTypes.object,
 	]).isRequired,
-	xScale: PropTypes.func,
-	yScale: PropTypes.func,
-	xAccessor: PropTypes.func,
-	plotData: PropTypes.array,
 	stroke: PropTypes.object,
 	type: PropTypes.string,
 };

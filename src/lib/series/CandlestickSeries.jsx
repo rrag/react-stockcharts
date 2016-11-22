@@ -60,11 +60,7 @@ CandlestickSeries.propTypes = {
 		PropTypes.func,
 		PropTypes.string
 	]).isRequired,
-	xAccessor: PropTypes.func,
 	yAccessor: PropTypes.func.isRequired,
-	xScale: PropTypes.func,
-	yScale: PropTypes.func,
-	plotData: PropTypes.array,
 };
 
 CandlestickSeries.defaultProps = {

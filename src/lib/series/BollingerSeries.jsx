@@ -58,14 +58,10 @@ class BollingerSeries extends Component {
 }
 
 BollingerSeries.propTypes = {
-	xAccessor: PropTypes.func,
 	calculator: PropTypes.oneOfType([
 		PropTypes.func,
 		PropTypes.object,
 	]).isRequired,
-	xScale: PropTypes.func,
-	yScale: PropTypes.func,
-	plotData: PropTypes.array,
 	className: PropTypes.string,
 	areaClassName: PropTypes.string,
 	opacity: PropTypes.number,
