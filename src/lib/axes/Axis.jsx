@@ -109,11 +109,6 @@ Axis.defaultProps = {
 	edgeClip: false,
 };
 
-Axis.contextTypes = {
-	height: PropTypes.number.isRequired,
-	width: PropTypes.number.isRequired,
-};
-
 function tickHelper(props, scale) {
 	var { orient, innerTickSize, tickFormat, tickPadding, fontSize, fontFamily, showTicks, flexTicks } = props;
 	var { ticks: tickArguments, tickValues: tickValuesProp, tickStroke, tickStrokeOpacity } = props;

@@ -3,8 +3,6 @@
 import React, { PropTypes, Component } from "react";
 import { isNotDefined, isDefined, noop, functor, identity } from "./utils";
 
-var suscriberId = 0;
-
 class GenericComponent extends Component {
 	constructor(props, context) {
 		super(props, context);
@@ -15,16 +13,15 @@ class GenericComponent extends Component {
 		this.updateMoreProps = this.updateMoreProps.bind(this);
 		this.evaluateType = this.evaluateType.bind(this);
 		this.isHover = this.isHover.bind(this);
-		this.executeMouseMove = this.executeMouseMove.bind(this);
 		this.preCanvasDraw = this.preCanvasDraw.bind(this);
 		this.postCanvasDraw = this.postCanvasDraw.bind(this);
 		this.getRef = this.getRef.bind(this);
 
-		this.suscriberId = suscriberId++;
-
-		this.drawOnNextTick = false;
+		var { generateSubscriptionId } = context;
+		this.suscriberId = generateSubscriptionId();
 
 		this.moreProps = {};
+		this.prevHovering = false;
 		this.state = {
 			updateCount: 0,
 		};
@@ -33,7 +30,7 @@ class GenericComponent extends Component {
 		return this.refs[ref];
 	}
 	updateMoreProps(moreProps) {
-		this.prevMoreProps = this.moreProps;
+		// this.prevMoreProps = this.moreProps;
 		this.moreProps = Object.assign(this.moreProps, moreProps);
 	}
 	listener(type, moreProps, e) {
@@ -43,17 +40,6 @@ class GenericComponent extends Component {
 		}
 
 		this.evaluateType(type, e);
-	}
-	executeMouseMove(e) {
-		this.moreProps.hovering = this.isHover(e);
-
-		if (this.moreProps.hovering
-				|| this.props.drawOnMouseMove) {
-			if (this.props.onMouseMove) this.props.onMouseMove(e);
-			this.drawOnNextTick = true;
-		} else {
-			this.drawOnNextTick = false;
-		}
 	}
 	evaluateType(type, e) {
 		this.props.debug(type);
@@ -82,7 +68,15 @@ class GenericComponent extends Component {
 			break;
 		}
 		case "mousemove": {
-			this.executeMouseMove(e);
+			this.moreProps.hovering = this.isHover(e);
+
+			if (this.prevHovering !== this.moreProps.hovering
+					|| this.moreProps.hovering
+					|| this.props.drawOnMouseMove) {
+				if (this.props.onMouseMove) this.props.onMouseMove(e);
+				this.draw();
+			}
+			this.prevHovering = this.moreProps.hovering;
 			break;
 		}
 		case "dblclick": {
@@ -92,21 +86,19 @@ class GenericComponent extends Component {
 			break;
 		}
 		case "mouseleave": {
-			this.drawOnNextTick = this.props.drawOnMouseExitOfCanvas;
+			if (this.props.drawOnMouseExitOfCanvas) {
+				this.draw();
+			}
 			break;
 		}
 		case "pan": {
 			this.moreProps.hovering = false;
-			this.drawOnNextTick = this.props.drawOnPan;
-			break;
-		}
-		case "draw": {
-			if (this.drawOnNextTick) {
+			if (this.props.drawOnPan) {
 				this.draw();
 			}
+			break;
 		}
 		}
-		this.props.debug(type, this.drawOnNextTick);
 
 		// if (type !== "mousemove" && type !== "ff") this.moreProps.prevHovering = false;
 	}
@@ -170,9 +162,6 @@ class GenericComponent extends Component {
 
 		return (morePropsDecorator || identity)(moreProps);
 	}
-	getPrevMoreProps() {
-		return this.prevMoreProps;
-	}
 	preCanvasDraw() {
 		// do nothing
 	}
@@ -191,9 +180,9 @@ class GenericComponent extends Component {
 			? hoverCanvasToDraw(getCanvasContexts())
 			: canvasToDraw(getCanvasContexts());
 
-		this.preCanvasDraw(ctx);
+		this.preCanvasDraw(ctx, moreProps);
 		canvasDraw(ctx, moreProps);
-		this.postCanvasDraw(ctx);
+		this.postCanvasDraw(ctx, moreProps);
 	}
 	render() {
 		var { chartCanvasType, chartId } = this.context;
@@ -269,6 +258,7 @@ GenericComponent.contextTypes = {
 	]).isRequired,
 
 	morePropsDecorator: PropTypes.func,
+	generateSubscriptionId: PropTypes.func,
 
 	subscribe: PropTypes.func.isRequired,
 	unsubscribe: PropTypes.func.isRequired,

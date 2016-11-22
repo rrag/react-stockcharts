@@ -58,9 +58,9 @@ MouseCoordinateX.defaultProps = {
 };
 
 function helper(props, moreProps) {
-	var { height, xAccessor, displayXAccessor } = moreProps;
+	var { xAccessor, displayXAccessor } = moreProps;
 	var { show, currentItem, xScale, mouseXY } = moreProps;
-	// var { chartConfig: { yScale, origin } } = moreProps;
+	var { chartConfig: { height } } = moreProps;
 
 	if (isNotDefined(currentItem)) return null;
 

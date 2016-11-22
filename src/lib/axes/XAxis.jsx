@@ -67,14 +67,13 @@ XAxis.defaultProps = {
 };
 
 XAxis.contextTypes = {
-	height: PropTypes.number.isRequired,
-	width: PropTypes.number.isRequired,
+	chartConfig: PropTypes.object.isRequired,
 	xAxisZoom: PropTypes.func.isRequired,
 };
 
 function helper(props, context) {
 	var { axisAt, xZoomHeight, orient } = props;
-	var { width, height } = context;
+	var { chartConfig: { width, height } } = context;
 
 	var axisLocation, x = 0, w = width, h = xZoomHeight;
 

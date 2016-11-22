@@ -256,6 +256,7 @@ class ChartCanvas extends Component {
 		this.yAxisZoom = this.yAxisZoom.bind(this);
 		this.resetYDomain = this.resetYDomain.bind(this);
 		this.calculateStateForDomain = this.calculateStateForDomain.bind(this);
+		this.generateSubscriptionId = this.generateSubscriptionId.bind(this);
 
 		this.pinchCoordinates = this.pinchCoordinates.bind(this);
 
@@ -265,12 +266,12 @@ class ChartCanvas extends Component {
 		this.subscriptions = [];
 		this.subscribe = this.subscribe.bind(this);
 		this.unsubscribe = this.unsubscribe.bind(this);
-		this.draw = this.draw.bind(this);
 		// this.canvasDrawCallbackList = [];
 		this.interactiveState = [];
 		this.panInProgress = false;
 
 		this.state = {};
+		this.lastSubscriptionId = 0;
 	}
 	getDataInfo() {
 		return {
@@ -283,10 +284,13 @@ class ChartCanvas extends Component {
 			return this.refs.canvases.getCanvasContexts();
 		}
 	}
+	generateSubscriptionId() {
+		this.lastSubscriptionId++;
+		return this.lastSubscriptionId;
+	}
 	clearBothCanvas() {
 		var canvases = this.getCanvasContexts();
 		if (canvases && canvases.axes) {
-			// console.log("CLEAR");
 			clearCanvas([canvases.axes, canvases.mouseCoord], this.props.ratio);
 		}
 	}
@@ -322,16 +326,14 @@ class ChartCanvas extends Component {
 
 		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
 
-		this.triggerEvent("mousemove", {
-			show: true,
-			mouseXY,
-			currentItem,
-			currentCharts,
-		}, e);
-
 		requestAnimationFrame(() => {
 			this.clearMouseCanvas();
-			this.draw();
+			this.triggerEvent("mousemove", {
+				show: true,
+				mouseXY,
+				currentItem,
+				currentCharts,
+			}, e);
 		});
 	}
 	handleContextMenu(mouseXY, e) {
@@ -345,21 +347,10 @@ class ChartCanvas extends Component {
 			currentItem,
 			currentCharts,
 		}, e);
-		this.draw();
 	}
 	handleMouseLeave(e) {
-		var contexts = this.getCanvasContexts();
-
-		// this.clearInteractiveCanvas();
-
-		if (contexts && contexts.mouseCoord) {
-			clearCanvas([contexts.mouseCoord], this.props.ratio);
-		}
+		this.clearMouseCanvas();
 		this.triggerEvent("mouseleave", { show: false }, e);
-		this.draw();
-		/* this.setState({
-			show: false
-		}); */
 	}
 	pinchCoordinates(pinch) {
 		var { touch1Pos, touch2Pos } = pinch;
@@ -575,19 +566,6 @@ class ChartCanvas extends Component {
 			currentItem,
 		};
 	}
-	draw() {/*
-		var { chartCanvasType } = this.props;
-		if (chartCanvasType === "svg") {
-			this.setState({
-				random: Math.random()
-			});
-		} else {*/
-		this.subscriptions.forEach(each => {
-			// console.log(each)
-			each.callback("draw");
-		});
-		// }
-	}
 	triggerEvent(type, props, e) {
 		this.subscriptions.forEach(each => {
 			// console.log(each)
@@ -604,10 +582,10 @@ class ChartCanvas extends Component {
 		this.hackyWayToStopPanBeyondBounds__domain = state.xScale.domain();
 
 		this.panInProgress = true;
-		this.triggerEvent("pan", state, e);
+
 		requestAnimationFrame(() => {
 			this.clearBothCanvas();
-			this.draw();
+			this.triggerEvent("pan", state, e);
 		});
 	}
 	handleMouseDown(mousePosition, currentCharts, e) {
@@ -680,6 +658,7 @@ class ChartCanvas extends Component {
 			getCanvasContexts: this.getCanvasContexts,
 			subscribe: this.subscribe,
 			unsubscribe: this.unsubscribe,
+			generateSubscriptionId: this.generateSubscriptionId,
 		};
 	}
 	componentWillMount() {
@@ -958,6 +937,7 @@ ChartCanvas.childContextTypes = {
 	yAxisZoom: PropTypes.func,
 	subscribe: PropTypes.func,
 	unsubscribe: PropTypes.func,
+	generateSubscriptionId: PropTypes.func,
 };
 
 ChartCanvas.ohlcv = d => ({ date: d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume });

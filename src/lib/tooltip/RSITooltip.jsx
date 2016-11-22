@@ -16,7 +16,7 @@ class RSITooltip extends Component {
 	}
 	renderSVG(moreProps) {
 		var { onClick, fontFamily, fontSize, calculator, displayFormat, className } = this.props;
-		var { width, height } = moreProps;
+		var { chartConfig: { width, height } } = moreProps;
 		var { currentItem } = moreProps;
 
 		var yAccessor = calculator.accessor();

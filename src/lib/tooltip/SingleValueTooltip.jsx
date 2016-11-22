@@ -19,7 +19,7 @@ class SingleValueTooltip extends Component {
 		var { onClick, fontFamily, fontSize, labelStroke, valueStroke, className } = this.props;
 		var { xDisplayFormat, yDisplayFormat, xLabel, yLabel, xAccessor, yAccessor } = this.props;
 
-		var { width, height } = moreProps;
+		var { chartConfig: { width, height } } = moreProps;
 		var { currentItem } = moreProps;
 
 		var xDisplayValue = isDefined(currentItem) && isDefined(xAccessor(currentItem)) ? xDisplayFormat(xAccessor(currentItem)) : "n/a";

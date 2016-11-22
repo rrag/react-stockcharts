@@ -12,9 +12,15 @@ class GenericChartComponent extends GenericComponent {
 		this.preCanvasDraw = this.preCanvasDraw.bind(this);
 		this.postCanvasDraw = this.postCanvasDraw.bind(this);
 	}
-	preCanvasDraw(ctx) {
+	preCanvasDraw(ctx, moreProps) {
 		ctx.save();
-		var { canvasOriginX, canvasOriginY, width, height, margin, ratio } = this.context;
+		var { margin, ratio } = this.context;
+		var { chartConfig } = moreProps;
+
+		var canvasOriginX = (0.5 * ratio) + chartConfig.origin[0] + margin.left;
+		var canvasOriginY = (0.5 * ratio) + chartConfig.origin[1] + margin.top;
+
+		var { chartConfig: { width, height } } = moreProps;
 		var { clip, edgeClip } = this.props;
 
 		ctx.setTransform(1, 0, 0, 1, 0, 0);

@@ -178,9 +178,4 @@ AxisZoomCapture.defaultProps = {
 	inverted: true
 };
 
-AxisZoomCapture.contextTypes = {
-	height: PropTypes.number.isRequired,
-	width: PropTypes.number.isRequired,
-};
-
 export default AxisZoomCapture;

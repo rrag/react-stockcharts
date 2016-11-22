@@ -54,10 +54,11 @@ class MovingAverageTooltip extends Component {
 		this.renderSVG = this.renderSVG.bind(this);
 	}
 	renderSVG(moreProps) {
-		var { height, chartId } = moreProps;
+		var { chartId } = moreProps;
 		var { chartConfig, currentItem } = moreProps;
 
 		var { className, onClick, width, fontFamily, fontSize, origin: originProp, calculators, displayFormat } = this.props;
+		var { chartConfig: { height } } = moreProps;
 
 		var config = chartConfig;
 

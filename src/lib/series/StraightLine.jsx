@@ -14,8 +14,8 @@ class StraightLine extends Component {
 	drawOnCanvas(ctx, moreProps) {
 		var { type, stroke, strokeWidth, opacity, strokeDasharray } = this.props;
 		var { yValue, xValue } = this.props;
-		var { width, height } = moreProps;
-		var { xScale, chartConfig: { yScale } } = moreProps;
+		var { xScale } = moreProps;
+		var { chartConfig: { yScale, width, height } } = moreProps;
 
 		ctx.beginPath();
 

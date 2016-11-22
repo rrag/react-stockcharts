@@ -17,7 +17,7 @@ class StochasticTooltip extends Component {
 	renderSVG(moreProps) {
 		var { onClick, fontFamily, fontSize, calculator, displayFormat, children } = this.props;
 		var { className } = this.props;
-		var { width, height } = moreProps;
+		var { chartConfig: { width, height } } = moreProps;
 		var { currentItem } = moreProps;
 
 		var yAccessor = calculator.accessor();

@@ -17,7 +17,7 @@ class OHLCTooltip extends Component {
 	}
 	renderSVG(moreProps) {
 		var { className } = this.props;
-		var { width, height } = moreProps;
+		var { chartConfig: { width, height } } = moreProps;
 		var { currentItem } = moreProps;
 
 		var { onClick, xDisplayFormat, fontFamily, fontSize, accessor, volumeFormat, ohlcFormat } = this.props;

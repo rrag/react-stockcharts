@@ -67,8 +67,6 @@ YAxis.defaultProps = {
 };
 
 YAxis.contextTypes = {
-	height: PropTypes.number.isRequired,
-	width: PropTypes.number.isRequired,
 	yAxisZoom: PropTypes.func.isRequired,
 	chartId: PropTypes.number.isRequired,
 	chartConfig: PropTypes.object.isRequired,
@@ -76,7 +74,7 @@ YAxis.contextTypes = {
 
 function helper(props, context) {
 	var { axisAt, yZoomWidth, orient } = props;
-	var { width, height } = context;
+	var { chartConfig: { width, height } } = context;
 
 	var axisLocation, y = 0, w = yZoomWidth, h = height;
 
