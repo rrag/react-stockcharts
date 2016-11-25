@@ -90,7 +90,8 @@ function getXScaleDirection(flipXScale) {
 
 function calculateFullData(props) {
 	var { data: inputData, calculator, plotFull, xScale: xScaleProp, clamp } = props;
-	var { xAccessor: inputXAccesor, map, xScaleProvider, indexAccessor, indexMutator } = props;
+	var { map, xScaleProvider, indexAccessor, indexMutator } = props;
+	var { xAccessor: inputXAccesor, displayXAccessor: inputDisplayXAccessor } = props;
 
 	var wholeData = isDefined(plotFull)
 			? plotFull
@@ -115,7 +116,13 @@ function calculateFullData(props) {
 
 	var { xAccessor, displayXAccessor, xScale, fullData, filterData } = evaluate(inputData);
 
-	return { xAccessor, displayXAccessor, xScale, fullData, filterData };
+	return {
+		xAccessor,
+		displayXAccessor: inputDisplayXAccessor || displayXAccessor,
+		xScale,
+		fullData,
+		filterData
+	};
 }
 function resetChart(props, firstCalculation = false) {
 	if (process.env.NODE_ENV !== "production") {
@@ -653,7 +660,6 @@ class ChartCanvas extends Component {
 	}
 	getChildContext() {
 		var dimensions = getDimensions(this.props);
-
 		return {
 			fullData: this.fullData,
 			plotData: this.state.plotData,
@@ -662,7 +668,7 @@ class ChartCanvas extends Component {
 			chartConfig: this.state.chartConfig,
 			xScale: this.state.xScale,
 			xAccessor: this.state.xAccessor,
-			displayXAccessor: this.props.displayXAccessor || this.state.displayXAccessor,
+			displayXAccessor: this.state.displayXAccessor,
 			chartCanvasType: this.props.type,
 			margin: this.props.margin,
 			ratio: this.props.ratio,
