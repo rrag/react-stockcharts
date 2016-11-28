@@ -25,4 +25,22 @@ const { LineSeries, ScatterSeries, CircleMarker, SquareMarker, TriangleMarker } 
     markerProps={{ r: 3 }} />
 ```
 
+### Props
+
+| props            | type          | default   | Description  |
+|------------------|:--------------|:----------|:-------------|
+| className        | string        | "line"    |
+| strokeWidth      | number        | 1         |
+| stroke           | string        | "#4682B4" |
+| hoverStrokeWidth | number        | 4         |
+| fill             | string        | "none"    |
+| hoverTolerance   | number        | 6         |
+| highlightOnHover | boolean       | false     |
+| connectNulls     | boolean       | false     | Whether to connect a graph line across null points.
+| yAccessor        | function      |           |
+| onClick          | function      |           |
+| onDoubleClick    | function      |           |
+| onContextMenu    | function      |           |
+| defined          | function      |           |
+
 [source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/LineAndScatterChart.jsx), [block](http://bl.ocks.org/rrag/95ffd539fa4e0b4544cf), [plunker](http://plnkr.co/edit/gist:95ffd539fa4e0b4544cf?p=preview)

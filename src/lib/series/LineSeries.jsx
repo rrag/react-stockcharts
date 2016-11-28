@@ -55,7 +55,7 @@ class LineSeries extends Component {
 		}
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { yAccessor, stroke, strokeWidth, hoverStrokeWidth, defined } = this.props;
+		var { yAccessor, stroke, strokeWidth, hoverStrokeWidth, defined, connectNulls } = this.props;
 		var { xAccessor } = moreProps;
 
 		var { xScale, chartConfig: { yScale }, plotData, hovering } = moreProps;
@@ -73,7 +73,7 @@ class LineSeries extends Component {
 				points.push([x, y]);
 			} else if (points.length) {
 				segment(points, ctx);
-				points = [];
+				points = connectNulls ? points : [];
 			}
 		}
 
@@ -140,6 +140,7 @@ LineSeries.propTypes = {
 	onDoubleClick: PropTypes.func,
 	onContextMenu: PropTypes.func,
 	yAccessor: PropTypes.func,
+	connectNulls: PropTypes.bool,
 };
 
 LineSeries.defaultProps = {
@@ -151,6 +152,7 @@ LineSeries.defaultProps = {
 	defined: d => !isNaN(d),
 	hoverTolerance: 6,
 	highlightOnHover: false,
+	connectNulls: false,
 	onClick: function(e) { console.log("Click", e); },
 	onDoubleClick: function(e) { console.log("Double Click", e); },
 	onContextMenu: function(e) { console.log("Right Click", e); },
