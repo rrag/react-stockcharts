@@ -90,6 +90,8 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 
 					<StraightLine type="vertical" xValue={608} />;
+					<StraightLine type="vertical" xValue={558} strokeDasharray="Dot" />;
+					<StraightLine type="vertical" xValue={578} strokeDasharray="LongDash" />;
 
 					<OHLCTooltip origin={[-40, -10]}/>
 					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]}
