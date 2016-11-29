@@ -4,7 +4,7 @@ import React, { PropTypes } from "react";
 import GenericComponent from "../GenericComponent";
 import PureComponent from "../utils/PureComponent";
 
-import { hexToRGBA, isDefined, isNotDefined } from "../utils";
+import { hexToRGBA, isDefined, isNotDefined, getStrokeDasharray } from "../utils";
 
 class CrossHairCursor extends PureComponent {
 	constructor(props) {
@@ -28,9 +28,9 @@ class CrossHairCursor extends PureComponent {
 			ctx.translate(originX, originY);
 
 			lines.forEach(line => {
+				const dashArray = getStrokeDasharray(line.strokeDasharray).split(",").map(d => +d);
 
 				ctx.strokeStyle = hexToRGBA(line.stroke, line.opacity);
-				var dashArray = line.strokeDasharray.split(",").map(d => +d);
 				ctx.setLineDash(dashArray);
 				ctx.beginPath();
 				ctx.moveTo(line.x1, line.y1);
@@ -49,8 +49,11 @@ class CrossHairCursor extends PureComponent {
 
 		return (
 			<g className={`react-stockcharts-crosshair ${className}`}>
-				{lines.map((each, idx) =>
-					<line key={idx} {...each} />)}
+				{lines.map(({ strokeDasharray, ...rest }, idx) =>
+					<line
+						key={idx}
+						strokeDasharray={getStrokeDasharray(strokeDasharray)}
+						{...rest} />)}
 			</g>
 		);
 	}
@@ -81,7 +84,7 @@ CrossHairCursor.contextTypes = {
 CrossHairCursor.defaultProps = {
 	stroke: "#000000",
 	opacity: 0.3,
-	strokeDasharray: "4, 2",
+	strokeDasharray: "ShortDash",
 	snapX: true,
 };
 
