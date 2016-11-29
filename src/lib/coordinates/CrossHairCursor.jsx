@@ -4,7 +4,7 @@ import React, { PropTypes } from "react";
 import GenericComponent from "../GenericComponent";
 import PureComponent from "../utils/PureComponent";
 
-import { hexToRGBA, isDefined, isNotDefined, getStrokeDasharray } from "../utils";
+import { hexToRGBA, isDefined, isNotDefined, strokeDashTypes, getStrokeDasharray } from "../utils";
 
 class CrossHairCursor extends PureComponent {
 	constructor(props) {
@@ -71,6 +71,7 @@ class CrossHairCursor extends PureComponent {
 
 CrossHairCursor.propTypes = {
 	className: PropTypes.string,
+	strokeDasharray: PropTypes.oneOf(strokeDashTypes),
 };
 
 CrossHairCursor.contextTypes = {
