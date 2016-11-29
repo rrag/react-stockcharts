@@ -2,7 +2,7 @@
 
 import React, { PropTypes, Component } from "react";
 
-import { hexToRGBA, isDefined, isNotDefined } from "../utils";
+import { hexToRGBA, isDefined, isNotDefined, strokeDashTypes, getStrokeDasharray } from "../utils";
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 
 class StraightLine extends Component {
@@ -24,7 +24,7 @@ class StraightLine extends Component {
 
 		var { x1, y1, x2, y2 } = getLineCoordinates(type, xScale, yScale, xValue, yValue, width, height);
 
-		if (isDefined(strokeDasharray)) ctx.setLineDash(strokeDasharray.split(","));
+		ctx.setLineDash(getStrokeDasharray(strokeDasharray).split(","));
 		ctx.moveTo(x1, y1);
 		ctx.lineTo(x2, y2);
 		ctx.stroke();
@@ -53,9 +53,14 @@ class StraightLine extends Component {
 			: { x1: xScale(xValue), y1: yScale(0), x2: xScale(xValue), y2: yScale(height) };*/
 
 		return (
-			<line className={className} strokeDasharray={strokeDasharray}
-				stroke={stroke} strokeWidth={strokeWidth}
-				opacity={opacity} {...lineCoordinates} />
+			<line
+				className={className}
+				strokeDasharray={getStrokeDasharray(strokeDasharray)}
+				stroke={stroke}
+				strokeWidth={strokeWidth}
+				opacity={opacity}
+				{...lineCoordinates}
+			/>
 		);
 	}
 }
@@ -71,7 +76,7 @@ StraightLine.propTypes = {
 	type: PropTypes.oneOf(["vertical", "horizontal"]),
 	stroke: PropTypes.string,
 	strokeWidth: PropTypes.number,
-	strokeDasharray: PropTypes.string,
+	strokeDasharray: PropTypes.oneOf(strokeDashTypes),
 	opacity: PropTypes.number.isRequired,
 	yValue: function(props, propName/* , componentName */) {
 		if (props.type === "vertical" && isDefined(props[propName])) return new Error("Do not define `yValue` when type is `vertical`, define the `xValue` prop");
@@ -91,7 +96,7 @@ StraightLine.defaultProps = {
 	stroke: "#000000",
 	opacity: 0.5,
 	strokeWidth: 1,
-	// strokeDasharray: "4, 2",
+	strokeDasharray: "Solid",
 };
 
 export default StraightLine;
