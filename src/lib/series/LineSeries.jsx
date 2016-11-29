@@ -4,7 +4,7 @@ import React, { PropTypes, Component } from "react";
 import { line as d3Line } from "d3-shape";
 
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
-import { first, getClosestItemIndexes } from "../utils";
+import { first, getClosestItemIndexes, strokeDashTypes, getStrokeDasharray } from "../utils";
 
 class LineSeries extends Component {
 	constructor(props) {
@@ -55,7 +55,7 @@ class LineSeries extends Component {
 		}
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { yAccessor, stroke, strokeWidth, hoverStrokeWidth, defined, connectNulls } = this.props;
+		var { yAccessor, stroke, strokeWidth, hoverStrokeWidth, defined, connectNulls, strokeDasharray } = this.props;
 		var { xAccessor } = moreProps;
 
 		var { xScale, chartConfig: { yScale }, plotData, hovering } = moreProps;
@@ -63,6 +63,7 @@ class LineSeries extends Component {
 		ctx.lineWidth = hovering ? hoverStrokeWidth : strokeWidth;
 
 		ctx.strokeStyle = stroke;
+		ctx.setLineDash(getStrokeDasharray(strokeDasharray).split(","));
 
 		var points = [];
 		for (let i = 0; i < plotData.length; i++) {
@@ -80,7 +81,7 @@ class LineSeries extends Component {
 		if (points.length) segment(points, ctx);
 	}
 	renderSVG(moreProps) {
-		var { yAccessor, stroke, strokeWidth, hoverStrokeWidth, defined } = this.props;
+		var { yAccessor, stroke, strokeWidth, hoverStrokeWidth, defined, strokeDasharray } = this.props;
 		var { xAccessor } = moreProps;
 
 		var { xScale, chartConfig: { yScale }, plotData, hovering } = moreProps;
@@ -97,7 +98,8 @@ class LineSeries extends Component {
 		return <path className={`${className} ${stroke ? "" : " line-stroke"}`}
 			d={d}
 			stroke={stroke}
-			strokeWidth={hovering ? hoverStrokeWidth : strokeWidth}
+            strokeWidth={hovering ? hoverStrokeWidth : strokeWidth}
+            strokeDasharray={getStrokeDasharray(strokeDasharray)}
 			fill={fill}
 			/>;
 	}
@@ -135,6 +137,7 @@ LineSeries.propTypes = {
 	fill: PropTypes.string,
 	defined: PropTypes.func,
 	hoverTolerance: PropTypes.number,
+	strokeDasharray: PropTypes.oneOf(strokeDashTypes),
 	highlightOnHover: PropTypes.bool,
 	onClick: PropTypes.func,
 	onDoubleClick: PropTypes.func,
@@ -149,6 +152,7 @@ LineSeries.defaultProps = {
 	hoverStrokeWidth: 4,
 	fill: "none",
 	stroke: "#4682B4",
+	strokeDasharray: "Solid",
 	defined: d => !isNaN(d),
 	hoverTolerance: 6,
 	highlightOnHover: false,

@@ -38,17 +38,24 @@ class LineAndScatterChart extends React.Component {
 						orient="right"
 						displayFormat={format(".2f")} />
 
-					<LineSeries yAccessor={d => d.AAPLClose} stroke="#ff7f0e" />
+					<LineSeries
+						yAccessor={d => d.AAPLClose}
+						stroke="#ff7f0e"
+						strokeDasharray="Dot" />
 					<ScatterSeries
 						yAccessor={d => d.AAPLClose}
 						marker={SquareMarker}
 						markerProps={{ width: 6, stroke: "#ff7f0e", fill: "#ff7f0e" }} />
-					<LineSeries yAccessor={d => d.GEClose} stroke="#2ca02c" />
+					<LineSeries
+						yAccessor={d => d.GEClose}
+						stroke="#2ca02c" />
 					<ScatterSeries
 						yAccessor={d => d.GEClose}
 						marker={TriangleMarker}
 						markerProps={{ width: 8, stroke: "#2ca02c", fill: "#2ca02c" }} />
-					<LineSeries yAccessor={d => d.close} />
+					<LineSeries
+						yAccessor={d => d.close}
+						strokeDasharray="LongDash" />
 					<ScatterSeries
 						yAccessor={d => d.close}
 						marker={CircleMarker}
