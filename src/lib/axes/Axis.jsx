@@ -6,7 +6,7 @@ import { forceSimulation, forceX, forceCollide } from "d3-force";
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 import AxisZoomCapture from "./AxisZoomCapture";
 
-import { first, last, hexToRGBA, isNotDefined, isDefined, identity, zipper } from "../utils";
+import { first, last, hexToRGBA, isNotDefined, isDefined, identity, zipper, strokeDashTypes, getStrokeDasharray } from "../utils";
 
 class Axis extends Component {
 	constructor(props) {
@@ -110,7 +110,7 @@ Axis.defaultProps = {
 };
 
 function tickHelper(props, scale) {
-	var { orient, innerTickSize, tickFormat, tickPadding, fontSize, fontFamily, showTicks, flexTicks } = props;
+	var { orient, innerTickSize, tickFormat, tickPadding, tickStrokeWidth, tickStrokeDasharray, fontSize, fontFamily, showTicks, flexTicks } = props;
 	var { ticks: tickArguments, tickValues: tickValuesProp, tickStroke, tickStrokeOpacity } = props;
 
 	// if (tickArguments) tickArguments = [tickArguments];
@@ -201,7 +201,7 @@ function tickHelper(props, scale) {
 		textAnchor = sign < 0 ? "end" : "start";
 	}
 
-	return { ticks, scale, tickStroke, tickStrokeOpacity, dy, canvas_dy, textAnchor, fontSize, fontFamily, format };
+	return { ticks, scale, tickStroke, tickStrokeOpacity, tickStrokeWidth, tickStrokeDasharray, dy, canvas_dy, textAnchor, fontSize, fontFamily, format };
 }
 
 /* eslint-disable react/prop-types */
@@ -263,11 +263,16 @@ function drawAxisLine(ctx, props, range) {
 }
 
 function Tick(props) {
-	var { tickStroke, tickStrokeOpacity, textAnchor, fontSize, fontFamily } = props;
+	var { tickStroke, tickStrokeOpacity, tickStrokeDasharray, tickStrokeWidth, textAnchor, fontSize, fontFamily } = props;
 	var { x1, y1, x2, y2, labelX, labelY, dy } = props;
 	return (
 		<g className="tick">
-			<line shapeRendering="crispEdges" opacity={tickStrokeOpacity} stroke={tickStroke}
+			<line
+				shapeRendering="crispEdges"
+				opacity={tickStrokeOpacity}
+				stroke={tickStroke}
+				strokeWidth={tickStrokeWidth}
+				strokeDasharray={getStrokeDasharray(tickStrokeDasharray)}
 				x1={x1} y1={y1}
 				x2={x2} y2={y2} />
 			<text
@@ -292,7 +297,9 @@ Tick.propTypes = {
 	labelY: PropTypes.number.isRequired,
 	dy: PropTypes.string.isRequired,
 	tickStroke: PropTypes.string,
+	tickStrokeWidth: PropTypes.number,
 	tickStrokeOpacity: PropTypes.number,
+	tickStrokeDasharray: PropTypes.oneOf(strokeDashTypes),
 	textAnchor: PropTypes.string,
 	fontSize: PropTypes.number,
 	fontFamily: PropTypes.string,
@@ -301,7 +308,7 @@ Tick.propTypes = {
 function axisTicksSVG(props, scale) {
 	var result = tickHelper(props, scale);
 
-	var { tickStroke, tickStrokeOpacity, textAnchor } = result;
+	var { tickStroke, tickStrokeOpacity, tickStrokeWidth, tickStrokeDasharray, textAnchor } = result;
 	var { fontSize, fontFamily, ticks, format } = result;
 
 	var { dy } = result;
@@ -311,7 +318,10 @@ function axisTicksSVG(props, scale) {
 			{ticks.map((tick, idx) => {
 				return (
 					<Tick key={idx}
-						tickStroke={tickStroke} tickStrokeOpacity={tickStrokeOpacity}
+						tickStroke={tickStroke}
+						tickStrokeWidth={tickStrokeWidth}
+						tickStrokeOpacity={tickStrokeOpacity}
+						tickStrokeDasharray={tickStrokeDasharray}
 						dy={dy}
 						x1={tick.x1} y1={tick.y1}
 						x2={tick.x2} y2={tick.y2}
@@ -341,14 +351,15 @@ function drawTicks(ctx, result) {
 }
 
 function drawEachTick(ctx, tick, result) {
-	var { canvas_dy, format } = result;
+	var { canvas_dy, format, tickStrokeWidth, tickStrokeDasharray } = result;
 
 	ctx.beginPath();
 
 	ctx.moveTo(tick.x1, tick.y1);
 	ctx.lineTo(tick.x2, tick.y2);
+	ctx.lineWidth = tickStrokeWidth;
+	ctx.setLineDash(getStrokeDasharray(tickStrokeDasharray).split(","));
 	ctx.stroke();
-
 	ctx.fillText(format(tick.value), tick.labelX, tick.labelY + canvas_dy);
 }
 

@@ -85,6 +85,7 @@ var INDICATORS = {
 		require("./lib/page/ElderImpulseIndicatorPage").default,
 		require("./lib/page/VolumeProfilePage").default,
 		require("./lib/page/VolumeProfileBySessionPage").default,
+		require("./lib/page/Grid").default,
 	]
 };
 var ALGORITHMIC_INDICATORS = {
