@@ -68,6 +68,7 @@ var CHART_FEATURES = {
 		require("./lib/page/UpdatingDataPageForCandleStick").default,
 		require("./lib/page/LoadMoreDataPage").default,
 		require("./lib/page/DarkThemePage").default,
+		require("./lib/page/GridPage").default,
 	]
 };
 
@@ -85,7 +86,6 @@ var INDICATORS = {
 		require("./lib/page/ElderImpulseIndicatorPage").default,
 		require("./lib/page/VolumeProfilePage").default,
 		require("./lib/page/VolumeProfileBySessionPage").default,
-		require("./lib/page/Grid").default,
 	]
 };
 var ALGORITHMIC_INDICATORS = {

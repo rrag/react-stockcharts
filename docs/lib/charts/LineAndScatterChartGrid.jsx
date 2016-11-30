@@ -18,7 +18,7 @@ var { fitWidth } = helper;
 class LineAndScatterChartGrid extends React.Component {
 	render() {
 		var { data, type, width, ratio, gridProps } = this.props;
-		var margin = {left: 70, right: 70, top:20, bottom: 30};
+		var margin = { left: 70, right: 70, top: 20, bottom: 30 };
 
 		const height = 400;
 		var gridHeight = height - margin.top - margin.bottom;
@@ -36,7 +36,7 @@ class LineAndScatterChartGrid extends React.Component {
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 2, 2)]}>
 				<Chart id={1}
-						yExtents={d => [d.high, d.low, d.AAPLClose, d.GEClose]}>
+						yExtents={d => [d.high, d.low]}>
 					<XAxis
 						axisAt="bottom"
 						orient="bottom"
@@ -60,11 +60,11 @@ class LineAndScatterChartGrid extends React.Component {
 						displayFormat={format(".2f")} />
 
 					<LineSeries
-						yAccessor={d => d.AAPLClose}
+						yAccessor={d => d.close}
 						stroke="#ff7f0e"
 					/>
 					<ScatterSeries
-						yAccessor={d => d.AAPLClose}
+						yAccessor={d => d.close}
 						marker={SquareMarker}
 						markerProps={{ width: 6, stroke: "#ff7f0e", fill: "#ff7f0e" }} />
 					<OHLCTooltip forChart={1} origin={[-40, 0]}/>

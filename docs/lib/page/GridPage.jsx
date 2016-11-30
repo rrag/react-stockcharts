@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import React from "react";
 import { helper } from "react-stockcharts";
@@ -10,17 +10,17 @@ import Section from "lib/section";
 
 import LineAndScatterChartGrid from "lib/charts/LineAndScatterChartGrid";
 
-class StochasticIndicatorPage extends React.Component {
+class GridPage extends React.Component {
 	constructor(params) {
 		super(params);
 		this.handleGridChange = this.handleGridChange.bind(this);
 		this.handleGridOpacityChange = this.handleGridOpacityChange.bind(this);
 		this.handleGridWidthChange = this.handleGridWidthChange.bind(this);
 		this.state = {
-			tickStrokeDasharray: 'Solid',
+			tickStrokeDasharray: "Solid",
 			tickStrokeOpacity: 0.2,
 			tickStrokeWidth: 1
-		}
+		};
 	}
 	handleGridChange(e) {
 		this.setState({
@@ -40,7 +40,7 @@ class StochasticIndicatorPage extends React.Component {
 	render() {
 		const { tickStrokeDasharray, tickStrokeOpacity, tickStrokeWidth } = this.state;
 		return (
-			<ContentSection title={StochasticIndicatorPage.title}>
+			<ContentSection title={GridPage.title}>
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser ref="container">
@@ -51,7 +51,7 @@ class StochasticIndicatorPage extends React.Component {
 										tickStrokeDasharray,
 										tickStrokeWidth
 									}}
-									data={this.props.compareData}
+									data={this.props.someData}
 									type={type} />
 							)}
 						</TypeChooser>
@@ -69,7 +69,7 @@ class StochasticIndicatorPage extends React.Component {
 							<option value="LongDashDot">LongDashDot</option>
 							<option value="LongDashDotDot">LongDashDotDot</option>
 						</select>
-						{' '}
+						{" "}
 						Stroke opacity:
 						<select onChange={this.handleGridOpacityChange} value={tickStrokeOpacity}>
 							<option value="1">1</option>
@@ -83,7 +83,7 @@ class StochasticIndicatorPage extends React.Component {
 							<option value="0.2">0.2</option>
 							<option value="0.1">0.1</option>
 						</select>
-						{' '}
+						{" "}
 						Stroke width:
 						<input type="number" value={tickStrokeWidth} onChange={this.handleGridWidthChange} />
                         <hr />
@@ -91,14 +91,14 @@ class StochasticIndicatorPage extends React.Component {
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/GRID')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/GRID") }}></aside>
 					</Section>
 				</Row>
 			</ContentSection>
 		);
 	}
-};
+}
 
-StochasticIndicatorPage.title = "Grid";
+GridPage.title = "Grid";
 
-export default StochasticIndicatorPage;
+export default GridPage;
