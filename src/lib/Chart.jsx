@@ -22,7 +22,7 @@ class Chart extends PureComponent {
 		var { unsubscribe } = this.context;
 		unsubscribe("chart_" + id);
 	}
-	listener(type, moreProps, e) {
+	listener(type, moreProps, state, e) {
 		var { id, onContextMenu } = this.props;
 
 		if (type === "contextmenu") {

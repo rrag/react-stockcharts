@@ -14,11 +14,15 @@ class MouseLocationIndicator extends Component {
 		this.handleMouseDown = this.handleMouseDown.bind(this);
 		this.handleClick = this.handleClick.bind(this);
 		this.xy = this.xy.bind(this);
+		this.saveNode = this.saveNode.bind(this);
 
 		this.mutableState = {};
 	}
+	saveNode(node) {
+		this.node = node;
+	}
 	handleMouseDown(e) {
-		var moreProps = this.refs.component.getMoreProps();
+		var moreProps = this.node.getMoreProps();
 		var pos = this.xy(moreProps, e);
 		if (isDefined(pos)) {
 			var { xValue, yValue, x, y } = pos;
@@ -27,7 +31,7 @@ class MouseLocationIndicator extends Component {
 		}
 	}
 	handleClick(e) {
-		var moreProps = this.refs.component.getMoreProps();
+		var moreProps = this.node.getMoreProps();
 		var pos = this.xy(moreProps, e);
 		if (isDefined(pos)) {
 			var { xValue, yValue, x, y } = pos;
@@ -55,10 +59,10 @@ class MouseLocationIndicator extends Component {
 	}
 	handleMousePosChange(e) {
 		// var { idx, onMouseEnter } = this.props;
-		var moreProps = this.refs.component.getMoreProps();
-		var prevMoreProps = this.refs.component.getPrevMoreProps();
+		var moreProps = this.node.getMoreProps();
+		// var prevMoreProps = this.node.getPrevMoreProps();
 
-		if (!shallowEqual(moreProps.mousXY, prevMoreProps.mouseXY)) {
+		if (!shallowEqual(moreProps.mousXY, this.node.prevMouseXY)) {
 			var pos = this.xy(moreProps, e);
 			// console.log("HERE11", pos)
 			if (isDefined(pos)) {
@@ -67,7 +71,7 @@ class MouseLocationIndicator extends Component {
 				this.props.onMouseMove([xValue, yValue], e);
 			}
 		}
-		// console.log(this.refs.component.getRef("capture"))
+		// console.log(this.node.getRef("capture"))
 	}
 	renderSVG(moreProps) {
 		var { enabled, r, stroke, strokeWidth, opacity } = this.props;
@@ -90,7 +94,7 @@ class MouseLocationIndicator extends Component {
 
 	}
 	render() {
-		return <GenericChartComponent ref="component"
+		return <GenericChartComponent ref={this.saveNode}
 			svgDraw={this.renderSVG}
 			onMouseMove={this.handleMousePosChange}
 			isHover={functor(true)}

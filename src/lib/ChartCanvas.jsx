@@ -264,6 +264,7 @@ class ChartCanvas extends Component {
 		this.resetYDomain = this.resetYDomain.bind(this);
 		this.calculateStateForDomain = this.calculateStateForDomain.bind(this);
 		this.generateSubscriptionId = this.generateSubscriptionId.bind(this);
+		this.draw = this.draw.bind(this);
 
 		this.pinchCoordinates = this.pinchCoordinates.bind(this);
 
@@ -322,11 +323,9 @@ class ChartCanvas extends Component {
 		this.subscriptions = this.subscriptions.filter(each => each.id !== id);
 	}
 	handleMouseEnter(e) {
-		requestAnimationFrame(() => {
-			this.triggerEvent("mouseenter", {
-				show: true,
-			}, e);
-		});
+		this.triggerEvent("mouseenter", {
+			show: true,
+		}, e);
 	}
 	handleMouseMove(mouseXY, inputType, e) {
 		var { chartConfig, plotData, xScale, xAccessor } = this.state;
@@ -335,14 +334,16 @@ class ChartCanvas extends Component {
 
 		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
 
+		this.triggerEvent("mousemove", {
+			show: true,
+			mouseXY,
+			currentItem,
+			currentCharts,
+		}, e);
+
 		requestAnimationFrame(() => {
 			this.clearMouseCanvas();
-			this.triggerEvent("mousemove", {
-				show: true,
-				mouseXY,
-				currentItem,
-				currentCharts,
-			}, e);
+			this.draw();
 		});
 	}
 	handleContextMenu(mouseXY, e) {
@@ -351,20 +352,15 @@ class ChartCanvas extends Component {
 		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
 		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
 
-		requestAnimationFrame(() => {
-			this.triggerEvent("contextmenu", {
-				mouseXY,
-				currentItem,
-				currentCharts,
-			}, e);
-		});
+		this.triggerEvent("contextmenu", {
+			mouseXY,
+			currentItem,
+			currentCharts,
+		}, e);
 	}
 	handleMouseLeave(e) {
-		requestAnimationFrame(() => {
-			this.clearMouseCanvas();
-			this.triggerEvent("mouseleave", { show: false }, e);
-		});
-
+		this.clearMouseCanvas();
+		this.triggerEvent("mouseleave", { show: false }, e);
 	}
 	pinchCoordinates(pinch) {
 		var { touch1Pos, touch2Pos } = pinch;
@@ -483,17 +479,19 @@ class ChartCanvas extends Component {
 		var end = xAccessor(firstItem);
 		var { onLoadMore } = this.props;
 
+		this.triggerEvent("zoom", {
+			mouseXY,
+			currentCharts,
+			currentItem,
+		}, e);
+
 		this.setState({
 			xScale,
 			plotData,
 			chartConfig,
 		}, () => {
-			this.triggerEvent("zoom", {
-				mouseXY,
-				currentCharts,
-				currentItem,
-			}, e);
 
+			this.draw();
 			if (start < end) {
 				onLoadMore(start, end);
 			}
@@ -582,14 +580,16 @@ class ChartCanvas extends Component {
 	}
 	triggerEvent(type, props, e) {
 		this.subscriptions.forEach(each => {
-			// console.log(each)
-			each.callback(type, {
+			var state = {
 				...this.state,
 				fullData: this.fullData,
 				subscriptions: this.subscriptions,
-				...props,
-			}, e);
+			};
+			each.callback(type, props, state, e);
 		});
+	}
+	draw() {
+		this.triggerEvent("draw");
 	}
 	handlePan(mousePosition, panStartXScale, panOrigin, chartsToPan, e) {
 		this.hackyWayToStopPanBeyondBounds__plotData = this.hackyWayToStopPanBeyondBounds__plotData || this.state.plotData;
@@ -602,25 +602,25 @@ class ChartCanvas extends Component {
 
 		this.panInProgress = true;
 
+		// Q: why cant panend be inside requestAnimationFrame
+		// A: the event e is a synthetic event and will be reused by react.
+		// Moving it inside the rAF means react cannot reuse the event
+
+		this.triggerEvent("pan", state, e);
+
 		requestAnimationFrame(() => {
 			this.clearBothCanvas();
-			this.triggerEvent("pan", state, e);
+			this.draw();
 		});
 	}
 	handleMouseDown(mousePosition, currentCharts, e) {
-		requestAnimationFrame(() => {
-			this.triggerEvent("mousedown", null, e);
-		});
+		this.triggerEvent("mousedown", null, e);
 	}
 	handleClick(mousePosition, e) {
-		requestAnimationFrame(() => {
-			this.triggerEvent("click", {}, e);
-		});
+		this.triggerEvent("click", {}, e);
 	}
 	handleDoubleClick(mousePosition, e) {
-		requestAnimationFrame(() => {
-			this.triggerEvent("dblclick", {}, e);
-		});
+		this.triggerEvent("dblclick", {}, e);
 	}
 	handlePanEnd(mousePosition, panStartXScale, panOrigin, chartsToPan, e) {
 		var state = this.panHelper(mousePosition, panStartXScale, panOrigin, chartsToPan);
@@ -637,6 +637,8 @@ class ChartCanvas extends Component {
 			chartConfig,
 		} = state;
 
+		this.triggerEvent("panend", state, e);
+
 		requestAnimationFrame(() => {
 			var { xAccessor } = this.state;
 			var { fullData } = this;
@@ -647,13 +649,14 @@ class ChartCanvas extends Component {
 			// console.log(start, end, start < end ? "Load more" : "I have it");
 
 			var { onLoadMore } = this.props;
+
 			this.clearThreeCanvas();
+
 			this.setState({
 				xScale,
 				plotData,
 				chartConfig,
 			}, () => {
-				this.triggerEvent("panend", state, e);
 				if (start < end) onLoadMore(start, end);
 			});
 		});

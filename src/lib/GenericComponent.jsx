@@ -22,6 +22,8 @@ class GenericComponent extends Component {
 
 		this.moreProps = {};
 		this.prevHovering = false;
+		this.prevMouseXY = null;
+		this.drawOnNextTick = false;
 		this.state = {
 			updateCount: 0,
 		};
@@ -33,7 +35,7 @@ class GenericComponent extends Component {
 		// this.prevMoreProps = this.moreProps;
 		this.moreProps = Object.assign(this.moreProps, moreProps);
 	}
-	listener(type, moreProps, e) {
+	listener(type, moreProps, state, e) {
 		// console.log(e.shiftKey)
 		if (isDefined(moreProps)) {
 			this.updateMoreProps(moreProps);
@@ -74,8 +76,12 @@ class GenericComponent extends Component {
 					|| this.moreProps.hovering
 					|| this.props.drawOnMouseMove) {
 				if (this.props.onMouseMove) this.props.onMouseMove(e);
-				this.draw();
+				this.drawOnNextTick = true;
+			} else {
+				this.drawOnNextTick = false;
 			}
+
+			this.prevMouseXY = this.moreProps.mouseXY;
 			this.prevHovering = this.moreProps.hovering;
 			break;
 		}
@@ -86,20 +92,19 @@ class GenericComponent extends Component {
 			break;
 		}
 		case "mouseleave": {
-			if (this.props.drawOnMouseExitOfCanvas) {
-				this.draw();
-			}
+			this.drawOnNextTick = this.props.drawOnMouseExitOfCanvas;
 			break;
 		}
 		case "pan": {
 			this.moreProps.hovering = false;
-			if (this.props.drawOnPan) {
-				this.draw();
-			}
+			this.drawOnNextTick = this.props.drawOnPan;
 			break;
 		}
 		case "draw": {
-			this.draw();
+
+			if (this.drawOnNextTick) {
+				this.draw();
+			}
 			break;
 		}
 		}
@@ -154,13 +159,14 @@ class GenericComponent extends Component {
 	}
 	getMoreProps() {
 		var { xScale, plotData, chartConfig, morePropsDecorator, xAccessor, displayXAccessor, width, height } = this.context;
-		var { chartId } = this.context;
+		var { chartId, fullData } = this.context;
 
 		var moreProps = {
 			xScale, plotData, chartConfig,
 			xAccessor, displayXAccessor,
 			width, height,
 			chartId,
+			fullData,
 			...this.moreProps
 		};
 
@@ -255,6 +261,7 @@ GenericComponent.contextTypes = {
 	xAccessor: PropTypes.func.isRequired,
 	displayXAccessor: PropTypes.func.isRequired,
 	plotData: PropTypes.array.isRequired,
+	fullData: PropTypes.array.isRequired,
 
 	chartConfig: PropTypes.oneOfType([
 		PropTypes.array,

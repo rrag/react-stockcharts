@@ -8,7 +8,6 @@ class GenericChartComponent extends GenericComponent {
 	constructor(props, context) {
 		super(props, context);
 
-		this.listener = this.listener.bind(this);
 		this.preCanvasDraw = this.preCanvasDraw.bind(this);
 		this.postCanvasDraw = this.postCanvasDraw.bind(this);
 	}

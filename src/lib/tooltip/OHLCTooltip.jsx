@@ -24,7 +24,7 @@ class OHLCTooltip extends Component {
 
 		var displayDate, open, high, low, close, volume;
 
-		displayDate = open = height = low = close = volume = "n/a";
+		displayDate = open = high = low = close = volume = "n/a";
 
 		if (isDefined(currentItem)
 				&& isDefined(accessor(currentItem))
