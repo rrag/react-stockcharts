@@ -182,12 +182,15 @@ class EventCapture extends Component {
 			if (!this.panHappened) {
 				if (this.clicked) {
 					onDoubleClick(newPos, e);
+					this.clicked = false;
 				} else {
 					this.clicked = true;
 					setTimeout(() => {
-						this.clicked = false;
+						if (this.clicked) {
+							onClick(newPos, e);
+							this.clicked = false;
+						}
 					}, 300);
-					onClick(newPos, e);
 				}
 			}
 
