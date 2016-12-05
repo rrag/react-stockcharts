@@ -27,6 +27,11 @@ export const ElderImpulse = {
 	sourcePath: "close", // "high", "low", "open", "close"
 };
 
+export const SAR = {
+	accelerationFactor: 0.02,
+	maxAccelerationFactor: 0.2,
+};
+
 export const MACD = {
 	fast: 12,
 	slow: 26,

@@ -21,7 +21,6 @@ class GenericComponent extends Component {
 		this.suscriberId = generateSubscriptionId();
 
 		this.moreProps = {};
-		this.prevHovering = false;
 		this.prevMouseXY = null;
 		this.drawOnNextTick = false;
 		this.state = {
@@ -72,17 +71,16 @@ class GenericComponent extends Component {
 		case "mousemove": {
 			this.moreProps.hovering = this.isHover(e);
 
-			if (this.prevHovering !== this.moreProps.hovering
-					|| this.moreProps.hovering
-					|| this.props.drawOnMouseMove) {
-				if (this.props.onMouseMove) this.props.onMouseMove(e);
-				this.drawOnNextTick = true;
-			} else {
-				this.drawOnNextTick = false;
-			}
+			this.drawOnNextTick = this.props.drawOnMouseMove
+				|| isDefined(this.props.isHover);
 
+			if (this.props.onMouseMove
+					&& this.drawOnNextTick) {
+				this.props.onMouseMove(e);
+			}
+			// prevMouseXY is used in interactive components
 			this.prevMouseXY = this.moreProps.mouseXY;
-			this.prevHovering = this.moreProps.hovering;
+
 			break;
 		}
 		case "dblclick": {
@@ -107,11 +105,11 @@ class GenericComponent extends Component {
 			break;
 		}
 		}
-
-		// if (type !== "mousemove" && type !== "ff") this.moreProps.prevHovering = false;
 	}
 	isHover(e) {
-		return this.props.isHover(this.getMoreProps(), e);
+		return isDefined(this.props.isHover)
+			? this.props.isHover(this.getMoreProps(), e)
+			: false;
 	}
 	draw() {
 		var { chartCanvasType } = this.context;
@@ -178,16 +176,15 @@ class GenericComponent extends Component {
 		// do nothing
 	}
 	drawOnCanvas() {
-		var { canvasDraw, canvasToDraw, hoverCanvasToDraw } = this.props;
+		var { canvasDraw, canvasToDraw } = this.props;
 		var { getCanvasContexts } = this.context;
 
 		var moreProps = this.getMoreProps();
+		var extra = {
+			hoverEnabled: isDefined(this.props.isHover)
+		};
 
-		var { hovering } = moreProps;
-
-		var ctx = hovering
-			? hoverCanvasToDraw(getCanvasContexts())
-			: canvasToDraw(getCanvasContexts());
+		var ctx = canvasToDraw(getCanvasContexts(), extra);
 
 		this.preCanvasDraw(ctx, moreProps);
 		canvasDraw(ctx, moreProps);
@@ -216,8 +213,7 @@ GenericComponent.propTypes = {
 	edgeClip: PropTypes.bool.isRequired,
 	drawOnMouseExitOfCanvas: PropTypes.bool.isRequired,
 	canvasToDraw: PropTypes.func.isRequired,
-	hoverCanvasToDraw: PropTypes.func.isRequired,
-	isHover: PropTypes.func.isRequired,
+	isHover: PropTypes.func,
 
 	onClick: PropTypes.func,
 	onDoubleClick: PropTypes.func,
@@ -235,10 +231,8 @@ GenericComponent.defaultProps = {
 	drawOnHover: false,
 	drawOnMouseExitOfCanvas: false,
 	canvasToDraw: contexts => contexts.mouseCoord,
-	hoverCanvasToDraw: contexts => contexts.mouseCoord,
 	clip: true,
 	edgeClip: false,
-	isHover: functor(false),
 	onMouseMove: noop,
 	onMouseDown: noop,
 	debug: noop,

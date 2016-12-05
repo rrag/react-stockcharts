@@ -103,12 +103,18 @@ class LineSeries extends Component {
 			fill={fill}
 			/>;
 	}
+
 	render() {
+		var { highlightOnHover } = this.props;
+		var hoverProps = highlightOnHover
+			? { isHover: this.isHover }
+			: {};
+
 		return <GenericChartComponent
 			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
-			isHover={this.isHover}
+			{...hoverProps}
 			onClick={this.props.onClick}
 			onDoubleClick={this.props.onDoubleClick}
 			onContextMenu={this.props.onContextMenu}
@@ -116,6 +122,7 @@ class LineSeries extends Component {
 			/>;
 	}
 }
+
 function segment(points, ctx) {
 	ctx.beginPath();
 

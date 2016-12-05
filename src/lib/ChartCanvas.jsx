@@ -300,19 +300,39 @@ class ChartCanvas extends Component {
 	clearBothCanvas() {
 		var canvases = this.getCanvasContexts();
 		if (canvases && canvases.axes) {
-			clearCanvas([canvases.axes, canvases.mouseCoord], this.props.ratio);
+			clearCanvas([
+				canvases.axes,
+				canvases.hover,
+				canvases.mouseCoord
+			], this.props.ratio);
 		}
 	}
 	clearMouseCanvas() {
 		var canvases = this.getCanvasContexts();
 		if (canvases && canvases.mouseCoord) {
-			clearCanvas([canvases.mouseCoord], this.props.ratio);
+			clearCanvas([
+				canvases.mouseCoord,
+				canvases.hover,
+			], this.props.ratio);
+		}
+	}
+	clearMouseCanvasOnly() {
+		var canvases = this.getCanvasContexts();
+		if (canvases && canvases.mouseCoord) {
+			clearCanvas([
+				canvases.mouseCoord,
+			], this.props.ratio);
 		}
 	}
 	clearThreeCanvas() {
 		var canvases = this.getCanvasContexts();
 		if (canvases && canvases.axes) {
-			clearCanvas([canvases.axes, canvases.mouseCoord, canvases.bg], this.props.ratio);
+			clearCanvas([
+				canvases.axes,
+				canvases.hover,
+				canvases.mouseCoord,
+				canvases.bg
+			], this.props.ratio);
 		}
 	}
 	subscribe(id, callback) {
@@ -360,7 +380,7 @@ class ChartCanvas extends Component {
 		}, e);
 	}
 	handleMouseLeave(e) {
-		this.clearMouseCanvas();
+		this.clearMouseCanvasOnly();
 		this.triggerEvent("mouseleave", { show: false }, e);
 	}
 	pinchCoordinates(pinch) {
@@ -471,7 +491,7 @@ class ChartCanvas extends Component {
 		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
 		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
 
-		this.clearBothCanvas();
+		this.clearThreeCanvas();
 
 		var { fullData } = this;
 		var firstItem = first(fullData);
@@ -500,7 +520,7 @@ class ChartCanvas extends Component {
 	}
 	xAxisZoom(newDomain) {
 		var { xScale, plotData, chartConfig } = this.calculateStateForDomain(newDomain);
-		this.clearBothCanvas();
+		this.clearThreeCanvas();
 
 		var { xAccessor } = this.state;
 		var { fullData } = this;

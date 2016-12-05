@@ -70,6 +70,8 @@ GenericChartComponent.contextTypes = {
 
 export default GenericChartComponent;
 
-export function getAxisCanvas(contexts) {
-	return contexts.axes;
+export function getAxisCanvas(contexts, { hoverEnabled }) {
+	return hoverEnabled
+		? contexts.hover
+		: contexts.axes;
 }

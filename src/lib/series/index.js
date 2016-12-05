@@ -20,6 +20,7 @@ import StochasticSeries from "./StochasticSeries";
 import ElderRaySeries from "./ElderRaySeries";
 import VolumeProfileSeries from "./VolumeProfileSeries";
 import StraightLine from "./StraightLine";
+import SARSeries from "./SARSeries";
 
 export {
 	ScatterSeries,
@@ -44,4 +45,5 @@ export {
 	ElderRaySeries,
 	VolumeProfileSeries,
 	StraightLine,
+	SARSeries,
 };
