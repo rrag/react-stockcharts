@@ -11,10 +11,7 @@ import CandleStickChartWithForceIndexIndicator from "lib/charts/CandleStickChart
 
 var { TypeChooser } = helper;
 
-var ForceIndexIndicatorPage = React.createClass({
-	statics: {
-		title: "ForceIndex"
-	},
+class ForceIndexIndicatorPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={ForceIndexIndicatorPage.title}>
@@ -33,6 +30,8 @@ var ForceIndexIndicatorPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+ForceIndexIndicatorPage.title = "ForceIndex";
 
 export default ForceIndexIndicatorPage;
