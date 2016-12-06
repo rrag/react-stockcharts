@@ -1,31 +1,32 @@
 "use strict";
 
+import { max } from "d3-array";
+import { scaleLinear, scalePoint } from  "d3-scale";
+
 import React from "react";
-import d3 from "d3";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, axes, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart, EventCapture } = ReStock;
+var { BarSeries } = series;
 
-var { BarSeries } = ReStock.series;
-
-var { XAxis, YAxis } = ReStock.axes;
-var { fitWidth } = ReStock.helper;
+var { XAxis, YAxis } = axes;
+var { fitWidth } = helper;
 
 class HorizontalBarChart extends React.Component {
 	render() {
-		var { data, type, width } = this.props;
+		var { data, type, width, ratio } = this.props;
 
 		return (
-			<ChartCanvas width={width} height={400}
-					margin={{left: 90, right: 10, top:20, bottom: 30}} type={type}
+			<ChartCanvas ratio={ratio} width={width} height={400}
+					margin={{ left: 90, right: 10, top: 20, bottom: 30 }} type={type}
 					seriesName="Fruits"
-					xExtents={data => [0, d3.max(data, d => d.x)]}
+					xExtents={data => [0, max(data, d => d.x)]}
 					data={data}
-					xScale={d3.scale.linear()} flipXScale={false}>
+					xScale={scaleLinear()} flipXScale={false}
+					useCrossHairStyleCursor={false}>
 				<Chart id={1}
 						yExtents={data.map(d => d.y)}
-						yScale={d3.scale.ordinal()}
+						yScale={scalePoint()}
 						padding={1}>
 					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="left" orient="left" />
@@ -39,6 +40,7 @@ class HorizontalBarChart extends React.Component {
 HorizontalBarChart.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

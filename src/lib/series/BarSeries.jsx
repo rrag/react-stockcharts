@@ -2,17 +2,34 @@
 
 import React, { PropTypes, Component } from "react";
 
-import wrap from "./wrap";
+import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 
-import StackedBarSeries, { drawOnCanvasHelper, svgHelper } from "./StackedBarSeries";
-import { identity } from "../utils";
-
+import StackedBarSeries, { drawOnCanvasHelper, svgHelper, identityStack } from "./StackedBarSeries";
 
 class BarSeries extends Component {
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+	}
+	drawOnCanvas(ctx, moreProps) {
+		var { xAccessor } = moreProps;
+
+		drawOnCanvasHelper(ctx, this.props, moreProps, xAccessor, identityStack);
+
+	}
+	renderSVG(moreProps) {
+		var { xAccessor } = moreProps;
+
+		return <g>{svgHelper(this.props, moreProps, xAccessor, identityStack)}</g>;
+	}
 	render() {
-		return <g className="react-stockcharts-bar-series">
-			{BarSeries.getBarsSVG(this.props)}
-		</g>;
+		return <GenericChartComponent
+			canvasToDraw={getAxisCanvas}
+			svgDraw={this.renderSVG}
+			canvasDraw={this.drawOnCanvas}
+			drawOnPan
+			/>;
 	}
 }
 
@@ -23,6 +40,7 @@ BarSeries.propTypes = {
 	]).isRequired,
 	stroke: PropTypes.bool.isRequired,
 	widthRatio: PropTypes.number.isRequired,
+	yAccessor: PropTypes.func.isRequired,
 	opacity: PropTypes.number.isRequired,
 	fill: PropTypes.oneOfType([
 		PropTypes.func, PropTypes.string
@@ -30,22 +48,9 @@ BarSeries.propTypes = {
 	className: PropTypes.oneOfType([
 		PropTypes.func, PropTypes.string
 	]).isRequired,
-	xAccessor: PropTypes.func,
-	yAccessor: PropTypes.func.isRequired,
-	xScale: PropTypes.func,
-	yScale: PropTypes.func,
-	plotData: PropTypes.array,
 };
+
 
 BarSeries.defaultProps = StackedBarSeries.defaultProps;
 
-BarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { yAccessor, xAccessor } = props;
-	drawOnCanvasHelper(props, ctx, xScale, yScale, plotData, xAccessor, yAccessor, identity);
-};
-
-BarSeries.getBarsSVG = (props) => {
-	return svgHelper(props, identity);
-};
-
-export default wrap(BarSeries);
+export default BarSeries;

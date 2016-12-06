@@ -13,7 +13,7 @@ npm install react-stockcharts
 edit the `index.html` and replace
 
 ```html
-<script type="text/javascript" src="//npmcdn.com/react-stockcharts@latest/dist/react-stockcharts.min.js"></script>
+<script type="text/javascript" src="//unpkg.com/react-stockcharts@latest/dist/react-stockcharts.min.js"></script>
 ```
 
 with

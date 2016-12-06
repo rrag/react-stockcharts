@@ -1,49 +1,61 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
+import { timeFormat } from "d3-time-format";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart, EventCapture } = ReStock;
+var { CandlestickSeries, BarSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { CandlestickSeries, BarSeries } = ReStock.series;
-var { financeEODDiscontiniousScale } = ReStock.scale;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY } = coordinates;
+var { OHLCTooltip } = tooltip;
 
-var { MouseCoordinates } = ReStock.coordinates;
-var { TooltipContainer, OHLCTooltip } = ReStock.tooltip;
+var { XAxis, YAxis } = axes;
 
-var { XAxis, YAxis } = ReStock.axes;
-
-var { fitWidth } = ReStock.helper;
+var { fitWidth } = helper;
 
 class CandleStickChartWithCHMousePointer extends React.Component {
 	render() {
-		var { data, type, width } = this.props;
+		var { data, type, width, ratio } = this.props;
 
 		return (
-			<ChartCanvas width={width} height={400}
-					margin={{left: 70, right: 70, top:10, bottom: 30}} type={type}
+			<ChartCanvas ratio={ratio} width={width} height={400}
+					margin={{ left: 70, right: 70, top: 10, bottom: 30 }} type={type}
 					seriesName="MSFT"
 					data={data}
-					xAccessor={d => d.date} discontinous xScale={financeEODDiscontiniousScale()}
+					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
-				<Chart id={1} yExtents={[d => [d.high, d.low]]}
-						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}>
+				<Chart id={1}
+						yExtents={[d => [d.high, d.low]]}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
+					<MouseCoordinateY
+						at="right"
+						orient="right"
+						displayFormat={format(".2f")} />
 					<CandlestickSeries />
+					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
+
 				</Chart>
-				<Chart id={2} origin={(w, h) => [0, h - 150]} height={150} yExtents={d => d.volume}
-						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+				<Chart id={2} height={150}
+						yExtents={d => d.volume}
+						origin={(w, h) => [0, h - 150]}>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
+
+					<MouseCoordinateX
+						at="bottom"
+						orient="bottom"
+						displayFormat={timeFormat("%Y-%m-%d")} />
+					<MouseCoordinateY
+						at="left"
+						orient="left"
+						displayFormat={format(".4s")} />
+
 					<BarSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
-				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} />
-				<TooltipContainer>
-					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
-				</TooltipContainer>
+				<CrossHairCursor />
 			</ChartCanvas>
 		);
 	}
@@ -56,6 +68,7 @@ class CandleStickChartWithCHMousePointer extends React.Component {
 CandleStickChartWithCHMousePointer.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

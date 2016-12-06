@@ -1,7 +1,7 @@
 'use strict';
 
 import React from "react";
-import ReStock from "react-stockcharts";
+import { helper } from "react-stockcharts";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -12,7 +12,7 @@ import KagiWithUpdatingData from "lib/charts/KagiWithUpdatingData";
 import PointAndFigureWithUpdatingData from "lib/charts/PointAndFigureWithUpdatingData";
 import RenkoWithUpdatingData from "lib/charts/RenkoWithUpdatingData";
 
-var { helper: { TypeChooser } } = ReStock;
+var { TypeChooser } = helper;
 
 
 var UpdatingDataPage = React.createClass({
@@ -22,7 +22,7 @@ var UpdatingDataPage = React.createClass({
 	render() {
 		return (
 			<ContentSection title={UpdatingDataPage.title}>
-				<Row>
+				{/*<Row>
 					<Section colSpan={2}>
 						<aside dangerouslySetInnerHTML={{__html: require('md/UPDATING-DATA')}}></aside>
 					</Section>
@@ -40,21 +40,21 @@ var UpdatingDataPage = React.createClass({
 							{(type) => <KagiWithUpdatingData data={this.props.someData} type={type} />}
 						</TypeChooser>
 					</Section>
-				</Row>
+				</Row>*/}
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser>
 							{(type) => <PointAndFigureWithUpdatingData data={this.props.someData} type={type} />}
 						</TypeChooser>
 					</Section>
-				</Row>
+				</Row>{/*
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser>
-							{(type) => <RenkoWithUpdatingData data={this.props.someData} type={type} />}
+							{(type) => <RenkoWithUpdatingData data={this.props.lotsOfData} type={type} />}
 						</TypeChooser>
 					</Section>
-				</Row>
+				</Row>*/}
 			</ContentSection>
 		);
 	}

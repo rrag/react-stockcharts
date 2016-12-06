@@ -1,6 +1,6 @@
 "use strict";
 
-import d3 from "d3";
+import { rebind } from "d3fc-rebind";
 
 import { kagi } from "./algorithm";
 import baseIndicator from "./baseIndicator";
@@ -14,13 +14,11 @@ export default function() {
 
 	var underlyingAlgorithm = kagi();
 
-	var indicator = function(data) {
-		return underlyingAlgorithm(data);
-	};
+	var indicator = underlyingAlgorithm;
 
-	d3.rebind(indicator, base, "id", "stroke", "fill", "echo", "type");
-	d3.rebind(indicator, underlyingAlgorithm, "dateAccessor", "dateMutator", "indexMutator");
-	// d3.rebind(indicator, mergedAlgorithm, "merge"/*, "skipUndefined"*/);
+	rebind(indicator, base, "id", "stroke", "fill", "echo", "type");
+	rebind(indicator, underlyingAlgorithm, "dateAccessor", "dateMutator");
+	// rebind(indicator, mergedAlgorithm, "merge"/*, "skipUndefined"*/);
 
 	return indicator;
 }

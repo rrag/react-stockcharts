@@ -1,15 +1,17 @@
 "use strict";
 
-import d3 from "d3";
 import React, { PropTypes } from "react";
 
-import { hexToRGBA } from "../utils";
+import { hexToRGBA, functor } from "../utils";
 
 function Circle(props) {
-	var { className, stroke, opacity, fill, point, r } = props;
-	var radius = d3.functor(r)(point.datum);
+	var { className, stroke, strokeWidth, opacity, fill, point, r } = props;
+	var radius = functor(r)(point.datum);
 	return (
-		<circle className={className} cx={point.x} cy={point.y} stroke={stroke} fillOpacity={opacity} fill={fill} r={radius} />
+		<circle className={className}
+			cx={point.x} cy={point.y}
+			stroke={stroke} strokeWidth={strokeWidth}
+			fillOpacity={opacity} fill={fill} r={radius} />
 	);
 }
 
@@ -23,6 +25,7 @@ Circle.propTypes = {
 		datum: PropTypes.object.isRequired,
 	}).isRequired,
 	className: PropTypes.string,
+	strokeWidth: PropTypes.number,
 	r: PropTypes.oneOfType([
 		PropTypes.number,
 		PropTypes.func
@@ -31,6 +34,7 @@ Circle.propTypes = {
 
 Circle.defaultProps = {
 	stroke: "#4682B4",
+	strokeWidth: 1,
 	opacity: 0.5,
 	fill: "#4682B4",
 	className: "react-stockcharts-marker-circle",
@@ -38,9 +42,10 @@ Circle.defaultProps = {
 
 Circle.drawOnCanvas = (props, point, ctx) => {
 
-	var { stroke, fill, opacity } = props;
+	var { stroke, fill, opacity, strokeWidth } = props;
 
 	ctx.strokeStyle = stroke;
+	ctx.lineWidth = strokeWidth;
 
 	if (fill !== "none") {
 		ctx.fillStyle = hexToRGBA(fill, opacity);
@@ -53,7 +58,7 @@ Circle.drawOnCanvas = (props, point, ctx) => {
 Circle.drawOnCanvasWithNoStateChange = (props, point, ctx) => {
 
 	var { r } = props;
-	var radius = d3.functor(r)(point.datum);
+	var radius = functor(r)(point.datum);
 
 	ctx.moveTo(point.x, point.y);
 	ctx.beginPath();

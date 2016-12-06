@@ -1,25 +1,24 @@
 "use strict";
 
-import d3 from "d3";
+import { rebind } from "d3fc-rebind";
 
 import { merge } from "../utils";
 import { rsi } from "./algorithm";
 
 import baseIndicator from "./baseIndicator";
-import { RSI as defaultOptions } from "./defaultOptions";
 
 const ALGORITHM_TYPE = "RSI";
 
 export default function() {
-	var { overSold, middle, overBought } = defaultOptions;
+	var overSold = 70,
+		middle = 50,
+		overBought = 30;
 
 	var base = baseIndicator()
 		.type(ALGORITHM_TYPE)
 		.accessor(d => d.rsi);
 
-	var underlyingAlgorithm = rsi()
-		.windowSize(defaultOptions.period)
-		.source(defaultOptions.source);
+	var underlyingAlgorithm = rsi();
 
 	var mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
@@ -53,9 +52,9 @@ export default function() {
 		return indicator;
 	};
 
-	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel", "domain", "tickValues");
-	d3.rebind(indicator, underlyingAlgorithm, "source", "windowSize");
-	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
+	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel", "domain", "tickValues");
+	rebind(indicator, underlyingAlgorithm, "sourcePath", "windowSize");
+	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;
 }

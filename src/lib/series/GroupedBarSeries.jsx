@@ -2,16 +2,34 @@
 
 import React, { PropTypes, Component } from "react";
 
-import wrap from "./wrap";
-
-import StackedBarSeries, { drawOnCanvasHelper, svgHelper } from "./StackedBarSeries";
-import { identity } from "../utils";
+import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
+import StackedBarSeries, { drawOnCanvasHelper, svgHelper, identityStack } from "./StackedBarSeries";
 
 class GroupedBarSeries extends Component {
-	render() {
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+	}
+	drawOnCanvas(ctx, moreProps) {
+		var { xAccessor } = moreProps;
+
+		drawOnCanvasHelper(ctx, this.props, moreProps, xAccessor, identityStack, postProcessor);
+	}
+	renderSVG(moreProps) {
+		var { xAccessor } = moreProps;
+
 		return <g className="react-stockcharts-grouped-bar-series">
-			{GroupedBarSeries.getBarsSVG(this.props)}
+			{svgHelper(this.props, moreProps, xAccessor, identityStack, postProcessor)}
 		</g>;
+	}
+	render() {
+		return <GenericChartComponent
+			canvasToDraw={getAxisCanvas}
+			svgDraw={this.renderSVG}
+			canvasDraw={this.drawOnCanvas}
+			drawOnPan
+			/>;
 	}
 }
 
@@ -30,27 +48,13 @@ GroupedBarSeries.propTypes = {
 	className: PropTypes.oneOfType([
 		PropTypes.func, PropTypes.string
 	]).isRequired,
-	xAccessor: PropTypes.func,
 	yAccessor: PropTypes.arrayOf(PropTypes.func),
-	xScale: PropTypes.func,
-	yScale: PropTypes.func,
-	plotData: PropTypes.array,
 };
 
 GroupedBarSeries.defaultProps = {
 	...StackedBarSeries.defaultProps,
 	widthRatio: 0.8,
 	spaceBetweenBar: 5,
-};
-
-GroupedBarSeries.drawOnCanvas = (props, ctx, xScale, yScale, plotData) => {
-	var { xAccessor, yAccessor } = props;
-	drawOnCanvasHelper(props, ctx, xScale, yScale, plotData, xAccessor, yAccessor,
-		identity, postProcessor);
-};
-
-GroupedBarSeries.getBarsSVG = (props) => {
-	return svgHelper(props, identity, postProcessor);
 };
 
 function postProcessor(array) {
@@ -63,4 +67,4 @@ function postProcessor(array) {
 	});
 }
 
-export default wrap(GroupedBarSeries);
+export default GroupedBarSeries;

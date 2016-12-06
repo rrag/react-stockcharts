@@ -1,7 +1,8 @@
 "use strict";
 
 
-import d3 from "d3";
+import { scaleOrdinal, schemeCategory10 } from  "d3-scale";
+import { bisector } from "d3-array";
 
 import zipper from "./zipper";
 import merge from "./merge";
@@ -11,6 +12,7 @@ import noop from "./noop";
 import shallowEqual from "./shallowEqual";
 import mappedSlidingWindow from "./mappedSlidingWindow";
 import accumulatingWindow from "./accumulatingWindow";
+import PureComponent from "./PureComponent";
 
 export {
 	accumulatingWindow,
@@ -21,10 +23,38 @@ export {
 	shallowEqual,
 	slidingWindow,
 	zipper,
+	PureComponent,
 };
 
+export * from "./strokeDasharray";
+
+export function getLogger(prefix) {
+	return (process.env.NODE_ENV !== "production")
+		? require("debug")("react-stockcharts:" + prefix)
+		: noop;
+}
+
+export function path(path = []) {
+	var key = Array.isArray(path) ? path : [path];
+	var length = key.length;
+
+	return function(obj, defaultValue) {
+		if (length === 0) return isDefined(obj) ? obj : defaultValue;
+
+		var index = 0;
+		while (obj != null && index < length) {
+			obj = obj[key[index++]];
+		}
+		return (index === length) ? obj : defaultValue;
+	};
+}
+
+export function functor(v) {
+	return typeof v === "function" ? v : () => v;
+}
+
 export function getClosestItemIndexes2(array, value, accessor) {
-	var left = d3.bisector(accessor).left(array, value);
+	var left = bisector(accessor).left(array, value);
 	left = Math.max(left - 1, 0);
 	var right = Math.min(left + 1, array.length - 1);
 
@@ -32,7 +62,23 @@ export function getClosestItemIndexes2(array, value, accessor) {
 	if (item >= value && item <= value) right = left;
 
 	return { left, right };
-};
+}
+
+export function getClosestValue(values, currentValue) {
+	var diff = values
+		.map(each => each - currentValue)
+		.reduce((diff1, diff2) => Math.abs(diff1) < Math.abs(diff2) ? diff1 : diff2);
+	return currentValue + diff;
+}
+
+
+export function d3Window(node) {
+	var d3win = node && (node.ownerDocument && node.ownerDocument.defaultView || node.document && node || node.defaultView);
+	return d3win;
+}
+
+export const MOUSEMOVE = "mousemove.pan";
+export const MOUSEUP = "mouseup.pan";
 
 export function getClosestItemIndexes(array, value, accessor, log) {
 	var lo = 0, hi = array.length - 1;
@@ -62,7 +108,7 @@ export function getClosestItemIndexes(array, value, accessor, log) {
 
 	// console.log(value, accessor(array[left]), accessor(array[right]));
 	return { left: lo, right: hi };
-};
+}
 
 export function getClosestItem(array, value, accessor, log) {
 	var { left, right } = getClosestItemIndexes(array, value, accessor, log);
@@ -78,39 +124,27 @@ export function getClosestItem(array, value, accessor, log) {
 		console.log(array[left], array[right], closest, left, right);
 	}
 	return closest;
-};
-
-
-export const overlayColors = d3.scale.category10();
-
-export function rebind(target, source, mappings) {
-	if (typeof(mappings) !== "object") {
-		return d3.rebind.apply(d3, arguments);
-	}
-	Object.keys(mappings)
-		.forEach(function(targetName) {
-			var method = source[mappings[targetName]];
-			if (typeof method !== "function") {
-				throw new Error(`The method ${mappings[targetName]} does not exist on the source object`);
-			}
-			target[targetName] = function() {
-				var value = method.apply(source, arguments);
-				return value === source ? target : value;
-			};
-		});
-	return target;
 }
+
+export const overlayColors = scaleOrdinal(schemeCategory10);
 
 export function head(array, accessor) {
 	if (accessor && array) {
 		var value;
 		for (var i = 0; i < array.length; i++) {
 			value = array[i];
-			if (isDefined(accessor(value))) break;
-		};
-		return value;
+			if (isDefined(accessor(value))) return value;
+		}
+		return undefined;
 	}
 	return array ? array[0] : undefined;
+}
+
+export function tail(array, accessor) {
+	if (accessor && array) {
+		return array.map(accessor).slice(1);
+	}
+	return array ? array.slice(1) : undefined;
 }
 
 export const first = head;
@@ -120,9 +154,9 @@ export function last(array, accessor) {
 		var value;
 		for (var i = array.length - 1; i >= 0; i--) {
 			value = array[i];
-			if (isDefined(accessor(value))) break;
-		};
-		return value;
+			if (isDefined(accessor(value))) return value;
+		}
+		return undefined;
 	}
 	var length = array ? array.length : 0;
 	return length ? array[length - 1] : undefined;
@@ -149,24 +183,29 @@ export function touchPosition(touch, e) {
 		y = touch.clientY - rect.top - container.clientTop,
 		xy = [Math.round(x), Math.round(y)];
 	return xy;
-};
+}
 
-export function mousePosition(e) {
-	var container = e.currentTarget,
-		rect = container.getBoundingClientRect(),
+export function mousePosition(e, defaultRect) {
+	var container = e.currentTarget;
+	var rect = defaultRect || container.getBoundingClientRect(),
 		x = e.clientX - rect.left - container.clientLeft,
 		y = e.clientY - rect.top - container.clientTop,
 		xy = [Math.round(x), Math.round(y)];
 	return xy;
-};
+}
 
 
-export function clearCanvas(canvasList) {
+export function clearCanvas(canvasList, ratio) {
 	canvasList.forEach(each => {
 		each.setTransform(1, 0, 0, 1, 0, 0);
 		each.clearRect(-1, -1, each.canvas.width + 2, each.canvas.height + 2);
+		each.scale(ratio, ratio);
 	});
-};
+}
+
+export function capitalizeFirst(str) {
+	return str.charAt(0).toUpperCase() + str.substring(1);
+}
 
 export function hexToRGBA(inputHex, opacity) {
 	var hex = inputHex.replace("#", "");
@@ -183,4 +222,4 @@ export function hexToRGBA(inputHex, opacity) {
 		return result;
 	}
 	return inputHex;
-};
+}

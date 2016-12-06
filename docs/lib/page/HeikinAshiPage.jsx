@@ -1,15 +1,15 @@
 'use strict';
 
 import React from "react";
-import ReStock from "react-stockcharts";
+import { helper } from "react-stockcharts";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 
-import HaikinAshi from "lib/charts/HaikinAshi";
+import HeikinAshi from "lib/charts/HeikinAshi";
 
-var { helper: { TypeChooser } } = ReStock;
+var { TypeChooser } = helper;
 
 var HeikinAshiPage = React.createClass({
 	statics: {
@@ -26,7 +26,7 @@ var HeikinAshiPage = React.createClass({
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser>
-							{(type) => <HaikinAshi data={this.props.someData} type={type} />}
+							{(type) => <HeikinAshi data={this.props.someData} type={type} />}
 						</TypeChooser>
 					</Section>
 				</Row>

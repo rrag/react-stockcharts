@@ -1,20 +1,32 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import d3 from "d3";
+import { extent as d3Extent, min, max } from "d3-array";
 
-import { shallowEqual, identity, last, isDefined, isNotDefined } from "./utils";
-import { shouldShowCrossHairStyle } from "./utils/ChartDataUtil";
+import {
+	first,
+	last,
+	isDefined,
+	isNotDefined,
+	clearCanvas,
+	shallowEqual,
+	identity,
+	noop,
+	functor,
+	getLogger,
+} from "./utils";
 
-import EventHandler from "./EventHandler";
+import { getNewChartConfig, getChartConfigWithUpdatedYScales, getCurrentCharts, getCurrentItem } from "./utils/ChartDataUtil";
+
+import EventCapture from "./EventCapture";
+
 import CanvasContainer from "./CanvasContainer";
-import eodIntervalCalculator from "./scale/eodIntervalCalculator";
 import evaluator from "./scale/evaluator";
 
+const log = getLogger("ChartCanvas");
 
-const CANDIDATES_FOR_RESET = ["seriesName", /* "data",*/"interval", "discontinous",
-	"intervalCalculator", "allowedIntervals",
-	"xScale", /* "xAccessor",*/"map", "dataEvaluator",
+const CANDIDATES_FOR_RESET = ["seriesName", /* "data",*/
+	"xScaleProvider", /* "xAccessor",*/"map",
 	"indexAccessor", "indexMutator"];
 
 function shouldResetChart(thisProps, nextProps) {
@@ -25,6 +37,46 @@ function shouldResetChart(thisProps, nextProps) {
 	});
 }
 
+function getCursorStyle(useCrossHairStyleCursor) {
+	var style = `
+	.react-stockcharts-grabbing-cursor {
+		pointer-events: all;
+		cursor: -webkit-grabbing;
+	}
+	.react-stockcharts-crosshair-cursor {
+		pointer-events: all;
+		cursor: crosshair;
+	}
+	.react-stockcharts-toottip-hover {
+		pointer-events: all;
+		cursor: pointer;
+	}`;
+	var tooltipStyle = `
+	.react-stockcharts-avoid-interaction {
+		pointer-events: none;
+	}
+	.react-stockcharts-enable-interaction {
+		pointer-events: all;
+	}
+	.react-stockcharts-toottip {
+		pointer-events: all;
+		cursor: pointer;
+	}
+	.react-stockcharts-default-cursor {
+		cursor: default;
+	}
+	.react-stockcharts-move-cursor {
+		cursor: move;
+	}
+	.react-stockcharts-ns-resize-cursor {
+		cursor: ns-resize;
+	}
+	.react-stockcharts-ew-resize-cursor {
+		cursor: ew-resize;
+	}`;
+	return (<style type="text/css">{useCrossHairStyleCursor ? style + tooltipStyle : tooltipStyle}</style>);
+}
+
 function getDimensions(props) {
 	return {
 		height: props.height - props.margin.top - props.margin.bottom,
@@ -32,175 +84,755 @@ function getDimensions(props) {
 	};
 }
 
+function getXScaleDirection(flipXScale) {
+	return flipXScale ? -1 : 1;
+}
+
 function calculateFullData(props) {
-	var { data, calculator } = props;
-	var { xScale, intervalCalculator, allowedIntervals, plotFull } = props;
-	var { xAccessor, map, dataEvaluator, indexAccessor, indexMutator, discontinous } = props;
+	var { data: inputData, calculator, plotFull, xScale: xScaleProp, clamp } = props;
+	var { map, xScaleProvider, indexAccessor, indexMutator } = props;
+	var { xAccessor: inputXAccesor, displayXAccessor: inputDisplayXAccessor } = props;
 
-	var wholeData = isDefined(plotFull) ? plotFull : xAccessor === identity;
+	var wholeData = isDefined(plotFull)
+			? plotFull
+			: inputXAccesor === identity;
 
-	var evaluate = dataEvaluator()
-		.allowedIntervals(allowedIntervals)
-		.intervalCalculator(intervalCalculator)
-		.xAccessor(xAccessor)
-		.discontinous(discontinous)
+	// xScale = discontinuousTimeScaleProvider(data);
+	var dimensions = getDimensions(props);
+	var evaluate = evaluator()
+		// .allowedIntervals(allowedIntervals)
+		// .intervalCalculator(intervalCalculator)
+		.xAccessor(inputXAccesor)
+		// .discontinuous(discontinuous)
 		.indexAccessor(indexAccessor)
 		.indexMutator(indexMutator)
 		.map(map)
 		.useWholeData(wholeData)
-		.scale(xScale)
-		.calculator(calculator.slice());
+		.width(dimensions.width)
+		.scaleProvider(xScaleProvider)
+		.xScale(xScaleProp)
+		.clamp(clamp)
+		.calculator(calculator);
 
-	var { xAccessor, domainCalculator: xExtentsCalculator, fullData } = evaluate(data);
+	var { xAccessor, displayXAccessor, xScale, fullData, filterData } = evaluate(inputData);
 
 	return {
 		xAccessor,
-		xExtentsCalculator,
+		displayXAccessor: inputDisplayXAccessor || displayXAccessor,
+		xScale,
 		fullData,
+		filterData
+	};
+}
+function resetChart(props, firstCalculation = false) {
+	if (process.env.NODE_ENV !== "production") {
+		if (!firstCalculation) log("CHART RESET");
+	}
+
+	var state = calculateState(props);
+	var { plotData: initialPlotData, xScale } = state;
+	var { postCalculator, children } = props;
+
+	var plotData = postCalculator(initialPlotData);
+
+	var dimensions = getDimensions(props);
+	var chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData, xScale.domain());
+
+	return {
+		...state,
+		xScale,
+		plotData,
+		chartConfig,
+	};
+}
+
+function updateChart(newState, initialXScale, props, lastItemWasVisible) {
+
+	var { fullData, xScale, xAccessor, filterData } = newState;
+
+	var lastItem = last(fullData);
+	var [start, end] = initialXScale.domain();
+
+	if (process.env.NODE_ENV !== "production") {
+		log("TRIVIAL CHANGE");
+	}
+
+	var { postCalculator, children, padding, flipXScale } = props;
+	var direction = getXScaleDirection(flipXScale);
+	var dimensions = getDimensions(props);
+
+	var updatedXScale = setXRange(xScale, dimensions, padding, direction);
+
+	var initialPlotData;
+	if (!lastItemWasVisible || end >= xAccessor(lastItem)) {
+		// get plotData between [start, end] and do not change the domain
+		initialPlotData = filterData(fullData, [start, end], xAccessor, updatedXScale).plotData;
+		updatedXScale.domain([start, end]);
+		// console.log("HERE!!!!!", start, end);
+	} else if (lastItemWasVisible
+			&& end < xAccessor(lastItem)) {
+
+		// get plotData between [xAccessor(l) - (end - start), xAccessor(l)] and DO change the domain
+		var dx = initialXScale(xAccessor(lastItem)) - initialXScale.range()[1];
+		var [newStart, newEnd] = initialXScale.range().map(x => x + dx).map(initialXScale.invert);
+
+		initialPlotData = filterData(fullData, [newStart, newEnd], xAccessor, updatedXScale).plotData;
+		updatedXScale.domain([newStart, newEnd]);
+		// if last item was visible, then shift
+	}
+	// plotData = getDataOfLength(fullData, showingInterval, plotData.length)
+	var plotData = postCalculator(initialPlotData);
+	let chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData, updatedXScale.domain());
+
+	return {
+		xScale: updatedXScale,
+		xAccessor,
+		chartConfig,
+		plotData,
+		fullData,
+		filterData,
 	};
 }
 
 function calculateState(props) {
 
-	var { data, interval, allowedIntervals } = props;
-	var { xAccessor: inputXAccesor, xExtents: xExtentsProp, xScale } = props;
+	var { xAccessor: inputXAccesor, xExtents: xExtentsProp, data, padding, flipXScale } = props;
 
-	if (isDefined(interval)
-		&& (isNotDefined(allowedIntervals)
-			|| allowedIntervals.indexOf(interval) > -1)) throw new Error("interval has to be part of allowedInterval");
-
-
-	var { xAccessor, xExtentsCalculator, fullData } = calculateFullData(props);
-
+	var direction = getXScaleDirection(flipXScale);
 	var dimensions = getDimensions(props);
-	// xAccessor - if discontinious return indexAccessor, else xAccessor
-	// inputXAccesor - send this down as context
-
-	// console.log(xAccessor, inputXAccesor, domainCalculator, domainCalculator, updatedScale);
-	// in componentWillReceiveProps calculate plotData and interval only if this.props.xExtentsProp != nextProps.xExtentsProp
 
 	var extent = typeof xExtentsProp === "function"
-		? xExtentsProp(fullData)
-		: d3.extent(xExtentsProp.map(d3.functor).map(each => each(data, inputXAccesor)));
+		? xExtentsProp(data)
+		: d3Extent(xExtentsProp.map(d => functor(d)).map(each => each(data, inputXAccesor)));
 
-	var { plotData, interval: showingInterval, scale: updatedScale } = xExtentsCalculator
-			.width(dimensions.width)
-			.scale(xScale)
-			.data(fullData)
-			.interval(interval)(extent, inputXAccesor);
+	var { xAccessor, displayXAccessor, xScale, fullData, filterData } = calculateFullData(props);
+	var updatedXScale = setXRange(xScale, dimensions, padding, direction);
 
-	// console.log(updatedScale.domain());
+	var { plotData, domain } = filterData(fullData, extent, inputXAccesor, updatedXScale);
+
 	return {
-		fullData,
 		plotData,
-		showingInterval,
-		xExtentsCalculator,
-		xScale: updatedScale,
+		xScale: updatedXScale.domain(domain),
 		xAccessor,
-		dataAltered: false,
+		displayXAccessor,
+		fullData,
+		filterData,
 	};
 }
 
-function getCursorStyle(children) {
-	var style = `<![CDATA[
-			.react-stockcharts-grabbing-cursor {
-				cursor: grabbing;
-				cursor: -moz-grabbing;
-				cursor: -webkit-grabbing;
-			}
-			.react-stockcharts-crosshair-cursor {
-				cursor: crosshair;
-			}
-			.react-stockcharts-toottip-hover {
-				pointer-events: all;
-				cursor: pointer;
-			}
-		]]>`;
-	return shouldShowCrossHairStyle(children)
-		? (<style type="text/css" dangerouslySetInnerHTML={{ __html: style }}></style>)
-		: null;
+function setXRange(xScale, dimensions, padding, direction = 1) {
+	if (xScale.rangeRoundPoints) {
+		if (isNaN(padding)) throw new Error("padding has to be a number for ordinal scale");
+		xScale.rangeRoundPoints([0, dimensions.width], padding);
+	} else if (xScale.padding) {
+		if (isNaN(padding)) throw new Error("padding has to be a number for ordinal scale");
+		xScale.range([0, dimensions.width]);
+		xScale.padding(padding / 2);
+	} else {
+		var { left, right } = isNaN(padding)
+			? padding
+			: { left: padding, right: padding };
+		if (direction > 0) {
+			xScale.range([left, dimensions.width - right]);
+		} else {
+			xScale.range([dimensions.width - right, left]);
+		}
+	}
+	return xScale;
 }
 
 class ChartCanvas extends Component {
 	constructor() {
 		super();
 		this.getDataInfo = this.getDataInfo.bind(this);
-		this.getCanvases = this.getCanvases.bind(this);
+		this.getCanvasContexts = this.getCanvasContexts.bind(this);
+
+		this.handleMouseMove = this.handleMouseMove.bind(this);
+		this.handleMouseEnter = this.handleMouseEnter.bind(this);
+		this.handleMouseLeave = this.handleMouseLeave.bind(this);
+		this.handleZoom = this.handleZoom.bind(this);
+		this.handlePinchZoom = this.handlePinchZoom.bind(this);
+		this.handlePan = this.handlePan.bind(this);
+		this.handlePanEnd = this.handlePanEnd.bind(this);
+		this.handleClick = this.handleClick.bind(this);
+		this.handleMouseDown = this.handleMouseDown.bind(this);
+		this.handleDoubleClick = this.handleDoubleClick.bind(this);
+		// this.handleFocus = this.handleFocus.bind(this);
+		this.handleContextMenu = this.handleContextMenu.bind(this);
+		this.xAxisZoom = this.xAxisZoom.bind(this);
+		this.yAxisZoom = this.yAxisZoom.bind(this);
+		this.resetYDomain = this.resetYDomain.bind(this);
+		this.calculateStateForDomain = this.calculateStateForDomain.bind(this);
+		this.generateSubscriptionId = this.generateSubscriptionId.bind(this);
+		this.draw = this.draw.bind(this);
+
+		this.pinchCoordinates = this.pinchCoordinates.bind(this);
+
+		// this.setInteractiveState = this.setInteractiveState.bind(this);
+		// this.getInteractiveState = this.getInteractiveState.bind(this);
+
+		this.subscriptions = [];
+		this.subscribe = this.subscribe.bind(this);
+		this.unsubscribe = this.unsubscribe.bind(this);
+		// this.canvasDrawCallbackList = [];
+		this.interactiveState = [];
+		this.panInProgress = false;
+
+		this.state = {};
+		this.lastSubscriptionId = 0;
 	}
 	getDataInfo() {
-		return this.refs.chartContainer.getDataInfo();
+		return {
+			...this.state,
+			fullData: this.fullData,
+		};
 	}
-	getCanvases() {
+	getCanvasContexts() {
 		if (this.refs && this.refs.canvases) {
 			return this.refs.canvases.getCanvasContexts();
 		}
 	}
-	getChildContext() {
+	generateSubscriptionId() {
+		this.lastSubscriptionId++;
+		return this.lastSubscriptionId;
+	}
+	clearBothCanvas() {
+		var canvases = this.getCanvasContexts();
+		if (canvases && canvases.axes) {
+			clearCanvas([canvases.axes, canvases.mouseCoord], this.props.ratio);
+		}
+	}
+	clearMouseCanvas() {
+		var canvases = this.getCanvasContexts();
+		if (canvases && canvases.mouseCoord) {
+			clearCanvas([canvases.mouseCoord], this.props.ratio);
+		}
+	}
+	clearThreeCanvas() {
+		var canvases = this.getCanvasContexts();
+		if (canvases && canvases.axes) {
+			clearCanvas([canvases.axes, canvases.mouseCoord, canvases.bg], this.props.ratio);
+		}
+	}
+	subscribe(id, callback) {
+		this.subscriptions = this.subscriptions.concat({
+			id, callback
+		});
+	}
+	unsubscribe(id) {
+		this.subscriptions = this.subscriptions.filter(each => each.id !== id);
+	}
+	handleMouseEnter(e) {
+		this.triggerEvent("mouseenter", {
+			show: true,
+		}, e);
+	}
+	handleMouseMove(mouseXY, inputType, e) {
+		var { chartConfig, plotData, xScale, xAccessor } = this.state;
+
+		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
+
+		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
+
+		this.triggerEvent("mousemove", {
+			show: true,
+			mouseXY,
+			currentItem,
+			currentCharts,
+		}, e);
+
+		requestAnimationFrame(() => {
+			this.clearMouseCanvas();
+			this.draw();
+		});
+	}
+	handleContextMenu(mouseXY, e) {
+		var { xAccessor, chartConfig, plotData, xScale } = this.state;
+
+		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
+		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
+
+		this.triggerEvent("contextmenu", {
+			mouseXY,
+			currentItem,
+			currentCharts,
+		}, e);
+	}
+	handleMouseLeave(e) {
+		this.clearMouseCanvas();
+		this.triggerEvent("mouseleave", { show: false }, e);
+	}
+	pinchCoordinates(pinch) {
+		var { touch1Pos, touch2Pos } = pinch;
+
 		return {
-			displayXAccessor: this.props.xAccessor,
+			topLeft: [Math.min(touch1Pos[0], touch2Pos[0]), Math.min(touch1Pos[1], touch2Pos[1])],
+			bottomRight: [Math.max(touch1Pos[0], touch2Pos[0]), Math.max(touch1Pos[1], touch2Pos[1])]
+		};
+	}
+	handlePinchZoom(initialPinch, finalPinch) {
+		var { xScale: initialPinchXScale } = initialPinch;
+
+		var { xScale: initialXScale, chartConfig: initialChartConfig, plotData: initialPlotData, xAccessor } = this.state;
+		var { filterData } = this.state;
+		var { fullData } = this;
+		var { postCalculator } = this.props;
+
+		var { topLeft: iTL, bottomRight: iBR } = this.pinchCoordinates(initialPinch);
+		var { topLeft: fTL, bottomRight: fBR } = this.pinchCoordinates(finalPinch);
+
+		var e = initialPinchXScale.range()[1];
+
+		// var fR1 = e - fTL[0];
+		// var fR2 = e - fBR[0];
+		// var iR1 = e - iTL[0];
+		// var iR2 = e - iBR[0];
+
+		var xDash = Math.round(-(iBR[0] * fTL[0] - iTL[0] * fBR[0]) / (iTL[0] - iBR[0]));
+		var yDash = Math.round(e + ((e - iBR[0]) * (e - fTL[0]) - (e - iTL[0]) * (e - fBR[0])) / ((e - iTL[0]) - (e - iBR[0])));
+
+
+		var x = Math.round(-xDash * iTL[0] / (-xDash + fTL[0]));
+		var y = Math.round(e - (yDash - e) * (e - iTL[0]) / (yDash + (e - fTL[0])));
+
+		// document.getElementById("debug_here").innerHTML = `**${[s, e]} to ${[xDash, yDash]} to ${[x, y]}`;
+		// var left = ((final.leftxy[0] - range[0]) / (final.rightxy[0] - final.leftxy[0])) * (initial.right - initial.left);
+		// var right = ((range[1] - final.rightxy[0]) / (final.rightxy[0] - final.leftxy[0])) * (initial.right - initial.left);
+
+		var newDomain = [x, y].map(initialPinchXScale.invert);
+		// var domainR = initial.right + right;
+
+		var { plotData, domain } = filterData(fullData,
+			newDomain,
+			xAccessor,
+			initialPinchXScale,
+			initialPlotData,
+			initialXScale.domain());
+
+		plotData = postCalculator(plotData);
+		var updatedScale = initialXScale.copy().domain(domain);
+
+		var chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData, updatedScale.domain());
+
+		requestAnimationFrame(() => {
+			this.clearThreeCanvas();
+			// this.clearInteractiveCanvas();
+
+			// this.clearCanvasDrawCallbackList();
+			this.setState({
+				chartConfig,
+				xScale: updatedScale,
+				plotData,
+			});
+		});
+
+		// document.getElementById("debug_here").innerHTML = `${panInProgress}`;
+
+		// document.getElementById("debug_here").innerHTML = `${initial.left} - ${initial.right} to ${final.left} - ${final.right}`;
+		// document.getElementById("debug_here").innerHTML = `${id[1] - id[0]} = ${initial.left - id[0]} + ${initial.right - initial.left} + ${id[1] - initial.right}`;
+		// document.getElementById("debug_here").innerHTML = `${range[1] - range[0]}, ${i1[0]}, ${i2[0]}`;
+	}
+	calculateStateForDomain(newDomain) {
+		var { xAccessor, xScale: initialXScale, chartConfig: initialChartConfig, plotData: initialPlotData } = this.state;
+		var { filterData } = this.state;
+		var { fullData } = this;
+		var { postCalculator } = this.props;
+
+		var { plotData, domain } = filterData(fullData,
+			newDomain,
+			xAccessor,
+			initialXScale,
+			initialPlotData,
+			initialXScale.domain());
+
+		plotData = postCalculator(plotData);
+		var updatedScale = initialXScale.copy().domain(domain);
+		var chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData, updatedScale.domain());
+
+		return {
+			xScale: updatedScale,
+			plotData,
+			chartConfig,
+		};
+	}
+	handleZoom(zoomDirection, mouseXY, e) {
+		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
+		var { xAccessor, xScale: initialXScale, plotData: initialPlotData } = this.state;
+		var { zoomMultiplier } = this.props;
+
+		var item = getCurrentItem(initialXScale, xAccessor, mouseXY, initialPlotData),
+			cx = initialXScale(xAccessor(item)),
+			c = zoomDirection > 0 ? 1 * zoomMultiplier : 1 / zoomMultiplier,
+			newDomain = initialXScale.range().map(x => cx + (x - cx) * c).map(initialXScale.invert);
+
+		var { xScale, plotData, chartConfig } = this.calculateStateForDomain(newDomain);
+
+		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
+		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
+		this.clearBothCanvas();
+		// this.clearInteractiveCanvas();
+
+		var { fullData } = this;
+		var firstItem = first(fullData);
+
+		var start = first(xScale.domain());
+		var end = xAccessor(firstItem);
+		var { onLoadMore } = this.props;
+
+		this.triggerEvent("zoom", {
+			mouseXY,
+			currentCharts,
+			currentItem,
+		}, e);
+
+		this.setState({
+			xScale,
+			plotData,
+			chartConfig,
+		}, () => {
+
+			this.draw();
+			if (start < end) {
+				onLoadMore(start, end);
+			}
+		});
+	}
+	xAxisZoom(newDomain) {
+		var { xScale, plotData, chartConfig } = this.calculateStateForDomain(newDomain);
+		this.clearBothCanvas();
+
+		var { xAccessor } = this.state;
+		var { fullData } = this;
+		var firstItem = first(fullData);
+		var start = first(xScale.domain());
+		var end = xAccessor(firstItem);
+		var { onLoadMore } = this.props;
+
+		this.setState({
+			xScale,
+			plotData,
+			chartConfig,
+		}, () => {
+			if (start < end) onLoadMore(start, end);
+		});
+	}
+	yAxisZoom(chartId, newDomain) {
+		this.clearThreeCanvas();
+		var { chartConfig: initialChartConfig } = this.state;
+		var chartConfig = initialChartConfig
+			.map(each => {
+				if (each.id === chartId) {
+					var { yScale } = each;
+					return {
+						...each,
+						yScale: yScale.copy().domain(newDomain),
+						yPanEnabled: true,
+					};
+				} else {
+					return each;
+				}
+			});
+
+		this.setState({
+			chartConfig,
+		});
+	}
+	panHelper(mouseXY, initialXScale, panOrigin, chartsToPan) {
+		var { xAccessor, chartConfig: initialChartConfig } = this.state;
+		var { filterData } = this.state;
+		var { fullData } = this;
+		var { postCalculator } = this.props;
+
+		var dx = mouseXY[0] - panOrigin[0];
+		var dy = mouseXY[1] - panOrigin[1];
+
+		if (isNotDefined(initialXScale.invert))
+			throw new Error("xScale provided does not have an invert() method."
+				+ "You are likely using an ordinal scale. This scale does not support zoom, pan");
+
+		var newDomain = initialXScale.range().map(x => x - dx).map(initialXScale.invert);
+
+		var { plotData, domain } = filterData(fullData,
+			newDomain,
+			xAccessor,
+			initialXScale,
+			this.hackyWayToStopPanBeyondBounds__plotData,
+			this.hackyWayToStopPanBeyondBounds__domain);
+
+		var updatedScale = initialXScale.copy().domain(domain);
+		plotData = postCalculator(plotData);
+		// console.log(last(plotData));
+		var currentItem = getCurrentItem(updatedScale, xAccessor, mouseXY, plotData);
+
+		var chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData, updatedScale.domain(), dy, chartsToPan);
+
+		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
+
+		// console.log(initialXScale.domain(), newDomain, updatedScale.domain());
+		return {
+			xScale: updatedScale,
+			plotData,
+			mouseXY,
+			currentCharts,
+			chartConfig,
+			currentItem,
+		};
+	}
+	triggerEvent(type, props, e) {
+		this.subscriptions.forEach(each => {
+			var state = {
+				...this.state,
+				fullData: this.fullData,
+				subscriptions: this.subscriptions,
+			};
+			each.callback(type, props, state, e);
+		});
+	}
+	draw() {
+		this.triggerEvent("draw");
+	}
+	handlePan(mousePosition, panStartXScale, panOrigin, chartsToPan, e) {
+		this.hackyWayToStopPanBeyondBounds__plotData = this.hackyWayToStopPanBeyondBounds__plotData || this.state.plotData;
+		this.hackyWayToStopPanBeyondBounds__domain = this.hackyWayToStopPanBeyondBounds__domain || this.state.xScale.domain();
+
+		var state = this.panHelper(mousePosition, panStartXScale, panOrigin, chartsToPan);
+
+		this.hackyWayToStopPanBeyondBounds__plotData = state.plotData;
+		this.hackyWayToStopPanBeyondBounds__domain = state.xScale.domain();
+
+		this.panInProgress = true;
+
+		// Q: why cant panend be inside requestAnimationFrame
+		// A: the event e is a synthetic event and will be reused by react.
+		// Moving it inside the rAF means react cannot reuse the event
+
+		this.triggerEvent("pan", state, e);
+
+		requestAnimationFrame(() => {
+			this.clearBothCanvas();
+			this.draw();
+		});
+	}
+	handleMouseDown(mousePosition, currentCharts, e) {
+		this.triggerEvent("mousedown", null, e);
+	}
+	handleClick(mousePosition, e) {
+		this.triggerEvent("click", {}, e);
+	}
+	handleDoubleClick(mousePosition, e) {
+		this.triggerEvent("dblclick", {}, e);
+	}
+	handlePanEnd(mousePosition, panStartXScale, panOrigin, chartsToPan, e) {
+		var state = this.panHelper(mousePosition, panStartXScale, panOrigin, chartsToPan);
+		// console.log(this.canvasDrawCallbackList.map(d => d.type));
+		this.hackyWayToStopPanBeyondBounds__plotData = null;
+		this.hackyWayToStopPanBeyondBounds__domain = null;
+
+		this.panInProgress = false;
+
+		// console.log("PANEND", panEnd++);
+		var {
+			xScale,
+			plotData,
+			chartConfig,
+		} = state;
+
+		this.triggerEvent("panend", state, e);
+
+		requestAnimationFrame(() => {
+			var { xAccessor } = this.state;
+			var { fullData } = this;
+
+			var firstItem = first(fullData);
+			var start = first(xScale.domain());
+			var end = xAccessor(firstItem);
+			// console.log(start, end, start < end ? "Load more" : "I have it");
+
+			var { onLoadMore } = this.props;
+
+			this.clearThreeCanvas();
+
+			this.setState({
+				xScale,
+				plotData,
+				chartConfig,
+			}, () => {
+				if (start < end) onLoadMore(start, end);
+			});
+		});
+	}
+	getChildContext() {
+		var dimensions = getDimensions(this.props);
+		return {
+			fullData: this.fullData,
+			plotData: this.state.plotData,
+			width: dimensions.width,
+			height: dimensions.height,
+			chartConfig: this.state.chartConfig,
+			xScale: this.state.xScale,
+			xAccessor: this.state.xAccessor,
+			displayXAccessor: this.state.displayXAccessor,
+			chartCanvasType: this.props.type,
+			margin: this.props.margin,
+			ratio: this.props.ratio,
+			xAxisZoom: this.xAxisZoom,
+			yAxisZoom: this.yAxisZoom,
+			// getInteractiveState: this.getInteractiveState,
+			// setInteractiveState: this.setInteractiveState,
+			getCanvasContexts: this.getCanvasContexts,
+			subscribe: this.subscribe,
+			unsubscribe: this.unsubscribe,
+			generateSubscriptionId: this.generateSubscriptionId,
 		};
 	}
 	componentWillMount() {
-		this.setState(calculateState(this.props));
+		var { fullData, ...state } = resetChart(this.props, true);
+
+		this.setState(state);
+		this.fullData = fullData;
 	}
 	componentWillReceiveProps(nextProps) {
 		var reset = shouldResetChart(this.props, nextProps);
-		// console.log("shouldResetChart =", reset);
 
-		if (reset) {
-			if (process.env.NODE_ENV !== "production") console.log("RESET CHART, one or more of these props changed", CANDIDATES_FOR_RESET);
-			this.setState(calculateState(nextProps));
-		} else if (!shallowEqual(this.props.xExtents, nextProps.xExtents)) {
-			if (process.env.NODE_ENV !== "production") console.log("xExtents changed");
-			// since the xExtents changed update fullData, plotData, xExtentsCalculator to state
-			let { fullData, plotData, xExtentsCalculator, xScale } = calculateState(nextProps);
-			this.setState({ fullData, plotData, xExtentsCalculator, xScale, dataAltered: false });
-		} else if (this.props.data !== nextProps.data) {
-			if (process.env.NODE_ENV !== "production") console.log("data is changed but seriesName did not");
-			// this means there are more points pushed/removed or existing points are altered
-			// console.log("data changed");
-			let { fullData } = calculateFullData(nextProps);
-			this.setState({ fullData, dataAltered: true });
-		} else if (!shallowEqual(this.props.calculator, nextProps.calculator)) {
-			if (process.env.NODE_ENV !== "production") console.log("calculator changed");
-			// data did not change but calculator changed, so update only the fullData to state
-			let { fullData } = calculateFullData(nextProps);
-			this.setState({ fullData, dataAltered: false });
+		var interaction = isInteractionEnabled(this.state.xScale, this.state.xAccessor, this.state.plotData);
+
+		var newState;
+		if (!interaction || reset || !shallowEqual(this.props.xExtents, nextProps.xExtents)) {
+			if (process.env.NODE_ENV !== "production") {
+				if (!interaction)
+					log("RESET CHART, changes to a non interactive chart");
+				else if (reset)
+					log("RESET CHART, one or more of these props changed", CANDIDATES_FOR_RESET);
+				else
+					log("xExtents changed");
+			}
+			// do reset
+			newState = resetChart(nextProps);
 		} else {
-			if (process.env.NODE_ENV !== "production")
-				console.log("Trivial change, may be width/height or type changed, but that does not matter");
+
+			var [start, end] = this.state.xScale.domain();
+			var prevLastItem = last(this.fullData);
+
+			var calculatedState = calculateFullData(nextProps);
+			var { xAccessor } = calculatedState;
+			var lastItemWasVisible = xAccessor(prevLastItem) <= end && xAccessor(prevLastItem) >= start;
+
+			if (process.env.NODE_ENV !== "production") {
+				if (this.props.data !== nextProps.data)
+					log("data is changed but seriesName did not, change the seriesName if you wish to reset the chart and lastItemWasVisible = ", lastItemWasVisible);
+				else if (!shallowEqual(this.props.calculator, nextProps.calculator))
+					log("calculator changed");
+				else
+					log("Trivial change, may be width/height or type changed, but that does not matter");
+			}
+			newState = updateChart(calculatedState, this.state.xScale, nextProps, lastItemWasVisible);
+		}
+
+		var { fullData, ...state } = newState;
+		var { chartConfig: initialChartConfig } = this.state;
+
+		if (this.panInProgress) {
+			if (process.env.NODE_ENV !== "production") {
+				log("Pan is in progress");
+			}
+		} else {
+			if (!reset) {
+				state.chartConfig
+					.forEach((each) => {
+						var sourceChartConfig = initialChartConfig.filter(d => d.id === each.id);
+						if (sourceChartConfig.length > 0 && sourceChartConfig[0].yPanEnabled) {
+							each.yScale.domain(sourceChartConfig[0].yScale.domain());
+							each.yPanEnabled = sourceChartConfig[0].yPanEnabled;
+						}
+					});
+			}
+			this.clearThreeCanvas();
+
+			this.setState(state);
+		}
+		this.fullData = fullData;
+	}
+	resetYDomain(chartId) {
+		var { chartConfig } = this.state;
+		var changed = false;
+		var newChartConfig = chartConfig
+			.map(each => {
+				if ((isNotDefined(chartId) || each.id === chartId)
+						&& !shallowEqual(each.yScale.domain(), each.realYDomain)) {
+					changed = true;
+					return {
+						...each,
+						yScale: each.yScale.domain(each.realYDomain),
+						yPanEnabled: false,
+					};
+				}
+				return each;
+			});
+
+		if (changed) {
+			this.clearThreeCanvas();
+			this.setState({
+				chartConfig: newChartConfig
+			});
 		}
 	}
+	shouldComponentUpdate() {
+		return !this.panInProgress;
+	}
 	render() {
-		var cursor = getCursorStyle(this.props.children);
 
-		var { interval, data, type, height, width, margin, className, zIndex, postCalculator, flipXScale } = this.props;
-		var { padding } = this.props;
-		var { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor, dataAltered } = this.state;
+		var { type, height, width, margin, className, zIndex, defaultFocus, ratio, disableMouseMoveEvent, disablePanEvent, disableZoomEvent } = this.props;
+		var { useCrossHairStyleCursor, drawMode, onSelect } = this.props;
 
+		var { plotData, xScale, xAccessor, chartConfig } = this.state;
 		var dimensions = getDimensions(this.props);
-		var props = { padding, interval, type, margin, postCalculator };
-		var stateProps = { fullData, plotData, showingInterval, xExtentsCalculator, xScale, xAccessor, dataAltered };
+
+		var interaction = isInteractionEnabled(xScale, xAccessor, plotData);
+
+		var cursor = getCursorStyle(useCrossHairStyleCursor && interaction);
 		return (
-			<div style={{ position: "relative", height: height, width: width }} className={className} >
-				<CanvasContainer ref="canvases" width={width} height={height} type={type} zIndex={zIndex}/>
+			<div style={{ position: "relative", width, height }} className={className} onClick={onSelect}>
+				<CanvasContainer ref="canvases" width={width} height={height} ratio={ratio} type={type} zIndex={zIndex}/>
 				<svg className={className} width={width} height={height} style={{ position: "absolute", zIndex: (zIndex + 5) }}>
 					{cursor}
 					<defs>
 						<clipPath id="chart-area-clip">
 							<rect x="0" y="0" width={dimensions.width} height={dimensions.height} />
 						</clipPath>
+						{chartConfig
+							.map((each, idx) => <clipPath key={idx} id={`chart-area-clip-${each.id}`}>
+								<rect x="0" y="0" width={each.width} height={each.height} />
+							</clipPath>)}
 					</defs>
 					<g transform={`translate(${margin.left + 0.5}, ${margin.top + 0.5})`}>
-						<EventHandler ref="chartContainer"
-							{...props}
-							{...stateProps}
-							direction={flipXScale ? -1 : 1}
-							lastItem={last(data)}
-							dimensions={dimensions}
-							canvasContexts={this.getCanvases}>
+						<EventCapture
+							mouseMove={!disableMouseMoveEvent && interaction}
+							zoom={!disableZoomEvent && interaction}
+							pan={!disablePanEvent && interaction && !drawMode}
+
+							width={dimensions.width}
+							height={dimensions.height}
+							chartConfig={chartConfig}
+							xScale={xScale}
+							xAccessor={xAccessor}
+							focus={defaultFocus}
+
+							onContextMenu={this.handleContextMenu}
+							onClick={this.handleClick}
+							onDoubleClick={this.handleDoubleClick}
+							onMouseDown={this.handleMouseDown}
+							onMouseMove={this.handleMouseMove}
+							onMouseEnter={this.handleMouseEnter}
+							onMouseLeave={this.handleMouseLeave}
+							onZoom={this.handleZoom}
+							onPinchZoom={this.handlePinchZoom}
+							onPan={this.handlePan}
+							onPanEnd={this.handlePanEnd}
+							/>
+
+						<g className="react-stockcharts-avoid-interaction">
 							{this.props.children}
-						</EventHandler>
+						</g>
 					</g>
 				</svg>
 			</div>
@@ -208,37 +840,45 @@ class ChartCanvas extends Component {
 	}
 }
 
-/*
-							interval={interval} type={type} margin={margin}
-							data={plotData} showingInterval={updatedInterval}
-							xExtentsCalculator={domainCalculator}
-							xScale={updatedScale} xAccessor={xAccessor}
-							dimensions={dimensions}
-
-*/
+function isInteractionEnabled(xScale, xAccessor, data) {
+	var interaction = !isNaN(xScale(xAccessor(first(data)))) && isDefined(xScale.invert);
+	return interaction;
+}
 
 ChartCanvas.propTypes = {
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 	margin: PropTypes.object,
-	interval: PropTypes.oneOf(["D", "W", "M"]), // ,"m1", "m5", "m15", "W", "M"
+	ratio: PropTypes.number.isRequired,
+	// interval: PropTypes.oneOf(["D", "W", "M"]), // ,"m1", "m5", "m15", "W", "M"
 	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 	data: PropTypes.array.isRequired,
-	initialDisplay: PropTypes.number,
+	// initialDisplay: PropTypes.number,
 	calculator: PropTypes.arrayOf(PropTypes.func).isRequired,
 	xAccessor: PropTypes.func,
 	xExtents: PropTypes.oneOfType([
 		PropTypes.array,
 		PropTypes.func
 	]).isRequired,
-	xScale: PropTypes.func.isRequired,
+	// xScale: PropTypes.func.isRequired,
 	className: PropTypes.string,
 	seriesName: PropTypes.string.isRequired,
 	zIndex: PropTypes.number,
 	children: PropTypes.node.isRequired,
-	discontinous: PropTypes.bool.isRequired,
+	xScaleProvider: function(props, propName/* , componentName */) {
+		if (isDefined(props[propName]) &&  typeof props[propName] === "function" && isDefined(props.xScale)) {
+			return new Error("Do not define both xScaleProvider and xScale choose only one");
+		}
+	},
+	xScale: function(props, propName/* , componentName */) {
+		if (isDefined(props[propName]) &&  typeof props[propName] === "function" && isDefined(props.xScaleProvider)) {
+			return new Error("Do not define both xScaleProvider and xScale choose only one");
+		}
+	},
 	postCalculator: PropTypes.func.isRequired,
 	flipXScale: PropTypes.bool.isRequired,
+	useCrossHairStyleCursor: PropTypes.bool.isRequired,
+	drawMode: PropTypes.bool.isRequired,
 	padding: PropTypes.oneOfType([
 		PropTypes.number,
 		PropTypes.shape({
@@ -246,30 +886,82 @@ ChartCanvas.propTypes = {
 			right: PropTypes.number,
 		})
 	]).isRequired,
+	defaultFocus: PropTypes.bool,
+	zoomMultiplier: PropTypes.number.isRequired,
+	onLoadMore: PropTypes.func,
+	displayXAccessor: PropTypes.func,
+	disableMouseMoveEvent: PropTypes.bool.isRequired,
+	disablePanEvent: PropTypes.bool.isRequired,
+	disableZoomEvent: PropTypes.bool.isRequired,
+	onSelect: PropTypes.func,
 };
 
 ChartCanvas.defaultProps = {
 	margin: { top: 20, right: 30, bottom: 30, left: 80 },
 	indexAccessor: d => d.idx,
-	indexMutator: (d, idx) => d.idx = idx,
+	indexMutator: (d, idx) => ({ ...d, idx }),
 	map: identity,
 	type: "hybrid",
 	calculator: [],
 	className: "react-stockchart",
 	zIndex: 1,
-	xExtents: [d3.min, d3.max],
-	intervalCalculator: eodIntervalCalculator,
-	dataEvaluator: evaluator,
-	discontinous: false,
+	xExtents: [min, max],
+	// dataEvaluator: evaluator,
 	postCalculator: identity,
 	padding: 0,
 	xAccessor: identity,
 	flipXScale: false,
-	// initialDisplay: 30
+	useCrossHairStyleCursor: true,
+	drawMode: false,
+	defaultFocus: true,
+	onLoadMore: noop,
+	onSelect: noop,
+	disableMouseMoveEvent: false,
+	disablePanEvent: false,
+	disableZoomEvent: false,
+	zoomMultiplier: 1.1,
+	// ratio: 2,
 };
 
 ChartCanvas.childContextTypes = {
-	displayXAccessor: PropTypes.func,
+	plotData: PropTypes.array,
+	fullData: PropTypes.array,
+	chartConfig: PropTypes.arrayOf(
+		PropTypes.shape({
+			id: PropTypes.number.isRequired,
+			origin: PropTypes.arrayOf(PropTypes.number).isRequired,
+			padding: PropTypes.oneOfType([
+				PropTypes.number,
+				PropTypes.shape({
+					top: PropTypes.number,
+					bottom: PropTypes.number,
+				})
+			]),
+			yExtents: PropTypes.arrayOf(PropTypes.func),
+			yExtentsProvider: PropTypes.func,
+			yScale: PropTypes.func.isRequired,
+			mouseCoordinates: PropTypes.shape({
+				at: PropTypes.string,
+				format: PropTypes.func
+			}),
+			width: PropTypes.number.isRequired,
+			height: PropTypes.number.isRequired,
+		})
+	).isRequired,
+	xScale: PropTypes.func.isRequired,
+	xAccessor: PropTypes.func.isRequired,
+	displayXAccessor: PropTypes.func.isRequired,
+	width: PropTypes.number.isRequired,
+	height: PropTypes.number.isRequired,
+	chartCanvasType: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	margin: PropTypes.object.isRequired,
+	ratio: PropTypes.number.isRequired,
+	getCanvasContexts: PropTypes.func,
+	xAxisZoom: PropTypes.func,
+	yAxisZoom: PropTypes.func,
+	subscribe: PropTypes.func,
+	unsubscribe: PropTypes.func,
+	generateSubscriptionId: PropTypes.func,
 };
 
 ChartCanvas.ohlcv = d => ({ date: d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume });

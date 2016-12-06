@@ -1,18 +1,18 @@
 "use strict";
 
-import d3 from "d3";
-
-import { merge, isNotDefined } from "../../utils";
+import { merge, isNotDefined, path, functor } from "../../utils";
 import atr from "./atr";
 
-import { Kagi as defaultOptions } from "../defaultOptions";
+import { Kagi as defaultOptions } from "../defaultOptionsForComputation";
 
 export default function() {
 
-	var { reversalType, period: windowSize, reversal, source } = defaultOptions;
-	var { dateAccessor, dateMutator, indexMutator } = defaultOptions;
+	var { reversalType, windowSize, reversal, sourcePath } = defaultOptions;
+	var dateAccessor = d => d.date;
+	var dateMutator = (d, date) => { d.date = date; };
 
 	function calculator(data) {
+		var source = path(sourcePath);
 		var reversalThreshold;
 
 		if (reversalType === "ATR") {
@@ -26,17 +26,16 @@ export default function() {
 			atrCalculator(data);
 			reversalThreshold = d => d["atr" + windowSize];
 		} else {
-			reversalThreshold = d3.functor(reversal);
+			reversalThreshold = functor(reversal);
 		}
 
 		var kagiData = [];
 
-		var index = 0, prevPeak, prevTrough, direction;
+		var prevPeak, prevTrough, direction;
 		var line = {};
 
 		data.forEach(function(d) {
 			if (isNotDefined(line.from)) {
-				indexMutator(line, index++);
 				dateMutator(line, dateAccessor(d));
 				line.from = dateAccessor(d);
 
@@ -155,7 +154,6 @@ export default function() {
 				line.added = false;
 				line.from = undefined;
 				line.volume = 0;
-				indexMutator(line, index);
 			} else {
 				// console.log("MOVING IN REV DIR BUT..", line.open, line.close, source(d));
 			}
@@ -167,7 +165,7 @@ export default function() {
 		if (!line.added) kagiData.push(line);
 
 		return kagiData;
-	};
+	}
 	calculator.reversalType = function(x) {
 		if (!arguments.length) return reversalType;
 		reversalType = x;
@@ -183,11 +181,5 @@ export default function() {
 		dateAccessor = x;
 		return calculator;
 	};
-	calculator.indexMutator = function(x) {
-		if (!arguments.length) return indexMutator;
-		indexMutator = x;
-		return calculator;
-	};
-
 	return calculator;
 }

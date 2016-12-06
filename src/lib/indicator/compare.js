@@ -1,6 +1,6 @@
 "use strict";
 
-import d3 from "d3";
+import { rebind } from "d3fc-rebind";
 
 import { merge } from "../utils";
 import { compare } from "./algorithm";
@@ -28,9 +28,9 @@ export default function() {
 		return mergedAlgorithm(data);
 	};
 
-	d3.rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type");
-	d3.rebind(indicator, underlyingAlgorithm, "base", "mainKeys", "compareKeys");
-	d3.rebind(indicator, mergedAlgorithm, "merge");
+	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type");
+	rebind(indicator, underlyingAlgorithm, "base", "mainKeys", "compareKeys");
+	rebind(indicator, mergedAlgorithm, "merge");
 
 	return indicator;
 }

@@ -1,31 +1,35 @@
 "use strict";
 
-import d3 from "d3";
+import { format } from "d3-format";
 import React, { PropTypes, Component } from "react";
 
-import { first, isDefined } from "../utils";
+import GenericChartComponent from "../GenericChartComponent";
+
+import { isDefined, functor } from "../utils";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
 class RSITooltip extends Component {
-	render() {
-
-		var { forChart, onClick, fontFamily, fontSize, calculator, displayFormat } = this.props;
-		var { chartConfig, currentItem, width, height } = this.context;
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+	}
+	renderSVG(moreProps) {
+		var { onClick, fontFamily, fontSize, calculator, displayFormat, className } = this.props;
+		var { chartConfig: { width, height } } = moreProps;
+		var { currentItem } = moreProps;
 
 		var yAccessor = calculator.accessor();
-		var config = first(chartConfig.filter(each => each.id === forChart));
-		var rsi = yAccessor(currentItem);
 
-		var value = (isDefined(rsi) && displayFormat(rsi)) || "n/a";
+		var rsi = isDefined(currentItem) && yAccessor(currentItem);
+		var value = (rsi && displayFormat(rsi)) || "n/a";
 
 		var { origin: originProp } = this.props;
-		var origin = d3.functor(originProp);
+		var origin = functor(originProp);
 		var [x, y] = origin(width, height);
-		var [ox, oy] = config.origin;
 
 		return (
-			<g transform={`translate(${ ox + x }, ${ oy + y })`} onClick={onClick}>
+			<g className={className} transform={`translate(${ x }, ${ y })`} onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={fontFamily} fontSize={fontSize}>
 					<ToolTipTSpanLabel>{calculator.tooltipLabel()}</ToolTipTSpanLabel>
@@ -34,31 +38,35 @@ class RSITooltip extends Component {
 			</g>
 		);
 	}
+	render() {
+		return <GenericChartComponent
+			clip={false}
+			svgDraw={this.renderSVG}
+			drawOnMouseMove
+			/>;
+	}
 }
 
-RSITooltip.contextTypes = {
-	chartConfig: PropTypes.array.isRequired,
-	currentItem: PropTypes.object.isRequired,
-	width: PropTypes.number.isRequired,
-	height: PropTypes.number.isRequired,
-};
-
 RSITooltip.propTypes = {
-	forChart: PropTypes.number.isRequired,
 	origin: PropTypes.oneOfType([
 		PropTypes.array,
 		PropTypes.func
 	]).isRequired,
+	className: PropTypes.string,
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
 	onClick: PropTypes.func,
-	calculator: PropTypes.func.isRequired,
+	calculator: PropTypes.oneOfType([
+		PropTypes.func,
+		PropTypes.object,
+	]).isRequired,
 	displayFormat: PropTypes.func.isRequired,
 };
 
 RSITooltip.defaultProps = {
-	displayFormat: d3.format(".2f"),
-	origin: [0, 0]
+	displayFormat: format(".2f"),
+	origin: [0, 0],
+	className: "react-stockcharts-toottip",
 };
 
 export default RSITooltip;

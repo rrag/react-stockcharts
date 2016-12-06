@@ -1,33 +1,39 @@
 "use strict";
 
-import d3 from "d3";
+import { format } from "d3-format";
 import React, { PropTypes, Component } from "react";
+import GenericChartComponent from "../GenericChartComponent";
 
-import { first } from "../utils";
+import { functor } from "../utils";
+
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
 class StochasticTooltip extends Component {
-	render() {
-		var { forChart, onClick, fontFamily, fontSize, calculator, displayFormat, children } = this.props;
-		var { chartConfig, currentItem, width, height } = this.context;
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+	}
+	renderSVG(moreProps) {
+		var { onClick, fontFamily, fontSize, calculator, displayFormat, children } = this.props;
+		var { className } = this.props;
+		var { chartConfig: { width, height } } = moreProps;
+		var { currentItem } = moreProps;
 
 		var yAccessor = calculator.accessor();
 		var stroke = calculator.stroke();
-		var config = first(chartConfig.filter(each => each.id === forChart));
-		var stochastic = yAccessor(currentItem);
+		var stochastic = currentItem && yAccessor(currentItem);
 
 		var K = (stochastic && stochastic.K && displayFormat(stochastic.K)) || "n/a";
 		var D = (stochastic && stochastic.D && displayFormat(stochastic.D)) || "n/a";
 		var label = children || "Stochastic";
 
 		var { origin: originProp } = this.props;
-		var origin = d3.functor(originProp);
+		var origin = functor(originProp);
 		var [x, y] = origin(width, height);
-		var [ox, oy] = config.origin;
 
 		return (
-			<g transform={`translate(${ ox + x }, ${ oy + y })`} onClick={onClick}>
+			<g className={className} transform={`translate(${ x }, ${ y })`} onClick={onClick}>
 				<ToolTipText x={0} y={0} fontFamily={fontFamily} fontSize={fontSize}>
 					<ToolTipTSpanLabel>{`${ label } %K(`}</ToolTipTSpanLabel>
 					<tspan fill={stroke.K}>{`${ calculator.windowSize() }, ${ calculator.kWindowSize() }`}</tspan>
@@ -41,32 +47,36 @@ class StochasticTooltip extends Component {
 			</g>
 		);
 	}
+	render() {
+		return <GenericChartComponent
+			clip={false}
+			svgDraw={this.renderSVG}
+			drawOnMouseMove
+			/>;
+	}
 }
 
-StochasticTooltip.contextTypes = {
-	chartConfig: PropTypes.array.isRequired,
-	currentItem: PropTypes.object.isRequired,
-	width: PropTypes.number.isRequired,
-	height: PropTypes.number.isRequired,
-};
-
 StochasticTooltip.propTypes = {
-	forChart: PropTypes.number.isRequired,
 	origin: PropTypes.oneOfType([
 		PropTypes.array,
 		PropTypes.func
 	]).isRequired,
+	className: PropTypes.string,
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
 	onClick: PropTypes.func,
-	calculator: PropTypes.func.isRequired,
+	calculator: PropTypes.oneOfType([
+		PropTypes.func,
+		PropTypes.object,
+	]).isRequired,
 	displayFormat: PropTypes.func.isRequired,
 	children: PropTypes.node.isRequired,
 };
 
 StochasticTooltip.defaultProps = {
-	displayFormat: d3.format(".2f"),
-	origin: [0, 0]
+	displayFormat: format(".2f"),
+	origin: [0, 0],
+	className: "react-stockcharts-toottip",
 };
 
 export default StochasticTooltip;

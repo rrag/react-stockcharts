@@ -1,35 +1,37 @@
 "use strict";
 
-import d3 from "d3";
+import { format } from "d3-format";
 import React, { PropTypes, Component } from "react";
+import GenericChartComponent from "../GenericChartComponent";
 
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
-
-import { first } from "../utils";
+import { functor } from "../utils";
 
 class MACDTooltip extends Component {
-	render() {
-
-		var { forChart, onClick, fontFamily, fontSize, calculator, displayFormat } = this.props;
-		var { chartConfig, currentItem, width, height } = this.context;
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+	}
+	renderSVG(moreProps) {
+		var { onClick, fontFamily, fontSize, calculator, displayFormat, className } = this.props;
+		var { chartConfig: { width, height } } = moreProps;
+		var { currentItem } = moreProps;
 
 		var yAccessor = calculator.accessor();
-		var config = first(chartConfig.filter(each => each.id === forChart));
 
-		var macdValue = yAccessor(currentItem);
+		var macdValue = currentItem && yAccessor(currentItem);
 
 		var macd = (macdValue && macdValue.macd && displayFormat(macdValue.macd)) || "n/a";
 		var signal = (macdValue && macdValue.signal && displayFormat(macdValue.signal)) || "n/a";
 		var divergence = (macdValue && macdValue.divergence && displayFormat(macdValue.divergence)) || "n/a";
 
 		var { origin: originProp } = this.props;
-		var origin = d3.functor(originProp);
+		var origin = functor(originProp);
 		var [x, y] = origin(width, height);
-		var [ox, oy] = config.origin;
 
 		return (
-			<g transform={`translate(${ ox + x }, ${ oy + y })`} onClick={onClick}>
+			<g className={className} transform={`translate(${ x }, ${ y })`} onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={fontFamily} fontSize={fontSize}>
 					<ToolTipTSpanLabel>MACD (</ToolTipTSpanLabel>
@@ -45,31 +47,35 @@ class MACDTooltip extends Component {
 			</g>
 		);
 	}
+	render() {
+		return <GenericChartComponent
+			clip={false}
+			svgDraw={this.renderSVG}
+			drawOnMouseMove
+			/>;
+	}
 }
 
-MACDTooltip.contextTypes = {
-	chartConfig: PropTypes.array.isRequired,
-	currentItem: PropTypes.object.isRequired,
-	width: PropTypes.number.isRequired,
-	height: PropTypes.number.isRequired,
-};
-
 MACDTooltip.propTypes = {
-	forChart: PropTypes.number.isRequired,
 	origin: PropTypes.oneOfType([
 		PropTypes.array,
 		PropTypes.func
 	]).isRequired,
+	className: PropTypes.string,
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
-	calculator: PropTypes.func.isRequired,
+	calculator: PropTypes.oneOfType([
+		PropTypes.func,
+		PropTypes.object,
+	]).isRequired,
 	displayFormat: PropTypes.func.isRequired,
 	onClick: PropTypes.func,
 };
 
 MACDTooltip.defaultProps = {
 	origin: [0, 0],
-	displayFormat: d3.format(".2f"),
+	displayFormat: format(".2f"),
+	className: "react-stockcharts-toottip",
 };
 
 export default MACDTooltip;

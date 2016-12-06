@@ -1,18 +1,22 @@
 "use strict";
 
-import d3 from "d3";
-import { merge, isNotDefined } from "../../utils";
+import { merge, isNotDefined, functor } from "../../utils";
 
 import atr from "./atr";
 
-import { Renko as defaultOptions } from "../defaultOptions";
+import { Renko as defaultOptions } from "../defaultOptionsForComputation";
 
 export default function() {
 
-	var { reversalType, fixedBrickSize, source, period: windowSize } = defaultOptions;
-	var { dateAccessor, dateMutator, indexMutator, indexAccessor } = defaultOptions;
+	var { reversalType, fixedBrickSize, sourcePath, windowSize } = defaultOptions;
+	var dateAccessor = d => d.date;
+	var dateMutator = (d, date) => { d.date = date; };
 
 	function calculator(rawData) {
+		var source = sourcePath === "high/low"
+			? d => { return { high: d.high, low: d.low }; }
+			: d => { return { high: d.close, low: d.close }; };
+
 		var pricingMethod = source, brickSize;
 
 		if (reversalType === "ATR") {
@@ -26,7 +30,7 @@ export default function() {
 			atrCalculator(rawData);
 			brickSize = d => d["atr" + windowSize];
 		} else {
-			brickSize = d3.functor(fixedBrickSize);
+			brickSize = functor(fixedBrickSize);
 		}
 
 		var renkoData = [];
@@ -34,7 +38,7 @@ export default function() {
 		var index = 0, prevBrickClose = rawData[index].open, prevBrickOpen = rawData[index].open;
 		var brick = {}, direction = 0;
 
-		rawData.forEach( function(d) {
+		rawData.forEach(function(d, idx) {
 			if (isNotDefined(brick.from)) {
 				brick.high = d.high;
 				brick.low = d.low;
@@ -43,9 +47,9 @@ export default function() {
 				brick.startOfMonth = d.startOfMonth;
 				brick.startOfWeek = d.startOfWeek;
 
-				brick.from = indexAccessor(d);
+				brick.from = idx;
 				brick.fromDate = dateAccessor(d);
-				indexMutator(brick, index++);
+				// indexMutator(brick, index++);
 				dateMutator(brick, dateAccessor(d));
 			}
 			brick.volume = (brick.volume || 0) + d.volume;
@@ -113,7 +117,7 @@ export default function() {
 											: brick.open - brickSize(d);
 						direction = brick.close > brick.open ? 1 : -1;
 						brick.direction = direction;
-						brick.to = indexAccessor(d);
+						brick.to = idx;
 						brick.toDate = dateAccessor(d);
 						// brick.diff = brick.open - brick.close;
 						// brick.atr = d.atr;
@@ -133,21 +137,20 @@ export default function() {
 							startOfWeek: false
 						};
 						brick = newBrick;
-						brick.from = indexAccessor(d);
+						brick.from = idx;
 						brick.fromDate = dateAccessor(d);
-						indexMutator(brick, index + j);
+						// indexMutator(brick, index + j);
 						dateMutator(brick, dateAccessor(d));
 						brick.volume = (brick.volume || 0) + d.volume;
 					}
 					index = index + j - 1;
 					brick = {};
 				} else {
-					if (indexAccessor(d) === rawData.length - 1) {
+					if (idx === rawData.length - 1) {
 						brick.close = direction > 0 ? pricingMethod(d).high : pricingMethod(d).low;
-						brick.to = indexAccessor(d);
+						brick.to = idx;
 						brick.toDate = dateAccessor(d);
 						dateMutator(brick, dateAccessor(d));
-
 						brick.fullyFormed = false;
 						renkoData.push(brick);
 					}
@@ -157,7 +160,7 @@ export default function() {
 		});
 		return renkoData;
 
-	};
+	}
 	calculator.reversalType = function(x) {
 		if (!arguments.length) return reversalType;
 		reversalType = x;
@@ -168,9 +171,9 @@ export default function() {
 		fixedBrickSize = x;
 		return calculator;
 	};
-	calculator.source = function(x) {
-		if (!arguments.length) return source;
-		source = x;
+	calculator.sourcePath = function(x) {
+		if (!arguments.length) return sourcePath;
+		sourcePath = x;
 		return calculator;
 	};
 	calculator.windowSize = function(x) {
@@ -186,16 +189,6 @@ export default function() {
 	calculator.dateAccessor = function(x) {
 		if (!arguments.length) return dateAccessor;
 		dateAccessor = x;
-		return calculator;
-	};
-	calculator.indexMutator = function(x) {
-		if (!arguments.length) return indexMutator;
-		indexMutator = x;
-		return calculator;
-	};
-	calculator.indexAccessor = function(x) {
-		if (!arguments.length) return indexAccessor;
-		indexAccessor = x;
 		return calculator;
 	};
 

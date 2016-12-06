@@ -1,12 +1,13 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import d3 from "d3";
+import { format } from "d3-format";
+import GenericChartComponent from "../GenericChartComponent";
 
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
-import { first } from "../utils";
+import { functor } from "../utils";
 
 class SingleMAToolTip extends Component {
 	constructor(props) {
@@ -48,14 +49,20 @@ SingleMAToolTip.propTypes = {
 };
 
 class MovingAverageTooltip extends Component {
-	render() {
-		var { chartConfig, currentItem, width, height } = this.context;
+	constructor(props) {
+		super(props);
+		this.renderSVG = this.renderSVG.bind(this);
+	}
+	renderSVG(moreProps) {
+		var { chartId } = moreProps;
+		var { chartConfig, currentItem } = moreProps;
 
-		var { className, onClick, forChart, width, fontFamily, fontSize, origin: originProp, calculators, displayFormat } = this.props;
+		var { className, onClick, width, fontFamily, fontSize, origin: originProp, calculators, displayFormat } = this.props;
+		var { chartConfig: { height } } = moreProps;
 
-		var config = first(chartConfig.filter(each => each.id === forChart));
+		var config = chartConfig;
 
-		var origin = d3.functor(originProp);
+		var origin = functor(originProp);
 		var [x, y] = origin(width, height);
 		var [ox, oy] = config.origin;
 
@@ -63,11 +70,11 @@ class MovingAverageTooltip extends Component {
 			<g transform={`translate(${ ox + x }, ${ oy + y })`} className={className}>
 				{calculators
 					.map((each, idx) => {
-						var yValue = each.accessor()(currentItem);
+						var yValue = currentItem && each.accessor()(currentItem);
 						var options = {
-							maType: each.type(),
-							period: each.windowSize(),
-							source: each.source(),
+							type: each.type(),
+							windowSize: each.windowSize(),
+							sourcePath: each.sourcePath(),
 							echo: each.echo()
 						};
 						var yDisplayValue = yValue ? displayFormat(yValue) : "n/a";
@@ -78,24 +85,23 @@ class MovingAverageTooltip extends Component {
 							displayName={each.tooltipLabel()}
 							value={yDisplayValue}
 							options={options}
-							forChart={forChart} onClick={onClick}
+							forChart={chartId} onClick={onClick}
 							fontFamily={fontFamily} fontSize={fontSize} />;
 					})}
 			</g>
 		);
 	}
+	render() {
+		return <GenericChartComponent
+			clip={false}
+			svgDraw={this.renderSVG}
+			drawOnMouseMove
+			/>;
+	}
 }
-
-MovingAverageTooltip.contextTypes = {
-	chartConfig: PropTypes.array.isRequired,
-	currentItem: PropTypes.object.isRequired,
-	width: PropTypes.number.isRequired,
-	height: PropTypes.number.isRequired,
-};
 
 MovingAverageTooltip.propTypes = {
 	className: PropTypes.string,
-	forChart: PropTypes.number.isRequired,
 	displayFormat: PropTypes.func.isRequired,
 	origin: PropTypes.array.isRequired,
 	onClick: PropTypes.func,
@@ -107,8 +113,8 @@ MovingAverageTooltip.propTypes = {
 };
 
 MovingAverageTooltip.defaultProps = {
-	className: "react-stockcharts-moving-average-tooltip",
-	displayFormat: d3.format(".2f"),
+	className: "react-stockcharts-toottip react-stockcharts-moving-average-tooltip",
+	displayFormat: format(".2f"),
 	origin: [0, 10],
 	width: 65,
 };

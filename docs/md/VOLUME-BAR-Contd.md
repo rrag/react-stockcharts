@@ -1,11 +1,15 @@
 [source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickStockScaleChartWithVolumeBarV2.jsx), [block](http://bl.ocks.org/rrag/0a54ca33b05001f17f8f), [plunker](http://plnkr.co/edit/gist:0a54ca33b05001f17f8f?p=preview)
 
+```js
+import { format } from "d3-format";
+```
+
 ```jsx
 <ChartCanvas width={width} height={400}
 		margin={{left: 50, right: 50, top:10, bottom: 30}} type={type}
 		seriesName="MSFT"
 		data={data}
-		xAccessor={d => d.date} discontinous xScale={financeEODDiscontiniousScale()}
+		xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 		xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 	<Chart id={1} yExtents={d => [d.high, d.low]}>
 		<XAxis axisAt="bottom" orient="bottom"/>
@@ -13,8 +17,8 @@
 		<CandlestickSeries />
 	</Chart>
 	<Chart id={2} origin={(w, h) => [0, h - 150]} height={150} yExtents={d => d.volume}>
-		<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
-		<HistogramSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
+		<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
+		<BarSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
 	</Chart>
 </ChartCanvas>
 ```
@@ -33,12 +37,12 @@ the chart has a defined `height` of 150.
 
 given the `width` and `height` available inside the `ChartCanvas` as input, this function returns an origin of `[0, height - 150]` to draw the volume histogram
 
-Similarly the `fill` of `HistogramSeries` accepts either
+Similarly the `fill` of `BarSeries` accepts either
 - a function which returns a string representing the color
 - or a string representing the color
 
 ```jsx
-<HistogramSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
+<BarSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "red"} />
 ```
 
 #### Another Version

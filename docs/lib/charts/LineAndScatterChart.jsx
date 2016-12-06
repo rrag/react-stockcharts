@@ -1,46 +1,69 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
+import { timeFormat } from "d3-time-format";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart, EventCapture } = ReStock;
+var { BarSeries, LineSeries, AreaSeries, ScatterSeries, CircleMarker, SquareMarker, TriangleMarker } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { BarSeries, LineSeries, AreaSeries, ScatterSeries, CircleMarker } = ReStock.series;
-var { financeEODDiscontiniousScale } = ReStock.scale;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY } = coordinates;
 
-var { MouseCoordinates } = ReStock.coordinates;
-
-var { TooltipContainer, OHLCTooltip } = ReStock.tooltip;
-var { XAxis, YAxis } = ReStock.axes;
-var { fitWidth } = ReStock.helper;
-
-var xScale = financeEODDiscontiniousScale();
+var { OHLCTooltip } = tooltip;
+var { XAxis, YAxis } = axes;
+var { fitWidth } = helper;
 
 class LineAndScatterChart extends React.Component {
 	render() {
-		var { data, type, width } = this.props;
+		var { data, type, width, ratio } = this.props;
 		return (
-			<ChartCanvas width={width} height={400}
+			<ChartCanvas ratio={ratio} width={width} height={400}
 					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
 					seriesName="MSFT"
 					data={data}
-					xAccessor={d => d.date} discontinous xScale={xScale}
+					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 2, 2)]}>
 				<Chart id={1}
-						yExtents={d => [d.high, d.low]}
-						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")} >
+						yExtents={d => [d.high, d.low, d.AAPLClose, d.GEClose]}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
-					<LineSeries yAccessor={d => d.close}/>
-					<ScatterSeries yAccessor={d => d.close} marker={CircleMarker} markerProps={{ r: 3 }} />
-				</Chart>
-				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} />
-				<TooltipContainer>
+					<MouseCoordinateX
+						at="bottom"
+						orient="bottom"
+						displayFormat={timeFormat("%Y-%m-%d")} />
+					<MouseCoordinateY
+						at="right"
+						orient="right"
+						displayFormat={format(".2f")} />
+
+					<LineSeries
+						yAccessor={d => d.AAPLClose}
+						stroke="#ff7f0e"
+						strokeDasharray="Dot" />
+					<ScatterSeries
+						yAccessor={d => d.AAPLClose}
+						marker={SquareMarker}
+						markerProps={{ width: 6, stroke: "#ff7f0e", fill: "#ff7f0e" }} />
+					<LineSeries
+						yAccessor={d => d.GEClose}
+						stroke="#2ca02c" />
+					<ScatterSeries
+						yAccessor={d => d.GEClose}
+						marker={TriangleMarker}
+						markerProps={{ width: 8, stroke: "#2ca02c", fill: "#2ca02c" }} />
+					<LineSeries
+						yAccessor={d => d.close}
+						strokeDasharray="LongDash" />
+					<ScatterSeries
+						yAccessor={d => d.close}
+						marker={CircleMarker}
+						markerProps={{ r: 3 }} />
 					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
-				</TooltipContainer>
+				</Chart>
+
+				<CrossHairCursor />
 			</ChartCanvas>
 
 		);
@@ -50,6 +73,7 @@ class LineAndScatterChart extends React.Component {
 LineAndScatterChart.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

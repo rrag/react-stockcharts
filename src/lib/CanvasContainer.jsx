@@ -1,39 +1,41 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
+import { isDefined, getLogger } from "./utils";
+
+const log = getLogger("CanvasContainer");
 
 class CanvasContainer extends Component {
+	constructor(props) {
+		super(props);
+		this.setDrawCanvas = this.setDrawCanvas.bind(this);
+		this.drawCanvas = {};
+	}
+	setDrawCanvas(node) {
+		if (isDefined(node))
+			this.drawCanvas[node.id] = node.getContext("2d");
+		else
+			this.drawCanvas = {};
+	}
 	getCanvasContexts() {
-
-		var {
-			canvas_axes: axesCanvasDOM,
-			canvas_mouse_coordinates: mouseCoordDOM,
-			canvas_interactive: interactiveDOM,
-			bg: bgDOM
-		} = this.refs;
-
-		if (this.refs.canvas_axes) {
-			return {
-				axes: axesCanvasDOM.getContext("2d"),
-				mouseCoord: mouseCoordDOM.getContext("2d"),
-				interactive: interactiveDOM.getContext("2d"),
-				bg: bgDOM.getContext("2d"),
-			};
+		if (isDefined(this.drawCanvas.axes)) {
+			return this.drawCanvas;
 		}
 	}
 	render() {
-		var { height, width, type, zIndex } = this.props;
+		var { height, width, type, zIndex, ratio } = this.props;
 		if (type === "svg") return null;
+
+		log("using ratio ", ratio);
+
 		return (
-			<div style={{ zIndex: zIndex }}>
-				<canvas ref="bg" width={width} height={height}
-					style={{ position: "absolute", left: 0, top: 0 }} />
-				<canvas ref="canvas_axes" width={width} height={height}
-					style={{ position: "absolute", left: 0, top: 0 }} />
-				<canvas ref="canvas_mouse_coordinates" width={width} height={height}
-					style={{ position: "absolute", left: 0, top: 0 }} />
-				<canvas ref="canvas_interactive" width={width} height={height}
-					style={{ position: "absolute", left: 0, top: 0 }} />
+			<div style={{ position: "absolute", zIndex: zIndex }}>
+				<canvas id="bg" ref={this.setDrawCanvas} width={width * ratio} height={height * ratio}
+					style={{ position: "absolute", width: width, height: height }} />
+				<canvas id="axes" ref={this.setDrawCanvas} width={width * ratio} height={height * ratio}
+					style={{ position: "absolute", width: width, height: height }} />
+				<canvas id="mouseCoord" ref={this.setDrawCanvas} width={width * ratio} height={height * ratio}
+					style={{ position: "absolute", width: width, height: height }} />
 			</div>
 		);
 	}
@@ -44,6 +46,7 @@ CanvasContainer.propTypes = {
 	height: PropTypes.number.isRequired,
 	type: PropTypes.string.isRequired,
 	zIndex: PropTypes.number,
+	ratio: PropTypes.number.isRequired,
 };
 
 export default CanvasContainer;

@@ -1,12 +1,12 @@
 
 import TypeChooser from "./TypeChooser";
-import ChartWidthMixin from "./ChartWidthMixin";
 import SaveChartAsImage from "./SaveChartAsImage";
 import fitWidth from "./fitWidth";
+import fitDimensions from "./fitDimensions";
 
 export {
 	TypeChooser,
-	ChartWidthMixin,
 	SaveChartAsImage,
-	fitWidth
+	fitWidth,
+	fitDimensions,
 };

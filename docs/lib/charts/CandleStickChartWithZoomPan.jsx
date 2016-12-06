@@ -1,51 +1,80 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { format } from "d3-format";
+import { timeFormat } from "d3-time-format";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart, EventCapture } = ReStock;
-var { CandlestickSeries, BarSeries } = ReStock.series;
-var { financeEODDiscontiniousScale } = ReStock.scale;
+var { CandlestickSeries, BarSeries } = series;
+var { discontinuousTimeScaleProvider } = scale;
 
-var { MouseCoordinates } = ReStock.coordinates;
+var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY } = coordinates;
 
-var { TooltipContainer, OHLCTooltip } = ReStock.tooltip;
+var { OHLCTooltip } = tooltip;
 
-var { XAxis, YAxis } = ReStock.axes;
+var { XAxis, YAxis } = axes;
 
-var { fitWidth } = ReStock.helper;
-
-var xScale = financeEODDiscontiniousScale();
+var { fitWidth } = helper;
 
 class CandleStickChartWithZoomPan extends React.Component {
+	constructor(props) {
+		super(props);
+		this.saveNode = this.saveNode.bind(this);
+		this.resetYDomain = this.resetYDomain.bind(this);
+	}
+	saveNode(node) {
+		this.node = node;
+	}
+	resetYDomain() {
+		this.node.resetYDomain();
+	}
 	render() {
-		var { data, type, width } = this.props;
+		var { data, type, width, ratio } = this.props;
+		var { disableMouseMoveEvent, disablePanEvent, disableZoomEvent } = this.props;
+		var { clamp } = this.props;
 		return (
-			<ChartCanvas width={width} height={400}
-					margin={{left: 70, right: 70, top:10, bottom: 30}} type={type}
+			<ChartCanvas ref={this.saveNode}
+					ratio={ratio} width={width} height={400}
+					margin={{ left: 70, right: 70, top: 10, bottom: 30 }} type={type}
 					seriesName="MSFT"
 					data={data}
-					xAccessor={d => d.date} discontinous xScale={xScale}
-					allowedIntervals={["D", "W", "M"]}
-					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
-				<Chart id={1} yExtents={[d => [d.high, d.low]]}
-						yMousePointerDisplayLocation="right" yMousePointerDisplayFormat={d3.format(".2f")}>
-					<XAxis axisAt="bottom" orient="bottom"/>
-					<YAxis axisAt="right" orient="right" ticks={5} />
+					disableMouseMoveEvent={disableMouseMoveEvent}
+					disablePanEvent={disablePanEvent}
+					disableZoomEvent={disableZoomEvent}
+					clamp={clamp}
+					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
+					xExtents={[new Date(2016, 0, 1), new Date(2016, 9, 11)]}>
+				<Chart id={1}
+						yExtents={[d => [d.high, d.low]]}>
+					<XAxis axisAt="bottom" orient="bottom" zoomEnabled={!disableZoomEvent} />
+					<YAxis axisAt="right" orient="right" ticks={5} zoomEnabled={!disableZoomEvent} />
+
+					<MouseCoordinateY
+						at="right"
+						orient="right"
+						displayFormat={format(".2f")} />
+
 					<CandlestickSeries />
+					<OHLCTooltip origin={[-40, 0]}/>
 				</Chart>
-				<Chart id={2} origin={(w, h) => [0, h - 150]} height={150} yExtents={d => d.volume}
-						yMousePointerDisplayLocation="left" yMousePointerDisplayFormat={d3.format(".4s")}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={d3.format("s")}/>
+				<Chart id={2}
+						yExtents={d => d.volume}
+						height={150} origin={(w, h) => [0, h - 150]}>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")} zoomEnabled={!disableZoomEvent} />
+
+					<MouseCoordinateX
+						at="bottom"
+						orient="bottom"
+						displayFormat={timeFormat("%Y-%m-%d")} />
+					<MouseCoordinateY
+						at="left"
+						orient="left"
+						displayFormat={format(".4s")} />
+
 					<BarSeries yAccessor={d => d.volume} fill={(d) => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
-				<MouseCoordinates xDisplayFormat={d3.time.format("%Y-%m-%d")} />
-				<EventCapture mouseMove={true} zoom={true} pan={true} />
-				<TooltipContainer>
-					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
-				</TooltipContainer>
+				<CrossHairCursor />
 			</ChartCanvas>
 		);
 	}
@@ -54,13 +83,18 @@ class CandleStickChartWithZoomPan extends React.Component {
 CandleStickChartWithZoomPan.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
 CandleStickChartWithZoomPan.defaultProps = {
 	type: "svg",
+	disableMouseMoveEvent: false,
+	disablePanEvent: false,
+	disableZoomEvent: false,
+	clamp: false,
 };
-CandleStickChartWithZoomPan = fitWidth(CandleStickChartWithZoomPan);
 
+CandleStickChartWithZoomPan = fitWidth(CandleStickChartWithZoomPan);
 
 export default CandleStickChartWithZoomPan;

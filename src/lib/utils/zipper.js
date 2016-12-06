@@ -2,7 +2,7 @@
 
 /* an extension to d3.zip so we call a function instead of an array */
 
-import d3 from "d3";
+import { min } from "d3-array";
 
 import identity from "./identity";
 
@@ -12,7 +12,7 @@ export default function zipper() {
 	function zip() {
 		var n = arguments.length;
 		if (!n) return [];
-		var i, m = d3.min(arguments, d3_zipLength), zips = new Array(m);
+		var i, m = min(arguments, d3_zipLength), zips = new Array(m);
 		for (i = -1; ++i < m; ) {
 			for (var j = -1, zip = zips[i] = new Array(n); ++j < n; ) {
 				zip[j] = arguments[j][i];
@@ -20,7 +20,7 @@ export default function zipper() {
 			zips[i] = combine.apply(this, zips[i]);
 		}
 		return zips;
-	};
+	}
 	function d3_zipLength(d) {
 		return d.length;
 	}
@@ -32,4 +32,4 @@ export default function zipper() {
 		return zip;
 	};
 	return zip;
-};
+}

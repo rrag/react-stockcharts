@@ -1,25 +1,23 @@
 "use strict";
 
 import React from "react";
-import d3 from "d3";
+import { scaleTime } from "d3-scale";
 
-import ReStock from "react-stockcharts";
+import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
 
-var { ChartCanvas, Chart } = ReStock;
-
-var { CandlestickSeries } = ReStock.series;
-var { XAxis, YAxis } = ReStock.axes;
-var { fitWidth } = ReStock.helper;
+var { CandlestickSeries } = series;
+var { XAxis, YAxis } = axes;
+var { fitWidth } = helper;
 
 class CandleStickChart extends React.Component {
 	render() {
-		var { type, width, data } = this.props;
+		var { type, width, data, ratio } = this.props;
 		return (
-			<ChartCanvas width={width} height={400}
-					margin={{left: 50, right: 50, top:10, bottom: 30}} type={type}
+			<ChartCanvas ratio={ratio} width={width} height={400}
+					margin={{ left: 50, right: 50, top: 10, bottom: 30 }} type={type}
 					seriesName="MSFT"
 					data={data}
-					xAccessor={d => d.date} xScale={d3.time.scale()}
+					xAccessor={d => d.date} xScale={scaleTime()}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 1)]}>
 
 				<Chart id={1} yExtents={d => [d.high, d.low]}>
@@ -35,6 +33,7 @@ class CandleStickChart extends React.Component {
 CandleStickChart.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
+	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 

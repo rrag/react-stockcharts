@@ -25,7 +25,7 @@ var SaveChartAsImage = {
 						var rect = each.getBoundingClientRect();
 						context.drawImage(each, rect.left - parent.left, rect.top - parent.top);
 					}
-				};
+				}
 
 				context.drawImage(image, 0, 0);
 				cb(canvas.toDataURL("image/png"));

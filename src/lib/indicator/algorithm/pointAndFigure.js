@@ -1,7 +1,7 @@
 "use strict";
 
 import { isNotDefined } from "../../utils";
-import { PointAndFigure as defaultOptions } from "../defaultOptions";
+import { PointAndFigure as defaultOptions } from "../defaultOptionsForComputation";
 
 function createBox(d, dateAccessor, dateMutator) {
 	var box = {
@@ -73,13 +73,17 @@ function updateColumns(columnData, dateAccessor, dateMutator) {
 
 
 export default function() {
-	var { reversal, boxSize, source } = defaultOptions;
-	var { dateAccessor, dateMutator, indexMutator, indexAccessor } = defaultOptions;
+	var { reversal, boxSize, sourcePath } = defaultOptions;
+	var dateAccessor = d => d.date;
+	var dateMutator = (d, date) => { d.date = date; };
 
 	function calculator(rawData) {
+		var source = sourcePath === "high/low"
+			? d => { return { high: d.high, low: d.low }; }
+			: d => { return { high: d.close, low: d.close }; };
+
+
 		var pricingMethod = source;
-
-
 		var columnData = [];
 
 		var column = {
@@ -87,7 +91,6 @@ export default function() {
 				open: rawData[0].open
 			}, box = createBox(rawData[0], dateAccessor, dateMutator);
 
-		indexMutator(column, 0);
 		columnData.push(column);
 
 		rawData.forEach(function(d) {
@@ -176,13 +179,12 @@ export default function() {
 					// box.startOfMonth = d.startOfMonth;
 					// box.startOfWeek = d.startOfWeek;
 					// console.table(column.boxes);
-					var idx = indexAccessor(column) + 1;
+					// var idx = index + 1;
 					column = {
 						boxes: [],
 						volume: 0,
 						direction: -1 * column.direction
 					};
-					indexMutator(column, idx);
 					let noOfBoxes = column.direction > 0
 										? Math.floor(upwardMovement / boxSize)
 										: Math.floor(downwardMovement / boxSize);
@@ -201,7 +203,7 @@ export default function() {
 		updateColumns(columnData, dateAccessor, dateMutator);
 
 		return columnData;
-	};
+	}
 	calculator.reversal = function(x) {
 		if (!arguments.length) return reversal;
 		reversal = x;
@@ -212,9 +214,9 @@ export default function() {
 		boxSize = x;
 		return calculator;
 	};
-	calculator.source = function(x) {
-		if (!arguments.length) return source;
-		source = x;
+	calculator.sourcePath = function(x) {
+		if (!arguments.length) return sourcePath;
+		sourcePath = x;
 		return calculator;
 	};
 	calculator.dateMutator = function(x) {
@@ -225,16 +227,6 @@ export default function() {
 	calculator.dateAccessor = function(x) {
 		if (!arguments.length) return dateAccessor;
 		dateAccessor = x;
-		return calculator;
-	};
-	calculator.indexMutator = function(x) {
-		if (!arguments.length) return indexMutator;
-		indexMutator = x;
-		return calculator;
-	};
-	calculator.indexAccessor = function(x) {
-		if (!arguments.length) return indexAccessor;
-		indexAccessor = x;
 		return calculator;
 	};
 

@@ -2,11 +2,15 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
-import d3 from "d3";
 
-import * as ReStock from "react-stockcharts";
+import { csvParse, tsvParse } from  "d3-dsv";
+import { merge } from "d3-array";
+import { timeParse } from "d3-time-format";
 
-var parseDate = d3.time.format("%Y-%m-%d").parse
+import { helper } from "react-stockcharts";
+
+var parseDate = timeParse("%Y-%m-%d");
+var parseDateTime = timeParse("%Y-%m-%d %H:%M:%S");
 
 import "stylesheets/re-stock";
 
@@ -19,135 +23,192 @@ import MenuItem from "lib/MenuItem";
 var DOCUMENTATION = {
 	head: "Documentation",
 	pages: [
-		// require("lib/page/GettingStartedPage").default,
-		// require("lib/page/QuickStartExamplesPage").default,
-		require("lib/page/OverviewPage").default,
-		require("lib/page/SvgVsCanvasPage").default,
-		require("lib/page/LotsOfDataPage").default,
-		require("lib/page/ChangeLogPage").default,
-		require("lib/page/ComingSoonPage").default,
+		// require("./lib/page/GettingStartedPage").default,
+		// require("./lib/page/QuickStartExamplesPage").default,
+		require("./lib/page/OverviewPage").default,
+		require("./lib/page/SvgVsCanvasPage").default,
+		require("./lib/page/LotsOfDataPage").default,
+		require("./lib/page/ChangeLogPage").default,
+		require("./lib/page/ComingSoonPage").default,
 	]
 };
 
 var CHART_TYPES = {
 	head: "Chart types",
 	pages: [
-		require("lib/page/AreaChartPage").default,
-		require("lib/page/LineAndScatterChartPage").default,
-		require("lib/page/BubbleChartPage").default,
-		require("lib/page/BarChartPage").default,
-		require("lib/page/GroupedBarChartPage").default,
-		require("lib/page/StackedBarChartPage").default,
-		require("lib/page/HorizontalBarChartPage").default,
-		require("lib/page/HorizontalStackedBarChartPage").default,
-		require("lib/page/CandleStickChartPage").default,
-		require("lib/page/VolumeBarPage").default,
-		// TODO add OHLC chart 
-		require("lib/page/HeikinAshiPage").default,
-		require("lib/page/KagiPage").default,
-		require("lib/page/PointAndFigurePage").default,
-		require("lib/page/RenkoPage").default,
-		require("lib/page/MiscChartsPage").default,
+		require("./lib/page/AreaChartPage").default,
+		require("./lib/page/LineAndScatterChartPage").default,
+		require("./lib/page/BubbleChartPage").default,
+		require("./lib/page/BarChartPage").default,
+		require("./lib/page/GroupedBarChartPage").default,
+		require("./lib/page/StackedBarChartPage").default,
+		require("./lib/page/HorizontalBarChartPage").default,
+		require("./lib/page/HorizontalStackedBarChartPage").default,
+		require("./lib/page/CandleStickChartPage").default,
+		require("./lib/page/VolumeBarPage").default,
+		// TODO add OHLC chart
+		require("./lib/page/HeikinAshiPage").default,
+		require("./lib/page/KagiPage").default,
+		require("./lib/page/PointAndFigurePage").default,
+		require("./lib/page/RenkoPage").default,
+		require("./lib/page/MiscChartsPage").default,
 	]
 };
 
 var CHART_FEATURES = {
 	head: "Chart features",
 	pages: [
-		require("lib/page/MousePointerPage").default,
-		require("lib/page/ZoomAndPanPage").default,
-		require("lib/page/EdgeCoordinatesPage").default,
-		require("lib/page/UpdatingDataPage").default,
-		require("lib/page/DarkThemePage").default,
+		require("./lib/page/MousePointerPage").default,
+		require("./lib/page/ZoomAndPanPage").default,
+		require("./lib/page/IntraDayContinuousDataPage").default,
+		require("./lib/page/EquityIntraDayDataPage").default,
+		require("./lib/page/EdgeCoordinatesPage").default,
+		require("./lib/page/AnnotationsPage").default,
+		require("./lib/page/MouseFollowingTooltipPage").default,
+		require("./lib/page/UpdatingDataPageForCandleStick").default,
+		require("./lib/page/LoadMoreDataPage").default,
+		require("./lib/page/DarkThemePage").default,
+		require("./lib/page/GridPage").default,
 	]
-}
+};
 
 var INDICATORS = {
 	head: "Indicators",
 	pages: [
-		require("lib/page/MAOverlayPage").default,
-		require("lib/page/BollingerBandOverlayPage").default,
-		require("lib/page/CompareWithPage").default,
-		require("lib/page/MACDIndicatorPage").default,
-		require("lib/page/RSIIndicatorPage").default,
-		require("lib/page/StochasticIndicatorPage").default,
-		require("lib/page/ForceIndexIndicatorPage").default,
-		require("lib/page/ElderRayIndicatorPage").default,
-		require("lib/page/ElderImpulseIndicatorPage").default,
-	] 
-}
+		require("./lib/page/MAOverlayPage").default,
+		require("./lib/page/BollingerBandOverlayPage").default,
+		require("./lib/page/CompareWithPage").default,
+		require("./lib/page/MACDIndicatorPage").default,
+		require("./lib/page/RSIIndicatorPage").default,
+		require("./lib/page/StochasticIndicatorPage").default,
+		require("./lib/page/ForceIndexIndicatorPage").default,
+		require("./lib/page/ElderRayIndicatorPage").default,
+		require("./lib/page/ElderImpulseIndicatorPage").default,
+		require("./lib/page/VolumeProfilePage").default,
+		require("./lib/page/VolumeProfileBySessionPage").default,
+	]
+};
+var ALGORITHMIC_INDICATORS = {
+	head: "Algorithmic Indicators",
+	pages: [
+		require("./lib/page/MovingAverageCrossoverAlgorithmPage").default,
+		require("./lib/page/MovingAverageCrossoverAlgorithmPage2").default,
+	]
+};
 
 var INTERACTIVE = {
 	head: "Interactive",
 	pages: [
-		require("lib/page/TrendLineInteractiveIndicatorPage").default,
-		require("lib/page/FibonacciInteractiveIndicatorPage").default,
-		require("lib/page/ClickHandlerCallbackPage").default,
-		require("lib/page/BrushSupportPage").default,
+		require("./lib/page/TrendLineInteractiveIndicatorPage").default,
+		require("./lib/page/FibonacciInteractiveIndicatorPage").default,
+		require("./lib/page/ClickHandlerCallbackPage").default,
+		require("./lib/page/BrushSupportPage").default,
 	]
-}
+};
 
 var CUSTOMIZATION = {
 	head: "Customization",
 	pages: [
-		require("lib/page/CreatingCustomIndicatorPage").default,
-		require("lib/page/CreatingCustomChartSeriesPage").default,
+		require("./lib/page/CreatingCustomIndicatorPage").default,
+		require("./lib/page/CreatingCustomChartSeriesPage").default,
 	]
-}
+};
 
 var ALL_PAGES = [
 	DOCUMENTATION,
 	CHART_TYPES,
 	CHART_FEATURES,
 	INDICATORS,
+	ALGORITHMIC_INDICATORS,
 	INTERACTIVE,
 	// CUSTOMIZATION, TODO
 ];
 
-var pages = d3.merge(ALL_PAGES.map(_ => _.pages))
+var pages = merge(ALL_PAGES.map(_ => _.pages));
 
 function compressString(string) {
 	string = string.replace(/\s+/g, "_");
 	string = string.replace(/[-&]/g, "_");
 	string = string.replace(/_+/g, "_");
+	string = string.replace(/[.]/g, "");
 	string = string.toLowerCase();
 	// console.log(string);
-	return string
+	return string;
 }
 
-function renderPage(data, dataFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData) {
-	data.forEach((d, i) => {
-		d.date = new Date(parseDate(d.date).getTime());
+function parseData(parse) {
+	return function(d) {
+		d.date = parse(d.date);
 		d.open = +d.open;
 		d.high = +d.high;
 		d.low = +d.low;
 		d.close = +d.close;
 		d.volume = +d.volume;
-		// console.log(d);
-	});
 
-	dataFull.forEach((d, i) => {
-		d.date = new Date(parseDate(d.date).getTime());
-		d.open = +d.open;
-		d.high = +d.high;
-		d.low = +d.low;
-		d.close = +d.close;
-		d.volume = +d.volume;
-		// console.log(d);
-	});
-	compareData.forEach((d, i) => {
-		d.date = new Date(parseDate(d.date).getTime());
-		d.open = +d.open;
-		d.high = +d.high;
-		d.low = +d.low;
-		d.close = +d.close;
-		d.volume = +d.volume;
-		d.SP500Close = +d.SP500Close;
-		d.AAPLClose = +d.AAPLClose;
-		d.GEClose = +d.GEClose;
-		// console.log(d);
-	});
+		return d;
+	};
+}
 
+if (!window.Modernizr.fetch || !window.Modernizr.promises) {
+	require.ensure(["whatwg-fetch", "es6-promise"], function(require) {
+		require("es6-promise");
+		require("whatwg-fetch");
+		loadPage();
+	});
+} else {
+	loadPage();
+}
+
+
+function loadPage() {
+	var promiseMSFT = fetch("data/MSFT.tsv")
+		.then(response => response.text())
+		.then(data => tsvParse(data, parseData(parseDate)));
+	var promiseMSFTfull = fetch("data/MSFT_full.tsv")
+		.then(response => response.text())
+		.then(data => tsvParse(data, parseData(parseDate)));
+	var promiseIntraDayContinuous = fetch("data/bitfinex_xbtusd_1m.csv")
+		.then(response => response.text())
+		.then(data => csvParse(data, parseData(parseDateTime)));
+	var promiseIntraDayDiscontinuous = fetch("data/MSFT_INTRA_DAY.tsv")
+		.then(response => response.text())
+		.then(data => tsvParse(data, parseData(d => new Date(+d))));
+	var promiseCompare = fetch("data/comparison.tsv")
+		.then(response => response.text())
+		.then(data => tsvParse(data, d => {
+			d = parseData(parseDate)(d);
+			d.SP500Close = +d.SP500Close;
+			d.AAPLClose = +d.AAPLClose;
+			d.GEClose = +d.GEClose;
+			return d;
+		}));
+	var promiseBubbleData = fetch("data/bubble.json")
+		.then(response => response.json());
+	var promiseBarData = fetch("data/barData.json")
+		.then(response => response.json());
+	var promisegroupedBarData = fetch("data/groupedBarData.json")
+		.then(response => response.json());
+
+	Promise.all([promiseMSFT, promiseMSFTfull, promiseIntraDayContinuous, promiseIntraDayDiscontinuous, promiseCompare, promiseBubbleData, promiseBarData, promisegroupedBarData])
+		.then(function(values) {
+			var [MSFT, MSFTfull, intraDayContinuous, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData] = values;
+			var horizontalBarData = barData.map(({ x, y }) => ({ x: y, y: x }));
+			var horizontalGroupedBarData = groupedBarData.map(d => {
+				return {
+					y: d.x,
+					x1: d.y1,
+					x2: d.y2,
+					x3: d.y3,
+					x4: d.y4,
+				};
+			});
+
+			renderPage(MSFT, MSFTfull, intraDayContinuous, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
+			// renderPartialPage(MSFT, MSFTfull, intraDayContinuous, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
+		});
+}
+
+function renderPage(data, dataFull, intraDayContinuous, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData) {
 	var selected = location.hash.replace("#/", "");
 	var selectedPage = pages.filter((page) => (compressString(page.title) === compressString(selected)));
 
@@ -160,7 +221,7 @@ function renderPage(data, dataFull, compareData, bubbleData, barData, groupedBar
 			this.handleRouteChange = this.handleRouteChange.bind(this);
 			this.state = {
 				selectedPage: firstPage
-			}
+			};
 		}
 		handleRouteChange() {
 			let selected = location.hash.replace("#/", "");
@@ -181,7 +242,7 @@ function renderPage(data, dataFull, compareData, bubbleData, barData, groupedBar
 					<Nav />
 					<MainContainer>
 						<Sidebar>
-							{ALL_PAGES.map((eachGroup, i) => 
+							{ALL_PAGES.map((eachGroup, i) =>
 								<div key={i}>
 									<h4>{eachGroup.head}</h4>
 									<MenuGroup>
@@ -191,6 +252,8 @@ function renderPage(data, dataFull, compareData, bubbleData, barData, groupedBar
 							)}
 						</Sidebar>
 						<Page someData={data}
+								intraDayContinuousData={intraDayContinuous}
+								intraDayDiscontinuousData={intraDayDiscontinuous}
 								lotsOfData={dataFull}
 								compareData={compareData}
 								bubbleData={bubbleData}
@@ -202,93 +265,15 @@ function renderPage(data, dataFull, compareData, bubbleData, barData, groupedBar
 				</div>
 			);
 		}
-	};
+	}
 
 	ReactDOM.render(<ExamplesPage />, document.getElementById("chart-goes-here"));
 }
 
 
-d3.tsv("data/MSFT_full.tsv", (err2, MSFTFull) => {
-	d3.tsv("data/MSFT.tsv", (err, MSFT) => {
-		d3.tsv("data/comparison.tsv", (err3, compareData) => {
-			d3.json("data/bubble.json", (err4, bubbleData) => {
-				d3.json("data/barData.json", (err5, barData) => {
-					d3.json("data/groupedBarData.json", (err6, groupedBarData) => {
-						var horizontalBarData = barData.map(({x, y}) => ({ x: y, y: x }))
-						var horizontalGroupedBarData = groupedBarData.map(d => {
-								return {
-									y: d.x,
-									x1: d.y1,
-									x2: d.y2,
-									x3: d.y3,
-									x4: d.y4,
-								}
-							});
+function renderPartialPage(data, dataFull, intraDayContinuous, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData) {
 
-						renderPage(MSFT, MSFTFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
-						// renderPartialPage(MSFT, MSFTFull, compareData, bubbleData, barData, groupedBarData, horizontalBarData);
-					});
-				});
-			})
-		});
-	});
-});
-
-/*document.addEventListener('keypress', function(e) {
-	var keyCode = e.which;
-	// b or s (98 or 115) - Begin performance
-	// e (101) - end performance
-	// l (108) - log performance
-	console.log("pressed ", e.which);
-	var Perf = React.addons.Perf;
-	if (keyCode === 98 || keyCode === 115) {
-		console.log("Perf.start()");
-		Perf.start();
-	} else if (keyCode === 101) {
-		console.log("Perf.stop()");
-		Perf.stop();
-	} else if (keyCode === 108) {
-		Perf.printInclusive();
-		Perf.printExclusive();
-		Perf.printWasted();
-	}
-})*/
-
-function renderPartialPage(data, dataFull, compareData, bubbleData, barData, groupedBarData) {
-	data.forEach((d, i) => {
-		d.date = new Date(parseDate(d.date).getTime());
-		d.open = +d.open;
-		d.high = +d.high;
-		d.low = +d.low;
-		d.close = +d.close;
-		d.volume = +d.volume;
-		// console.log(d);
-	});
-
-	dataFull.forEach((d, i) => {
-		d.date = new Date(parseDate(d.date).getTime());
-		d.open = +d.open;
-		d.high = +d.high;
-		d.low = +d.low;
-		d.close = +d.close;
-		d.volume = +d.volume;
-		// console.log(d);
-	});
-
-	compareData.forEach((d, i) => {
-		d.date = new Date(parseDate(d.date).getTime());
-		d.open = +d.open;
-		d.high = +d.high;
-		d.low = +d.low;
-		d.close = +d.close;
-		d.volume = +d.volume;
-		d.SP500Close = +d.SP500Close;
-		d.AAPLClose = +d.AAPLClose;
-		d.GEClose = +d.GEClose;
-		// console.log(d);
-	});
-
-	//var Renko = require("./lib/charts/Renko").init(dataFull);
+	// var Renko = require("./lib/charts/Renko").init(dataFull);
 	// AreaChart
 	// AreaChartWithYPercent
 	// CandleStickChart
@@ -303,6 +288,8 @@ function renderPartialPage(data, dataFull, compareData, bubbleData, barData, gro
 	// CandleStickChartWithEdge
 	// CandleStickChartWithCompare
 	// CandleStickChartWithEdge  - Lots of data -> data={dataFull}/>
+	// CandleStickChartForDiscontinuousIntraDay - intraDayDiscontinuous
+	// CandleStickChartWithAnnotation
 	// CandleStickChartWithUpdatingData
 	// KagiWithUpdatingData
 	// RenkoWithUpdatingData
@@ -320,12 +307,12 @@ function renderPartialPage(data, dataFull, compareData, bubbleData, barData, gro
 	// CandleStickChartWithDarkTheme
 	// AreaChartWithZoomPan
 	// AreaChartWithPointsAndEdge
-	// HaikinAshi
+	// HeikinAshi
 	// Kagi
 	// PointAndFigure
 	// Renko
-	var Chart = require("lib/charts/CandleStickChartWithFullStochasticsIndicator").default;
-	var TypeChooser = ReStock.helper.TypeChooser;
+	var Chart = require("./lib/charts/CandleStickChartForDiscontinuousIntraDay").default;
+	var { TypeChooser } = helper;
 
 	// data, dataFull, compareData
 	class ExamplesPage extends React.Component {
@@ -333,12 +320,12 @@ function renderPartialPage(data, dataFull, compareData, bubbleData, barData, gro
 			return (
 				<div>
 					<TypeChooser type="hybrid">
-						{(type) => <Chart data={data} type={type} />}
+						{(type) => <Chart data={intraDayDiscontinuous} type={type} />}
 					</TypeChooser>
 				</div>
-			)
+			);
 		}
-	};
+	}
 
 	/*
 					<TypeChooser type="svg">

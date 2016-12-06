@@ -1,11 +1,13 @@
-import financeEODCalculator from "./financeEODCalculator";
-import financeEODDiscontiniousScale from "./financeEODDiscontiniousScale";
-import eodIntervalCalculator from "./eodIntervalCalculator";
-import identityIntervalCalculator from "./identityIntervalCalculator";
+
+import discontinuousTimeScaleProvider, { discontinuousTimeScaleProviderBuilder } from "./discontinuousTimeScaleProvider";
+import financeDiscontinuousScale from "./financeDiscontinuousScale";
 
 export {
-	financeEODCalculator,
-	financeEODDiscontiniousScale,
-	identityIntervalCalculator,
-	eodIntervalCalculator,
+	discontinuousTimeScaleProviderBuilder,
+	discontinuousTimeScaleProvider,
+	financeDiscontinuousScale
 };
+
+export function defaultScaleProvider(xScale) {
+	return (data, xAccessor) => ({ data, xScale, xAccessor, displayXAccessor: xAccessor });
+}

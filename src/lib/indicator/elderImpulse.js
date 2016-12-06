@@ -1,10 +1,10 @@
 "use strict";
 
-import d3 from "d3";
+import { rebind } from "d3fc-rebind";
 
 import { isDefined, isNotDefined, merge, slidingWindow } from "../utils";
 
-import { ElderImpulse as defaultOptions } from "./defaultOptions";
+import { ElderImpulse as appearanceOptions } from "./defaultOptionsForAppearance";
 import baseIndicator from "./baseIndicator";
 
 const ALGORITHM_TYPE = "ElderImpulse";
@@ -15,8 +15,8 @@ export default function() {
 
 	var base = baseIndicator()
 		.type(ALGORITHM_TYPE)
-		.stroke(d => defaultOptions.stroke[d.elderImpulse])
-		.accessor([d => d.close])
+		// .stroke(d => stroke[d.elderImpulse])
+		.stroke(appearanceOptions.stroke)
 		.fill(undefined);
 
 	var underlyingAlgorithm = slidingWindow()
@@ -60,9 +60,9 @@ export default function() {
 		emaSource = x;
 		return indicator;
 	};
-	d3.rebind(indicator, base, "id", "stroke", "echo", "type");
-	// d3.rebind(indicator, underlyingAlgorithm, "windowSize", "movingAverageType", "multiplier", "source");
-	d3.rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
+	rebind(indicator, base, "id", "echo", "type", "stroke");
+	// rebind(indicator, underlyingAlgorithm, "windowSize", "movingAverageType", "multiplier", "source");
+	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;
 }
