@@ -9,9 +9,15 @@ class ClickCallback extends Component {
 	constructor(props) {
 		super(props);
 		this.handleClick = this.handleClick.bind(this);
+		this.handleContextMenu = this.handleContextMenu.bind(this);
+		this.saveNode = this.saveNode.bind(this);
+		this.getClickProps = this.getClickProps.bind(this);
 	}
-	handleClick(e) {
-		var moreProps = this.refs.component.getMoreProps();
+	saveNode(node) {
+		this.node = node;
+	}
+	getClickProps() {
+		var moreProps = this.node.getMoreProps();
 
 		var {
 			// xScale,
@@ -27,14 +33,21 @@ class ClickCallback extends Component {
 
 		var yValue = yScale.invert(mouseXY[1]);
 		var xValue = displayXAccessor(currentItem);
-		this.props.onClick({
+
+		return {
 			xy: [xValue, yValue],
 			mouseXY,
 			currentItem
-		}, e);
+		};
+	}
+	handleContextMenu(e) {
+		this.props.onContextMenu(this.getClickProps(), e);
+	}
+	handleClick(e) {
+		this.props.onClick(this.getClickProps(), e);
 	}
 	render() {
-		return <GenericChartComponent ref="component"
+		return <GenericChartComponent ref={this.saveNode}
 			svgDraw={functor(null)}
 			isHover={functor(true)}
 			onClick={this.handleClick}
@@ -47,10 +60,12 @@ ClickCallback.drawOnCanvas = noop;
 
 ClickCallback.propTypes = {
 	onClick: PropTypes.func.isRequired,
+	onContextMenu: PropTypes.func.isRequired,
 };
 
 ClickCallback.defaultProps = {
-	onClick: (e) => { console.log(e); },
+	onClick: (...rest) => { console.log(rest); },
+	onContextMenu: (...rest) => { console.log(rest); },
 };
 
 export default ClickCallback;
