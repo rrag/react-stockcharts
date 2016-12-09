@@ -129,29 +129,42 @@ function tooltipSVG({ fontFamily, fontSize, fontFill }, content) {
 }
 /* eslint-enable react/prop-types */
 
+const sumSizes = (...sizes) => {
+	return {
+		width: Math.max(...sizes.map(size => size.width)),
+		height: sizes.reduce((res, size) => res + size.height, 0)
+	};
+};
+
 function calculateTooltipSize({ fontFamily, fontSize, fontFill }, content) {
 	const canvas = document.createElement("canvas");
 	let ctx = canvas.getContext("2d");
-	let width = 0;
-	let height = content.y.length * fontSize + fontSize;
 
 	ctx.font = `${fontSize}px ${fontFamily}`;
 	ctx.fillStyle = fontFill;
 	ctx.textAlign = "left";
-	for (let i = 0; i < content.y.length; i++) {
-		let y = content.y[i];
-		const textWidth = ctx.measureText(`${y.label}: ${y.value}`).width;
-		if (textWidth > width) width = textWidth;
-	}
+
+	const measureText = str => ({
+		width: ctx.measureText(str).width,
+		height: fontSize,
+	});
+
+	const { width, height } = content.y
+        .map(({ label, value }) => measureText(`${label}: ${value}`))
+        // Sum all y and x sizes (begin with x label size)
+        .reduce((res, size) => sumSizes(res, size), measureText(String(content.x)))
+    ;
+
 	return {
 		width: width + 2 * X,
 		height: height + 2 * Y
 	};
 }
 
-function backgroundShapeCanvas(props, content, ctx) {
+function backgroundShapeCanvas(props, { width, height }, ctx) {
 	const { fill, stroke, opacity } = props;
-	const { width, height } = calculateTooltipSize(props, content);
+	// const { width, height } = calculateTooltipSize(props, content);
+
 	ctx.fillStyle = hexToRGBA(fill, opacity);
 	ctx.strokeStyle = stroke;
 	ctx.beginPath();
@@ -189,10 +202,20 @@ function origin(mouseXY, bgheight, bgwidth, xAccessor, currentItem, xScale) {
 	return [originX, originY];
 }
 
+const normalizeX = (x, bgSize, pointWidth) => x - bgSize.width - pointWidth / 2 - PADDING * 2 < 0
+    ? x + pointWidth / 2 + PADDING
+    : x - bgSize.width - pointWidth / 2 - PADDING
+;
+const normalizeY = (y, bgSize) => y - bgSize.height < 0
+    ? y + PADDING
+    : y - bgSize.height - PADDING
+;
+
+
 function drawOnCanvas(ctx, props, context, pointer, height, moreProps) {
 
 	var { margin, ratio } = context;
-	var { bgwidth, bgheight, bgFill, bgOpacity, chartId, yAccessor } = props;
+	var { bgFill, bgOpacity, chartId, yAccessor } = props;
 	var { backgroundShapeCanvas, tooltipCanvas } = props;
 	var { xAccessor, xScale, chartConfig, currentItem } = moreProps;
 
@@ -207,6 +230,7 @@ function drawOnCanvas(ctx, props, context, pointer, height, moreProps) {
 	ctx.translate(originX, originY);
 
 	var { x, y, content, centerX, drawWidth } = pointer;
+	const bgSize = calculateTooltipSize(props, content);
 
 	if (chartId && yAccessor) {
 		var xValue = xAccessor(currentItem);
@@ -216,8 +240,8 @@ function drawOnCanvas(ctx, props, context, pointer, height, moreProps) {
 		x = Math.round(xScale(xValue));
 		y = Math.round(chartConfig[chartIndex].yScale(yValue));
 
-		x = (x - bgwidth  - PADDING * 2 < 0) ? x + PADDING : x - bgwidth - PADDING;
-		y = (y - bgheight < 0) ? y + PADDING : y - bgheight - PADDING;
+		x = normalizeX(x, bgSize, drawWidth);
+		y = normalizeY(y, bgSize);
 	}
 
 	ctx.fillStyle = hexToRGBA(bgFill, bgOpacity);
@@ -226,7 +250,7 @@ function drawOnCanvas(ctx, props, context, pointer, height, moreProps) {
 	ctx.fill();
 
 	ctx.translate(x, y);
-	backgroundShapeCanvas(props, content, ctx);
+	backgroundShapeCanvas(props, bgSize, ctx);
 	tooltipCanvas(props, content, ctx);
 
 	ctx.restore();

@@ -17,7 +17,7 @@ var { XAxis, YAxis } = axes;
 var { ema, sma } = indicator;
 var { fitWidth } = helper;
 
-var dateFormat = timeFormat("%Y-%m-%d");
+var dateFormat = timeFormat('%Y-%m-%d');
 var numberFormat = format(".2f");
 
 function tooltipContent(calculators) {
