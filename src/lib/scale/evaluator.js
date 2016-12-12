@@ -64,7 +64,7 @@ function extentsWrapper(inputXAccessor, realXAccessor, useWholeData, clamp, poin
 }
 
 function canShowTheseManyPeriods(width, arrayLength, threshold) {
-	return arrayLength > 1 && arrayLength < width * threshold;
+	return arrayLength > 1 && arrayLength < showMax(width, threshold);
 }
 
 function showMax(width, threshold) {
