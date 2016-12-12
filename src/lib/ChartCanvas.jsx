@@ -89,7 +89,7 @@ function getXScaleDirection(flipXScale) {
 }
 
 function calculateFullData(props) {
-	var { data: inputData, calculator, plotFull, xScale: xScaleProp, clamp } = props;
+	var { data: inputData, calculator, plotFull, xScale: xScaleProp, clamp, pointsPerPxThreshold = 2 } = props;
 	var { map, xScaleProvider, indexAccessor, indexMutator } = props;
 	var { xAccessor: inputXAccesor, displayXAccessor: inputDisplayXAccessor } = props;
 
@@ -104,6 +104,7 @@ function calculateFullData(props) {
 		// .intervalCalculator(intervalCalculator)
 		.xAccessor(inputXAccesor)
 		// .discontinuous(discontinuous)
+		.pointsPerPxThreshold(pointsPerPxThreshold)
 		.indexAccessor(indexAccessor)
 		.indexMutator(indexMutator)
 		.map(map)

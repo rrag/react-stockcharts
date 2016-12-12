@@ -7,11 +7,12 @@ import {
 	isDefined,
 	isNotDefined,
 	identity,
+	getLogger,
 } from "../utils";
 
-const debug = false;
+const log = getLogger("evaluator");
 
-function extentsWrapper(inputXAccessor, realXAccessor, useWholeData, clamp) {
+function extentsWrapper(inputXAccessor, realXAccessor, useWholeData, clamp, pointsPerPxThreshold) {
 	function domain(data, inputDomain, xAccessor, initialXScale, currentPlotData, currentDomain) {
 		if (useWholeData) {
 			return { plotData: data, domain: inputDomain };
@@ -39,21 +40,21 @@ function extentsWrapper(inputXAccessor, realXAccessor, useWholeData, clamp) {
 
 		var chartWidth = last(xScale.range()) - first(xScale.range());
 
-		if (debug) console.debug(`Trying to show ${filteredData.length} in ${width}px, I can show up to ${showMax(width)} in that width. Also FYI the entire chart width is ${chartWidth}px`);
+		log(`Trying to show ${filteredData.length} in ${width}px, I can show up to ${showMax(width, pointsPerPxThreshold)} in that width (pointsPerPxThreshold is ${pointsPerPxThreshold}). Also FYI the entire chart width is ${chartWidth}px`);
 
-		if (canShowTheseManyPeriods(width, filteredData.length)) {
+		if (canShowTheseManyPeriods(width, filteredData.length, pointsPerPxThreshold)) {
 			plotData = filteredData;
 			domain = realInputDomain;
-			if (debug) console.debug("AND IT WORKED");
+			log("AND IT WORKED");
 		} else {
-			plotData = currentPlotData || filteredData.slice(filteredData.length - showMax(width));
+			plotData = currentPlotData || filteredData.slice(filteredData.length - showMax(width, pointsPerPxThreshold));
 			domain = currentDomain || [realXAccessor(first(plotData)), realXAccessor(last(plotData))];
 
 			var newXScale = xScale.copy().domain(domain);
 			var newWidth = Math.floor(newXScale(realXAccessor(last(plotData)))
 				- newXScale(realXAccessor(first(plotData))));
 
-			if (debug) console.debug(`and ouch, that is too much, so instead showing ${plotData.length} in ${newWidth}px`);
+			log(`and ouch, that is too much, so instead showing ${plotData.length} in ${newWidth}px`);
 		}
 
 		return { plotData, domain };
@@ -62,13 +63,11 @@ function extentsWrapper(inputXAccessor, realXAccessor, useWholeData, clamp) {
 	return domain;
 }
 
-function canShowTheseManyPeriods(width, arrayLength) {
-	var threshold = 2; // number of datapoints per 1 px
+function canShowTheseManyPeriods(width, arrayLength, threshold) {
 	return arrayLength > 1 && arrayLength < width * threshold;
 }
 
-function showMax(width) {
-	var threshold = 1.80; // number of datapoints per 1 px
+function showMax(width, threshold) {
 	return Math.floor(width * threshold);
 }
 
@@ -100,23 +99,17 @@ export default function() {
 
 	var xAccessor, useWholeData, width, xScale,
 		map, calculator = [], scaleProvider,
-		indexAccessor, indexMutator, clamp;
+		indexAccessor, indexMutator, clamp, pointsPerPxThreshold;
 
 	function evaluate(data) {
 
-		if (process.env.NODE_ENV !== "production") {
-			if (debug) console.time("evaluation");
-		}
+		log("evaluation");
 		var mappedData = data.map(map);
 
 		var composedCalculator = compose(calculator);
 
 		var calculatedData = composedCalculator(mappedData);
-
-		if (process.env.NODE_ENV !== "production") {
-			if (debug) console.timeEnd("evaluation");
-		}
-
+		log("evaluation");
 
 		if (isDefined(scaleProvider)) {
 			var scaleProvider2 = scaleProvider
@@ -131,7 +124,7 @@ export default function() {
 			} = scaleProvider2(calculatedData);
 
 			return {
-				filterData: extentsWrapper(xAccessor, realXAccessor, useWholeData || isNotDefined(modifiedXScale.invert), clamp),
+				filterData: extentsWrapper(xAccessor, realXAccessor, useWholeData || isNotDefined(modifiedXScale.invert), clamp, pointsPerPxThreshold),
 				fullData: finalData,
 				xScale: modifiedXScale,
 				xAccessor: realXAccessor,
@@ -140,13 +133,18 @@ export default function() {
 		}
 
 		return {
-			filterData: extentsWrapper(xAccessor, xAccessor, useWholeData || isNotDefined(xScale.invert), clamp),
+			filterData: extentsWrapper(xAccessor, xAccessor, useWholeData || isNotDefined(xScale.invert), clamp, pointsPerPxThreshold),
 			fullData: calculatedData,
 			xScale,
 			xAccessor,
 			displayXAccessor: xAccessor,
 		};
 	}
+	evaluate.pointsPerPxThreshold = function(x) {
+		if (!arguments.length) return pointsPerPxThreshold;
+		pointsPerPxThreshold = x;
+		return evaluate;
+	};
 	evaluate.clamp = function(x) {
 		if (!arguments.length) return clamp;
 		clamp = x;
