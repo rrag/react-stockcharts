@@ -76,7 +76,7 @@
     "json-loader": "^0.5.4",
     "modernizr": "^3.3.1",
     "ncp": "^2.0.0",
-    "node-sass": "^3.14.0-0",
+    "node-sass": "^4.0.0",
     "prismjs": "^1.5.1",
     "progress-bar-webpack-plugin": "^1.9.0",
     "react": "^15.4.0",
@@ -86,7 +86,7 @@
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
-    "webpack": "^2.1.0-beta.27",
+    "webpack": "^2.1.0-beta.28",
     "webpack-config-utils": "^2.1.0",
     "webpack-dev-server": "^2.1.0-beta.11",
     "whatwg-fetch": "^2.0.1"

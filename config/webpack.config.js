@@ -59,6 +59,9 @@ function buildConfig(mode) {
 				...(docsOrWatch ? loadersForDocs : []),
 			])
 		},
+		performance: {
+			hints: false,
+		},
 		plugins: removeEmpty([
 			new ProgressBarPlugin(),
 			new webpack.NoErrorsPlugin(),
