@@ -1,7 +1,7 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import { line as d3Line } from "d3-shape";
+import { line, curveStepBefore } from "d3-shape";
 
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 import { isDefined, isNotDefined } from "../utils";
@@ -32,10 +32,13 @@ class KagiSeries extends Component {
 		var { className, stroke, fill, strokeWidth } = this.props;
 
 		var paths = helper(plotData, xAccessor).map((each, i) => {
-			var dataSeries = d3Line()
+			var dataSeries = line()
 				.x((item) => xScale(item[0]))
 				.y((item) => yScale(item[1]))
-				.interpolate("step-before");
+				.curve(curveStepBefore);
+
+			dataSeries(each.plot);
+
 			return (<path key={i} d={dataSeries(each.plot)} className={each.type}
 				stroke={stroke[each.type]} fill={fill[each.type]} strokeWidth={strokeWidth} />);
 		});

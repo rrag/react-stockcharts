@@ -24,9 +24,10 @@ class Kagi extends React.Component {
 	render() {
 		var { data, type, width, ratio } = this.props;
 		var kagiCalculator = kagi();
+		console.log(type)
 		return (
 			<ChartCanvas ref="chartCanvas" ratio={ratio} width={width} height={400}
-					margin={{left: 80, right: 80, top:10, bottom: 30}} type={type}
+					margin={{ left: 80, right: 80, top: 10, bottom: 30 }} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[kagiCalculator]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}>
@@ -61,7 +62,7 @@ class Kagi extends React.Component {
 					<BarSeries
 							yAccessor={d => d.volume}
 							stroke
-							fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} 
+							fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}
 							opacity={0.5} />
 				</Chart>
 				<CrossHairCursor />

@@ -1,5 +1,3 @@
-'use strict';
-
 import React from "react";
 import { helper } from "react-stockcharts";
 
@@ -11,10 +9,8 @@ import Kagi from "lib/charts/Kagi";
 
 var { TypeChooser } = helper;
 
-var KagiPage = React.createClass({
-	statics: {
-		title: 'Kagi'
-	},
+class KagiPage extends React.Component {
+
 	render() {
 		return (
 			<ContentSection title={KagiPage.title}>
@@ -33,6 +29,8 @@ var KagiPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+KagiPage.title = "Kagi";
 
 export default KagiPage;
