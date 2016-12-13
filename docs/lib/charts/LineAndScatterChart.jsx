@@ -30,7 +30,13 @@ class LineAndScatterChart extends React.Component {
 				<Chart id={1}
 						yExtents={d => [d.high, d.low, d.AAPLClose, d.GEClose]}>
 					<XAxis axisAt="bottom" orient="bottom"/>
-					<YAxis axisAt="right" orient="right" ticks={5} />
+					<YAxis
+						axisAt="right"
+						orient="right"
+						// tickInterval={5}
+						// tickValues={[40, 60]}
+						ticks={5}
+					/>
 					<MouseCoordinateX
 						at="bottom"
 						orient="bottom"

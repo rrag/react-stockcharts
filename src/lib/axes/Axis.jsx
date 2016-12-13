@@ -2,6 +2,7 @@
 
 import React, { PropTypes, Component } from "react";
 import { forceSimulation, forceX, forceCollide } from "d3-force";
+import { range as d3Range } from "d3-array";
 
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 import AxisZoomCapture from "./AxisZoomCapture";
@@ -86,6 +87,7 @@ Axis.propTypes = {
 	tickSize: PropTypes.number,
 	ticks: PropTypes.number,
 	tickValues: PropTypes.array,
+	tickInterval: PropTypes.number,
 	showDomain: PropTypes.bool,
 	showTicks: PropTypes.bool,
 	className: PropTypes.string,
@@ -110,16 +112,29 @@ Axis.defaultProps = {
 };
 
 function tickHelper(props, scale) {
-	var { orient, innerTickSize, tickFormat, tickPadding, tickStrokeWidth, tickStrokeDasharray, fontSize, fontFamily, showTicks, flexTicks } = props;
-	var { ticks: tickArguments, tickValues: tickValuesProp, tickStroke, tickStrokeOpacity } = props;
+	const {
+		orient, innerTickSize, tickFormat, tickPadding,
+		tickStrokeWidth, tickStrokeDasharray, fontSize,
+		fontFamily, showTicks, flexTicks
+	} = props;
+	const {
+		ticks: tickArguments, tickValues: tickValuesProp,
+		tickStroke, tickStrokeOpacity, tickInterval
+	} = props;
 
 	// if (tickArguments) tickArguments = [tickArguments];
 
-	var tickValues = isNotDefined(tickValuesProp)
-		? (isDefined(scale.ticks)
-			? scale.ticks(tickArguments, flexTicks)
-			: scale.domain())
-		: tickValuesProp;
+	let tickValues;
+	if (isDefined(tickValuesProp)) {
+		tickValues = tickValuesProp;
+	} else if (isDefined(tickInterval)) {
+		const [min, max] = scale.domain();
+		tickValues = d3Range(min, max, tickInterval);
+	} else if (isDefined(scale.ticks)) {
+		tickValues = scale.ticks(tickArguments, flexTicks);
+	} else {
+		tickValues = scale.domain();
+	}
 
 	var baseFormat = scale.tickFormat
 			? scale.tickFormat(tickArguments)
