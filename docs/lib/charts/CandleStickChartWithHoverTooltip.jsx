@@ -88,11 +88,16 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 
 		var [yAxisLabelX, yAxisLabelY] = [width -margin.left - 40, margin.top + (height - margin.top - margin.bottom) / 2]
 		return (
-			<ChartCanvas ratio={ratio} width={width} height={height}
-					margin={margin} type={type}
+			<ChartCanvas ratio={ratio}
+					width={width}
+					height={height}
+					margin={margin}
+					type={type}
 					seriesName="MSFT"
-					data={data} calculator={[ema20, ema50]}
-					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
+					data={data}
+					calculator={[ema20, ema50]}
+					xAccessor={d => d.date}
+					xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2015, 0, 1), new Date(2015, 5, 8)]}>
 
 				<Chart id={1}
@@ -106,8 +111,11 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
 					<LineSeries yAccessor={ema50.accessor()} stroke={ema50.stroke()}/>
 
-					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
-						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
+					<EdgeIndicator itemType="last"
+						orient="right"
+						edgeAt="right"
+						yAccessor={d => d.close}
+						fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 
 				</Chart>
 				<Chart id={2}
@@ -117,7 +125,11 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
-				<HoverTooltip chartId={1} yAccessor={ema50.accessor()} tooltipContent={tooltipContent([ema20, ema50])} fontSize={15} />
+				<HoverTooltip
+					chartId={1}
+					yAccessor={ema50.accessor()}
+					tooltipContent={tooltipContent([ema20, ema50])}
+					fontSize={15} />
 			</ChartCanvas>
 		);
 	}

@@ -11,28 +11,27 @@ import CandleStickChartWithHoverTooltip from "lib/charts/CandleStickChartWithHov
 
 var { TypeChooser } = helper;
 
-var AnnotationsPage = React.createClass({
-	statics: {
-		title: "Hover Tooltip"
-	},
+class MouseFollowingTooltipPage extends React.Component {
 	render() {
 		return (
-			<ContentSection title={AnnotationsPage.title}>
+			<ContentSection title={MouseFollowingTooltipPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<TypeChooser ref="container">
+						<TypeChooser type="svg">
 							{(type) => (<CandleStickChartWithHoverTooltip  data={this.props.someData} type={type} />)}
 						</TypeChooser>
 					</Section>
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require("md/HOVER-TOOLTIP")}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/HOVER-TOOLTIP") }}></aside>
 					</Section>
 				</Row>
 			</ContentSection>
 		);
 	}
-});
+}
 
-export default AnnotationsPage;
+MouseFollowingTooltipPage.title = "Hover Tooltip";
+
+export default MouseFollowingTooltipPage;

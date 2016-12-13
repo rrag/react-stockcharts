@@ -2,8 +2,9 @@
 
 import React, { PropTypes, Component } from "react";
 import GenericComponent from "../GenericComponent";
+import { sum } from "d3-array";
 
-import { first, last, isNotDefined, hexToRGBA } from "../utils";
+import { first, last, isNotDefined, isDefined, hexToRGBA } from "../utils";
 
 class HoverTooltip extends Component {
 	constructor(props) {
@@ -12,7 +13,7 @@ class HoverTooltip extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var pointer = helper(this.props, moreProps);
+		var pointer = helper(this.props, moreProps, ctx);
 		var { height } = moreProps;
 
 		if (isNotDefined(pointer)) return null;
@@ -32,28 +33,21 @@ class HoverTooltip extends Component {
 
 		if (isNotDefined(pointer)) return null;
 
-		var { chartId, yAccessor, bgFill, bgOpacity, bgwidth, bgheight, backgroundShapeSVG } = this.props;
-		var { height, xAccessor, xScale, chartConfig, currentItem } = moreProps;
+		var { bgFill, bgOpacity, backgroundShapeSVG } = this.props;
+		var { height } = moreProps;
 
-		var { x, y, content, centerX, drawWidth } = pointer;
-
-		if (chartId && yAccessor) {
-			var xValue = xAccessor(currentItem);
-			var yValue = yAccessor(currentItem);
-			var chartIndex = chartConfig.findIndex(x => x.id === chartId);
-
-			x = Math.round(xScale(xValue));
-			y = Math.round(chartConfig[chartIndex].yScale(yValue));
-
-			x = (x - bgwidth  - PADDING * 2 < 0) ? x + PADDING : x - bgwidth - PADDING;
-			y = (y - bgheight < 0) ? y + PADDING : y - bgheight - PADDING;
-		}
+		var { x, y, content, centerX, pointWidth, bgSize } = pointer;
 
 		return (
 			<g>
-				<rect x={centerX - drawWidth / 2} y={0} width={drawWidth} height={height} fill={bgFill} opacity={bgOpacity} />
+				<rect x={centerX - pointWidth / 2}
+					y={0}
+					width={pointWidth}
+					height={height}
+					fill={bgFill}
+					opacity={bgOpacity} />
 				<g className="react-stockcharts-tooltip-content" transform={`translate(${x}, ${y})`}>
-					{backgroundShapeSVG(this.props)}
+					{backgroundShapeSVG(this.props, bgSize)}
 					{tooltipSVG(this.props, content)}
 				</g>
 			</g>
@@ -69,10 +63,7 @@ HoverTooltip.propTypes = {
 	bgheight: PropTypes.number.isRequired,
 	bgFill: PropTypes.string.isRequired,
 	bgOpacity: PropTypes.number.isRequired,
-	tooltipContent: PropTypes.oneOfType([
-		PropTypes.object,
-		PropTypes.func
-	]).isRequired,
+	tooltipContent: PropTypes.func.isRequired,
 	origin: PropTypes.oneOfType([
 		PropTypes.array,
 		PropTypes.func
@@ -110,60 +101,36 @@ const Y = 10;
 
 
 /* eslint-disable react/prop-types */
-function backgroundShapeSVG({ bgheight, bgwidth, fill, stroke, opacity }) {
-	return <rect height={bgheight} width={bgwidth} fill={fill} opacity={opacity} stroke={stroke} />;
+function backgroundShapeSVG({ fill, stroke, opacity }, { height, width }) {
+	return <rect
+		height={height}
+		width={width}
+		fill={fill}
+		opacity={opacity}
+		stroke={stroke} />;
 }
 
 function tooltipSVG({ fontFamily, fontSize, fontFill }, content) {
 	var tspans = [];
+	const startY = Y + fontSize * 0.9;
+
 	for (var i = 0; i < content.y.length; i++) {
 		let y = content.y[i];
-		tspans.push(<tspan key={`L-${i}`} x={10} dy={fontSize} fill={y.stroke}>{y.label}</tspan>);
-		tspans.push(<tspan key={`${i}`}>: </tspan>);
+		let textY = startY + (fontSize * (i + 1));
+
+		tspans.push(<tspan key={`L-${i}`} x={X} y={textY} fill={y.stroke}>{y.label}</tspan>);
+		tspans.push(<tspan key={i}>: </tspan>);
 		tspans.push(<tspan key={`V-${i}`}>{y.value}</tspan>);
 	}
 	return <text fontFamily={fontFamily} fontSize={fontSize} fill={fontFill}>
-		<tspan x={10} y={15}>{content.x}</tspan>
+		<tspan x={X} y={startY}>{content.x}</tspan>
 		{tspans}
 	</text>;
 }
 /* eslint-enable react/prop-types */
 
-const sumSizes = (...sizes) => {
-	return {
-		width: Math.max(...sizes.map(size => size.width)),
-		height: sizes.reduce((res, size) => res + size.height, 0)
-	};
-};
-
-function calculateTooltipSize({ fontFamily, fontSize, fontFill }, content) {
-	const canvas = document.createElement("canvas");
-	let ctx = canvas.getContext("2d");
-
-	ctx.font = `${fontSize}px ${fontFamily}`;
-	ctx.fillStyle = fontFill;
-	ctx.textAlign = "left";
-
-	const measureText = str => ({
-		width: ctx.measureText(str).width,
-		height: fontSize,
-	});
-
-	const { width, height } = content.y
-        .map(({ label, value }) => measureText(`${label}: ${value}`))
-        // Sum all y and x sizes (begin with x label size)
-        .reduce((res, size) => sumSizes(res, size), measureText(String(content.x)))
-    ;
-
-	return {
-		width: width + 2 * X,
-		height: height + 2 * Y
-	};
-}
-
 function backgroundShapeCanvas(props, { width, height }, ctx) {
 	const { fill, stroke, opacity } = props;
-	// const { width, height } = calculateTooltipSize(props, content);
 
 	ctx.fillStyle = hexToRGBA(fill, opacity);
 	ctx.strokeStyle = stroke;
@@ -191,33 +158,11 @@ function tooltipCanvas({ fontFamily, fontSize, fontFill }, content, ctx) {
 	}
 }
 
-function origin(mouseXY, bgheight, bgwidth, xAccessor, currentItem, xScale) {
-	var y = last(mouseXY);
-
-	var snapX = xScale(xAccessor(currentItem));
-	var originX = (snapX - bgwidth - PADDING * 2 < 0) ? snapX + PADDING : snapX - bgwidth - PADDING;
-	// originX = (x - width - PADDING * 2 < 0) ? x + PADDING : x - width - PADDING;
-
-	var originY = y - bgheight / 2;
-	return [originX, originY];
-}
-
-const normalizeX = (x, bgSize, pointWidth) => x - bgSize.width - pointWidth / 2 - PADDING * 2 < 0
-    ? x + pointWidth / 2 + PADDING
-    : x - bgSize.width - pointWidth / 2 - PADDING
-;
-const normalizeY = (y, bgSize) => y - bgSize.height < 0
-    ? y + PADDING
-    : y - bgSize.height - PADDING
-;
-
-
-function drawOnCanvas(ctx, props, context, pointer, height, moreProps) {
+function drawOnCanvas(ctx, props, context, pointer, height) {
 
 	var { margin, ratio } = context;
-	var { bgFill, bgOpacity, chartId, yAccessor } = props;
+	var { bgFill, bgOpacity } = props;
 	var { backgroundShapeCanvas, tooltipCanvas } = props;
-	var { xAccessor, xScale, chartConfig, currentItem } = moreProps;
 
 	var originX = 0.5 * ratio + margin.left;
 	var originY = 0.5 * ratio + margin.top;
@@ -229,24 +174,11 @@ function drawOnCanvas(ctx, props, context, pointer, height, moreProps) {
 
 	ctx.translate(originX, originY);
 
-	var { x, y, content, centerX, drawWidth } = pointer;
-	const bgSize = calculateTooltipSize(props, content);
-
-	if (chartId && yAccessor) {
-		var xValue = xAccessor(currentItem);
-		var yValue = yAccessor(currentItem);
-		var chartIndex = chartConfig.findIndex(x => x.id === chartId);
-
-		x = Math.round(xScale(xValue));
-		y = Math.round(chartConfig[chartIndex].yScale(yValue));
-
-		x = normalizeX(x, bgSize, drawWidth);
-		y = normalizeY(y, bgSize);
-	}
+	var { x, y, content, centerX, pointWidth, bgSize } = pointer;
 
 	ctx.fillStyle = hexToRGBA(bgFill, bgOpacity);
 	ctx.beginPath();
-	ctx.rect(centerX - drawWidth / 2, 0, drawWidth, height);
+	ctx.rect(centerX - pointWidth / 2, 0, pointWidth, height);
 	ctx.fill();
 
 	ctx.translate(x, y);
@@ -256,9 +188,77 @@ function drawOnCanvas(ctx, props, context, pointer, height, moreProps) {
 	ctx.restore();
 }
 
-function helper(props, moreProps) {
-	var { show, xScale, mouseXY, currentItem, plotData } = moreProps;
-	var { bgheight, bgwidth, origin, tooltipContent } = props;
+function calculateTooltipSize({ fontFamily, fontSize, fontFill }, content, ctx) {
+	if (isNotDefined(ctx)) {
+		const canvas = document.createElement("canvas");
+		ctx = canvas.getContext("2d");
+	}
+
+	ctx.font = `${fontSize}px ${fontFamily}`;
+	ctx.fillStyle = fontFill;
+	ctx.textAlign = "left";
+
+	const measureText = str => ({
+		width: ctx.measureText(str).width,
+		height: fontSize,
+	});
+
+	const { width, height } = content.y
+		.map(({ label, value }) => measureText(`${label}: ${value}`))
+		// Sum all y and x sizes (begin with x label size)
+		.reduce((res, size) => sumSizes(res, size), measureText(String(content.x)))
+	;
+
+	return {
+		width: width + 2 * X,
+		height: height + 2 * Y
+	};
+}
+
+function sumSizes(...sizes) {
+	return {
+		width: Math.max(...sizes.map(size => size.width)),
+		height: sum(sizes, d => d.height),
+	};
+}
+
+function normalizeX(x, bgSize, pointWidth, width) {
+	// return x - bgSize.width - pointWidth / 2 - PADDING * 2 < 0
+	return x < width / 2
+		? x + pointWidth / 2 + PADDING
+		: x - bgSize.width - pointWidth / 2 - PADDING;
+}
+
+function normalizeY(y, bgSize) {
+	return y - bgSize.height <= 0
+		? y + PADDING
+		: y - bgSize.height - PADDING;
+}
+
+function origin(props, moreProps, bgSize, pointWidth) {
+	var { chartId, yAccessor } = props;
+	var { mouseXY, xAccessor, currentItem, xScale, chartConfig, width } = moreProps;
+	var y = last(mouseXY);
+
+	var xValue = xAccessor(currentItem);
+	var x = Math.round(xScale(xValue));
+
+	if (isDefined(chartId) && isDefined(yAccessor)) {
+		var yValue = yAccessor(currentItem);
+		var chartIndex = chartConfig.findIndex(x => x.id === chartId);
+
+		y = Math.round(chartConfig[chartIndex].yScale(yValue));
+	}
+
+	x = normalizeX(x, bgSize, pointWidth, width);
+	y = normalizeY(y, bgSize);
+
+	return [x, y];
+}
+
+function helper(props, moreProps, ctx) {
+	var { show, xScale, currentItem, plotData } = moreProps;
+	var { origin, tooltipContent } = props;
 	var { xAccessor, displayXAccessor } = moreProps;
 
 	if (!show || isNotDefined(currentItem)) return;
@@ -267,13 +267,15 @@ function helper(props, moreProps) {
 
 	if (!show || isNotDefined(xValue)) return;
 
-	var [x, y] = origin(mouseXY, bgheight, bgwidth, xAccessor, currentItem, xScale);
-
 	var content = tooltipContent({ currentItem, xAccessor: displayXAccessor });
 	var centerX = xScale(xValue);
-	var drawWidth = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData)))) / (plotData.length - 1);
+	var pointWidth = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData)))) / (plotData.length - 1);
 
-	return { x, y, content, centerX, drawWidth };
+	const bgSize = calculateTooltipSize(props, content, ctx);
+
+	var [x, y] = origin(props, moreProps, bgSize, pointWidth);
+
+	return { x, y, content, centerX, pointWidth, bgSize };
 }
 
 export default HoverTooltip;
