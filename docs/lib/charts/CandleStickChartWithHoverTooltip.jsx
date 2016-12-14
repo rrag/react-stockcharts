@@ -17,11 +17,11 @@ var { XAxis, YAxis } = axes;
 var { ema, sma } = indicator;
 var { fitWidth } = helper;
 
-var dateFormat = timeFormat('%Y-%m-%d');
+var dateFormat = timeFormat("%Y-%m-%d");
 var numberFormat = format(".2f");
 
 function tooltipContent(calculators) {
-	return ({currentItem, xAccessor}) => {
+	return ({ currentItem, xAccessor }) => {
 		return {
 			x: dateFormat(xAccessor(currentItem)),
 			y: [
@@ -36,11 +36,11 @@ function tooltipContent(calculators) {
 				stroke: each.stroke()
 			})))
 			.filter(line => line.value)
-		}
-	}
+		};
+	};
 }
 
-const keyValues = ['high', 'low', 'open'];
+const keyValues = ["high", "low", "open"];
 
 class CandleStickChartWithHoverTooltip extends React.Component {
 
@@ -65,28 +65,18 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 		var ema20 = ema()
 			.id(0)
 			.windowSize(20)
-			.merge((d, c) => {d.ema20 = c})
+			.merge((d, c) => {d.ema20 = c;})
 			.accessor(d => d.ema20);
 
 		var ema50 = ema()
 			.id(2)
 			.windowSize(50)
-			.merge((d, c) => {d.ema50 = c})
+			.merge((d, c) => {d.ema50 = c;})
 			.accessor(d => d.ema50);
 
-		var annotationProps = {
-			fontFamily: "Glyphicons Halflings",
-			fontSize: 20,
-			fill: "#060F8F",
-			opacity: 0.8,
-			text: "\ue093",
-			y: ({ yScale }) => (yScale.range()[0] - 10)
-		};
-
-		var margin = {left: 80, right: 80, top:30, bottom: 50};
+		var margin = { left: 80, right: 80, top: 30, bottom: 50 };
 		var height = 400;
 
-		var [yAxisLabelX, yAxisLabelY] = [width -margin.left - 40, margin.top + (height - margin.top - margin.bottom) / 2]
 		return (
 			<ChartCanvas ratio={ratio}
 					width={width}
