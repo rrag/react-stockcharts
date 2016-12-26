@@ -68,7 +68,7 @@ export default function() {
 	}
 
 	calculator.undefinedLength = function() {
-		return slow + signal;
+		return slow + signal - 1;
 	};
 	calculator.fast = function(x) {
 		if (!arguments.length) {

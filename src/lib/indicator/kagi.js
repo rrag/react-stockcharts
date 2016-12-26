@@ -18,6 +18,7 @@ export default function() {
 
 	rebind(indicator, base, "id", "stroke", "fill", "echo", "type");
 	rebind(indicator, underlyingAlgorithm, "dateAccessor", "dateMutator");
+	rebind(indicator, underlyingAlgorithm, "reversalType", "windowSize", "reversal", "sourcePath");
 	// rebind(indicator, mergedAlgorithm, "merge"/*, "skipUndefined"*/);
 
 	return indicator;

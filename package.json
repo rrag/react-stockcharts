@@ -33,6 +33,7 @@
     "sourcemap:visualize": "source-map-explorer build/dist/react-stockcharts.min.js build/dist/react-stockcharts.min.js.map"
   },
   "dependencies": {
+    "d3-array": "^1.0.2",
     "d3-collection": "^1.0.1",
     "d3-force": "^1.0.3",
     "d3-format": "^1.0.2",

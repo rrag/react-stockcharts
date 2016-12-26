@@ -14,7 +14,6 @@ class PointAndFigureSeries extends Component {
 	drawOnCanvas(ctx, moreProps) {
 		var { xAccessor } = moreProps;
 		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
-
 		var columns = getColumns(xScale, xAccessor, yScale, plotData);
 
 		drawOnCanvas(ctx, this.props, columns);
@@ -133,6 +132,8 @@ function getColumns(xScale, xAccessor, yScale, plotData) {
 	while (isNotDefined(anyBox)) {
 		if (isDefined(plotData[j].close)) {
 			anyBox = plotData[j].boxes[0];
+		} else {
+			break;
 		}
 		j++;
 	}

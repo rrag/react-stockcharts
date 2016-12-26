@@ -21,9 +21,9 @@ export default function() {
 		var ma = smoothingType === "ema" ? ema() : sma();
 		var forceMA = ma
 			.windowSize(smoothingWindow)
-			.sourcePath(null);
-		var smoothed = forceMA(force);
+			.sourcePath(undefined);
 
+		var smoothed = forceMA(force);
 		return merge(force, smoothed);
 	}
 

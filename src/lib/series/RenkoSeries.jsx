@@ -64,7 +64,8 @@ RenkoSeries.propTypes = {
 	}),
 	fill: PropTypes.shape({
 		up: PropTypes.string,
-		down: PropTypes.string
+		down: PropTypes.string,
+		partial: PropTypes.string
 	}),
 	yAccessor: PropTypes.func.isRequired,
 };

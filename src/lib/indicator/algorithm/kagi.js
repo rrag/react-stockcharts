@@ -171,6 +171,21 @@ export default function() {
 		reversalType = x;
 		return calculator;
 	};
+	calculator.windowSize = function(x) {
+		if (!arguments.length) return windowSize;
+		windowSize = x;
+		return calculator;
+	};
+	calculator.reversal = function(x) {
+		if (!arguments.length) return reversal;
+		reversal = x;
+		return calculator;
+	};
+	calculator.sourcePath = function(x) {
+		if (!arguments.length) return sourcePath;
+		sourcePath = x;
+		return calculator;
+	};
 	calculator.dateMutator = function(x) {
 		if (!arguments.length) return dateMutator;
 		dateMutator = x;

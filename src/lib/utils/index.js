@@ -34,8 +34,8 @@ export function getLogger(prefix) {
 		: noop;
 }
 
-export function path(path = []) {
-	var key = Array.isArray(path) ? path : [path];
+export function path(loc = []) {
+	var key = Array.isArray(loc) ? loc : [loc];
 	var length = key.length;
 
 	return function(obj, defaultValue) {

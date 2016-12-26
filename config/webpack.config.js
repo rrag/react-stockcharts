@@ -33,11 +33,11 @@ function buildConfig(mode) {
 	const loadersForDocs = [
 		{ test: /\.jpg$/, loader: "file-loader" },
 		{ test: /\.(png|svg)$/, loader: "url-loader?mimetype=image/png" },
-		{ test: /\.md/, loaders: ["html-loader", "remarkable-loader"] },
+		{ test: /\.md$/, loaders: ["html-loader", "remarkable-loader"] },
 		{ test: /\.scss$/, loaders: ["style-loader", "css-loader", "autoprefixer-loader", "sass-loader?outputStyle=expanded"] }
 	];
 
-	console.log("MODE", mode)
+	console.log("MODE", mode);
 	return {
 		context,
 		entry: Object.assign({

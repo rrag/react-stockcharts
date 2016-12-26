@@ -124,7 +124,7 @@ function doStuff(realDateAccessor, inputDateAccessor, initialIndex) {
 		var dateAccessor = realDateAccessor(inputDateAccessor);
 		var calculate = discontinuousIndexCalculatorLocalTime.source(dateAccessor).misc(initialIndex);
 		var index = calculate(data);
-
+		/*
 		var map = d3Map();
 		for (var i = 0; i < data.length - 1; i++) {
 
@@ -143,11 +143,13 @@ function doStuff(realDateAccessor, inputDateAccessor, initialIndex) {
 		var entries = map.entries().sort((a, b) => a.value < b.value);
 
 		// For Renko/p&f
+
 		var interval = entries[0].value === 1
 			? Math.round((dateAccessor(last(data)) - dateAccessor(head(data))) / data.length)
-			: parseInt(entries[0].key, 10);
+			: parseInt(entries[0].key, 10); */
 
-		return { index, interval };
+		// return { index, interval };
+		return { index };
 	};
 }
 

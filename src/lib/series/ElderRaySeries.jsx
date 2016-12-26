@@ -48,7 +48,11 @@ class ElderRaySeries extends Component {
 		return yAccessorNumber % 2 === 0 ? bullPowerFill : bearPowerFill;
 	}
 	render() {
-		var { className, opacity, stroke, straightLineStroke, widthRatio } = this.props;
+		var { className, opacity, stroke,
+			straightLineStroke,
+			straightLineOpacity,
+			widthRatio
+		} = this.props;
 
 		return (
 			<g className={className}>
@@ -63,7 +67,8 @@ class ElderRaySeries extends Component {
 				<StraightLine
 					className="react-stockcharts-elderray-straight-line"
 					yValue={0}
-					stroke={straightLineStroke} />
+					stroke={straightLineStroke}
+					opacity={straightLineOpacity} />
 			</g>
 		);
 	}
@@ -77,13 +82,14 @@ ElderRaySeries.propTypes = {
 	bullPowerFill: PropTypes.string,
 	bearPowerFill: PropTypes.string,
 	straightLineStroke: PropTypes.string,
+	straightLineOpacity: PropTypes.number,
 	widthRatio: PropTypes.number,
 };
 
 ElderRaySeries.defaultProps = {
 	className: "react-stockcharts-elderray-series",
-	zeroLineStroke: "#000000",
-	zeroLineOpacity: 0.3,
+	straightLineStroke: "#000000",
+	straightLineOpacity: 0.3,
 	opacity: 0.5,
 	stroke: true,
 	bullPowerFill: "#6BA583",

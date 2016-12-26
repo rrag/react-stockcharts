@@ -34,7 +34,7 @@ export default function financeDiscontinuousScale(index,
 		interval,
 		backingLinearScale = scaleLinear()) {
 
-	if (isNotDefined(index) || isNotDefined(interval))
+	if (isNotDefined(index) /* || isNotDefined(interval) */)
 		throw new Error("Use the discontinuousTimeScaleProvider to create financeDiscontinuousScale");
 
 	function scale(x) {

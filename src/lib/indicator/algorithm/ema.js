@@ -62,7 +62,7 @@ export default function() {
 		});
 	}
 	calculator.undefinedLength = function() {
-		return windowSize;
+		return windowSize - 1;
 	};
 	calculator.windowSize = function(x) {
 		if (!arguments.length) {
