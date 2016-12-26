@@ -1,10 +1,10 @@
 "use strict";
 
 import { timeFormat } from "d3-time-format";
-import { map as d3Map } from "d3-collection";
+// import { map as d3Map } from "d3-collection";
 
 import financeDiscontinuousScale from "./financeDiscontinuousScale";
-import { head, last, slidingWindow, zipper, identity, isNotDefined } from "../utils";
+import { slidingWindow, zipper, identity, isNotDefined } from "../utils";
 
 const yearFormat = "%Y";
 const quarterFormat = "%b %Y";
