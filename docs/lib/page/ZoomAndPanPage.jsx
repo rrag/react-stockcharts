@@ -15,9 +15,9 @@ class ZoomAndPanPage extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			disableMouseMoveEvent: false,
-			disablePanEvent: false,
-			disableZoomEvent: false,
+			mouseMoveEvent: true,
+			panEvent: true,
+			zoomEvent: true,
 			clamp: false,
 		};
 		this.toggleState = this.toggleState.bind(this);
@@ -38,9 +38,9 @@ class ZoomAndPanPage extends React.Component {
 	}
 	render() {
 		const {
-			disableMouseMoveEvent,
-			disablePanEvent,
-			disableZoomEvent,
+			mouseMoveEvent,
+			panEvent,
+			zoomEvent,
 			clamp,
 		} = this.state;
 
@@ -52,9 +52,9 @@ class ZoomAndPanPage extends React.Component {
 							{(type) => (<CandleStickChartWithZoomPan
 								ref={this.saveNode}
 								data={this.props.someData}
-								disableMouseMoveEvent={disableMouseMoveEvent}
-								disablePanEvent={disablePanEvent}
-								disableZoomEvent={disableZoomEvent}
+								mouseMoveEvent={mouseMoveEvent}
+								panEvent={panEvent}
+								zoomEvent={zoomEvent}
 								clamp={clamp}
 								type={type} />)}
 						</TypeChooser>
@@ -62,16 +62,16 @@ class ZoomAndPanPage extends React.Component {
 				</Row>
 				<Row>
 					<div style={{ textAlign: "center" }}>
-						<button type="button" onClick={this.toggleState.bind(this, "disableMouseMoveEvent")}>
-							{disableMouseMoveEvent ? "Enable" : "Disable"} Mouse Moves
+						<button type="button" onClick={this.toggleState.bind(this, "mouseMoveEvent")}>
+							{mouseMoveEvent ? "Disable" : "Enable"} Mouse Moves
 						</button>
 						{" "}
-						<button type="button" onClick={this.toggleState.bind(this, "disablePanEvent")}>
-							{disablePanEvent ? "Enable" : "Disable"} Pan
+						<button type="button" onClick={this.toggleState.bind(this, "panEvent")}>
+							{panEvent ? "Disable" : "Enable"} Pan
 						</button>
 						{" "}
-						<button type="button" onClick={this.toggleState.bind(this, "disableZoomEvent")}>
-							{disableZoomEvent ? "Enable" : "Disable"} Zoom
+						<button type="button" onClick={this.toggleState.bind(this, "zoomEvent")}>
+							{zoomEvent ? "Disable" : "Enable"} Zoom
 						</button>
 						{" "}
 						<button type="button" onClick={this.toggleState.bind(this, "clamp")}>

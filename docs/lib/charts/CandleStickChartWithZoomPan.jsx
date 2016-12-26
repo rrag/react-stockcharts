@@ -31,7 +31,7 @@ class CandleStickChartWithZoomPan extends React.Component {
 	}
 	render() {
 		var { data, type, width, ratio } = this.props;
-		var { disableMouseMoveEvent, disablePanEvent, disableZoomEvent } = this.props;
+		var { mouseMoveEvent, panEvent, zoomEvent } = this.props;
 		var { clamp } = this.props;
 		return (
 			<ChartCanvas ref={this.saveNode}
@@ -39,16 +39,16 @@ class CandleStickChartWithZoomPan extends React.Component {
 					margin={{ left: 70, right: 70, top: 10, bottom: 30 }} type={type}
 					seriesName="MSFT"
 					data={data}
-					disableMouseMoveEvent={disableMouseMoveEvent}
-					disablePanEvent={disablePanEvent}
-					disableZoomEvent={disableZoomEvent}
+					mouseMoveEvent={mouseMoveEvent}
+					panEvent={panEvent}
+					zoomEvent={zoomEvent}
 					clamp={clamp}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2016, 0, 1), new Date(2016, 9, 11)]}>
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low]]}>
-					<XAxis axisAt="bottom" orient="bottom" zoomEnabled={!disableZoomEvent} />
-					<YAxis axisAt="right" orient="right" ticks={5} zoomEnabled={!disableZoomEvent} />
+					<XAxis axisAt="bottom" orient="bottom" zoomEnabled={!zoomEvent} />
+					<YAxis axisAt="right" orient="right" ticks={5} zoomEnabled={!zoomEvent} />
 
 					<MouseCoordinateY
 						at="right"
@@ -61,7 +61,7 @@ class CandleStickChartWithZoomPan extends React.Component {
 				<Chart id={2}
 						yExtents={d => d.volume}
 						height={150} origin={(w, h) => [0, h - 150]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")} zoomEnabled={!disableZoomEvent} />
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")} zoomEnabled={!zoomEvent} />
 
 					<MouseCoordinateX
 						at="bottom"
@@ -89,9 +89,9 @@ CandleStickChartWithZoomPan.propTypes = {
 
 CandleStickChartWithZoomPan.defaultProps = {
 	type: "svg",
-	disableMouseMoveEvent: false,
-	disablePanEvent: false,
-	disableZoomEvent: false,
+	mouseMoveEvent: true,
+	panEvent: true,
+	zoomEvent: true,
 	clamp: false,
 };
 

@@ -4,16 +4,16 @@
 
 Click and drag the axis, to zoom on y & x. Once y axis is zoomed you can pan the chart on both x & y axis. Reset the y axis domain with the "Reset y domain" button
 
-`mousemove`, `pan` and `zoom` are enabled by default. To disable them you can use `disableMouseMoveEvent`, `disablePanEvent` and `disableZoomEvent` props.
+`mousemove`, `pan` and `zoom` are enabled by default. To disable them you can use `mouseMoveEvent`, `panEvent` and `zoomEvent` props.
 
 `clamp` is disabled by default
 
 ```jsx
 <ChartCanvas 
     ...
-    disableMouseMoveEvent={false}
-    disablePanEvent={false}
-    disableZoomEvent={false}
+    mouseMoveEvent={true}
+    panEvent={true}
+    zoomEvent={true}
     clamp={false}
     ...
 />

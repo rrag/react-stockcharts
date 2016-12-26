@@ -101,7 +101,6 @@ class GenericComponent extends Component {
 			break;
 		}
 		case "draw": {
-
 			if (this.drawOnNextTick) {
 				this.draw();
 			}

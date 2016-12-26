@@ -470,8 +470,8 @@ class ChartCanvas extends Component {
 
 		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
 		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
+
 		this.clearBothCanvas();
-		// this.clearInteractiveCanvas();
 
 		var { fullData } = this;
 		var firstItem = first(fullData);
@@ -481,6 +481,7 @@ class ChartCanvas extends Component {
 		var { onLoadMore } = this.props;
 
 		this.triggerEvent("zoom", {
+			show: true,
 			mouseXY,
 			currentCharts,
 			currentItem,
@@ -491,8 +492,7 @@ class ChartCanvas extends Component {
 			plotData,
 			chartConfig,
 		}, () => {
-
-			this.draw();
+			// this.draw();
 			if (start < end) {
 				onLoadMore(start, end);
 			}
@@ -782,7 +782,7 @@ class ChartCanvas extends Component {
 	}
 	render() {
 
-		var { type, height, width, margin, className, zIndex, defaultFocus, ratio, disableMouseMoveEvent, disablePanEvent, disableZoomEvent } = this.props;
+		var { type, height, width, margin, className, zIndex, defaultFocus, ratio, mouseMoveEvent, panEvent, zoomEvent } = this.props;
 		var { useCrossHairStyleCursor, drawMode, onSelect } = this.props;
 
 		var { plotData, xScale, xAccessor, chartConfig } = this.state;
@@ -807,9 +807,9 @@ class ChartCanvas extends Component {
 					</defs>
 					<g transform={`translate(${margin.left + 0.5}, ${margin.top + 0.5})`}>
 						<EventCapture
-							mouseMove={!disableMouseMoveEvent && interaction}
-							zoom={!disableZoomEvent && interaction}
-							pan={!disablePanEvent && interaction && !drawMode}
+							mouseMove={mouseMoveEvent && interaction}
+							zoom={zoomEvent && interaction}
+							pan={panEvent && interaction && !drawMode}
 
 							width={dimensions.width}
 							height={dimensions.height}
@@ -892,9 +892,9 @@ ChartCanvas.propTypes = {
 	zoomMultiplier: PropTypes.number.isRequired,
 	onLoadMore: PropTypes.func,
 	displayXAccessor: PropTypes.func,
-	disableMouseMoveEvent: PropTypes.bool.isRequired,
-	disablePanEvent: PropTypes.bool.isRequired,
-	disableZoomEvent: PropTypes.bool.isRequired,
+	mouseMoveEvent: PropTypes.bool.isRequired,
+	panEvent: PropTypes.bool.isRequired,
+	zoomEvent: PropTypes.bool.isRequired,
 	onSelect: PropTypes.func,
 };
 
@@ -919,9 +919,9 @@ ChartCanvas.defaultProps = {
 	defaultFocus: true,
 	onLoadMore: noop,
 	onSelect: noop,
-	disableMouseMoveEvent: false,
-	disablePanEvent: false,
-	disableZoomEvent: false,
+	mouseMoveEvent: true,
+	panEvent: true,
+	zoomEvent: true,
 	zoomMultiplier: 1.1,
 	// ratio: 2,
 };
