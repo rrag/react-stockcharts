@@ -13,6 +13,14 @@
 1. Pan on y
 1. Support for pan to load more data
 1. Click, Right click, Doubleclick handlers on `LineSeries` - This can serve as a model for other series
+1. Add `tickStrokeDasharray` - [#183](https://github.com/rrag/react-stockcharts/pull/183) and [documentation](http://rrag.github.io/react-stockcharts/documentation.html#/line_scatter)
+1. Control the number of datapoints/px - [#192](https://github.com/rrag/react-stockcharts/pull/192)
+1. Hovertooltip now autosizes based on the content - [#189](https://github.com/rrag/react-stockcharts/pull/189)
+1. Smooth zoom - [#160](https://github.com/rrag/react-stockcharts/pull/160)
+1. More markers for a scatter chart - [#172](https://github.com/rrag/react-stockcharts/pull/172)
+
+#### Contributors
+Please welcome [@shprink](https://github.com/shprink) as a new contributor.
 
 #### Internal Changes
 

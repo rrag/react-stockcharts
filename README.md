@@ -44,7 +44,7 @@ and it is simple to create your own indicator too
 
 ### Installation
 ```sh
-npm install react-stockcharts@next --save
+npm install react-stockcharts --save
 ```
 
 ### Documentation
