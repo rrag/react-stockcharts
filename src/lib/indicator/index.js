@@ -1,6 +1,7 @@
 
 import ema from "./ema";
 import sma from "./sma";
+import wma from "./wma";
 import bollingerBand from "./bollingerBand";
 import heikinAshi from "./heikinAshi";
 import kagi from "./kagi";
@@ -22,6 +23,7 @@ import * as defaultOptionsForAppearance from "./defaultOptionsForAppearance";
 export {
 	ema,
 	sma,
+    wma,
 	bollingerBand,
 	heikinAshi,
 	kagi,

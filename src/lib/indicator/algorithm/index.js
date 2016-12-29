@@ -3,6 +3,7 @@
 // import zipper from "./zipper";
 import ema from "./ema";
 import sma from "./sma";
+import wma from "./wma";
 import bollingerband from "./bollingerband";
 import heikinAshi from "./heikinAshi";
 import kagi from "./kagi";
@@ -25,6 +26,7 @@ export {
 	// zipper
 	ema,
 	sma,
+    wma,
 	bollingerband,
 	heikinAshi,
 	kagi,

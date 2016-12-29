@@ -59,6 +59,11 @@ export const SMA = {
 	windowSize: 10,
 };
 
+export const WMA = {
+    // source: d => d.close, // "high", "low", "open", "close"
+    sourcePath: "close",
+    windowSize: 10,
+};
 export const Kagi = {
 	reversalType: "ATR", // "ATR", "FIXED"
 	windowSize: 14,
