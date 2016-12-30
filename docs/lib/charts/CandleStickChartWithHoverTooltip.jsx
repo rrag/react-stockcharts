@@ -75,12 +75,10 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 			.accessor(d => d.ema50);
 
 		var margin = { left: 80, right: 80, top: 30, bottom: 50 };
-		var height = 400;
 
 		return (
-			<ChartCanvas ratio={ratio}
+			<ChartCanvas ratio={ratio} height={400}
 					width={width}
-					height={height}
 					margin={margin}
 					type={type}
 					seriesName="MSFT"

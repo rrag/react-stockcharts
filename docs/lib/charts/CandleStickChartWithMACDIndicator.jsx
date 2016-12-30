@@ -20,41 +20,38 @@ var { macd, ema, sma } = indicator;
 var { fitWidth } = helper;
 
 class CandleStickChartWithMACDIndicator extends React.Component {
-	getChartCanvas() {
-		return this.refs.chartCanvas;
-	}
 	render() {
 		var { data, type, width, ratio } = this.props;
 
 		var ema26 = ema()
 			.id(0)
 			.windowSize(26)
-			.merge((d, c) => {d.ema26 = c})
+			.merge((d, c) => { d.ema26 = c; })
 			.accessor(d => d.ema26);
 
 		var ema12 = ema()
 			.id(1)
 			.windowSize(12)
-			.merge((d, c) => {d.ema12 = c})
+			.merge((d, c) => {d.ema12 = c;})
 			.accessor(d => d.ema12);
 
 		var macdCalculator = macd()
 			.fast(12)
 			.slow(26)
 			.signal(9)
-			.merge((d, c) => {d.macd = c})
+			.merge((d, c) => {d.macd = c;})
 			.accessor(d => d.macd);
 
 		var smaVolume50 = sma()
 			.id(3)
 			.windowSize(10)
 			.sourcePath("volume")
-			.merge((d, c) => {d.smaVolume50 = c})
+			.merge((d, c) => {d.smaVolume50 = c;})
 			.accessor(d => d.smaVolume50);
 
 		return (
-			<ChartCanvas ref="chartCanvas" ratio={ratio} width={width} height={600}
-					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
+			<ChartCanvas ratio={ratio} width={width} height={600}
+					margin={{ left: 70, right: 70, top: 20, bottom: 30 }} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[ema26, ema12, smaVolume50, macdCalculator]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}>

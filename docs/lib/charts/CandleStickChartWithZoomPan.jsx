@@ -34,8 +34,9 @@ class CandleStickChartWithZoomPan extends React.Component {
 		var { mouseMoveEvent, panEvent, zoomEvent } = this.props;
 		var { clamp } = this.props;
 		return (
-			<ChartCanvas ref={this.saveNode}
-					ratio={ratio} width={width} height={400}
+			<ChartCanvas ref={this.saveNode} height={400}
+					width={width}
+					ratio={ratio}
 					margin={{ left: 70, right: 70, top: 10, bottom: 30 }} type={type}
 					seriesName="MSFT"
 					data={data}

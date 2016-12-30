@@ -40,7 +40,9 @@ function extentsWrapper(inputXAccessor, realXAccessor, useWholeData, clamp, poin
 
 		var chartWidth = last(xScale.range()) - first(xScale.range());
 
-		log(`Trying to show ${filteredData.length} in ${width}px, I can show up to ${showMax(width, pointsPerPxThreshold)} in that width (pointsPerPxThreshold is ${pointsPerPxThreshold}). Also FYI the entire chart width is ${chartWidth}px`);
+		log(`Trying to show ${filteredData.length} in ${width}px,`
+			+ ` I can show up to ${showMax(width, pointsPerPxThreshold)} in that width. `
+			+ `Also FYI the entire chart width is ${chartWidth}px and pointsPerPxThreshold is ${pointsPerPxThreshold}`);
 
 		if (canShowTheseManyPeriods(width, filteredData.length, pointsPerPxThreshold)) {
 			plotData = filteredData;
@@ -64,11 +66,14 @@ function extentsWrapper(inputXAccessor, realXAccessor, useWholeData, clamp, poin
 }
 
 function canShowTheseManyPeriods(width, arrayLength, threshold) {
-	return arrayLength > 1 && arrayLength < showMax(width, threshold);
+	return arrayLength > 1 && arrayLength < showMaxThreshold(width, threshold);
+}
+function showMaxThreshold(width, threshold) {
+	return Math.floor(width * threshold);
 }
 
 function showMax(width, threshold) {
-	return Math.floor(width * threshold);
+	return Math.floor(showMaxThreshold(width, threshold) * 0.97);
 }
 
 function getFilteredResponse(data, left, right, xAccessor) {
