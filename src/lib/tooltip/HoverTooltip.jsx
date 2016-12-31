@@ -33,7 +33,7 @@ class HoverTooltip extends Component {
 
 		if (isNotDefined(pointer)) return null;
 
-		var { bgFill, bgOpacity, backgroundShapeSVG } = this.props;
+		var { bgFill, bgOpacity, backgroundShapeSVG, tooltipSVG } = this.props;
 		var { height } = moreProps;
 
 		var { x, y, content, centerX, pointWidth, bgSize } = pointer;
@@ -58,6 +58,7 @@ class HoverTooltip extends Component {
 HoverTooltip.propTypes = {
 	chartId: PropTypes.number,
 	yAccessor: PropTypes.func,
+	tooltipSVG: PropTypes.func,
 	backgroundShapeSVG: PropTypes.func,
 	bgwidth: PropTypes.number.isRequired,
 	bgheight: PropTypes.number.isRequired,
