@@ -12,31 +12,31 @@ const ALGORITHM_TYPE = "WMA";
 
 export default function() {
 
-    var base = baseIndicator()
+	var base = baseIndicator()
             .type(ALGORITHM_TYPE)
             .accessor(d => d.wma);
 
-    var underlyingAlgorithm = wma();
+	var underlyingAlgorithm = wma();
 
-    var mergedAlgorithm = merge()
+	var mergedAlgorithm = merge()
         .algorithm(underlyingAlgorithm)
         .merge((datum, indicator) => { datum.wma = indicator; });
 
-    var indicator = function(data) {
-        if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
-        var newData = mergedAlgorithm(data);
-        return newData;
-    };
-    indicator.undefinedLength = function() {
-        return underlyingAlgorithm.windowSize();
-    };
+	var indicator = function(data) {
+		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
+		var newData = mergedAlgorithm(data);
+		return newData;
+	};
+	indicator.undefinedLength = function() {
+		return underlyingAlgorithm.windowSize();
+	};
 
-    base.tooltipLabel(() => `${ALGORITHM_TYPE}(${underlyingAlgorithm.windowSize()})`);
+	base.tooltipLabel(() => `${ALGORITHM_TYPE}(${underlyingAlgorithm.windowSize()})`);
 
-    rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
-    rebind(indicator, underlyingAlgorithm, "windowSize", "undefinedLength", "sourcePath");
-    rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
+	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
+	rebind(indicator, underlyingAlgorithm, "windowSize", "undefinedLength", "sourcePath");
+	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 
-    return indicator;
+	return indicator;
 }

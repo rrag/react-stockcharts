@@ -34,9 +34,14 @@ class HoverTooltip extends Component {
 		if (isNotDefined(pointer)) return null;
 
 		var { bgFill, bgOpacity, backgroundShapeSVG, tooltipSVG } = this.props;
+		var { bgheight, bgwidth } = this.props;
 		var { height } = moreProps;
 
 		var { x, y, content, centerX, pointWidth, bgSize } = pointer;
+
+		var bgShape = isDefined(bgwidth) && isDefined(bgheight)
+			? { width: bgwidth, height: bgheight }
+			: bgSize;
 
 		return (
 			<g>
@@ -47,7 +52,7 @@ class HoverTooltip extends Component {
 					fill={bgFill}
 					opacity={bgOpacity} />
 				<g className="react-stockcharts-tooltip-content" transform={`translate(${x}, ${y})`}>
-					{backgroundShapeSVG(this.props, bgSize)}
+					{backgroundShapeSVG(this.props, bgShape)}
 					{tooltipSVG(this.props, content)}
 				</g>
 			</g>
@@ -79,8 +84,8 @@ HoverTooltip.contextTypes = {
 };
 
 HoverTooltip.defaultProps = {
-	bgwidth: 150,
-	bgheight: 50,
+	// bgwidth: 150,
+	// bgheight: 50,
 	tooltipSVG: tooltipSVG,
 	tooltipCanvas: tooltipCanvas,
 	origin: origin,
