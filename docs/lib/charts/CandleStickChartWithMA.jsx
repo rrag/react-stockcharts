@@ -13,7 +13,7 @@ var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } =
 
 var { OHLCTooltip, MovingAverageTooltip } = tooltip;
 var { XAxis, YAxis } = axes;
-var { ema, sma, wma } = indicator;
+var { ema, sma, wma, trima } = indicator;
 
 var { fitWidth } = helper;
 
@@ -41,6 +41,12 @@ class CandleStickChartWithMA extends React.Component {
             .merge((d, c) => {d.wma20 = c})
             .accessor(d => d.wma20)
 
+        var trima20 = trima()
+            .windowSize(20)
+            .sourcePath("close")
+            .merge((d, c) => {d.trima20 = c})
+            .accessor(d => d.trima20)
+
 		var ema50 = ema()
 			.windowSize(50)
 			.sourcePath("close")
@@ -59,11 +65,11 @@ class CandleStickChartWithMA extends React.Component {
 			<ChartCanvas ratio={ratio} width={width} height={400}
 					margin={{ left: 70, right: 70, top: 10, bottom: 30 }} type={type}
 					seriesName="MSFT"
-					data={data} calculator={[sma20, wma20, ema20, ema50, smaVolume50]}
+					data={data} calculator={[sma20, wma20, trima20, ema20, ema50, smaVolume50]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
 					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
 				<Chart id={1}
-						yExtents={[d => [d.high, d.low], sma20.accessor(), wma20.accessor(), ema20.accessor(), ema50.accessor()]}
+						yExtents={[d => [d.high, d.low], sma20.accessor(), wma20.accessor(), trima20.accessor(), ema20.accessor(), ema50.accessor()]}
 						padding={{ top: 10, bottom: 20 }}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
@@ -76,16 +82,18 @@ class CandleStickChartWithMA extends React.Component {
 					<CandlestickSeries />
                     <LineSeries yAccessor={sma20.accessor()} stroke={sma20.stroke()}/>
                     <LineSeries yAccessor={wma20.accessor()} stroke={wma20.stroke()}/>
+                    <LineSeries yAccessor={trima20.accessor()} stroke={trima20.stroke()}/>
                     <LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
 					<LineSeries yAccessor={ema50.accessor()} stroke={ema50.stroke()}/>
                     <CurrentCoordinate yAccessor={sma20.accessor()} fill={sma20.stroke()} />
                     <CurrentCoordinate yAccessor={wma20.accessor()} fill={wma20.stroke()} />
+                    <CurrentCoordinate yAccessor={trima20.accessor()} fill={trima20.stroke()} />
                     <CurrentCoordinate yAccessor={ema20.accessor()} fill={ema20.stroke()} />
 					<CurrentCoordinate yAccessor={ema50.accessor()} fill={ema50.stroke()} />
 
 					<OHLCTooltip origin={[-40, 0]}/>
 					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]}
-						calculators={[sma20, wma20, ema20, ema50]}/>
+						calculators={[sma20, wma20, trima20, ema20, ema50]}/>
 				</Chart>
 				<Chart id={2}
 						yExtents={[d => d.volume, smaVolume50.accessor()]}
