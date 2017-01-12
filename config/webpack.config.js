@@ -64,7 +64,7 @@ function buildConfig(mode) {
 		},
 		plugins: removeEmpty([
 			new ProgressBarPlugin(),
-			new webpack.NoErrorsPlugin(),
+			new webpack.NoEmitOnErrorsPlugin(),
 			new webpack.optimize.OccurrenceOrderPlugin(),
 
 			(docsOrProd ? new webpack.DefinePlugin({
