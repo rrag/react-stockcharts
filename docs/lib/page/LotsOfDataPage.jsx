@@ -1,7 +1,7 @@
 'use strict';
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -9,12 +9,7 @@ import Section from "lib/section";
 
 import CandleStickChartWithEdge from "lib/charts/CandleStickChartWithEdge";
 
-var { TypeChooser } = helper;
-
-var LotsOfDataPage = React.createClass({
-	statics: {
-		title: 'Lots of data'
-	},
+class LotsOfDataPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={LotsOfDataPage.title}>
@@ -33,6 +28,8 @@ var LotsOfDataPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+LotsOfDataPage.title = "Lots of data"
 
 export default LotsOfDataPage;

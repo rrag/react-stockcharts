@@ -4,20 +4,32 @@ import React from "react";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
-import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
+import { ChartCanvas, Chart } from "react-stockcharts";
+import {
+	BarSeries,
+	AreaSeries,
+	CandlestickSeries,
+	LineSeries,
+	RSISeries,
+} from "react-stockcharts/lib/series";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
+import {
+	CrossHairCursor,
+	EdgeIndicator,
+	CurrentCoordinate,
+	MouseCoordinateX,
+	MouseCoordinateY,
+} from "react-stockcharts/lib/coordinates";
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, RSISeries } = series;
-var { discontinuousTimeScaleProvider } = scale;
-
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
-var { EdgeIndicator } = coordinates;
-
-var { OHLCTooltip, MovingAverageTooltip, SingleValueTooltip, RSITooltip } = tooltip;
-
-var { XAxis, YAxis } = axes;
-var { rsi, atr, ema, sma } = indicator;
-
-var { fitWidth } = helper;
+import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
+import {
+	OHLCTooltip,
+	MovingAverageTooltip,
+	RSITooltip,
+	SingleValueTooltip,
+} from "react-stockcharts/lib/tooltip";
+import { ema, rsi, sma, atr } from "react-stockcharts/lib/indicator";
+import { fitWidth } from "react-stockcharts/lib/helper";
 
 class CandleStickChartWithRSIIndicator extends React.Component {
 	render() {
@@ -25,35 +37,35 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 		var ema26 = ema()
 			.id(0)
 			.windowSize(26)
-			.merge((d, c) => {d.ema26 = c})
+			.merge((d, c) => {d.ema26 = c;})
 			.accessor(d => d.ema26);
 
 		var ema12 = ema()
 			.id(1)
 			.windowSize(12)
-			.merge((d, c) => {d.ema12 = c})
+			.merge((d, c) => {d.ema12 = c;})
 			.accessor(d => d.ema12);
 
 		var smaVolume50 = sma()
 			.id(3)
 			.windowSize(10)
 			.sourcePath("volume")
-			.merge((d, c) => {d.smaVolume50 = c})
+			.merge((d, c) => {d.smaVolume50 = c;})
 			.accessor(d => d.smaVolume50);
 
 		var rsiCalculator = rsi()
 			.windowSize(14)
-			.merge((d, c) => {d.rsi = c})
+			.merge((d, c) => {d.rsi = c;})
 			.accessor(d => d.rsi);
 
 		var atr14 = atr()
 			.windowSize(14)
-			.merge((d, c) => {d.atr14 = c})
+			.merge((d, c) => {d.atr14 = c;})
 			.accessor(d => d.atr14);
 
 		return (
 			<ChartCanvas ratio={ratio} width={width} height={600}
-					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
+					margin={{ left: 70, right: 70, top: 20, bottom: 30 }} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[ema26, ema12, smaVolume50, rsiCalculator, atr14]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
@@ -83,7 +95,7 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]}
 						calculators={[ema26, ema12]}/>
 				</Chart>
-				<Chart id={2} height={150} 
+				<Chart id={2} height={150}
 						yExtents={[d => d.volume, smaVolume50.accessor()]}
 						origin={(w, h) => [0, h - 400]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
@@ -96,7 +108,7 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
 				</Chart>
-				<Chart id={3} 
+				<Chart id={3}
 						yExtents={rsiCalculator.domain()}
 						height={125} origin={(w, h) => [0, h - 250]} >
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
@@ -138,8 +150,7 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 			</ChartCanvas>
 		);
 	}
-};
-
+}
 
 CandleStickChartWithRSIIndicator.propTypes = {
 	data: React.PropTypes.array.isRequired,

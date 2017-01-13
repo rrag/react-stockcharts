@@ -1,20 +1,15 @@
 'use strict';
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 
 import CandleStickChartPanToLoadMore from "lib/charts/CandleStickChartPanToLoadMore";
-var { TypeChooser } = helper;
 
-
-var LoadMoreDataPage = React.createClass({
-	statics: {
-		title: 'Load more data on pan'
-	},
+class LoadMoreDataPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={LoadMoreDataPage.title}>
@@ -28,6 +23,8 @@ var LoadMoreDataPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+LoadMoreDataPage.title = 'Load more data on pan'
 
 export default LoadMoreDataPage;

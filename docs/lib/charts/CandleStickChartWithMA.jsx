@@ -4,18 +4,28 @@ import React from "react";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
-import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
+import { ChartCanvas, Chart } from "react-stockcharts";
+import {
+	BarSeries,
+	AreaSeries,
+	CandlestickSeries,
+	LineSeries,
+} from "react-stockcharts/lib/series";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
+import {
+	CrossHairCursor,
+	CurrentCoordinate,
+	MouseCoordinateX,
+	MouseCoordinateY,
+} from "react-stockcharts/lib/coordinates";
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = series;
-var { discontinuousTimeScaleProvider } = scale;
-
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
-
-var { OHLCTooltip, MovingAverageTooltip } = tooltip;
-var { XAxis, YAxis } = axes;
-var { ema, sma, wma, tma } = indicator;
-
-var { fitWidth } = helper;
+import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
+import {
+	OHLCTooltip,
+	MovingAverageTooltip,
+} from "react-stockcharts/lib/tooltip";
+import { ema, wma, sma, tma } from "react-stockcharts/lib/indicator";
+import { fitWidth } from "react-stockcharts/lib/helper";
 
 class CandleStickChartWithMA extends React.Component {
 	render() {

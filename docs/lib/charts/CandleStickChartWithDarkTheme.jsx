@@ -4,25 +4,39 @@ import React from "react";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
-import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, annotation, indicator, helper } from "../../../src/";
+import { ChartCanvas, Chart } from "react-stockcharts";
+import {
+	BarSeries,
+	BollingerSeries,
+	CandlestickSeries,
+	LineSeries,
+	StochasticSeries,
+} from "react-stockcharts/lib/series";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
+import {
+	CrossHairCursor,
+	EdgeIndicator,
+	CurrentCoordinate,
+	MouseCoordinateX,
+	MouseCoordinateY,
+} from "react-stockcharts/lib/coordinates";
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, StochasticSeries, BollingerSeries } = series;
-var { discontinuousTimeScaleProvider } = scale;
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
-var { EdgeIndicator } = coordinates;
-
-var { OHLCTooltip, MovingAverageTooltip, BollingerBandTooltip, StochasticTooltip } = tooltip;
-
-var { XAxis, YAxis } = axes;
-var { stochasticOscillator, ema, bollingerBand } = indicator;
-var { fitWidth } = helper;
+import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
+import {
+	OHLCTooltip,
+	MovingAverageTooltip,
+	BollingerBandTooltip,
+	StochasticTooltip,
+} from "react-stockcharts/lib/tooltip";
+import { ema, stochasticOscillator, bollingerBand } from "react-stockcharts/lib/indicator";
+import { fitWidth } from "react-stockcharts/lib/helper";
 
 class CandleStickChartWithDarkTheme extends React.Component {
 	render() {
 		var height = 750;
 		var { data, type, width, ratio } = this.props;
 
-		var margin = {left: 70, right: 70, top:20, bottom: 30};
+		var margin = { left: 70, right: 70, top: 20, bottom: 30 };
 
 		var gridHeight = height - margin.top - margin.bottom;
 		var gridWidth = width - margin.left - margin.right;
@@ -34,33 +48,33 @@ class CandleStickChartWithDarkTheme extends React.Component {
 		var ema20 = ema()
 			.id(0)
 			.windowSize(20)
-			.merge((d, c) => {d.ema20 = c})
+			.merge((d, c) => {d.ema20 = c;})
 			.accessor(d => d.ema20);
 
 		var ema50 = ema()
 			.id(2)
 			.windowSize(50)
-			.merge((d, c) => {d.ema50 = c})
+			.merge((d, c) => {d.ema50 = c;})
 			.accessor(d => d.ema50);
 
 		var slowSTO = stochasticOscillator()
 			.windowSize(14)
 			.kWindowSize(1)
 			.stroke({ D: "#ea2bff", K: "#74d400", top: "#37a600", middle: "#b8ab00", bottom: "#37a600" })
-			.merge((d, c) => {d.slowSTO = c})
+			.merge((d, c) => {d.slowSTO = c;})
 			.accessor(d => d.slowSTO);
 		var fastSTO = stochasticOscillator()
 			.windowSize(14)
 			.kWindowSize(3)
 			.stroke({ D: "#ea2bff", K: "#74d400", top: "#37a600", middle: "#b8ab00", bottom: "#37a600" })
-			.merge((d, c) => {d.fastSTO = c})
+			.merge((d, c) => {d.fastSTO = c;})
 			.accessor(d => d.fastSTO);
 		var fullSTO = stochasticOscillator()
 			.windowSize(14)
 			.kWindowSize(3)
 			.dWindowSize(4)
 			.stroke({ D: "#ea2bff", K: "#74d400" })
-			.merge((d, c) => {d.fullSTO = c})
+			.merge((d, c) => {d.fullSTO = c;})
 			.accessor(d => d.fullSTO);
 
 		var bb = bollingerBand()

@@ -4,16 +4,24 @@ import React from "react";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
-import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, helper } from "react-stockcharts";
+import { ChartCanvas, Chart } from "react-stockcharts";
+import {
+	ScatterSeries,
+	SquareMarker,
+	LineSeries,
+} from "react-stockcharts/lib/series";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
+import {
+	CrossHairCursor,
+	MouseCoordinateX,
+	MouseCoordinateY,
+} from "react-stockcharts/lib/coordinates";
 
-var { BarSeries, LineSeries, AreaSeries, ScatterSeries, CircleMarker, SquareMarker, TriangleMarker } = series;
-var { discontinuousTimeScaleProvider } = scale;
-
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY } = coordinates;
-
-var { OHLCTooltip } = tooltip;
-var { XAxis, YAxis } = axes;
-var { fitWidth } = helper;
+import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
+import {
+	OHLCTooltip,
+} from "react-stockcharts/lib/tooltip";
+import { fitWidth } from "react-stockcharts/lib/helper";
 
 class LineAndScatterChartGrid extends React.Component {
 	render() {

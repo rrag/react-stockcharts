@@ -1,20 +1,15 @@
 'use strict';
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 
-var { TypeChooser } = helper;
-
 import HorizontalBarChart from "lib/charts/HorizontalBarChart";
 
-var HorizontalBarChartPage = React.createClass({
-	statics: {
-		title: "Horizontal Bar Chart"
-	},
+class HorizontalBarChartPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={HorizontalBarChartPage.title}>
@@ -33,6 +28,8 @@ var HorizontalBarChartPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+HorizontalBarChartPage.title = "Horizontal Bar Chart"
 
 export default HorizontalBarChartPage;

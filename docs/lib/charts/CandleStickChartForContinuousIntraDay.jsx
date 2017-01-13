@@ -6,18 +6,26 @@ import { scaleTime } from "d3-scale";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
+import { ChartCanvas, Chart } from "react-stockcharts";
+import {
+	BarSeries,
+	AreaSeries,
+	CandlestickSeries,
+	LineSeries,
+} from "react-stockcharts/lib/series";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
+import {
+	CrossHairCursor,
+	EdgeIndicator,
+	CurrentCoordinate,
+	MouseCoordinateX,
+	MouseCoordinateY,
+} from "react-stockcharts/lib/coordinates";
 
-import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
+import { OHLCTooltip, MovingAverageTooltip } from "react-stockcharts/lib/tooltip";
+import { ema, sma } from "react-stockcharts/lib/indicator";
+import { fitWidth } from "react-stockcharts/lib/helper";
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = series;
-
-var { EdgeIndicator } = coordinates;
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
-
-var { OHLCTooltip, MovingAverageTooltip } = tooltip;
-var { XAxis, YAxis } = axes;
-var { ema, sma } = indicator;
-var { fitWidth } = helper;
 
 class CandleStickChartForContinuousIntraDay extends React.Component {
 	render() {
@@ -26,20 +34,20 @@ class CandleStickChartForContinuousIntraDay extends React.Component {
 		var ema20 = ema()
 			.id(0)
 			.windowSize(20)
-			.merge((d, c) => {d.ema20 = c})
+			.merge((d, c) => {d.ema20 = c;})
 			.accessor(d => d.ema20);
 
 		var ema50 = ema()
 			.id(2)
 			.windowSize(50)
-			.merge((d, c) => {d.ema50 = c})
+			.merge((d, c) => {d.ema50 = c;})
 			.accessor(d => d.ema50);
 
 		var smaVolume50 = sma()
 			.id(3)
 			.windowSize(50)
 			.sourcePath("volume")
-			.merge((d, c) => {d.smaVolume50 = c})
+			.merge((d, c) => {d.smaVolume50 = c;})
 			.accessor(d => d.smaVolume50);
 
 		return (

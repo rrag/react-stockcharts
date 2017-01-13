@@ -8,10 +8,7 @@ import Section from "lib/section";
 import CandleStickChart from "lib/charts/CandleStickChart";
 import CandleStickStockScaleChart from "lib/charts/CandleStickStockScaleChart";
 
-var CandleStickChartPage = React.createClass({
-	statics: {
-		title: 'Candlestick Chart'
-	},
+class CandleStickChartPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={CandleStickChartPage.title}>
@@ -43,6 +40,8 @@ var CandleStickChartPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+CandleStickChartPage.title = 'Candlestick Chart'
 
 export default CandleStickChartPage;

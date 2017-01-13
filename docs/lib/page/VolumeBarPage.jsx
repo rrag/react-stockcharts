@@ -9,10 +9,7 @@ import CandleStickStockScaleChartWithVolumeBarV1 from "lib/charts/CandleStickSto
 import CandleStickStockScaleChartWithVolumeBarV2 from "lib/charts/CandleStickStockScaleChartWithVolumeBarV2";
 import CandleStickStockScaleChartWithVolumeBarV3 from "lib/charts/CandleStickStockScaleChartWithVolumeBarV3";
 
-var VolumeBarPage = React.createClass({
-	statics: {
-		title: 'Volume bar'
-	},
+class VolumeBarPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={VolumeBarPage.title}>
@@ -54,6 +51,8 @@ var VolumeBarPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+VolumeBarPage.title = 'Volume bar';
 
 export default VolumeBarPage;

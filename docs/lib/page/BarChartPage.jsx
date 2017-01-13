@@ -1,8 +1,7 @@
 'use strict';
 
 import React from "react";
-import { helper } from "react-stockcharts";
-var { TypeChooser } = helper;
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -10,10 +9,7 @@ import Section from "lib/section";
 
 import BarChart from "lib/charts/BarChart";
 
-var BarChartPage = React.createClass({
-	statics: {
-		title: "Bar Chart"
-	},
+class BarChartPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={BarChartPage.title}>
@@ -32,6 +28,8 @@ var BarChartPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+BarChartPage.title = "Bar Chart";
 
 export default BarChartPage;

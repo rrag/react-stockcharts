@@ -1,7 +1,7 @@
 'use strict';
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -9,12 +9,7 @@ import Section from "lib/section";
 
 import AreaChartWithZoomPan from "lib/charts/AreaChartWithZoomPan";
 
-var { TypeChooser } = helper;
-
-var MiscChartsPage = React.createClass({
-	statics: {
-		title: 'Misc Charts'
-	},
+class MiscChartsPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={MiscChartsPage.title}>
@@ -33,6 +28,8 @@ var MiscChartsPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+MiscChartsPage.title = "Misc Charts";
 
 export default MiscChartsPage;

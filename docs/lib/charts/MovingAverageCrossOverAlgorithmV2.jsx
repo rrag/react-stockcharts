@@ -4,21 +4,35 @@ import React from "react";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
-import { ChartCanvas, Chart, series, scale, coordinates, algorithm, annotation, tooltip, axes, indicator, helper } from "react-stockcharts";
+import { ChartCanvas, Chart } from "react-stockcharts";
+import {
+	CandlestickSeries,
+	LineSeries,
+} from "react-stockcharts/lib/series";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
+import {
+	CrossHairCursor,
+	EdgeIndicator,
+	CurrentCoordinate,
+	MouseCoordinateX,
+	MouseCoordinateY,
+} from "react-stockcharts/lib/coordinates";
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = series;
-var { discontinuousTimeScaleProvider } = scale;
-
-var { EdgeIndicator } = coordinates;
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
-var { Annotate, SvgPathAnnotation, Label, buyPath, sellPath } = annotation;
-
-var { OHLCTooltip, MovingAverageTooltip } = tooltip;
-var { XAxis, YAxis } = axes;
-var { ema, sma } = indicator;
-var { fitWidth } = helper;
-
-var algo = algorithm.default;
+import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
+import {
+	OHLCTooltip,
+	MovingAverageTooltip,
+} from "react-stockcharts/lib/tooltip";
+import { ema } from "react-stockcharts/lib/indicator";
+import { fitWidth } from "react-stockcharts/lib/helper";
+import algo from "react-stockcharts/lib/algorithm";
+import {
+	Label,
+	Annotate,
+	SvgPathAnnotation,
+	buyPath,
+	sellPath,
+} from "react-stockcharts/lib/annotation";
 
 class MovingAverageCrossOverAlgorithmV2 extends React.Component {
 	render() {
@@ -27,13 +41,13 @@ class MovingAverageCrossOverAlgorithmV2 extends React.Component {
 		var ema20 = ema()
 			.id(0)
 			.windowSize(13)
-			.merge((d, c) => {d.ema20 = c})
+			.merge((d, c) => { d.ema20 = c; })
 			.accessor(d => d.ema20);
 
 		var ema50 = ema()
 			.id(2)
 			.windowSize(50)
-			.merge((d, c) => {d.ema50 = c})
+			.merge((d, c) => { d.ema50 = c; })
 			.accessor(d => d.ema50);
 
 		var buySell = algo()
@@ -44,11 +58,11 @@ class MovingAverageCrossOverAlgorithmV2 extends React.Component {
 				if (prevShortTerm < prevLongTerm && nowShortTerm > nowLongTerm) return "LONG";
 				if (prevShortTerm > prevLongTerm && nowShortTerm < nowLongTerm) return "SHORT";
 			})
-			.merge((d, c) => {d.longShort = c})
+			.merge((d, c) => { d.longShort = c; });
 
 		var defaultAnnotationProps = {
 			onClick: console.log.bind(console),
-		}
+		};
 
 		var longAnnotationProps = {
 			...defaultAnnotationProps,
@@ -66,10 +80,10 @@ class MovingAverageCrossOverAlgorithmV2 extends React.Component {
 			tooltip: "Go short",
 		};
 
-		var margin = {left: 80, right: 80, top:30, bottom: 50};
+		var margin = { left: 80, right: 80, top: 30, bottom: 50 };
 		var height = 400;
 
-		var [yAxisLabelX, yAxisLabelY] = [width -margin.left - 40, margin.top + (height - margin.top - margin.bottom) / 2]
+		var [yAxisLabelX, yAxisLabelY] = [width - margin.left - 40, margin.top + (height - margin.top - margin.bottom) / 2]
 		return (
 			<ChartCanvas ratio={ratio} width={width} height={height}
 					margin={margin} type={type}
@@ -83,7 +97,7 @@ class MovingAverageCrossOverAlgorithmV2 extends React.Component {
 						padding={{ top: 10, bottom: 20 }}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 
-					<Label x={(width -margin.left - margin.right)/ 2} y={height - 45}
+					<Label x={(width - margin.left - margin.right) / 2} y={height - 45}
 						fontSize="12" text="XAxis Label here" />
 
 					<YAxis axisAt="right" orient="right" ticks={5} />

@@ -4,26 +4,25 @@ import React from "react";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
-import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
+import { ChartCanvas, Chart } from "react-stockcharts";
+import { BarSeries } from "react-stockcharts/lib/series";
+import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
+import {
+	CrossHairCursor,
+	MouseCoordinateX,
+	MouseCoordinateY,
+} from "react-stockcharts/lib/coordinates";
 
-
-
-var { AreaSeries, BarSeries, LineSeries, AreaSeries } = series;
-var { discontinuousTimeScaleProvider } = scale;
-
-var { EdgeIndicator } = coordinates;
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
-
-var { SingleValueTooltip, MovingAverageTooltip } = tooltip;
-var { XAxis, YAxis } = axes;
-var { fitWidth } = helper;
+import { SingleValueTooltip } from "react-stockcharts/lib/tooltip";
+import { fitWidth } from "react-stockcharts/lib/helper";
 
 class AreaChartWithEdge extends React.Component {
 	render() {
 		var { data, type, width, ratio } = this.props;
 		return (
 			<ChartCanvas ratio={ratio} width={width} height={400}
-					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
+					margin={{ left: 70, right: 70, top: 20, bottom: 30 }} type={type}
 					seriesName="MSFT"
 					data={data}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}

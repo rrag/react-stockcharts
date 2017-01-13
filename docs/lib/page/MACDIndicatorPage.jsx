@@ -1,7 +1,7 @@
 "use strict";
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -9,12 +9,7 @@ import Section from "lib/section";
 
 import CandleStickChartWithMACDIndicator from "lib/charts/CandleStickChartWithMACDIndicator";
 
-var { TypeChooser } = helper;
-
-var MACDIndicatorPage = React.createClass({
-	statics: {
-		title: "MACD"
-	},
+class MACDIndicatorPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={MACDIndicatorPage.title}>
@@ -33,6 +28,8 @@ var MACDIndicatorPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+MACDIndicatorPage.title = "MACD"
 
 export default MACDIndicatorPage;

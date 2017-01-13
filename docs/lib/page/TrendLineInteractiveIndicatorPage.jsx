@@ -2,15 +2,13 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
-import { helper } from "react-stockcharts";
+import { TypeChooser, SaveChartAsImage } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 
 import CandleStickChartWithInteractiveIndicator from "lib/charts/CandleStickChartWithInteractiveIndicator";
-
-var { TypeChooser, SaveChartAsImage } = helper;
 
 class TrendLineInteractiveIndicatorPage extends React.Component {
 	constructor(props) {

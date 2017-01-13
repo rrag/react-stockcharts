@@ -6,12 +6,12 @@ import { max } from "d3-array";
 
 import React from "react";
 
-import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
-
-var { StackedBarSeries  } = series;
-
-var { XAxis, YAxis } = axes;
-var { fitWidth } = helper;
+import { ChartCanvas, Chart } from "react-stockcharts";
+import {
+	StackedBarSeries,
+} from "react-stockcharts/lib/series";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
+import { fitWidth } from "react-stockcharts/lib/helper";
 
 class HorizontalStackedBarChart extends React.Component {
 	render() {

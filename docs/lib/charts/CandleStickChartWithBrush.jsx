@@ -4,46 +4,53 @@ import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 import React from "react";
 
-import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper, interactive } from "react-stockcharts";
+import { ChartCanvas, Chart } from "react-stockcharts";
+import {
+	BarSeries,
+	AreaSeries,
+	CandlestickSeries,
+	LineSeries,
+	MACDSeries,
+} from "react-stockcharts/lib/series";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
+import {
+	CrossHairCursor,
+	EdgeIndicator,
+	CurrentCoordinate,
+	MouseCoordinateX,
+	MouseCoordinateY,
+} from "react-stockcharts/lib/coordinates";
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, MACDSeries } = series;
-var { discontinuousTimeScaleProvider } = scale;
-
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
-var { EdgeIndicator } = coordinates;
-
-var { OHLCTooltip, MovingAverageTooltip, MACDTooltip } = tooltip;
-
-var { XAxis, YAxis } = axes;
-var { macd, ema, sma } = indicator;
-var { fitWidth } = helper;
-
-var { Brush } = interactive;
+import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
+import { OHLCTooltip, MovingAverageTooltip, MACDTooltip } from "react-stockcharts/lib/tooltip";
+import { ema, sma, macd } from "react-stockcharts/lib/indicator";
+import { fitWidth } from "react-stockcharts/lib/helper";
+import { Brush } from "react-stockcharts/lib/interactive";
 
 var ema26 = ema()
 	.id(0)
 	.windowSize(26)
-	.merge((d, c) => { d.ema26 = c })
+	.merge((d, c) => { d.ema26 = c; })
 	.accessor(d => d.ema26);
 
 var ema12 = ema()
 	.id(1)
 	.windowSize(12)
-	.merge((d, c) => { d.ema12 = c })
+	.merge((d, c) => { d.ema12 = c; })
 	.accessor(d => d.ema12);
 
 var macdCalculator = macd()
 	.fast(12)
 	.slow(26)
 	.signal(9)
-	.merge((d, c) => { d.macd = c })
+	.merge((d, c) => { d.macd = c; })
 	.accessor(d => d.macd);
 
 var smaVolume50 = sma()
 	.id(3)
 	.windowSize(10)
 	.sourcePath("volume")
-	.merge((d, c) => { d.smaVolume50 = c })
+	.merge((d, c) => { d.smaVolume50 = c; })
 	.accessor(d => d.smaVolume50);
 
 const BRUSH_TYPE = "2D"; // Valid values = "2D", "1D"
@@ -70,9 +77,9 @@ class CandlestickChart extends React.Component {
 		var keyCode = e.which;
 		console.log(keyCode);
 		switch (keyCode) {
-			case 27: { // ESC
-				this.refs.brush.terminate();
-			}
+		case 27: { // ESC
+			this.refs.brush.terminate();
+		}
 		}
 	}
 	handleBrush(brushCoords, startAndEndItem, startAndEndMouseLocation, event) {
@@ -178,6 +185,6 @@ CandlestickChart.defaultProps = {
 	type: "svg",
 };
 
-var CandleStickChartWithBrush = fitWidth(CandlestickChart)
+var CandleStickChartWithBrush = fitWidth(CandlestickChart);
 
 export default CandleStickChartWithBrush;

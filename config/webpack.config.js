@@ -113,7 +113,9 @@ function buildConfig(mode) {
 		resolve: Object.assign({
 			extensions: [".js", ".jsx", ".scss", ".md"]
 		}, (docsOrWatch ? {
-			alias: { "react-stockcharts": path.join(rootPath, "src") },
+			alias: {
+				"react-stockcharts": path.join(rootPath, "src"),
+			},
 			modules: ["docs", "node_modules"]
 		} : {}))
 	};

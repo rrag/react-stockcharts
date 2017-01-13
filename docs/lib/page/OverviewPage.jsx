@@ -6,10 +6,7 @@ import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 
-var OverviewPage = React.createClass({
-	statics: {
-		title: 'Overview'
-	},
+class OverviewPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={OverviewPage.title}>
@@ -21,6 +18,8 @@ var OverviewPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+OverviewPage.title = 'Overview';
 
 export default OverviewPage;

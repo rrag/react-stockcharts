@@ -1,7 +1,7 @@
 'use strict';
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -9,12 +9,7 @@ import Section from "lib/section";
 
 import CandleStickChartWithMA from "lib/charts/CandleStickChartWithMA";
 
-var { TypeChooser } = helper;
-
-var MAOverlayPage = React.createClass({
-	statics: {
-		title: 'Moving Average'
-	},
+class MAOverlayPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={MAOverlayPage.title}>
@@ -33,6 +28,8 @@ var MAOverlayPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+MAOverlayPage.title = "Moving Average";
 
 export default MAOverlayPage;

@@ -1,7 +1,7 @@
 "use strict";
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -9,13 +9,7 @@ import Section from "lib/section";
 
 import CandleStickChartWithBrush from "lib/charts/CandleStickChartWithBrush";
 
-var { TypeChooser } = helper;
-
-
-var BrushSupportPage = React.createClass({
-	statics: {
-		title: "Brush"
-	},
+class BrushSupportPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={BrushSupportPage.title}>
@@ -34,6 +28,8 @@ var BrushSupportPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+BrushSupportPage.title = "Brush";
 
 export default BrushSupportPage;

@@ -4,27 +4,30 @@ import React from "react";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
-import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
+import { ChartCanvas, Chart } from "react-stockcharts";
+import {
+	SARSeries,
+	CandlestickSeries,
+} from "react-stockcharts/lib/series";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
+import {
+	CrossHairCursor,
+	EdgeIndicator,
+	MouseCoordinateX,
+	MouseCoordinateY,
+} from "react-stockcharts/lib/coordinates";
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, SARSeries } = series;
-var { discontinuousTimeScaleProvider } = scale;
-
-var { EdgeIndicator } = coordinates;
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
-
-var { OHLCTooltip, SingleValueTooltip } = tooltip;
-var { XAxis, YAxis } = axes;
-var { ema, sar } = indicator;
-var { fitWidth } = helper;
+import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
+import {
+	OHLCTooltip,
+	SingleValueTooltip,
+} from "react-stockcharts/lib/tooltip";
+import { sar } from "react-stockcharts/lib/indicator";
+import { fitWidth } from "react-stockcharts/lib/helper";
 
 class CandleStickChartWithSAR extends React.Component {
 	render() {
 		var { data, type, width, ratio } = this.props;
-		var ema26 = ema()
-			.id(0)
-			.windowSize(26)
-			.merge((d, c) => {d.ema26 = c})
-			.accessor(d => d.ema26);
 
 		const accelerationFactor = .02;
 		const maxAccelerationFactor = .2;
@@ -32,7 +35,7 @@ class CandleStickChartWithSAR extends React.Component {
 		var defaultSar = sar()
 			.accelerationFactor(accelerationFactor)
 			.maxAccelerationFactor(maxAccelerationFactor)
-			.merge((d, c) => {d.sar = c})
+			.merge((d, c) => {d.sar = c;})
 			.accessor(d => d.sar);
 
 		var dataWithSar = defaultSar(data);
@@ -71,7 +74,8 @@ class CandleStickChartWithSAR extends React.Component {
 
 					<OHLCTooltip origin={[-40, 0]}/>
 					<SingleValueTooltip
-						yLabel={`SAR (${accelerationFactor}, ${maxAccelerationFactor})`} yAccessor={d => d.sar}
+						yLabel={`SAR (${accelerationFactor}, ${maxAccelerationFactor})`}
+						yAccessor={d => d.sar}
 						origin={[-40, 20]}/>
 				</Chart>
 				<CrossHairCursor />
@@ -79,11 +83,6 @@ class CandleStickChartWithSAR extends React.Component {
 		);
 	}
 }
-
-/*
-
-
-*/
 
 CandleStickChartWithSAR.propTypes = {
 	data: React.PropTypes.array.isRequired,

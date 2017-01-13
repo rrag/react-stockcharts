@@ -1,8 +1,7 @@
 'use strict';
 
 import React from "react";
-import { helper } from "react-stockcharts";
-var { TypeChooser } = helper;
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -10,10 +9,8 @@ import Section from "lib/section";
 
 import LineAndScatterChart from "lib/charts/LineAndScatterChart";
 
-var LineAndScatterChartPage = React.createClass({
-	statics: {
-		title: 'Line & Scatter'
-	},
+class LineAndScatterChartPage extends React.Component {
+
 	render() {
 		return (
 			<ContentSection title={LineAndScatterChartPage.title}>
@@ -32,6 +29,8 @@ var LineAndScatterChartPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+LineAndScatterChartPage.title = 'Line & Scatter'
 
 export default LineAndScatterChartPage;

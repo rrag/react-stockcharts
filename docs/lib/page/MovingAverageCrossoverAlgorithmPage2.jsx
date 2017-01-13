@@ -1,7 +1,7 @@
 "use strict";
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -9,12 +9,7 @@ import Section from "lib/section";
 
 import MovingAverageCrossOverAlgorithmV2 from "lib/charts/MovingAverageCrossOverAlgorithmV2";
 
-var { TypeChooser } = helper;
-
-var MovingAverageCrossoverAlgorithmPage2 = React.createClass({
-	statics: {
-		title: "MA Crossover - Using svg shape"
-	},
+class MovingAverageCrossoverAlgorithmPage2 extends React.Component {
 	render() {
 		return (
 			<ContentSection title={MovingAverageCrossoverAlgorithmPage2.title}>
@@ -33,6 +28,8 @@ var MovingAverageCrossoverAlgorithmPage2 = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+MovingAverageCrossoverAlgorithmPage2.title = "MA Crossover - Using svg shape"
 
 export default MovingAverageCrossoverAlgorithmPage2;

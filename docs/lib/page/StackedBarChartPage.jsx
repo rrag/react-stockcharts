@@ -1,8 +1,6 @@
-'use strict';
 
 import React from "react";
-import { helper } from "react-stockcharts";
-var { TypeChooser } = helper;
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -10,10 +8,8 @@ import Section from "lib/section";
 
 import StackedBarChart from "lib/charts/StackedBarChart";
 
-var StackedBarChartPage = React.createClass({
-	statics: {
-		title: "Stacked Bar Chart"
-	},
+class StackedBarChartPage extends React.Component {
+
 	render() {
 		return (
 			<ContentSection title={StackedBarChartPage.title}>
@@ -26,12 +22,14 @@ var StackedBarChartPage = React.createClass({
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/STACKED-BAR-CHART')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require('md/STACKED-BAR-CHART')}}></aside>
 					</Section>
 				</Row>
 			</ContentSection>
 		);
 	}
-});
+}
+
+StackedBarChartPage.title = "Stacked Bar Chart";
 
 export default StackedBarChartPage;

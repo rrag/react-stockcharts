@@ -4,20 +4,28 @@ import React from "react";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
-import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
+import { ChartCanvas, Chart } from "react-stockcharts";
+import {
+	BarSeries,
+	OHLCSeries,
+	ElderRaySeries,
+	StraightLine,
+} from "react-stockcharts/lib/series";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
+import {
+	CrossHairCursor,
+	EdgeIndicator,
+	MouseCoordinateX,
+	MouseCoordinateY,
+} from "react-stockcharts/lib/coordinates";
 
-var { OHLCSeries, BarSeries, LineSeries, AreaSeries, ElderRaySeries, StraightLine } = series;
-var { discontinuousTimeScaleProvider } = scale;
-
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
-var { EdgeIndicator } = coordinates;
-
-var { OHLCTooltip, MovingAverageTooltip, SingleValueTooltip, RSITooltip } = tooltip;
-
-var { XAxis, YAxis } = axes;
-var { elderRay, change } = indicator;
-
-var { fitWidth } = helper;
+import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
+import {
+	OHLCTooltip,
+	SingleValueTooltip,
+} from "react-stockcharts/lib/tooltip";
+import { change, elderRay } from "react-stockcharts/lib/indicator";
+import { fitWidth } from "react-stockcharts/lib/helper";
 
 class OHLCChartWithElderRayIndicator extends React.Component {
 	render() {
@@ -28,7 +36,7 @@ class OHLCChartWithElderRayIndicator extends React.Component {
 
 		return (
 			<ChartCanvas ratio={ratio} width={width} height={650}
-					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
+					margin={{ left: 70, right: 70, top: 20, bottom: 30 }} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[changeCalculator, elder]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
@@ -136,7 +144,7 @@ class OHLCChartWithElderRayIndicator extends React.Component {
 			</ChartCanvas>
 		);
 	}
-};
+}
 
 OHLCChartWithElderRayIndicator.propTypes = {
 	data: React.PropTypes.array.isRequired,

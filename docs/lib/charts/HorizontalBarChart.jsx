@@ -5,12 +5,12 @@ import { scaleLinear, scalePoint } from  "d3-scale";
 
 import React from "react";
 
-import { ChartCanvas, Chart, series, axes, helper } from "react-stockcharts";
-
-var { BarSeries } = series;
-
-var { XAxis, YAxis } = axes;
-var { fitWidth } = helper;
+import { ChartCanvas, Chart } from "react-stockcharts";
+import {
+	BarSeries,
+} from "react-stockcharts/lib/series";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
+import { fitWidth } from "react-stockcharts/lib/helper";
 
 class HorizontalBarChart extends React.Component {
 	render() {

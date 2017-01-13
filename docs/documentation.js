@@ -7,8 +7,6 @@ import { csvParse, tsvParse } from  "d3-dsv";
 import { merge } from "d3-array";
 import { timeParse } from "d3-time-format";
 
-import { helper } from "react-stockcharts";
-
 var parseDate = timeParse("%Y-%m-%d");
 var parseDateTime = timeParse("%Y-%m-%d %H:%M:%S");
 
@@ -104,14 +102,6 @@ var INTERACTIVE = {
 		require("./lib/page/FibonacciInteractiveIndicatorPage").default,
 		require("./lib/page/ClickHandlerCallbackPage").default,
 		require("./lib/page/BrushSupportPage").default,
-	]
-};
-
-var CUSTOMIZATION = {
-	head: "Customization",
-	pages: [
-		require("./lib/page/CreatingCustomIndicatorPage").default,
-		require("./lib/page/CreatingCustomChartSeriesPage").default,
 	]
 };
 
@@ -313,8 +303,6 @@ function renderPartialPage(data, dataFull, intraDayContinuous, intraDayDiscontin
 	// PointAndFigure
 	// Renko
 	var Chart = require("./lib/charts/CandleStickChartForDiscontinuousIntraDay").default;
-	var { TypeChooser } = helper;
-
 	// data, dataFull, compareData
 	class ExamplesPage extends React.Component {
 		render() {

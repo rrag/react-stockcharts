@@ -4,18 +4,23 @@ import React from "react";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
-import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
+import { ChartCanvas, Chart } from "react-stockcharts";
+import {
+	BarSeries,
+	CandlestickSeries,
+	LineSeries,
+} from "react-stockcharts/lib/series";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
+import {
+	EdgeIndicator,
+} from "react-stockcharts/lib/coordinates";
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries } = series;
-var { discontinuousTimeScaleProvider } = scale;
-
-var { EdgeIndicator } = coordinates;
-var { CurrentCoordinate } = coordinates;
-
-var { OHLCTooltip, MovingAverageTooltip, HoverTooltip } = tooltip;
-var { XAxis, YAxis } = axes;
-var { ema, sma } = indicator;
-var { fitWidth } = helper;
+import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
+import {
+	HoverTooltip,
+} from "react-stockcharts/lib/tooltip";
+import { ema } from "react-stockcharts/lib/indicator";
+import { fitWidth } from "react-stockcharts/lib/helper";
 
 var dateFormat = timeFormat("%Y-%m-%d");
 var numberFormat = format(".2f");
@@ -47,7 +52,7 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 	removeRandomValues(data) {
 		return data.map((item) => {
 			const numberOfDeletion = Math.floor(Math.random() * keyValues.length) + 1;
-			for (let i = 0; i < numberOfDeletion; i += 1){
+			for (let i = 0; i < numberOfDeletion; i += 1) {
 				const randomKey = keyValues[Math.floor(Math.random() * keyValues.length)];
 				item[randomKey] = undefined;
 			}
@@ -105,6 +110,10 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 						yAccessor={d => d.close}
 						fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 
+					<HoverTooltip
+						yAccessor={ema50.accessor()}
+						tooltipContent={tooltipContent([ema20, ema50])}
+						fontSize={15} />
 				</Chart>
 				<Chart id={2}
 						yExtents={[d => d.volume]}
@@ -113,11 +122,6 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
-				<HoverTooltip
-					chartId={1}
-					yAccessor={ema50.accessor()}
-					tooltipContent={tooltipContent([ema20, ema50])}
-					fontSize={15} />
 			</ChartCanvas>
 		);
 	}

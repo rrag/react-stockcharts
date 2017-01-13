@@ -1,19 +1,14 @@
 'use strict';
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 import CandleStickChartWithBollingerBandOverlay from "lib/charts/CandleStickChartWithBollingerBandOverlay";
 
-var { TypeChooser } = helper;
-
-var BollingerBandOverlayPage = React.createClass({
-	statics: {
-		title: 'Bollinger Band'
-	},
+class BollingerBandOverlayPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={BollingerBandOverlayPage.title}>
@@ -32,6 +27,8 @@ var BollingerBandOverlayPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+BollingerBandOverlayPage.title = 'Bollinger Band';
 
 export default BollingerBandOverlayPage;

@@ -1,7 +1,7 @@
 "use strict";
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -9,12 +9,8 @@ import Section from "lib/section";
 
 import CandleStickChartWithRSIIndicator from "lib/charts/CandleStickChartWithRSIIndicator";
 
-var { TypeChooser } = helper;
+class RSIIndicatorPage extends React.Component {
 
-var RSIIndicatorPage = React.createClass({
-	statics: {
-		title: "RSI and ATR"
-	},
 	render() {
 		return (
 			<ContentSection title={RSIIndicatorPage.title}>
@@ -33,6 +29,8 @@ var RSIIndicatorPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+RSIIndicatorPage.title = "RSI and ATR";
 
 export default RSIIndicatorPage;

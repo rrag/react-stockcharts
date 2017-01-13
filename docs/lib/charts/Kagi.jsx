@@ -4,18 +4,24 @@ import React from "react";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
-import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
+import { ChartCanvas, Chart } from "react-stockcharts";
+import {
+	BarSeries,
+	KagiSeries,
+} from "react-stockcharts/lib/series";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
+import {
+	CrossHairCursor,
+	MouseCoordinateX,
+	MouseCoordinateY,
+} from "react-stockcharts/lib/coordinates";
 
-var { BarSeries, LineSeries, AreaSeries, KagiSeries } = series;
-var { discontinuousTimeScaleProvider } = scale;
-
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
-var { EdgeIndicator } = coordinates;
-
-var { OHLCTooltip } = tooltip;
-var { XAxis, YAxis } = axes;
-var { kagi } = indicator;
-var { fitWidth } = helper;
+import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
+import {
+	OHLCTooltip,
+} from "react-stockcharts/lib/tooltip";
+import { kagi } from "react-stockcharts/lib/indicator";
+import { fitWidth } from "react-stockcharts/lib/helper";
 
 class Kagi extends React.Component {
 	getChartCanvas() {
@@ -24,7 +30,7 @@ class Kagi extends React.Component {
 	render() {
 		var { data, type, width, ratio } = this.props;
 		var kagiCalculator = kagi();
-		console.log(type)
+
 		return (
 			<ChartCanvas ref="chartCanvas" ratio={ratio} width={width} height={400}
 					margin={{ left: 80, right: 80, top: 10, bottom: 30 }} type={type}

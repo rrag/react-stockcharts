@@ -3,28 +3,17 @@
 
 import { scaleOrdinal, schemeCategory10 } from  "d3-scale";
 import { bisector } from "d3-array";
-
-import zipper from "./zipper";
-import merge from "./merge";
-import slidingWindow from "./slidingWindow";
-import identity from "./identity";
 import noop from "./noop";
-import shallowEqual from "./shallowEqual";
-import mappedSlidingWindow from "./mappedSlidingWindow";
-import accumulatingWindow from "./accumulatingWindow";
-import PureComponent from "./PureComponent";
 
-export {
-	accumulatingWindow,
-	mappedSlidingWindow,
-	merge,
-	identity,
-	noop,
-	shallowEqual,
-	slidingWindow,
-	zipper,
-	PureComponent,
-};
+export { default as zipper } from "./zipper";
+export { default as merge } from "./merge";
+export { default as slidingWindow } from "./slidingWindow";
+export { default as identity } from "./identity";
+export { default as noop } from "./noop";
+export { default as shallowEqual } from "./shallowEqual";
+export { default as mappedSlidingWindow } from "./mappedSlidingWindow";
+export { default as accumulatingWindow } from "./accumulatingWindow";
+export { default as PureComponent } from "./PureComponent";
 
 export * from "./strokeDasharray";
 

@@ -3,15 +3,15 @@
 import React from "react";
 import { format } from "d3-format";
 
-import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
+import { ChartCanvas, Chart } from "react-stockcharts";
+import {
+	BarSeries,
+	CandlestickSeries,
+} from "react-stockcharts/lib/series";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
 
-
-var { CandlestickSeries, BarSeries } = series;
-var { discontinuousTimeScaleProvider } = scale;
-
-var { XAxis, YAxis } = axes;
-
-var { fitWidth } = helper;
+import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
+import { fitWidth } from "react-stockcharts/lib/helper";
 
 class CandleStickStockScaleChartWithVolumeBarV1 extends React.Component {
 	render() {
@@ -19,7 +19,7 @@ class CandleStickStockScaleChartWithVolumeBarV1 extends React.Component {
 
 		return (
 			<ChartCanvas ratio={ratio} width={width} height={400}
-					margin={{left: 50, right: 50, top:10, bottom: 30}} type={type}
+					margin={{ left: 50, right: 50, top: 10, bottom: 30 }} type={type}
 					seriesName="MSFT"
 					data={data}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}

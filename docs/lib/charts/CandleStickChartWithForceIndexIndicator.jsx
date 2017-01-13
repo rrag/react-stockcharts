@@ -4,40 +4,47 @@ import React from "react";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
-import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
+import { ChartCanvas, Chart } from "react-stockcharts";
+import {
+	BarSeries,
+	AreaSeries,
+	CandlestickSeries,
+	StraightLine,
+} from "react-stockcharts/lib/series";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
+import {
+	CrossHairCursor,
+	EdgeIndicator,
+	MouseCoordinateX,
+	MouseCoordinateY,
+} from "react-stockcharts/lib/coordinates";
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, RSISeries, StraightLine } = series;
-var { discontinuousTimeScaleProvider } = scale;
-
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
-var { EdgeIndicator } = coordinates;
-
-var { OHLCTooltip, MovingAverageTooltip, SingleValueTooltip, RSITooltip } = tooltip;
-
-var { XAxis, YAxis } = axes;
-//console.log(indicator);
-var { forceIndex, ema } = indicator;
-
-var { fitWidth } = helper;
+import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
+import {
+	OHLCTooltip,
+	SingleValueTooltip,
+} from "react-stockcharts/lib/tooltip";
+import { ema, forceIndex } from "react-stockcharts/lib/indicator";
+import { fitWidth } from "react-stockcharts/lib/helper";
 
 class CandleStickChartWithForceIndexIndicator extends React.Component {
 	render() {
 		var { data, type, width, ratio } = this.props;
 
 		var fi = forceIndex()
-			.merge((d, c) => {d.fi = c})
+			.merge((d, c) => {d.fi = c;})
 			.accessor(d => d.fi);
 
 		var fiEMA13 = ema()
 			.id(1)
 			.windowSize(13)
 			.sourcePath("fi")
-			.merge((d, c) => {d.fiEMA13 = c})
+			.merge((d, c) => {d.fiEMA13 = c;})
 			.accessor(d => d.fiEMA13);
 
 		return (
 			<ChartCanvas ratio={ratio} width={width} height={550}
-					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
+					margin={{ left: 70, right: 70, top: 20, bottom: 30 }} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[fi, fiEMA13]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
@@ -122,7 +129,7 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 			</ChartCanvas>
 		);
 	}
-};
+}
 
 CandleStickChartWithForceIndexIndicator.propTypes = {
 	data: React.PropTypes.array.isRequired,

@@ -1,7 +1,7 @@
 "use strict";
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -9,12 +9,7 @@ import Section from "lib/section";
 
 import OHLCChartWithElderImpulseIndicator from "lib/charts/OHLCChartWithElderImpulseIndicator";
 
-var { TypeChooser } = helper;
-
-var ElderImpulseIndicatorPage = React.createClass({
-	statics: {
-		title: "Elder Impulse"
-	},
+class ElderImpulseIndicatorPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={ElderImpulseIndicatorPage.title}>
@@ -33,6 +28,8 @@ var ElderImpulseIndicatorPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+ElderImpulseIndicatorPage.title = "Elder Impulse"
 
 export default ElderImpulseIndicatorPage;

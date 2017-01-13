@@ -4,22 +4,32 @@ import React from "react";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
-import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper, interactive } from "react-stockcharts";
+import { ChartCanvas, Chart } from "react-stockcharts";
+import {
+	BarSeries,
+	AreaSeries,
+	CandlestickSeries,
+	LineSeries,
+	MACDSeries,
+} from "react-stockcharts/lib/series";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
+import {
+	CrossHairCursor,
+	EdgeIndicator,
+	CurrentCoordinate,
+	MouseCoordinateX,
+	MouseCoordinateY,
+} from "react-stockcharts/lib/coordinates";
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, MACDSeries } = series;
-var { discontinuousTimeScaleProvider } = scale;
-
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
-var { EdgeIndicator } = coordinates;
-
-var { OHLCTooltip, MovingAverageTooltip, MACDTooltip } = tooltip;
-
-var { XAxis, YAxis } = axes;
-var { macd, ema, sma } = indicator;
-
-var { fitWidth } = helper;
-
-var { Interactive, TrendLine } = interactive;
+import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
+import {
+	OHLCTooltip,
+	MovingAverageTooltip,
+	MACDTooltip,
+} from "react-stockcharts/lib/tooltip";
+import { ema, macd, sma } from "react-stockcharts/lib/indicator";
+import { fitWidth } from "react-stockcharts/lib/helper";
+import { TrendLine } from "react-stockcharts/lib/interactive";
 
 class CandlestickChart extends React.Component {
 	constructor(props) {
@@ -28,7 +38,7 @@ class CandlestickChart extends React.Component {
 		this.onTrendLineComplete = this.onTrendLineComplete.bind(this);
 		this.state = {
 			enableTrendLine: true
-		}
+		};
 	}
 	componentDidMount() {
 		document.addEventListener("keyup", this.onKeyPress);
@@ -39,30 +49,30 @@ class CandlestickChart extends React.Component {
 	onTrendLineComplete() {
 		this.setState({
 			enableTrendLine: false
-		})
+		});
 	}
 	onKeyPress(e) {
 		var keyCode = e.which;
 		console.log(keyCode);
 		switch (keyCode) {
-			case 46: { // DEL
-				this.refs.trend.removeLast();
-				break;
-			}
-			case 27: { // ESC
-				this.refs.trend.terminate();
-				this.setState({
-					enableTrendLine: false
-				})
-				break;
-			}
-			case 68:   // D - Draw trendline
-			case 69: { // E - Enable trendline
-				this.setState({
-					enableTrendLine: true
-				})
-				break;
-			}
+		case 46: { // DEL
+			this.refs.trend.removeLast();
+			break;
+		}
+		case 27: { // ESC
+			this.refs.trend.terminate();
+			this.setState({
+				enableTrendLine: false
+			});
+			break;
+		}
+		case 68:   // D - Draw trendline
+		case 69: { // E - Enable trendline
+			this.setState({
+				enableTrendLine: true
+			});
+			break;
+		}
 		}
 	}
 	render() {
@@ -70,32 +80,32 @@ class CandlestickChart extends React.Component {
 		var ema26 = ema()
 			.id(0)
 			.windowSize(26)
-			.merge((d, c) => {d.ema26 = c})
+			.merge((d, c) => {d.ema26 = c;})
 			.accessor(d => d.ema26);
 
 		var ema12 = ema()
 			.id(1)
 			.windowSize(12)
-			.merge((d, c) => {d.ema12 = c})
+			.merge((d, c) => {d.ema12 = c;})
 			.accessor(d => d.ema12);
 
 		var macdCalculator = macd()
 			.fast(12)
 			.slow(26)
 			.signal(9)
-			.merge((d, c) => {d.macd = c})
+			.merge((d, c) => {d.macd = c;})
 			.accessor(d => d.macd);
 
 		var smaVolume50 = sma()
 			.id(3)
 			.windowSize(10)
 			.sourcePath("volume")
-			.merge((d, c) => {d.smaVolume50 = c})
+			.merge((d, c) => {d.smaVolume50 = c;})
 			.accessor(d => d.smaVolume50);
 
 		return (
 			<ChartCanvas ratio={ratio} width={width} height={600}
-					margin={{left: 70, right: 70, top:20, bottom: 30}} type={type}
+					margin={{ left: 70, right: 70, top: 20, bottom: 30 }} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[ema26, ema12, smaVolume50, macdCalculator]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
@@ -183,6 +193,6 @@ CandlestickChart.defaultProps = {
 	type: "svg",
 };
 
-var CandleStickChartWithInteractiveIndicator = fitWidth(CandlestickChart)
+var CandleStickChartWithInteractiveIndicator = fitWidth(CandlestickChart);
 
 export default CandleStickChartWithInteractiveIndicator;

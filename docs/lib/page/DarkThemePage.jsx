@@ -2,17 +2,13 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
-import { helper } from "react-stockcharts";
+import { TypeChooser, SaveChartAsImage } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 
 import CandleStickChartWithDarkTheme from "lib/charts/CandleStickChartWithDarkTheme";
-
-
-var { TypeChooser, SaveChartAsImage } = helper;
-
 
 class DarkThemePage extends React.Component {
 	constructor(props) {

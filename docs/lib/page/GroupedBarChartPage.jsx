@@ -1,8 +1,7 @@
 'use strict';
 
 import React from "react";
-import { helper } from "react-stockcharts";
-var { TypeChooser } = helper;
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -10,10 +9,7 @@ import Section from "lib/section";
 
 import GroupedBarChart from "lib/charts/GroupedBarChart";
 
-var GroupedBarChartPage = React.createClass({
-	statics: {
-		title: "Grouped Bar Chart"
-	},
+class GroupedBarChartPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={GroupedBarChartPage.title}>
@@ -32,6 +28,8 @@ var GroupedBarChartPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+GroupedBarChartPage.title = "Grouped Bar Chart"
 
 export default GroupedBarChartPage;

@@ -4,20 +4,24 @@ import React from "react";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
-import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
+import { ChartCanvas, Chart } from "react-stockcharts";
+import {
+	BarSeries,
+	RenkoSeries,
+} from "react-stockcharts/lib/series";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
+import {
+	CrossHairCursor,
+	MouseCoordinateX,
+	MouseCoordinateY,
+} from "react-stockcharts/lib/coordinates";
 
-
-var { BarSeries, LineSeries, AreaSeries, RenkoSeries } = series;
-var { discontinuousTimeScaleProvider } = scale;
-
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
-var { EdgeIndicator } = coordinates;
-
-var { OHLCTooltip, MACDTooltip } = tooltip;
-var { XAxis, YAxis } = axes;
-var { renko } = indicator;
-
-var { fitWidth } = helper;
+import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
+import {
+	OHLCTooltip,
+} from "react-stockcharts/lib/tooltip";
+import { renko } from "react-stockcharts/lib/indicator";
+import { fitWidth } from "react-stockcharts/lib/helper";
 
 class Renko extends React.Component {
 	getChartCanvas() {
@@ -29,7 +33,7 @@ class Renko extends React.Component {
 
 		return (
 			<ChartCanvas ref="chartCanvas" ratio={ratio} width={width} height={400}
-					margin={{left: 80, right: 80, top:10, bottom: 30}} type={type}
+					margin={{ left: 80, right: 80, top: 10, bottom: 30 }} type={type}
 					seriesName="MSFT"
 					data={data} calculator={[renkoCalculator]}
 					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}>

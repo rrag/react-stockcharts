@@ -1,20 +1,16 @@
 'use strict';
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 
 import CandleStickChartForContinuousIntraDay from "lib/charts/CandleStickChartForContinuousIntraDay";
-var { TypeChooser } = helper;
 
+class IntraDayContinuousDataPage extends React.Component {
 
-var IntraDayContinuousDataPage = React.createClass({
-	statics: {
-		title: "Intra day with Continuous scale"
-	},
 	render() {
 		return (
 			<ContentSection title={IntraDayContinuousDataPage.title}>
@@ -33,6 +29,8 @@ var IntraDayContinuousDataPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+IntraDayContinuousDataPage.title = "Intra day with Continuous scale"
 
 export default IntraDayContinuousDataPage;

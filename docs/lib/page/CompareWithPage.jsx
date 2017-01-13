@@ -1,20 +1,15 @@
 'use strict';
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 
-var { TypeChooser } = helper;
-
 import CandleStickChartWithCompare from "lib/charts/CandleStickChartWithCompare";
 
-var CompareWithPage = React.createClass({
-	statics: {
-		title: 'Compare'
-	},
+class CompareWithPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={CompareWithPage.title}>
@@ -33,6 +28,8 @@ var CompareWithPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+CompareWithPage.title = "Compare";
 
 export default CompareWithPage;

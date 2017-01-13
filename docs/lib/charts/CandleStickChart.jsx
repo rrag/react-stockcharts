@@ -3,11 +3,10 @@
 import React from "react";
 import { scaleTime } from "d3-scale";
 
-import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
-
-var { CandlestickSeries } = series;
-var { XAxis, YAxis } = axes;
-var { fitWidth } = helper;
+import { ChartCanvas, Chart } from "react-stockcharts";
+import { CandlestickSeries } from "react-stockcharts/lib/series";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
+import { fitWidth } from "react-stockcharts/lib/helper";
 
 class CandleStickChart extends React.Component {
 	render() {

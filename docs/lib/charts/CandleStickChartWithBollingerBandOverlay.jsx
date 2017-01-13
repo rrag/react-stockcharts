@@ -4,17 +4,26 @@ import React from "react";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
-import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
+import { ChartCanvas, Chart } from "react-stockcharts";
+import {
+	CandlestickSeries,
+	LineSeries,
+	BollingerSeries,
+	BarSeries,
+	AreaSeries,
+} from "react-stockcharts/lib/series";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
+import {
+	CrossHairCursor,
+	CurrentCoordinate,
+	MouseCoordinateX,
+	MouseCoordinateY,
+} from "react-stockcharts/lib/coordinates";
 
-var { CandlestickSeries, BarSeries, LineSeries, AreaSeries, BollingerSeries } = series;
-var { discontinuousTimeScaleProvider } = scale;
-var { EdgeIndicator } = coordinates;
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY, CurrentCoordinate } = coordinates;
-
-var { OHLCTooltip, MovingAverageTooltip, BollingerBandTooltip } = tooltip;
-var { XAxis, YAxis } = axes;
-var { ema, sma, bollingerBand } = indicator;
-var { fitWidth } = helper;
+import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
+import { OHLCTooltip, MovingAverageTooltip, BollingerBandTooltip } from "react-stockcharts/lib/tooltip";
+import { ema, sma, bollingerBand } from "react-stockcharts/lib/indicator";
+import { fitWidth } from "react-stockcharts/lib/helper";
 
 class CandleStickChartWithBollingerBandOverlay extends React.Component {
 	render() {
@@ -24,32 +33,32 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 			.windowSize(20) // optional will default to 10
 			.sourcePath("close") // optional will default to close as the source
 			.skipUndefined(true) // defaults to true
-			.merge((d, c) => {d.ema20 = c}) // Required, if not provided, log a error
+			.merge((d, c) => {d.ema20 = c;}) // Required, if not provided, log a error
 			.accessor(d => d.ema20) // Required, if not provided, log an error during calculation
-			.stroke("blue") // Optional
+			.stroke("blue"); // Optional
 
 		var sma20 = sma()
 			.windowSize(20)
 			.sourcePath("close")
-			.merge((d, c) => {d.sma20 = c})
-			.accessor(d => d.sma20)
+			.merge((d, c) => {d.sma20 = c;})
+			.accessor(d => d.sma20);
 
 		var ema50 = ema()
 			.windowSize(50)
 			.sourcePath("close")
-			.merge((d, c) => {d.ema50 = c})
-			.accessor(d => d.ema50)
+			.merge((d, c) => {d.ema50 = c;})
+			.accessor(d => d.ema50);
 
 		var smaVolume50 = sma()
 			.windowSize(50)
 			.sourcePath("volume")
-			.merge((d, c) => {d.smaVolume50 = c})
+			.merge((d, c) => {d.smaVolume50 = c;})
 			.accessor(d => d.smaVolume50)
 			.stroke("#4682B4")
 			.fill("#4682B4");
 
 		var bb = bollingerBand()
-			.merge((d, c) => {d.bb = c})
+			.merge((d, c) => {d.bb = c;})
 			.accessor(d => d.bb);
 		return (
 			<ChartCanvas ratio={ratio} width={width} height={400}
@@ -113,10 +122,7 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 			</ChartCanvas>
 		);
 	}
-};
-
-/*
-*/
+}
 
 CandleStickChartWithBollingerBandOverlay.propTypes = {
 	data: React.PropTypes.array.isRequired,

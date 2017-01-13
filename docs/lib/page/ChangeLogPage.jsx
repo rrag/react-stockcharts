@@ -5,13 +5,10 @@ import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 
-var BreakingChangesPage = React.createClass({
-	statics: {
-		title: 'Change log'
-	},
+class ChangeLogPage extends React.Component {
 	render() {
 		return (
-			<ContentSection title={BreakingChangesPage.title}>
+			<ContentSection title={ChangeLogPage.title}>
 				<Row>
 					<Section colSpan={2}>
 						<aside dangerouslySetInnerHTML={{__html: require('md/CHANGE-LOG')}}></aside>
@@ -20,6 +17,8 @@ var BreakingChangesPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
 
-export default BreakingChangesPage;
+ChangeLogPage.title = 'Change log';
+
+export default ChangeLogPage;

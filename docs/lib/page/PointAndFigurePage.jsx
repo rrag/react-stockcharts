@@ -1,7 +1,7 @@
 'use strict';
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -9,12 +9,7 @@ import Section from "lib/section";
 
 import PointAndFigure from "lib/charts/PointAndFigure";
 
-var { TypeChooser } = helper;
-
-var PointAndFigurePage = React.createClass({
-	statics: {
-		title: 'Point & Figure'
-	},
+class PointAndFigurePage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={PointAndFigurePage.title}>
@@ -33,6 +28,9 @@ var PointAndFigurePage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+PointAndFigurePage.title = 'Point & Figure';
+
 
 export default PointAndFigurePage;

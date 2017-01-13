@@ -1,20 +1,15 @@
 "use strict";
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 
-var { TypeChooser } = helper;
-
 import CandleStickChartWithFibonacciInteractiveIndicator from "lib/charts/CandleStickChartWithFibonacciInteractiveIndicator";
 
-var FibonacciInteractiveIndicatorPage = React.createClass({
-	statics: {
-		title: "Fibonacci Retracement"
-	},
+class FibonacciInteractiveIndicatorPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={FibonacciInteractiveIndicatorPage.title}>
@@ -33,6 +28,8 @@ var FibonacciInteractiveIndicatorPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+FibonacciInteractiveIndicatorPage.title = "Fibonacci Retracement"
 
 export default FibonacciInteractiveIndicatorPage;

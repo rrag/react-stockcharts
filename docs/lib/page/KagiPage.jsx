@@ -1,13 +1,11 @@
 import React from "react";
-import { helper } from "react-stockcharts";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 
 import Kagi from "lib/charts/Kagi";
-
-var { TypeChooser } = helper;
 
 class KagiPage extends React.Component {
 

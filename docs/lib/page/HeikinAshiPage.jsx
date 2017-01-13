@@ -1,7 +1,7 @@
 'use strict';
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -9,12 +9,7 @@ import Section from "lib/section";
 
 import HeikinAshi from "lib/charts/HeikinAshi";
 
-var { TypeChooser } = helper;
-
-var HeikinAshiPage = React.createClass({
-	statics: {
-		title: 'Heikin Ashi'
-	},
+class HeikinAshiPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={HeikinAshiPage.title}>
@@ -33,6 +28,8 @@ var HeikinAshiPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+HeikinAshiPage.title = 'Heikin Ashi';
 
 export default HeikinAshiPage;

@@ -1,19 +1,15 @@
 'use strict';
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 
 import CandleStickChartWithEdge from "lib/charts/CandleStickChartWithEdge";
-var { TypeChooser } = helper;
 
-var EdgeCoordinatesPage = React.createClass({
-	statics: {
-		title: 'Edge coordinate'
-	},
+class EdgeCoordinatesPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={EdgeCoordinatesPage.title}>
@@ -32,6 +28,8 @@ var EdgeCoordinatesPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+EdgeCoordinatesPage.title = "Edge coordinate";
 
 export default EdgeCoordinatesPage;

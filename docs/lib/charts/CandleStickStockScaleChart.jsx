@@ -2,15 +2,14 @@
 
 import React from "react";
 
-import { ChartCanvas, Chart, series, scale, coordinates, tooltip, axes, indicator, helper } from "react-stockcharts";
+import { ChartCanvas, Chart } from "react-stockcharts";
+import {
+	CandlestickSeries,
+} from "react-stockcharts/lib/series";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
 
-
-
-var { CandlestickSeries } = series;
-var { discontinuousTimeScaleProvider } = scale;
-var { XAxis, YAxis } = axes;
-
-var { fitWidth } = helper;
+import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
+import { fitWidth } from "react-stockcharts/lib/helper";
 
 class CandleStickStockScaleChart extends React.Component {
 	render() {

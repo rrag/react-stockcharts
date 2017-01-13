@@ -7,14 +7,16 @@ import { extent } from "d3-array";
 
 import React from "react";
 
-import { ChartCanvas, Chart, series, coordinates, axes, helper } from "react-stockcharts";
+import { ChartCanvas, Chart } from "react-stockcharts";
+import { ScatterSeries, CircleMarker } from "react-stockcharts/lib/series";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
+import {
+	CrossHairCursor,
+	MouseCoordinateX,
+	MouseCoordinateY,
+} from "react-stockcharts/lib/coordinates";
 
-var { ScatterSeries, CircleMarker } = series;
-
-var { CrossHairCursor, MouseCoordinateX, MouseCoordinateY } = coordinates;
-
-var { XAxis, YAxis } = axes;
-var { fitWidth } = helper;
+import { fitWidth } from "react-stockcharts/lib/helper";
 
 class BubbleChart extends React.Component {
 	render() {

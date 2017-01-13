@@ -9,10 +9,7 @@ import Section from "lib/section";
 import AreaChart from "lib/charts/AreaChart";
 import AreaChartWithYPercent from "lib/charts/AreaChartWithYPercent";
 
-var OverviewPage = React.createClass({
-	statics: {
-		title: 'Area Chart'
-	},
+class OverviewPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={OverviewPage.title}>
@@ -34,6 +31,8 @@ var OverviewPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+OverviewPage.title = 'Area Chart'
 
 export default OverviewPage;

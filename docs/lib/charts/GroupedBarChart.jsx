@@ -4,12 +4,12 @@ import React from "react";
 import { scaleOrdinal, schemeCategory10, scalePoint } from  "d3-scale";
 import { set } from "d3-collection";
 
-import { ChartCanvas, Chart, series, axes, helper } from "react-stockcharts";
-
-var { GroupedBarSeries  } = series;
-
-var { XAxis, YAxis } = axes;
-var { fitWidth } = helper;
+import { ChartCanvas, Chart } from "react-stockcharts";
+import {
+	GroupedBarSeries,
+} from "react-stockcharts/lib/series";
+import { XAxis, YAxis } from "react-stockcharts/lib/axes";
+import { fitWidth } from "react-stockcharts/lib/helper";
 
 class GroupedBarChart extends React.Component {
 	render() {

@@ -1,7 +1,7 @@
 'use strict';
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -9,12 +9,7 @@ import Section from "lib/section";
 
 import Renko from "lib/charts/Renko";
 
-var { TypeChooser } = helper;
-
-var RenkoPage = React.createClass({
-	statics: {
-		title: 'Renko'
-	},
+class RenkoPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={RenkoPage.title}>
@@ -33,6 +28,8 @@ var RenkoPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+RenkoPage.title = 'Renko';
 
 export default RenkoPage;

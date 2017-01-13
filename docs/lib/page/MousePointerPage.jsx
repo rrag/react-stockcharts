@@ -7,10 +7,7 @@ import Section from "lib/section";
 
 import CandleStickChartWithCHMousePointer from "lib/charts/CandleStickChartWithCHMousePointer";
 
-var MousePointerPage = React.createClass({
-	statics: {
-		title: 'Mouse pointer'
-	},
+class MousePointerPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={MousePointerPage.title}>
@@ -27,6 +24,8 @@ var MousePointerPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+MousePointerPage.title = 'Mouse pointer'
 
 export default MousePointerPage;

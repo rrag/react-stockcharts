@@ -1,20 +1,15 @@
 'use strict';
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 
 import VolumeProfileChart from "lib/charts/VolumeProfileChart";
-var { TypeChooser } = helper;
 
-
-var VolumeProfilePage = React.createClass({
-	statics: {
-		title: "Volume profile"
-	},
+class VolumeProfilePage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={VolumeProfilePage.title}>
@@ -33,6 +28,8 @@ var VolumeProfilePage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+VolumeProfilePage.title = "Volume profile";
 
 export default VolumeProfilePage;

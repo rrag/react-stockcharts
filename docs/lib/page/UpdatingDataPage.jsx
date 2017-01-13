@@ -1,7 +1,7 @@
 'use strict';
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -12,13 +12,7 @@ import KagiWithUpdatingData from "lib/charts/KagiWithUpdatingData";
 import PointAndFigureWithUpdatingData from "lib/charts/PointAndFigureWithUpdatingData";
 import RenkoWithUpdatingData from "lib/charts/RenkoWithUpdatingData";
 
-var { TypeChooser } = helper;
-
-
-var UpdatingDataPage = React.createClass({
-	statics: {
-		title: 'Updating Data'
-	},
+class UpdatingDataPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={UpdatingDataPage.title}>
@@ -58,6 +52,8 @@ var UpdatingDataPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+
+UpdatingDataPage.title = 'Updating Data';
 
 export default UpdatingDataPage;

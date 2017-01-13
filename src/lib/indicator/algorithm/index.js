@@ -1,49 +1,19 @@
-// import slidingWindow from "./slidingWindow";
-// import merge from "./merge";
-// import zipper from "./zipper";
-import ema from "./ema";
-import sma from "./sma";
-import wma from "./wma";
-import tma from "./tma";
-import bollingerband from "./bollingerband";
-import heikinAshi from "./heikinAshi";
-import kagi from "./kagi";
-import pointAndFigure from "./pointAndFigure";
-import renko from "./renko";
-
-import macd from "./macd";
-import rsi from "./rsi";
-import sto from "./sto";
-import atr from "./atr";
-import forceIndex from "./forceIndex";
-import smoothedForceIndex from "./smoothedForceIndex";
-import elderRay from "./elderRay";
-import sar from "./sar";
-import compare from "./compare";
-import change from "./change";
-
-export {
-	// slidingWindow,
-	// merge,
-	// zipper
-	ema,
-	sma,
-    wma,
-    tma,
-	bollingerband,
-	heikinAshi,
-	kagi,
-	pointAndFigure,
-	renko,
-	macd,
-
-	rsi,
-	sto,
-	atr,
-	forceIndex,
-	smoothedForceIndex,
-	elderRay,
-	sar,
-	compare,
-	change,
-};
+export { default as ema } from "./ema";
+export { default as sma } from "./sma";
+export { default as wma } from "./wma";
+export { default as tma } from "./tma";
+export { default as bollingerband } from "./bollingerband";
+export { default as heikinAshi } from "./heikinAshi";
+export { default as kagi } from "./kagi";
+export { default as pointAndFigure } from "./pointAndFigure";
+export { default as renko } from "./renko";
+export { default as macd } from "./macd";
+export { default as rsi } from "./rsi";
+export { default as sto } from "./sto";
+export { default as atr } from "./atr";
+export { default as forceIndex } from "./forceIndex";
+export { default as smoothedForceIndex } from "./smoothedForceIndex";
+export { default as elderRay } from "./elderRay";
+export { default as sar } from "./sar";
+export { default as compare } from "./compare";
+export { default as change } from "./change";

@@ -1,7 +1,7 @@
 "use strict";
 
 import React from "react";
-import { helper } from "react-stockcharts";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -9,12 +9,7 @@ import Section from "lib/section";
 
 import MovingAverageCrossOverAlgorithmV1 from "lib/charts/MovingAverageCrossOverAlgorithmV1";
 
-var { TypeChooser } = helper;
-
-var AnnotationsPage = React.createClass({
-	statics: {
-		title: "MA Crossover - Using text annotation"
-	},
+class AnnotationsPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={AnnotationsPage.title}>
@@ -33,6 +28,7 @@ var AnnotationsPage = React.createClass({
 			</ContentSection>
 		);
 	}
-});
+}
+AnnotationsPage.title = "MA Crossover - Using text annotation";
 
 export default AnnotationsPage;
