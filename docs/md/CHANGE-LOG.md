@@ -1,3 +1,17 @@
+## v0.6.1
+
+#### New features
+
+1. Weighted Moving Average indicator PR [#200](https://github.com/rrag/react-stockcharts/pull/200)- Thank you [#mgeri](https://github.com/mgeri)
+1. Triangular Moving Average indicator PR [#204](https://github.com/rrag/react-stockcharts/pull/204)- Thank you [#mgeri](https://github.com/mgeri)
+1. SAR
+
+#### Bug fixes
+
+1. [#196](https://github.com/rrag/react-stockcharts/issues/196) - Add `clip` property (default = true) to `BarSeries`, `CandlestickSeries`, `ElderRaySeries`, `MACDSeries`, `OHLCSeries`, `OverlayBarSeries`, `PointAndFigureSeries`, `RenkoSeries`, `StackedBarSeries`
+1. [#203](https://github.com/rrag/react-stockcharts/issues/203) - Filter out bars which have invalid y values
+
+
 ## v0.6.0
 
 #### Breaking Changes
