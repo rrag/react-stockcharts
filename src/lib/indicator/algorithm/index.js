@@ -4,7 +4,7 @@
 import ema from "./ema";
 import sma from "./sma";
 import wma from "./wma";
-import trima from "./trima";
+import tma from "./tma";
 import bollingerband from "./bollingerband";
 import heikinAshi from "./heikinAshi";
 import kagi from "./kagi";
@@ -29,7 +29,7 @@ export {
 	ema,
 	sma,
     wma,
-    trima,
+    tma,
 	bollingerband,
 	heikinAshi,
 	kagi,

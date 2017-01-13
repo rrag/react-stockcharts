@@ -37,48 +37,48 @@ import { TRIMA as defaultOptions } from "../defaultOptionsForComputation";
 
 export default function() {
 
-    var { windowSize, sourcePath } = defaultOptions;
+	var { windowSize, sourcePath } = defaultOptions;
 
-    function calculator(data)
-    {
+	function calculator(data)    {
 
-        var weight, n = Math.floor(windowSize/2);
-        if ((windowSize % 2) == 0) {
-            weight = n*(n+1);
-        } else {
-            weight = (n+1)*(n+1);
-        }
+		var n = Math.floor(windowSize / 2);
+		var weight = (windowSize % 2) === 0
+			? n * (n + 1)
+			: (n + 1) * (n + 1);
 
-        var triaverage = slidingWindow()
-            .windowSize(windowSize)
-            .sourcePath(sourcePath)
-            .accumulator((values) => {
-                return sum(values, function(v, i) {
-                    return i < n ? ((i+1) * v) : ((windowSize - i) * v);
-                }) / weight;
-            });
+		var triaverage = slidingWindow()
+			.windowSize(windowSize)
+			.sourcePath(sourcePath)
+			.accumulator(values => {
+				var total = sum(values, (v, i) => {
+					return i < n
+						? (i + 1) * v
+						: (windowSize - i) * v;
+				});
+				return total / weight;
+			});
 
-        return triaverage(data);
+		return triaverage(data);
 
-    };
-    calculator.undefinedLength = function() {
-        return windowSize;
-    };
-    calculator.windowSize = function(x) {
-        if (!arguments.length) {
-            return windowSize;
-        }
-        windowSize = x;
-        return calculator;
-    };
+	}
+	calculator.undefinedLength = function() {
+		return windowSize;
+	};
+	calculator.windowSize = function(x) {
+		if (!arguments.length) {
+			return windowSize;
+		}
+		windowSize = x;
+		return calculator;
+	};
 
-    calculator.sourcePath = function(x) {
-        if (!arguments.length) {
-            return sourcePath;
-        }
-        sourcePath = x;
-        return calculator;
-    };
+	calculator.sourcePath = function(x) {
+		if (!arguments.length) {
+			return sourcePath;
+		}
+		sourcePath = x;
+		return calculator;
+	};
 
-    return calculator;
+	return calculator;
 }

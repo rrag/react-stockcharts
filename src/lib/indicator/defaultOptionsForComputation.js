@@ -72,8 +72,8 @@ export const WMA = {
 
 export const TRIMA = {
     // source: d => d.close, // "high", "low", "open", "close"
-    sourcePath: "close",
-    windowSize: 10,
+	sourcePath: "close",
+	windowSize: 10,
 };
 
 export const Kagi = {
