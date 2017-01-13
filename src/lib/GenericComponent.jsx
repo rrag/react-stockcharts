@@ -90,7 +90,12 @@ class GenericComponent extends Component {
 			break;
 		}
 		case "mouseleave": {
-			this.drawOnNextTick = this.props.drawOnMouseExitOfCanvas;
+			// when you move the mouse fast enough, that mouseleave
+			// is triggered before the draw after mousemove is triggered
+			// This or condition below avoids having a blank hover
+			// canvas
+			this.drawOnNextTick = this.drawOnNextTick
+				|| this.props.drawOnMouseExitOfCanvas;
 			break;
 		}
 		case "pan": {
