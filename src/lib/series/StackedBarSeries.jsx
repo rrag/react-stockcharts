@@ -223,24 +223,25 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 
 	var offset = (barWidth === 1 ? 0 : 0.5 * bw);
 
-	var ds = plotData.map(each => {
-		var d = {
-			appearance: {
-			},
-			x: xAccessor(each),
-		};
-		yAccessor.forEach((eachYAccessor, i) => {
-			var key = `y${i}`;
-			d[key] = eachYAccessor(each);
-			var appearance = {
-				className: getClassName(each, i),
-				stroke: stroke ? getFill(each, i) : "none",
-				fill: getFill(each, i),
+	var ds = plotData
+		.map(each => {
+			var d = {
+				appearance: {
+				},
+				x: xAccessor(each),
 			};
-			d.appearance[key] = appearance;
+			yAccessor.forEach((eachYAccessor, i) => {
+				var key = `y${i}`;
+				d[key] = eachYAccessor(each);
+				var appearance = {
+					className: getClassName(each, i),
+					stroke: stroke ? getFill(each, i) : "none",
+					fill: getFill(each, i),
+				};
+				d.appearance[key] = appearance;
+			});
+			return d;
 		});
-		return d;
-	});
 
 	var keys = yAccessor.map((_, i) => `y${i}`);
 
@@ -297,8 +298,8 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 					height: h,
 					width: barWidth,
 				};
-			});
-	// console.log(bars)
+			})
+			.filter(bar => !isNaN(bar.y));
 
 	return after(bars);
 }

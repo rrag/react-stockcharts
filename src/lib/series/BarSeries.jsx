@@ -4,7 +4,11 @@ import React, { PropTypes, Component } from "react";
 
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 
-import StackedBarSeries, { drawOnCanvasHelper, svgHelper, identityStack } from "./StackedBarSeries";
+import StackedBarSeries, {
+	drawOnCanvasHelper,
+	svgHelper,
+	identityStack
+} from "./StackedBarSeries";
 
 class BarSeries extends Component {
 	constructor(props) {
