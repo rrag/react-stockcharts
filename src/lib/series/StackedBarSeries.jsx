@@ -28,10 +28,13 @@ class StackedBarSeries extends Component {
 		return <g>{svgHelper(this.props, moreProps, xAccessor, d3Stack)}</g>;
 	}
 	render() {
+		var { clip } = this.props;
+
 		return <GenericChartComponent
 			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
+			clip={clip}
 			drawOnPan
 			/>;
 	}
@@ -52,6 +55,7 @@ StackedBarSeries.propTypes = {
 	className: PropTypes.oneOfType([
 		PropTypes.func, PropTypes.string
 	]).isRequired,
+	clip: PropTypes.bool.isRequired,
 };
 
 StackedBarSeries.defaultProps = {
@@ -62,6 +66,7 @@ StackedBarSeries.defaultProps = {
 	fill: "#4682B4",
 	opacity: 0.5,
 	widthRatio: 0.8,
+	clip: true,
 };
 
 export function identityStack() {

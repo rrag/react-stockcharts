@@ -22,10 +22,13 @@ class RenkoSeries extends Component {
 		drawOnCanvas(ctx, candles);
 	}
 	render() {
+		var { clip } = this.props;
+
 		return <GenericChartComponent
 			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
+			clip={clip}
 			drawOnPan
 			/>;
 	}
@@ -68,6 +71,7 @@ RenkoSeries.propTypes = {
 		partial: PropTypes.string
 	}),
 	yAccessor: PropTypes.func.isRequired,
+	clip: PropTypes.bool.isRequired,
 };
 
 RenkoSeries.defaultProps = {
@@ -85,6 +89,7 @@ RenkoSeries.defaultProps = {
 		partial: "#4682B4",
 	},
 	yAccessor: d => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
+	clip: true,
 };
 
 function drawOnCanvas(ctx, renko) {

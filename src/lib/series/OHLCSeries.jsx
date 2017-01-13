@@ -21,10 +21,13 @@ class OHLCSeries extends Component {
 		drawOnCanvas(ctx, barData);
 	}
 	render() {
+		var { clip } = this.props;
+
 		return <GenericChartComponent
 			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
+			clip={clip}
 			drawOnPan
 			/>;
 	}
@@ -57,6 +60,7 @@ OHLCSeries.propTypes = {
 		PropTypes.string
 	]).isRequired,
 	yAccessor: PropTypes.func.isRequired,
+	clip: PropTypes.bool.isRequired,
 };
 
 OHLCSeries.defaultProps = {
@@ -64,6 +68,7 @@ OHLCSeries.defaultProps = {
 	yAccessor: (d) => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
 	classNames: d => isDefined(d.absoluteChange) ? (d.absoluteChange > 0 ? "up" : "down") : "firstbar",
 	stroke: d => isDefined(d.absoluteChange) ? (d.absoluteChange > 0 ? "#6BA583" : "#FF0000") : "#000000",
+	clip: true,
 };
 
 function drawOnCanvas(ctx, barData) {

@@ -30,10 +30,12 @@ class CandlestickSeries extends Component {
 	}
 
 	render() {
+		var { clip } = this.props;
 		return <GenericChartComponent
 			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
+			clip={clip}
 			drawOnPan
 			/>;
 	}
@@ -61,6 +63,7 @@ CandlestickSeries.propTypes = {
 		PropTypes.string
 	]).isRequired,
 	yAccessor: PropTypes.func.isRequired,
+	clip: PropTypes.bool.isRequired,
 };
 
 CandlestickSeries.defaultProps = {
@@ -78,6 +81,7 @@ CandlestickSeries.defaultProps = {
 	candleStrokeWidth: 0.5,
 	// stroke: "none",
 	opacity: 0.5,
+	clip: true,
 };
 
 function getWicksSVG(props, moreProps) {

@@ -36,37 +36,37 @@ class MACDSeries extends Component {
 		var { className, type, opacity, divergenceStroke, calculator } = this.props;
 		var stroke = calculator.stroke();
 		var fill = calculator.fill();
+		var { clip } = this.props;
+		var { zeroLineStroke, zeroLineOpacity } = this.props;
+
 		return (
 			<g className={className}>
 				<BarSeries
 					baseAt={this.yAccessorForDivergenceBase}
 					className="macd-divergence"
 					widthRatio={0.5}
-					stroke={divergenceStroke} fill={fill.divergence} opacity={opacity}
+					stroke={divergenceStroke}
+					fill={fill.divergence}
+					opacity={opacity}
+					clip={clip}
 					yAccessor={this.yAccessorForDivergence} />
 				<LineSeries
 					yAccessor={this.yAccessorForMACD}
-					stroke={stroke.macd} fill="none"
+					stroke={stroke.macd}
+					fill="none"
 					type={type} />
 				<LineSeries
 					yAccessor={this.yAccessorForSignal}
-					stroke={stroke.signal} fill="none"
+					stroke={stroke.signal}
+					fill="none"
 					type={type} />
-				{getHorizontalLine(this.props)}
+				<StraightLine
+					stroke={zeroLineStroke}
+					opacity={zeroLineOpacity}
+					yValue={0} />
 			</g>
 		);
 	}
-}
-
-function getHorizontalLine(props) {
-
-	/* eslint-disable react/prop-types */
-	var { zeroLineStroke, zeroLineOpacity } = props;
-	/* eslint-enable react/prop-types */
-
-	return <StraightLine
-		stroke={zeroLineStroke} opacity={zeroLineOpacity}
-		yValue={0} />;
 }
 
 MACDSeries.propTypes = {
@@ -78,6 +78,9 @@ MACDSeries.propTypes = {
 	type: PropTypes.string,
 	opacity: PropTypes.number,
 	divergenceStroke: PropTypes.bool,
+	zeroLineStroke: PropTypes.string,
+	zeroLineOpacity: PropTypes.number,
+	clip: PropTypes.bool.isRequired,
 };
 
 MACDSeries.defaultProps = {
@@ -86,6 +89,7 @@ MACDSeries.defaultProps = {
 	zeroLineOpacity: 0.3,
 	opacity: 0.6,
 	divergenceStroke: false,
+	clip: true,
 };
 
 export default MACDSeries;

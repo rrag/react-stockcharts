@@ -24,10 +24,13 @@ class BarSeries extends Component {
 		return <g>{svgHelper(this.props, moreProps, xAccessor, identityStack)}</g>;
 	}
 	render() {
+		var { clip } = this.props;
+
 		return <GenericChartComponent
 			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
+			clip={clip}
 			drawOnPan
 			/>;
 	}
@@ -48,6 +51,7 @@ BarSeries.propTypes = {
 	className: PropTypes.oneOfType([
 		PropTypes.func, PropTypes.string
 	]).isRequired,
+	clip: PropTypes.bool.isRequired,
 };
 
 

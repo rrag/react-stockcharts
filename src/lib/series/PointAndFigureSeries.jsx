@@ -19,10 +19,13 @@ class PointAndFigureSeries extends Component {
 		drawOnCanvas(ctx, this.props, columns);
 	}
 	render() {
+		var { clip } = this.props;
+
 		return <GenericChartComponent
 			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
+			clip={clip}
 			drawOnPan
 			/>;
 	}
@@ -68,6 +71,7 @@ PointAndFigureSeries.propTypes = {
 	strokeWidth: PropTypes.number.isRequired,
 	stroke: PropTypes.object.isRequired,
 	fill: PropTypes.object.isRequired,
+	clip: PropTypes.bool.isRequired,
 };
 
 PointAndFigureSeries.defaultProps = {
@@ -81,6 +85,7 @@ PointAndFigureSeries.defaultProps = {
 		up: "none",
 		down: "none"
 	},
+	clip: true,
 };
 
 function drawOnCanvas(ctx, props, columns) {

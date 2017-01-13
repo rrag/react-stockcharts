@@ -34,10 +34,13 @@ class OverlayBarSeries extends Component {
 		</g>;
 	}
 	render() {
+		var { clip } = this.props;
+
 		return <GenericChartComponent
 			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
+			clip={clip}
 			drawOnPan
 			/>;
 	}
@@ -63,6 +66,7 @@ OverlayBarSeries.propTypes = {
 	xScale: PropTypes.func,
 	yScale: PropTypes.func,
 	plotData: PropTypes.array,
+	clip: PropTypes.bool.isRequired,
 };
 
 OverlayBarSeries.defaultProps = {
@@ -73,6 +77,7 @@ OverlayBarSeries.defaultProps = {
 	fill: "#4682B4",
 	opacity: 1,
 	widthRatio: 0.5,
+	clip: true,
 };
 
 function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData) {

@@ -53,6 +53,7 @@ class ElderRaySeries extends Component {
 			straightLineOpacity,
 			widthRatio
 		} = this.props;
+		var { clip } = this.props;
 
 		return (
 			<g className={className}>
@@ -63,6 +64,7 @@ class ElderRaySeries extends Component {
 					fill={this.fillForEachBar}
 					opacity={opacity}
 					widthRatio={widthRatio}
+					clip={clip}
 					yAccessor={[this.yAccessorBullTop, this.yAccessorBearTop, this.yAccessorBullBottom, this.yAccessorBearBottom]} />
 				<StraightLine
 					className="react-stockcharts-elderray-straight-line"
@@ -84,6 +86,7 @@ ElderRaySeries.propTypes = {
 	straightLineStroke: PropTypes.string,
 	straightLineOpacity: PropTypes.number,
 	widthRatio: PropTypes.number,
+	clip: PropTypes.bool.isRequired,
 };
 
 ElderRaySeries.defaultProps = {
@@ -95,6 +98,7 @@ ElderRaySeries.defaultProps = {
 	bullPowerFill: "#6BA583",
 	bearPowerFill: "#FF0000",
 	widthRatio: 0.8,
+	clip: true,
 };
 
 export default ElderRaySeries;
