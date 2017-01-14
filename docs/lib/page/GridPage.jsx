@@ -42,8 +42,8 @@ class GridPage extends React.Component {
 			<ContentSection title={GridPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<TypeChooser ref="container">
-							{(type) => (
+						<TypeChooser>
+							{type => (
 								<LineAndScatterChartGrid
 									gridProps={{
 										tickStrokeOpacity,

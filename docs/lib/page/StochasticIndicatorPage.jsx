@@ -32,7 +32,7 @@ class StochasticIndicatorPage extends React.Component {
 							<span className="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
 						</button>
 						<TypeChooser>
-							{(type) => (<CandleStickChartWithFullStochasticsIndicator ref={this.saveNode} data={this.props.someData} type={type} />)}
+							{type => <CandleStickChartWithFullStochasticsIndicator ref={this.saveNode} data={this.props.someData} type={type} />}
 						</TypeChooser>
 					</Section>
 				</Row>

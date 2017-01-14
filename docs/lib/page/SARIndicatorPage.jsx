@@ -16,7 +16,7 @@ class ForceIndexIndicatorPage extends React.Component {
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser>
-							{(type) => (<CandleStickChartWithSAR data={this.props.someData} type={type} />)}
+							{type => <CandleStickChartWithSAR data={this.props.someData} type={type} />}
 						</TypeChooser>
 					</Section>
 				</Row>

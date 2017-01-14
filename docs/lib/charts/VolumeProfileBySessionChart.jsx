@@ -26,11 +26,10 @@ import {
 } from "react-stockcharts/lib/tooltip";
 import { ema, change } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
+import { last } from "react-stockcharts/lib/utils";
 
 class VolumeProfileBySessionChart extends React.Component {
 	render() {
-		var { data, type, width, ratio } = this.props;
-
 		var ema20 = ema()
 			.id(0)
 			.windowSize(20)
@@ -45,13 +44,35 @@ class VolumeProfileBySessionChart extends React.Component {
 
 		var changeCalculator = change();
 
+		var { type, data: initialData, width, ratio } = this.props;
+
+		const calculatedData = ema20(ema50(changeCalculator(initialData)));
+		const xScaleProvider = discontinuousTimeScaleProvider
+			.inputDateAccessor(d => d.date);
+		const {
+			data,
+			xScale,
+			xAccessor,
+			displayXAccessor,
+		} = xScaleProvider(calculatedData);
+
+		const start = xAccessor(last(data));
+		const end = xAccessor(data[Math.max(0, data.length - 150)]);
+		const xExtents = [start, end];
+
 		return (
-			<ChartCanvas ratio={ratio} width={width} height={400}
-					margin={{ left: 80, right: 80, top: 10, bottom: 30 }} type={type}
+			<ChartCanvas height={400}
+					width={width}
+					ratio={ratio}
+					margin={{ left: 80, right: 80, top: 10, bottom: 30 }}
+					type={type}
 					seriesName="MSFT"
-					data={data} calculator={[ema20, ema50, changeCalculator]}
-					xExtents={[new Date(2014, 9, 1), new Date(2015, 2, 2)]}
-					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}>
+					data={data}
+					xScale={xScale}
+					xAccessor={xAccessor}
+					displayXAccessor={displayXAccessor}
+					xExtents={xExtents}>
+
 				<Chart id={2}
 						yExtents={[d => d.volume]}
 						height={150} origin={(w, h) => [0, h - 150]}>

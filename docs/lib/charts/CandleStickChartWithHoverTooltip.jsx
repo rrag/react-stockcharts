@@ -21,6 +21,7 @@ import {
 } from "react-stockcharts/lib/tooltip";
 import { ema } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
+import { last } from "react-stockcharts/lib/utils";
 
 var dateFormat = timeFormat("%Y-%m-%d");
 var numberFormat = format(".2f");
@@ -61,11 +62,11 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 	}
 
 	render() {
-		var { data, type, width, ratio } = this.props;
+		var { type, data: initialData, width, ratio } = this.props;
 
 		// remove some of the data to be able to see
 		// the tooltip resize
-		data = this.removeRandomValues(data);
+		initialData = this.removeRandomValues(initialData);
 
 		var ema20 = ema()
 			.id(0)
@@ -81,18 +82,32 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 
 		var margin = { left: 80, right: 80, top: 30, bottom: 50 };
 
+		const calculatedData = ema50(ema20(initialData));
+		const xScaleProvider = discontinuousTimeScaleProvider
+			.inputDateAccessor(d => d.date);
+		const {
+			data,
+			xScale,
+			xAccessor,
+			displayXAccessor,
+		} = xScaleProvider(calculatedData);
+
+		const start = xAccessor(last(data));
+		const end = xAccessor(data[Math.max(0, data.length - 150)]);
+		const xExtents = [start, end];
+
 		return (
-			<ChartCanvas ratio={ratio} height={400}
+			<ChartCanvas height={400}
 					width={width}
+					ratio={ratio}
 					margin={margin}
 					type={type}
 					seriesName="MSFT"
 					data={data}
-					calculator={[ema20, ema50]}
-					xAccessor={d => d.date}
-					xScaleProvider={discontinuousTimeScaleProvider}
-					xExtents={[new Date(2015, 0, 1), new Date(2015, 5, 8)]}>
-
+					xScale={xScale}
+					xAccessor={xAccessor}
+					displayXAccessor={displayXAccessor}
+					xExtents={xExtents}>
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
 						padding={{ top: 10, bottom: 20 }}>

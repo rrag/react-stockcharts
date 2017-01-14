@@ -67,7 +67,7 @@ class Brush extends Component {
 			mouseXY,
 			currentItem,
 			chartConfig,
-			displayXAccessor,
+			xAccessor,
 		} = moreProps;
 
 		var { enabled, onBrush } = this.props;
@@ -75,7 +75,7 @@ class Brush extends Component {
 		if (enabled) {
 			var { x1, y1, startItem, startClick } = this.state;
 			var { yScale } = chartConfig;
-			var xValue = displayXAccessor(currentItem);
+			var xValue = xAccessor(currentItem);
 			var yValue = yScale.invert(mouseXY[1]);
 
 			if (isDefined(startItem)) {
@@ -83,7 +83,7 @@ class Brush extends Component {
 				onBrush({
 					x1,
 					y1,
-					x2: displayXAccessor(currentItem),
+					x2: xAccessor(currentItem),
 					y2: yValue,
 					startItem,
 					currentItem,

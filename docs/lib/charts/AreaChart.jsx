@@ -16,21 +16,19 @@ class AreaChart extends React.Component {
 					margin={{ left: 50, right: 50, top: 10, bottom: 30 }}
 					seriesName="MSFT"
 					data={data} type={type}
-					xAccessor={d => d.date} xScale={scaleTime()}
+					xAccessor={d => d.date}
+					xScale={scaleTime()}
 					xExtents={[new Date(2011, 0, 1), new Date(2013, 0, 2)]}>
 				<Chart id={0} yExtents={d => d.close}>
 					<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 					<YAxis axisAt="left" orient="left" />
-					<AreaSeries yAccessor={(d) => d.close}/>
+					<AreaSeries yAccessor={d => d.close}/>
 				</Chart>
 			</ChartCanvas>
 		);
 	}
 }
 
-/*
-
-*/
 
 AreaChart.propTypes = {
 	data: React.PropTypes.array.isRequired,

@@ -37,7 +37,7 @@ class TrendLineInteractiveIndicatorPage extends React.Component {
 							<span className="glyphicon glyphicon-floppy-save" aria-hidden="true"></span>
 						</button>
 						<TypeChooser>
-							{(type) => (<CandleStickChartWithInteractiveIndicator ref={this.saveNode} data={this.props.someData} type={type} />)}
+							{type => <CandleStickChartWithInteractiveIndicator ref={this.saveNode} data={this.props.someData} type={type} />}
 						</TypeChooser>
 					</Section>
 				</Row>

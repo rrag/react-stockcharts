@@ -32,8 +32,7 @@ import { fitWidth } from "react-stockcharts/lib/helper";
 
 class CandleStickChartWithMACDIndicator extends React.Component {
 	render() {
-		var { data, type, width, ratio } = this.props;
-
+		var { type, data: initialData, width, ratio } = this.props;
 		var ema26 = ema()
 			.id(0)
 			.windowSize(26)
@@ -60,12 +59,27 @@ class CandleStickChartWithMACDIndicator extends React.Component {
 			.merge((d, c) => {d.smaVolume50 = c;})
 			.accessor(d => d.smaVolume50);
 
+		const calculatedData = smaVolume50(macdCalculator(ema12(ema26(initialData))));
+		const xScaleProvider = discontinuousTimeScaleProvider
+			.inputDateAccessor(d => d.date);
+		const {
+			data,
+			xScale,
+			xAccessor,
+			displayXAccessor,
+		} = xScaleProvider(calculatedData);
+
 		return (
-			<ChartCanvas ratio={ratio} width={width} height={600}
-					margin={{ left: 70, right: 70, top: 20, bottom: 30 }} type={type}
+			<ChartCanvas height={600}
+					width={width}
+					ratio={ratio}
+					margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
+					type={type}
 					seriesName="MSFT"
-					data={data} calculator={[ema26, ema12, smaVolume50, macdCalculator]}
-					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}>
+					data={data}
+					xScale={xScale}
+					xAccessor={xAccessor}
+					displayXAccessor={displayXAccessor}>
 				<Chart id={1} height={400}
 						yExtents={[d => [d.high, d.low], ema26.accessor(), ema12.accessor()]}
 						padding={{ top: 10, bottom: 20 }}>

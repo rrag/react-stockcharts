@@ -19,14 +19,13 @@ import {
 } from "react-stockcharts/lib/coordinates";
 
 import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
-import { OHLCTooltip } from "react-stockcharts/lib/tooltip";
+import { OHLCTooltip, SingleValueTooltip } from "react-stockcharts/lib/tooltip";
 import { sma, compare } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
+import { last } from "react-stockcharts/lib/utils";
 
 class CandleStickChartWithCompare extends React.Component {
 	render() {
-		var { data, type, width, ratio } = this.props;
-
 		var compareCalculator = compare()
 			.base(d => d.close)
 			.mainKeys(["open", "high", "low", "close"])
@@ -40,15 +39,35 @@ class CandleStickChartWithCompare extends React.Component {
 			.sourcePath("volume")
 			.merge((d, c) => {d.smaVolume50 = c;})
 			.accessor(d => d.smaVolume50);
+		var { type, data: initialData, width, ratio } = this.props;
+
+		const calculatedData = smaVolume50(initialData);
+		const xScaleProvider = discontinuousTimeScaleProvider
+			.inputDateAccessor(d => d.date);
+		const {
+			data,
+			xScale,
+			xAccessor,
+			displayXAccessor,
+		} = xScaleProvider(calculatedData);
+
+		const start = xAccessor(last(data));
+		const end = xAccessor(data[Math.max(0, data.length - 150)]);
+		const xExtents = [start, end];
 
 		return (
-			<ChartCanvas ratio={ratio} width={width} height={400}
-					margin={{ left: 70, right: 70, top: 20, bottom: 30 }} type={type}
+			<ChartCanvas height={400}
+					width={width}
+					ratio={ratio}
+					margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
+					type={type}
 					seriesName="MSFT"
-					data={data} calculator={[smaVolume50]} postCalculator={compareCalculator}
-					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
-					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
-
+					data={data}
+					postCalculator={compareCalculator}
+					xScale={xScale}
+					xAccessor={xAccessor}
+					displayXAccessor={displayXAccessor}
+					xExtents={xExtents}>
 				<Chart id={1}
 						yExtents={d => d.compare}>
 					<XAxis axisAt="bottom" orient="bottom" />

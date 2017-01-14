@@ -25,9 +25,11 @@ import evaluator from "./scale/evaluator";
 
 const log = getLogger("ChartCanvas");
 
-const CANDIDATES_FOR_RESET = ["seriesName", /* "data",*/
-	"xScaleProvider", /* "xAccessor",*/"map",
-	"indexAccessor", "indexMutator"];
+const CANDIDATES_FOR_RESET = [
+	"seriesName",
+	/* "data",*/
+	/* "xAccessor",*/
+];
 
 function shouldResetChart(thisProps, nextProps) {
 	return !CANDIDATES_FOR_RESET.every(key => {
@@ -89,37 +91,24 @@ function getXScaleDirection(flipXScale) {
 }
 
 function calculateFullData(props) {
-	var { data: inputData, calculator, plotFull, xScale: xScaleProp, clamp, pointsPerPxThreshold } = props;
-	var { map, xScaleProvider, indexAccessor, indexMutator } = props;
-	var { xAccessor: inputXAccesor, displayXAccessor: inputDisplayXAccessor } = props;
+	var { data: fullData, plotFull, xScale, clamp, pointsPerPxThreshold } = props;
+	var { xAccessor, displayXAccessor } = props;
 
-	var wholeData = isDefined(plotFull)
+	var useWholeData = isDefined(plotFull)
 			? plotFull
-			: inputXAccesor === identity;
+			: xAccessor === identity;
 
-	// xScale = discontinuousTimeScaleProvider(data);
-	var dimensions = getDimensions(props);
-	var evaluate = evaluator()
-		// .allowedIntervals(allowedIntervals)
-		// .intervalCalculator(intervalCalculator)
-		.xAccessor(inputXAccesor)
-		// .discontinuous(discontinuous)
-		.pointsPerPxThreshold(pointsPerPxThreshold)
-		.indexAccessor(indexAccessor)
-		.indexMutator(indexMutator)
-		.map(map)
-		.useWholeData(wholeData)
-		.width(dimensions.width)
-		.scaleProvider(xScaleProvider)
-		.xScale(xScaleProp)
-		.clamp(clamp)
-		.calculator(calculator);
-
-	var { xAccessor, displayXAccessor, xScale, fullData, filterData } = evaluate(inputData);
+	var filterData = evaluator({
+		xAccessor,
+		xScale,
+		useWholeData,
+		clamp,
+		pointsPerPxThreshold
+	});
 
 	return {
 		xAccessor,
-		displayXAccessor: inputDisplayXAccessor || displayXAccessor,
+		displayXAccessor: displayXAccessor || xAccessor,
 		xScale,
 		fullData,
 		filterData
@@ -741,8 +730,6 @@ class ChartCanvas extends Component {
 			if (process.env.NODE_ENV !== "production") {
 				if (this.props.data !== nextProps.data)
 					log("data is changed but seriesName did not, change the seriesName if you wish to reset the chart and lastItemWasVisible = ", lastItemWasVisible);
-				else if (!shallowEqual(this.props.calculator, nextProps.calculator))
-					log("calculator changed");
 				else
 					log("Trivial change, may be width/height or type changed, but that does not matter");
 			}
@@ -876,7 +863,6 @@ ChartCanvas.propTypes = {
 	pointsPerPxThreshold: PropTypes.number,
 	data: PropTypes.array.isRequired,
 	// initialDisplay: PropTypes.number,
-	calculator: PropTypes.arrayOf(PropTypes.func).isRequired,
 	xAccessor: PropTypes.func,
 	xExtents: PropTypes.oneOfType([
 		PropTypes.array,
@@ -887,16 +873,7 @@ ChartCanvas.propTypes = {
 	seriesName: PropTypes.string.isRequired,
 	zIndex: PropTypes.number,
 	children: PropTypes.node.isRequired,
-	xScaleProvider: function(props, propName/* , componentName */) {
-		if (isDefined(props[propName]) &&  typeof props[propName] === "function" && isDefined(props.xScale)) {
-			return new Error("Do not define both xScaleProvider and xScale choose only one");
-		}
-	},
-	xScale: function(props, propName/* , componentName */) {
-		if (isDefined(props[propName]) &&  typeof props[propName] === "function" && isDefined(props.xScaleProvider)) {
-			return new Error("Do not define both xScaleProvider and xScale choose only one");
-		}
-	},
+	xScale: PropTypes.func.isRequired,
 	postCalculator: PropTypes.func.isRequired,
 	flipXScale: PropTypes.bool.isRequired,
 	useCrossHairStyleCursor: PropTypes.bool.isRequired,
@@ -911,7 +888,16 @@ ChartCanvas.propTypes = {
 	defaultFocus: PropTypes.bool,
 	zoomMultiplier: PropTypes.number.isRequired,
 	onLoadMore: PropTypes.func,
-	displayXAccessor: PropTypes.func,
+	displayXAccessor: function(props, propName/* , componentName */) {
+		if (isNotDefined(props[propName])) {
+			console.warn("`displayXAccessor` is not defined,"
+				+ " will use the value from `xAccessor` as `displayXAccessor`."
+				+ " This might be ok if you do not use a discontinuous scale"
+				+ " but if you do, provide a `displayXAccessor` prop to `ChartCanvas`");
+		} else if (typeof props[propName] !== "function") {
+			return new Error("displayXAccessor has to be a function");
+		}
+	},
 	mouseMoveEvent: PropTypes.bool.isRequired,
 	panEvent: PropTypes.bool.isRequired,
 	zoomEvent: PropTypes.bool.isRequired,
@@ -920,16 +906,11 @@ ChartCanvas.propTypes = {
 
 ChartCanvas.defaultProps = {
 	margin: { top: 20, right: 30, bottom: 30, left: 80 },
-	indexAccessor: d => d.idx,
-	indexMutator: (d, idx) => ({ ...d, idx }),
-	map: identity,
 	type: "hybrid",
 	pointsPerPxThreshold: 2,
-	calculator: [],
 	className: "react-stockchart",
 	zIndex: 1,
 	xExtents: [min, max],
-	// dataEvaluator: evaluator,
 	postCalculator: identity,
 	padding: 0,
 	xAccessor: identity,

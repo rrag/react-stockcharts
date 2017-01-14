@@ -23,11 +23,10 @@ import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
 import { OHLCTooltip, MovingAverageTooltip } from "react-stockcharts/lib/tooltip";
 import { ema } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
+import { last } from "react-stockcharts/lib/utils";
 
 class CandleStickChartWithAnnotation extends React.Component {
 	render() {
-		var { data, type, width, ratio } = this.props;
-
 		var ema20 = ema()
 			.id(0)
 			.windowSize(13)
@@ -55,14 +54,36 @@ class CandleStickChartWithAnnotation extends React.Component {
 		var margin = { left: 80, right: 80, top: 30, bottom: 50 };
 		var height = 400;
 
-		var [yAxisLabelX, yAxisLabelY] = [width - margin.left - 40, margin.top + (height - margin.top - margin.bottom) / 2]
+		var [yAxisLabelX, yAxisLabelY] = [width - margin.left - 40, margin.top + (height - margin.top - margin.bottom) / 2];
+
+		var { type, data: initialData, width, ratio } = this.props;
+
+		const calculatedData = ema50(ema20(initialData));
+		const xScaleProvider = discontinuousTimeScaleProvider
+			.inputDateAccessor(d => d.date);
+		const {
+			data,
+			xScale,
+			xAccessor,
+			displayXAccessor,
+		} = xScaleProvider(calculatedData);
+
+		const start = xAccessor(last(data));
+		const end = xAccessor(data[Math.max(0, data.length - 150)]);
+		const xExtents = [start, end];
+
 		return (
-			<ChartCanvas ratio={ratio} width={width} height={height}
-					margin={margin} type={type}
+			<ChartCanvas height={height}
+					ratio={ratio}
+					width={width}
+					margin={margin}
+					type={type}
 					seriesName="MSFT"
-					data={data} calculator={[ema20, ema50]}
-					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
-					xExtents={[new Date(2015, 0, 1), new Date(2015, 5, 8)]}>
+					data={data}
+					xScale={xScale}
+					xAccessor={xAccessor}
+					displayXAccessor={displayXAccessor}
+					xExtents={xExtents}>
 
 				<Label x={(width - margin.left - margin.right) / 2} y={30}
 					fontSize="30" text="Chart title here" />

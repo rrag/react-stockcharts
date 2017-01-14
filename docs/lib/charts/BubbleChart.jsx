@@ -37,7 +37,8 @@ class BubbleChart extends React.Component {
 					margin={{ left: 70, right: 70, top: 20, bottom: 30 }} type={type}
 					seriesName="Wealth & Health of Nations"
 					data={data}
-					xAccessor={d => d.income} xScale={scaleLog()}
+					xAccessor={d => d.income}
+					xScale={scaleLog()}
 					padding={{ left: 20, right: 20 }}
 					>
 				<Chart id={1}

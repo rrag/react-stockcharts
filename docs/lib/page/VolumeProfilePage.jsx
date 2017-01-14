@@ -15,8 +15,8 @@ class VolumeProfilePage extends React.Component {
 			<ContentSection title={VolumeProfilePage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<TypeChooser ref="container">
-							{(type) => (<VolumeProfileChart data={this.props.lotsOfData} type={type} />)}
+						<TypeChooser>
+							{type => <VolumeProfileChart data={this.props.lotsOfData} type={type} />}
 						</TypeChooser>
 					</Section>
 				</Row>

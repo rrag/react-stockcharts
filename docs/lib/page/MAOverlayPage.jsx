@@ -15,8 +15,8 @@ class MAOverlayPage extends React.Component {
 			<ContentSection title={MAOverlayPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<TypeChooser type="hybrid">
-							{(type) => <CandleStickChartWithMA data={this.props.someData} type={type} />}
+						<TypeChooser>
+							{type => <CandleStickChartWithMA data={this.props.someData} type={type} />}
 						</TypeChooser>
 					</Section>
 				</Row>

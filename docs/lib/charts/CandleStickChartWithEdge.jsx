@@ -27,11 +27,10 @@ import {
 } from "react-stockcharts/lib/tooltip";
 import { ema, sma } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
+import { last } from "react-stockcharts/lib/utils";
 
 class CandleStickChartWithEdge extends React.Component {
 	render() {
-		var { data, type, width, ratio } = this.props;
-
 		var ema20 = ema()
 			.id(0)
 			.windowSize(20)
@@ -50,15 +49,34 @@ class CandleStickChartWithEdge extends React.Component {
 			.sourcePath("volume")
 			.merge((d, c) => {d.smaVolume70 = c;})
 			.accessor(d => d.smaVolume70);
+		var { type, data: initialData, width, ratio } = this.props;
+
+		const calculatedData = ema20(ema50(smaVolume70(initialData)));
+		const xScaleProvider = discontinuousTimeScaleProvider
+			.inputDateAccessor(d => d.date);
+		const {
+			data,
+			xScale,
+			xAccessor,
+			displayXAccessor,
+		} = xScaleProvider(calculatedData);
+
+		const start = xAccessor(last(data));
+		const end = xAccessor(data[Math.max(0, data.length - 150)]);
+		const xExtents = [start, end];
 
 		return (
-			<ChartCanvas ratio={ratio} width={width} height={450}
-					margin={{ left: 90, right: 90, top: 70, bottom: 30 }} type={type}
+			<ChartCanvas height={400}
+					ratio={ratio}
+					width={width}
+					margin={{ left: 90, right: 90, top: 70, bottom: 30 }}
+					type={type}
 					seriesName="MSFT"
-					data={data} calculator={[ema20, ema50, smaVolume70]}
-					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
-					xExtents={[new Date(2016, 0, 1), new Date(2016, 9, 11)]}>
-
+					data={data}
+					xScale={xScale}
+					xAccessor={xAccessor}
+					displayXAccessor={displayXAccessor}
+					xExtents={xExtents}>
 				<Chart id={2}
 						yExtents={[d => d.volume, smaVolume70.accessor()]}
 						height={150} origin={(w, h) => [0, h - 150]}>

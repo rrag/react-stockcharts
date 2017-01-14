@@ -21,7 +21,7 @@ class ElderImpulseIndicatorPage extends React.Component {
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser>
-							{(type) => (<OHLCChartWithElderImpulseIndicator data={this.props.someData} type={type} />)}
+							{type => <OHLCChartWithElderImpulseIndicator data={this.props.someData} type={type} />}
 						</TypeChooser>
 					</Section>
 				</Row>

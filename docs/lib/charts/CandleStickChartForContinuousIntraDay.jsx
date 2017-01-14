@@ -25,12 +25,10 @@ import {
 import { OHLCTooltip, MovingAverageTooltip } from "react-stockcharts/lib/tooltip";
 import { ema, sma } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
-
+import { last } from "react-stockcharts/lib/utils";
 
 class CandleStickChartForContinuousIntraDay extends React.Component {
 	render() {
-		var { data, type, width, ratio } = this.props;
-
 		var ema20 = ema()
 			.id(0)
 			.windowSize(20)
@@ -49,13 +47,26 @@ class CandleStickChartForContinuousIntraDay extends React.Component {
 			.sourcePath("volume")
 			.merge((d, c) => {d.smaVolume50 = c;})
 			.accessor(d => d.smaVolume50);
+		var { type, data: initialData, width, ratio } = this.props;
+
+		const data = ema20(ema50(smaVolume50(initialData)));
+
+		const xAccessor = d => d.date;
+		const start = xAccessor(last(data));
+		const end = xAccessor(data[Math.max(0, data.length - 150)]);
+		const xExtents = [start, end];
 
 		return (
-			<ChartCanvas ratio={ratio} width={width} height={400}
-					margin={{ left: 80, right: 80, top: 10, bottom: 30 }} type={type}
+			<ChartCanvas height={400}
+					ratio={ratio}
+					width={width}
+					margin={{ left: 80, right: 80, top: 10, bottom: 30 }}
+					type={type}
 					seriesName="MSFT"
-					data={data} calculator={[ema20, ema50, smaVolume50]}
-					xAccessor={d => d.date} xScale={scaleTime()}>
+					data={data}
+					xScale={scaleTime()}
+					xAccessor={xAccessor}
+					xExtents={xExtents}>
 				<Chart id={2}
 						yExtents={[d => d.volume, smaVolume50.accessor()]}
 						height={150} origin={(w, h) => [0, h - 150]}>

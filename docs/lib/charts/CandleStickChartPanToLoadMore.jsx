@@ -75,10 +75,11 @@ class CandleStickChartPanToLoadMore extends React.Component {
 		var indexCalculator = discontinuousTimeScaleProviderBuilder().indexCalculator();
 
 		// console.log(inputData.length, dataToCalculate.length, maxWindowSize)
-		var { index, interval } = indexCalculator(calculatedData);
+		var { index } = indexCalculator(calculatedData);
 		/* SERVER - END */
 
-		var xScaleProvider = discontinuousTimeScaleProviderBuilder().withIndex(index).withInterval(interval);
+		var xScaleProvider = discontinuousTimeScaleProviderBuilder()
+			.withIndex(index);
 		var { data: linearData, xScale, xAccessor, displayXAccessor } = xScaleProvider(calculatedData.slice(-LENGTH_TO_SHOW));
 
 		// console.log(head(linearData), last(linearData))

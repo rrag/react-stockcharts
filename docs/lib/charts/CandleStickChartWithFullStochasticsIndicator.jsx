@@ -29,12 +29,12 @@ import {
 } from "react-stockcharts/lib/tooltip";
 import { ema, stochasticOscillator } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
+import { last } from "react-stockcharts/lib/utils";
 
 class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 	render() {
 		var height = 750;
-		var { data, type, width, ratio } = this.props;
-
+		var { type, data: initialData, width, ratio } = this.props;
 		var margin = { left: 70, right: 70, top: 20, bottom: 30 };
 
 		var gridHeight = height - margin.top - margin.bottom;
@@ -73,13 +73,32 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 			.merge((d, c) => {d.fullSTO = c;})
 			.accessor(d => d.fullSTO);
 
+		const calculatedData = ema20(ema50(slowSTO(fastSTO(fullSTO(initialData)))));
+		const xScaleProvider = discontinuousTimeScaleProvider
+			.inputDateAccessor(d => d.date);
+		const {
+			data,
+			xScale,
+			xAccessor,
+			displayXAccessor,
+		} = xScaleProvider(calculatedData);
+
+		const start = xAccessor(last(data));
+		const end = xAccessor(data[Math.max(0, data.length - 150)]);
+		const xExtents = [start, end];
+
 		return (
-			<ChartCanvas ratio={ratio} width={width} height={750}
-					margin={margin} type={type}
+			<ChartCanvas height={750}
+					width={width}
+					ratio={ratio}
+					margin={margin}
+					type={type}
 					seriesName="MSFT"
-					data={data} calculator={[ema20, ema50, slowSTO, fastSTO, fullSTO]}
-					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
-					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
+					data={data}
+					xScale={xScale}
+					xAccessor={xAccessor}
+					displayXAccessor={displayXAccessor}
+					xExtents={xExtents}>
 				<Chart id={1} height={325}
 						yExtents={d => [d.high, d.low]}
 						padding={{ top: 10, bottom: 20 }}>

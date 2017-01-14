@@ -27,10 +27,10 @@ import {
 } from "react-stockcharts/lib/tooltip";
 import { ema, macd, change, elderImpulse } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
+import { last } from "react-stockcharts/lib/utils";
 
 class OHLCChartWithElderImpulseIndicator extends React.Component {
 	render() {
-		var { data, type, width, ratio } = this.props;
 
 		var changeCalculator = change();
 
@@ -51,14 +51,34 @@ class OHLCChartWithElderImpulseIndicator extends React.Component {
 			.macdSource(macdCalculator.accessor())
 			.emaSource(ema12.accessor());
 
-		return (
-			<ChartCanvas ratio={ratio} width={width} height={500}
-					margin={{ left: 70, right: 70, top: 20, bottom: 30 }} type={type}
-					seriesName="MSFT"
-					data={data} calculator={[changeCalculator, ema12, macdCalculator, elderImpulseCalculator]}
-					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
-					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
+		var { type, data: initialData, width, ratio } = this.props;
 
+		const calculatedData = elderImpulseCalculator(macdCalculator(ema12(changeCalculator(initialData))));
+		const xScaleProvider = discontinuousTimeScaleProvider
+			.inputDateAccessor(d => d.date);
+		const {
+			data,
+			xScale,
+			xAccessor,
+			displayXAccessor,
+		} = xScaleProvider(calculatedData);
+
+		const start = xAccessor(last(data));
+		const end = xAccessor(data[Math.max(0, data.length - 150)]);
+		const xExtents = [start, end];
+
+		return (
+			<ChartCanvas height={500}
+					width={width}
+					ratio={ratio}
+					margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
+					type={type}
+					seriesName="MSFT"
+					data={data}
+					xScale={xScale}
+					xAccessor={xAccessor}
+					displayXAccessor={displayXAccessor}
+					xExtents={xExtents}>
 				<Chart id={1} height={300}
 						yExtents={d => [d.high, d.low]}
 						padding={{ top: 10, bottom: 10 }} >

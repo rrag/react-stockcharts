@@ -15,7 +15,7 @@ class MouseFollowingTooltipPage extends React.Component {
 			<ContentSection title={MouseFollowingTooltipPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<TypeChooser type="svg">
+						<TypeChooser>
 							{(type) => (<CandleStickChartWithHoverTooltip  data={this.props.someData} type={type} />)}
 						</TypeChooser>
 					</Section>

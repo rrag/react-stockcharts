@@ -161,6 +161,12 @@ export function discontinuousTimeScaleProviderBuilder() {
 		withIndex, withInterval;
 
 	var discontinuousTimeScaleProvider = function(data) {
+		console.warn("Are you sure you want to use a discontinuousTimeScale?"
+			+ " Use this only if you have discontinuous data which"
+			+ " needs to be displayed as continuous."
+			+ " If you have continuous data use a d3 scale like"
+			+ " `d3.scaleTime`"
+			);
 
 		var index = withIndex;
 		var interval = withInterval;

@@ -24,10 +24,23 @@ import {
 	OHLCTooltip,
 } from "react-stockcharts/lib/tooltip";
 import { fitWidth } from "react-stockcharts/lib/helper";
+import { last } from "react-stockcharts/lib/utils";
 
 class LineAndScatterChart extends React.Component {
 	render() {
-		var { data, type, width, ratio } = this.props;
+		var { data: initialData, type, width, ratio } = this.props;
+		const xScaleProvider = discontinuousTimeScaleProvider
+			.inputDateAccessor(d => d.date);
+		const {
+			data,
+			xScale,
+			xAccessor,
+			displayXAccessor,
+		} = xScaleProvider(initialData);
+		const xExtents = [
+			xAccessor(last(data)),
+			xAccessor(data[data.length - 20])
+		];
 		return (
 			<ChartCanvas ratio={ratio} width={width} height={400}
 					margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
@@ -35,8 +48,10 @@ class LineAndScatterChart extends React.Component {
 					pointsPerPxThreshold={1}
 					seriesName="MSFT"
 					data={data}
-					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
-					xExtents={[new Date(2012, 0, 1), new Date(2012, 2, 2)]}>
+					xAccessor={xAccessor}
+					displayXAccessor={displayXAccessor}
+					xScale={xScale}
+					xExtents={xExtents}>
 				<Chart id={1}
 						yExtents={d => [d.high, d.low, d.AAPLClose, d.GEClose]}>
 					<XAxis axisAt="bottom" orient="bottom"/>

@@ -7,17 +7,27 @@ import { ChartCanvas, Chart } from "react-stockcharts";
 import { CandlestickSeries } from "react-stockcharts/lib/series";
 import { XAxis, YAxis } from "react-stockcharts/lib/axes";
 import { fitWidth } from "react-stockcharts/lib/helper";
+import { last } from "react-stockcharts/lib/utils";
 
 class CandleStickChart extends React.Component {
 	render() {
 		var { type, width, data, ratio } = this.props;
+		const xAccessor = d => d.date;
+		const xExtents = [
+			xAccessor(last(data)),
+			xAccessor(data[data.length - 100])
+		];
 		return (
-			<ChartCanvas ratio={ratio} width={width} height={400}
-					margin={{ left: 50, right: 50, top: 10, bottom: 30 }} type={type}
+			<ChartCanvas height={400}
+					ratio={ratio}
+					width={width}
+					margin={{ left: 50, right: 50, top: 10, bottom: 30 }}
+					type={type}
 					seriesName="MSFT"
 					data={data}
-					xAccessor={d => d.date} xScale={scaleTime()}
-					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 1)]}>
+					xAccessor={xAccessor}
+					xScale={scaleTime()}
+					xExtents={xExtents}>
 
 				<Chart id={1} yExtents={d => [d.high, d.low]}>
 					<XAxis axisAt="bottom" orient="bottom" ticks={6}/>

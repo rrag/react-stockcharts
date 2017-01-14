@@ -22,10 +22,12 @@ import {
 	OHLCTooltip,
 } from "react-stockcharts/lib/tooltip";
 import { fitWidth } from "react-stockcharts/lib/helper";
+import { last } from "react-stockcharts/lib/utils";
 
 class LineAndScatterChartGrid extends React.Component {
 	render() {
-		var { data, type, width, ratio, gridProps } = this.props;
+		var { type, data: initialData, width, ratio } = this.props;
+		var { gridProps } = this.props;
 		var margin = { left: 70, right: 70, top: 20, bottom: 30 };
 
 		const height = 400;
@@ -36,13 +38,31 @@ class LineAndScatterChartGrid extends React.Component {
 		var yGrid = showGrid ? { innerTickSize: -1 * gridWidth } : {};
 		var xGrid = showGrid ? { innerTickSize: -1 * gridHeight } : {};
 
+		const xScaleProvider = discontinuousTimeScaleProvider
+			.inputDateAccessor(d => d.date);
+		const {
+			data,
+			xScale,
+			xAccessor,
+			displayXAccessor,
+		} = xScaleProvider(initialData);
+
+		const start = xAccessor(last(data));
+		const end = xAccessor(data[Math.max(0, data.length - 150)]);
+		const xExtents = [start, end];
+
 		return (
-			<ChartCanvas ratio={ratio} width={width} height={height}
-					margin={margin} type={type}
+			<ChartCanvas height={height}
+					ratio={ratio}
+					width={width}
+					margin={{ left: 80, right: 80, top: 10, bottom: 30 }}
+					type={type}
 					seriesName="MSFT"
 					data={data}
-					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
-					xExtents={[new Date(2012, 0, 1), new Date(2012, 2, 2)]}>
+					xScale={xScale}
+					xAccessor={xAccessor}
+					displayXAccessor={displayXAccessor}
+					xExtents={xExtents}>
 				<Chart id={1}
 						yExtents={d => [d.high, d.low]}>
 					<XAxis

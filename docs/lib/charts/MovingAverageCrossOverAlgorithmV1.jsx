@@ -31,10 +31,11 @@ import {
 	Annotate,
 	LabelAnnotation,
 } from "react-stockcharts/lib/annotation";
+import { last } from "react-stockcharts/lib/utils";
 
 class MovingAverageCrossOverAlgorithmV1 extends React.Component {
 	render() {
-		var { data, type, width, ratio } = this.props;
+		var { type, data: initialData, width, ratio } = this.props;
 
 		var ema20 = ema()
 			.id(0)
@@ -85,14 +86,33 @@ class MovingAverageCrossOverAlgorithmV1 extends React.Component {
 		var height = 400;
 
 		var [yAxisLabelX, yAxisLabelY] = [width - margin.left - 40, margin.top + (height - margin.top - margin.bottom) / 2]
-		return (
-			<ChartCanvas ratio={ratio} width={width} height={height}
-					margin={margin} type={type}
-					seriesName="MSFT"
-					data={data} calculator={[ema20, ema50, buySell]}
-					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
-					xExtents={[new Date(2015, 0, 1), new Date(2015, 5, 8)]}>
 
+		const calculatedData = buySell(ema50(ema20(initialData)));
+		const xScaleProvider = discontinuousTimeScaleProvider
+			.inputDateAccessor(d => d.date);
+		const {
+			data,
+			xScale,
+			xAccessor,
+			displayXAccessor,
+		} = xScaleProvider(calculatedData);
+
+		const start = xAccessor(last(data));
+		const end = xAccessor(data[Math.max(0, data.length - 150)]);
+		const xExtents = [start, end];
+
+		return (
+			<ChartCanvas height={height}
+					width={width}
+					ratio={ratio}
+					margin={margin}
+					type={type}
+					seriesName="MSFT"
+					data={data}
+					xScale={xScale}
+					xAccessor={xAccessor}
+					displayXAccessor={displayXAccessor}
+					xExtents={xExtents}>
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
 						padding={{ top: 10, bottom: 20 }}>

@@ -17,7 +17,7 @@ class RSIIndicatorPage extends React.Component {
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser>
-							{(type) => (<CandleStickChartWithRSIIndicator data={this.props.someData} type={type} />)}
+							{type => <CandleStickChartWithRSIIndicator data={this.props.someData} type={type} />}
 						</TypeChooser>
 					</Section>
 				</Row>

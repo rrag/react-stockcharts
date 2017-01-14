@@ -20,8 +20,8 @@ class FibonacciInteractiveIndicatorPage extends React.Component {
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<TypeChooser ref="container">
-							{(type) => (<CandleStickChartWithFibonacciInteractiveIndicator data={this.props.someData} type={type} />)}
+						<TypeChooser>
+							{type => <CandleStickChartWithFibonacciInteractiveIndicator data={this.props.someData} type={type} />}
 						</TypeChooser>
 					</Section>
 				</Row>

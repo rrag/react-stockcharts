@@ -30,11 +30,12 @@ import {
 } from "react-stockcharts/lib/tooltip";
 import { ema, stochasticOscillator, bollingerBand } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
+import { last } from "react-stockcharts/lib/utils";
 
 class CandleStickChartWithDarkTheme extends React.Component {
 	render() {
 		var height = 750;
-		var { data, type, width, ratio } = this.props;
+		var { type, data: initialData, width, ratio } = this.props;
 
 		var margin = { left: 70, right: 70, top: 20, bottom: 30 };
 
@@ -81,13 +82,36 @@ class CandleStickChartWithDarkTheme extends React.Component {
 			.stroke({ top: "#964B00", middle: "#8c9900", bottom: "#964B00" })
 			.fill("#adffaf");
 
+
+		const calculatedData = ema20(ema50(slowSTO(fastSTO(fullSTO(initialData)))));
+		const xScaleProvider = discontinuousTimeScaleProvider
+			.inputDateAccessor(d => d.date);
+		const {
+			data,
+			xScale,
+			xAccessor,
+			displayXAccessor,
+		} = xScaleProvider(calculatedData);
+
+		const start = xAccessor(last(data));
+		const end = xAccessor(data[Math.max(0, data.length - 150)]);
+		const xExtents = [start, end];
+
+
 		return (
-			<ChartCanvas ratio={ratio} width={width} height={750}
-					margin={margin} type={type}
+			<ChartCanvas height={750}
+					width={width}
+					ratio={ratio}
+					margin={margin}
+					type={type}
 					seriesName="MSFT"
-					data={data} calculator={[ema20, ema50, slowSTO, fastSTO, fullSTO, bb]}
-					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
-					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
+					data={data}
+					xScale={xScale}
+					xAccessor={xAccessor}
+					displayXAccessor={displayXAccessor}
+					xExtents={xExtents}>
+
+
 				<Chart id={1} height={325}
 						yExtents={[d => [d.high, d.low], bb.accessor(), ema20.accessor(), ema50.accessor()]}
 						padding={{ top: 10, bottom: 20 }}>
@@ -102,6 +126,7 @@ class CandleStickChartWithDarkTheme extends React.Component {
 						displayFormat={format(".2f")} />
 
 					<CandlestickSeries
+							stroke={d => d.close > d.open ? "#6BA583" : "#DB0000"}
 							wickStroke={d => d.close > d.open ? "#6BA583" : "#DB0000"}
 							fill={d => d.close > d.open ? "#6BA583" : "#DB0000"} />
 

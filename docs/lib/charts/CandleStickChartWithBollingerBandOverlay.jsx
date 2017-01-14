@@ -24,11 +24,10 @@ import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
 import { OHLCTooltip, MovingAverageTooltip, BollingerBandTooltip } from "react-stockcharts/lib/tooltip";
 import { ema, sma, bollingerBand } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
+import { last } from "react-stockcharts/lib/utils";
 
 class CandleStickChartWithBollingerBandOverlay extends React.Component {
 	render() {
-		var { data, type, width, ratio } = this.props;
-
 		var ema20 = ema()
 			.windowSize(20) // optional will default to 10
 			.sourcePath("close") // optional will default to close as the source
@@ -60,13 +59,35 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 		var bb = bollingerBand()
 			.merge((d, c) => {d.bb = c;})
 			.accessor(d => d.bb);
+
+		var { type, data: initialData, width, ratio } = this.props;
+
+		const calculatedData = ema20(sma20(ema50(smaVolume50(bb(initialData)))));
+		const xScaleProvider = discontinuousTimeScaleProvider
+			.inputDateAccessor(d => d.date);
+		const {
+			data,
+			xScale,
+			xAccessor,
+			displayXAccessor,
+		} = xScaleProvider(calculatedData);
+
+		const start = xAccessor(last(data));
+		const end = xAccessor(data[Math.max(0, data.length - 150)]);
+		const xExtents = [start, end];
+
 		return (
-			<ChartCanvas ratio={ratio} width={width} height={400}
-					margin={{ left: 70, right: 70, top: 10, bottom: 30 }} type={type}
+			<ChartCanvas height={400}
+					width={width}
+					ratio={ratio}
+					margin={{ left: 70, right: 70, top: 10, bottom: 30 }}
+					type={type}
 					seriesName="MSFT"
-					data={data} calculator={[sma20, ema20, ema50, smaVolume50, bb]}
-					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
-					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
+					data={data}
+					xScale={xScale}
+					xAccessor={xAccessor}
+					displayXAccessor={displayXAccessor}
+					xExtents={xExtents}>
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], sma20.accessor(), ema20.accessor(), ema50.accessor(), bb.accessor()]}
 						padding={{ top: 10, bottom: 20 }}

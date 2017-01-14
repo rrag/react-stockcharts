@@ -26,11 +26,10 @@ import {
 } from "react-stockcharts/lib/tooltip";
 import { ema, forceIndex } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
+import { last } from "react-stockcharts/lib/utils";
 
 class CandleStickChartWithForceIndexIndicator extends React.Component {
 	render() {
-		var { data, type, width, ratio } = this.props;
-
 		var fi = forceIndex()
 			.merge((d, c) => {d.fi = c;})
 			.accessor(d => d.fi);
@@ -42,13 +41,34 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 			.merge((d, c) => {d.fiEMA13 = c;})
 			.accessor(d => d.fiEMA13);
 
+		var { type, data: initialData, width, ratio } = this.props;
+
+		const calculatedData = fiEMA13(fi(initialData));
+		const xScaleProvider = discontinuousTimeScaleProvider
+			.inputDateAccessor(d => d.date);
+		const {
+			data,
+			xScale,
+			xAccessor,
+			displayXAccessor,
+		} = xScaleProvider(calculatedData);
+
+		const start = xAccessor(last(data));
+		const end = xAccessor(data[Math.max(0, data.length - 150)]);
+		const xExtents = [start, end];
+
 		return (
-			<ChartCanvas ratio={ratio} width={width} height={550}
-					margin={{ left: 70, right: 70, top: 20, bottom: 30 }} type={type}
+			<ChartCanvas height={550}
+					width={width}
+					ratio={ratio}
+					margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
+					type={type}
 					seriesName="MSFT"
-					data={data} calculator={[fi, fiEMA13]}
-					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
-					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
+					data={data}
+					xScale={xScale}
+					xAccessor={xAccessor}
+					displayXAccessor={displayXAccessor}
+					xExtents={xExtents}>
 				<Chart id={1}  height={300}
 						yExtents={d => [d.high, d.low]}
 						padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>

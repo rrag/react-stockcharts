@@ -27,11 +27,10 @@ import {
 } from "react-stockcharts/lib/tooltip";
 import { ema, heikinAshi, sma } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
+import { last } from "react-stockcharts/lib/utils";
 
 class HeikinAshi extends React.Component {
 	render() {
-		var { data, type, width, ratio } = this.props;
-
 		var ha = heikinAshi();
 		var ema20 = ema()
 			.id(0)
@@ -52,13 +51,34 @@ class HeikinAshi extends React.Component {
 			.merge((d, c) => { d.smaVolume50 = c; })
 			.accessor(d => d.smaVolume50);
 
+		var { type, data: initialData, width, ratio } = this.props;
+
+		const calculatedData = smaVolume50(ema50(ema20(ha(initialData))));
+		const xScaleProvider = discontinuousTimeScaleProvider
+			.inputDateAccessor(d => d.date);
+		const {
+			data,
+			xScale,
+			xAccessor,
+			displayXAccessor,
+		} = xScaleProvider(calculatedData);
+
+		const start = xAccessor(last(data));
+		const end = xAccessor(data[Math.max(0, data.length - 150)]);
+		const xExtents = [start, end];
+
 		return (
-			<ChartCanvas ratio={ratio} width={width} height={400}
-					margin={{ left: 80, right: 80, top: 10, bottom: 30 }} type={type}
+			<ChartCanvas height={400}
+					ratio={ratio}
+					width={width}
+					margin={{ left: 80, right: 80, top: 10, bottom: 30 }}
+					type={type}
 					seriesName="MSFT"
-					data={data} calculator={[ha, ema20, ema50, smaVolume50]}
-					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
-					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
+					data={data}
+					xScale={xScale}
+					xAccessor={xAccessor}
+					displayXAccessor={displayXAccessor}
+					xExtents={xExtents}>
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
 						padding={{ top: 10, bottom: 20 }}>

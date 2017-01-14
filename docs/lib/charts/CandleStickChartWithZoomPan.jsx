@@ -21,6 +21,7 @@ import {
 	OHLCTooltip,
 } from "react-stockcharts/lib/tooltip";
 import { fitWidth } from "react-stockcharts/lib/helper";
+import { last } from "react-stockcharts/lib/utils";
 
 class CandleStickChartWithZoomPan extends React.Component {
 	constructor(props) {
@@ -35,22 +36,42 @@ class CandleStickChartWithZoomPan extends React.Component {
 		this.node.resetYDomain();
 	}
 	render() {
-		var { data, type, width, ratio } = this.props;
+		var { type, data: initialData, width, ratio } = this.props;
 		var { mouseMoveEvent, panEvent, zoomEvent } = this.props;
 		var { clamp } = this.props;
+
+		const xScaleProvider = discontinuousTimeScaleProvider
+			.inputDateAccessor(d => d.date);
+		const {
+			data,
+			xScale,
+			xAccessor,
+			displayXAccessor,
+		} = xScaleProvider(initialData);
+
+		const start = xAccessor(last(data));
+		const end = xAccessor(data[Math.max(0, data.length - 150)]);
+		const xExtents = [start, end];
+
 		return (
 			<ChartCanvas ref={this.saveNode} height={400}
-					width={width}
 					ratio={ratio}
-					margin={{ left: 70, right: 70, top: 10, bottom: 30 }} type={type}
-					seriesName="MSFT"
-					data={data}
+					width={width}
+					margin={{ left: 70, right: 70, top: 10, bottom: 30 }}
+
 					mouseMoveEvent={mouseMoveEvent}
 					panEvent={panEvent}
 					zoomEvent={zoomEvent}
 					clamp={clamp}
-					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
-					xExtents={[new Date(2016, 0, 1), new Date(2016, 9, 11)]}>
+
+					type={type}
+					seriesName="MSFT"
+					data={data}
+					xScale={xScale}
+					xAccessor={xAccessor}
+					displayXAccessor={displayXAccessor}
+					xExtents={xExtents}>
+
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low]]}>
 					<XAxis axisAt="bottom" orient="bottom" zoomEnabled={!zoomEvent} />

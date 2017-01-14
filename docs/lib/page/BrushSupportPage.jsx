@@ -20,8 +20,8 @@ class BrushSupportPage extends React.Component {
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<TypeChooser ref="container">
-							{(type) => (<CandleStickChartWithBrush data={this.props.someData} type={type} />)}
+						<TypeChooser>
+							{type => <CandleStickChartWithBrush data={this.props.someData} type={type} />}
 						</TypeChooser>
 					</Section>
 				</Row>

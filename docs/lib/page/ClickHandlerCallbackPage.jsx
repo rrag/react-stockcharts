@@ -20,8 +20,8 @@ class ClickHandlerCallbackPage extends React.Component {
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<TypeChooser ref="container">
-							{(type) => (<CandleStickChartWithClickHandlerCallback data={this.props.someData} type={type} />)}
+						<TypeChooser>
+							{type => <CandleStickChartWithClickHandlerCallback data={this.props.someData} type={type} />}
 						</TypeChooser>
 					</Section>
 				</Row>

@@ -26,11 +26,10 @@ import {
 } from "react-stockcharts/lib/tooltip";
 import { ema, wma, sma, tma } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
+import { last } from "react-stockcharts/lib/utils";
 
 class CandleStickChartWithMA extends React.Component {
 	render() {
-		var { data, type, width, ratio } = this.props;
-
 		var ema20 = ema()
 			.windowSize(20) // optional will default to 10
 			.sourcePath("close") // optional will default to close as the source
@@ -71,13 +70,34 @@ class CandleStickChartWithMA extends React.Component {
 			.stroke("#4682B4")
 			.fill("#4682B4");
 
+		var { type, data: initialData, width, ratio } = this.props;
+
+		const calculatedData = ema20(sma20(wma20(tma20(ema50(smaVolume50(initialData))))));
+		const xScaleProvider = discontinuousTimeScaleProvider
+			.inputDateAccessor(d => d.date);
+		const {
+			data,
+			xScale,
+			xAccessor,
+			displayXAccessor,
+		} = xScaleProvider(calculatedData);
+
+		const start = xAccessor(last(data));
+		const end = xAccessor(data[Math.max(0, data.length - 150)]);
+		const xExtents = [start, end];
+
 		return (
-			<ChartCanvas ratio={ratio} width={width} height={400}
-					margin={{ left: 70, right: 70, top: 10, bottom: 30 }} type={type}
+			<ChartCanvas height={400}
+					width={width}
+					ratio={ratio}
+					margin={{ left: 70, right: 70, top: 10, bottom: 30 }}
+					type={type}
 					seriesName="MSFT"
-					data={data} calculator={[sma20, wma20, tma20, ema20, ema50, smaVolume50]}
-					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
-					xExtents={[new Date(2012, 0, 1), new Date(2012, 6, 2)]}>
+					data={data}
+					xScale={xScale}
+					xAccessor={xAccessor}
+					displayXAccessor={displayXAccessor}
+					xExtents={xExtents}>
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low], sma20.accessor(), wma20.accessor(), tma20.accessor(), ema20.accessor(), ema50.accessor()]}
 						padding={{ top: 10, bottom: 20 }}>
@@ -102,7 +122,8 @@ class CandleStickChartWithMA extends React.Component {
 					<CurrentCoordinate yAccessor={ema50.accessor()} fill={ema50.stroke()} />
 
 					<OHLCTooltip origin={[-40, 0]}/>
-					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]}
+					<MovingAverageTooltip onClick={(e) => console.log(e)}
+						origin={[-38, 15]}
 						calculators={[sma20, wma20, tma20, ema20, ema50]}/>
 				</Chart>
 				<Chart id={2}

@@ -31,6 +31,23 @@ var DOCUMENTATION = {
 	]
 };
 
+var CHART_FEATURES = {
+	head: "Chart features",
+	pages: [
+		require("./lib/page/MousePointerPage").default,
+		require("./lib/page/ZoomAndPanPage").default,
+		require("./lib/page/IntraDayContinuousDataPage").default,
+		require("./lib/page/EquityIntraDayDataPage").default,
+		require("./lib/page/EdgeCoordinatesPage").default,
+		require("./lib/page/AnnotationsPage").default,
+		require("./lib/page/MouseFollowingTooltipPage").default,
+		require("./lib/page/UpdatingDataPageForCandleStick").default,
+		require("./lib/page/LoadMoreDataPage").default,
+		require("./lib/page/DarkThemePage").default,
+		require("./lib/page/GridPage").default,
+	]
+};
+
 var CHART_TYPES = {
 	head: "Chart types",
 	pages: [
@@ -50,23 +67,6 @@ var CHART_TYPES = {
 		require("./lib/page/PointAndFigurePage").default,
 		require("./lib/page/RenkoPage").default,
 		require("./lib/page/MiscChartsPage").default,
-	]
-};
-
-var CHART_FEATURES = {
-	head: "Chart features",
-	pages: [
-		require("./lib/page/MousePointerPage").default,
-		require("./lib/page/ZoomAndPanPage").default,
-		require("./lib/page/IntraDayContinuousDataPage").default,
-		require("./lib/page/EquityIntraDayDataPage").default,
-		require("./lib/page/EdgeCoordinatesPage").default,
-		require("./lib/page/AnnotationsPage").default,
-		require("./lib/page/MouseFollowingTooltipPage").default,
-		require("./lib/page/UpdatingDataPageForCandleStick").default,
-		require("./lib/page/LoadMoreDataPage").default,
-		require("./lib/page/DarkThemePage").default,
-		require("./lib/page/GridPage").default,
 	]
 };
 
@@ -107,8 +107,8 @@ var INTERACTIVE = {
 
 var ALL_PAGES = [
 	DOCUMENTATION,
-	CHART_TYPES,
 	CHART_FEATURES,
+	CHART_TYPES,
 	INDICATORS,
 	ALGORITHMIC_INDICATORS,
 	INTERACTIVE,

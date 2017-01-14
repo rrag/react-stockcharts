@@ -22,21 +22,42 @@ import {
 } from "react-stockcharts/lib/tooltip";
 import { pointAndFigure } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
+import { last } from "react-stockcharts/lib/utils";
 
 class PointAndFigure extends React.Component {
 	getChartCanvas() {
 		return this.refs.chartCanvas;
 	}
 	render() {
-		var { data, type, width, ratio } = this.props;
 		var pAndF = pointAndFigure();
+		var { type, data: initialData, width, ratio } = this.props;
+
+		const calculatedData = pAndF(initialData);
+		const xScaleProvider = discontinuousTimeScaleProvider
+			.inputDateAccessor(d => d.date);
+		const {
+			data,
+			xScale,
+			xAccessor,
+			displayXAccessor,
+		} = xScaleProvider(calculatedData);
+
+		const start = xAccessor(last(data));
+		const end = xAccessor(data[Math.max(0, data.length - 150)]);
+		const xExtents = [start, end];
 
 		return (
-			<ChartCanvas ref="chartCanvas" ratio={ratio} width={width} height={400}
-					margin={{ left: 80, right: 80, top: 10, bottom: 30 }} type={type}
+			<ChartCanvas height={400}
+					ratio={ratio}
+					width={width}
+					margin={{ left: 80, right: 80, top: 10, bottom: 30 }}
+					type={type}
 					seriesName="MSFT"
-					data={data} calculator={[pAndF]}
-					xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}>
+					data={data}
+					xScale={xScale}
+					xAccessor={xAccessor}
+					displayXAccessor={displayXAccessor}
+					xExtents={xExtents}>
 				<Chart id={1}
 						yExtents={d => [d.high, d.low]}
 						padding={{ top: 10, bottom: 20 }}>

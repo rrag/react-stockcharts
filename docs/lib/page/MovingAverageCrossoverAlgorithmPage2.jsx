@@ -15,8 +15,8 @@ class MovingAverageCrossoverAlgorithmPage2 extends React.Component {
 			<ContentSection title={MovingAverageCrossoverAlgorithmPage2.title}>
 				<Row>
 					<Section colSpan={2}>
-						<TypeChooser ref="container">
-							{(type) => (<MovingAverageCrossOverAlgorithmV2  data={this.props.someData} type={type} />)}
+						<TypeChooser>
+							{type => <MovingAverageCrossOverAlgorithmV2  data={this.props.someData} type={type} />}
 						</TypeChooser>
 					</Section>
 				</Row>

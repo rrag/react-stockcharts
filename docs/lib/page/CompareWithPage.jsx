@@ -15,8 +15,8 @@ class CompareWithPage extends React.Component {
 			<ContentSection title={CompareWithPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<TypeChooser ref="container">
-							{(type) => (<CandleStickChartWithCompare data={this.props.compareData} type={type} />)}
+						<TypeChooser>
+							{type => <CandleStickChartWithCompare data={this.props.compareData} type={type} />}
 						</TypeChooser>
 					</Section>
 				</Row>
