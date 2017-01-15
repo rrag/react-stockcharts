@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import React from "react";
 import ContentSection from "lib/content-section";
@@ -11,7 +11,7 @@ class ComingSoonPage extends React.Component {
 			<ContentSection title={ComingSoonPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{ __html: require('md/COMING-SOON')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/COMING-SOON") }}></aside>
 					</Section>
 				</Row>
 			</ContentSection>
@@ -19,6 +19,6 @@ class ComingSoonPage extends React.Component {
 	}
 }
 
-ComingSoonPage.title = 'Coming soon'
+ComingSoonPage.title = "Coming soon";
 
 export default ComingSoonPage;

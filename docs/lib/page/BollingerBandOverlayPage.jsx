@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import React from "react";
 import { TypeChooser } from "react-stockcharts/lib/helper";
@@ -21,7 +21,7 @@ class BollingerBandOverlayPage extends React.Component {
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/BOLLINGER-BAND-OVERLAY')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/BOLLINGER-BAND-OVERLAY") }}></aside>
 					</Section>
 				</Row>
 			</ContentSection>
@@ -29,6 +29,6 @@ class BollingerBandOverlayPage extends React.Component {
 	}
 }
 
-BollingerBandOverlayPage.title = 'Bollinger Band';
+BollingerBandOverlayPage.title = "Bollinger Band";
 
 export default BollingerBandOverlayPage;

@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import React from "react";
 import { TypeChooser } from "react-stockcharts/lib/helper";
@@ -22,7 +22,7 @@ class VolumeProfileBySessionPage extends React.Component {
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require("md/VOLUME-PROFILE-BY-SESSION")}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/VOLUME-PROFILE-BY-SESSION") }}></aside>
 					</Section>
 				</Row>
 			</ContentSection>

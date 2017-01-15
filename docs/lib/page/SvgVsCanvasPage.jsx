@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import React from "react";
 import { TypeChooser } from "react-stockcharts/lib/helper";
@@ -15,7 +15,7 @@ class SvgVsCanvasPage extends React.Component {
 			<ContentSection title={SvgVsCanvasPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/SVG-VS-CANVAS')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/SVG-VS-CANVAS") }}></aside>
 					</Section>
 				</Row>
 				<Row>
@@ -30,6 +30,6 @@ class SvgVsCanvasPage extends React.Component {
 	}
 }
 
-SvgVsCanvasPage.title = 'Svg vs Canvas';
+SvgVsCanvasPage.title = "Svg vs Canvas";
 
 export default SvgVsCanvasPage;

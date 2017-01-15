@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import React from "react";
 import { TypeChooser } from "react-stockcharts/lib/helper";
@@ -22,7 +22,7 @@ class GroupedBarChartPage extends React.Component {
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/GROUPED-BAR-CHART')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/GROUPED-BAR-CHART") }}></aside>
 					</Section>
 				</Row>
 			</ContentSection>
@@ -30,6 +30,6 @@ class GroupedBarChartPage extends React.Component {
 	}
 }
 
-GroupedBarChartPage.title = "Grouped Bar Chart"
+GroupedBarChartPage.title = "Grouped Bar Chart";
 
 export default GroupedBarChartPage;

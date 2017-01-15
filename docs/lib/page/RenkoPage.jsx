@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import React from "react";
 import { TypeChooser } from "react-stockcharts/lib/helper";
@@ -15,7 +15,7 @@ class RenkoPage extends React.Component {
 			<ContentSection title={RenkoPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/RENKO')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/RENKO") }}></aside>
 					</Section>
 				</Row>
 				<Row>
@@ -30,6 +30,6 @@ class RenkoPage extends React.Component {
 	}
 }
 
-RenkoPage.title = 'Renko';
+RenkoPage.title = "Renko";
 
 export default RenkoPage;

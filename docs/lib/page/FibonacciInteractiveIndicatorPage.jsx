@@ -15,7 +15,7 @@ class FibonacciInteractiveIndicatorPage extends React.Component {
 			<ContentSection title={FibonacciInteractiveIndicatorPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/FIBB-RETRACEMENTS-INTERACTIVE-INDICATOR')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/FIBB-RETRACEMENTS-INTERACTIVE-INDICATOR") }}></aside>
 					</Section>
 				</Row>
 				<Row>
@@ -30,6 +30,6 @@ class FibonacciInteractiveIndicatorPage extends React.Component {
 	}
 }
 
-FibonacciInteractiveIndicatorPage.title = "Fibonacci Retracement"
+FibonacciInteractiveIndicatorPage.title = "Fibonacci Retracement";
 
 export default FibonacciInteractiveIndicatorPage;

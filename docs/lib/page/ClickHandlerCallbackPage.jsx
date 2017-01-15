@@ -15,7 +15,7 @@ class ClickHandlerCallbackPage extends React.Component {
 			<ContentSection title={ClickHandlerCallbackPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/CLICK-CALLBACK-INTERACTIVE-INDICATOR')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/CLICK-CALLBACK-INTERACTIVE-INDICATOR") }}></aside>
 					</Section>
 				</Row>
 				<Row>

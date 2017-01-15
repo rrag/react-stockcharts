@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import React from "react";
 import ContentSection from "lib/content-section";
@@ -11,7 +11,7 @@ class ChangeLogPage extends React.Component {
 			<ContentSection title={ChangeLogPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/CHANGE-LOG')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/CHANGE-LOG") }}></aside>
 					</Section>
 				</Row>
 			</ContentSection>
@@ -19,6 +19,6 @@ class ChangeLogPage extends React.Component {
 	}
 }
 
-ChangeLogPage.title = 'Change log';
+ChangeLogPage.title = "Change log";
 
 export default ChangeLogPage;

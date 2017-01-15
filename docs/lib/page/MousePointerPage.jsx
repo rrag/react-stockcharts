@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import React from "react";
 import ContentSection from "lib/content-section";
@@ -18,7 +18,7 @@ class MousePointerPage extends React.Component {
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/MOUSEPOINTER')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/MOUSEPOINTER") }}></aside>
 					</Section>
 				</Row>
 			</ContentSection>
@@ -26,6 +26,6 @@ class MousePointerPage extends React.Component {
 	}
 }
 
-MousePointerPage.title = 'Mouse pointer'
+MousePointerPage.title = "Mouse pointer";
 
 export default MousePointerPage;

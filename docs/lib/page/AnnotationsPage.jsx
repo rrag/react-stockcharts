@@ -22,7 +22,7 @@ class AnnotationsPage extends React.Component {
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require("md/ANNOTATIONS")}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/ANNOTATIONS") }}></aside>
 					</Section>
 				</Row>
 			</ContentSection>
@@ -30,6 +30,6 @@ class AnnotationsPage extends React.Component {
 	}
 }
 
-AnnotationsPage.title = "Annotations"
+AnnotationsPage.title = "Annotations";
 
 export default AnnotationsPage;

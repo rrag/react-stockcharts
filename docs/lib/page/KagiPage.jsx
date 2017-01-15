@@ -14,7 +14,7 @@ class KagiPage extends React.Component {
 			<ContentSection title={KagiPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/KAGI')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/KAGI") }}></aside>
 					</Section>
 				</Row>
 				<Row>

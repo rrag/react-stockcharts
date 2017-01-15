@@ -15,7 +15,7 @@ class MACDIndicatorPage extends React.Component {
 			<ContentSection title={MACDIndicatorPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require("md/MACD-INDICATOR")}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/MACD-INDICATOR") }}></aside>
 					</Section>
 				</Row>
 				<Row>
@@ -30,6 +30,6 @@ class MACDIndicatorPage extends React.Component {
 	}
 }
 
-MACDIndicatorPage.title = "MACD"
+MACDIndicatorPage.title = "MACD";
 
 export default MACDIndicatorPage;

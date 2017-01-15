@@ -144,7 +144,7 @@ class CandleStickChartWithEdge extends React.Component {
 						displayFormat={format(".2f")} />
 
 					<OHLCTooltip origin={[-40, -65]}/>
-					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, -55]} 
+					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, -55]}
 						calculators={[ema20, ema50]}/>
 				</Chart>
 				<CrossHairCursor />

@@ -23,7 +23,7 @@ class RSIIndicatorPage extends React.Component {
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require("md/RSI-INDICATOR")}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/RSI-INDICATOR") }}></aside>
 					</Section>
 				</Row>
 			</ContentSection>

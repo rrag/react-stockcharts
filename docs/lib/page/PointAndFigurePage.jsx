@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import React from "react";
 import { TypeChooser } from "react-stockcharts/lib/helper";
@@ -15,7 +15,7 @@ class PointAndFigurePage extends React.Component {
 			<ContentSection title={PointAndFigurePage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/POINT-AND-FIGURE')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/POINT-AND-FIGURE") }}></aside>
 					</Section>
 				</Row>
 				<Row>
@@ -30,7 +30,7 @@ class PointAndFigurePage extends React.Component {
 	}
 }
 
-PointAndFigurePage.title = 'Point & Figure';
+PointAndFigurePage.title = "Point & Figure";
 
 
 export default PointAndFigurePage;

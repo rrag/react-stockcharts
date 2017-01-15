@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import React from "react";
 import { TypeChooser } from "react-stockcharts/lib/helper";
@@ -23,7 +23,7 @@ class IntraDayContinuousDataPage extends React.Component {
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/INTRA-DAY-CONTINUOUS')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/INTRA-DAY-CONTINUOUS") }}></aside>
 					</Section>
 				</Row>
 			</ContentSection>
@@ -31,6 +31,6 @@ class IntraDayContinuousDataPage extends React.Component {
 	}
 }
 
-IntraDayContinuousDataPage.title = "Intra day with Continuous scale"
+IntraDayContinuousDataPage.title = "Intra day with Continuous scale";
 
 export default IntraDayContinuousDataPage;

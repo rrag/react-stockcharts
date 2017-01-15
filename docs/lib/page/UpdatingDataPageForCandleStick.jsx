@@ -23,7 +23,7 @@ class UpdatingDataPageForCandleStick extends React.Component {
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{ __html: require('md/UPDATING-DATA') }}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/UPDATING-DATA") }}></aside>
 					</Section>
 				</Row>
 				{/* <Row>

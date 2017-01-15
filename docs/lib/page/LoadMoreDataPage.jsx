@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import React from "react";
 import { TypeChooser } from "react-stockcharts/lib/helper";
@@ -25,6 +25,6 @@ class LoadMoreDataPage extends React.Component {
 	}
 }
 
-LoadMoreDataPage.title = 'Load more data on pan'
+LoadMoreDataPage.title = "Load more data on pan";
 
 export default LoadMoreDataPage;

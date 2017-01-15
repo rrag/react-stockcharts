@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import React from "react";
 import ContentSection from "lib/content-section";
@@ -15,7 +15,7 @@ class VolumeBarPage extends React.Component {
 			<ContentSection title={VolumeBarPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/VOLUME-BAR-INTRO')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/VOLUME-BAR-INTRO") }}></aside>
 					</Section>
 				</Row>
 				<Row>
@@ -25,7 +25,7 @@ class VolumeBarPage extends React.Component {
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/VOLUME-BAR')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/VOLUME-BAR") }}></aside>
 					</Section>
 				</Row>
 				<Row>
@@ -35,7 +35,7 @@ class VolumeBarPage extends React.Component {
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/VOLUME-BAR-Contd')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/VOLUME-BAR-Contd") }}></aside>
 					</Section>
 				</Row>
 				<Row>
@@ -45,7 +45,7 @@ class VolumeBarPage extends React.Component {
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/VOLUME-BAR-Contd2')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/VOLUME-BAR-Contd2") }}></aside>
 					</Section>
 				</Row>
 			</ContentSection>
@@ -53,6 +53,6 @@ class VolumeBarPage extends React.Component {
 	}
 }
 
-VolumeBarPage.title = 'Volume bar';
+VolumeBarPage.title = "Volume bar";
 
 export default VolumeBarPage;

@@ -15,7 +15,7 @@ class ElderRayIndicatorPage extends React.Component {
 			<ContentSection title={ElderRayIndicatorPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require("md/ELDER-RAY-INDICATOR")}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/ELDER-RAY-INDICATOR") }}></aside>
 					</Section>
 				</Row>
 				<Row>

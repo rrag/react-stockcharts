@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import React from "react";
 
@@ -12,7 +12,7 @@ class OverviewPage extends React.Component {
 			<ContentSection title={OverviewPage.title}>
 				<Row>
 					<Section  colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/OVERVIEW')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/OVERVIEW") }}></aside>
 					</Section>
 				</Row>
 			</ContentSection>
@@ -20,6 +20,6 @@ class OverviewPage extends React.Component {
 	}
 }
 
-OverviewPage.title = 'Overview';
+OverviewPage.title = "Overview";
 
 export default OverviewPage;

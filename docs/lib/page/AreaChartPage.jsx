@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import React from "react";
 
@@ -20,7 +20,7 @@ class OverviewPage extends React.Component {
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/AREACHART')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/AREACHART") }}></aside>
 					</Section>
 				</Row>
 				<Row>
@@ -33,6 +33,6 @@ class OverviewPage extends React.Component {
 	}
 }
 
-OverviewPage.title = 'Area Chart'
+OverviewPage.title = "Area Chart";
 
 export default OverviewPage;

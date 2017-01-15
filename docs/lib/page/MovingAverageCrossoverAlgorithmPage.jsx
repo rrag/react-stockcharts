@@ -22,7 +22,7 @@ class AnnotationsPage extends React.Component {
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require("md/MA-CROSSOVER-ALGORITHM")}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/MA-CROSSOVER-ALGORITHM") }}></aside>
 					</Section>
 				</Row>
 			</ContentSection>

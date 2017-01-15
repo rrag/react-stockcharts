@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import React from "react";
 import ContentSection from "lib/content-section";
@@ -19,7 +19,7 @@ class CandleStickChartPage extends React.Component {
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/CANDLESTICK')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/CANDLESTICK") }}></aside>
 					</Section>
 				</Row>
 				<Row>
@@ -29,12 +29,12 @@ class CandleStickChartPage extends React.Component {
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/CANDLESTICK-IMPROVED')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/CANDLESTICK-IMPROVED") }}></aside>
 					</Section>
 				</Row>
 				<Row title="stocktime scale">
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/FINANCETIMESCALE')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/FINANCETIMESCALE") }}></aside>
 					</Section>
 				</Row>
 			</ContentSection>
@@ -42,6 +42,6 @@ class CandleStickChartPage extends React.Component {
 	}
 }
 
-CandleStickChartPage.title = 'Candlestick Chart'
+CandleStickChartPage.title = "Candlestick Chart";
 
 export default CandleStickChartPage;

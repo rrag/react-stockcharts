@@ -15,7 +15,7 @@ class BrushSupportPage extends React.Component {
 			<ContentSection title={BrushSupportPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/BRUSH-INTERACTIVE-INDICATOR')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/BRUSH-INTERACTIVE-INDICATOR") }}></aside>
 					</Section>
 				</Row>
 				<Row>

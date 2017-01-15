@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import React from "react";
 import { TypeChooser } from "react-stockcharts/lib/helper";
@@ -15,7 +15,7 @@ class MiscChartsPage extends React.Component {
 			<ContentSection title={MiscChartsPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/SINGLE-VALUE-TOOLTIP')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/SINGLE-VALUE-TOOLTIP") }}></aside>
 					</Section>
 				</Row>
 				<Row>

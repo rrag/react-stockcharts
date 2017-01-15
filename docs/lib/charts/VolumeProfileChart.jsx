@@ -110,7 +110,7 @@ class VolumeProfileChart extends React.Component {
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 
 					<OHLCTooltip origin={[-40, 0]} />
-					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]} 
+					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]}
 						calculators={[ema20, ema50]}/>
 				</Chart>
 				<CrossHairCursor />

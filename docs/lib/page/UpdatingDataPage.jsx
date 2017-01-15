@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import React from "react";
 import { TypeChooser } from "react-stockcharts/lib/helper";
@@ -16,7 +16,7 @@ class UpdatingDataPage extends React.Component {
 	render() {
 		return (
 			<ContentSection title={UpdatingDataPage.title}>
-				{/*<Row>
+				{/* <Row>
 					<Section colSpan={2}>
 						<aside dangerouslySetInnerHTML={{__html: require('md/UPDATING-DATA')}}></aside>
 					</Section>
@@ -54,6 +54,6 @@ class UpdatingDataPage extends React.Component {
 	}
 }
 
-UpdatingDataPage.title = 'Updating Data';
+UpdatingDataPage.title = "Updating Data";
 
 export default UpdatingDataPage;

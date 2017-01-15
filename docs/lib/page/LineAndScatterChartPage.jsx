@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import React from "react";
 import { TypeChooser } from "react-stockcharts/lib/helper";
@@ -23,7 +23,7 @@ class LineAndScatterChartPage extends React.Component {
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/SCATTER-CHART')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/SCATTER-CHART") }}></aside>
 					</Section>
 				</Row>
 			</ContentSection>
@@ -31,6 +31,6 @@ class LineAndScatterChartPage extends React.Component {
 	}
 }
 
-LineAndScatterChartPage.title = 'Line & Scatter'
+LineAndScatterChartPage.title = "Line & Scatter";
 
 export default LineAndScatterChartPage;

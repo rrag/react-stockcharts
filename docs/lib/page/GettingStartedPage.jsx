@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 import React from "react";
 
@@ -12,7 +12,7 @@ class GettingStartedPage extends React.Component {
 			<ContentSection title={GettingStartedPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require('md/GETTING-STARTED')}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/GETTING-STARTED") }}></aside>
 					</Section>
 				</Row>
 			</ContentSection>

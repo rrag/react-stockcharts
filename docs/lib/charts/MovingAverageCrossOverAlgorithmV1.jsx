@@ -85,7 +85,7 @@ class MovingAverageCrossOverAlgorithmV1 extends React.Component {
 		var margin = { left: 80, right: 80, top: 30, bottom: 50 };
 		var height = 400;
 
-		var [yAxisLabelX, yAxisLabelY] = [width - margin.left - 40, margin.top + (height - margin.top - margin.bottom) / 2]
+		var [yAxisLabelX, yAxisLabelY] = [width - margin.left - 40, margin.top + (height - margin.top - margin.bottom) / 2];
 
 		const calculatedData = buySell(ema50(ema20(initialData)));
 		const xScaleProvider = discontinuousTimeScaleProvider
@@ -145,7 +145,7 @@ class MovingAverageCrossOverAlgorithmV1 extends React.Component {
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 
 					<OHLCTooltip origin={[-40, 0]}/>
-					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]} 
+					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]}
 						calculators={[ema20, ema50]}/>
 
 					<Annotate with={LabelAnnotation} when={d => d.longShort === "LONG"}

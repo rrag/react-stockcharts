@@ -15,7 +15,7 @@ class ElderImpulseIndicatorPage extends React.Component {
 			<ContentSection title={ElderImpulseIndicatorPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require("md/ELDER-IMPULSE-INDICATOR")}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/ELDER-IMPULSE-INDICATOR") }}></aside>
 					</Section>
 				</Row>
 				<Row>
@@ -30,6 +30,6 @@ class ElderImpulseIndicatorPage extends React.Component {
 	}
 }
 
-ElderImpulseIndicatorPage.title = "Elder Impulse"
+ElderImpulseIndicatorPage.title = "Elder Impulse";
 
 export default ElderImpulseIndicatorPage;

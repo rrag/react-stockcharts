@@ -22,7 +22,7 @@ class MovingAverageCrossoverAlgorithmPage2 extends React.Component {
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{__html: require("md/MA-CROSSOVER-ALGORITHMV2")}}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/MA-CROSSOVER-ALGORITHMV2") }}></aside>
 					</Section>
 				</Row>
 			</ContentSection>
@@ -30,6 +30,6 @@ class MovingAverageCrossoverAlgorithmPage2 extends React.Component {
 	}
 }
 
-MovingAverageCrossoverAlgorithmPage2.title = "MA Crossover - Using svg shape"
+MovingAverageCrossoverAlgorithmPage2.title = "MA Crossover - Using svg shape";
 
 export default MovingAverageCrossoverAlgorithmPage2;
