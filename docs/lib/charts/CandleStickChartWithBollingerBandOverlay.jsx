@@ -26,6 +26,14 @@ import { ema, sma, bollingerBand } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
 import { last } from "react-stockcharts/lib/utils";
 
+const bbStroke = {
+	top: "#964B00",
+	middle: "#000000",
+	bottom: "#964B00",
+};
+
+const bbFill = "#4682B4";
+
 class CandleStickChartWithBollingerBandOverlay extends React.Component {
 	render() {
 		var ema20 = ema()
@@ -109,14 +117,16 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 						displayFormat={format(".2f")} />
 
 					<CandlestickSeries />
+					<BollingerSeries yAccessor={d => d.bb}
+						stroke={bbStroke}
+						fill={bbFill} />
+
 					<LineSeries yAccessor={sma20.accessor()} stroke={sma20.stroke()}/>
 					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
 					<LineSeries yAccessor={ema50.accessor()} stroke={ema50.stroke()}/>
-					<BollingerSeries calculator={bb} />
 					<CurrentCoordinate yAccessor={sma20.accessor()} fill={sma20.stroke()} />
 					<CurrentCoordinate yAccessor={ema20.accessor()} fill={ema20.stroke()} />
 					<CurrentCoordinate yAccessor={ema50.accessor()} fill={ema50.stroke()} />
-
 
 					<OHLCTooltip origin={[-40, 0]}/>
 					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]}

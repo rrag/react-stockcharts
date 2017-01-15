@@ -151,7 +151,8 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 						orient="right"
 						displayFormat={format(".2f")} />
 
-					<StochasticSeries calculator={slowSTO}/>
+					<StochasticSeries
+							yAccessor={d => d.slowSTO} />
 					<StochasticTooltip calculator={slowSTO} origin={[-38, 15]}>Fast STO</StochasticTooltip>
 				</Chart>
 				<Chart id={4}
@@ -165,7 +166,8 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 						orient="right"
 						displayFormat={format(".2f")} />
 
-					<StochasticSeries calculator={fastSTO}/>
+					<StochasticSeries
+							yAccessor={d => d.fastSTO} />
 					<StochasticTooltip calculator={fastSTO} origin={[-38, 15]}>Slow STO</StochasticTooltip>
 				</Chart>
 				<Chart id={5}
@@ -182,8 +184,8 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 						at="right"
 						orient="right"
 						displayFormat={format(".2f")} />
-
-					<StochasticSeries calculator={fullSTO}/>
+					<StochasticSeries
+							yAccessor={d => d.fullSTO} />
 					<StochasticTooltip calculator={fullSTO} origin={[-38, 15]}>Full STO</StochasticTooltip>
 				</Chart>
 				<CrossHairCursor />

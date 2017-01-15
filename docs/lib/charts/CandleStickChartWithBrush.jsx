@@ -55,7 +55,14 @@ var smaVolume50 = sma()
 	.accessor(d => d.smaVolume50);
 
 const BRUSH_TYPE = "2D"; // Valid values = "2D", "1D"
+const macdStroke = {
+	macd: "#FF0000",
+	signal: "#00F300",
+};
 
+const macdFill = {
+	divergence: "#4682B4"
+};
 class CandlestickChart extends React.Component {
 	constructor(props) {
 		super(props);
@@ -190,8 +197,9 @@ class CandlestickChart extends React.Component {
 						orient="right"
 						displayFormat={format(".2f")} />
 
-					<MACDSeries calculator={macdCalculator} />
-
+					<MACDSeries yAccessor={d => d.macd}
+						stroke={macdStroke}
+						fill={macdFill} />
 					<MACDTooltip forChart={3} origin={[-38, 15]} calculator={macdCalculator}/>
 				</Chart>
 				<CrossHairCursor />

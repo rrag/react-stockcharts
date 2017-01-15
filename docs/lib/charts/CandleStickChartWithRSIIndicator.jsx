@@ -140,7 +140,7 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 						orient="right"
 						displayFormat={format(".2f")} />
 
-					<RSISeries calculator={rsiCalculator} />
+					<RSISeries yAccessor={d => d.rsi} />
 
 					<RSITooltip origin={[-38, 15]} calculator={rsiCalculator}/>
 				</Chart>

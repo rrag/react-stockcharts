@@ -32,6 +32,18 @@ import { ema, stochasticOscillator, bollingerBand } from "react-stockcharts/lib/
 import { fitWidth } from "react-stockcharts/lib/helper";
 import { last } from "react-stockcharts/lib/utils";
 
+const bbStroke = {
+	top: "#964B00",
+	middle: "#000000",
+	bottom: "#964B00",
+};
+
+const bbFill = "#4682B4";
+
+const stoStroke = Object.assign({},
+	StochasticSeries.defaultProps.stroke,
+	{ top: "#37a600", middle: "#b8ab00", bottom: "#37a600" });
+
 class CandleStickChartWithDarkTheme extends React.Component {
 	render() {
 		var height = 750;
@@ -133,8 +145,9 @@ class CandleStickChartWithDarkTheme extends React.Component {
 					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
 					<LineSeries yAccessor={ema50.accessor()} stroke={ema50.stroke()}/>
 
-					<BollingerSeries calculator={bb} />
-
+					<BollingerSeries yAccessor={d => d.bb}
+							stroke={bbStroke}
+							fill={bbFill} />
 					<CurrentCoordinate yAccessor={ema20.accessor()} fill={ema20.stroke()} />
 					<CurrentCoordinate yAccessor={ema50.accessor()} fill={ema50.stroke()} />
 
@@ -167,8 +180,9 @@ class CandleStickChartWithDarkTheme extends React.Component {
 						orient="right"
 						displayFormat={format(".2f")} />
 
-					<StochasticSeries calculator={slowSTO}
-							stroke={{ top: "#37a600", middle: "#b8ab00", bottom: "#37a600" }}/>
+					<StochasticSeries
+							yAccessor={d => d.slowSTO}
+							stroke={stoStroke}/>
 					<StochasticTooltip calculator={slowSTO} origin={[-38, 15]}>Fast STO</StochasticTooltip>
 				</Chart>
 				<Chart id={4}
@@ -184,8 +198,9 @@ class CandleStickChartWithDarkTheme extends React.Component {
 						orient="right"
 						displayFormat={format(".2f")} />
 
-					<StochasticSeries calculator={fastSTO}
-							stroke={{ top: "#37a600", middle: "#b8ab00", bottom: "#37a600" }}/>
+					<StochasticSeries
+							yAccessor={d => d.fastSTO}
+							stroke={stoStroke}/>
 					<StochasticTooltip calculator={fastSTO} origin={[-38, 15]}>Slow STO</StochasticTooltip>
 				</Chart>
 				<Chart id={5}
@@ -205,8 +220,9 @@ class CandleStickChartWithDarkTheme extends React.Component {
 						orient="right"
 						displayFormat={format(".2f")} />
 
-					<StochasticSeries calculator={fullSTO}
-							stroke={{ top: "#37a600", middle: "#b8ab00", bottom: "#37a600" }}/>
+					<StochasticSeries
+							yAccessor={d => d.fullSTO}
+							stroke={stoStroke}/>
 					<StochasticTooltip calculator={fullSTO} origin={[-38, 15]}>Full STO</StochasticTooltip>
 				</Chart>
 				<CrossHairCursor stroke="#FFFFFF" />

@@ -32,6 +32,15 @@ function getMaxUndefined(calculators) {
 }
 const LENGTH_TO_SHOW = 180;
 
+const macdStroke = {
+	macd: "#FF0000",
+	signal: "#00F300",
+};
+
+const macdFill = {
+	divergence: "#4682B4"
+};
+
 class CandleStickChartPanToLoadMore extends React.Component {
 	constructor(props) {
 		super(props);
@@ -210,7 +219,9 @@ class CandleStickChartPanToLoadMore extends React.Component {
 						orient="right"
 						displayFormat={format(".2f")} />
 
-					<MACDSeries calculator={macdCalculator} />
+					<MACDSeries yAccessor={d => d.macd}
+						stroke={macdStroke}
+						fill={macdFill} />
 					<MACDTooltip origin={[-38, 15]} calculator={macdCalculator}/>
 				</Chart>
 				<CrossHairCursor />

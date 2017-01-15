@@ -6,43 +6,42 @@ import StraightLine from "./StraightLine";
 
 class RSISeries extends Component {
 	render() {
-		var { className, calculator, stroke, type } = this.props;
-		var yAccessor = calculator.accessor();
-		var overSold = calculator.overSold();
-		var middle = calculator.middle();
-		var overBought = calculator.overBought();
+		var { className, stroke } = this.props;
+		var { yAccessor } = this.props;
+		var { overSold, middle, overBought } = this.props;
 
 		return (
 			<g className={className}>
 				<LineSeries
 					className={className}
 					yAccessor={yAccessor}
-					stroke={stroke.line} fill="none"
-					type={type} />
-				{getHorizontalLine(this.props, overSold, stroke.top)}
-				{getHorizontalLine(this.props, middle, stroke.middle)}
-				{getHorizontalLine(this.props, overBought, stroke.bottom)}
+					stroke={stroke.line} fill="none" />
+				<StraightLine
+					stroke={stroke.top} opacity={0.3}
+					yValue={overSold} />
+				<StraightLine
+					stroke={stroke.middle} opacity={0.3}
+					yValue={middle} />
+				<StraightLine
+					stroke={stroke.bottom} opacity={0.3}
+					yValue={overBought} />
 			</g>
 		);
 	}
 }
 
-function getHorizontalLine(props, yValue, stroke) {
-
-	return <StraightLine
-		stroke={stroke} opacity={0.3}
-		yValue={yValue} />;
-}
-
 RSISeries.propTypes = {
 	className: PropTypes.string,
-
-	calculator: PropTypes.oneOfType([
-		PropTypes.func,
-		PropTypes.object,
-	]).isRequired,
-	stroke: PropTypes.object,
-	type: PropTypes.string,
+	yAccessor: PropTypes.func.isRequired,
+	stroke: PropTypes.shape({
+		line: PropTypes.string.isRequired,
+		top: PropTypes.string.isRequired,
+		middle: PropTypes.string.isRequired,
+		bottom: PropTypes.string.isRequired,
+	}).isRequired,
+	overSold: PropTypes.number.isRequired,
+	middle: PropTypes.number.isRequired,
+	overBought: PropTypes.number.isRequired,
 };
 
 RSISeries.defaultProps = {
@@ -52,7 +51,10 @@ RSISeries.defaultProps = {
 		top: "#964B00",
 		middle: "#000000",
 		bottom: "#964B00"
-	}
+	},
+	overSold: 70,
+	middle: 50,
+	overBought: 30,
 };
 
 export default RSISeries;

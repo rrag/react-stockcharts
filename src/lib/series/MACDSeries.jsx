@@ -15,27 +15,24 @@ class MACDSeries extends Component {
 		this.yAccessorForDivergenceBase = this.yAccessorForDivergenceBase.bind(this);
 	}
 	yAccessorForMACD(d) {
-		var { calculator } = this.props;
-		var yAccessor = calculator.accessor();
+		var { yAccessor } = this.props;
 		return yAccessor(d) && yAccessor(d).macd;
 	}
 	yAccessorForSignal(d) {
-		var { calculator } = this.props;
-		var yAccessor = calculator.accessor();
+		var { yAccessor } = this.props;
 		return yAccessor(d) && yAccessor(d).signal;
 	}
 	yAccessorForDivergence(d) {
-		var { calculator } = this.props;
-		var yAccessor = calculator.accessor();
+		var { yAccessor } = this.props;
 		return yAccessor(d) && yAccessor(d).divergence;
 	}
 	yAccessorForDivergenceBase(xScale, yScale/* , d */) {
 		return yScale(0);
 	}
 	render() {
-		var { className, type, opacity, divergenceStroke, calculator } = this.props;
-		var stroke = calculator.stroke();
-		var fill = calculator.fill();
+		var { className, opacity, divergenceStroke } = this.props;
+		var { stroke, fill } = this.props;
+
 		var { clip } = this.props;
 		var { zeroLineStroke, zeroLineOpacity } = this.props;
 
@@ -53,13 +50,11 @@ class MACDSeries extends Component {
 				<LineSeries
 					yAccessor={this.yAccessorForMACD}
 					stroke={stroke.macd}
-					fill="none"
-					type={type} />
+					fill="none" />
 				<LineSeries
 					yAccessor={this.yAccessorForSignal}
 					stroke={stroke.signal}
-					fill="none"
-					type={type} />
+					fill="none" />
 				<StraightLine
 					stroke={zeroLineStroke}
 					opacity={zeroLineOpacity}
@@ -71,16 +66,19 @@ class MACDSeries extends Component {
 
 MACDSeries.propTypes = {
 	className: PropTypes.string,
-	calculator: PropTypes.oneOfType([
-		PropTypes.func,
-		PropTypes.object,
-	]).isRequired,
-	type: PropTypes.string,
+	yAccessor: PropTypes.func.isRequired,
 	opacity: PropTypes.number,
 	divergenceStroke: PropTypes.bool,
 	zeroLineStroke: PropTypes.string,
 	zeroLineOpacity: PropTypes.number,
 	clip: PropTypes.bool.isRequired,
+	stroke: PropTypes.shape({
+		macd: PropTypes.string.isRequired,
+		signal: PropTypes.string.isRequired,
+	}).isRequired,
+	fill: PropTypes.shape({
+		divergence: PropTypes.string.isRequired,
+	}).isRequired,
 };
 
 MACDSeries.defaultProps = {

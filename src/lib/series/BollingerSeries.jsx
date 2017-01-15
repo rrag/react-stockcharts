@@ -14,30 +14,24 @@ class BollingerSeries extends Component {
 		this.yAccessorForScalledBottom = this.yAccessorForScalledBottom.bind(this);
 	}
 	yAccessorForTop(d) {
-		var { calculator } = this.props;
-		var yAccessor = calculator.accessor();
+		var { yAccessor } = this.props;
 		return yAccessor(d) && yAccessor(d).top;
 	}
 	yAccessorForMiddle(d) {
-		var { calculator } = this.props;
-		var yAccessor = calculator.accessor();
+		var { yAccessor } = this.props;
 		return yAccessor(d) && yAccessor(d).middle;
 	}
 	yAccessorForBottom(d) {
-		var { calculator } = this.props;
-		var yAccessor = calculator.accessor();
+		var { yAccessor } = this.props;
 		return yAccessor(d) && yAccessor(d).bottom;
 	}
 	yAccessorForScalledBottom(scale, d) {
-		var { calculator } = this.props;
-		var yAccessor = calculator.accessor();
+		var { yAccessor } = this.props;
 		return scale(yAccessor(d) && yAccessor(d).bottom);
 	}
 	render() {
-		var { calculator, areaClassName, className, opacity } = this.props;
-
-		var stroke = calculator.stroke();
-		var fill = calculator.fill();
+		var { areaClassName, className, opacity } = this.props;
+		var { stroke, fill } = this.props;
 
 		return (
 			<g className={className}>
@@ -58,14 +52,17 @@ class BollingerSeries extends Component {
 }
 
 BollingerSeries.propTypes = {
-	calculator: PropTypes.oneOfType([
-		PropTypes.func,
-		PropTypes.object,
-	]).isRequired,
+	yAccessor: PropTypes.func.isRequired,
 	className: PropTypes.string,
 	areaClassName: PropTypes.string,
 	opacity: PropTypes.number,
 	type: PropTypes.string,
+	stroke: PropTypes.shape({
+		top: PropTypes.string.isRequired,
+		middle: PropTypes.string.isRequired,
+		bottom: PropTypes.string.isRequired,
+	}).isRequired,
+	fill: PropTypes.string.isRequired,
 };
 
 BollingerSeries.defaultProps = {
