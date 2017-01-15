@@ -72,21 +72,18 @@ class CandleStickChartWithDarkTheme extends React.Component {
 
 		var slowSTO = stochasticOscillator()
 			.windowSize(14)
-			.kWindowSize(1)
-			.stroke({ D: "#ea2bff", K: "#74d400", top: "#37a600", middle: "#b8ab00", bottom: "#37a600" })
+			.kWindowSize(3)
 			.merge((d, c) => {d.slowSTO = c;})
 			.accessor(d => d.slowSTO);
 		var fastSTO = stochasticOscillator()
 			.windowSize(14)
-			.kWindowSize(3)
-			.stroke({ D: "#ea2bff", K: "#74d400", top: "#37a600", middle: "#b8ab00", bottom: "#37a600" })
+			.kWindowSize(1)
 			.merge((d, c) => {d.fastSTO = c;})
 			.accessor(d => d.fastSTO);
 		var fullSTO = stochasticOscillator()
 			.windowSize(14)
 			.kWindowSize(3)
 			.dWindowSize(4)
-			.stroke({ D: "#ea2bff", K: "#74d400" })
 			.merge((d, c) => {d.fullSTO = c;})
 			.accessor(d => d.fullSTO);
 
@@ -155,10 +152,34 @@ class CandleStickChartWithDarkTheme extends React.Component {
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#DB0000"}/>
 
 					<OHLCTooltip origin={[-40, -10]}/>
-					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 10]}
-						calculators={[ema20, ema50]}/>
-					<BollingerBandTooltip origin={[-38, 60]} calculator={bb} />
-				</Chart>
+					<MovingAverageTooltip
+						onClick={e => console.log(e)}
+						origin={[-38, 15]}
+						options={[
+							{
+								yAccessor: ema20.accessor(),
+								type: "EMA",
+								stroke: ema20.stroke(),
+								windowSize: ema20.windowSize(),
+							},
+							{
+								yAccessor: ema50.accessor(),
+								type: "EMA",
+								stroke: ema50.stroke(),
+								windowSize: ema50.windowSize(),
+							},
+						]}
+						/>
+					<BollingerBandTooltip
+						origin={[-38, 60]}
+						yAccessor={d => d.bb}
+						options={{
+							sourcePath: bb.sourcePath(),
+							windowSize: bb.windowSize(),
+							multiplier: bb.multiplier(),
+							movingAverageType: bb.movingAverageType(),
+						}}
+						/>				</Chart>
 				<Chart id={2}
 						yExtents={d => d.volume}
 						height={100} origin={(w, h) => [0, h - 475]} >
@@ -183,7 +204,18 @@ class CandleStickChartWithDarkTheme extends React.Component {
 					<StochasticSeries
 							yAccessor={d => d.slowSTO}
 							stroke={stoStroke}/>
-					<StochasticTooltip calculator={slowSTO} origin={[-38, 15]}>Fast STO</StochasticTooltip>
+					<StochasticTooltip
+						origin={[-38, 15]}
+						yAccessor={d => d.slowSTO}
+						options={{
+							windowSize: slowSTO.windowSize(),
+							kWindowSize: slowSTO.kWindowSize(),
+							dWindowSize: slowSTO.dWindowSize(),
+						}}
+						appearance={{
+							stroke: stoStroke
+						}}
+						label="Slow STO" />
 				</Chart>
 				<Chart id={4}
 						yExtents={fastSTO.domain()}
@@ -201,7 +233,18 @@ class CandleStickChartWithDarkTheme extends React.Component {
 					<StochasticSeries
 							yAccessor={d => d.fastSTO}
 							stroke={stoStroke}/>
-					<StochasticTooltip calculator={fastSTO} origin={[-38, 15]}>Slow STO</StochasticTooltip>
+					<StochasticTooltip
+						origin={[-38, 15]}
+						yAccessor={d => d.fastSTO}
+						options={{
+							windowSize: fastSTO.windowSize(),
+							kWindowSize: fastSTO.kWindowSize(),
+							dWindowSize: fastSTO.dWindowSize(),
+						}}
+						appearance={{
+							stroke: stoStroke
+						}}
+						label="Fast STO" />
 				</Chart>
 				<Chart id={5}
 						yExtents={fullSTO.domain()}
@@ -223,7 +266,18 @@ class CandleStickChartWithDarkTheme extends React.Component {
 					<StochasticSeries
 							yAccessor={d => d.fullSTO}
 							stroke={stoStroke}/>
-					<StochasticTooltip calculator={fullSTO} origin={[-38, 15]}>Full STO</StochasticTooltip>
+					<StochasticTooltip
+						origin={[-38, 15]}
+						yAccessor={d => d.fullSTO}
+						options={{
+							windowSize: fullSTO.windowSize(),
+							kWindowSize: fullSTO.kWindowSize(),
+							dWindowSize: fullSTO.dWindowSize(),
+						}}
+						appearance={{
+							stroke: stoStroke
+						}}
+						label="Full STO" />
 				</Chart>
 				<CrossHairCursor stroke="#FFFFFF" />
 			</ChartCanvas>

@@ -15,11 +15,10 @@ class RSITooltip extends Component {
 		this.renderSVG = this.renderSVG.bind(this);
 	}
 	renderSVG(moreProps) {
-		var { onClick, fontFamily, fontSize, calculator, displayFormat, className } = this.props;
+		var { onClick, fontFamily, fontSize, yAccessor, displayFormat, className } = this.props;
+		var { options } = this.props;
 		var { chartConfig: { width, height } } = moreProps;
 		var { currentItem } = moreProps;
-
-		var yAccessor = calculator.accessor();
 
 		var rsi = isDefined(currentItem) && yAccessor(currentItem);
 		var value = (rsi && displayFormat(rsi)) || "n/a";
@@ -28,11 +27,12 @@ class RSITooltip extends Component {
 		var origin = functor(originProp);
 		var [x, y] = origin(width, height);
 
+		const tooltipLabel = `RSI (${options.windowSize}): `;
 		return (
 			<g className={className} transform={`translate(${ x }, ${ y })`} onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={fontFamily} fontSize={fontSize}>
-					<ToolTipTSpanLabel>{calculator.tooltipLabel()}</ToolTipTSpanLabel>
+					<ToolTipTSpanLabel>{tooltipLabel}</ToolTipTSpanLabel>
 					<tspan>{value}</tspan>
 				</ToolTipText>
 			</g>
@@ -52,14 +52,14 @@ RSITooltip.propTypes = {
 		PropTypes.array,
 		PropTypes.func
 	]).isRequired,
+	options: PropTypes.shape({
+		windowSize: PropTypes.number.isRequired,
+	}).isRequired,
 	className: PropTypes.string,
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
 	onClick: PropTypes.func,
-	calculator: PropTypes.oneOfType([
-		PropTypes.func,
-		PropTypes.object,
-	]).isRequired,
+	yAccessor: PropTypes.func.isRequired,
 	displayFormat: PropTypes.func.isRequired,
 };
 

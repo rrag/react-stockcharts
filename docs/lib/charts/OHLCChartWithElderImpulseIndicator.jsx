@@ -107,8 +107,18 @@ class OHLCChartWithElderImpulseIndicator extends React.Component {
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 
 					<OHLCTooltip origin={[-40, -10]}/>
-					<MovingAverageTooltip origin={[-38, 5]}
-						calculators={[ema12]} />
+					<MovingAverageTooltip
+						onClick={e => console.log(e)}
+						origin={[-38, 5]}
+						options={[
+							{
+								yAccessor: ema12.accessor(),
+								type: "EMA",
+								stroke: ema12.stroke(),
+								windowSize: ema12.windowSize(),
+							},
+						]}
+						/>
 				</Chart>
 				<Chart id={2} height={150}
 						yExtents={d => d.volume}
@@ -142,7 +152,19 @@ class OHLCChartWithElderImpulseIndicator extends React.Component {
 					<MACDSeries yAccessor={d => d.macd}
 						stroke={macdStroke}
 						fill={macdFill} />
-					<MACDTooltip origin={[-38, 15]} calculator={macdCalculator}/>
+					<MACDTooltip
+						origin={[-38, 15]}
+						yAccessor={d => d.macd}
+						options={{
+							slow: macdCalculator.slow(),
+							fast: macdCalculator.fast(),
+							signal: macdCalculator.signal(),
+						}}
+						appearance={{
+							stroke: macdStroke,
+							fill: macdFill,
+						}}
+						/>
 				</Chart>
 				<CrossHairCursor />
 			</ChartCanvas>

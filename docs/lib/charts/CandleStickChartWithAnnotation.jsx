@@ -27,18 +27,6 @@ import { last } from "react-stockcharts/lib/utils";
 
 class CandleStickChartWithAnnotation extends React.Component {
 	render() {
-		var ema20 = ema()
-			.id(0)
-			.windowSize(13)
-			.merge((d, c) => {d.ema20 = c;})
-			.accessor(d => d.ema20);
-
-		var ema50 = ema()
-			.id(2)
-			.windowSize(50)
-			.merge((d, c) => {d.ema50 = c;})
-			.accessor(d => d.ema50);
-
 		var annotationProps = {
 			fontFamily: "Glyphicons Halflings",
 			fontSize: 20,
@@ -53,12 +41,13 @@ class CandleStickChartWithAnnotation extends React.Component {
 
 		var margin = { left: 80, right: 80, top: 30, bottom: 50 };
 		var height = 400;
-
-		var [yAxisLabelX, yAxisLabelY] = [width - margin.left - 40, margin.top + (height - margin.top - margin.bottom) / 2];
-
 		var { type, data: initialData, width, ratio } = this.props;
 
-		const calculatedData = ema50(ema20(initialData));
+		var [yAxisLabelX, yAxisLabelY] = [
+			width - margin.left - 40,
+			(height - margin.top - margin.bottom) / 2
+		];
+
 		const xScaleProvider = discontinuousTimeScaleProvider
 			.inputDateAccessor(d => d.date);
 		const {
@@ -66,7 +55,7 @@ class CandleStickChartWithAnnotation extends React.Component {
 			xScale,
 			xAccessor,
 			displayXAccessor,
-		} = xScaleProvider(calculatedData);
+		} = xScaleProvider(initialData);
 
 		const start = xAccessor(last(data));
 		const end = xAccessor(data[Math.max(0, data.length - 150)]);
@@ -89,7 +78,7 @@ class CandleStickChartWithAnnotation extends React.Component {
 					fontSize="30" text="Chart title here" />
 
 				<Chart id={1}
-						yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
+						yExtents={[d => [d.high, d.low]]}
 						padding={{ top: 10, bottom: 20 }}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<MouseCoordinateX
@@ -111,17 +100,10 @@ class CandleStickChartWithAnnotation extends React.Component {
 						fontSize="12" text="YAxis Label here" />
 
 					<CandlestickSeries />
-					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
-					<LineSeries yAccessor={ema50.accessor()} stroke={ema50.stroke()}/>
-
-					<CurrentCoordinate yAccessor={ema20.accessor()} fill={ema20.stroke()} />
-					<CurrentCoordinate yAccessor={ema50.accessor()} fill={ema50.stroke()} />
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 
 					<OHLCTooltip origin={[-40, 0]}/>
-					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]}
-						calculators={[ema20, ema50]}/>
 
 					<Annotate with={LabelAnnotation}
 						when={d => d.date.getDate() === 1 /* some condition */}
@@ -130,15 +112,10 @@ class CandleStickChartWithAnnotation extends React.Component {
 				</Chart>
 				<CrossHairCursor strokeDasharray="LongDashDot" />
 
-		</ChartCanvas>
+			</ChartCanvas>
 		);
 	}
 }
-
-/*
-
-
-*/
 
 CandleStickChartWithAnnotation.propTypes = {
 	data: React.PropTypes.array.isRequired,

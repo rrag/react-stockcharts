@@ -114,8 +114,26 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 
 					<OHLCTooltip origin={[-40, 0]}/>
-					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]}
-						calculators={[ema26, ema12]}/>
+
+					<MovingAverageTooltip
+						onClick={e => console.log(e)}
+						origin={[-38, 15]}
+						options={[
+							{
+								yAccessor: ema26.accessor(),
+								type: "EMA",
+								stroke: ema26.stroke(),
+								windowSize: ema26.windowSize(),
+							},
+							{
+								yAccessor: ema12.accessor(),
+								type: "EMA",
+								stroke: ema12.stroke(),
+								windowSize: ema12.windowSize(),
+							},
+						]}
+						/>
+
 				</Chart>
 				<Chart id={2} height={150}
 						yExtents={[d => d.volume, smaVolume50.accessor()]}
@@ -142,7 +160,11 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 
 					<RSISeries yAccessor={d => d.rsi} />
 
-					<RSITooltip origin={[-38, 15]} calculator={rsiCalculator}/>
+					<RSITooltip origin={[-38, 15]}
+						yAccessor={d => d.rsi}
+						options={{
+							windowSize: rsiCalculator.windowSize()
+						}} />
 				</Chart>
 				<Chart id={8}
 						yExtents={atr14.accessor()}

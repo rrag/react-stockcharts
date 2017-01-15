@@ -14,11 +14,10 @@ class MACDTooltip extends Component {
 		this.renderSVG = this.renderSVG.bind(this);
 	}
 	renderSVG(moreProps) {
-		var { onClick, fontFamily, fontSize, calculator, displayFormat, className } = this.props;
+		var { onClick, fontFamily, fontSize, displayFormat, className } = this.props;
+		var { yAccessor, options, appearance } = this.props;
 		var { chartConfig: { width, height } } = moreProps;
 		var { currentItem } = moreProps;
-
-		var yAccessor = calculator.accessor();
 
 		var macdValue = currentItem && yAccessor(currentItem);
 
@@ -35,14 +34,17 @@ class MACDTooltip extends Component {
 				<ToolTipText x={0} y={0}
 					fontFamily={fontFamily} fontSize={fontSize}>
 					<ToolTipTSpanLabel>MACD (</ToolTipTSpanLabel>
-						<tspan fill={calculator.stroke().macd}>{calculator.slow()}</tspan>
-						<ToolTipTSpanLabel>, </ToolTipTSpanLabel>
-						<tspan fill={calculator.stroke().macd}>{calculator.fast()}</tspan>
-					<ToolTipTSpanLabel>): </ToolTipTSpanLabel><tspan fill={calculator.stroke().macd}>{macd}</tspan>
+					<tspan fill={appearance.stroke.macd}>{options.slow}</tspan>
+					<ToolTipTSpanLabel>, </ToolTipTSpanLabel>
+					<tspan fill={appearance.stroke.macd}>{options.fast}</tspan>
+					<ToolTipTSpanLabel>): </ToolTipTSpanLabel>
+					<tspan fill={appearance.stroke.macd}>{macd}</tspan>
 					<ToolTipTSpanLabel> Signal (</ToolTipTSpanLabel>
-						<tspan fill={calculator.stroke().signal}>{calculator.signal()}</tspan>
-						<ToolTipTSpanLabel>): </ToolTipTSpanLabel><tspan fill={calculator.stroke().signal}>{signal}</tspan>
-					<ToolTipTSpanLabel> Divergence: </ToolTipTSpanLabel><tspan fill={calculator.fill().divergence}>{divergence}</tspan>
+					<tspan fill={appearance.stroke.signal}>{options.signal}</tspan>
+					<ToolTipTSpanLabel>): </ToolTipTSpanLabel>
+					<tspan fill={appearance.stroke.signal}>{signal}</tspan>
+					<ToolTipTSpanLabel> Divergence: </ToolTipTSpanLabel>
+					<tspan fill={appearance.fill.divergence}>{divergence}</tspan>
 				</ToolTipText>
 			</g>
 		);
@@ -64,10 +66,21 @@ MACDTooltip.propTypes = {
 	className: PropTypes.string,
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
-	calculator: PropTypes.oneOfType([
-		PropTypes.func,
-		PropTypes.object,
-	]).isRequired,
+	yAccessor: PropTypes.func.isRequired,
+	options: PropTypes.shape({
+		slow: PropTypes.number.isRequired,
+		fast: PropTypes.number.isRequired,
+		signal: PropTypes.number.isRequired,
+	}).isRequired,
+	appearance: PropTypes.shape({
+		stroke: {
+			macd: PropTypes.string.isRequired,
+			signal: PropTypes.string.isRequired,
+		}.isRequired,
+		fill: PropTypes.shape({
+			divergence: PropTypes.string.isRequired,
+		}).isRequired,
+	}).isRequired,
 	displayFormat: PropTypes.func.isRequired,
 	onClick: PropTypes.func,
 };

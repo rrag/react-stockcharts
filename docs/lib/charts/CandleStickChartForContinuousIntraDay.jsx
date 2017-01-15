@@ -129,8 +129,24 @@ class CandleStickChartForContinuousIntraDay extends React.Component {
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 
 					<OHLCTooltip origin={[-40, 0]} xDisplayFormat={timeFormat("%Y-%m-%d %H:%M:%S")}/>
-					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]}
-						calculators={[ema20, ema50]}/>
+					<MovingAverageTooltip
+						onClick={(e) => console.log(e)}
+						origin={[-38, 15]}
+						options={[
+							{
+								yAccessor: ema20.accessor(),
+								type: "EMA",
+								stroke: ema20.stroke(),
+								windowSize: ema20.windowSize(),
+							},
+							{
+								yAccessor: ema50.accessor(),
+								type: "EMA",
+								stroke: ema50.stroke(),
+								windowSize: ema50.windowSize(),
+							},
+						]}
+						/>
 				</Chart>
 				<CrossHairCursor />
 			</ChartCanvas>

@@ -122,9 +122,48 @@ class CandleStickChartWithMA extends React.Component {
 					<CurrentCoordinate yAccessor={ema50.accessor()} fill={ema50.stroke()} />
 
 					<OHLCTooltip origin={[-40, 0]}/>
-					<MovingAverageTooltip onClick={(e) => console.log(e)}
+					<MovingAverageTooltip
+						onClick={e => console.log(e)}
 						origin={[-38, 15]}
-						calculators={[sma20, wma20, tma20, ema20, ema50]}/>
+						options={[
+							{
+								yAccessor: sma20.accessor(),
+								type: "SMA",
+								stroke: sma20.stroke(),
+								windowSize: sma20.windowSize(),
+								echo: "some echo here",
+							},
+							{
+								yAccessor: wma20.accessor(),
+								type: "WMA",
+								stroke: wma20.stroke(),
+								windowSize: wma20.windowSize(),
+								echo: "some echo here",
+							},
+							{
+								yAccessor: tma20.accessor(),
+								type: "TMA",
+								stroke: tma20.stroke(),
+								windowSize: tma20.windowSize(),
+								echo: "some echo here",
+							},
+							{
+								yAccessor: ema20.accessor(),
+								type: "EMA",
+								stroke: ema20.stroke(),
+								windowSize: ema20.windowSize(),
+								echo: "some echo here",
+							},
+							{
+								yAccessor: ema50.accessor(),
+								type: "EMA",
+								stroke: ema50.stroke(),
+								windowSize: ema50.windowSize(),
+								echo: "some echo here",
+							},
+						]}
+						/>
+
 				</Chart>
 				<Chart id={2}
 						yExtents={[d => d.volume, smaVolume50.accessor()]}

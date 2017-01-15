@@ -114,9 +114,24 @@ class CandlestickChart extends React.Component {
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 
 					<OHLCTooltip origin={[-40, 0]}/>
-					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]}
-						calculators={[ema26, ema12]}/>
-
+					<MovingAverageTooltip
+						onClick={e => console.log(e)}
+						origin={[-38, 15]}
+						options={[
+							{
+								yAccessor: ema26.accessor(),
+								type: "EMA",
+								stroke: ema26.stroke(),
+								windowSize: ema26.windowSize(),
+							},
+							{
+								yAccessor: ema12.accessor(),
+								type: "EMA",
+								stroke: ema12.stroke(),
+								windowSize: ema12.windowSize(),
+							},
+						]}
+						/>
 					<ClickCallback enabled={true}
 						onClick={ e => { console.log(`mouse position = ${e.mouseXY}`, e); } }/>
 
@@ -152,8 +167,19 @@ class CandlestickChart extends React.Component {
 					<MACDSeries yAccessor={d => d.macd}
 						stroke={macdStroke}
 						fill={macdFill} />
-					<MACDTooltip origin={[-38, 15]} calculator={macdCalculator}/>
-
+					<MACDTooltip
+						origin={[-38, 15]}
+						yAccessor={d => d.macd}
+						options={{
+							slow: macdCalculator.slow(),
+							fast: macdCalculator.fast(),
+							signal: macdCalculator.signal(),
+						}}
+						appearance={{
+							stroke: macdStroke,
+							fill: macdFill,
+						}}
+						/>
 				</Chart>
 				<CrossHairCursor />
 			</ChartCanvas>

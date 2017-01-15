@@ -129,9 +129,41 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 					<CurrentCoordinate yAccessor={ema50.accessor()} fill={ema50.stroke()} />
 
 					<OHLCTooltip origin={[-40, 0]}/>
-					<MovingAverageTooltip onClick={(e) => console.log(e)} origin={[-38, 15]}
-						calculators={[sma20, ema20, ema50]}/>
-					<BollingerBandTooltip origin={[-38, 60]} calculator={bb} />
+
+					<MovingAverageTooltip
+						onClick={e => console.log(e)}
+						origin={[-38, 15]}
+						options={[
+							{
+								yAccessor: sma20.accessor(),
+								type: "SMA",
+								stroke: sma20.stroke(),
+								windowSize: sma20.windowSize(),
+							},
+							{
+								yAccessor: ema20.accessor(),
+								type: "EMA",
+								stroke: ema20.stroke(),
+								windowSize: ema20.windowSize(),
+							},
+							{
+								yAccessor: ema50.accessor(),
+								type: "EMA",
+								stroke: ema50.stroke(),
+								windowSize: ema50.windowSize(),
+							},
+						]}
+						/>
+					<BollingerBandTooltip
+						origin={[-38, 60]}
+						yAccessor={d => d.bb}
+						options={{
+							sourcePath: bb.sourcePath(),
+							windowSize: bb.windowSize(),
+							multiplier: bb.multiplier(),
+							movingAverageType: bb.movingAverageType(),
+						}}
+						/>
 
 				</Chart>
 				<Chart id={2}

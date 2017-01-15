@@ -15,17 +15,16 @@ class BollingerBandTooltip extends Component {
 		this.renderSVG = this.renderSVG.bind(this);
 	}
 	renderSVG(moreProps) {
-		var { onClick, displayFormat, calculator } = this.props;
+		var { onClick, displayFormat, yAccessor, options } = this.props;
 		var { chartConfig: { width, height } } = moreProps;
 		var { currentItem } = moreProps;
 
 		var top, middle, bottom;
 		top = middle = bottom = "n/a";
-		var accessor = calculator.accessor();
 
 		if (isDefined(currentItem)
-				&& isDefined(accessor(currentItem))) {
-			var item = accessor(currentItem);
+				&& isDefined(yAccessor(currentItem))) {
+			var item = yAccessor(currentItem);
 			top = displayFormat(item.top);
 			middle = displayFormat(item.middle);
 			bottom = displayFormat(item.bottom);
@@ -34,15 +33,17 @@ class BollingerBandTooltip extends Component {
 		var { origin: originProp } = this.props;
 		var origin = functor(originProp);
 		var [x, y] = origin(width, height);
-		var tooltipLabel = functor(calculator.tooltipLabel());
 
+		const { sourcePath, windowSize, multiplier, movingAverageType } = options;
+		const tooltipLabel = `BB(${sourcePath}, ${windowSize}, ${multiplier}, ${movingAverageType}): `;
+		const tooltipValue = `${top}, ${middle}, ${bottom}`;
 		return (
 			<g transform={`translate(${ x }, ${ y })`}
 					className={this.props.className} onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={this.props.fontFamily} fontSize={this.props.fontSize}>
-					<ToolTipTSpanLabel>{tooltipLabel()}</ToolTipTSpanLabel>
-					<tspan>{`${ top }, ${ middle }, ${ bottom }`}</tspan>
+					<ToolTipTSpanLabel>{tooltipLabel}</ToolTipTSpanLabel>
+					<tspan>{tooltipValue}</tspan>
 				</ToolTipText>
 			</g>
 		);
@@ -58,16 +59,18 @@ class BollingerBandTooltip extends Component {
 
 BollingerBandTooltip.propTypes = {
 	className: PropTypes.string,
-	calculator: PropTypes.oneOfType([
-		PropTypes.func,
-		PropTypes.object,
-	]).isRequired,
+	yAccessor: PropTypes.func.isRequired,
 	displayFormat: PropTypes.func.isRequired,
 	origin: PropTypes.array.isRequired,
 	onClick: PropTypes.func,
+	options: PropTypes.shape({
+		sourcePath: PropTypes.string.isRequired,
+		windowSize: PropTypes.number.isRequired,
+		multiplier: PropTypes.number.isRequired,
+		movingAverageType: PropTypes.string.isRequired,
+	}).isRequired,
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
-	forDataSeries: PropTypes.number,
 };
 
 BollingerBandTooltip.defaultProps = {

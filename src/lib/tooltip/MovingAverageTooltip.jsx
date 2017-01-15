@@ -57,7 +57,8 @@ class MovingAverageTooltip extends Component {
 		var { chartId } = moreProps;
 		var { chartConfig, currentItem } = moreProps;
 
-		var { className, onClick, width, fontFamily, fontSize, origin: originProp, calculators, displayFormat } = this.props;
+		var { className, onClick, width, fontFamily, fontSize } = this.props;
+		var { origin: originProp, displayFormat, options } = this.props;
 		var { chartConfig: { height } } = moreProps;
 
 		var config = chartConfig;
@@ -68,23 +69,19 @@ class MovingAverageTooltip extends Component {
 
 		return (
 			<g transform={`translate(${ ox + x }, ${ oy + y })`} className={className}>
-				{calculators
+				{options
 					.map((each, idx) => {
-						var yValue = currentItem && each.accessor()(currentItem);
-						var options = {
-							type: each.type(),
-							windowSize: each.windowSize(),
-							sourcePath: each.sourcePath(),
-							echo: each.echo()
-						};
+						var yValue = currentItem && each.yAccessor(currentItem);
+
+						var tooltipLabel = `${each.type} (${each.windowSize})`;
 						var yDisplayValue = yValue ? displayFormat(yValue) : "n/a";
 						return <SingleMAToolTip
 							key={idx}
 							origin={[width * idx, 0]}
-							color={each.stroke()}
-							displayName={each.tooltipLabel()}
+							color={each.stroke}
+							displayName={tooltipLabel}
 							value={yDisplayValue}
-							options={options}
+							options={each}
 							forChart={chartId} onClick={onClick}
 							fontFamily={fontFamily} fontSize={fontSize} />;
 					})}
@@ -108,8 +105,13 @@ MovingAverageTooltip.propTypes = {
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
 	width: PropTypes.number,
-	calculators: PropTypes.array.isRequired,
-	forDataSeries: PropTypes.arrayOf(PropTypes.number),
+	options: PropTypes.arrayOf(PropTypes.shape({
+		yAccessor: PropTypes.func.isRequired,
+		type: PropTypes.string.isRequired,
+		stroke: PropTypes.string.isRequired,
+		windowSize: PropTypes.number.isRequired,
+		echo: PropTypes.any,
+	})),
 };
 
 MovingAverageTooltip.defaultProps = {
