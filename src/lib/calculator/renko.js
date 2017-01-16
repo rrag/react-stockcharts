@@ -1,18 +1,20 @@
 "use strict";
 
-import { merge, isNotDefined, functor } from "../../utils";
+import { merge, isNotDefined, functor } from "../utils";
 
 import atr from "./atr";
 
-import { Renko as defaultOptions } from "../defaultOptionsForComputation";
+import { Renko as defaultOptions } from "./defaultOptionsForComputation";
 
 export default function() {
+	var options = defaultOptions;
 
-	var { reversalType, fixedBrickSize, sourcePath, windowSize } = defaultOptions;
 	var dateAccessor = d => d.date;
 	var dateMutator = (d, date) => { d.date = date; };
 
 	function calculator(rawData) {
+		var { reversalType, fixedBrickSize, sourcePath, windowSize } = options;
+
 		var source = sourcePath === "high/low"
 			? d => { return { high: d.high, low: d.low }; }
 			: d => { return { high: d.close, low: d.close }; };
@@ -21,7 +23,7 @@ export default function() {
 
 		if (reversalType === "ATR") {
 			// calculateATR(rawData, period);
-			var atrAlgorithm = atr().windowSize(windowSize);
+			var atrAlgorithm = atr().options({ windowSize });
 
 			var atrCalculator = merge()
 				.algorithm(atrAlgorithm)
@@ -161,26 +163,14 @@ export default function() {
 		return renkoData;
 
 	}
-	calculator.reversalType = function(x) {
-		if (!arguments.length) return reversalType;
-		reversalType = x;
+	calculator.options = function(x) {
+		if (!arguments.length) {
+			return options;
+		}
+		options = { ...defaultOptions, ...x };
 		return calculator;
 	};
-	calculator.fixedBrickSize = function(x) {
-		if (!arguments.length) return fixedBrickSize;
-		fixedBrickSize = x;
-		return calculator;
-	};
-	calculator.sourcePath = function(x) {
-		if (!arguments.length) return sourcePath;
-		sourcePath = x;
-		return calculator;
-	};
-	calculator.windowSize = function(x) {
-		if (!arguments.length) return windowSize;
-		windowSize = x;
-		return calculator;
-	};
+
 	calculator.dateMutator = function(x) {
 		if (!arguments.length) return dateMutator;
 		dateMutator = x;

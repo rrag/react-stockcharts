@@ -31,40 +31,37 @@ import { last } from "react-stockcharts/lib/utils";
 class CandleStickChartWithMA extends React.Component {
 	render() {
 		var ema20 = ema()
-			.windowSize(20) // optional will default to 10
-			.sourcePath("close") // optional will default to close as the source
+			.options({
+				windowSize: 20, // optional will default to 10
+				sourcePath: "close", // optional will default to close as the source
+			})
 			.skipUndefined(true) // defaults to true
 			.merge((d, c) => {d.ema20 = c;}) // Required, if not provided, log a error
 			.accessor(d => d.ema20) // Required, if not provided, log an error during calculation
 			.stroke("blue"); // Optional
 
 		var sma20 = sma()
-			.windowSize(20)
-			.sourcePath("close")
+			.options({ windowSize: 20 })
 			.merge((d, c) => {d.sma20 = c;})
 			.accessor(d => d.sma20);
 
 		var wma20 = wma()
-			.windowSize(20)
-			.sourcePath("close")
+			.options({ windowSize: 20 })
 			.merge((d, c) => {d.wma20 = c;})
 			.accessor(d => d.wma20);
 
 		var tma20 = tma()
-			.windowSize(20)
-			.sourcePath("close")
+			.options({ windowSize: 20 })
 			.merge((d, c) => {d.tma20 = c;})
 			.accessor(d => d.tma20);
 
 		var ema50 = ema()
-			.windowSize(50)
-			.sourcePath("close")
+			.options({ windowSize: 50 })
 			.merge((d, c) => {d.ema50 = c;})
 			.accessor(d => d.ema50);
 
 		var smaVolume50 = sma()
-			.windowSize(50)
-			.sourcePath("volume")
+			.options({ windowSize: 20, sourcePath: "volume" })
 			.merge((d, c) => {d.smaVolume50 = c;})
 			.accessor(d => d.smaVolume50)
 			.stroke("#4682B4")
@@ -130,35 +127,35 @@ class CandleStickChartWithMA extends React.Component {
 								yAccessor: sma20.accessor(),
 								type: "SMA",
 								stroke: sma20.stroke(),
-								windowSize: sma20.windowSize(),
+								windowSize: sma20.options().windowSize,
 								echo: "some echo here",
 							},
 							{
 								yAccessor: wma20.accessor(),
 								type: "WMA",
 								stroke: wma20.stroke(),
-								windowSize: wma20.windowSize(),
+								windowSize: wma20.options().windowSize,
 								echo: "some echo here",
 							},
 							{
 								yAccessor: tma20.accessor(),
 								type: "TMA",
 								stroke: tma20.stroke(),
-								windowSize: tma20.windowSize(),
+								windowSize: tma20.options().windowSize,
 								echo: "some echo here",
 							},
 							{
 								yAccessor: ema20.accessor(),
 								type: "EMA",
 								stroke: ema20.stroke(),
-								windowSize: ema20.windowSize(),
+								windowSize: ema20.options().windowSize,
 								echo: "some echo here",
 							},
 							{
 								yAccessor: ema50.accessor(),
 								type: "EMA",
 								stroke: ema50.stroke(),
-								windowSize: ema50.windowSize(),
+								windowSize: ema50.options().windowSize,
 								echo: "some echo here",
 							},
 						]}

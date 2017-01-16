@@ -36,8 +36,7 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 
 		var fiEMA13 = ema()
 			.id(1)
-			.windowSize(13)
-			.sourcePath("fi")
+			.options({ windowSize: 13, sourcePath: "fi" })
 			.merge((d, c) => {d.fiEMA13 = c;})
 			.accessor(d => d.fiEMA13);
 
@@ -82,7 +81,8 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 					<CandlestickSeries />
 
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
-						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
+						yAccessor={d => d.close}
+						fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 					<OHLCTooltip origin={[-40, -10]}/>
 
 				</Chart>
@@ -141,7 +141,7 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 
 					<SingleValueTooltip
 						yAccessor={fiEMA13.accessor()}
-						yLabel={`ForceIndex (${fiEMA13.windowSize()})`}
+						yLabel={`ForceIndex (${fiEMA13.options().windowSize})`}
 						yDisplayFormat={format(".4s")}
 						origin={[-40, 15]}/>
 				</Chart>

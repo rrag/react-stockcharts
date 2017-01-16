@@ -1,11 +1,13 @@
 "use strict";
 
-import { slidingWindow } from "../../utils";
+import { slidingWindow } from "../utils";
+import { Change as defaultOptions } from "./defaultOptionsForComputation";
 
 export default function() {
+	var options = defaultOptions;
 
-	var sourcePath = "close";
 	function calculator(data) {
+		var { sourcePath } = options;
 
 		var algo = slidingWindow()
 			.windowSize(2)
@@ -23,12 +25,11 @@ export default function() {
 	calculator.undefinedLength = function() {
 		return 1;
 	};
-
-	calculator.sourcePath = function(x) {
+	calculator.options = function(x) {
 		if (!arguments.length) {
-			return sourcePath;
+			return options;
 		}
-		sourcePath = x;
+		options = { ...defaultOptions, ...x };
 		return calculator;
 	};
 

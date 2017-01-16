@@ -27,18 +27,19 @@ import {
 	MovingAverageTooltip,
 	MACDTooltip,
 } from "react-stockcharts/lib/tooltip";
-import { ema, macd, sma } from "react-stockcharts/lib/indicator";
+import { ema, macd } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
 import { TrendLine } from "react-stockcharts/lib/interactive";
 import { last } from "react-stockcharts/lib/utils";
 
-const macdStroke = {
-	macd: "#FF0000",
-	signal: "#00F300",
-};
-
-const macdFill = {
-	divergence: "#4682B4"
+const macdAppearance = {
+	stroke: {
+		macd: "#FF0000",
+		signal: "#00F300",
+	},
+	fill: {
+		divergence: "#4682B4"
+	},
 };
 
 class CandlestickChart extends React.Component {
@@ -88,33 +89,28 @@ class CandlestickChart extends React.Component {
 	render() {
 		var ema26 = ema()
 			.id(0)
-			.windowSize(26)
-			.merge((d, c) => {d.ema26 = c;})
+			.options({ windowSize: 26 })
+			.merge((d, c) => { d.ema26 = c; })
 			.accessor(d => d.ema26);
 
 		var ema12 = ema()
 			.id(1)
-			.windowSize(12)
+			.options({ windowSize: 12 })
 			.merge((d, c) => {d.ema12 = c;})
 			.accessor(d => d.ema12);
 
 		var macdCalculator = macd()
-			.fast(12)
-			.slow(26)
-			.signal(9)
+			.options({
+				fast: 12,
+				slow: 26,
+				signal: 9,
+			})
 			.merge((d, c) => {d.macd = c;})
 			.accessor(d => d.macd);
 
-		var smaVolume50 = sma()
-			.id(3)
-			.windowSize(10)
-			.sourcePath("volume")
-			.merge((d, c) => {d.smaVolume50 = c;})
-			.accessor(d => d.smaVolume50);
-
 		var { type, data: initialData, width, ratio } = this.props;
 
-		const calculatedData = macdCalculator(smaVolume50(ema12(ema26(initialData))));
+		const calculatedData = macdCalculator(ema12(ema26(initialData)));
 		const xScaleProvider = discontinuousTimeScaleProvider
 			.inputDateAccessor(d => d.date);
 		const {
@@ -172,13 +168,13 @@ class CandlestickChart extends React.Component {
 								yAccessor: ema26.accessor(),
 								type: "EMA",
 								stroke: ema26.stroke(),
-								windowSize: ema26.windowSize(),
+								windowSize: ema26.options().windowSize,
 							},
 							{
 								yAccessor: ema12.accessor(),
 								type: "EMA",
 								stroke: ema12.stroke(),
-								windowSize: ema12.windowSize(),
+								windowSize: ema12.options().windowSize,
 							},
 						]}
 						/>
@@ -191,7 +187,7 @@ class CandlestickChart extends React.Component {
 						/>
 				</Chart>
 				<Chart id={2} height={150}
-						yExtents={[d => d.volume, smaVolume50.accessor()]}
+						yExtents={[d => d.volume]}
 						origin={(w, h) => [0, h - 300]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
 
@@ -201,7 +197,6 @@ class CandlestickChart extends React.Component {
 						displayFormat={format(".4s")} />
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
-					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
 				</Chart>
 				<Chart id={3} height={150}
 						yExtents={macdCalculator.accessor()}
@@ -219,20 +214,12 @@ class CandlestickChart extends React.Component {
 						displayFormat={format(".2f")} />
 
 					<MACDSeries yAccessor={d => d.macd}
-						stroke={macdStroke}
-						fill={macdFill} />
+						{...macdAppearance} />
 					<MACDTooltip
 						origin={[-38, 15]}
 						yAccessor={d => d.macd}
-						options={{
-							slow: macdCalculator.slow(),
-							fast: macdCalculator.fast(),
-							signal: macdCalculator.signal(),
-						}}
-						appearance={{
-							stroke: macdStroke,
-							fill: macdFill,
-						}}
+						options={macdCalculator.options()}
+						appearance={macdAppearance}
 						/>
 				</Chart>
 				<CrossHairCursor />

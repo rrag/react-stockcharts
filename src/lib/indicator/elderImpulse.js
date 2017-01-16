@@ -46,8 +46,11 @@ export default function() {
 		.algorithm(underlyingAlgorithm)
 		.merge((datum, indicator) => { datum.elderImpulse = indicator; });
 
-	var indicator = function(data) {
-		var newData = mergedAlgorithm(data);
+	var indicator = function(data, options = { merge: true }) {
+		var newData = options.merge
+			? mergedAlgorithm(data)
+			: underlyingAlgorithm(data);
+
 		return newData;
 	};
 	indicator.macdSource = function(x) {

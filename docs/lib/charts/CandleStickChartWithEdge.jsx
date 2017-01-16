@@ -33,20 +33,19 @@ class CandleStickChartWithEdge extends React.Component {
 	render() {
 		var ema20 = ema()
 			.id(0)
-			.windowSize(20)
+			.options({ windowSize: 20 })
 			.merge((d, c) => {d.ema20 = c;})
 			.accessor(d => d.ema20);
 
 		var ema50 = ema()
 			.id(2)
-			.windowSize(50)
+			.options({ windowSize: 50 })
 			.merge((d, c) => {d.ema50 = c;})
 			.accessor(d => d.ema50);
 
 		var smaVolume70 = sma()
 			.id(3)
-			.windowSize(70)
-			.sourcePath("volume")
+			.options({ windowSize: 70, sourcePath: "volume" })
 			.merge((d, c) => {d.smaVolume70 = c;})
 			.accessor(d => d.smaVolume70);
 		var { type, data: initialData, width, ratio } = this.props;
@@ -150,15 +149,15 @@ class CandleStickChartWithEdge extends React.Component {
 						options={[
 							{
 								yAccessor: ema20.accessor(),
-								type: "EMA",
+								type: ema20.type(),
 								stroke: ema20.stroke(),
-								windowSize: ema20.windowSize(),
+								windowSize: ema20.options().windowSize,
 							},
 							{
 								yAccessor: ema50.accessor(),
-								type: "EMA",
+								type: ema50.type(),
 								stroke: ema50.stroke(),
-								windowSize: ema50.windowSize(),
+								windowSize: ema50.options().windowSize,
 							},
 						]}
 						/>

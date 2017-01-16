@@ -3,7 +3,7 @@
 import { rebind } from "d3fc-rebind";
 
 import { merge } from "../utils";
-import { forceIndex } from "./algorithm";
+import { forceIndex } from "../calculator";
 
 import baseIndicator from "./baseIndicator";
 
@@ -21,13 +21,16 @@ export default function() {
 		.algorithm(underlyingAlgorithm)
 		.merge((datum, indicator) => { datum.forceIndex = indicator; });
 
-	var indicator = function(data) {
-		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
-		return mergedAlgorithm(data);
+	var indicator = function(data, options = { merge: true }) {
+		if (options.merge) {
+			if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
+			return mergedAlgorithm(data);
+		}
+		return underlyingAlgorithm(data);
 	};
 
 	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type");
-	rebind(indicator, underlyingAlgorithm, "sourcePath");
+	rebind(indicator, underlyingAlgorithm, "options");
 	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;

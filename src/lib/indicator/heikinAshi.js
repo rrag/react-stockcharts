@@ -2,7 +2,7 @@
 
 import { rebind } from "d3fc-rebind";
 
-import { heikinAshi } from "./algorithm";
+import { heikinAshi } from "../calculator";
 import baseIndicator from "./baseIndicator";
 
 import { merge } from "../utils";
@@ -23,9 +23,12 @@ export default function() {
 			return { ...datum, ...indicator };
 		});
 
-	var indicator = function(data) {
-		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
-		return mergedAlgorithm(data);
+	var indicator = function(data, options = { merge: true }) {
+		if (options.merge) {
+			if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
+			return mergedAlgorithm(data);
+		}
+		return underlyingAlgorithm(data);
 	};
 
 	rebind(indicator, base, "accessor", "stroke", "fill", "echo", "type");

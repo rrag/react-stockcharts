@@ -29,13 +29,14 @@ import { ema, macd, change, elderImpulse } from "react-stockcharts/lib/indicator
 import { fitWidth } from "react-stockcharts/lib/helper";
 import { last } from "react-stockcharts/lib/utils";
 
-const macdStroke = {
-	macd: "#FF0000",
-	signal: "#00F300",
-};
-
-const macdFill = {
-	divergence: "#4682B4"
+const macdAppearance = {
+	stroke: {
+		macd: "#FF0000",
+		signal: "#00F300",
+	},
+	fill: {
+		divergence: "#4682B4"
+	},
 };
 
 class OHLCChartWithElderImpulseIndicator extends React.Component {
@@ -45,14 +46,16 @@ class OHLCChartWithElderImpulseIndicator extends React.Component {
 
 		var ema12 = ema()
 			.id(1)
-			.windowSize(12)
+			.options({ windowSize: 12 })
 			.merge((d, c) => { d.ema12 = c; })
 			.accessor(d => d.ema12);
 
 		var macdCalculator = macd()
-			.fast(12)
-			.slow(26)
-			.signal(9)
+			.options({
+				fast: 12,
+				slow: 26,
+				signal: 9,
+			})
 			.merge((d, c) => { d.macd = c; })
 			.accessor(d => d.macd);
 
@@ -115,7 +118,7 @@ class OHLCChartWithElderImpulseIndicator extends React.Component {
 								yAccessor: ema12.accessor(),
 								type: "EMA",
 								stroke: ema12.stroke(),
-								windowSize: ema12.windowSize(),
+								windowSize: ema12.options().windowSize,
 							},
 						]}
 						/>
@@ -150,20 +153,12 @@ class OHLCChartWithElderImpulseIndicator extends React.Component {
 						displayFormat={format(".2f")} />
 
 					<MACDSeries yAccessor={d => d.macd}
-						stroke={macdStroke}
-						fill={macdFill} />
+						{...macdAppearance} />
 					<MACDTooltip
 						origin={[-38, 15]}
 						yAccessor={d => d.macd}
-						options={{
-							slow: macdCalculator.slow(),
-							fast: macdCalculator.fast(),
-							signal: macdCalculator.signal(),
-						}}
-						appearance={{
-							stroke: macdStroke,
-							fill: macdFill,
-						}}
+						options={macdCalculator.options()}
+						appearance={macdAppearance}
 						/>
 				</Chart>
 				<CrossHairCursor />

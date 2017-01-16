@@ -37,28 +37,27 @@ const bbFill = "#4682B4";
 class CandleStickChartWithBollingerBandOverlay extends React.Component {
 	render() {
 		var ema20 = ema()
-			.windowSize(20) // optional will default to 10
-			.sourcePath("close") // optional will default to close as the source
+			.options({
+				windowSize: 20, // optional will default to 10
+				sourcePath: "close", // optional will default to close as the source
+			})
 			.skipUndefined(true) // defaults to true
 			.merge((d, c) => {d.ema20 = c;}) // Required, if not provided, log a error
 			.accessor(d => d.ema20) // Required, if not provided, log an error during calculation
 			.stroke("blue"); // Optional
 
 		var sma20 = sma()
-			.windowSize(20)
-			.sourcePath("close")
+			.options({ windowSize: 20 })
 			.merge((d, c) => {d.sma20 = c;})
 			.accessor(d => d.sma20);
 
 		var ema50 = ema()
-			.windowSize(50)
-			.sourcePath("close")
+			.options({ windowSize: 50 })
 			.merge((d, c) => {d.ema50 = c;})
 			.accessor(d => d.ema50);
 
 		var smaVolume50 = sma()
-			.windowSize(50)
-			.sourcePath("volume")
+			.options({ windowSize: 20, sourcePath: "volume" })
 			.merge((d, c) => {d.smaVolume50 = c;})
 			.accessor(d => d.smaVolume50)
 			.stroke("#4682B4")
@@ -136,34 +135,28 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 						options={[
 							{
 								yAccessor: sma20.accessor(),
-								type: "SMA",
+								type: sma20.type(),
 								stroke: sma20.stroke(),
-								windowSize: sma20.windowSize(),
+								windowSize: sma20.options().windowSize,
 							},
 							{
 								yAccessor: ema20.accessor(),
-								type: "EMA",
+								type: ema20.type(),
 								stroke: ema20.stroke(),
-								windowSize: ema20.windowSize(),
+								windowSize: ema20.options().windowSize,
 							},
 							{
 								yAccessor: ema50.accessor(),
-								type: "EMA",
+								type: ema50.type(),
 								stroke: ema50.stroke(),
-								windowSize: ema50.windowSize(),
+								windowSize: ema50.options().windowSize,
 							},
 						]}
 						/>
 					<BollingerBandTooltip
 						origin={[-38, 60]}
 						yAccessor={d => d.bb}
-						options={{
-							sourcePath: bb.sourcePath(),
-							windowSize: bb.windowSize(),
-							multiplier: bb.multiplier(),
-							movingAverageType: bb.movingAverageType(),
-						}}
-						/>
+						options={bb.options()} />
 
 				</Chart>
 				<Chart id={2}

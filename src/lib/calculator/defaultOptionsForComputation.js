@@ -14,6 +14,21 @@ export const ATR = {
 
 export const ForceIndex = {
 	sourcePath: "close", // "high", "low", "open", "close"
+	volumePath: "volume",
+};
+export const SmoothedForceIndex = {
+	sourcePath: "close", // "high", "low", "open", "close"
+	volumePath: "volume",
+	smoothingType: "ema",
+	smoothingWindow: 13,
+};
+export const Change = {
+	sourcePath: "close", // "high", "low", "open", "close"
+};
+export const Compare = {
+	basePath: "close",
+	mainKeys: ["open", "high", "low", "close"],
+	compareKeys: [],
 };
 
 export const ElderRay = {
@@ -70,7 +85,7 @@ export const WMA = {
 	windowSize: 10,
 };
 
-export const TRIMA = {
+export const TMA = {
     // source: d => d.close, // "high", "low", "open", "close"
 	sourcePath: "close",
 	windowSize: 10,

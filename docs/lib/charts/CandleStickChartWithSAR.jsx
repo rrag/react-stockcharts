@@ -32,8 +32,9 @@ class CandleStickChartWithSAR extends React.Component {
 		const maxAccelerationFactor = .2;
 
 		var defaultSar = sar()
-			.accelerationFactor(accelerationFactor)
-			.maxAccelerationFactor(maxAccelerationFactor)
+			.options({
+				accelerationFactor, maxAccelerationFactor
+			})
 			.merge((d, c) => {d.sar = c;})
 			.accessor(d => d.sar);
 

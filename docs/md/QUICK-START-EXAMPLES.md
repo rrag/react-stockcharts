@@ -5,7 +5,7 @@ CandleStickChart - [source](https://gist.github.com/rrag/b13b739458e65ff93f4a), 
 
 w/ Finance time scale - [source](https://gist.github.com/rrag/1eac0cb78f27b31415ac), [block](http://bl.ocks.org/rrag/1eac0cb78f27b31415ac), [plunker](http://plnkr.co/edit/gist:1eac0cb78f27b31415ac?p=preview)
 
-w/ Volume Histogram
+w/ Volume Bar
 - v1 - [source](https://gist.github.com/rrag/88cd65baa331d57caa83), [block](http://bl.ocks.org/rrag/88cd65baa331d57caa83), [plunker](http://plnkr.co/edit/gist:88cd65baa331d57caa83?p=preview)
 - v2 - [source](https://gist.github.com/rrag/0a54ca33b05001f17f8f), [block](http://bl.ocks.org/rrag/0a54ca33b05001f17f8f), [plunker](http://plnkr.co/edit/gist:0a54ca33b05001f17f8f?p=preview)
 - v3 - [source](https://gist.github.com/rrag/2dc9dd83567cd41c830a), [block](http://bl.ocks.org/rrag/2dc9dd83567cd41c830a), [plunker](http://plnkr.co/edit/gist:2dc9dd83567cd41c830a?p=preview)

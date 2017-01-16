@@ -3,7 +3,7 @@
 import { rebind } from "d3fc-rebind";
 
 import { merge } from "../utils";
-import { change } from "./algorithm";
+import { change } from "../calculator";
 
 import baseIndicator from "./baseIndicator";
 
@@ -12,8 +12,7 @@ const ALGORITHM_TYPE = "Change";
 export default function() {
 
 	var base = baseIndicator()
-		.type(ALGORITHM_TYPE)
-		.accessor(d => d.elderRay);
+		.type(ALGORITHM_TYPE);
 
 	var underlyingAlgorithm = change();
 
@@ -24,13 +23,14 @@ export default function() {
 			datum.percentChange = indicator.percentChange;
 		});
 
-	var indicator = function(data) {
-		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
-		return mergedAlgorithm(data);
+	var indicator = function(data, options = { merge: true }) {
+		if (options.merge) {
+			return mergedAlgorithm(data);
+		}
+		return underlyingAlgorithm(data);
 	};
-
 	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type");
-	rebind(indicator, underlyingAlgorithm, "sourcePath");
+	rebind(indicator, underlyingAlgorithm, "options");
 	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;

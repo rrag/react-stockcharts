@@ -34,20 +34,19 @@ class HeikinAshi extends React.Component {
 		var ha = heikinAshi();
 		var ema20 = ema()
 			.id(0)
-			.windowSize(20)
+			.options({ windowSize: 20 })
 			.merge((d, c) => { d.ema20 = c; })
 			.accessor(d => d.ema20);
 
 		var ema50 = ema()
 			.id(2)
-			.windowSize(50)
+			.options({ windowSize: 50 })
 			.merge((d, c) => { d.ema50 = c; })
 			.accessor(d => d.ema50);
 
 		var smaVolume50 = sma()
 			.id(3)
-			.windowSize(50)
-			.sourcePath("volume")
+			.options({ windowSize: 50, sourcePath: "volume" })
 			.merge((d, c) => { d.smaVolume50 = c; })
 			.accessor(d => d.smaVolume50);
 
@@ -118,13 +117,13 @@ class HeikinAshi extends React.Component {
 								yAccessor: ema20.accessor(),
 								type: "EMA",
 								stroke: ema20.stroke(),
-								windowSize: ema20.windowSize(),
+								windowSize: ema20.options().windowSize,
 							},
 							{
 								yAccessor: ema50.accessor(),
 								type: "EMA",
 								stroke: ema50.stroke(),
-								windowSize: ema50.windowSize(),
+								windowSize: ema50.options().windowSize,
 							},
 						]}
 						/>

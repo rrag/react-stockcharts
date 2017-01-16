@@ -1,7 +1,7 @@
 "use strict";
 
-import { mappedSlidingWindow, isNotDefined, isDefined } from "../../utils";
-import { SAR as defaultOptions } from "../defaultOptionsForComputation";
+import { mappedSlidingWindow, isNotDefined, isDefined } from "../utils";
+import { SAR as defaultOptions } from "./defaultOptionsForComputation";
 
 function calc(prev, now) {
 	const risingSar = prev.risingSar
@@ -23,9 +23,10 @@ function calc(prev, now) {
 
 export default function() {
 
-	var { accelerationFactor, maxAccelerationFactor } = defaultOptions;
+	var options = defaultOptions;
 
 	function calculator(data) {
+		var { accelerationFactor, maxAccelerationFactor } = options;
 
 		var algorithm = mappedSlidingWindow()
 			.windowSize(2)
@@ -101,19 +102,11 @@ export default function() {
 	calculator.undefinedLength = function() {
 		return 1;
 	};
-	calculator.accelerationFactor = function(x) {
+	calculator.options = function(x) {
 		if (!arguments.length) {
-			return accelerationFactor;
+			return options;
 		}
-		accelerationFactor = x;
-		return calculator;
-	};
-
-	calculator.maxAccelerationFactor = function(x) {
-		if (!arguments.length) {
-			return maxAccelerationFactor;
-		}
-		maxAccelerationFactor = x;
+		options = { ...defaultOptions, ...x };
 		return calculator;
 	};
 

@@ -19,7 +19,7 @@ export { default as change } from "./change";
 export { default as elderImpulse } from "./elderImpulse";
 export { default as compare } from "./compare";
 
-import * as defaultOptionsForComputation from "./defaultOptionsForComputation";
+import * as defaultOptionsForComputation from "../calculator/defaultOptionsForComputation";
 import * as defaultOptionsForAppearance from "./defaultOptionsForAppearance";
 
 export {

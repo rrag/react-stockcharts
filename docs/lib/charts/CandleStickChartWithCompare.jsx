@@ -20,28 +20,23 @@ import {
 
 import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
 import { OHLCTooltip, SingleValueTooltip } from "react-stockcharts/lib/tooltip";
-import { sma, compare } from "react-stockcharts/lib/indicator";
+import { compare } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
 import { last } from "react-stockcharts/lib/utils";
 
 class CandleStickChartWithCompare extends React.Component {
 	render() {
 		var compareCalculator = compare()
-			.base(d => d.close)
-			.mainKeys(["open", "high", "low", "close"])
-			.compareKeys(["AAPLClose", "SP500Close"])
+			.options({
+				basePath: "close",
+				mainKeys: ["open", "high", "low", "close"],
+				compareKeys: ["AAPLClose", "SP500Close"],
+			})
 			.accessor(d => d.compare)
 			.merge((d, c) => { d.compare = c; });
 
-		var smaVolume50 = sma()
-			.id(3)
-			.windowSize(10)
-			.sourcePath("volume")
-			.merge((d, c) => {d.smaVolume50 = c;})
-			.accessor(d => d.smaVolume50);
 		var { type, data: initialData, width, ratio } = this.props;
 
-		const calculatedData = smaVolume50(initialData);
 		const xScaleProvider = discontinuousTimeScaleProvider
 			.inputDateAccessor(d => d.date);
 		const {
@@ -49,7 +44,7 @@ class CandleStickChartWithCompare extends React.Component {
 			xScale,
 			xAccessor,
 			displayXAccessor,
-		} = xScaleProvider(calculatedData);
+		} = xScaleProvider(initialData);
 
 		const start = xAccessor(last(data));
 		const end = xAccessor(data[Math.max(0, data.length - 150)]);

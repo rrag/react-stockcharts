@@ -31,6 +31,11 @@ import { ema, stochasticOscillator } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
 import { last } from "react-stockcharts/lib/utils";
 
+const stoAppearance = {
+	stroke: Object.assign({},
+		StochasticSeries.defaultProps.stroke)
+};
+
 class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 	render() {
 		var height = 750;
@@ -46,30 +51,26 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 
 		var ema20 = ema()
 			.id(0)
-			.windowSize(20)
+			.options({ windowSize: 20 })
 			.merge((d, c) => {d.ema20 = c;})
 			.accessor(d => d.ema20);
 
 		var ema50 = ema()
 			.id(2)
-			.windowSize(50)
+			.options({ windowSize: 50 })
 			.merge((d, c) => {d.ema50 = c;})
 			.accessor(d => d.ema50);
 
 		var slowSTO = stochasticOscillator()
-			.windowSize(14)
-			.kWindowSize(3)
+			.options({ windowSize: 14, kWindowSize: 3 })
 			.merge((d, c) => {d.slowSTO = c;})
 			.accessor(d => d.slowSTO);
 		var fastSTO = stochasticOscillator()
-			.windowSize(14)
-			.kWindowSize(1)
+			.options({ windowSize: 14, kWindowSize: 1 })
 			.merge((d, c) => {d.fastSTO = c;})
 			.accessor(d => d.fastSTO);
 		var fullSTO = stochasticOscillator()
-			.windowSize(14)
-			.kWindowSize(3)
-			.dWindowSize(4)
+			.options({ windowSize: 14, kWindowSize: 3, dWindowSize: 4 })
 			.merge((d, c) => {d.fullSTO = c;})
 			.accessor(d => d.fullSTO);
 
@@ -128,19 +129,19 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 					<OHLCTooltip origin={[-40, -10]}/>
 					<MovingAverageTooltip
 						onClick={e => console.log(e)}
-						origin={[-38, 15]}
+						origin={[-38, 5]}
 						options={[
 							{
 								yAccessor: ema20.accessor(),
-								type: "EMA",
+								type: ema20.type(),
 								stroke: ema20.stroke(),
-								windowSize: ema20.windowSize(),
+								windowSize: ema20.options().windowSize,
 							},
 							{
 								yAccessor: ema50.accessor(),
-								type: "EMA",
+								type: ema50.type(),
 								stroke: ema50.stroke(),
-								windowSize: ema50.windowSize(),
+								windowSize: ema50.options().windowSize,
 							},
 						]}
 						/>
@@ -158,63 +159,56 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
 				<Chart id={3}
-						yExtents={fastSTO.domain()}
+						yExtents={[0, 100]}
 						height={125} origin={(w, h) => [0, h - 375]} padding={{ top: 10, bottom: 10 }} >
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
-					<YAxis axisAt="right" orient="right" ticks={2} tickValues={fastSTO.tickValues()} />
+					<YAxis axisAt="right" orient="right"
+						tickValues={[20, 50, 80]} />
 					<MouseCoordinateY
 						at="right"
 						orient="right"
 						displayFormat={format(".2f")} />
 
 					<StochasticSeries
-							yAccessor={d => d.fastSTO} />
-					<StochasticTooltip
-						origin={[-38, 15]}
 						yAccessor={d => d.fastSTO}
-						options={{
-							windowSize: fastSTO.windowSize(),
-							kWindowSize: fastSTO.kWindowSize(),
-							dWindowSize: fastSTO.dWindowSize(),
-						}}
-						appearance={{
-							stroke: StochasticSeries.defaultProps.stroke
-						}}
-						label="Fast STO" />
-
-				</Chart>
-				<Chart id={4}
-						yExtents={slowSTO.domain()}
-						height={125} origin={(w, h) => [0, h - 250]} padding={{ top: 10, bottom: 10 }} >
-					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
-					<YAxis axisAt="right" orient="right" ticks={2} tickValues={slowSTO.tickValues()} />
-
-					<MouseCoordinateY
-						at="right"
-						orient="right"
-						displayFormat={format(".2f")} />
-
-					<StochasticSeries
-							yAccessor={d => d.slowSTO} />
-
+						{...stoAppearance} />
 					<StochasticTooltip
 						origin={[-38, 15]}
 						yAccessor={d => d.slowSTO}
-						options={{
-							windowSize: slowSTO.windowSize(),
-							kWindowSize: slowSTO.kWindowSize(),
-							dWindowSize: slowSTO.dWindowSize(),
-						}}
-						appearance={{
-							stroke: StochasticSeries.defaultProps.stroke
-						}}
+						options={slowSTO.options()}
+						appearance={stoAppearance}
 						label="Slow STO" />
+
+				</Chart>
+				<Chart id={4}
+						yExtents={[0, 100]}
+						height={125} origin={(w, h) => [0, h - 250]} padding={{ top: 10, bottom: 10 }} >
+					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
+					<YAxis axisAt="right" orient="right"
+						tickValues={[20, 50, 80]} />
+
+					<MouseCoordinateY
+						at="right"
+						orient="right"
+						displayFormat={format(".2f")} />
+
+					<StochasticSeries
+						yAccessor={d => d.slowSTO}
+						{...stoAppearance} />
+
+					<StochasticTooltip
+						origin={[-38, 15]}
+						yAccessor={d => d.fastSTO}
+						options={fastSTO.options()}
+						appearance={stoAppearance}
+						label="Fast STO" />
 				</Chart>
 				<Chart id={5}
-						yExtents={fullSTO.domain()}
+						yExtents={[0, 100]}
 						height={125} origin={(w, h) => [0, h - 125]} padding={{ top: 10, bottom: 10 }} >
 					<XAxis axisAt="bottom" orient="bottom" {...xGrid} />
-					<YAxis axisAt="right" orient="right" ticks={2} tickValues={fullSTO.tickValues()} />
+					<YAxis axisAt="right" orient="right"
+						tickValues={[20, 50, 80]} />
 
 					<MouseCoordinateX
 						at="bottom"
@@ -225,19 +219,14 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 						orient="right"
 						displayFormat={format(".2f")} />
 					<StochasticSeries
-							yAccessor={d => d.fullSTO} />
+						yAccessor={d => d.fullSTO}
+						{...stoAppearance} />
 
 					<StochasticTooltip
 						origin={[-38, 15]}
 						yAccessor={d => d.fullSTO}
-						options={{
-							windowSize: fullSTO.windowSize(),
-							kWindowSize: fullSTO.kWindowSize(),
-							dWindowSize: fullSTO.dWindowSize(),
-						}}
-						appearance={{
-							stroke: StochasticSeries.defaultProps.stroke
-						}}
+						options={fullSTO.options()}
+						appearance={stoAppearance}
 						label="Full STO" />
 				</Chart>
 				<CrossHairCursor />

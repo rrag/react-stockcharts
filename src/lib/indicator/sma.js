@@ -3,9 +3,7 @@
 import { rebind } from "d3fc-rebind";
 
 import { merge } from "../utils";
-
-import { sma } from "./algorithm";
-
+import { sma } from "../calculator";
 import baseIndicator from "./baseIndicator";
 
 const ALGORITHM_TYPE = "SMA";
@@ -22,19 +20,16 @@ export default function() {
 		.algorithm(underlyingAlgorithm)
 		.merge((datum, indicator) => { datum.sma = indicator; });
 
-	var indicator = function(data) {
-		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
-		var newData = mergedAlgorithm(data);
-		return newData;
+	var indicator = function(data, options = { merge: true }) {
+		if (options.merge) {
+			if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
+			return mergedAlgorithm(data);
+		}
+		return underlyingAlgorithm(data);
 	};
-	indicator.undefinedLength = function() {
-		return underlyingAlgorithm.windowSize();
-	};
-
-	base.tooltipLabel(() => `${ALGORITHM_TYPE}(${underlyingAlgorithm.windowSize()})`);
-
-	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
-	rebind(indicator, underlyingAlgorithm, "windowSize", "undefinedLength", "sourcePath");
+	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type");
+	rebind(indicator, underlyingAlgorithm, "undefinedLength");
+	rebind(indicator, underlyingAlgorithm, "options");
 	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 

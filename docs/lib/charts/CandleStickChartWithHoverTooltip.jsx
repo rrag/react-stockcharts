@@ -26,7 +26,7 @@ import { last } from "react-stockcharts/lib/utils";
 var dateFormat = timeFormat("%Y-%m-%d");
 var numberFormat = format(".2f");
 
-function tooltipContent(calculators) {
+function tooltipContent(ys) {
 	return ({ currentItem, xAccessor }) => {
 		return {
 			x: dateFormat(xAccessor(currentItem)),
@@ -36,28 +36,29 @@ function tooltipContent(calculators) {
 				{ label: "low", value: currentItem.low && numberFormat(currentItem.low) },
 				{ label: "close", value: currentItem.close && numberFormat(currentItem.close) },
 			]
-			.concat(calculators.map(each => ({
-				label: each.tooltipLabel(),
-				value: numberFormat(each.accessor()(currentItem)),
-				stroke: each.stroke()
+			.concat(ys.map(each => ({
+				label: each.label,
+				value: each.value(currentItem),
+				stroke: each.stroke,
 			})))
 			.filter(line => line.value)
 		};
 	};
 }
 
-const keyValues = ["high", "low", "open"];
+const keyValues = ["high", "low"];
 
 class CandleStickChartWithHoverTooltip extends React.Component {
 
 	removeRandomValues(data) {
-		return data.map((item) => {
+		return data.map(item => {
+			const newItem = { ...item };
 			const numberOfDeletion = Math.floor(Math.random() * keyValues.length) + 1;
 			for (let i = 0; i < numberOfDeletion; i += 1) {
 				const randomKey = keyValues[Math.floor(Math.random() * keyValues.length)];
-				item[randomKey] = undefined;
+				newItem[randomKey] = undefined;
 			}
-			return item;
+			return newItem;
 		});
 	}
 
@@ -70,13 +71,13 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 
 		var ema20 = ema()
 			.id(0)
-			.windowSize(20)
+			.options({ windowSize: 20 })
 			.merge((d, c) => {d.ema20 = c;})
 			.accessor(d => d.ema20);
 
 		var ema50 = ema()
 			.id(2)
-			.windowSize(50)
+			.options({ windowSize: 50 })
 			.merge((d, c) => {d.ema50 = c;})
 			.accessor(d => d.ema50);
 
@@ -127,7 +128,18 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 
 					<HoverTooltip
 						yAccessor={ema50.accessor()}
-						tooltipContent={tooltipContent([ema20, ema50])}
+						tooltipContent={tooltipContent([
+							{
+								label: `${ema20.type()}(${ema20.options().windowSize})`,
+								value: d => numberFormat(ema20.accessor()(d)),
+								stroke: ema20.stroke()
+							},
+							{
+								label: `${ema50.type()}(${ema50.options().windowSize})`,
+								value: d => numberFormat(ema50.accessor()(d)),
+								stroke: ema50.stroke()
+							}
+						])}
 						fontSize={15} />
 				</Chart>
 				<Chart id={2}

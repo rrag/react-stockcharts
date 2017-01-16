@@ -30,15 +30,16 @@ import { mean } from "d3-array";
 
 import ema from "./ema";
 
-import { ElderRay as defaultOptions } from "../defaultOptionsForComputation";
-import { isDefined, zipper, slidingWindow } from "../../utils";
+import { ElderRay as defaultOptions } from "./defaultOptionsForComputation";
+import { isDefined, zipper, slidingWindow } from "../utils";
 
 export default function() {
 
-	var { windowSize, sourcePath, movingAverageType } = defaultOptions;
+	var options = defaultOptions;
 	var ohlc = d => ({ open: d.open, high: d.high, low: d.low, close: d.close });
 
 	function calculator(data) {
+		var { windowSize, sourcePath, movingAverageType } = options;
 
 		var meanAlgorithm = movingAverageType === "ema"
 			? ema().windowSize(windowSize).sourcePath(sourcePath)
@@ -55,14 +56,8 @@ export default function() {
 		return newData;
 	}
 	calculator.undefinedLength = function() {
-		return windowSize;
-	};
-	calculator.windowSize = function(x) {
-		if (!arguments.length) {
-			return windowSize;
-		}
-		windowSize = x;
-		return calculator;
+		var { windowSize } = options;
+		return windowSize - 1;
 	};
 	calculator.ohlc = function(x) {
 		if (!arguments.length) {
@@ -71,20 +66,11 @@ export default function() {
 		ohlc = x;
 		return calculator;
 	};
-
-	calculator.movingAverageType = function(x) {
+	calculator.options = function(x) {
 		if (!arguments.length) {
-			return movingAverageType;
+			return options;
 		}
-		movingAverageType = x;
-		return calculator;
-	};
-
-	calculator.sourcePath = function(x) {
-		if (!arguments.length) {
-			return sourcePath;
-		}
-		sourcePath = x;
+		options = { ...defaultOptions, ...x };
 		return calculator;
 	};
 

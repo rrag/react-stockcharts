@@ -1,13 +1,15 @@
 "use strict";
 
-import { first } from "../../utils";
+import { first, path } from "../utils";
+import { Change as defaultOptions } from "./defaultOptionsForComputation";
 
 export default function() {
-	var base = d => d.close;
-	var mainKeys = [];
-	var compareKeys = [];
+	var options = defaultOptions;
 
 	function calculator(data) {
+		var { basePath, mainKeys, compareKeys } = options;
+		var base = path(basePath);
+
 		var f = first(data);
 		var b = base(f);
 		var compareData = data.map(d => {
@@ -25,25 +27,11 @@ export default function() {
 		// console.log(compareData[20]);
 		return compareData;
 	}
-	calculator.base = function(x) {
+	calculator.options = function(x) {
 		if (!arguments.length) {
-			return base;
+			return options;
 		}
-		base = x;
-		return calculator;
-	};
-	calculator.mainKeys = function(x) {
-		if (!arguments.length) {
-			return mainKeys;
-		}
-		mainKeys = x;
-		return calculator;
-	};
-	calculator.compareKeys = function(x) {
-		if (!arguments.length) {
-			return compareKeys;
-		}
-		compareKeys = x;
+		options = { ...defaultOptions, ...x };
 		return calculator;
 	};
 	return calculator;

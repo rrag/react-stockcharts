@@ -1,14 +1,14 @@
 "use strict";
 
-import { slidingWindow, path } from "../../utils";
-import { ForceIndex as defaultOptions } from "../defaultOptionsForComputation";
+import { slidingWindow, path } from "../utils";
+import { ForceIndex as defaultOptions } from "./defaultOptionsForComputation";
 
 export default function() {
 
-	var { sourcePath } = defaultOptions;
-	var volumePath = "volume";
+	var options = defaultOptions;
 
 	function calculator(data) {
+		var { sourcePath, volumePath } = options;
 
 		var source = path(sourcePath);
 		var volume = path(volumePath);
@@ -24,19 +24,11 @@ export default function() {
 	calculator.undefinedLength = function() {
 		return 2;
 	};
-	calculator.sourcePath = function(x) {
+	calculator.options = function(x) {
 		if (!arguments.length) {
-			return sourcePath;
+			return options;
 		}
-		sourcePath = x;
-		return calculator;
-	};
-
-	calculator.volumePath = function(x) {
-		if (!arguments.length) {
-			return volumePath;
-		}
-		volumePath = x;
+		options = { ...defaultOptions, ...x };
 		return calculator;
 	};
 

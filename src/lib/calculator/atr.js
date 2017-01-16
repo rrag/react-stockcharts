@@ -2,14 +2,16 @@
 
 import { sum } from "d3-array";
 
-import { slidingWindow, last, isDefined } from "../../utils";
+import { ATR as defaultOptions } from "./defaultOptionsForComputation";
+import { slidingWindow, last, isDefined } from "../utils";
 
 export default function() {
 
-	var windowSize = 9,
-		source = d => ({ open: d.open, high: d.high, low: d.low, close: d.close });
+	var options = defaultOptions;
+	var source = d => ({ open: d.open, high: d.high, low: d.low, close: d.close });
 
 	function calculator(data) {
+		var { windowSize } = options;
 
 		var trueRangeAlgorithm = slidingWindow()
 			.windowSize(2)
@@ -43,13 +45,14 @@ export default function() {
 		return newData;
 	}
 	calculator.undefinedLength = function() {
-		return windowSize;
+		var { windowSize } = options;
+		return windowSize - 1;
 	};
-	calculator.windowSize = function(x) {
+	calculator.options = function(x) {
 		if (!arguments.length) {
-			return windowSize;
+			return options;
 		}
-		windowSize = x;
+		options = { ...defaultOptions, ...x };
 		return calculator;
 	};
 

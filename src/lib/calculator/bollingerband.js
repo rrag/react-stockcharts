@@ -29,15 +29,16 @@ THE SOFTWARE.
 import { mean, deviation } from "d3-array";
 
 import ema from "./ema";
-import { last, slidingWindow, zipper, path } from "../../utils";
+import { last, slidingWindow, zipper, path } from "../utils";
 
-import { BollingerBand as defaultOptions } from "../defaultOptionsForComputation";
+import { BollingerBand as defaultOptions } from "./defaultOptionsForComputation";
 
 export default function() {
-
-	var { windowSize, multiplier, movingAverageType, sourcePath } = defaultOptions;
+	var options = defaultOptions;
 
 	function calculator(data) {
+		var { windowSize, multiplier, movingAverageType, sourcePath } = options;
+
 		var source = path(sourcePath);
 		var meanAlgorithm = movingAverageType === "ema"
 			? ema().windowSize(windowSize).sourcePath(sourcePath)
@@ -63,39 +64,17 @@ export default function() {
 		return bollingerBandAlgorithm(tuples);
 	}
 	calculator.undefinedLength = function() {
-		return windowSize;
+		var { windowSize } = options;
+		return windowSize - 1;
 	};
-	calculator.windowSize = function(x) {
+	calculator.options = function(x) {
 		if (!arguments.length) {
-			return windowSize;
+			return options;
 		}
-		windowSize = x;
+		options = { ...defaultOptions, ...x };
 		return calculator;
 	};
 
-	calculator.multiplier = function(x) {
-		if (!arguments.length) {
-			return multiplier;
-		}
-		multiplier = x;
-		return calculator;
-	};
-
-	calculator.movingAverageType = function(x) {
-		if (!arguments.length) {
-			return movingAverageType;
-		}
-		movingAverageType = x;
-		return calculator;
-	};
-
-	calculator.sourcePath = function(x) {
-		if (!arguments.length) {
-			return sourcePath;
-		}
-		sourcePath = x;
-		return calculator;
-	};
 
 	return calculator;
 }

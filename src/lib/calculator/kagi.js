@@ -1,23 +1,25 @@
 "use strict";
 
-import { merge, isNotDefined, path, functor } from "../../utils";
+import { merge, isNotDefined, path, functor } from "../utils";
 import atr from "./atr";
 
-import { Kagi as defaultOptions } from "../defaultOptionsForComputation";
+import { Kagi as defaultOptions } from "./defaultOptionsForComputation";
 
 export default function() {
 
-	var { reversalType, windowSize, reversal, sourcePath } = defaultOptions;
+	var options = defaultOptions;
 	var dateAccessor = d => d.date;
 	var dateMutator = (d, date) => { d.date = date; };
 
 	function calculator(data) {
+		var { reversalType, windowSize, reversal, sourcePath } = options;
+
 		var source = path(sourcePath);
 		var reversalThreshold;
 
 		if (reversalType === "ATR") {
 			// calculateATR(rawData, period);
-			var atrAlgorithm = atr().windowSize(windowSize);
+			var atrAlgorithm = atr().options({ windowSize });
 
 			var atrCalculator = merge()
 				.algorithm(atrAlgorithm)
@@ -166,24 +168,11 @@ export default function() {
 
 		return kagiData;
 	}
-	calculator.reversalType = function(x) {
-		if (!arguments.length) return reversalType;
-		reversalType = x;
-		return calculator;
-	};
-	calculator.windowSize = function(x) {
-		if (!arguments.length) return windowSize;
-		windowSize = x;
-		return calculator;
-	};
-	calculator.reversal = function(x) {
-		if (!arguments.length) return reversal;
-		reversal = x;
-		return calculator;
-	};
-	calculator.sourcePath = function(x) {
-		if (!arguments.length) return sourcePath;
-		sourcePath = x;
+	calculator.options = function(x) {
+		if (!arguments.length) {
+			return options;
+		}
+		options = { ...defaultOptions, ...x };
 		return calculator;
 	};
 	calculator.dateMutator = function(x) {

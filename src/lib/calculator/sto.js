@@ -28,12 +28,12 @@ THE SOFTWARE.
 
 import { max, min, mean } from "d3-array";
 
-import { last, slidingWindow, zipper } from "../../utils";
-import { FullStochasticOscillator as defaultOptions } from "../defaultOptionsForComputation";
+import { last, slidingWindow, zipper } from "../utils";
+import { FullStochasticOscillator as defaultOptions } from "./defaultOptionsForComputation";
 
 export default function() {
 
-	var { windowSize, kWindowSize, dWindowSize } = defaultOptions;
+	var options = defaultOptions;
 
 	var source = d => ({ open: d.open, high: d.high, low: d.low, close: d.close });
 	var high = d => source(d).high,
@@ -41,6 +41,7 @@ export default function() {
 		close = d => source(d).close;
 
 	function calculator(data) {
+		const { windowSize, kWindowSize, dWindowSize } = options;
 		var kWindow = slidingWindow()
 			.windowSize(windowSize)
 			.accumulator(values => {
@@ -70,39 +71,26 @@ export default function() {
 		var kData = kSmoothed(kWindow(data));
 		var dData = dWindow(kData);
 
-		var newData = stoAlgorithm(kData, dData);
+		var indicatorData = stoAlgorithm(kData, dData);
 
-		return newData;
+		return indicatorData;
 	}
 	calculator.undefinedLength = function() {
+		const { windowSize, kWindowSize, dWindowSize } = options;
 		return windowSize + kWindowSize + dWindowSize;
-	};
-	calculator.windowSize = function(x) {
-		if (!arguments.length) {
-			return windowSize;
-		}
-		windowSize = x;
-		return calculator;
-	};
-	calculator.kWindowSize = function(x) {
-		if (!arguments.length) {
-			return kWindowSize;
-		}
-		kWindowSize = x;
-		return calculator;
-	};
-	calculator.dWindowSize = function(x) {
-		if (!arguments.length) {
-			return dWindowSize;
-		}
-		dWindowSize = x;
-		return calculator;
 	};
 	calculator.source = function(x) {
 		if (!arguments.length) {
 			return source;
 		}
 		source = x;
+		return calculator;
+	};
+	calculator.options = function(x) {
+		if (!arguments.length) {
+			return options;
+		}
+		options = { ...defaultOptions, ...x };
 		return calculator;
 	};
 

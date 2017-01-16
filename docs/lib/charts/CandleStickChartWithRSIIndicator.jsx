@@ -36,30 +36,29 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 	render() {
 		var ema26 = ema()
 			.id(0)
-			.windowSize(26)
+			.options({ windowSize: 26 })
 			.merge((d, c) => {d.ema26 = c;})
 			.accessor(d => d.ema26);
 
 		var ema12 = ema()
 			.id(1)
-			.windowSize(12)
+			.options({ windowSize: 12 })
 			.merge((d, c) => {d.ema12 = c;})
 			.accessor(d => d.ema12);
 
 		var smaVolume50 = sma()
 			.id(3)
-			.windowSize(10)
-			.sourcePath("volume")
+			.options({ windowSize: 50, sourcePath: "volume" })
 			.merge((d, c) => {d.smaVolume50 = c;})
 			.accessor(d => d.smaVolume50);
 
 		var rsiCalculator = rsi()
-			.windowSize(14)
+			.options({ windowSize: 14 })
 			.merge((d, c) => {d.rsi = c;})
 			.accessor(d => d.rsi);
 
 		var atr14 = atr()
-			.windowSize(14)
+			.options({ windowSize: 14 })
 			.merge((d, c) => {d.atr14 = c;})
 			.accessor(d => d.atr14);
 
@@ -123,13 +122,13 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 								yAccessor: ema26.accessor(),
 								type: "EMA",
 								stroke: ema26.stroke(),
-								windowSize: ema26.windowSize(),
+								windowSize: ema26.options().windowSize,
 							},
 							{
 								yAccessor: ema12.accessor(),
 								type: "EMA",
 								stroke: ema12.stroke(),
-								windowSize: ema12.windowSize(),
+								windowSize: ema12.options().windowSize,
 							},
 						]}
 						/>
@@ -149,10 +148,12 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
 				</Chart>
 				<Chart id={3}
-						yExtents={rsiCalculator.domain()}
+						yExtents={[0, 100]}
 						height={125} origin={(w, h) => [0, h - 250]} >
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
-					<YAxis axisAt="right" orient="right" ticks={2} tickValues={rsiCalculator.tickValues()}/>
+					<YAxis axisAt="right"
+						orient="right"
+						tickValues={[30, 50, 70]}/>
 					<MouseCoordinateY
 						at="right"
 						orient="right"
@@ -162,9 +163,7 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 
 					<RSITooltip origin={[-38, 15]}
 						yAccessor={d => d.rsi}
-						options={{
-							windowSize: rsiCalculator.windowSize()
-						}} />
+						options={rsiCalculator.options()} />
 				</Chart>
 				<Chart id={8}
 						yExtents={atr14.accessor()}
@@ -184,7 +183,7 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 					<LineSeries yAccessor={atr14.accessor()} stroke={atr14.stroke()}/>
 					<SingleValueTooltip
 						yAccessor={atr14.accessor()}
-						yLabel={`ATR (${atr14.windowSize()})`}
+						yLabel={`ATR (${atr14.options().windowSize})`}
 						yDisplayFormat={format(".2f")}
 						/* valueStroke={atr14.stroke()} - optional prop */
 						/* labelStroke="#4682B4" - optional prop */

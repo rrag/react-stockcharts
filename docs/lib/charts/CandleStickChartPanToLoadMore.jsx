@@ -32,13 +32,14 @@ function getMaxUndefined(calculators) {
 }
 const LENGTH_TO_SHOW = 180;
 
-const macdStroke = {
-	macd: "#FF0000",
-	signal: "#00F300",
-};
-
-const macdFill = {
-	divergence: "#4682B4"
+const macdAppearance = {
+	stroke: {
+		macd: "#FF0000",
+		signal: "#00F300",
+	},
+	fill: {
+		divergence: "#4682B4"
+	},
 };
 
 class CandleStickChartPanToLoadMore extends React.Component {
@@ -48,27 +49,31 @@ class CandleStickChartPanToLoadMore extends React.Component {
 
 		var ema26 = ema()
 			.id(0)
-			.windowSize(26)
+			.options({ windowSize: 26 })
 			.merge((d, c) => {d.ema26 = c;})
 			.accessor(d => d.ema26);
 
 		var ema12 = ema()
 			.id(1)
-			.windowSize(12)
+			.options({ windowSize: 12 })
 			.merge((d, c) => {d.ema12 = c;})
 			.accessor(d => d.ema12);
 
 		var macdCalculator = macd()
-			.fast(12)
-			.slow(26)
-			.signal(9)
+			.options({
+				fast: 12,
+				slow: 26,
+				signal: 9,
+			})
 			.merge((d, c) => {d.macd = c;})
 			.accessor(d => d.macd);
 
 		var smaVolume50 = sma()
 			.id(3)
-			.windowSize(50)
-			.sourcePath("volume")
+			.options({
+				windowSize: 50,
+				sourcePath: "volume",
+			})
 			.merge((d, c) => {d.smaVolume50 = c;})
 			.accessor(d => d.smaVolume50);
 
@@ -194,15 +199,15 @@ class CandleStickChartPanToLoadMore extends React.Component {
 						options={[
 							{
 								yAccessor: ema26.accessor(),
-								type: "EMA",
+								type: ema26.type(),
 								stroke: ema26.stroke(),
-								windowSize: ema26.windowSize(),
+								...ema26.options(),
 							},
 							{
 								yAccessor: ema12.accessor(),
-								type: "EMA",
+								type: ema12.type(),
 								stroke: ema12.stroke(),
-								windowSize: ema12.windowSize(),
+								...ema12.options(),
 							},
 						]}
 						/>
@@ -236,20 +241,12 @@ class CandleStickChartPanToLoadMore extends React.Component {
 						displayFormat={format(".2f")} />
 
 					<MACDSeries yAccessor={d => d.macd}
-						stroke={macdStroke}
-						fill={macdFill} />
+						{...macdAppearance} />
 					<MACDTooltip
 						origin={[-38, 15]}
 						yAccessor={d => d.macd}
-						options={{
-							slow: macdCalculator.slow(),
-							fast: macdCalculator.fast(),
-							signal: macdCalculator.signal(),
-						}}
-						appearance={{
-							stroke: macdStroke,
-							fill: macdFill,
-						}}
+						options={macdCalculator.options()}
+						appearance={macdAppearance}
 						/>
 				</Chart>
 				<CrossHairCursor />

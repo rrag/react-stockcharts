@@ -9,7 +9,6 @@ import {
 	BarSeries,
 	VolumeProfileSeries,
 	CandlestickSeries,
-	LineSeries,
 } from "react-stockcharts/lib/series";
 import { XAxis, YAxis } from "react-stockcharts/lib/axes";
 import {
@@ -22,31 +21,19 @@ import {
 import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
 import {
 	OHLCTooltip,
-	MovingAverageTooltip,
 } from "react-stockcharts/lib/tooltip";
-import { ema, change } from "react-stockcharts/lib/indicator";
+import { change } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
 import { last } from "react-stockcharts/lib/utils";
 
 class VolumeProfileBySessionChart extends React.Component {
 	render() {
-		var ema20 = ema()
-			.id(0)
-			.windowSize(20)
-			.merge((d, c) => { d.ema20 = c; })
-			.accessor(d => d.ema20);
-
-		var ema50 = ema()
-			.id(2)
-			.windowSize(50)
-			.merge((d, c) => { d.ema50 = c; })
-			.accessor(d => d.ema50);
 
 		var changeCalculator = change();
 
 		var { type, data: initialData, width, ratio } = this.props;
 
-		const calculatedData = ema20(ema50(changeCalculator(initialData)));
+		const calculatedData = changeCalculator(initialData);
 		const xScaleProvider = discontinuousTimeScaleProvider
 			.inputDateAccessor(d => d.date);
 		const {
@@ -89,7 +76,7 @@ class VolumeProfileBySessionChart extends React.Component {
 							fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
 				<Chart id={1}
-						yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
+						yExtents={[d => [d.high, d.low]]}
 						padding={{ top: 40, bottom: 20 }}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
@@ -104,30 +91,10 @@ class VolumeProfileBySessionChart extends React.Component {
 
 					<VolumeProfileSeries bySession orient="right" showSessionBackground />
 					<CandlestickSeries />
-					<LineSeries yAccessor={ema20.accessor()} stroke={ema20.stroke()}/>
-					<LineSeries yAccessor={ema50.accessor()} stroke={ema50.stroke()}/>
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 
 					<OHLCTooltip origin={[-40, 0]} />
-					<MovingAverageTooltip
-						onClick={e => console.log(e)}
-						origin={[-38, 15]}
-						options={[
-							{
-								yAccessor: ema20.accessor(),
-								type: "EMA",
-								stroke: ema20.stroke(),
-								windowSize: ema20.windowSize(),
-							},
-							{
-								yAccessor: ema50.accessor(),
-								type: "EMA",
-								stroke: ema50.stroke(),
-								windowSize: ema50.windowSize(),
-							},
-						]}
-						/>
 
 				</Chart>
 				<CrossHairCursor />

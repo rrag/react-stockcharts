@@ -28,24 +28,23 @@ THE SOFTWARE.
 
 import ema from "./ema";
 
-import { isDefined, zipper } from "../../utils";
-import { MACD as defaultOptions } from "../defaultOptionsForComputation";
+import { isDefined, zipper } from "../utils";
+import { MACD as defaultOptions } from "./defaultOptionsForComputation";
 
 export default function() {
-
-	var { fast, slow, signal, sourcePath } = defaultOptions;
+	var options = defaultOptions;
 
 	function calculator(data) {
+		var { fast, slow, signal, sourcePath } = options;
 
 		var fastEMA = ema()
-			.windowSize(fast)
-			.sourcePath(sourcePath);
+			.options({ windowSize: fast, sourcePath });
+
 		var slowEMA = ema()
-			.windowSize(slow)
-			.sourcePath(sourcePath);
+			.options({ windowSize: slow, sourcePath });
+
 		var signalEMA = ema()
-			.windowSize(signal)
-			.sourcePath(undefined);
+			.options({ windowSize: signal, sourcePath: undefined });
 
 		var macdCalculator = zipper()
 			.combine((fastEMA, slowEMA) => (isDefined(fastEMA) && isDefined(slowEMA)) ? fastEMA - slowEMA : undefined);
@@ -68,53 +67,16 @@ export default function() {
 	}
 
 	calculator.undefinedLength = function() {
+		var { slow, signal } = options;
 		return slow + signal - 1;
 	};
-	calculator.fast = function(x) {
+	calculator.options = function(x) {
 		if (!arguments.length) {
-			return fast;
+			return options;
 		}
-		fast = x;
+		options = { ...defaultOptions, ...x };
 		return calculator;
 	};
-
-	calculator.slow = function(x) {
-		if (!arguments.length) {
-			return slow;
-		}
-		slow = x;
-		return calculator;
-	};
-
-	calculator.signal = function(x) {
-		if (!arguments.length) {
-			return signal;
-		}
-		signal = x;
-		return calculator;
-	};
-
-	calculator.sourcePath = function(x) {
-		if (!arguments.length) {
-			return sourcePath;
-		}
-		sourcePath = x;
-		return calculator;
-	};
-
-	/* calculator.options = function(options) {
-		if (options) {
-			var { fast, slow, signal, source } = options;
-			underlyingAlgorithm
-				.fast(fast)
-				.slow(slow)
-				.signal(signal)
-				.source()
-		}
-		return {
-
-		}
-	}; */
 
 	return calculator;
 }

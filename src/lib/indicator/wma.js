@@ -4,7 +4,7 @@ import { rebind } from "d3fc-rebind";
 
 import { merge } from "../utils";
 
-import { wma } from "./algorithm";
+import { wma } from "../calculator";
 
 import baseIndicator from "./baseIndicator";
 
@@ -22,19 +22,17 @@ export default function() {
         .algorithm(underlyingAlgorithm)
         .merge((datum, indicator) => { datum.wma = indicator; });
 
-	var indicator = function(data) {
-		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
-		var newData = mergedAlgorithm(data);
-		return newData;
-	};
-	indicator.undefinedLength = function() {
-		return underlyingAlgorithm.windowSize();
+	var indicator = function(data, options = { merge: true }) {
+		if (options.merge) {
+			if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
+			return mergedAlgorithm(data);
+		}
+		return underlyingAlgorithm(data);
 	};
 
-	base.tooltipLabel(() => `${ALGORITHM_TYPE}(${underlyingAlgorithm.windowSize()})`);
-
-	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
-	rebind(indicator, underlyingAlgorithm, "windowSize", "undefinedLength", "sourcePath");
+	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type");
+	rebind(indicator, underlyingAlgorithm, "undefinedLength");
+	rebind(indicator, underlyingAlgorithm, "options");
 	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 

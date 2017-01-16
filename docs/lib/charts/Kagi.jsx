@@ -84,10 +84,10 @@ class Kagi extends React.Component {
 						displayFormat={format(".4s")} />
 
 					<BarSeries
-							yAccessor={d => d.volume}
-							stroke
-							fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}
-							opacity={0.5} />
+						yAccessor={d => d.volume}
+						stroke
+						fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}
+						opacity={0.5} />
 				</Chart>
 				<CrossHairCursor />
 			</ChartCanvas>

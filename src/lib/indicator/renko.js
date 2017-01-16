@@ -2,7 +2,7 @@
 
 import { rebind } from "d3fc-rebind";
 
-import { renko } from "./algorithm";
+import { renko } from "../calculator";
 import baseIndicator from "./baseIndicator";
 
 const ALGORITHM_TYPE = "Renko";
@@ -14,13 +14,11 @@ export default function() {
 
 	var underlyingAlgorithm = renko();
 
-	var indicator = function(data) {
-		return underlyingAlgorithm(data);
-	};
+	var indicator = underlyingAlgorithm;
 
-	rebind(indicator, base, "id", "stroke", "fill", "echo", "type", "tooltipLabel");
+	rebind(indicator, base, "id", "stroke", "fill", "echo", "type");
 	rebind(indicator, underlyingAlgorithm, "dateAccessor", "dateMutator");
-	rebind(indicator, underlyingAlgorithm, "reversalType", "fixedBrickSize", "sourcePath", "windowSize");
+	rebind(indicator, underlyingAlgorithm, "options");
 
 	return indicator;
 }

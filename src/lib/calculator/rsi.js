@@ -28,14 +28,15 @@ THE SOFTWARE.
 
 import { mean } from "d3-array";
 
-import { isDefined, last, slidingWindow, path } from "../../utils";
-import { RSI as defaultOptions } from "../defaultOptionsForComputation";
+import { isDefined, last, slidingWindow, path } from "../utils";
+import { RSI as defaultOptions } from "./defaultOptionsForComputation";
 
 export default function() {
 
-	var { windowSize, sourcePath } = defaultOptions;
+	var options = defaultOptions;
 
 	function calculator(data) {
+		var { windowSize, sourcePath } = options;
 
 		var source = path(sourcePath);
 		var prevAvgGain, prevAvgLoss;
@@ -80,20 +81,15 @@ export default function() {
 		return rsiData;
 	}
 	calculator.undefinedLength = function() {
-		return windowSize;
+		var { windowSize } = options;
+
+		return windowSize - 1;
 	};
-	calculator.windowSize = function(x) {
+	calculator.options = function(x) {
 		if (!arguments.length) {
-			return windowSize;
+			return options;
 		}
-		windowSize = x;
-		return calculator;
-	};
-	calculator.sourcePath = function(x) {
-		if (!arguments.length) {
-			return sourcePath;
-		}
-		sourcePath = x;
+		options = { ...defaultOptions, ...x };
 		return calculator;
 	};
 
