@@ -12,6 +12,7 @@ import {
 	getClosestItem,
 	zipper,
 	isDefined,
+	isArray,
 	functor,
 } from "./index";
 
@@ -133,7 +134,7 @@ export function getChartConfigWithUpdatedYScales(chartConfig, plotData, xDomain,
 		.combine((config, { realYDomain, yDomainDY, prevYDomain }) => {
 			var { id, padding, height, yScale, yPan, flipYScale, yPanEnabled = false } = config;
 
-			var another = isDefined(chartsToPan)
+			var another = (isDefined(chartsToPan) && isArray(chartsToPan))
 				? chartsToPan.indexOf(id) > -1
 				: true;
 			var domain = yPan && yPanEnabled
