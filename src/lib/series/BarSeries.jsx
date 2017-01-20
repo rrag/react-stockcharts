@@ -45,7 +45,7 @@ BarSeries.propTypes = {
 		PropTypes.number,
 		PropTypes.func,
 	]).isRequired,
-	stroke: PropTypes.bool.isRequired,
+	stroke: PropTypes.string.isRequired,
 	widthRatio: PropTypes.number.isRequired,
 	yAccessor: PropTypes.func.isRequired,
 	opacity: PropTypes.number.isRequired,
