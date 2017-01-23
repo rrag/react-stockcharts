@@ -8,10 +8,24 @@
 	],
 	"env": {
 		"cjs": {
-			"presets": ["es2015"],
+			"presets": ["latest"],
 		},
 		"es": {
-			"presets": [["es2015", { "modules": false }]],
+			"presets": ["latest", {
+				"es2015": {
+					"modules": false 
+				}
+			}]
+		},
+		"watch": {
+			"presets": [
+				["env", {
+					"targets": {
+						"chrome": 55
+					},
+					"modules": false,
+				}]
+			]
 		}
 	}
 }
