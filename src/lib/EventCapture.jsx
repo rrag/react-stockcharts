@@ -30,6 +30,9 @@ class EventCapture extends Component {
 		this.handleTouchMove = this.handleTouchMove.bind(this);
 		this.handleTouchEnd = this.handleTouchEnd.bind(this);
 		this.handleRightClick = this.handleRightClick.bind(this);
+		this.handleDrag = this.handleDrag.bind(this);
+		this.handleDragEnd = this.handleDragEnd.bind(this);
+
 		this.saveNode = this.saveNode.bind(this);
 		this.lastTouch = {};
 		this.initialPinch = {};
@@ -104,34 +107,85 @@ class EventCapture extends Component {
 
 		this.contextMenuClicked = true;
 	}
+	handleDrag() {
+		var e = d3Event;
+		if (this.props.onDrag) {
+			var rect = this.node.getBoundingClientRect();
+			var mouseXY = [
+				Math.round(e.pageX - rect.left),
+				Math.round(e.pageY - rect.top)
+			];
+			this.props.onDrag({
+				startPos: this.state.dragStartPosition,
+				mouseXY
+			}, e);
+		}
+	}
+	handleDragEnd() {
+		var e = d3Event;
+		if (this.props.onDragComplete) {
+			var rect = this.node.getBoundingClientRect();
+			var mouseXY = [Math.round(e.pageX - rect.left), Math.round(e.pageY - rect.top)];
+
+			this.props.onDragComplete({
+				startPos: this.state.dragStartPosition,
+				mouseXY
+			}, e);
+
+			this.mouseInteraction = true;
+
+			var win = d3Window(this.node);
+
+			select(win)
+				.on(MOUSEMOVE, null)
+				.on(MOUSEUP, null);
+		}
+	}
 	handleMouseDown(e) {
-		var { pan, xScale, chartConfig, onMouseDown } = this.props;
+		var { pan: panEnabled, xScale, chartConfig, onMouseDown } = this.props;
+		var { isSomethingSelectedAndHovering } = this.props;
+
 		this.panHappened = false;
 		this.focus = true;
 
-		if (!this.state.panInProgress && this.mouseInteraction) {
+		if (!this.state.panInProgress
+				&& this.mouseInteraction) {
 
 			var mouseXY = mousePosition(e);
 
 			var currentCharts = getCurrentCharts(chartConfig, mouseXY);
 
-			this.setState({
-				panInProgress: pan,
-				panStart: {
-					panStartXScale: xScale,
-					panOrigin: mouseXY,
-					chartsToPan: currentCharts
-				},
-			});
+			const somethingSelected = isSomethingSelectedAndHovering();
+
+			const pan = panEnabled && !somethingSelected;
 
 			if (pan) {
-				var win = d3Window(this.node);
+				this.setState({
+					panInProgress: pan,
+					panStart: {
+						panStartXScale: xScale,
+						panOrigin: mouseXY,
+						chartsToPan: currentCharts
+					},
+				});
+
+				const win = d3Window(this.node);
 				select(win)
 					.on(MOUSEMOVE, this.handlePan)
 					.on(MOUSEUP, this.handlePanEnd);
+			} else if (somethingSelected) {
+				this.setState({
+					dragStartPosition: mouseXY,
+				});
+				this.props.onDragStart(e);
+				this.mouseInteraction = false;
+				const win = d3Window(this.node);
+				select(win)
+					.on(MOUSEMOVE, this.handleDrag)
+					.on(MOUSEUP, this.handleDragEnd);
 			}
 
-			if (!pan) {
+			if (!panEnabled) {
 				// This block of code gets executed when
 				// drawMode is enabled,
 				// pan is disabled in draw mode
@@ -190,7 +244,7 @@ class EventCapture extends Component {
 							onClick(newPos, e);
 							this.clicked = false;
 						}
-					}, 300);
+					}, 100);
 				}
 			}
 
@@ -360,6 +414,8 @@ EventCapture.propTypes = {
 	xScale: PropTypes.func.isRequired,
 	xAccessor: PropTypes.func.isRequired,
 
+	isSomethingSelectedAndHovering: PropTypes.func.isRequired,
+
 	onMouseMove: PropTypes.func,
 	onMouseEnter: PropTypes.func,
 	onMouseLeave: PropTypes.func,
@@ -367,6 +423,9 @@ EventCapture.propTypes = {
 	onPinchZoom: PropTypes.func,
 	onPan: PropTypes.func,
 	onPanEnd: PropTypes.func,
+	onDragStart: PropTypes.func,
+	onDrag: PropTypes.func,
+	onDragComplete: PropTypes.func,
 
 	onClick: PropTypes.func,
 	onDoubleClick: PropTypes.func,

@@ -130,20 +130,20 @@ export default function() {
 			}
 
 			if (columnData.length === 1 && column.boxes.length === 0) {
-				let upwardMovement = (Math.max((pricingMethod(d).high - column.open), 0)); // upward movement
-				let downwardMovement = Math.abs(Math.min((column.open - pricingMethod(d).low), 0)); // downward movement
+				const upwardMovement = (Math.max((pricingMethod(d).high - column.open), 0)); // upward movement
+				const downwardMovement = Math.abs(Math.min((column.open - pricingMethod(d).low), 0)); // downward movement
 				column.direction = upwardMovement > downwardMovement ? 1 : -1;
 				if (boxSize * reversal < upwardMovement
 					|| boxSize * reversal < downwardMovement) {
 					// enough movement to trigger a reversal
 					box.toDate = dateAccessor(d);
 					box.open = column.open;
-					let noOfBoxes = column.direction > 0
+					const noOfBoxes = column.direction > 0
 										? Math.floor(upwardMovement / boxSize)
 										: Math.floor(downwardMovement / boxSize);
 					for (let i = 0; i < noOfBoxes; i++) {
 						box.close = box.open + column.direction * boxSize;
-						let prevBoxClose = box.close;
+						const prevBoxClose = box.close;
 						column.boxes.push(box);
 						box = createBox(box, dateAccessor, dateMutator);
 						// box = cloneMe(box);
@@ -154,15 +154,15 @@ export default function() {
 				}
 			} else {
 				// one or more boxes already formed in the current column
-				let upwardMovement = (Math.max((pricingMethod(d).high - box.open), 0)); // upward movement
-				let downwardMovement = Math.abs(Math.min((pricingMethod(d).low - box.open), 0)); // downward movement
+				const upwardMovement = (Math.max((pricingMethod(d).high - box.open), 0)); // upward movement
+				const downwardMovement = Math.abs(Math.min((pricingMethod(d).low - box.open), 0)); // downward movement
 
 				if ((column.direction > 0 && upwardMovement > boxSize) /* rising column AND box can be formed */
 						|| (column.direction < 0 && downwardMovement > boxSize) /* falling column AND box can be formed */ ) {
 					// form another box
 					box.close = box.open + column.direction * boxSize;
 					box.toDate = dateAccessor(d);
-					let prevBoxClose = box.close;
+					const prevBoxClose = box.close;
 					column.boxes.push(box);
 					box = createBox(d, dateAccessor, dateMutator);
 					box.open = prevBoxClose;
@@ -187,7 +187,7 @@ export default function() {
 						volume: 0,
 						direction: -1 * column.direction
 					};
-					let noOfBoxes = column.direction > 0
+					const noOfBoxes = column.direction > 0
 										? Math.floor(upwardMovement / boxSize)
 										: Math.floor(downwardMovement / boxSize);
 					for (let i = 0; i < noOfBoxes; i++) {

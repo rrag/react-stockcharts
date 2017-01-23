@@ -60,9 +60,11 @@ export function getClosestValue(values, currentValue) {
 	return currentValue + diff;
 }
 
-
 export function d3Window(node) {
-	var d3win = node && (node.ownerDocument && node.ownerDocument.defaultView || node.document && node || node.defaultView);
+	var d3win = node
+		&& (node.ownerDocument && node.ownerDocument.defaultView
+			|| node.document && node
+			|| node.defaultView);
 	return d3win;
 }
 

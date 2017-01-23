@@ -67,9 +67,9 @@ class LineSeries extends Component {
 
 		var points = [];
 		for (let i = 0; i < plotData.length; i++) {
-			let d = plotData[i];
+			const d = plotData[i];
 			if (defined(yAccessor(d), i)) {
-				let [x, y] = [xScale(xAccessor(d)), yScale(yAccessor(d))];
+				const [x, y] = [xScale(xAccessor(d)), yScale(yAccessor(d))];
 
 				points.push([x, y]);
 			} else if (points.length) {
@@ -126,10 +126,10 @@ class LineSeries extends Component {
 function segment(points, ctx) {
 	ctx.beginPath();
 
-	let [x, y] = first(points);
+	const [x, y] = first(points);
 	ctx.moveTo(x, y);
 	for (let i = 1; i < points.length; i++) {
-		let [x1, y1] = points[i];
+		const [x1, y1] = points[i];
 		ctx.lineTo(x1, y1);
 	}
 

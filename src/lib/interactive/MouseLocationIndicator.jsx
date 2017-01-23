@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from "react";
 
-import GenericChartComponent from "../GenericChartComponent";
+import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 
 import { isDefined, getClosestValue, noop, shallowEqual, functor } from "../utils";
 // import { getCurrentCharts } from "../utils/ChartDataUtil";
@@ -9,6 +9,7 @@ class MouseLocationIndicator extends Component {
 	constructor(props) {
 		super(props);
 		this.renderSVG = this.renderSVG.bind(this);
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 
 		this.handleMousePosChange = this.handleMousePosChange.bind(this);
 		this.handleMouseDown = this.handleMouseDown.bind(this);
@@ -73,6 +74,21 @@ class MouseLocationIndicator extends Component {
 		}
 		// console.log(this.node.getRef("capture"))
 	}
+	drawOnCanvas(ctx, moreProps) {
+		var { enabled, r, stroke, strokeWidth } = this.props;
+		var { x, y } = this.mutableState;
+		var { show } = moreProps;
+
+		if (enabled && show && isDefined(x)) {
+			ctx.lineWidth = strokeWidth;
+			ctx.strokeStyle = stroke;
+			ctx.moveTo(x, y);
+			ctx.beginPath();
+			ctx.arc(x, y, r, 0, 2 * Math.PI, false);
+			ctx.stroke();
+			// ctx.fill();
+		}
+	}
 	renderSVG(moreProps) {
 		var { enabled, r, stroke, strokeWidth, opacity } = this.props;
 		var { x, y } = this.mutableState;
@@ -95,13 +111,14 @@ class MouseLocationIndicator extends Component {
 	}
 	render() {
 		return <GenericChartComponent ref={this.saveNode}
+			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
+			canvasDraw={this.drawOnCanvas}
 			onMouseMove={this.handleMousePosChange}
-			isHover={functor(true)}
 			onMouseDown={this.handleMouseDown}
 			onClick={this.handleClick}
 			onContextMenu={this.handleContextMenu}
-			drawOnMouseExitOfCanvas
+			isHover={functor(true)}
 			/>;
 	}
 }

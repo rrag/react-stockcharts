@@ -94,7 +94,7 @@ function drawOnCanvas(ctx, props, columns) {
 	ctx.lineWidth = strokeWidth;
 
 	columns.forEach(col => {
-		let [offsetX, offsetY] = col.offset;
+		const [offsetX, offsetY] = col.offset;
 		col.boxes.forEach(box => {
 			if (col.direction > 0) {
 				ctx.fillStyle = fill.up;
@@ -114,8 +114,8 @@ function drawOnCanvas(ctx, props, columns) {
 
 				ctx.beginPath();
 
-				let [x, y] = [offsetX + box.columnWidth / 2, offsetY + box.open + box.boxHeight / 2];
-				let [rx, ry] = [box.columnWidth / 2, box.boxHeight / 2];
+				const [x, y] = [offsetX + box.columnWidth / 2, offsetY + box.open + box.boxHeight / 2];
+				const [rx, ry] = [box.columnWidth / 2, box.boxHeight / 2];
 
 				ctx.ellipse(x, y, rx, ry, 0, 0, 2 * Math.PI);
 				ctx.stroke();

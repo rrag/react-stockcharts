@@ -12,6 +12,7 @@ class GenericChartComponent extends GenericComponent {
 		this.postCanvasDraw = this.postCanvasDraw.bind(this);
 	}
 	preCanvasDraw(ctx, moreProps) {
+		super.preCanvasDraw(ctx, moreProps);
 		ctx.save();
 		var { margin, ratio } = this.context;
 		var { chartConfig } = moreProps;
@@ -38,7 +39,8 @@ class GenericChartComponent extends GenericComponent {
 			ctx.clip();
 		}
 	}
-	postCanvasDraw(ctx) {
+	postCanvasDraw(ctx, moreProps) {
+		super.postCanvasDraw(ctx, moreProps);
 		ctx.restore();
 	}
 	updateMoreProps(moreProps) {

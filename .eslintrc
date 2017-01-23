@@ -1,6 +1,6 @@
 {
 	"plugins": [
-		"import", "flowtype", "jsx-a11y", "react"
+		"import", "flowtype", "jsx-a11y", "react", "const-immutable"
 	],
 	"parser": "babel-eslint",
 	"parserOptions": {
@@ -57,6 +57,10 @@
 		"react/prop-types": 1,
 		"react/react-in-jsx-scope": 1,
 
+		"const-immutable/no-mutation": 2,
+
+		"no-var": "error",
+		"prefer-const": "error",
 		"array-bracket-spacing": [2, "never"],
 		"block-scoped-var": 2,
 		"brace-style": [2, "1tbs", { "allowSingleLine": true }],

@@ -172,7 +172,7 @@ function updateChart(newState, initialXScale, props, lastItemWasVisible) {
 	}
 	// plotData = getDataOfLength(fullData, showingInterval, plotData.length)
 	var plotData = postCalculator(initialPlotData);
-	let chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData, updatedXScale.domain());
+	const chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData, updatedXScale.domain());
 
 	return {
 		xScale: updatedXScale,
@@ -247,23 +247,25 @@ class ChartCanvas extends Component {
 		this.handleClick = this.handleClick.bind(this);
 		this.handleMouseDown = this.handleMouseDown.bind(this);
 		this.handleDoubleClick = this.handleDoubleClick.bind(this);
-		// this.handleFocus = this.handleFocus.bind(this);
 		this.handleContextMenu = this.handleContextMenu.bind(this);
+		this.handleDragStart = this.handleDragStart.bind(this);
+		this.handleDrag = this.handleDrag.bind(this);
+		this.handleDragEnd = this.handleDragEnd.bind(this);
+
 		this.xAxisZoom = this.xAxisZoom.bind(this);
 		this.yAxisZoom = this.yAxisZoom.bind(this);
 		this.resetYDomain = this.resetYDomain.bind(this);
 		this.calculateStateForDomain = this.calculateStateForDomain.bind(this);
 		this.generateSubscriptionId = this.generateSubscriptionId.bind(this);
 		this.draw = this.draw.bind(this);
+		this.isSomethingSelectedAndHovering = this.isSomethingSelectedAndHovering.bind(this);
 
 		this.pinchCoordinates = this.pinchCoordinates.bind(this);
-
-		// this.setInteractiveState = this.setInteractiveState.bind(this);
-		// this.getInteractiveState = this.getInteractiveState.bind(this);
 
 		this.subscriptions = [];
 		this.subscribe = this.subscribe.bind(this);
 		this.unsubscribe = this.unsubscribe.bind(this);
+		this.amIOnTop = this.amIOnTop.bind(this);
 		// this.canvasDrawCallbackList = [];
 		this.interactiveState = [];
 		this.panInProgress = false;
@@ -305,14 +307,6 @@ class ChartCanvas extends Component {
 			], this.props.ratio);
 		}
 	}
-	clearMouseCanvasOnly() {
-		var canvases = this.getCanvasContexts();
-		if (canvases && canvases.mouseCoord) {
-			clearCanvas([
-				canvases.mouseCoord,
-			], this.props.ratio);
-		}
-	}
 	clearThreeCanvas() {
 		var canvases = this.getCanvasContexts();
 		if (canvases && canvases.axes) {
@@ -324,37 +318,25 @@ class ChartCanvas extends Component {
 			], this.props.ratio);
 		}
 	}
-	subscribe(id, callback) {
+	subscribe(id, callback, rest = { isDraggable: functor(false) }) {
+		const { isDraggable } = rest;
 		this.subscriptions = this.subscriptions.concat({
-			id, callback
+			id,
+			callback,
+			isDraggable,
 		});
 	}
 	unsubscribe(id) {
 		this.subscriptions = this.subscriptions.filter(each => each.id !== id);
 	}
-	handleMouseEnter(e) {
-		this.triggerEvent("mouseenter", {
-			show: true,
-		}, e);
+	isSomethingSelectedAndHovering() {
+		return this.subscriptions
+			.filter(each => each.isDraggable()).length > 0;
 	}
-	handleMouseMove(mouseXY, inputType, e) {
-		var { chartConfig, plotData, xScale, xAccessor } = this.state;
-
-		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
-
-		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
-
-		this.triggerEvent("mousemove", {
-			show: true,
-			mouseXY,
-			currentItem,
-			currentCharts,
-		}, e);
-
-		requestAnimationFrame(() => {
-			this.clearMouseCanvas();
-			this.draw();
-		});
+	amIOnTop(id) {
+		const dragableComponents = this.subscriptions
+			.filter(each => each.isDraggable());
+		return last(dragableComponents).id === id;
 	}
 	handleContextMenu(mouseXY, e) {
 		var { xAccessor, chartConfig, plotData, xScale } = this.state;
@@ -367,10 +349,6 @@ class ChartCanvas extends Component {
 			currentItem,
 			currentCharts,
 		}, e);
-	}
-	handleMouseLeave(e) {
-		this.clearMouseCanvasOnly();
-		this.triggerEvent("mouseleave", { show: false }, e);
 	}
 	pinchCoordinates(pinch) {
 		var { touch1Pos, touch2Pos } = pinch;
@@ -547,6 +525,19 @@ class ChartCanvas extends Component {
 			chartConfig,
 		});
 	}
+	triggerEvent(type, props, e) {
+		this.subscriptions.forEach(each => {
+			var state = {
+				...this.state,
+				fullData: this.fullData,
+				subscriptions: this.subscriptions,
+			};
+			each.callback(type, props, state, e);
+		});
+	}
+	draw() {
+		this.triggerEvent("draw");
+	}
 	panHelper(mouseXY, initialXScale, panOrigin, chartsToPan) {
 		var { xAccessor, chartConfig: initialChartConfig } = this.state;
 		var { filterData } = this.state;
@@ -588,19 +579,6 @@ class ChartCanvas extends Component {
 			currentItem,
 		};
 	}
-	triggerEvent(type, props, e) {
-		this.subscriptions.forEach(each => {
-			var state = {
-				...this.state,
-				fullData: this.fullData,
-				subscriptions: this.subscriptions,
-			};
-			each.callback(type, props, state, e);
-		});
-	}
-	draw() {
-		this.triggerEvent("draw");
-	}
 	handlePan(mousePosition, panStartXScale, panOrigin, chartsToPan, e) {
 		this.hackyWayToStopPanBeyondBounds__plotData = this.hackyWayToStopPanBeyondBounds__plotData || this.state.plotData;
 		this.hackyWayToStopPanBeyondBounds__domain = this.hackyWayToStopPanBeyondBounds__domain || this.state.xScale.domain();
@@ -626,8 +604,61 @@ class ChartCanvas extends Component {
 	handleMouseDown(mousePosition, currentCharts, e) {
 		this.triggerEvent("mousedown", null, e);
 	}
+	handleMouseEnter(e) {
+		this.triggerEvent("mouseenter", {
+			show: true,
+		}, e);
+	}
+	handleMouseMove(mouseXY, inputType, e) {
+		var { chartConfig, plotData, xScale, xAccessor } = this.state;
+		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
+		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
+
+		this.triggerEvent("mousemove", {
+			show: true,
+			mouseXY,
+			currentItem,
+			currentCharts,
+		}, e);
+
+		requestAnimationFrame(() => {
+			this.clearMouseCanvas();
+			this.draw();
+		});
+	}
+	handleMouseLeave(e) {
+		this.triggerEvent("mouseleave", { show: false }, e);
+		this.clearMouseCanvas();
+		this.draw();
+	}
+	handleDragStart(mousePosition, e) {
+		this.triggerEvent("dragstart", { mousePosition }, e);
+	}
+	handleDrag({ startPos, mouseXY }, e) {
+		var { chartConfig, plotData, xScale, xAccessor } = this.state;
+		var currentCharts = getCurrentCharts(chartConfig, mouseXY);
+		var currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
+
+		this.triggerEvent("drag", {
+			startPos,
+			mouseXY,
+			currentItem,
+			currentCharts,
+		}, e);
+
+		requestAnimationFrame(() => {
+			this.clearMouseCanvas();
+			this.draw();
+		});
+	}
+	handleDragEnd(mousePosition, e) {
+		this.triggerEvent("dragend", { mousePosition }, e);
+	}
 	handleClick(mousePosition, e) {
 		this.triggerEvent("click", {}, e);
+
+		this.clearMouseCanvas();
+		this.draw();
 	}
 	handleDoubleClick(mousePosition, e) {
 		this.triggerEvent("dblclick", {}, e);
@@ -687,12 +718,11 @@ class ChartCanvas extends Component {
 			ratio: this.props.ratio,
 			xAxisZoom: this.xAxisZoom,
 			yAxisZoom: this.yAxisZoom,
-			// getInteractiveState: this.getInteractiveState,
-			// setInteractiveState: this.setInteractiveState,
 			getCanvasContexts: this.getCanvasContexts,
 			subscribe: this.subscribe,
 			unsubscribe: this.unsubscribe,
 			generateSubscriptionId: this.generateSubscriptionId,
+			amIOnTop: this.amIOnTop,
 		};
 	}
 	componentWillMount() {
@@ -825,6 +855,7 @@ class ChartCanvas extends Component {
 							xAccessor={xAccessor}
 							focus={defaultFocus}
 
+							isSomethingSelectedAndHovering={this.isSomethingSelectedAndHovering}
 							onContextMenu={this.handleContextMenu}
 							onClick={this.handleClick}
 							onDoubleClick={this.handleDoubleClick}
@@ -832,6 +863,11 @@ class ChartCanvas extends Component {
 							onMouseMove={this.handleMouseMove}
 							onMouseEnter={this.handleMouseEnter}
 							onMouseLeave={this.handleMouseLeave}
+
+							onDragStart={this.handleDragStart}
+							onDrag={this.handleDrag}
+							onDragComplete={this.handleDragEnd}
+
 							onZoom={this.handleZoom}
 							onPinchZoom={this.handlePinchZoom}
 							onPan={this.handlePan}
@@ -963,6 +999,7 @@ ChartCanvas.childContextTypes = {
 	getCanvasContexts: PropTypes.func,
 	xAxisZoom: PropTypes.func,
 	yAxisZoom: PropTypes.func,
+	amIOnTop: PropTypes.func,
 	subscribe: PropTypes.func,
 	unsubscribe: PropTypes.func,
 	generateSubscriptionId: PropTypes.func,

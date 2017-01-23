@@ -166,13 +166,13 @@ class CandlestickChart extends React.Component {
 						options={[
 							{
 								yAccessor: ema26.accessor(),
-								type: "EMA",
+								type: ema26.type(),
 								stroke: ema26.stroke(),
 								windowSize: ema26.options().windowSize,
 							},
 							{
 								yAccessor: ema12.accessor(),
-								type: "EMA",
+								type: ema12.type(),
 								stroke: ema12.stroke(),
 								windowSize: ema12.options().windowSize,
 							},
@@ -181,7 +181,8 @@ class CandlestickChart extends React.Component {
 					<TrendLine ref="trend"
 						enabled={this.state.enableTrendLine}
 						type="LINE"
-						snap={true} snapTo={d => [d.high, d.low]}
+						snap={true}
+						snapTo={d => [d.high, d.low]}
 						onStart={() => console.log("START")}
 						onComplete={this.onTrendLineComplete}
 						/>

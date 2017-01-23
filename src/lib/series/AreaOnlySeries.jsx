@@ -26,9 +26,9 @@ class AreaOnlySeries extends Component {
 		var points0 = [], points1 = [];
 
 		for (let i = 0; i < plotData.length; i++) {
-			let d = plotData[i];
+			const d = plotData[i];
 			if (defined(yAccessor(d), i)) {
-				let [x, y1, y0] = [xScale(xAccessor(d)), yScale(yAccessor(d)), newBase(yScale, d)];
+				const [x, y1, y0] = [xScale(xAccessor(d)), yScale(yAccessor(d)), newBase(yScale, d)];
 
 				points0.push([x, y0]);
 				points1.push([x, y1]);
@@ -97,12 +97,12 @@ function segment(points0, points1, ctx) {
 
 	var i;
 	for (i = 0; i < points1.length; i++) {
-		let [x1, y1] = points1[i];
+		const [x1, y1] = points1[i];
 		ctx.lineTo(x1, y1);
 	}
 
 	for (i = points0.length - 1; i >= 0; i--) {
-		let [x0, y0] = points0[i];
+		const [x0, y0] = points0[i];
 		ctx.lineTo(x0, y0);
 	}
 	ctx.closePath();

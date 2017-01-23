@@ -121,8 +121,8 @@ function tooltipSVG({ fontFamily, fontSize, fontFill }, content) {
 	const startY = Y + fontSize * 0.9;
 
 	for (var i = 0; i < content.y.length; i++) {
-		let y = content.y[i];
-		let textY = startY + (fontSize * (i + 1));
+		const y = content.y[i];
+		const textY = startY + (fontSize * (i + 1));
 
 		tspans.push(<tspan key={`L-${i}`} x={X} y={textY} fill={y.stroke}>{y.label}</tspan>);
 		tspans.push(<tspan key={i}>: </tspan>);
@@ -154,8 +154,8 @@ function tooltipCanvas({ fontFamily, fontSize, fontFill }, content, ctx) {
 	ctx.fillText(content.x, X, startY);
 
 	for (var i = 0; i < content.y.length; i++) {
-		let y = content.y[i];
-		let textY = startY + (fontSize * (i + 1));
+		const y = content.y[i];
+		const textY = startY + (fontSize * (i + 1));
 		ctx.fillStyle = y.stroke || fontFill;
 		ctx.fillText(y.label, X, textY);
 

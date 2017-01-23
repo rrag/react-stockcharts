@@ -7,6 +7,7 @@ import { isDefined, isNotDefined, noop } from "../utils";
 import { getValueFromOverride } from "./utils";
 
 import InteractiveLine from "./InteractiveLine";
+import StraightLine from "./StraightLine";
 import MouseLocationIndicator from "./MouseLocationIndicator";
 
 
@@ -98,28 +99,34 @@ class TrendLine extends Component {
 		var { trends, current, override } = this.state;
 
 		var tempLine = isDefined(current) && isDefined(current.end)
-			? <InteractiveLine type={type}
-					x1Value={current.start[0]} y1Value={current.start[1]}
-					x2Value={current.end[0]} y2Value={current.end[1]}
-					stroke={stroke} strokeWidth={strokeWidth} opacity={opacity} />
+			? <StraightLine type={type}
+					noHover
+					x1Value={current.start[0]}
+					y1Value={current.start[1]}
+					x2Value={current.end[0]}
+					y2Value={current.end[1]}
+					stroke={stroke}
+					strokeWidth={strokeWidth}
+					opacity={opacity} />
 			: null;
 
 		return <g>
-			{trends.map((each, idx) =>
-				<InteractiveLine key={idx} withEdge
-					echo={idx} type={type}
-					defaultClassName="react-stockcharts-enable-interaction react-stockcharts-move-cursor"
+			{trends.map((each, idx) => {
+				return <EachTrendLine
+					key={idx}
+					index={idx}
+					type={type}
 					x1Value={getValueFromOverride(override, idx, "x1Value", each.start[0])}
 					y1Value={getValueFromOverride(override, idx, "y1Value", each.start[1])}
 					x2Value={getValueFromOverride(override, idx, "x2Value", each.end[0])}
 					y2Value={getValueFromOverride(override, idx, "y2Value", each.end[1])}
-					stroke={stroke} strokeWidth={strokeWidth} opacity={opacity}
+					stroke={stroke}
+					strokeWidth={strokeWidth}
+					opacity={opacity}
 					onDrag={this.handleDragLine}
-					onEdge1Drag={this.handleDragLine}
-					onEdge2Drag={this.handleDragLine}
 					onDragComplete={this.handleDragLineComplete}
-					/>)
-			}
+					/>;
+			})}
 			{tempLine}
 			<MouseLocationIndicator
 				enabled={enabled}
@@ -139,13 +146,11 @@ class TrendLine extends Component {
 
 TrendLine.propTypes = {
 	snap: PropTypes.bool.isRequired,
-	show: PropTypes.bool,
 	enabled: PropTypes.bool.isRequired,
-	snapTo: PropTypes.func,
+	snapTo: PropTypes.func.isRequired,
 	shouldDisableSnap: PropTypes.func.isRequired,
 	onStart: PropTypes.func.isRequired,
 	onComplete: PropTypes.func.isRequired,
-	interactive: PropTypes.object,
 	strokeWidth: PropTypes.number.isRequired,
 	currentPositionStroke: PropTypes.string,
 	currentPositionStrokeWidth: PropTypes.number,
@@ -171,7 +176,7 @@ TrendLine.defaultProps = {
 	stroke: "#000000",
 	type: "XLINE",
 	opacity: 0.7,
-	strokeWidth: 2,
+	strokeWidth: 1,
 	onStart: noop,
 	onComplete: noop,
 	shouldDisableSnap: e => (e.button === 2 || e.shiftKey),
@@ -182,6 +187,61 @@ TrendLine.defaultProps = {
 	endPointCircleFill: "#000000",
 	endPointCircleRadius: 5,
 	init: { trends: [] },
+};
+
+class EachTrendLine extends Component {
+	constructor(props) {
+		super(props);
+		this.handleDragLine = this.handleDragLine.bind(this);
+		this.handleDragLineComplete = this.handleDragLineComplete.bind(this);
+	}
+	handleDragLine(...rest) {
+		const { index, onDrag } = this.props;
+		onDrag(index, ...rest);
+	}
+	handleDragLineComplete(...rest) {
+		const { index, onDragComplete } = this.props;
+		onDragComplete(index, ...rest);
+	}
+	render() {
+		const {
+			type,
+			x1Value,
+			y1Value,
+			x2Value,
+			y2Value,
+			stroke,
+			strokeWidth,
+			opacity,
+		} = this.props;
+		return <InteractiveLine
+			type={type}
+			x1Value={x1Value}
+			y1Value={y1Value}
+			x2Value={x2Value}
+			y2Value={y2Value}
+			stroke={stroke}
+			strokeWidth={strokeWidth}
+			opacity={opacity}
+			onDrag={this.handleDragLine}
+			onDragComplete={this.handleDragLineComplete}
+			/>;
+	}
+
+}
+
+EachTrendLine.propTypes = {
+	index: PropTypes.number.isRequired,
+	type: PropTypes.string,
+	stroke: PropTypes.string,
+	strokeWidth: PropTypes.number.isRequired,
+	opacity: PropTypes.number,
+	onDrag: PropTypes.func,
+	onDragComplete: PropTypes.func,
+	x1Value: PropTypes.any.isRequired,
+	y1Value: PropTypes.any.isRequired,
+	x2Value: PropTypes.any.isRequired,
+	y2Value: PropTypes.any.isRequired,
 };
 
 export default TrendLine;
