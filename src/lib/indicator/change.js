@@ -11,19 +11,19 @@ const ALGORITHM_TYPE = "Change";
 
 export default function() {
 
-	var base = baseIndicator()
+	const base = baseIndicator()
 		.type(ALGORITHM_TYPE);
 
-	var underlyingAlgorithm = change();
+	const underlyingAlgorithm = change();
 
-	var mergedAlgorithm = merge()
+	const mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
 		.merge((datum, indicator) => {
 			datum.absoluteChange = indicator.absoluteChange;
 			datum.percentChange = indicator.percentChange;
 		});
 
-	var indicator = function(data, options = { merge: true }) {
+	const indicator = function(data, options = { merge: true }) {
 		if (options.merge) {
 			return mergedAlgorithm(data);
 		}

@@ -15,57 +15,57 @@ class LineSeries extends Component {
 	}
 	isHover(moreProps) {
 		// console.log("HERE")
-		var { highlightOnHover, yAccessor, hoverTolerance } = this.props;
+		const { highlightOnHover, yAccessor, hoverTolerance } = this.props;
 
 		if (!highlightOnHover) return false;
 
-		var { mouseXY, currentItem, xScale, plotData } = moreProps;
-		var { chartConfig: { yScale, origin } } = moreProps;
+		const { mouseXY, currentItem, xScale, plotData } = moreProps;
+		const { chartConfig: { yScale, origin } } = moreProps;
 
-		var { xAccessor } = moreProps;
+		const { xAccessor } = moreProps;
 
-		var [x, y] = mouseXY;
+		const [x, y] = mouseXY;
 		const radius = hoverTolerance;
 
-		var { left, right } = getClosestItemIndexes(plotData, xScale.invert(x), xAccessor);
+		const { left, right } = getClosestItemIndexes(plotData, xScale.invert(x), xAccessor);
 		if (left === right) {
-			var cy = yScale(yAccessor(currentItem)) + origin[1];
-			var cx = xScale(xAccessor(currentItem)) + origin[0];
+			const cy = yScale(yAccessor(currentItem)) + origin[1];
+			const cx = xScale(xAccessor(currentItem)) + origin[0];
 
-			var hovering1 = Math.pow(x - cx, 2) + Math.pow(y - cy, 2) < Math.pow(radius, 2);
+			const hovering1 = Math.pow(x - cx, 2) + Math.pow(y - cy, 2) < Math.pow(radius, 2);
 
 			return hovering1;
 		} else {
-			var l = plotData[left];
-			var r = plotData[right];
-			var x1 = xScale(xAccessor(l)) + origin[0];
-			var y1 = yScale(yAccessor(l)) + origin[1];
-			var x2 = xScale(xAccessor(r)) + origin[0];
-			var y2 = yScale(yAccessor(r)) + origin[1];
+			const l = plotData[left];
+			const r = plotData[right];
+			const x1 = xScale(xAccessor(l)) + origin[0];
+			const y1 = yScale(yAccessor(l)) + origin[1];
+			const x2 = xScale(xAccessor(r)) + origin[0];
+			const y2 = yScale(yAccessor(r)) + origin[1];
 
 			// y = m * x + b
-			var m /* slope */ = (y2 - y1) / (x2 - x1);
-			var b /* y intercept */ = -1 * m * x1 + y1;
+			const m /* slope */ = (y2 - y1) / (x2 - x1);
+			const b /* y intercept */ = -1 * m * x1 + y1;
 
-			var desiredY = Math.round(m * x + b);
+			const desiredY = Math.round(m * x + b);
 
-			var hovering2 = y >= desiredY - radius && y <= desiredY + radius;
+			const hovering2 = y >= desiredY - radius && y <= desiredY + radius;
 
 			return hovering2;
 		}
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { yAccessor, stroke, strokeWidth, hoverStrokeWidth, defined, connectNulls, strokeDasharray } = this.props;
-		var { xAccessor } = moreProps;
+		const { yAccessor, stroke, strokeWidth, hoverStrokeWidth, defined, connectNulls, strokeDasharray } = this.props;
+		const { xAccessor } = moreProps;
 
-		var { xScale, chartConfig: { yScale }, plotData, hovering } = moreProps;
+		const { xScale, chartConfig: { yScale }, plotData, hovering } = moreProps;
 
 		ctx.lineWidth = hovering ? hoverStrokeWidth : strokeWidth;
 
 		ctx.strokeStyle = stroke;
 		ctx.setLineDash(getStrokeDasharray(strokeDasharray).split(","));
 
-		var points = [];
+		let points = [];
 		for (let i = 0; i < plotData.length; i++) {
 			const d = plotData[i];
 			if (defined(yAccessor(d), i)) {
@@ -81,19 +81,19 @@ class LineSeries extends Component {
 		if (points.length) segment(points, ctx);
 	}
 	renderSVG(moreProps) {
-		var { yAccessor, stroke, strokeWidth, hoverStrokeWidth, defined, strokeDasharray } = this.props;
-		var { xAccessor } = moreProps;
+		const { yAccessor, stroke, strokeWidth, hoverStrokeWidth, defined, strokeDasharray } = this.props;
+		const { xAccessor } = moreProps;
 
-		var { xScale, chartConfig: { yScale }, plotData, hovering } = moreProps;
+		const { xScale, chartConfig: { yScale }, plotData, hovering } = moreProps;
 
-		var dataSeries = d3Line()
+		const dataSeries = d3Line()
 			.defined(d => defined(yAccessor(d)))
 			.x(d => xScale(xAccessor(d)))
 			.y(d => yScale(yAccessor(d)));
 
-		var d = dataSeries(plotData);
+		const d = dataSeries(plotData);
 
-		var { fill, className } = this.props;
+		const { fill, className } = this.props;
 
 		return <path className={`${className} ${stroke ? "" : " line-stroke"}`}
 			d={d}
@@ -105,8 +105,8 @@ class LineSeries extends Component {
 	}
 
 	render() {
-		var { highlightOnHover } = this.props;
-		var hoverProps = highlightOnHover
+		const { highlightOnHover } = this.props;
+		const hoverProps = highlightOnHover
 			? { isHover: this.isHover }
 			: {};
 

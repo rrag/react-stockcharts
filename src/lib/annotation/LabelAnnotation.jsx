@@ -9,18 +9,18 @@ class LabelAnnotation extends Component {
 		this.handleClick = this.handleClick.bind(this);
 	}
 	handleClick(e) {
-		var { onClick } = this.props;
+		const { onClick } = this.props;
 
 		if (onClick) {
-			var { xScale, yScale, datum } = this.props;
+			const { xScale, yScale, datum } = this.props;
 			onClick({ xScale, yScale, datum }, e);
 		}
 	}
 	render() {
-		var { className, textAnchor, fontFamily, fontSize, opacity, rotate } = this.props;
-		var { xAccessor, xScale, yScale } = this.props;
+		const { className, textAnchor, fontFamily, fontSize, opacity, rotate } = this.props;
+		const { xAccessor, xScale, yScale } = this.props;
 
-		var { xPos, yPos, fill, text, tooltip } = helper(this.props, xAccessor, xScale, yScale);
+		const { xPos, yPos, fill, text, tooltip } = helper(this.props, xAccessor, xScale, yScale);
 
 		return (<g className={className}>
 			<title>{tooltip}</title>
@@ -36,12 +36,12 @@ class LabelAnnotation extends Component {
 }
 
 export function helper(props, xAccessor, xScale, yScale) {
-	var { x, y, datum, fill, text, tooltip, plotData } = props;
+	const { x, y, datum, fill, text, tooltip, plotData } = props;
 
-	var xFunc = functor(x);
-	var yFunc = functor(y);
+	const xFunc = functor(x);
+	const yFunc = functor(y);
 
-	var [xPos, yPos] = [xFunc({ xScale, xAccessor, datum, plotData }), yFunc({ yScale, datum, plotData })];
+	const [xPos, yPos] = [xFunc({ xScale, xAccessor, datum, plotData }), yFunc({ yScale, datum, plotData })];
 
 	return {
 		xPos,

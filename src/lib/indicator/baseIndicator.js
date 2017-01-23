@@ -2,11 +2,11 @@
 
 import { overlayColors } from "../utils";
 
-var i = 0;
+let i = 0;
 
 export default function() {
 
-	var id = i++, accessor, stroke, fill, echo, type;
+	let id = i++, accessor, stroke, fill, echo, type;
 
 	function baseIndicator() {
 	}

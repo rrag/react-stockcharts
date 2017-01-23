@@ -16,12 +16,12 @@ function d3_scaleRange(scale) {
 */
 class AxisLine extends Component {
 	render() {
-		var { orient, outerTickSize, fill, stroke, strokeWidth, className, shapeRendering, opacity, range } = this.props;
-		var sign = orient === "top" || orient === "left" ? -1 : 1;
+		const { orient, outerTickSize, fill, stroke, strokeWidth, className, shapeRendering, opacity, range } = this.props;
+		const sign = orient === "top" || orient === "left" ? -1 : 1;
 
 		// var range = d3_scaleRange(scale);
 
-		var d;
+		let d;
 
 		if (orient === "bottom" || orient === "top") {
 			d = "M" + range[0] + "," + sign * outerTickSize + "V0H" + range[1] + "V" + sign * outerTickSize;
@@ -69,10 +69,10 @@ AxisLine.defaultProps = {
 AxisLine.drawOnCanvasStatic = (props, ctx/* , xScale, yScale*/) => {
 	props = { ...AxisLine.defaultProps, ...props };
 
-	var { orient, outerTickSize, stroke, strokeWidth, opacity, range } = props;
+	const { orient, outerTickSize, stroke, strokeWidth, opacity, range } = props;
 
-	var sign = orient === "top" || orient === "left" ? -1 : 1;
-	var xAxis = (orient === "bottom" || orient === "top");
+	const sign = orient === "top" || orient === "left" ? -1 : 1;
+	const xAxis = (orient === "bottom" || orient === "top");
 
 	// var range = d3_scaleRange(xAxis ? xScale : yScale);
 

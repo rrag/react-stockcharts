@@ -17,18 +17,18 @@ class StackedBarSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { xAccessor } = moreProps;
+		const { xAccessor } = moreProps;
 		// var { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 		drawOnCanvasHelper(ctx, this.props, moreProps, xAccessor, d3Stack);
 	}
 	renderSVG(moreProps) {
-		var { xAccessor } = moreProps;
+		const { xAccessor } = moreProps;
 
 		return <g>{svgHelper(this.props, moreProps, xAccessor, d3Stack)}</g>;
 	}
 	render() {
-		var { clip } = this.props;
+		const { clip } = this.props;
 
 		return <GenericChartComponent
 			canvasToDraw={getAxisCanvas}
@@ -70,12 +70,13 @@ StackedBarSeries.defaultProps = {
 };
 
 export function identityStack() {
-	var keys = [];
+	let keys = [];
 	function stack(data) {
-		var response = keys.map((key, i) => {
-			var arrays = data.map(d => {
-
-				var array = [0, d[key]];
+		const response = keys.map((key, i) => {
+			// eslint-disable-next-line prefer-const
+			let arrays = data.map(d => {
+				// eslint-disable-next-line prefer-const
+				let array = [0, d[key]];
 				array.data = d;
 				return array;
 			});
@@ -97,9 +98,9 @@ export function identityStack() {
 
 
 export function drawOnCanvasHelper(ctx, props, moreProps, xAccessor, stackFn, defaultPostAction = identity, postRotateAction = rotateXY) {
-	var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+	const { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
-	var bars = doStuff(props, xAccessor, plotData, xScale, yScale, stackFn, postRotateAction, defaultPostAction);
+	const bars = doStuff(props, xAccessor, plotData, xScale, yScale, stackFn, postRotateAction, defaultPostAction);
 
 	drawOnCanvas2(props, ctx, bars);
 }
@@ -109,23 +110,23 @@ function convertToArray(item) {
 }
 
 export function svgHelper(props, moreProps, xAccessor, stackFn, defaultPostAction = identity, postRotateAction = rotateXY) {
-	var { xScale, chartConfig: { yScale }, plotData } = moreProps;
-	var bars = doStuff(props, xAccessor, plotData, xScale, yScale, stackFn, postRotateAction, defaultPostAction);
+	const { xScale, chartConfig: { yScale }, plotData } = moreProps;
+	const bars = doStuff(props, xAccessor, plotData, xScale, yScale, stackFn, postRotateAction, defaultPostAction);
 	return getBarsSVG2(props, bars);
 }
 
 function doStuff(props, xAccessor, plotData, xScale, yScale, stackFn, postRotateAction, defaultPostAction) {
-	var { yAccessor, swapScales } = props;
+	const { yAccessor, swapScales } = props;
 
-	var modifiedYAccessor = swapScales ? convertToArray(props.xAccessor) : convertToArray(yAccessor);
-	var modifiedXAccessor = swapScales ? yAccessor : xAccessor;
+	const modifiedYAccessor = swapScales ? convertToArray(props.xAccessor) : convertToArray(yAccessor);
+	const modifiedXAccessor = swapScales ? yAccessor : xAccessor;
 
-	var modifiedXScale = swapScales ? yScale : xScale;
-	var modifiedYScale = swapScales ? xScale : yScale;
+	const modifiedXScale = swapScales ? yScale : xScale;
+	const modifiedYScale = swapScales ? xScale : yScale;
 
-	var postProcessor =  swapScales ? postRotateAction : defaultPostAction;
+	const postProcessor =  swapScales ? postRotateAction : defaultPostAction;
 
-	var bars = getBars(props, modifiedXAccessor, modifiedYAccessor, modifiedXScale, modifiedYScale, plotData, stackFn, postProcessor);
+	const bars = getBars(props, modifiedXAccessor, modifiedYAccessor, modifiedXScale, modifiedYScale, plotData, stackFn, postProcessor);
 
 	return bars;
 }
@@ -142,7 +143,7 @@ export const rotateXY = (array) => array.map(each => {
 
 export function getBarsSVG2(props, bars) {
 	/* eslint-disable react/prop-types */
-	var { opacity } = props;
+	const { opacity } = props;
 	/* eslint-enable react/prop-types */
 
 	return bars.map((d, idx) => {
@@ -164,14 +165,14 @@ export function getBarsSVG2(props, bars) {
 }
 
 export function drawOnCanvas2(props, ctx, bars) {
-	var { stroke } = props;
+	const { stroke } = props;
 
-	var nest = d3Nest()
+	const nest = d3Nest()
 		.key(d => d.fill)
 		.entries(bars);
 
 	nest.forEach(outer => {
-		var { key, values } = outer;
+		const { key, values } = outer;
 		if (values[0].width <= 1) {
 			ctx.strokeStyle = hexToRGBA(key, props.opacity);
 		} else {
@@ -208,32 +209,33 @@ export function drawOnCanvas2(props, ctx, bars) {
 }
 
 export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, stack = identityStack, after = identity) {
-	var { baseAt, className, fill, stroke, widthRatio, spaceBetweenBar = 0 } = props;
+	const { baseAt, className, fill, stroke, widthRatio, spaceBetweenBar = 0 } = props;
 
-	var getClassName = functor(className);
-	var getFill = functor(fill);
-	var getBase = functor(baseAt);
+	const getClassName = functor(className);
+	const getFill = functor(fill);
+	const getBase = functor(baseAt);
 
-	var width = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData))));
-	var bw = (width / (plotData.length - 1) * widthRatio);
-	var barWidth = Math.round(bw);
+	const width = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData))));
+	const bw = (width / (plotData.length - 1) * widthRatio);
+	const barWidth = Math.round(bw);
 	// console.log(barWidth)
 
-	var eachBarWidth = (barWidth - spaceBetweenBar * (yAccessor.length - 1)) / yAccessor.length;
+	const eachBarWidth = (barWidth - spaceBetweenBar * (yAccessor.length - 1)) / yAccessor.length;
 
-	var offset = (barWidth === 1 ? 0 : 0.5 * bw);
+	const offset = (barWidth === 1 ? 0 : 0.5 * bw);
 
-	var ds = plotData
+	const ds = plotData
 		.map(each => {
-			var d = {
+			// eslint-disable-next-line prefer-const
+			let d = {
 				appearance: {
 				},
 				x: xAccessor(each),
 			};
 			yAccessor.forEach((eachYAccessor, i) => {
-				var key = `y${i}`;
+				const key = `y${i}`;
 				d[key] = eachYAccessor(each);
-				var appearance = {
+				const appearance = {
 					className: getClassName(each, i),
 					stroke: stroke ? getFill(each, i) : "none",
 					fill: getFill(each, i),
@@ -243,18 +245,19 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 			return d;
 		});
 
-	var keys = yAccessor.map((_, i) => `y${i}`);
+	const keys = yAccessor.map((_, i) => `y${i}`);
 
 	// console.log(ds);
 
-	var data = stack().keys(keys)(ds);
+	const data = stack().keys(keys)(ds);
 
 	// console.log(data);
 
-	var newData = data.map((each, i) => {
-		var key = each.key;
+	const newData = data.map((each, i) => {
+		const key = each.key;
 		return each.map((d) => {
-			var array = [d[0], d[1]];
+			// eslint-disable-next-line prefer-const
+			let array = [d[0], d[1]];
 			array.data = {
 				x: d.data.x,
 				i,
@@ -266,7 +269,7 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 	// console.log(newData);
 	// console.log(merge(newData));
 
-	var bars = merge(newData)
+	const bars = merge(newData)
 			// .filter(d => isDefined(d.y))
 			.map(d => {
 				// let baseValue = yScale.invert(getBase(xScale, yScale, d.datum));
@@ -274,7 +277,7 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 				/* let h = isDefined(d.y0) && d.y0 !== 0 && !isNaN(d.y0)
 					? yScale(d.y0) - y
 					: getBase(xScale, yScale, d.datum) - yScale(d.y)*/
-				var h = getBase(xScale, yScale, d.data) - yScale(d[1] - d[0]);
+				let h = getBase(xScale, yScale, d.data) - yScale(d[1] - d[0]);
 				// console.log(d.y, yScale.domain(), yScale.range())
 				// let h = ;
 				// if (d.y < 0) h = -h;

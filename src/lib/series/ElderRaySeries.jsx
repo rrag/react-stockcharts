@@ -17,43 +17,43 @@ class ElderRaySeries extends Component {
 		this.yAccessorForBarBase = this.yAccessorForBarBase.bind(this);
 	}
 	yAccessorTop(d) {
-		var { yAccessor } = this.props;
+		const { yAccessor } = this.props;
 		return yAccessor(d) && Math.max(yAccessor(d).bullPower, 0);
 	}
 	yAccessorBullTop(d) {
-		var { yAccessor } = this.props;
+		const { yAccessor } = this.props;
 		return yAccessor(d) && (yAccessor(d).bullPower > 0 ? yAccessor(d).bullPower : undefined);
 	}
 	yAccessorBearTop(d) {
-		var { yAccessor } = this.props;
+		const { yAccessor } = this.props;
 		return yAccessor(d) && (yAccessor(d).bearPower > 0 ? yAccessor(d).bearPower : undefined);
 	}
 	yAccessorBullBottom(d) {
-		var { yAccessor } = this.props;
+		const { yAccessor } = this.props;
 		return yAccessor(d) && (yAccessor(d).bullPower < 0 ? 0 : undefined);
 	}
 	yAccessorBearBottom(d) {
-		var { yAccessor } = this.props;
+		const { yAccessor } = this.props;
 		return yAccessor(d) && (yAccessor(d).bullPower < 0
 				|| yAccessor(d).bullPower * yAccessor(d).bearPower < 0 // bullPower is +ve and bearPower is -ve
 			? Math.min(0, yAccessor(d).bullPower) : undefined);
 	}
 	yAccessorForBarBase(xScale, yScale, d) {
-		var { yAccessor } = this.props;
-		var y = yAccessor(d) && Math.min(yAccessor(d).bearPower, 0);
+		const { yAccessor } = this.props;
+		const y = yAccessor(d) && Math.min(yAccessor(d).bearPower, 0);
 		return yScale(y);
 	}
 	fillForEachBar(d, yAccessorNumber) {
-		var { bullPowerFill, bearPowerFill } = this.props;
+		const { bullPowerFill, bearPowerFill } = this.props;
 		return yAccessorNumber % 2 === 0 ? bullPowerFill : bearPowerFill;
 	}
 	render() {
-		var { className, opacity, stroke,
+		const { className, opacity, stroke,
 			straightLineStroke,
 			straightLineOpacity,
 			widthRatio
 		} = this.props;
-		var { clip } = this.props;
+		const { clip } = this.props;
 
 		return (
 			<g className={className}>

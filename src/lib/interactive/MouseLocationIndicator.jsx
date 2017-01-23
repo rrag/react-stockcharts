@@ -23,51 +23,51 @@ class MouseLocationIndicator extends Component {
 		this.node = node;
 	}
 	handleMouseDown(e) {
-		var moreProps = this.node.getMoreProps();
-		var pos = this.xy(moreProps, e);
+		const moreProps = this.node.getMoreProps();
+		const pos = this.xy(moreProps, e);
 		if (isDefined(pos)) {
-			var { xValue, yValue, x, y } = pos;
+			const { xValue, yValue, x, y } = pos;
 			this.mutableState = { x, y };
 			this.props.onMouseDown([xValue, yValue], e);
 		}
 	}
 	handleClick(e) {
-		var moreProps = this.node.getMoreProps();
-		var pos = this.xy(moreProps, e);
+		const moreProps = this.node.getMoreProps();
+		const pos = this.xy(moreProps, e);
 		if (isDefined(pos)) {
-			var { xValue, yValue, x, y } = pos;
+			const { xValue, yValue, x, y } = pos;
 			this.mutableState = { x, y };
 			this.props.onClick([xValue, yValue], e);
 		}
 	}
 	xy(moreProps, e) {
-		var { xAccessor } = moreProps;
-		var { mouseXY, currentItem, xScale, chartConfig: { yScale } } = moreProps;
-		var { enabled, snap, shouldDisableSnap, snapTo } = this.props;
+		const { xAccessor } = moreProps;
+		const { mouseXY, currentItem, xScale, chartConfig: { yScale } } = moreProps;
+		const { enabled, snap, shouldDisableSnap, snapTo } = this.props;
 
 		if (enabled && isDefined(currentItem) && isDefined(e)) {
 
-			var xValue = xAccessor(currentItem);
-			var yValue = snap && !shouldDisableSnap(e)
+			const xValue = xAccessor(currentItem);
+			const yValue = snap && !shouldDisableSnap(e)
 				? getClosestValue(snapTo(currentItem), yScale.invert(mouseXY[1]))
 				: yScale.invert(mouseXY[1]);
 
-			var x = xScale(xValue);
-			var y = yScale(yValue);
+			const x = xScale(xValue);
+			const y = yScale(yValue);
 
 			return { xValue, yValue, x, y };
 		}
 	}
 	handleMousePosChange(e) {
 		// var { idx, onMouseEnter } = this.props;
-		var moreProps = this.node.getMoreProps();
+		const moreProps = this.node.getMoreProps();
 		// var prevMoreProps = this.node.getPrevMoreProps();
 
 		if (!shallowEqual(moreProps.mousXY, this.node.prevMouseXY)) {
-			var pos = this.xy(moreProps, e);
+			const pos = this.xy(moreProps, e);
 			// console.log("HERE11", pos)
 			if (isDefined(pos)) {
-				var { xValue, yValue, x, y } = pos;
+				const { xValue, yValue, x, y } = pos;
 				this.mutableState = { x, y };
 				this.props.onMouseMove([xValue, yValue], e);
 			}
@@ -75,9 +75,9 @@ class MouseLocationIndicator extends Component {
 		// console.log(this.node.getRef("capture"))
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { enabled, r, stroke, strokeWidth } = this.props;
-		var { x, y } = this.mutableState;
-		var { show } = moreProps;
+		const { enabled, r, stroke, strokeWidth } = this.props;
+		const { x, y } = this.mutableState;
+		const { show } = moreProps;
 
 		if (enabled && show && isDefined(x)) {
 			ctx.lineWidth = strokeWidth;
@@ -90,9 +90,9 @@ class MouseLocationIndicator extends Component {
 		}
 	}
 	renderSVG(moreProps) {
-		var { enabled, r, stroke, strokeWidth, opacity } = this.props;
-		var { x, y } = this.mutableState;
-		var { show } = moreProps;
+		const { enabled, r, stroke, strokeWidth, opacity } = this.props;
+		const { x, y } = this.mutableState;
+		const { show } = moreProps;
 		// console.log("HERE")
 
 		// console.log(stroke, strokeWidth, opacity)

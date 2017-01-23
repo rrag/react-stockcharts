@@ -4,7 +4,7 @@ import { isNotDefined } from "../utils";
 import { PointAndFigure as defaultOptions } from "./defaultOptionsForComputation";
 
 function createBox(d, dateAccessor, dateMutator) {
-	var box = {
+	const box = {
 		open: d.open,
 		fromDate: dateAccessor(d),
 		toDate: dateAccessor(d),
@@ -73,22 +73,22 @@ function updateColumns(columnData, dateAccessor, dateMutator) {
 
 
 export default function() {
-	var options = defaultOptions;
-	var dateAccessor = d => d.date;
-	var dateMutator = (d, date) => { d.date = date; };
+	let options = defaultOptions;
+	let dateAccessor = d => d.date;
+	let dateMutator = (d, date) => { d.date = date; };
 
 	function calculator(rawData) {
-		var { reversal, boxSize, sourcePath } = options;
+		const { reversal, boxSize, sourcePath } = options;
 
-		var source = sourcePath === "high/low"
+		const source = sourcePath === "high/low"
 			? d => { return { high: d.high, low: d.low }; }
 			: d => { return { high: d.close, low: d.close }; };
 
 
-		var pricingMethod = source;
-		var columnData = [];
+		const pricingMethod = source;
+		const columnData = [];
 
-		var column = {
+		let column = {
 				boxes: [],
 				open: rawData[0].open
 			}, box = createBox(rawData[0], dateAccessor, dateMutator);
@@ -192,7 +192,7 @@ export default function() {
 										: Math.floor(downwardMovement / boxSize);
 					for (let i = 0; i < noOfBoxes; i++) {
 						box.close = box.open + column.direction * boxSize;
-						var prevBoxClose = box.close;
+						const prevBoxClose = box.close;
 						column.boxes.push(box);
 						box = createBox(d, dateAccessor, dateMutator);
 						box.open = prevBoxClose;

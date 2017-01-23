@@ -5,8 +5,8 @@ import React, { PropTypes } from "react";
 import { hexToRGBA, functor } from "../utils";
 
 function Circle(props) {
-	var { className, stroke, strokeWidth, opacity, fill, point, r } = props;
-	var radius = functor(r)(point.datum);
+	const { className, stroke, strokeWidth, opacity, fill, point, r } = props;
+	const radius = functor(r)(point.datum);
 	return (
 		<circle className={className}
 			cx={point.x} cy={point.y}
@@ -42,7 +42,7 @@ Circle.defaultProps = {
 
 Circle.drawOnCanvas = (props, point, ctx) => {
 
-	var { stroke, fill, opacity, strokeWidth } = props;
+	const { stroke, fill, opacity, strokeWidth } = props;
 
 	ctx.strokeStyle = stroke;
 	ctx.lineWidth = strokeWidth;
@@ -57,8 +57,8 @@ Circle.drawOnCanvas = (props, point, ctx) => {
 
 Circle.drawOnCanvasWithNoStateChange = (props, point, ctx) => {
 
-	var { r } = props;
-	var radius = functor(r)(point.datum);
+	const { r } = props;
+	const radius = functor(r)(point.datum);
 
 	ctx.moveTo(point.x, point.y);
 	ctx.beginPath();

@@ -16,8 +16,8 @@ class VolumeProfileSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { xAccessor, width } = moreProps;
-		var { rects, sessionBg } = helper(this.props, moreProps, xAccessor, width);
+		const { xAccessor, width } = moreProps;
+		const { rects, sessionBg } = helper(this.props, moreProps, xAccessor, width);
 
 		drawOnCanvas(ctx, this.props, rects, sessionBg);
 	}
@@ -30,13 +30,13 @@ class VolumeProfileSeries extends Component {
 			/>;
 	}
 	renderSVG(moreProps) {
-		var { className, opacity } = this.props;
-		var { showSessionBackground, sessionBackGround, sessionBackGroundOpacity } = this.props;
+		const { className, opacity } = this.props;
+		const { showSessionBackground, sessionBackGround, sessionBackGroundOpacity } = this.props;
 
-		var { xAccessor, width } = moreProps;
-		var { rects, sessionBg } = helper(this.props, moreProps, xAccessor, width);
+		const { xAccessor, width } = moreProps;
+		const { rects, sessionBg } = helper(this.props, moreProps, xAccessor, width);
 
-		var sessionBgSvg = showSessionBackground
+		const sessionBgSvg = showSessionBackground
 			? sessionBg.map((d, idx) => <rect key={idx} {...d} opacity={sessionBackGroundOpacity} fill={sessionBackGround} />)
 			: null;
 
@@ -89,12 +89,12 @@ VolumeProfileSeries.defaultProps = {
 };
 
 function helper(props, moreProps, xAccessor, width) {
-	var { xScale: realXScale, chartConfig: { yScale }, plotData } = moreProps;
+	const { xScale: realXScale, chartConfig: { yScale }, plotData } = moreProps;
 
-	var { sessionStart, bySession, partialStartOK, partialEndOK } = props;
-	var { bins, maxProfileWidthPercent, source, volume, absoluteChange, orient, fill, stroke } = props;
+	const { sessionStart, bySession, partialStartOK, partialEndOK } = props;
+	const { bins, maxProfileWidthPercent, source, volume, absoluteChange, orient, fill, stroke } = props;
 
-	var sessionBuilder = accumulatingWindow()
+	const sessionBuilder = accumulatingWindow()
 			.discardTillStart(!partialStartOK)
 			.discardTillEnd(!partialEndOK)
 			.accumulateTill((d, i) => {
@@ -102,15 +102,15 @@ function helper(props, moreProps, xAccessor, width) {
 			})
 			.accumulator(identity);
 
-	var dx = plotData.length > 1 ? realXScale(xAccessor(plotData[1])) - realXScale(xAccessor(head(plotData))) : 0;
+	const dx = plotData.length > 1 ? realXScale(xAccessor(plotData[1])) - realXScale(xAccessor(head(plotData))) : 0;
 
-	var sessions = bySession ? sessionBuilder(plotData) : [plotData];
+	const sessions = bySession ? sessionBuilder(plotData) : [plotData];
 
-	var allRects = sessions.map(session => {
+	const allRects = sessions.map(session => {
 
-		var begin = bySession ? realXScale(xAccessor(head(session))) : 0;
-		var finish = bySession ? realXScale(xAccessor(last(session))) : width;
-		var sessionWidth = finish - begin + dx;
+		const begin = bySession ? realXScale(xAccessor(head(session))) : 0;
+		const finish = bySession ? realXScale(xAccessor(last(session))) : width;
+		const sessionWidth = finish - begin + dx;
 
 		// console.log(session)
 
@@ -118,50 +118,50 @@ function helper(props, moreProps, xAccessor, width) {
 				.value(source)
 				.bins(bins);*/
 
-		var histogram2 = d3Histogram()
+		const histogram2 = d3Histogram()
 				// .domain(xScale.domain())
 				.value(source)
 				.thresholds(bins);
 
 		// console.log(bins, histogram(session))
 		// console.log(bins, histogram2(session))
-		var rollup = nest()
+		const rollup = nest()
 				.key(d => d.direction)
 				.sortKeys(orient === "right" ? descending : ascending)
 				.rollup(leaves => sum(leaves, d => d.volume));
 
-		var values = histogram2(session);
+		const values = histogram2(session);
 		// console.log("values", values)
 
-		var volumeInBins = values
+		const volumeInBins = values
 				.map(arr => arr.map(d => absoluteChange(d) > 0 ? { direction: "up", volume: volume(d) } : { direction: "down", volume: volume(d) }))
 				.map(arr => rollup.entries(arr));
 
 		// console.log("volumeInBins", volumeInBins)
-		var volumeValues = volumeInBins
+		const volumeValues = volumeInBins
 				.map(each => sum(each.map(d => d.value)));
 
 		// console.log("volumeValues", volumeValues)
-		var base = xScale => head(xScale.range());
+		const base = xScale => head(xScale.range());
 
-		var [start, end] = orient === "right"
+		const [start, end] = orient === "right"
 				? [begin, begin + sessionWidth * maxProfileWidthPercent / 100]
 				: [finish, finish - sessionWidth * (100 - maxProfileWidthPercent) / 100];
 
-		var xScale = scaleLinear()
+		const xScale = scaleLinear()
 				.domain([0, max(volumeValues)])
 				.range([start, end]);
 
 		// console.log(xScale.domain())
 
-		var totalVolumes = volumeInBins.map(volumes => {
+		const totalVolumes = volumeInBins.map(volumes => {
 
-			var totalVolume = sum(volumes, d => d.value);
-			var totalVolumeX = xScale(totalVolume);
-			var width = base(xScale) - totalVolumeX;
-			var x = width < 0 ? totalVolumeX + width : totalVolumeX;
+			const totalVolume = sum(volumes, d => d.value);
+			const totalVolumeX = xScale(totalVolume);
+			const width = base(xScale) - totalVolumeX;
+			const x = width < 0 ? totalVolumeX + width : totalVolumeX;
 
-			var ws = volumes.map(d => {
+			const ws = volumes.map(d => {
 				return {
 					type: d.key,
 					width: d.value * Math.abs(width) / totalVolume,
@@ -172,10 +172,10 @@ function helper(props, moreProps, xAccessor, width) {
 		});
 		// console.log("totalVolumes", totalVolumes)
 
-		var rects = zip(values, totalVolumes)
+		const rects = zip(values, totalVolumes)
 				.map(([d, { x, ws }]) => {
-					var w1 = ws[0] || { type: "up", width: 0 };
-					var w2 = ws[1] || { type: "down", width: 0 };
+					const w1 = ws[0] || { type: "up", width: 0 };
+					const w2 = ws[1] || { type: "down", width: 0 };
 
 					return {
 						// y: yScale(d.x + d.dx),
@@ -195,7 +195,7 @@ function helper(props, moreProps, xAccessor, width) {
 
 		// console.log("rects", rects)
 
-		var sessionBg = {
+		const sessionBg = {
 			x: begin,
 			y: last(rects).y,
 			height: head(rects).y - last(rects).y + head(rects).height,
@@ -213,7 +213,7 @@ function helper(props, moreProps, xAccessor, width) {
 
 
 function drawOnCanvas(ctx, props, rects, sessionBg) {
-	var { opacity, sessionBackGround, sessionBackGroundOpacity, showSessionBackground } = props;
+	const { opacity, sessionBackGround, sessionBackGroundOpacity, showSessionBackground } = props;
 
 	// var { rects, sessionBg } = helper(props, xScale, yScale, plotData);
 
@@ -221,7 +221,7 @@ function drawOnCanvas(ctx, props, rects, sessionBg) {
 		ctx.fillStyle = hexToRGBA(sessionBackGround, sessionBackGroundOpacity);
 
 		sessionBg.forEach(each => {
-			var { x, y, height, width } = each;
+			const { x, y, height, width } = each;
 
 			ctx.beginPath();
 			ctx.rect(x, y, width, height);
@@ -231,7 +231,7 @@ function drawOnCanvas(ctx, props, rects, sessionBg) {
 	}
 
 	rects.forEach(each => {
-		var { x, y, height, w1, w2, stroke1, stroke2, fill1, fill2 } = each;
+		const { x, y, height, w1, w2, stroke1, stroke2, fill1, fill2 } = each;
 
 
 		if (w1 > 0) {

@@ -13,15 +13,15 @@ class OHLCSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { yAccessor } = this.props;
-		var { xAccessor } = moreProps;
-		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+		const { yAccessor } = this.props;
+		const { xAccessor } = moreProps;
+		const { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
-		var barData = getOHLCBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
+		const barData = getOHLCBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
 		drawOnCanvas(ctx, barData);
 	}
 	render() {
-		var { clip } = this.props;
+		const { clip } = this.props;
 
 		return <GenericChartComponent
 			canvasToDraw={getAxisCanvas}
@@ -32,14 +32,14 @@ class OHLCSeries extends Component {
 			/>;
 	}
 	renderSVG(moreProps) {
-		var { className, yAccessor } = this.props;
-		var { xAccessor } = moreProps;
-		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+		const { className, yAccessor } = this.props;
+		const { xAccessor } = moreProps;
+		const { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 
-		var barData = getOHLCBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
+		const barData = getOHLCBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
 
-		var { strokeWidth, bars } = barData;
+		const { strokeWidth, bars } = barData;
 
 		return <g className={className}>
 			{bars.map((d, idx) => <path key={idx}
@@ -73,16 +73,16 @@ OHLCSeries.defaultProps = {
 
 function drawOnCanvas(ctx, barData) {
 
-	var { strokeWidth, bars } = barData;
+	const { strokeWidth, bars } = barData;
 
-	var wickNest = nest()
+	const wickNest = nest()
 		.key(d => d.stroke)
 		.entries(bars);
 
 	ctx.lineWidth = strokeWidth;
 
 	wickNest.forEach(outer => {
-		var { key, values } = outer;
+		const { key, values } = outer;
 		ctx.strokeStyle = key;
 		values.forEach(d => {
 			ctx.beginPath();
@@ -101,21 +101,21 @@ function drawOnCanvas(ctx, barData) {
 }
 
 function getOHLCBars(props, xAccessor, yAccessor, xScale, yScale, plotData) {
-	var { classNames: classNamesProp, stroke: strokeProp } = props;
+	const { classNames: classNamesProp, stroke: strokeProp } = props;
 
-	var strokeFunc = functor(strokeProp);
-	var classNameFunc = functor(classNamesProp);
+	const strokeFunc = functor(strokeProp);
+	const classNameFunc = functor(classNamesProp);
 
-	var width = xScale(xAccessor(plotData[plotData.length - 1]))
+	const width = xScale(xAccessor(plotData[plotData.length - 1]))
 		- xScale(xAccessor(plotData[0]));
 
-	var barWidth = Math.max(1, Math.round(width / (plotData.length - 1) / 2) - 1.5);
-	var strokeWidth = Math.min(barWidth, 6);
+	const barWidth = Math.max(1, Math.round(width / (plotData.length - 1) / 2) - 1.5);
+	const strokeWidth = Math.min(barWidth, 6);
 
-	var bars = plotData
+	const bars = plotData
 			.filter(d => isDefined(yAccessor(d).close))
 			.map(d => {
-				var ohlc = yAccessor(d),
+				const ohlc = yAccessor(d),
 					x = Math.round(xScale(xAccessor(d))),
 					y1 = yScale(ohlc.high),
 					y2 = yScale(ohlc.low),
@@ -127,7 +127,7 @@ function getOHLCBars(props, xAccessor, yAccessor, xScale, yScale, plotData) {
 					closeY = yScale(ohlc.close),
 					className = classNameFunc(d),
 					stroke = strokeFunc(d);
-				// console.log(d);
+
 				return { x, y1, y2, openX1, openX2, openY, closeX1, closeX2, closeY, stroke, className };
 			});
 	return { barWidth, strokeWidth, bars };

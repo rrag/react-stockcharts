@@ -34,14 +34,14 @@ import { isNotDefined } from "./index";
 // the source array using the given merge function.
 export default function() {
 
-	var algorithm = identity,
+	let algorithm = identity,
 		skipUndefined = true,
 		merge = noop;
 
 	function mergeCompute(data) {
-		var zip = zipper()
+		const zip = zipper()
 			.combine((datum, indicator) => {
-				var result = (skipUndefined && isNotDefined(indicator))
+				const result = (skipUndefined && isNotDefined(indicator))
 					? datum
 					: merge(datum, indicator);
 				return isNotDefined(result) ? datum : result;

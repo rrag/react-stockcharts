@@ -4,21 +4,21 @@ import { slidingWindow } from "../utils";
 import { Change as defaultOptions } from "./defaultOptionsForComputation";
 
 export default function() {
-	var options = defaultOptions;
+	let options = defaultOptions;
 
 	function calculator(data) {
-		var { sourcePath } = options;
+		const { sourcePath } = options;
 
-		var algo = slidingWindow()
+		const algo = slidingWindow()
 			.windowSize(2)
 			.sourcePath(sourcePath)
 			.accumulator(([prev, curr]) => {
-				var absoluteChange = curr - prev;
-				var percentChange = absoluteChange * 100 / prev;
+				const absoluteChange = curr - prev;
+				const percentChange = absoluteChange * 100 / prev;
 				return { absoluteChange, percentChange };
 			});
 
-		var newData = algo(data);
+		const newData = algo(data);
 
 		return newData;
 	}

@@ -16,11 +16,11 @@ class Annotate extends Component {
 			/>;
 	}
 	renderSVG(moreProps) {
-		var { xAccessor } = moreProps;
-		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+		const { xAccessor } = moreProps;
+		const { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
-		var { className, usingProps, with: Annotation } = this.props;
-		var data = helper(this.props, plotData);
+		const { className, usingProps, with: Annotation } = this.props;
+		const data = helper(this.props, plotData);
 
 		return (
 			<g className={`react-stockcharts-enable-interaction ${className}`}>

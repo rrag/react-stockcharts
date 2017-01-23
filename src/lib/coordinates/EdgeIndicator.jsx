@@ -15,16 +15,16 @@ class EdgeIndicator extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var edge = helper(this.props, moreProps);
-		var props = {
+		const edge = helper(this.props, moreProps);
+		const props = {
 			...this.props,
 			...edge,
 		};
 		drawOnCanvas(ctx, props);
 	}
 	renderSVG(moreProps) {
-		var edge = helper(this.props, moreProps);
-		var props = {
+		const edge = helper(this.props, moreProps);
+		const props = {
 			...this.props,
 			...edge,
 		};
@@ -87,48 +87,56 @@ EdgeIndicator.defaultProps = {
 };
 
 function helper(props, moreProps) {
-	var { type: edgeType, displayFormat, itemType, edgeAt, yAxisPad, orient } = props;
-	var { yAccessor, fill, textFill, rectHeight, rectWidth, arrowWidth } = props;
-	var { fontFamily, fontSize } = props;
+	const { itemType, yAccessor } = props;
+	const { plotData } = moreProps;
 
-	var { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
+	const item = itemType === "first"
+		? first(plotData, yAccessor)
+		: last(plotData, yAccessor);
 
 	// var currentItem = ChartDataUtil.getCurrentItemForChartNew(currentItems, forChart);
-	var edge = null;
-	// console.log(chartData.config.compareSeries.length);
+	const edge = isDefined(item)
+		? getEdge(props, moreProps, item)
+		: null;
 
-	var item = (itemType === "first" ? first(plotData, yAccessor) : last(plotData, yAccessor));
-
-	if (isDefined(item)) {
-		var yValue = yAccessor(item),
-			xValue = xAccessor(item);
-
-		var x1 = Math.round(xScale(xValue)),
-			y1 = Math.round(yScale(yValue));
-
-		var [left, right] = xScale.range();
-		var edgeX = edgeAt === "left"
-				? left - yAxisPad
-				: right + yAxisPad;
-
-		edge = {
-			// ...props,
-			coordinate: displayFormat(yValue),
-			show: true,
-			type: edgeType,
-			orient,
-			edgeAt: edgeX,
-			fill: functor(fill)(item),
-			fontFamily, fontSize,
-			textFill: functor(textFill)(item),
-			rectHeight, rectWidth, arrowWidth,
-			x1,
-			y1,
-			x2: edgeX,
-			y2: y1,
-		};
-	}
 	return edge;
+}
+
+function getEdge(props, moreProps, item) {
+	const { type: edgeType, displayFormat, edgeAt, yAxisPad, orient } = props;
+
+	const { yAccessor, fill, textFill, rectHeight, rectWidth, arrowWidth } = props;
+	const { fontFamily, fontSize } = props;
+
+	const { xScale, chartConfig: { yScale }, xAccessor } = moreProps;
+
+	const yValue = yAccessor(item),
+		xValue = xAccessor(item);
+
+	const x1 = Math.round(xScale(xValue)),
+		y1 = Math.round(yScale(yValue));
+
+	const [left, right] = xScale.range();
+	const edgeX = edgeAt === "left"
+			? left - yAxisPad
+			: right + yAxisPad;
+
+	return {
+		// ...props,
+		coordinate: displayFormat(yValue),
+		show: true,
+		type: edgeType,
+		orient,
+		edgeAt: edgeX,
+		fill: functor(fill)(item),
+		fontFamily, fontSize,
+		textFill: functor(textFill)(item),
+		rectHeight, rectWidth, arrowWidth,
+		x1,
+		y1,
+		x2: edgeX,
+		y2: y1,
+	};
 }
 
 export default EdgeIndicator;

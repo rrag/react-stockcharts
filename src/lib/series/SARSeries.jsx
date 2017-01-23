@@ -13,26 +13,26 @@ class SARSeries extends Component {
 		this.isHover = this.isHover.bind(this);
 	}
 	isHover(moreProps) {
-		var { mouseXY, currentItem, chartConfig: { yScale } } = moreProps;
-		var { yAccessor } = this.props;
-		var y = mouseXY[1];
-		var currentY = yScale(yAccessor(currentItem));
+		const { mouseXY, currentItem, chartConfig: { yScale } } = moreProps;
+		const { yAccessor } = this.props;
+		const y = mouseXY[1];
+		const currentY = yScale(yAccessor(currentItem));
 		return y <  currentY + 5 && y > currentY - 5;
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { yAccessor, fill, opacity } = this.props;
-		var { xAccessor, plotData, xScale, chartConfig: { yScale }, hovering } = moreProps;
+		const { yAccessor, fill, opacity } = this.props;
+		const { xAccessor, plotData, xScale, chartConfig: { yScale }, hovering } = moreProps;
 
-		var width = xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData)));
+		const width = xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData)));
 
-		var d = (width / plotData.length) * 0.5 / 2;
-		var rx = Math.max(0.5,  d / 2) + (hovering ? 2 : 0);
-		var ry = Math.min(2, Math.max(0.5,  d)) + (hovering ? 0 : 0);
+		const d = (width / plotData.length) * 0.5 / 2;
+		const rx = Math.max(0.5,  d / 2) + (hovering ? 2 : 0);
+		const ry = Math.min(2, Math.max(0.5,  d)) + (hovering ? 0 : 0);
 
 		plotData.forEach(each => {
-			var centerX = xScale(xAccessor(each));
-			var centerY = yScale(yAccessor(each));
-			var color = yAccessor(each) > each.close
+			const centerX = xScale(xAccessor(each));
+			const centerY = yScale(yAccessor(each));
+			const color = yAccessor(each) > each.close
 				? fill.falling
 				: fill.rising;
 
@@ -47,8 +47,8 @@ class SARSeries extends Component {
 		});
 	}
 	renderSVG(moreProps) {
-		var { className, yAccessor } = this.props;
-		var { xAccessor, plotData, xScale, chartConfig: { yScale } } = moreProps;
+		const { className, yAccessor } = this.props;
+		const { xAccessor, plotData, xScale, chartConfig: { yScale } } = moreProps;
 		// console.log(moreProps);
 
 		return <g className={className}>
@@ -60,8 +60,8 @@ class SARSeries extends Component {
 	}
 
 	render() {
-		var { highlightOnHover } = this.props;
-		var hoverProps = highlightOnHover
+		const { highlightOnHover } = this.props;
+		const hoverProps = highlightOnHover
 			? { isHover: this.isHover }
 			: {};
 

@@ -49,18 +49,18 @@ class InteractiveLine extends Component {
 		const { xScale, chartConfig: { yScale }, xAccessor, fullData } = moreProps;
 		const { startPos, mouseXY } = moreProps;
 
-		var x1 = xScale(x1Value);
-		var y1 = yScale(y1Value);
-		var x2 = xScale(x2Value);
-		var y2 = yScale(y2Value);
+		const x1 = xScale(x1Value);
+		const y1 = yScale(y1Value);
+		const x2 = xScale(x2Value);
+		const y2 = yScale(y2Value);
 
 		const dx = startPos[0] - mouseXY[0];
 		const dy = startPos[1] - mouseXY[1];
 
-		var newX1Value = xAccessor(getCurrentItem(xScale, xAccessor, [x1 - dx, y1 - dy], fullData));
-		var newY1Value = yScale.invert(y1 - dy);
-		var newX2Value = xAccessor(getCurrentItem(xScale, xAccessor, [x2 - dx, y2 - dy], fullData));
-		var newY2Value = yScale.invert(y2 - dy);
+		const newX1Value = xAccessor(getCurrentItem(xScale, xAccessor, [x1 - dx, y1 - dy], fullData));
+		const newY1Value = yScale.invert(y1 - dy);
+		const newX2Value = xAccessor(getCurrentItem(xScale, xAccessor, [x2 - dx, y2 - dy], fullData));
+		const newY2Value = yScale.invert(y2 - dy);
 
 		onDrag({
 			x1Value: newX1Value,
@@ -191,13 +191,13 @@ class InteractiveLine extends Component {
 }
 
 function getNewXY(moreProps) {
-	var { xScale, chartConfig: { yScale }, xAccessor, plotData, mouseXY } = moreProps;
-	var [, mouseY] = mouseXY;
+	const { xScale, chartConfig: { yScale }, xAccessor, plotData, mouseXY } = moreProps;
+	const [, mouseY] = mouseXY;
 
 	const currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
-	var x = xAccessor(currentItem);
+	const x = xAccessor(currentItem);
 	const [small, big] = yScale.domain().sort();
-	var y = yScale.invert(mouseY);
+	const y = yScale.invert(mouseY);
 	const newY = Math.min(Math.max(y, small), big);
 	return [x, newY];
 }

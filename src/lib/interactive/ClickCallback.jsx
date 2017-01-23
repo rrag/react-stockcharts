@@ -17,9 +17,9 @@ class ClickCallback extends Component {
 		this.node = node;
 	}
 	getClickProps() {
-		var moreProps = this.node.getMoreProps();
+		const moreProps = this.node.getMoreProps();
 
-		var {
+		const {
 			// xScale,
 			// plotData,
 			mouseXY,
@@ -29,10 +29,10 @@ class ClickCallback extends Component {
 			displayXAccessor,
 		} = moreProps;
 
-		var { yScale } = chartConfig;
+		const { yScale } = chartConfig;
 
-		var yValue = yScale.invert(mouseXY[1]);
-		var xValue = displayXAccessor(currentItem);
+		const yValue = yScale.invert(mouseXY[1]);
+		const xValue = displayXAccessor(currentItem);
 
 		return {
 			xy: [xValue, yValue],

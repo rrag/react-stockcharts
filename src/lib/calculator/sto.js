@@ -33,45 +33,47 @@ import { FullStochasticOscillator as defaultOptions } from "./defaultOptionsForC
 
 export default function() {
 
-	var options = defaultOptions;
+	let options = defaultOptions;
 
-	var source = d => ({ open: d.open, high: d.high, low: d.low, close: d.close });
-	var high = d => source(d).high,
-		low = d => source(d).low,
-		close = d => source(d).close;
+	let source = d => ({ open: d.open, high: d.high, low: d.low, close: d.close });
 
 	function calculator(data) {
 		const { windowSize, kWindowSize, dWindowSize } = options;
-		var kWindow = slidingWindow()
+
+		const high = d => source(d).high,
+			low = d => source(d).low,
+			close = d => source(d).close;
+
+		const kWindow = slidingWindow()
 			.windowSize(windowSize)
 			.accumulator(values => {
 
-				var highestHigh = max(values, high);
-				var lowestLow = min(values, low);
+				const highestHigh = max(values, high);
+				const lowestLow = min(values, low);
 
-				var currentClose = close(last(values));
-				var k = (currentClose - lowestLow) / (highestHigh - lowestLow) * 100;
+				const currentClose = close(last(values));
+				const k = (currentClose - lowestLow) / (highestHigh - lowestLow) * 100;
 
 				return k;
 			});
 
-		var kSmoothed = slidingWindow()
+		const kSmoothed = slidingWindow()
 			.skipInitial(windowSize - 1)
 			.windowSize(kWindowSize)
 			.accumulator(values => mean(values));
 
-		var dWindow = slidingWindow()
+		const dWindow = slidingWindow()
 			.skipInitial(windowSize - 1 + kWindowSize - 1)
 			.windowSize(dWindowSize)
 			.accumulator(values => mean(values));
 
-		var stoAlgorithm = zipper()
+		const stoAlgorithm = zipper()
 			.combine((K, D) => ({ K, D }));
 
-		var kData = kSmoothed(kWindow(data));
-		var dData = dWindow(kData);
+		const kData = kSmoothed(kWindow(data));
+		const dData = dWindow(kData);
 
-		var indicatorData = stoAlgorithm(kData, dData);
+		const indicatorData = stoAlgorithm(kData, dData);
 
 		return indicatorData;
 	}

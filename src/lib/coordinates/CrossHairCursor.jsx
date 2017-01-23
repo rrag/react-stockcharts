@@ -13,13 +13,13 @@ class CrossHairCursor extends PureComponent {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var lines = helper(this.props, moreProps);
+		const lines = helper(this.props, moreProps);
 
 		if (isDefined(lines)) {
 
-			var { margin, ratio } = this.context;
-			var originX = 0.5 * ratio + margin.left;
-			var originY = 0.5 * ratio + margin.top;
+			const { margin, ratio } = this.context;
+			const originX = 0.5 * ratio + margin.left;
+			const originY = 0.5 * ratio + margin.top;
 
 			ctx.save();
 			ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -42,8 +42,8 @@ class CrossHairCursor extends PureComponent {
 		}
 	}
 	renderSVG(moreProps) {
-		var { className } = this.props;
-		var lines = helper(this.props, moreProps);
+		const { className } = this.props;
+		const lines = helper(this.props, moreProps);
 
 		if (isNotDefined(lines)) return null;
 
@@ -90,20 +90,20 @@ CrossHairCursor.defaultProps = {
 };
 
 function helper(props, { mouseXY, xScale, currentItem, show, height, width, xAccessor }) {
-	var { snapX, stroke, opacity, strokeDasharray } = props;
+	const { snapX, stroke, opacity, strokeDasharray } = props;
 
 	if (!show || isNotDefined(currentItem)) return null;
 
-	var line1 = {
+	const line1 = {
 		x1: 0,
 		x2: width,
 		y1: mouseXY[1],
 		y2: mouseXY[1],
 		stroke, strokeDasharray, opacity,
 	};
-	var x = snapX ? Math.round(xScale(xAccessor(currentItem))) : mouseXY[0];
+	const x = snapX ? Math.round(xScale(xAccessor(currentItem))) : mouseXY[0];
 
-	var line2 = {
+	const line2 = {
 		x1: x,
 		x2: x,
 		y1: 0,

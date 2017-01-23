@@ -13,8 +13,8 @@ class HoverTooltip extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var pointer = helper(this.props, moreProps, ctx);
-		var { height } = moreProps;
+		const pointer = helper(this.props, moreProps, ctx);
+		const { height } = moreProps;
 
 		if (isNotDefined(pointer)) return null;
 		drawOnCanvas(ctx, this.props, this.context, pointer, height, moreProps);
@@ -29,17 +29,17 @@ class HoverTooltip extends Component {
 			/>;
 	}
 	renderSVG(moreProps) {
-		var pointer = helper(this.props, moreProps);
+		const pointer = helper(this.props, moreProps);
 
 		if (isNotDefined(pointer)) return null;
 
-		var { bgFill, bgOpacity, backgroundShapeSVG, tooltipSVG } = this.props;
-		var { bgheight, bgwidth } = this.props;
-		var { height } = moreProps;
+		const { bgFill, bgOpacity, backgroundShapeSVG, tooltipSVG } = this.props;
+		const { bgheight, bgwidth } = this.props;
+		const { height } = moreProps;
 
-		var { x, y, content, centerX, pointWidth, bgSize } = pointer;
+		const { x, y, content, centerX, pointWidth, bgSize } = pointer;
 
-		var bgShape = isDefined(bgwidth) && isDefined(bgheight)
+		const bgShape = isDefined(bgwidth) && isDefined(bgheight)
 			? { width: bgwidth, height: bgheight }
 			: bgSize;
 
@@ -117,10 +117,10 @@ function backgroundShapeSVG({ fill, stroke, opacity }, { height, width }) {
 }
 
 function tooltipSVG({ fontFamily, fontSize, fontFill }, content) {
-	var tspans = [];
+	const tspans = [];
 	const startY = Y + fontSize * 0.9;
 
-	for (var i = 0; i < content.y.length; i++) {
+	for (let i = 0; i < content.y.length; i++) {
 		const y = content.y[i];
 		const textY = startY + (fontSize * (i + 1));
 
@@ -153,7 +153,7 @@ function tooltipCanvas({ fontFamily, fontSize, fontFill }, content, ctx) {
 	ctx.textAlign = "left";
 	ctx.fillText(content.x, X, startY);
 
-	for (var i = 0; i < content.y.length; i++) {
+	for (let i = 0; i < content.y.length; i++) {
 		const y = content.y[i];
 		const textY = startY + (fontSize * (i + 1));
 		ctx.fillStyle = y.stroke || fontFill;
@@ -166,12 +166,12 @@ function tooltipCanvas({ fontFamily, fontSize, fontFill }, content, ctx) {
 
 function drawOnCanvas(ctx, props, context, pointer, height) {
 
-	var { margin, ratio } = context;
-	var { bgFill, bgOpacity } = props;
-	var { backgroundShapeCanvas, tooltipCanvas } = props;
+	const { margin, ratio } = context;
+	const { bgFill, bgOpacity } = props;
+	const { backgroundShapeCanvas, tooltipCanvas } = props;
 
-	var originX = 0.5 * ratio + margin.left;
-	var originY = 0.5 * ratio + margin.top;
+	const originX = 0.5 * ratio + margin.left;
+	const originY = 0.5 * ratio + margin.top;
 
 	ctx.save();
 
@@ -180,7 +180,7 @@ function drawOnCanvas(ctx, props, context, pointer, height) {
 
 	ctx.translate(originX, originY);
 
-	var { x, y, content, centerX, pointWidth, bgSize } = pointer;
+	const { x, y, content, centerX, pointWidth, bgSize } = pointer;
 
 	ctx.fillStyle = hexToRGBA(bgFill, bgOpacity);
 	ctx.beginPath();
@@ -242,16 +242,16 @@ function normalizeY(y, bgSize) {
 }
 
 function origin(props, moreProps, bgSize, pointWidth) {
-	var { chartId, yAccessor } = props;
-	var { mouseXY, xAccessor, currentItem, xScale, chartConfig, width } = moreProps;
-	var y = last(mouseXY);
+	const { chartId, yAccessor } = props;
+	const { mouseXY, xAccessor, currentItem, xScale, chartConfig, width } = moreProps;
+	let y = last(mouseXY);
 
-	var xValue = xAccessor(currentItem);
-	var x = Math.round(xScale(xValue));
+	const xValue = xAccessor(currentItem);
+	let x = Math.round(xScale(xValue));
 
 	if (isDefined(chartId) && isDefined(yAccessor)) {
-		var yValue = yAccessor(currentItem);
-		var chartIndex = chartConfig.findIndex(x => x.id === chartId);
+		const yValue = yAccessor(currentItem);
+		const chartIndex = chartConfig.findIndex(x => x.id === chartId);
 
 		y = Math.round(chartConfig[chartIndex].yScale(yValue));
 	}
@@ -263,23 +263,23 @@ function origin(props, moreProps, bgSize, pointWidth) {
 }
 
 function helper(props, moreProps, ctx) {
-	var { show, xScale, currentItem, plotData } = moreProps;
-	var { origin, tooltipContent } = props;
-	var { xAccessor, displayXAccessor } = moreProps;
+	const { show, xScale, currentItem, plotData } = moreProps;
+	const { origin, tooltipContent } = props;
+	const { xAccessor, displayXAccessor } = moreProps;
 
 	if (!show || isNotDefined(currentItem)) return;
 
-	var xValue = xAccessor(currentItem);
+	const xValue = xAccessor(currentItem);
 
 	if (!show || isNotDefined(xValue)) return;
 
-	var content = tooltipContent({ currentItem, xAccessor: displayXAccessor });
-	var centerX = xScale(xValue);
-	var pointWidth = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData)))) / (plotData.length - 1);
+	const content = tooltipContent({ currentItem, xAccessor: displayXAccessor });
+	const centerX = xScale(xValue);
+	const pointWidth = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData)))) / (plotData.length - 1);
 
 	const bgSize = calculateTooltipSize(props, content, ctx);
 
-	var [x, y] = origin(props, moreProps, bgSize, pointWidth);
+	const [x, y] = origin(props, moreProps, bgSize, pointWidth);
 
 	return { x, y, content, centerX, pointWidth, bgSize };
 }

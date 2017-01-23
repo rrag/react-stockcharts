@@ -23,7 +23,7 @@ class CanvasContainer extends Component {
 		}
 	}
 	render() {
-		var { height, width, type, zIndex, ratio } = this.props;
+		const { height, width, type, zIndex, ratio } = this.props;
 		if (type === "svg") return null;
 
 		log("using ratio ", ratio);

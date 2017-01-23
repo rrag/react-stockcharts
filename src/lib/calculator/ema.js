@@ -31,19 +31,19 @@ import { EMA as defaultOptions } from "./defaultOptionsForComputation";
 
 export default function() {
 
-	var options = defaultOptions;
+	let options = defaultOptions;
 
 	function calculator(data) {
-		var { windowSize, sourcePath } = options;
+		const { windowSize, sourcePath } = options;
 
-		var source = path(sourcePath);
-		var alpha = 2 / (windowSize + 1);
-		var previous;
-		var initialAccumulator = 0;
-		var skip = 0;
+		const source = path(sourcePath);
+		const alpha = 2 / (windowSize + 1);
+		let previous;
+		let initialAccumulator = 0;
+		let skip = 0;
 
 		return data.map(function(d, i) {
-			var v = source(d, i);
+			const v = source(d, i);
 			if (isNotDefined(previous) && isNotDefined(v)) {
 				skip++;
 				return undefined;
@@ -52,18 +52,18 @@ export default function() {
 				return undefined;
 			} else if (i === windowSize + skip - 1) {
 				initialAccumulator += v;
-				var initialValue = initialAccumulator / windowSize;
+				const initialValue = initialAccumulator / windowSize;
 				previous = initialValue;
 				return initialValue;
 			} else {
-				var nextValue = v * alpha + (1 - alpha) * previous;
+				const nextValue = v * alpha + (1 - alpha) * previous;
 				previous = nextValue;
 				return nextValue;
 			}
 		});
 	}
 	calculator.undefinedLength = function() {
-		var { windowSize } = options;
+		const { windowSize } = options;
 		return windowSize - 1;
 	};
 	calculator.options = function(x) {

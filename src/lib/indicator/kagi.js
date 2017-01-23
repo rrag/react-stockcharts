@@ -9,12 +9,12 @@ const ALGORITHM_TYPE = "Kagi";
 
 export default function() {
 
-	var base = baseIndicator()
+	const base = baseIndicator()
 		.type(ALGORITHM_TYPE);
 
-	var underlyingAlgorithm = kagi();
+	const underlyingAlgorithm = kagi();
 
-	var indicator = underlyingAlgorithm;
+	const indicator = underlyingAlgorithm;
 
 	rebind(indicator, base, "id", "stroke", "fill", "echo", "type");
 	rebind(indicator, underlyingAlgorithm, "dateAccessor", "dateMutator");

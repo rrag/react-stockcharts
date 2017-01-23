@@ -6,8 +6,8 @@ import LineSeries from "./LineSeries";
 import AreaOnlySeries from "./AreaOnlySeries";
 
 function AreaSeries(props) {
-	var { yAccessor, baseAt } = props;
-	var { className, opacity, stroke, strokeWidth, fill } = props;
+	const { yAccessor, baseAt } = props;
+	const { className, opacity, stroke, strokeWidth, fill } = props;
 
 	return (
 		<g className={className}>

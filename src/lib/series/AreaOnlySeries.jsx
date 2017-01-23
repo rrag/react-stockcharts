@@ -13,17 +13,17 @@ class AreaOnlySeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { yAccessor, defined, base } = this.props;
-		var { fill, stroke, opacity } = this.props;
+		const { yAccessor, defined, base } = this.props;
+		const { fill, stroke, opacity } = this.props;
 
-		var { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
+		const { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
 
-		var newBase = functor(base);
+		const newBase = functor(base);
 
 		ctx.fillStyle = hexToRGBA(fill, opacity);
 		ctx.strokeStyle = stroke;
 
-		var points0 = [], points1 = [];
+		let points0 = [], points1 = [];
 
 		for (let i = 0; i < plotData.length; i++) {
 			const d = plotData[i];
@@ -41,22 +41,22 @@ class AreaOnlySeries extends Component {
 		if (points0.length) segment(points0, points1, ctx);
 	}
 	renderSVG(moreProps) {
-		var { yAccessor, defined, base } = this.props;
-		var { stroke, fill, className, opacity } = this.props;
+		const { yAccessor, defined, base } = this.props;
+		const { stroke, fill, className, opacity } = this.props;
 
-		var { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
+		const { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
 
-		var newBase = functor(base);
-		var areaSeries = d3Area()
+		const newBase = functor(base);
+		const areaSeries = d3Area()
 			.defined(d => defined(yAccessor(d)))
 			.x((d) => xScale(xAccessor(d)))
 			.y0(newBase.bind(null, yScale))
 			.y1((d) => yScale(yAccessor(d)));
 
-		var d = areaSeries(plotData);
-		className = className.concat(isDefined(stroke) ? "" : " line-stroke");
+		const d = areaSeries(plotData);
+		const newClassName = className.concat(isDefined(stroke) ? "" : " line-stroke");
 		return (
-			<path d={d} stroke={stroke} fill={fill} className={className} opacity={opacity} />
+			<path d={d} stroke={stroke} fill={fill} className={newClassName} opacity={opacity} />
 		);
 	}
 	render() {
@@ -92,10 +92,10 @@ AreaOnlySeries.defaultProps = {
 
 function segment(points0, points1, ctx) {
 	ctx.beginPath();
-	var [x0, y0] = first(points0);
+	const [x0, y0] = first(points0);
 	ctx.moveTo(x0, y0);
 
-	var i;
+	let i;
 	for (i = 0; i < points1.length; i++) {
 		const [x1, y1] = points1[i];
 		ctx.lineTo(x1, y1);

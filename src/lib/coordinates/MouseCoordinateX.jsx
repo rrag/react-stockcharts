@@ -14,13 +14,13 @@ class MouseCoordinateX extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var props = helper(this.props, moreProps);
+		const props = helper(this.props, moreProps);
 		if (isNotDefined(props)) return null;
 
 		drawOnCanvas(ctx, props);
 	}
 	renderSVG(moreProps) {
-		var props = helper(this.props, moreProps);
+		const props = helper(this.props, moreProps);
 		if (isNotDefined(props)) return null;
 
 		return renderSVG(props);
@@ -58,28 +58,28 @@ MouseCoordinateX.defaultProps = {
 };
 
 function helper(props, moreProps) {
-	var { xAccessor, displayXAccessor } = moreProps;
-	var { show, currentItem, xScale, mouseXY } = moreProps;
-	var { chartConfig: { height } } = moreProps;
+	const { xAccessor, displayXAccessor } = moreProps;
+	const { show, currentItem, xScale, mouseXY } = moreProps;
+	const { chartConfig: { height } } = moreProps;
 
 	if (isNotDefined(currentItem)) return null;
 
-	var { snapX } = props;
+	const { snapX } = props;
 
-	var { orient, at, rectWidth, rectHeight, displayFormat } = props;
-	var { fill, opacity, fontFamily, fontSize, textFill } = props;
+	const { orient, at, rectWidth, rectHeight, displayFormat } = props;
+	const { fill, opacity, fontFamily, fontSize, textFill } = props;
 
-	var x = snapX ? xScale(xAccessor(currentItem)) : mouseXY[0];
-	var edgeAt = (at === "bottom")
+	const x = snapX ? xScale(xAccessor(currentItem)) : mouseXY[0];
+	const edgeAt = (at === "bottom")
 		? height
 		: 0;
 
-	var coordinate = snapX ? displayFormat(displayXAccessor(currentItem)) : displayFormat(xScale.invert(x));
-	var type = "vertical";
-	var y1 = 0, y2 = height;
-	var hideLine = true;
+	const coordinate = snapX ? displayFormat(displayXAccessor(currentItem)) : displayFormat(xScale.invert(x));
+	const type = "vertical";
+	const y1 = 0, y2 = height;
+	const hideLine = true;
 
-	var coordinateProps = {
+	const coordinateProps = {
 		coordinate,
 		show,
 		type,

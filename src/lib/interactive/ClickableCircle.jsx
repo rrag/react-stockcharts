@@ -16,12 +16,12 @@ class ClickableCircle extends Component {
 		this.node = node;
 	}
 	isHover(moreProps) {
-		var { mouseXY, xScale, chartConfig: { yScale } } = moreProps;
-		var { cx, cy, r } = this.props;
-		var x = xScale(cx);
-		var y = yScale(cy);
+		const { mouseXY, xScale, chartConfig: { yScale } } = moreProps;
+		const { cx, cy, r } = this.props;
+		const x = xScale(cx);
+		const y = yScale(cy);
 
-		var [mx, my] = mouseXY;
+		const [mx, my] = mouseXY;
 		const hover = (x - r) < mx && mx < (x + r)
 			&& (y - r) < my && my < (y + r);
 
@@ -29,8 +29,8 @@ class ClickableCircle extends Component {
 		return hover;
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { stroke, strokeWidth, fill, opacity } = this.props;
-		var { r } = this.props;
+		const { stroke, strokeWidth, fill, opacity } = this.props;
+		const { r } = this.props;
 
 		const [x, y] = helper(this.props, moreProps);
 
@@ -45,8 +45,8 @@ class ClickableCircle extends Component {
 
 	}
 	renderSVG(moreProps) {
-		var { stroke, strokeWidth, fill, opacity } = this.props;
-		var { r } = this.props;
+		const { stroke, strokeWidth, fill, opacity } = this.props;
+		const { r } = this.props;
 
 		const [x, y] = helper(this.props, moreProps);
 
@@ -58,7 +58,7 @@ class ClickableCircle extends Component {
 			/>;
 	}
 	render() {
-		var { show, onDrag, onDragComplete } = this.props;
+		const { show, onDrag, onDragComplete } = this.props;
 
 		return show
 			? <GenericChartComponent ref={this.saveNode}
@@ -76,12 +76,12 @@ class ClickableCircle extends Component {
 }
 
 function helper(props, moreProps) {
-	var { cx, cy } = props;
+	const { cx, cy } = props;
 
-	var { xScale, chartConfig: { yScale } } = moreProps;
+	const { xScale, chartConfig: { yScale } } = moreProps;
 
-	var x = xScale(cx);
-	var y = yScale(cy);
+	const x = xScale(cx);
+	const y = yScale(cy);
 
 	return [x, y];
 }

@@ -24,13 +24,13 @@ export function getLogger(prefix) {
 }
 
 export function path(loc = []) {
-	var key = Array.isArray(loc) ? loc : [loc];
-	var length = key.length;
+	const key = Array.isArray(loc) ? loc : [loc];
+	const length = key.length;
 
 	return function(obj, defaultValue) {
 		if (length === 0) return isDefined(obj) ? obj : defaultValue;
 
-		var index = 0;
+		let index = 0;
 		while (obj != null && index < length) {
 			obj = obj[key[index++]];
 		}
@@ -43,25 +43,25 @@ export function functor(v) {
 }
 
 export function getClosestItemIndexes2(array, value, accessor) {
-	var left = bisector(accessor).left(array, value);
+	let left = bisector(accessor).left(array, value);
 	left = Math.max(left - 1, 0);
-	var right = Math.min(left + 1, array.length - 1);
+	let right = Math.min(left + 1, array.length - 1);
 
-	var item = accessor(array[left]);
+	const item = accessor(array[left]);
 	if (item >= value && item <= value) right = left;
 
 	return { left, right };
 }
 
 export function getClosestValue(values, currentValue) {
-	var diff = values
+	const diff = values
 		.map(each => each - currentValue)
 		.reduce((diff1, diff2) => Math.abs(diff1) < Math.abs(diff2) ? diff1 : diff2);
 	return currentValue + diff;
 }
 
 export function d3Window(node) {
-	var d3win = node
+	const d3win = node
 		&& (node.ownerDocument && node.ownerDocument.defaultView
 			|| node.document && node
 			|| node.defaultView);
@@ -72,9 +72,9 @@ export const MOUSEMOVE = "mousemove.pan";
 export const MOUSEUP = "mouseup.pan";
 
 export function getClosestItemIndexes(array, value, accessor, log) {
-	var lo = 0, hi = array.length - 1;
+	let lo = 0, hi = array.length - 1;
 	while (hi - lo > 1) {
-		var mid = Math.round((lo + hi) / 2);
+		const mid = Math.round((lo + hi) / 2);
 		if (accessor(array[mid]) <= value) {
 			lo = mid;
 		} else {
@@ -102,13 +102,13 @@ export function getClosestItemIndexes(array, value, accessor, log) {
 }
 
 export function getClosestItem(array, value, accessor, log) {
-	var { left, right } = getClosestItemIndexes(array, value, accessor, log);
+	const { left, right } = getClosestItemIndexes(array, value, accessor, log);
 
 	if (left === right) {
 		return array[left];
 	}
 
-	var closest = (Math.abs(accessor(array[left]) - value) < Math.abs(accessor(array[right]) - value))
+	const closest = (Math.abs(accessor(array[left]) - value) < Math.abs(accessor(array[right]) - value))
 						? array[left]
 						: array[right];
 	if (log) {
@@ -121,8 +121,8 @@ export const overlayColors = scaleOrdinal(schemeCategory10);
 
 export function head(array, accessor) {
 	if (accessor && array) {
-		var value;
-		for (var i = 0; i < array.length; i++) {
+		let value;
+		for (let i = 0; i < array.length; i++) {
 			value = array[i];
 			if (isDefined(accessor(value))) return value;
 		}
@@ -142,14 +142,14 @@ export const first = head;
 
 export function last(array, accessor) {
 	if (accessor && array) {
-		var value;
-		for (var i = array.length - 1; i >= 0; i--) {
+		let value;
+		for (let i = array.length - 1; i >= 0; i--) {
 			value = array[i];
 			if (isDefined(accessor(value))) return value;
 		}
 		return undefined;
 	}
-	var length = array ? array.length : 0;
+	const length = array ? array.length : 0;
 	return length ? array[length - 1] : undefined;
 }
 
@@ -168,7 +168,7 @@ export function isObject(d) {
 export const isArray = Array.isArray;
 
 export function touchPosition(touch, e) {
-	var container = e.target,
+	const container = e.target,
 		rect = container.getBoundingClientRect(),
 		x = touch.clientX - rect.left - container.clientLeft,
 		y = touch.clientY - rect.top - container.clientTop,
@@ -177,8 +177,8 @@ export function touchPosition(touch, e) {
 }
 
 export function mousePosition(e, defaultRect) {
-	var container = e.currentTarget;
-	var rect = defaultRect || container.getBoundingClientRect(),
+	const container = e.currentTarget;
+	const rect = defaultRect || container.getBoundingClientRect(),
 		x = e.clientX - rect.left - container.clientLeft,
 		y = e.clientY - rect.top - container.clientTop,
 		xy = [Math.round(x), Math.round(y)];
@@ -199,16 +199,16 @@ export function capitalizeFirst(str) {
 }
 
 export function hexToRGBA(inputHex, opacity) {
-	var hex = inputHex.replace("#", "");
+	const hex = inputHex.replace("#", "");
 	if (inputHex.indexOf("#") > -1 && (hex.length === 3 || hex.length === 6)) {
 
-		var multiplier = (hex.length === 3) ? 1 : 2;
+		const multiplier = (hex.length === 3) ? 1 : 2;
 
-		var r = parseInt(hex.substring(0, 1 * multiplier), 16);
-		var g = parseInt(hex.substring(1 * multiplier, 2 * multiplier), 16);
-		var b = parseInt(hex.substring(2 * multiplier, 3 * multiplier), 16);
+		const r = parseInt(hex.substring(0, 1 * multiplier), 16);
+		const g = parseInt(hex.substring(1 * multiplier, 2 * multiplier), 16);
+		const b = parseInt(hex.substring(2 * multiplier, 3 * multiplier), 16);
 
-		var result = `rgba(${ r }, ${ g }, ${ b }, ${ opacity })`;
+		const result = `rgba(${ r }, ${ g }, ${ b }, ${ opacity })`;
 
 		return result;
 	}

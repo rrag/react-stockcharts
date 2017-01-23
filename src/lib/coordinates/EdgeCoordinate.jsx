@@ -7,11 +7,11 @@ import { hexToRGBA, isDefined } from "../utils";
 class EdgeCoordinate extends Component {
 
 	render() {
-		var { className } = this.props;
+		const { className } = this.props;
 
-		var edge = helper(this.props);
+		const edge = helper(this.props);
 		if (edge === null) return null;
-		var line, coordinateBase, coordinate;
+		let line, coordinateBase, coordinate;
 
 		if (isDefined(edge.line)) {
 			line = <line
@@ -21,9 +21,9 @@ class EdgeCoordinate extends Component {
 		}
 		if (isDefined(edge.coordinateBase)) {
 
-			var { rectWidth, rectHeight, arrowWidth } = edge.coordinateBase;
+			const { rectWidth, rectHeight, arrowWidth } = edge.coordinateBase;
 
-			var path = edge.orient === "left"
+			const path = edge.orient === "left"
 				? `M0,0L0,${ rectHeight }L${ rectWidth },${ rectHeight }L${ rectWidth + arrowWidth },10L${ rectWidth },0L0,0L0,0`
 				: `M0,${ arrowWidth }L${ arrowWidth },${ rectHeight }L${ rectWidth + arrowWidth },${ rectHeight }L${ rectWidth + arrowWidth },0L${ arrowWidth },0L0,${ arrowWidth }`;
 
@@ -89,16 +89,16 @@ EdgeCoordinate.defaultProps = {
 
 
 function helper(props) {
-	var { coordinate: displayCoordinate, show, type, orient, edgeAt, hideLine } = props;
-	var { fill, opacity, fontFamily, fontSize, textFill, lineStroke, lineOpacity, arrowWidth } = props;
-	var { rectWidth, rectHeight } = props;
-	var { x1, y1, x2, y2 } = props;
+	const { coordinate: displayCoordinate, show, type, orient, edgeAt, hideLine } = props;
+	const { fill, opacity, fontFamily, fontSize, textFill, lineStroke, lineOpacity, arrowWidth } = props;
+	const { rectWidth, rectHeight } = props;
+	const { x1, y1, x2, y2 } = props;
 
 	if (!show) return null;
 
 	// rectWidth = rectWidth ? rectWidth : (type === "horizontal") ? 60 : 100;
 
-	var edgeXRect, edgeYRect, edgeXText, edgeYText;
+	let edgeXRect, edgeYRect, edgeXText, edgeYText;
 
 	if (type === "horizontal") {
 
@@ -112,7 +112,8 @@ function helper(props) {
 		edgeXText = x1;
 		edgeYText = (orient === "bottom") ? edgeAt + (rectHeight / 2) : edgeAt - (rectHeight / 2);
 	}
-	var coordinateBase, coordinate, textAnchor = "middle";
+	let coordinateBase, coordinate;
+	const textAnchor = "middle";
 	if (isDefined(displayCoordinate)) {
 		coordinateBase = {
 			edgeXRect, edgeYRect, rectHeight, rectWidth, fill, opacity, arrowWidth
@@ -122,7 +123,7 @@ function helper(props) {
 		};
 	}
 
-	var line = hideLine ? undefined : {
+	const line = hideLine ? undefined : {
 		opacity: lineOpacity, stroke: lineStroke, x1, y1, x2, y2
 	};
 	return {
@@ -133,17 +134,17 @@ function helper(props) {
 EdgeCoordinate.drawOnCanvasStatic = (ctx, props) => {
 	props = { ...EdgeCoordinate.defaultProps, ...props };
 
-	var edge = helper(props);
+	const edge = helper(props);
 
 	if (edge === null) return;
 
 	if (isDefined(edge.coordinateBase)) {
-		var { rectWidth, rectHeight, arrowWidth } = edge.coordinateBase;
+		const { rectWidth, rectHeight, arrowWidth } = edge.coordinateBase;
 
 		ctx.fillStyle = hexToRGBA(edge.coordinateBase.fill, edge.coordinateBase.opacity);
 
-		var x = edge.coordinateBase.edgeXRect;
-		var y = edge.coordinateBase.edgeYRect;
+		const x = edge.coordinateBase.edgeXRect;
+		const y = edge.coordinateBase.edgeYRect;
 
 		ctx.beginPath();
 

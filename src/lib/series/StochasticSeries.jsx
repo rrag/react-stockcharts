@@ -12,16 +12,16 @@ class StochasticSeries extends Component {
 		this.yAccessorForK = this.yAccessorForK.bind(this);
 	}
 	yAccessorForD(d) {
-		var { yAccessor } = this.props;
+		const { yAccessor } = this.props;
 		return yAccessor(d) && yAccessor(d).D;
 	}
 	yAccessorForK(d) {
-		var { yAccessor } = this.props;
+		const { yAccessor } = this.props;
 		return yAccessor(d) && yAccessor(d).K;
 	}
 	render() {
-		var { className, stroke, refLineOpacity } = this.props;
-		var { overSold, middle, overBought } = this.props;
+		const { className, stroke, refLineOpacity } = this.props;
+		const { overSold, middle, overBought } = this.props;
 		return (
 			<g className={className}>
 				<LineSeries yAccessor={this.yAccessorForD}

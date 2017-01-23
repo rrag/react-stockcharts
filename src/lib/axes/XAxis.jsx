@@ -9,12 +9,12 @@ class XAxis extends Component {
 		this.axisZoomCallback = this.axisZoomCallback.bind(this);
 	}
 	axisZoomCallback(newXDomain) {
-		var { xAxisZoom } = this.context;
+		const { xAxisZoom } = this.context;
 		xAxisZoom(newXDomain);
 	}
 	render() {
-		var { showTicks } = this.props;
-		var moreProps = helper(this.props, this.context);
+		const { showTicks } = this.props;
+		const moreProps = helper(this.props, this.context);
 
 		return <Axis {...this.props} {...moreProps} x
 			zoomEnabled={this.props.zoomEnabled && showTicks}
@@ -72,17 +72,18 @@ XAxis.contextTypes = {
 };
 
 function helper(props, context) {
-	var { axisAt, xZoomHeight, orient } = props;
-	var { chartConfig: { width, height } } = context;
+	const { axisAt, xZoomHeight, orient } = props;
+	const { chartConfig: { width, height } } = context;
 
-	var axisLocation, x = 0, w = width, h = xZoomHeight;
+	let axisLocation;
+	const x = 0, w = width, h = xZoomHeight;
 
 	if (axisAt === "top") axisLocation = 0;
 	else if (axisAt === "bottom") axisLocation = height;
 	else if (axisAt === "middle") axisLocation = (height) / 2;
 	else axisLocation = axisAt;
 
-	var y = (orient === "top") ? -xZoomHeight : 0;
+	const y = (orient === "top") ? -xZoomHeight : 0;
 
 	return {
 		transform: [0, axisLocation],

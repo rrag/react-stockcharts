@@ -26,7 +26,7 @@ class GenericComponent extends Component {
 		this.isDraggable = this.isDraggable.bind(this);
 		this.saveNode = this.saveNode.bind(this);
 
-		var { generateSubscriptionId } = context;
+		const { generateSubscriptionId } = context;
 		this.suscriberId = generateSubscriptionId();
 
 		this.moreProps = {};
@@ -167,11 +167,11 @@ class GenericComponent extends Component {
 			: false;
 	}
 	draw() {
-		var { chartCanvasType } = this.context;
-		var { canvasDraw } = this.props;
+		const { chartCanvasType } = this.context;
+		const { canvasDraw } = this.props;
 
 		if (isNotDefined(canvasDraw) || chartCanvasType === "svg") {
-			var { updateCount } = this.state;
+			const { updateCount } = this.state;
 			this.setState({
 				updateCount: updateCount + 1,
 			});
@@ -180,22 +180,22 @@ class GenericComponent extends Component {
 		}
 	}
 	componentWillMount() {
-		var { subscribe } = this.context;
+		const { subscribe } = this.context;
 		subscribe(this.suscriberId, this.listener, {
 			isDraggable: this.isDraggable,
 		});
 		this.componentWillReceiveProps(this.props, this.context);
 	}
 	componentWillUnmount() {
-		var { unsubscribe } = this.context;
+		const { unsubscribe } = this.context;
 		unsubscribe(this.suscriberId);
 	}
 	componentDidMount() {
 		this.componentDidUpdate();
 	}
 	componentDidUpdate() {
-		var { chartCanvasType } = this.context;
-		var { canvasDraw } = this.props;
+		const { chartCanvasType } = this.context;
+		const { canvasDraw } = this.props;
 
 		this.props.debug("updated");
 
@@ -206,7 +206,7 @@ class GenericComponent extends Component {
 		}
 	}
 	componentWillReceiveProps(nextProps, nextContext) {
-		var { xScale, plotData, chartConfig } = nextContext;
+		const { xScale, plotData, chartConfig } = nextContext;
 		this.props.debug(nextContext);
 		this.moreProps = {
 			...this.moreProps,
@@ -220,10 +220,10 @@ class GenericComponent extends Component {
 		return draggable;
 	}
 	getMoreProps() {
-		var { xScale, plotData, chartConfig, morePropsDecorator, xAccessor, displayXAccessor, width, height } = this.context;
-		var { chartId, fullData } = this.context;
+		const { xScale, plotData, chartConfig, morePropsDecorator, xAccessor, displayXAccessor, width, height } = this.context;
+		const { chartId, fullData } = this.context;
 
-		var moreProps = {
+		const moreProps = {
 			xScale, plotData, chartConfig,
 			xAccessor, displayXAccessor,
 			width, height,
@@ -240,31 +240,31 @@ class GenericComponent extends Component {
 	postCanvasDraw() {
 	}
 	drawOnCanvas() {
-		var { canvasDraw, canvasToDraw } = this.props;
-		var { getCanvasContexts } = this.context;
+		const { canvasDraw, canvasToDraw } = this.props;
+		const { getCanvasContexts } = this.context;
 
-		var moreProps = this.getMoreProps();
-		var extra = {
+		const moreProps = this.getMoreProps();
+		const extra = {
 			hoverEnabled: isDefined(this.props.isHover)
 		};
 
-		var ctx = canvasToDraw(getCanvasContexts(), extra);
+		const ctx = canvasToDraw(getCanvasContexts(), extra);
 
 		this.preCanvasDraw(ctx, moreProps);
 		canvasDraw(ctx, moreProps);
 		this.postCanvasDraw(ctx, moreProps);
 	}
 	render() {
-		var { chartCanvasType, chartId } = this.context;
-		var { canvasDraw, clip, svgDraw } = this.props;
+		const { chartCanvasType, chartId } = this.context;
+		const { canvasDraw, clip, svgDraw } = this.props;
 
 		if (isDefined(canvasDraw) && chartCanvasType !== "svg") {
 			return <g ref={this.saveNode} />;
 		}
 
-		var suffix = isDefined(chartId) ? "-" + chartId : "";
+		const suffix = isDefined(chartId) ? "-" + chartId : "";
 
-		var style = clip ? { "clipPath": `url(#chart-area-clip${suffix})` } : null;
+		const style = clip ? { "clipPath": `url(#chart-area-clip${suffix})` } : null;
 
 		return <g ref={this.saveNode} style={style}>{svgDraw(this.getMoreProps())}</g>;
 	}

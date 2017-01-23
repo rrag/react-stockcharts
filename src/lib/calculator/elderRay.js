@@ -35,28 +35,28 @@ import { isDefined, zipper, slidingWindow } from "../utils";
 
 export default function() {
 
-	var options = defaultOptions;
-	var ohlc = d => ({ open: d.open, high: d.high, low: d.low, close: d.close });
+	let options = defaultOptions;
+	let ohlc = d => ({ open: d.open, high: d.high, low: d.low, close: d.close });
 
 	function calculator(data) {
-		var { windowSize, sourcePath, movingAverageType } = options;
+		const { windowSize, sourcePath, movingAverageType } = options;
 
-		var meanAlgorithm = movingAverageType === "ema"
+		const meanAlgorithm = movingAverageType === "ema"
 			? ema().windowSize(windowSize).sourcePath(sourcePath)
 			: slidingWindow().windowSize(windowSize).accumulator(values => mean(values)).sourcePath(sourcePath);
 
-		var zip = zipper()
+		const zip = zipper()
 			.combine((datum, mean) => {
-				var bullPower = isDefined(mean) ? ohlc(datum).high - mean : undefined;
-				var bearPower = isDefined(mean) ? ohlc(datum).low - mean : undefined;
+				const bullPower = isDefined(mean) ? ohlc(datum).high - mean : undefined;
+				const bearPower = isDefined(mean) ? ohlc(datum).low - mean : undefined;
 				return { bullPower, bearPower };
 			});
 
-		var newData = zip(data, meanAlgorithm(data));
+		const newData = zip(data, meanAlgorithm(data));
 		return newData;
 	}
 	calculator.undefinedLength = function() {
-		var { windowSize } = options;
+		const { windowSize } = options;
 		return windowSize - 1;
 	};
 	calculator.ohlc = function(x) {

@@ -4,13 +4,13 @@ import ReactDOM from "react-dom";
 import { isDefined } from "../utils";
 
 function getDisplayName(Series) {
-	var name = Series.displayName || Series.name || "Series";
+	const name = Series.displayName || Series.name || "Series";
 	return name;
 }
 
 export default function fitDimensions(WrappedComponent, props = {}) {
 
-	var {
+	const {
 		minWidth = 100,
 		minHeight = 100,
 		ratio,
@@ -19,8 +19,8 @@ export default function fitDimensions(WrappedComponent, props = {}) {
 	} = props;
 
 	function getDimensions(el) {
-		var w = el.parentNode.clientWidth;
-		var h = el.parentNode.clientHeight;
+		const w = el.parentNode.clientWidth;
+		const h = el.parentNode.clientHeight;
 
 		return {
 			width: isDefined(width) ? width : Math.max(w, minWidth),
@@ -44,16 +44,16 @@ export default function fitDimensions(WrappedComponent, props = {}) {
 		}
 		getRatio() {
 			if (isDefined(this.testCanvas)) {
-				var context = this.testCanvas.getContext("2d");
+				const context = this.testCanvas.getContext("2d");
 
-				var devicePixelRatio = window.devicePixelRatio || 1;
-				var backingStoreRatio = context.webkitBackingStorePixelRatio ||
+				const devicePixelRatio = window.devicePixelRatio || 1;
+				const backingStoreRatio = context.webkitBackingStorePixelRatio ||
 								context.mozBackingStorePixelRatio ||
 								context.msBackingStorePixelRatio ||
 								context.oBackingStorePixelRatio ||
 								context.backingStorePixelRatio || 1;
 
-				var ratio = devicePixelRatio / backingStoreRatio;
+				const ratio = devicePixelRatio / backingStoreRatio;
 				// console.log("ratio = ", ratio);
 				return ratio;
 			}
@@ -61,7 +61,7 @@ export default function fitDimensions(WrappedComponent, props = {}) {
 		}
 		componentDidMount() {
 			window.addEventListener("resize", this.handleWindowResize);
-			var dimensions = getDimensions(this.node);
+			const dimensions = getDimensions(this.node);
 
 			/* eslint-disable react/no-did-mount-set-state */
 			this.setState({
@@ -74,14 +74,14 @@ export default function fitDimensions(WrappedComponent, props = {}) {
 			window.removeEventListener("resize", this.handleWindowResize);
 		}
 		handleWindowResize() {
-			var node = ReactDOM.findDOMNode(this.node); // eslint-disable-line react/no-find-dom-node
+			const node = ReactDOM.findDOMNode(this.node); // eslint-disable-line react/no-find-dom-node
 			this.setState(getDimensions(node));
 		}
 		getWrappedInstance() {
 			return this.node;
 		}
 		render() {
-			var ref = { ref: this.saveNode };
+			const ref = { ref: this.saveNode };
 
 			if (this.state.width) {
 				return <WrappedComponent

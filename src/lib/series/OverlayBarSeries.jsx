@@ -15,26 +15,26 @@ class OverlayBarSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { yAccessor } = this.props;
-		var { xAccessor } = moreProps;
-		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+		const { yAccessor } = this.props;
+		const { xAccessor } = moreProps;
+		const { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
-		var bars = getBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
+		const bars = getBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
 
 		drawOnCanvas2(this.props, ctx, bars);
 	}
 	renderSVG(moreProps) {
-		var { yAccessor } = this.props;
-		var { xAccessor } = moreProps;
-		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+		const { yAccessor } = this.props;
+		const { xAccessor } = moreProps;
+		const { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
-		var bars = getBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
+		const bars = getBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
 		return <g className="react-stockcharts-bar-series">
 			{getBarsSVG2(this.props, bars)}
 		</g>;
 	}
 	render() {
-		var { clip } = this.props;
+		const { clip } = this.props;
 
 		return <GenericChartComponent
 			canvasToDraw={getAxisCanvas}
@@ -81,30 +81,31 @@ OverlayBarSeries.defaultProps = {
 };
 
 function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData) {
-	var { baseAt, className, fill, stroke, widthRatio } = props;
+	const { baseAt, className, fill, stroke, widthRatio } = props;
 
-	var getClassName = functor(className);
-	var getFill = functor(fill);
-	var getBase = functor(baseAt);
+	const getClassName = functor(className);
+	const getFill = functor(fill);
+	const getBase = functor(baseAt);
 
-	var width = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData))));
+	const width = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData))));
 
 
-	var bw = (width / (plotData.length - 1) * widthRatio);
-	var barWidth = Math.round(bw);
-	var offset = (barWidth === 1 ? 0 : 0.5 * bw);
+	const bw = (width / (plotData.length - 1) * widthRatio);
+	const barWidth = Math.round(bw);
+	const offset = (barWidth === 1 ? 0 : 0.5 * bw);
 
 	// console.log(xScale.domain(), yScale.domain());
 
-	var bars = plotData
+	const bars = plotData
 			.map(d => {
-				var innerBars = yAccessor.map((eachYAccessor, i) => {
-					var yValue = eachYAccessor(d);
+				// eslint-disable-next-line prefer-const
+				let innerBars = yAccessor.map((eachYAccessor, i) => {
+					const yValue = eachYAccessor(d);
 					if (isNotDefined(yValue)) return undefined;
 
-					var xValue = xAccessor(d);
-					var x = Math.round(xScale(xValue)) - offset;
-					var y = yScale(yValue);
+					const xValue = xAccessor(d);
+					const x = Math.round(xScale(xValue)) - offset;
+					const y = yScale(yValue);
 					// console.log(yValue, y, xValue, x)
 					return {
 						width: barWidth,
@@ -117,9 +118,9 @@ function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData) {
 					};
 				}).filter(yValue => isDefined(yValue));
 
-				var b = getBase(xScale, yScale, d);
-				var h;
-				for (var i = innerBars.length - 1; i >= 0; i--) {
+				let b = getBase(xScale, yScale, d);
+				let h;
+				for (let i = innerBars.length - 1; i >= 0; i--) {
 					h = b - innerBars[i].y;
 					if (h < 0) {
 						innerBars[i].y = b;

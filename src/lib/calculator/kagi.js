@@ -7,21 +7,21 @@ import { Kagi as defaultOptions } from "./defaultOptionsForComputation";
 
 export default function() {
 
-	var options = defaultOptions;
-	var dateAccessor = d => d.date;
-	var dateMutator = (d, date) => { d.date = date; };
+	let options = defaultOptions;
+	let dateAccessor = d => d.date;
+	let dateMutator = (d, date) => { d.date = date; };
 
 	function calculator(data) {
-		var { reversalType, windowSize, reversal, sourcePath } = options;
+		const { reversalType, windowSize, reversal, sourcePath } = options;
 
-		var source = path(sourcePath);
-		var reversalThreshold;
+		const source = path(sourcePath);
+		let reversalThreshold;
 
 		if (reversalType === "ATR") {
 			// calculateATR(rawData, period);
-			var atrAlgorithm = atr().options({ windowSize });
+			const atrAlgorithm = atr().options({ windowSize });
 
-			var atrCalculator = merge()
+			const atrCalculator = merge()
 				.algorithm(atrAlgorithm)
 				.merge((d, c) => { d["atr" + windowSize] = c; } );
 
@@ -31,10 +31,10 @@ export default function() {
 			reversalThreshold = functor(reversal);
 		}
 
-		var kagiData = [];
+		const kagiData = [];
 
-		var prevPeak, prevTrough, direction;
-		var line = {};
+		let prevPeak, prevTrough, direction;
+		let line = {};
 
 		data.forEach(function(d) {
 			if (isNotDefined(line.from)) {
@@ -86,7 +86,7 @@ export default function() {
 			line.low = Math.min(line.low, d.low);
 			line.to = dateAccessor(d);
 
-			var priceMovement = (source(d) - line.close);
+			const priceMovement = (source(d) - line.close);
 
 			// console.log(source(d), priceMovement)
 			if ((line.close > line.open /* going up */ && priceMovement > 0 /* and moving in same direction */)
@@ -117,11 +117,11 @@ export default function() {
 							&& priceMovement > 0 /* and moving in other direction */
 							&& Math.abs(priceMovement) > reversalThreshold(d) /* and the movement is big enough for reversal */)) {
 				// reverse direction
-				var nextLineOpen = line.close;
+				const nextLineOpen = line.close;
 
 				direction = (line.close - line.open) / Math.abs(line.close - line.open);
 
-				var nextChangePoint, nextChangeTo;
+				let nextChangePoint, nextChangeTo;
 				if (direction < 0 /* if direction so far has been -ve*/) {
 					// compare with line.close becomes prevTrough
 					if (isNotDefined(prevPeak)) prevPeak = line.open;
@@ -142,7 +142,7 @@ export default function() {
 					line.startAs = direction > 0 ? "yang" : "yin";
 				}
 
-				var startAs = line.changeTo || line.startAs;
+				const startAs = line.changeTo || line.startAs;
 				line.added = true;
 				kagiData.push(line);
 				direction = -1 * direction; // direction is reversed
@@ -160,7 +160,7 @@ export default function() {
 				// console.log("MOVING IN REV DIR BUT..", line.open, line.close, source(d));
 			}
 			line.current = source(d);
-			var dir = line.close - line.open;
+			let dir = line.close - line.open;
 			dir = dir / Math.abs(dir);
 			line.reverseAt = dir > 0 ? line.close - reversalThreshold(d) : line.open - reversalThreshold(d);
 		});

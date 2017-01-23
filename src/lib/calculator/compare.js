@@ -4,16 +4,17 @@ import { first, path } from "../utils";
 import { Change as defaultOptions } from "./defaultOptionsForComputation";
 
 export default function() {
-	var options = defaultOptions;
+	let options = defaultOptions;
 
 	function calculator(data) {
-		var { basePath, mainKeys, compareKeys } = options;
-		var base = path(basePath);
+		const { basePath, mainKeys, compareKeys } = options;
+		const base = path(basePath);
 
-		var f = first(data);
-		var b = base(f);
-		var compareData = data.map(d => {
-			var result = {};
+		const f = first(data);
+		const b = base(f);
+		const compareData = data.map(d => {
+			// eslint-disable-next-line prefer-const
+			let result = {};
 
 			mainKeys.forEach(key => {
 				result[key] = (d[key] - b) / b;

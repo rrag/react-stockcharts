@@ -12,7 +12,7 @@ class CurrentCoordinate extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var circle = helper(this.props, moreProps);
+		const circle = helper(this.props, moreProps);
 		if (!circle) return null;
 
 		ctx.fillStyle = circle.fill;
@@ -21,9 +21,9 @@ class CurrentCoordinate extends Component {
 		ctx.fill();
 	}
 	renderSVG(moreProps) {
-		var { className } = this.props;
+		const { className } = this.props;
 
-		var circle = helper(this.props, moreProps);
+		const circle = helper(this.props, moreProps);
 		if (!circle) return null;
 
 		return (
@@ -54,21 +54,21 @@ CurrentCoordinate.defaultProps = {
 };
 
 function helper(props, moreProps) {
-	var { fill, yAccessor, r } = props;
+	const { fill, yAccessor, r } = props;
 
-	var { show, xScale, chartConfig: { yScale }, currentItem, xAccessor } = moreProps;
+	const { show, xScale, chartConfig: { yScale }, currentItem, xAccessor } = moreProps;
 
 	// console.log(show);
 	if (!show || isNotDefined(currentItem)) return null;
 
-	var xValue = xAccessor(currentItem);
-	var yValue = yAccessor(currentItem);
+	const xValue = xAccessor(currentItem);
+	const yValue = yAccessor(currentItem);
 
 	if (isNotDefined(yValue)) return null;
 
 	// console.log(chartConfig);
-	var x = Math.round(xScale(xValue));
-	var y = Math.round(yScale(yValue));
+	const x = Math.round(xScale(xValue));
+	const y = Math.round(yScale(yValue));
 
 	return { x, y, r, fill };
 }

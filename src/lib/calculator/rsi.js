@@ -33,27 +33,27 @@ import { RSI as defaultOptions } from "./defaultOptionsForComputation";
 
 export default function() {
 
-	var options = defaultOptions;
+	let options = defaultOptions;
 
 	function calculator(data) {
-		var { windowSize, sourcePath } = options;
+		const { windowSize, sourcePath } = options;
 
-		var source = path(sourcePath);
-		var prevAvgGain, prevAvgLoss;
-		var rsiAlgorithm = slidingWindow()
+		const source = path(sourcePath);
+		let prevAvgGain, prevAvgLoss;
+		const rsiAlgorithm = slidingWindow()
 			.windowSize(windowSize)
 			.accumulator((values) => {
 
-				var avgGain = isDefined(prevAvgGain)
+				const avgGain = isDefined(prevAvgGain)
 					? (prevAvgGain * (windowSize - 1) + last(values).gain) / windowSize
 					: mean(values, (each) => each.gain);
 
-				var avgLoss = isDefined(prevAvgLoss)
+				const avgLoss = isDefined(prevAvgLoss)
 					? (prevAvgLoss * (windowSize - 1) + last(values).loss) / windowSize
 					: mean(values, (each) => each.loss);
 
-				var relativeStrength = avgGain / avgLoss;
-				var rsi = 100 - (100 / (1 + relativeStrength));
+				const relativeStrength = avgGain / avgLoss;
+				const rsi = 100 - (100 / (1 + relativeStrength));
 
 				prevAvgGain = avgGain;
 				prevAvgLoss = avgLoss;
@@ -61,27 +61,27 @@ export default function() {
 				return rsi;
 			});
 
-		var gainsAndLossesCalculator = slidingWindow()
+		const gainsAndLossesCalculator = slidingWindow()
 			.windowSize(2)
 			.undefinedValue(() => [0, 0])
 			.accumulator(tuple => {
-				var prev = tuple[0];
-				var now = tuple[1];
-				var change = source(now) - source(prev);
+				const prev = tuple[0];
+				const now = tuple[1];
+				const change = source(now) - source(prev);
 				return {
 					gain: Math.max(change, 0),
 					loss: Math.abs(Math.min(change, 0)),
 				};
 			});
 
-		var gainsAndLosses = gainsAndLossesCalculator(data);
+		const gainsAndLosses = gainsAndLossesCalculator(data);
 
-		var rsiData = rsiAlgorithm(gainsAndLosses);
+		const rsiData = rsiAlgorithm(gainsAndLosses);
 
 		return rsiData;
 	}
 	calculator.undefinedLength = function() {
-		var { windowSize } = options;
+		const { windowSize } = options;
 
 		return windowSize - 1;
 	};

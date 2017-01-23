@@ -6,7 +6,7 @@ import { hexToRGBA, isDefined } from "./utils";
 class BackgroundText extends PureComponent {
 	componentDidMount() {
 		if (this.context.chartCanvasType !== "svg" && isDefined(this.context.getCanvasContexts)) {
-			var contexts = this.context.getCanvasContexts();
+			const contexts = this.context.getCanvasContexts();
 			if (contexts) BackgroundText.drawOnCanvas(contexts.bg, this.props, this.context, this.props.children);
 		}
 	}
@@ -14,12 +14,12 @@ class BackgroundText extends PureComponent {
 		this.componentDidMount();
 	}
 	render() {
-		var { chartCanvasType } = this.context;
+		const { chartCanvasType } = this.context;
 
 		if (chartCanvasType !== "svg") return null;
 
-		var { x, y, fill, opacity, stroke, strokeOpacity, fontFamily, fontSize, textAnchor } = this.props;
-		var props = { x, y, fill, opacity, stroke, strokeOpacity, fontFamily, fontSize, textAnchor };
+		const { x, y, fill, opacity, stroke, strokeOpacity, fontFamily, fontSize, textAnchor } = this.props;
+		const props = { x, y, fill, opacity, stroke, strokeOpacity, fontFamily, fontSize, textAnchor };
 		return (
 			<text {...props}>this.props.children(interval)</text>
 		);
@@ -33,9 +33,9 @@ BackgroundText.drawOnCanvas = (ctx, props, { interval }, getText) => {
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
 	ctx.translate(0.5, 0.5);
 
-	var { x, y, fill, opacity, stroke, strokeOpacity, fontFamily, fontSize, textAnchor } = props;
+	const { x, y, fill, opacity, stroke, strokeOpacity, fontFamily, fontSize, textAnchor } = props;
 
-	var text = getText(interval);
+	const text = getText(interval);
 
 	ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
 

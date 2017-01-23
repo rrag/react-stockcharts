@@ -14,20 +14,20 @@ class MACDTooltip extends Component {
 		this.renderSVG = this.renderSVG.bind(this);
 	}
 	renderSVG(moreProps) {
-		var { onClick, fontFamily, fontSize, displayFormat, className } = this.props;
-		var { yAccessor, options, appearance } = this.props;
-		var { chartConfig: { width, height } } = moreProps;
-		var { currentItem } = moreProps;
+		const { onClick, fontFamily, fontSize, displayFormat, className } = this.props;
+		const { yAccessor, options, appearance } = this.props;
+		const { chartConfig: { width, height } } = moreProps;
+		const { currentItem } = moreProps;
 
-		var macdValue = currentItem && yAccessor(currentItem);
+		const macdValue = currentItem && yAccessor(currentItem);
 
-		var macd = (macdValue && macdValue.macd && displayFormat(macdValue.macd)) || "n/a";
-		var signal = (macdValue && macdValue.signal && displayFormat(macdValue.signal)) || "n/a";
-		var divergence = (macdValue && macdValue.divergence && displayFormat(macdValue.divergence)) || "n/a";
+		const macd = (macdValue && macdValue.macd && displayFormat(macdValue.macd)) || "n/a";
+		const signal = (macdValue && macdValue.signal && displayFormat(macdValue.signal)) || "n/a";
+		const divergence = (macdValue && macdValue.divergence && displayFormat(macdValue.divergence)) || "n/a";
 
-		var { origin: originProp } = this.props;
-		var origin = functor(originProp);
-		var [x, y] = origin(width, height);
+		const { origin: originProp } = this.props;
+		const origin = functor(originProp);
+		const [x, y] = origin(width, height);
 
 		return (
 			<g className={className} transform={`translate(${ x }, ${ y })`} onClick={onClick}>

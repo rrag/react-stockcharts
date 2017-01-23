@@ -13,21 +13,21 @@ class ScatterSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { xAccessor } = moreProps;
+		const { xAccessor } = moreProps;
 
-		var points = helper(this.props, moreProps, xAccessor);
+		const points = helper(this.props, moreProps, xAccessor);
 
 		drawOnCanvas(ctx, this.props, points);
 	}
 	renderSVG(moreProps) {
-		var { className, markerProps } = this.props;
-		var { xAccessor } = moreProps;
+		const { className, markerProps } = this.props;
+		const { xAccessor } = moreProps;
 
-		var points = helper(this.props, moreProps, xAccessor);
+		const points = helper(this.props, moreProps, xAccessor);
 
 		return <g className={className}>
 			{points.map((point, idx) => {
-				var { marker: Marker } = point;
+				const { marker: Marker } = point;
 				return <Marker key={idx} {...markerProps} point={point} />;
 			})}
 		</g>;
@@ -55,8 +55,9 @@ ScatterSeries.defaultProps = {
 };
 
 function helper(props, moreProps, xAccessor) {
-	var { yAccessor, marker: Marker, markerProvider, markerProps } = props;
-	var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+	const { yAccessor, markerProvider, markerProps } = props;
+	let { marker: Marker } = props;
+	const { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
 	if (!(markerProvider || Marker)) throw new Error("required prop, either marker or markerProvider missing");
 
@@ -64,10 +65,10 @@ function helper(props, moreProps, xAccessor) {
 
 		if (markerProvider) Marker = markerProvider(d);
 
-		var mProps = { ...Marker.defaultProps, ...markerProps };
+		const mProps = { ...Marker.defaultProps, ...markerProps };
 
-		var fill = functor(mProps.fill);
-		var stroke = functor(mProps.stroke);
+		const fill = functor(mProps.fill);
+		const stroke = functor(mProps.stroke);
 
 		return {
 			x: xScale(xAccessor(d)),
@@ -82,15 +83,15 @@ function helper(props, moreProps, xAccessor) {
 
 function drawOnCanvas(ctx, props, points) {
 
-	var { markerProps } = props;
+	const { markerProps } = props;
 
-	var nest = d3Nest()
+	const nest = d3Nest()
 		.key(d => d.fill)
 		.key(d => d.stroke)
 		.entries(points);
 
 	nest.forEach(fillGroup => {
-		var { key: fillKey, values: fillValues } = fillGroup;
+		const { key: fillKey, values: fillValues } = fillGroup;
 
 		if (fillKey !== "none") {
 			ctx.fillStyle = fillKey;
@@ -98,10 +99,10 @@ function drawOnCanvas(ctx, props, points) {
 
 		fillValues.forEach(strokeGroup => {
 			// var { key: strokeKey, values: strokeValues } = strokeGroup;
-			var { values: strokeValues } = strokeGroup;
+			const { values: strokeValues } = strokeGroup;
 
 			strokeValues.forEach(point => {
-				var { marker } = point;
+				const { marker } = point;
 				marker.drawOnCanvas({ ...marker.defaultProps, ...markerProps, fill: fillKey }, point, ctx);
 			});
 		});

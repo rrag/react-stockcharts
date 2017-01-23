@@ -12,14 +12,14 @@ class PointAndFigureSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { xAccessor } = moreProps;
-		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
-		var columns = getColumns(xScale, xAccessor, yScale, plotData);
+		const { xAccessor } = moreProps;
+		const { xScale, chartConfig: { yScale }, plotData } = moreProps;
+		const columns = getColumns(xScale, xAccessor, yScale, plotData);
 
 		drawOnCanvas(ctx, this.props, columns);
 	}
 	render() {
-		var { clip } = this.props;
+		const { clip } = this.props;
 
 		return <GenericChartComponent
 			canvasToDraw={getAxisCanvas}
@@ -30,12 +30,12 @@ class PointAndFigureSeries extends Component {
 			/>;
 	}
 	renderSVG(moreProps) {
-		var { xAccessor } = moreProps;
-		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+		const { xAccessor } = moreProps;
+		const { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
-		var { stroke, fill, strokeWidth, className } = this.props;
+		const { stroke, fill, strokeWidth, className } = this.props;
 
-		var columns = getColumns(xScale, xAccessor, yScale, plotData);
+		const columns = getColumns(xScale, xAccessor, yScale, plotData);
 
 		return (
 			<g className={className}>
@@ -89,7 +89,7 @@ PointAndFigureSeries.defaultProps = {
 };
 
 function drawOnCanvas(ctx, props, columns) {
-	var { stroke, fill, strokeWidth } = props;
+	const { stroke, fill, strokeWidth } = props;
 
 	ctx.lineWidth = strokeWidth;
 
@@ -128,12 +128,12 @@ function drawOnCanvas(ctx, props, columns) {
 
 function getColumns(xScale, xAccessor, yScale, plotData) {
 
-	var width = xScale(xAccessor(plotData[plotData.length - 1]))
+	const width = xScale(xAccessor(plotData[plotData.length - 1]))
 		- xScale(xAccessor(plotData[0]));
 
-	var columnWidth = (width / (plotData.length - 1));
+	const columnWidth = (width / (plotData.length - 1));
 
-	var anyBox, j = 0;
+	let anyBox, j = 0;
 	while (isNotDefined(anyBox)) {
 		if (isDefined(plotData[j].close)) {
 			anyBox = plotData[j].boxes[0];
@@ -143,19 +143,19 @@ function getColumns(xScale, xAccessor, yScale, plotData) {
 		j++;
 	}
 
-	var boxHeight = Math.abs(yScale(anyBox.open) - yScale(anyBox.close));
+	const boxHeight = Math.abs(yScale(anyBox.open) - yScale(anyBox.close));
 
-	var columns = plotData
+	const columns = plotData
 			.filter(d => isDefined(d.close))
 			.map(d => {
-				var boxes = d.boxes.map((box) => ({
+				const boxes = d.boxes.map((box) => ({
 					columnWidth: columnWidth,
 					boxHeight: boxHeight,
 					open: yScale(box.open),
 					close: yScale(box.close),
 				}));
 
-				var xOffset = (xScale(xAccessor(d)) - (columnWidth / 2));
+				const xOffset = (xScale(xAccessor(d)) - (columnWidth / 2));
 				return {
 					boxes: boxes,
 					direction: d.direction,

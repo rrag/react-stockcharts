@@ -23,7 +23,7 @@ class TrendLine extends Component {
 		this.state = this.props.init;
 	}
 	removeLast() {
-		var { trends } = this.state;
+		const { trends } = this.state;
 		if (isDefined(trends) && trends.length > 0) {
 			this.setState({
 				trends: trends.slice(0, trends.length - 1),
@@ -45,8 +45,8 @@ class TrendLine extends Component {
 		});
 	}
 	handleDragLineComplete() {
-		var { trends, override } = this.state;
-		var newTrends = trends
+		const { trends, override } = this.state;
+		const newTrends = trends
 			.map((each, idx) => idx === override.index
 				? {
 					start: [override.x1Value, override.y1Value],
@@ -59,7 +59,7 @@ class TrendLine extends Component {
 		});
 	}
 	handleDrawLine(xyValue) {
-		var { current } = this.state;
+		const { current } = this.state;
 
 		if (isDefined(current) && isDefined(current.start)) {
 			this.setState({
@@ -71,7 +71,7 @@ class TrendLine extends Component {
 		}
 	}
 	handleStartAndEnd(xyValue) {
-		var { current, trends } = this.state;
+		const { current, trends } = this.state;
 
 		if (isNotDefined(current) || isNotDefined(current.start)) {
 			this.setState({
@@ -92,13 +92,13 @@ class TrendLine extends Component {
 		}
 	}
 	render() {
-		var { stroke, opacity, strokeWidth } = this.props;
-		var { enabled, snap, shouldDisableSnap, snapTo, type } = this.props;
-		var { currentPositionRadius, currentPositionStroke } = this.props;
-		var { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
-		var { trends, current, override } = this.state;
+		const { stroke, opacity, strokeWidth } = this.props;
+		const { enabled, snap, shouldDisableSnap, snapTo, type } = this.props;
+		const { currentPositionRadius, currentPositionStroke } = this.props;
+		const { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
+		const { trends, current, override } = this.state;
 
-		var tempLine = isDefined(current) && isDefined(current.end)
+		const tempLine = isDefined(current) && isDefined(current.end)
 			? <StraightLine type={type}
 					noHover
 					x1Value={current.start[0]}

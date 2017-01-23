@@ -15,17 +15,17 @@ class RSITooltip extends Component {
 		this.renderSVG = this.renderSVG.bind(this);
 	}
 	renderSVG(moreProps) {
-		var { onClick, fontFamily, fontSize, yAccessor, displayFormat, className } = this.props;
-		var { options } = this.props;
-		var { chartConfig: { width, height } } = moreProps;
-		var { currentItem } = moreProps;
+		const { onClick, fontFamily, fontSize, yAccessor, displayFormat, className } = this.props;
+		const { options } = this.props;
+		const { chartConfig: { width, height } } = moreProps;
+		const { currentItem } = moreProps;
 
-		var rsi = isDefined(currentItem) && yAccessor(currentItem);
-		var value = (rsi && displayFormat(rsi)) || "n/a";
+		const rsi = isDefined(currentItem) && yAccessor(currentItem);
+		const value = (rsi && displayFormat(rsi)) || "n/a";
 
-		var { origin: originProp } = this.props;
-		var origin = functor(originProp);
-		var [x, y] = origin(width, height);
+		const { origin: originProp } = this.props;
+		const origin = functor(originProp);
+		const [x, y] = origin(width, height);
 
 		const tooltipLabel = `RSI (${options.windowSize}): `;
 		return (

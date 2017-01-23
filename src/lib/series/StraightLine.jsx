@@ -12,17 +12,17 @@ class StraightLine extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { type, stroke, strokeWidth, opacity, strokeDasharray } = this.props;
-		var { yValue, xValue } = this.props;
-		var { xScale } = moreProps;
-		var { chartConfig: { yScale, width, height } } = moreProps;
+		const { type, stroke, strokeWidth, opacity, strokeDasharray } = this.props;
+		const { yValue, xValue } = this.props;
+		const { xScale } = moreProps;
+		const { chartConfig: { yScale, width, height } } = moreProps;
 
 		ctx.beginPath();
 
 		ctx.strokeStyle = hexToRGBA(stroke, opacity);
 		ctx.lineWidth = strokeWidth;
 
-		var { x1, y1, x2, y2 } = getLineCoordinates(type, xScale, yScale, xValue, yValue, width, height);
+		const { x1, y1, x2, y2 } = getLineCoordinates(type, xScale, yScale, xValue, yValue, width, height);
 
 		ctx.setLineDash(getStrokeDasharray(strokeDasharray).split(","));
 		ctx.moveTo(x1, y1);
@@ -38,14 +38,14 @@ class StraightLine extends Component {
 			/>;
 	}
 	renderSVG(moreProps) {
-		var { width, height } = moreProps;
-		var { xScale, chartConfig: { yScale } } = moreProps;
+		const { width, height } = moreProps;
+		const { xScale, chartConfig: { yScale } } = moreProps;
 
-		var { className } = this.props;
-		var { type, stroke, strokeWidth, opacity, strokeDasharray } = this.props;
-		var { yValue, xValue } = this.props;
+		const { className } = this.props;
+		const { type, stroke, strokeWidth, opacity, strokeDasharray } = this.props;
+		const { yValue, xValue } = this.props;
 
-		var lineCoordinates = getLineCoordinates(type, xScale, yScale, xValue, yValue, width, height);
+		const lineCoordinates = getLineCoordinates(type, xScale, yScale, xValue, yValue, width, height);
 
 		/*
 		type === "horizontal"

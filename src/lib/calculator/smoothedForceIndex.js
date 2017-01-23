@@ -8,33 +8,33 @@ import { SmoothedForceIndex as defaultOptions } from "./defaultOptionsForComputa
 
 export default function() {
 
-	var underlyingAlgorithm = forceIndex();
-	var merge = zipper()
+	const underlyingAlgorithm = forceIndex();
+	const merge = zipper()
 			.combine((force, smoothed) => {
 				return { force, smoothed };
 			});
 
-	var options = defaultOptions;
+	let options = defaultOptions;
 	function calculator(data) {
-		var { smoothingType, smoothingWindow } = options;
-		var { sourcePath, volumePath } = options;
+		const { smoothingType, smoothingWindow } = options;
+		const { sourcePath, volumePath } = options;
 
-		var force = underlyingAlgorithm(data)
+		const force = underlyingAlgorithm(data)
 			.options({ sourcePath, volumePath });
 
-		var ma = smoothingType === "ema" ? ema() : sma();
-		var forceMA = ma
+		const ma = smoothingType === "ema" ? ema() : sma();
+		const forceMA = ma
 			.options({
 				windowSize: smoothingWindow,
 				sourcePath: undefined
 			});
 
-		var smoothed = forceMA(force);
+		const smoothed = forceMA(force);
 		return merge(force, smoothed);
 	}
 
 	calculator.undefinedLength = function() {
-		var { smoothingWindow } = options;
+		const { smoothingWindow } = options;
 		return underlyingAlgorithm.undefinedLength() + smoothingWindow - 1;
 	};
 	calculator.options = function(x) {

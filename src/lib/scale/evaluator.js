@@ -16,27 +16,27 @@ function extentsWrapper(xAccessor, useWholeData, clamp, pointsPerPxThreshold) {
 			return { plotData: data, domain: inputDomain };
 		}
 
-		var left = first(inputDomain);
-		var right = last(inputDomain);
+		const left = first(inputDomain);
+		const right = last(inputDomain);
 
-		var filteredData = getFilteredResponse(data, left, right, xAccessor);
-		var clampedDomain = [
+		const filteredData = getFilteredResponse(data, left, right, xAccessor);
+		const clampedDomain = [
 			Math.max(left, xAccessor(first(data))),
 			Math.min(right, xAccessor(last(data)))
 		];
 
-		var realInputDomain = xAccessor === xAccessor
+		const realInputDomain = xAccessor === xAccessor
 			? (clamp ? clampedDomain : inputDomain)
 			: [xAccessor(first(filteredData)), xAccessor(last(filteredData))];
 
-		var xScale = initialXScale.copy().domain(realInputDomain);
+		const xScale = initialXScale.copy().domain(realInputDomain);
 
-		var width = Math.floor(xScale(xAccessor(last(filteredData)))
+		const width = Math.floor(xScale(xAccessor(last(filteredData)))
 			- xScale(xAccessor(first(filteredData))));
 
-		var plotData, domain;
+		let plotData, domain;
 
-		var chartWidth = last(xScale.range()) - first(xScale.range());
+		const chartWidth = last(xScale.range()) - first(xScale.range());
 
 		log(`Trying to show ${filteredData.length} in ${width}px,`
 			+ ` I can show up to ${showMax(width, pointsPerPxThreshold)} in that width. `
@@ -50,8 +50,8 @@ function extentsWrapper(xAccessor, useWholeData, clamp, pointsPerPxThreshold) {
 			plotData = currentPlotData || filteredData.slice(filteredData.length - showMax(width, pointsPerPxThreshold));
 			domain = currentDomain || [xAccessor(first(plotData)), xAccessor(last(plotData))];
 
-			var newXScale = xScale.copy().domain(domain);
-			var newWidth = Math.floor(newXScale(xAccessor(last(plotData)))
+			const newXScale = xScale.copy().domain(domain);
+			const newWidth = Math.floor(newXScale(xAccessor(last(plotData)))
 				- newXScale(xAccessor(first(plotData))));
 
 			log(`and ouch, that is too much, so instead showing ${plotData.length} in ${newWidth}px`);
@@ -74,10 +74,10 @@ function showMax(width, threshold) {
 }
 
 function getFilteredResponse(data, left, right, xAccessor) {
-	var newLeftIndex = getClosestItemIndexes(data, left, xAccessor).right;
-	var newRightIndex = getClosestItemIndexes(data, right, xAccessor).left;
+	const newLeftIndex = getClosestItemIndexes(data, left, xAccessor).right;
+	const newRightIndex = getClosestItemIndexes(data, right, xAccessor).left;
 
-	var filteredData = data.slice(newLeftIndex, newRightIndex + 1);
+	const filteredData = data.slice(newLeftIndex, newRightIndex + 1);
 	// console.log(right, newRightIndex, dataForInterval.length);
 
 	return filteredData;

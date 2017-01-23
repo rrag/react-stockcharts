@@ -18,25 +18,25 @@ class Axis extends Component {
 
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { showDomain, showTicks, transform, range, getScale } = this.props;
+		const { showDomain, showTicks, transform, range, getScale } = this.props;
 
 		ctx.save();
 		ctx.translate(transform[0], transform[1]);
 
 		if (showDomain) drawAxisLine(ctx, this.props, range);
 		if (showTicks) {
-			var tickProps = tickHelper(this.props, getScale(moreProps));
+			const tickProps = tickHelper(this.props, getScale(moreProps));
 			drawTicks(ctx, tickProps);
 		}
 
 		ctx.restore();
 	}
 	renderSVG(moreProps) {
-		var { className } = this.props;
-		var { showDomain, showTicks, range, getScale } = this.props;
+		const { className } = this.props;
+		const { showDomain, showTicks, range, getScale } = this.props;
 
-		var ticks = showTicks ? axisTicksSVG(this.props, getScale(moreProps)) : null;
-		var domain = showDomain ? axisLineSVG(this.props, range) : null;
+		const ticks = showTicks ? axisTicksSVG(this.props, getScale(moreProps)) : null;
+		const domain = showDomain ? axisLineSVG(this.props, range) : null;
 
 		return <g className={className}>
 			{ticks}
@@ -47,11 +47,11 @@ class Axis extends Component {
 		return this.refs.propProvider.getMoreProps();
 	}
 	render() {
-		var { bg, axisZoomCallback, zoomCursorClassName, zoomEnabled, getScale, inverted } = this.props;
-		var { transform, getMouseDelta, edgeClip } = this.props;
-		var { onContextMenu, onDoubleClick } = this.props;
+		const { bg, axisZoomCallback, zoomCursorClassName, zoomEnabled, getScale, inverted } = this.props;
+		const { transform, getMouseDelta, edgeClip } = this.props;
+		const { onContextMenu, onDoubleClick } = this.props;
 
-		var zoomCapture = zoomEnabled
+		const zoomCapture = zoomEnabled
 			? <AxisZoomCapture
 				bg={bg}
 				getScale={getScale}
@@ -136,18 +136,18 @@ function tickHelper(props, scale) {
 		tickValues = scale.domain();
 	}
 
-	var baseFormat = scale.tickFormat
+	const baseFormat = scale.tickFormat
 			? scale.tickFormat(tickArguments)
 			: identity;
 
-	var format = isNotDefined(tickFormat)
+	const format = isNotDefined(tickFormat)
 		? baseFormat
 		: d => baseFormat(d) ? tickFormat(d) : "";
 
-	var sign = orient === "top" || orient === "left" ? -1 : 1;
-	var tickSpacing = Math.max(innerTickSize, 0) + tickPadding;
+	const sign = orient === "top" || orient === "left" ? -1 : 1;
+	const tickSpacing = Math.max(innerTickSize, 0) + tickPadding;
 
-	var ticks, dy, canvas_dy, textAnchor;
+	let ticks, dy, canvas_dy, textAnchor;
 
 	if (orient === "bottom" || orient === "top") {
 		dy = sign < 0 ? "0em" : ".71em";
@@ -155,7 +155,7 @@ function tickHelper(props, scale) {
 		textAnchor = "middle";
 
 		ticks = tickValues.map(d => {
-			var x = scale(d);
+			const x = scale(d);
 			return {
 				value: d,
 				x1: x,
@@ -170,18 +170,18 @@ function tickHelper(props, scale) {
 		if (showTicks && flexTicks) {
 			// console.log(ticks, showTicks);
 
-			var nodes = ticks.map(d => ({ id: d.value, value: d.value, fy: d.y2, origX: d.x1 }));
+			const nodes = ticks.map(d => ({ id: d.value, value: d.value, fy: d.y2, origX: d.x1 }));
 
-			var simulation = forceSimulation(nodes)
+			const simulation = forceSimulation(nodes)
 				.force("x", forceX(d => d.origX).strength(1))
 				.force("collide", forceCollide(22))
 				// .force("center", forceCenter())
 				.stop();
 
-			for (var i = 0; i < 100; ++i) simulation.tick();
+			for (let i = 0; i < 100; ++i) simulation.tick();
 			// console.log(nodes);
 
-			var zip = zipper()
+			const zip = zipper()
 				.combine((a, b) => {
 					if (Math.abs(b.x - b.origX) > 0.01) {
 						return {
@@ -199,7 +199,7 @@ function tickHelper(props, scale) {
 
 	} else {
 		ticks = tickValues.map(d => {
-			var y = scale(d);
+			const y = scale(d);
 			return {
 				value: d,
 				x1: 0,
@@ -221,12 +221,12 @@ function tickHelper(props, scale) {
 
 /* eslint-disable react/prop-types */
 function axisLineSVG(props, range) {
-	var { orient, outerTickSize } = props;
-	var { domainClassName, fill, stroke, strokeWidth, opacity } = props;
+	const { orient, outerTickSize } = props;
+	const { domainClassName, fill, stroke, strokeWidth, opacity } = props;
 
-	var sign = orient === "top" || orient === "left" ? -1 : 1;
+	const sign = orient === "top" || orient === "left" ? -1 : 1;
 
-	var d;
+	let d;
 
 	if (orient === "bottom" || orient === "top") {
 		d = "M" + range[0] + "," + sign * outerTickSize + "V0H" + range[1] + "V" + sign * outerTickSize;
@@ -251,10 +251,10 @@ function axisLineSVG(props, range) {
 function drawAxisLine(ctx, props, range) {
 	// props = { ...AxisLine.defaultProps, ...props };
 
-	var { orient, outerTickSize, stroke, strokeWidth, opacity } = props;
+	const { orient, outerTickSize, stroke, strokeWidth, opacity } = props;
 
-	var sign = orient === "top" || orient === "left" ? -1 : 1;
-	var xAxis = (orient === "bottom" || orient === "top");
+	const sign = orient === "top" || orient === "left" ? -1 : 1;
+	const xAxis = (orient === "bottom" || orient === "top");
 
 	// var range = d3_scaleRange(xAxis ? xScale : yScale);
 
@@ -278,8 +278,8 @@ function drawAxisLine(ctx, props, range) {
 }
 
 function Tick(props) {
-	var { tickStroke, tickStrokeOpacity, tickStrokeDasharray, tickStrokeWidth, textAnchor, fontSize, fontFamily } = props;
-	var { x1, y1, x2, y2, labelX, labelY, dy } = props;
+	const { tickStroke, tickStrokeOpacity, tickStrokeDasharray, tickStrokeWidth, textAnchor, fontSize, fontFamily } = props;
+	const { x1, y1, x2, y2, labelX, labelY, dy } = props;
 	return (
 		<g className="tick">
 			<line
@@ -321,12 +321,12 @@ Tick.propTypes = {
 };
 
 function axisTicksSVG(props, scale) {
-	var result = tickHelper(props, scale);
+	const result = tickHelper(props, scale);
 
-	var { tickStroke, tickStrokeOpacity, tickStrokeWidth, tickStrokeDasharray, textAnchor } = result;
-	var { fontSize, fontFamily, ticks, format } = result;
+	const { tickStroke, tickStrokeOpacity, tickStrokeWidth, tickStrokeDasharray, textAnchor } = result;
+	const { fontSize, fontFamily, ticks, format } = result;
 
-	var { dy } = result;
+	const { dy } = result;
 
 	return (
 		<g>
@@ -351,7 +351,7 @@ function axisTicksSVG(props, scale) {
 
 function drawTicks(ctx, result) {
 
-	var { tickStroke, tickStrokeOpacity, textAnchor, fontSize, fontFamily, ticks } = result;
+	const { tickStroke, tickStrokeOpacity, textAnchor, fontSize, fontFamily, ticks } = result;
 
 	ctx.strokeStyle = hexToRGBA(tickStroke, tickStrokeOpacity);
 
@@ -366,7 +366,7 @@ function drawTicks(ctx, result) {
 }
 
 function drawEachTick(ctx, tick, result) {
-	var { canvas_dy, format, tickStrokeWidth, tickStrokeDasharray } = result;
+	const { canvas_dy, format, tickStrokeWidth, tickStrokeDasharray } = result;
 
 	ctx.beginPath();
 

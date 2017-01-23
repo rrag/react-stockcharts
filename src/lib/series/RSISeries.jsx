@@ -6,9 +6,9 @@ import StraightLine from "./StraightLine";
 
 class RSISeries extends Component {
 	render() {
-		var { className, stroke } = this.props;
-		var { yAccessor } = this.props;
-		var { overSold, middle, overBought } = this.props;
+		const { className, stroke } = this.props;
+		const { yAccessor } = this.props;
+		const { overSold, middle, overBought } = this.props;
 
 		return (
 			<g className={className}>

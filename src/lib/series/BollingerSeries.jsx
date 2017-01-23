@@ -14,24 +14,24 @@ class BollingerSeries extends Component {
 		this.yAccessorForScalledBottom = this.yAccessorForScalledBottom.bind(this);
 	}
 	yAccessorForTop(d) {
-		var { yAccessor } = this.props;
+		const { yAccessor } = this.props;
 		return yAccessor(d) && yAccessor(d).top;
 	}
 	yAccessorForMiddle(d) {
-		var { yAccessor } = this.props;
+		const { yAccessor } = this.props;
 		return yAccessor(d) && yAccessor(d).middle;
 	}
 	yAccessorForBottom(d) {
-		var { yAccessor } = this.props;
+		const { yAccessor } = this.props;
 		return yAccessor(d) && yAccessor(d).bottom;
 	}
 	yAccessorForScalledBottom(scale, d) {
-		var { yAccessor } = this.props;
+		const { yAccessor } = this.props;
 		return scale(yAccessor(d) && yAccessor(d).bottom);
 	}
 	render() {
-		var { areaClassName, className, opacity } = this.props;
-		var { stroke, fill } = this.props;
+		const { areaClassName, className, opacity } = this.props;
+		const { stroke, fill } = this.props;
 
 		return (
 			<g className={className}>

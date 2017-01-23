@@ -11,16 +11,16 @@ const ALGORITHM_TYPE = "BollingerBand";
 
 export default function() {
 
-	var base = baseIndicator()
+	const base = baseIndicator()
 		.type(ALGORITHM_TYPE);
 
-	var underlyingAlgorithm = bollingerband();
+	const underlyingAlgorithm = bollingerband();
 
-	var mergedAlgorithm = merge()
+	const mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
 		.merge((datum, indicator) => { datum.bollingerBand = indicator; });
 
-	var indicator = function(data, options = { merge: true }) {
+	const indicator = function(data, options = { merge: true }) {
 		if (options.merge) {
 			if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
 			return mergedAlgorithm(data);

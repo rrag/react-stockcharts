@@ -17,7 +17,7 @@ class CandlestickSeries extends Component {
 		drawOnCanvas(ctx, this.props, moreProps);
 	}
 	renderSVG(moreProps) {
-		var { className, wickClassName, candleClassName } = this.props;
+		const { className, wickClassName, candleClassName } = this.props;
 
 		return <g className={className}>
 			<g className={wickClassName} key="wicks">
@@ -30,7 +30,7 @@ class CandlestickSeries extends Component {
 	}
 
 	render() {
-		var { clip } = this.props;
+		const { clip } = this.props;
 		return <GenericChartComponent
 			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
@@ -87,11 +87,11 @@ CandlestickSeries.defaultProps = {
 function getWicksSVG(props, moreProps) {
 
 	/* eslint-disable react/prop-types */
-	var { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
+	const { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
 	/* eslint-enable react/prop-types */
 
-	var wickData = getWickData(props, xAccessor, xScale, yScale, plotData);
-	var wicks = wickData
+	const wickData = getWickData(props, xAccessor, xScale, yScale, plotData);
+	const wicks = wickData
 		.map((d, idx) => <path key={idx}
 			className={d.className} stroke={d.stroke} style={{ shapeRendering: "crispEdges" }}
 			d={`M${d.x},${d.y1} L${d.x},${d.y2} M${d.x},${d.y3} L${d.x},${d.y4}`} />
@@ -102,12 +102,12 @@ function getWicksSVG(props, moreProps) {
 function getCandlesSVG(props, moreProps) {
 
 	/* eslint-disable react/prop-types */
-	var { opacity, candleStrokeWidth } = props;
-	var { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
+	const { opacity, candleStrokeWidth } = props;
+	const { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
 	/* eslint-enable react/prop-types */
 
-	var candleData = getCandleData(props, xAccessor, xScale, yScale, plotData);
-	var candles = candleData.map((d, idx) => {
+	const candleData = getCandleData(props, xAccessor, xScale, yScale, plotData);
+	const candles = candleData.map((d, idx) => {
 		if (d.width < 0)
 			return (
 				<line className={d.className} key={idx}
@@ -131,17 +131,17 @@ function getCandlesSVG(props, moreProps) {
 }
 
 function drawOnCanvas(ctx, props, moreProps) {
-	var { opacity, candleStrokeWidth } = props;
-	var { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
+	const { opacity, candleStrokeWidth } = props;
+	const { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
 
-	var wickData = getWickData(props, xAccessor, xScale, yScale, plotData);
+	const wickData = getWickData(props, xAccessor, xScale, yScale, plotData);
 
-	var wickNest = nest()
+	const wickNest = nest()
 		.key(d => d.stroke)
 		.entries(wickData);
 
 	wickNest.forEach(outer => {
-		var { key, values } = outer;
+		const { key, values } = outer;
 		ctx.strokeStyle = key;
 		values.forEach(d => {
 			ctx.beginPath();
@@ -154,21 +154,21 @@ function drawOnCanvas(ctx, props, moreProps) {
 		});
 	});
 
-	var candleData = getCandleData(props, xAccessor, xScale, yScale, plotData);
+	const candleData = getCandleData(props, xAccessor, xScale, yScale, plotData);
 
-	var candleNest = nest()
+	const candleNest = nest()
 		.key(d => d.stroke)
 		.key(d => d.fill)
 		.entries(candleData);
 
 	candleNest.forEach(outer => {
-		var { key: strokeKey, values: strokeValues } = outer;
+		const { key: strokeKey, values: strokeValues } = outer;
 		if (strokeKey !== "none") {
 			ctx.strokeStyle = strokeKey;
 			ctx.lineWidth = candleStrokeWidth;
 		}
 		strokeValues.forEach(inner => {
-			var { key, values } = inner;
+			const { key, values } = inner;
 			ctx.fillStyle = hexToRGBA(key, opacity);
 
 			values.forEach(d => {
@@ -198,16 +198,16 @@ function drawOnCanvas(ctx, props, moreProps) {
 
 function getWickData(props, xAccessor, xScale, yScale, plotData) {
 
-	var { classNames: classNameProp, wickStroke: wickStrokeProp, yAccessor } = props;
-	var wickStroke = functor(wickStrokeProp);
-	var className = functor(classNameProp);
-	var wickData = plotData
+	const { classNames: classNameProp, wickStroke: wickStrokeProp, yAccessor } = props;
+	const wickStroke = functor(wickStrokeProp);
+	const className = functor(classNameProp);
+	const wickData = plotData
 			.filter(d => isDefined(yAccessor(d).close))
 			.map(d => {
 				// console.log(yAccessor);
-				var ohlc = yAccessor(d);
+				const ohlc = yAccessor(d);
 
-				var x = Math.round(xScale(xAccessor(d))),
+				const x = Math.round(xScale(xAccessor(d))),
 					y1 = yScale(ohlc.high),
 					y2 = yScale(Math.max(ohlc.open, ohlc.close)),
 					y3 = yScale(Math.min(ohlc.open, ohlc.close)),
@@ -228,21 +228,21 @@ function getWickData(props, xAccessor, xScale, yScale, plotData) {
 }
 
 function getCandleData(props, xAccessor, xScale, yScale, plotData) {
-	var { classNames, fill: fillProp, stroke: strokeProp, widthRatio, yAccessor } = props;
-	var fill = functor(fillProp);
-	var stroke = functor(strokeProp);
+	const { classNames, fill: fillProp, stroke: strokeProp, widthRatio, yAccessor } = props;
+	const fill = functor(fillProp);
+	const stroke = functor(strokeProp);
 	// console.log(plotData);
-	var width = xScale(xAccessor(last(plotData)))
+	const width = xScale(xAccessor(last(plotData)))
 		- xScale(xAccessor(first(plotData)));
-	var cw = (width / (plotData.length - 1) * widthRatio);
-	var candleWidth = Math.round(cw); // Math.floor(cw) % 2 === 0 ? Math.floor(cw) : Math.round(cw);
+	const cw = (width / (plotData.length - 1) * widthRatio);
+	const candleWidth = Math.round(cw); // Math.floor(cw) % 2 === 0 ? Math.floor(cw) : Math.round(cw);
 
-	var offset = (candleWidth === 1 ? 0 : 0.5 * cw);
-	var candles = plotData
+	const offset = (candleWidth === 1 ? 0 : 0.5 * cw);
+	const candles = plotData
 			.filter(d => isDefined(yAccessor(d).close))
 			.map(d => {
-				var ohlc = yAccessor(d);
-				var x = Math.round(xScale(xAccessor(d)) - offset),
+				const ohlc = yAccessor(d);
+				const x = Math.round(xScale(xAccessor(d)) - offset),
 					y = yScale(Math.max(ohlc.open, ohlc.close)),
 					height = Math.abs(yScale(ohlc.open) - yScale(ohlc.close)),
 					className = (ohlc.open <= ohlc.close) ? classNames.up : classNames.down;

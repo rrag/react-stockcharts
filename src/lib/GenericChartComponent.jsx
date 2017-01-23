@@ -14,14 +14,14 @@ class GenericChartComponent extends GenericComponent {
 	preCanvasDraw(ctx, moreProps) {
 		super.preCanvasDraw(ctx, moreProps);
 		ctx.save();
-		var { margin, ratio } = this.context;
-		var { chartConfig } = moreProps;
+		const { margin, ratio } = this.context;
+		const { chartConfig } = moreProps;
 
-		var canvasOriginX = (0.5 * ratio) + chartConfig.origin[0] + margin.left;
-		var canvasOriginY = (0.5 * ratio) + chartConfig.origin[1] + margin.top;
+		const canvasOriginX = (0.5 * ratio) + chartConfig.origin[0] + margin.left;
+		const canvasOriginY = (0.5 * ratio) + chartConfig.origin[1] + margin.top;
 
-		var { chartConfig: { width, height } } = moreProps;
-		var { clip, edgeClip } = this.props;
+		const { chartConfig: { width, height } } = moreProps;
+		const { clip, edgeClip } = this.props;
 
 		ctx.setTransform(1, 0, 0, 1, 0, 0);
 		ctx.scale(ratio, ratio);
@@ -46,11 +46,11 @@ class GenericChartComponent extends GenericComponent {
 	updateMoreProps(moreProps) {
 		// console.log(type, moreProps, e)
 		super.updateMoreProps(moreProps);
-		var { chartConfig: chartConfigList } = moreProps;
+		const { chartConfig: chartConfigList } = moreProps;
 
 		if (chartConfigList) {
-			var { chartId } = this.context;
-			var chartConfig = chartConfigList
+			const { chartId } = this.context;
+			const chartConfig = chartConfigList
 				.filter(each => each.id === chartId)[0];
 			this.moreProps.chartConfig = chartConfig;
 		}

@@ -12,17 +12,17 @@ const ALGORITHM_TYPE = "WMA";
 
 export default function() {
 
-	var base = baseIndicator()
+	const base = baseIndicator()
             .type(ALGORITHM_TYPE)
             .accessor(d => d.wma);
 
-	var underlyingAlgorithm = wma();
+	const underlyingAlgorithm = wma();
 
-	var mergedAlgorithm = merge()
+	const mergedAlgorithm = merge()
         .algorithm(underlyingAlgorithm)
         .merge((datum, indicator) => { datum.wma = indicator; });
 
-	var indicator = function(data, options = { merge: true }) {
+	const indicator = function(data, options = { merge: true }) {
 		if (options.merge) {
 			if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
 			return mergedAlgorithm(data);

@@ -34,22 +34,22 @@ import { last, slidingWindow, zipper, path } from "../utils";
 import { BollingerBand as defaultOptions } from "./defaultOptionsForComputation";
 
 export default function() {
-	var options = defaultOptions;
+	let options = defaultOptions;
 
 	function calculator(data) {
-		var { windowSize, multiplier, movingAverageType, sourcePath } = options;
+		const { windowSize, multiplier, movingAverageType, sourcePath } = options;
 
-		var source = path(sourcePath);
-		var meanAlgorithm = movingAverageType === "ema"
+		const source = path(sourcePath);
+		const meanAlgorithm = movingAverageType === "ema"
 			? ema().windowSize(windowSize).sourcePath(sourcePath)
 			: slidingWindow().windowSize(windowSize)
 				.accumulator(values => mean(values)).sourcePath(sourcePath);
 
-		var bollingerBandAlgorithm = slidingWindow()
+		const bollingerBandAlgorithm = slidingWindow()
 			.windowSize(windowSize)
 			.accumulator((values) => {
-				var avg = last(values).mean;
-				var stdDev = deviation(values, (each) => source(each.datum));
+				const avg = last(values).mean;
+				const stdDev = deviation(values, (each) => source(each.datum));
 				return {
 					top: avg + multiplier * stdDev,
 					middle: avg,
@@ -57,14 +57,14 @@ export default function() {
 				};
 			});
 
-		var zip = zipper()
+		const zip = zipper()
 			.combine((datum, mean) => ({ datum, mean }));
 
-		var tuples = zip(data, meanAlgorithm(data));
+		const tuples = zip(data, meanAlgorithm(data));
 		return bollingerBandAlgorithm(tuples);
 	}
 	calculator.undefinedLength = function() {
-		var { windowSize } = options;
+		const { windowSize } = options;
 		return windowSize - 1;
 	};
 	calculator.options = function(x) {

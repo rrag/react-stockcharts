@@ -7,14 +7,14 @@ import { WMA as defaultOptions } from "./defaultOptionsForComputation";
 
 export default function() {
 
-	var options = defaultOptions;
+	let options = defaultOptions;
 
 	function calculator(data)    {
-		var { windowSize, sourcePath } = options;
+		const { windowSize, sourcePath } = options;
 
-		var weight = windowSize * (windowSize + 1) / 2;
+		const weight = windowSize * (windowSize + 1) / 2;
 
-		var waverage = slidingWindow()
+		const waverage = slidingWindow()
 			.windowSize(windowSize)
 			.sourcePath(sourcePath)
 			.accumulator(values => {
@@ -27,7 +27,7 @@ export default function() {
 		return waverage(data);
 	}
 	calculator.undefinedLength = function() {
-		var { windowSize } = options;
+		const { windowSize } = options;
 
 		return windowSize - 1;
 	};

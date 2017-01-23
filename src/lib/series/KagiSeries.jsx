@@ -13,7 +13,7 @@ class KagiSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { xAccessor } = moreProps;
+		const { xAccessor } = moreProps;
 
 		drawOnCanvas(ctx, this.props, moreProps, xAccessor);
 	}
@@ -26,13 +26,13 @@ class KagiSeries extends Component {
 			/>;
 	}
 	renderSVG(moreProps) {
-		var { xAccessor } = moreProps;
-		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+		const { xAccessor } = moreProps;
+		const { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
-		var { className, stroke, fill, strokeWidth } = this.props;
+		const { className, stroke, fill, strokeWidth } = this.props;
 
-		var paths = helper(plotData, xAccessor).map((each, i) => {
-			var dataSeries = line()
+		const paths = helper(plotData, xAccessor).map((each, i) => {
+			const dataSeries = line()
 				.x((item) => xScale(item[0]))
 				.y((item) => yScale(item[1]))
 				.curve(curveStepBefore);
@@ -71,21 +71,21 @@ KagiSeries.defaultProps = {
 };
 
 function drawOnCanvas(ctx, props, moreProps, xAccessor) {
-	var { stroke, strokeWidth, currentValueStroke } = props;
-	var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+	const { stroke, strokeWidth, currentValueStroke } = props;
+	const { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
-	var paths = helper(plotData, xAccessor);
+	const paths = helper(plotData, xAccessor);
 
-	var begin = true;
+	let begin = true;
 
 	paths.forEach((each) => {
 		ctx.strokeStyle = stroke[each.type];
 		ctx.lineWidth = strokeWidth;
 
 		ctx.beginPath();
-		var prevX;
+		let prevX;
 		each.plot.forEach(d => {
-			var [x, y] = [xScale(d[0]), yScale(d[1])];
+			const [x, y] = [xScale(d[0]), yScale(d[1])];
 			if (begin) {
 				ctx.moveTo(x, y);
 				begin = false;
@@ -101,13 +101,13 @@ function drawOnCanvas(ctx, props, moreProps, xAccessor) {
 		});
 		ctx.stroke();
 	});
-	var lastPlot = paths[paths.length - 1].plot;
-	var last = lastPlot[lastPlot.length - 1];
+	const lastPlot = paths[paths.length - 1].plot;
+	const last = lastPlot[lastPlot.length - 1];
 	ctx.beginPath();
 	// ctx.strokeStyle = "black";
 	ctx.lineWidth = 1;
 
-	var [x, y1, y2] = [xScale(last[0]), yScale(last[2]), yScale(last[3])];
+	const [x, y1, y2] = [xScale(last[0]), yScale(last[2]), yScale(last[3])];
 	// console.log(last, x, y);
 	ctx.moveTo(x, y1);
 	ctx.lineTo(x + 10, y1);
@@ -121,10 +121,10 @@ function drawOnCanvas(ctx, props, moreProps, xAccessor) {
 }
 
 function helper(plotData, xAccessor) {
-	var kagiLine = [];
-	var kagi = {};
-	var d = plotData[0];
-	var idx = xAccessor(d);
+	const kagiLine = [];
+	let kagi = {};
+	let d = plotData[0];
+	let idx = xAccessor(d);
 
 	for (let i = 0; i < plotData.length; i++) {
 		d = plotData[i];

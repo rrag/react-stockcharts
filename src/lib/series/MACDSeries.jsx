@@ -15,26 +15,26 @@ class MACDSeries extends Component {
 		this.yAccessorForDivergenceBase = this.yAccessorForDivergenceBase.bind(this);
 	}
 	yAccessorForMACD(d) {
-		var { yAccessor } = this.props;
+		const { yAccessor } = this.props;
 		return yAccessor(d) && yAccessor(d).macd;
 	}
 	yAccessorForSignal(d) {
-		var { yAccessor } = this.props;
+		const { yAccessor } = this.props;
 		return yAccessor(d) && yAccessor(d).signal;
 	}
 	yAccessorForDivergence(d) {
-		var { yAccessor } = this.props;
+		const { yAccessor } = this.props;
 		return yAccessor(d) && yAccessor(d).divergence;
 	}
 	yAccessorForDivergenceBase(xScale, yScale/* , d */) {
 		return yScale(0);
 	}
 	render() {
-		var { className, opacity, divergenceStroke } = this.props;
-		var { stroke, fill } = this.props;
+		const { className, opacity, divergenceStroke } = this.props;
+		const { stroke, fill } = this.props;
 
-		var { clip } = this.props;
-		var { zeroLineStroke, zeroLineOpacity } = this.props;
+		const { clip } = this.props;
+		const { zeroLineStroke, zeroLineOpacity } = this.props;
 
 		return (
 			<g className={className}>

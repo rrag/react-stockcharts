@@ -11,17 +11,17 @@ const ALGORITHM_TYPE = "ForceIndex";
 
 export default function() {
 
-	var base = baseIndicator()
+	const base = baseIndicator()
 		.type(ALGORITHM_TYPE)
 		.accessor(d => d.forceIndex);
 
-	var underlyingAlgorithm = forceIndex();
+	const underlyingAlgorithm = forceIndex();
 
-	var mergedAlgorithm = merge()
+	const mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
 		.merge((datum, indicator) => { datum.forceIndex = indicator; });
 
-	var indicator = function(data, options = { merge: true }) {
+	const indicator = function(data, options = { merge: true }) {
 		if (options.merge) {
 			if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
 			return mergedAlgorithm(data);

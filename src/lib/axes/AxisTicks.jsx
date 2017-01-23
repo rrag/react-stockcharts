@@ -14,8 +14,8 @@ function tickTransform_svg_axisY(scale, tick) {
 
 class Tick extends Component {
 	render() {
-		var { transform, tickStroke, tickStrokeOpacity, textAnchor, fontSize, fontFamily } = this.props;
-		var { x, y, x2, y2, dy } = this.props;
+		const { transform, tickStroke, tickStrokeOpacity, textAnchor, fontSize, fontFamily } = this.props;
+		const { x, y, x2, y2, dy } = this.props;
 		return (
 			<g className="tick" transform={`translate(${ transform[0] }, ${ transform[1] })`} >
 				<line shapeRendering="crispEdges" opacity={tickStrokeOpacity} stroke={tickStroke} x2={x2} y2={y2} />
@@ -48,9 +48,9 @@ Tick.propTypes = {
 };
 
 Tick.drawOnCanvasStatic = (tick, ctx, result) => {
-	var { scale, tickTransform, canvas_dy, x, y, x2, y2, format } = result;
+	const { scale, tickTransform, canvas_dy, x, y, x2, y2, format } = result;
 
-	var origin = tickTransform(scale, tick);
+	const origin = tickTransform(scale, tick);
 
 	ctx.beginPath();
 
@@ -63,8 +63,8 @@ Tick.drawOnCanvasStatic = (tick, ctx, result) => {
 
 class AxisTicks extends Component {
 	render() {
-		var result = AxisTicks.helper(this.props, this.props.scale);
-		var { ticks, scale, tickTransform, tickStroke, tickStrokeOpacity, dy, x, y, x2, y2, textAnchor, fontSize, fontFamily, format } = result;
+		const result = AxisTicks.helper(this.props, this.props.scale);
+		const { ticks, scale, tickTransform, tickStroke, tickStrokeOpacity, dy, x, y, x2, y2, textAnchor, fontSize, fontFamily, format } = result;
 
 		return (
 			<g>
@@ -103,27 +103,27 @@ AxisTicks.defaultProps = {
 };
 
 AxisTicks.helper = (props, scale) => {
-	var { orient, innerTickSize, tickFormat, tickPadding, fontSize, fontFamily } = props;
-	var { ticks: tickArguments, tickValues, tickStroke, tickStrokeOpacity } = props;
+	const { orient, innerTickSize, tickFormat, tickPadding, fontSize, fontFamily } = props;
+	const { ticks: tickArguments, tickValues, tickStroke, tickStrokeOpacity } = props;
 
-	var ticks = isNotDefined(tickValues)
+	const ticks = isNotDefined(tickValues)
 		? (scale.ticks
 			? scale.ticks.apply(scale, tickArguments)
 			: scale.domain())
 		: tickValues;
 
-	var baseFormat = scale.tickFormat
+	const baseFormat = scale.tickFormat
 			? scale.tickFormat.apply(scale, tickArguments)
 			: identity;
 
-	var format = isNotDefined(tickFormat)
+	const format = isNotDefined(tickFormat)
 		? baseFormat
 		: d => baseFormat(d) ? tickFormat(d) : "";
 
-	var sign = orient === "top" || orient === "left" ? -1 : 1;
-	var tickSpacing = Math.max(innerTickSize, 0) + tickPadding;
+	const sign = orient === "top" || orient === "left" ? -1 : 1;
+	const tickSpacing = Math.max(innerTickSize, 0) + tickPadding;
 
-	var tickTransform, x, y, x2, y2, dy, canvas_dy, textAnchor;
+	let tickTransform, x, y, x2, y2, dy, canvas_dy, textAnchor;
 
 	if (orient === "bottom" || orient === "top") {
 		tickTransform = tickTransform_svg_axisX;
@@ -150,12 +150,12 @@ AxisTicks.helper = (props, scale) => {
 AxisTicks.drawOnCanvasStatic = (props, ctx, xScale, yScale) => {
 	props = { ...AxisTicks.defaultProps, ...props };
 
-	var { orient } = props;
-	var xAxis = (orient === "bottom" || orient === "top");
+	const { orient } = props;
+	const xAxis = (orient === "bottom" || orient === "top");
 
-	var result = AxisTicks.helper(props, xAxis ? xScale : yScale);
+	const result = AxisTicks.helper(props, xAxis ? xScale : yScale);
 
-	var { tickStroke, tickStrokeOpacity, textAnchor, fontSize, fontFamily } = result;
+	const { tickStroke, tickStrokeOpacity, textAnchor, fontSize, fontFamily } = result;
 
 	ctx.strokeStyle = hexToRGBA(tickStroke, tickStrokeOpacity);
 

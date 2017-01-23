@@ -38,7 +38,7 @@ export default function shallowEqual(a, b) {
 	if (!a && !b) { return true; }
 	if (!a && b || a && !b) { return false; }
 
-	var numKeysA = 0, numKeysB = 0, key;
+	let numKeysA = 0, numKeysB = 0, key;
 	for (key in b) {
 		numKeysB++;
 		if (/* !isPrimitive(b[key]) || */ !a.hasOwnProperty(key) || !isEqual(a[key], b[key])) {

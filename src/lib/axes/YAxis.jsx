@@ -9,11 +9,11 @@ class YAxis extends Component {
 		this.axisZoomCallback = this.axisZoomCallback.bind(this);
 	}
 	axisZoomCallback(newYDomain) {
-		var { chartId, yAxisZoom } = this.context;
+		const { chartId, yAxisZoom } = this.context;
 		yAxisZoom(chartId, newYDomain);
 	}
 	render() {
-		var { zoomEnabled, ...moreProps } = helper(this.props, this.context);
+		const { zoomEnabled, ...moreProps } = helper(this.props, this.context);
 		return <Axis {...this.props} {...moreProps}
 			zoomEnabled={this.props.zoomEnabled && zoomEnabled}
 			edgeClip
@@ -73,10 +73,11 @@ YAxis.contextTypes = {
 };
 
 function helper(props, context) {
-	var { axisAt, yZoomWidth, orient } = props;
-	var { chartConfig: { width, height } } = context;
+	const { axisAt, yZoomWidth, orient } = props;
+	const { chartConfig: { width, height } } = context;
 
-	var axisLocation, y = 0, w = yZoomWidth, h = height;
+	let axisLocation;
+	const y = 0, w = yZoomWidth, h = height;
 
 	if (axisAt === "left") {
 		axisLocation = 0;
@@ -88,7 +89,7 @@ function helper(props, context) {
 		axisLocation = axisAt;
 	}
 
-	var x = (orient === "left") ? -yZoomWidth : 0;
+	const x = (orient === "left") ? -yZoomWidth : 0;
 
 	return {
 		transform: [axisLocation, 0],

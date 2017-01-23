@@ -15,24 +15,24 @@ class BollingerBandTooltip extends Component {
 		this.renderSVG = this.renderSVG.bind(this);
 	}
 	renderSVG(moreProps) {
-		var { onClick, displayFormat, yAccessor, options } = this.props;
-		var { chartConfig: { width, height } } = moreProps;
-		var { currentItem } = moreProps;
+		const { onClick, displayFormat, yAccessor, options } = this.props;
+		const { chartConfig: { width, height } } = moreProps;
+		const { currentItem } = moreProps;
 
-		var top, middle, bottom;
+		let top, middle, bottom;
 		top = middle = bottom = "n/a";
 
 		if (isDefined(currentItem)
 				&& isDefined(yAccessor(currentItem))) {
-			var item = yAccessor(currentItem);
+			const item = yAccessor(currentItem);
 			top = displayFormat(item.top);
 			middle = displayFormat(item.middle);
 			bottom = displayFormat(item.bottom);
 		}
 
-		var { origin: originProp } = this.props;
-		var origin = functor(originProp);
-		var [x, y] = origin(width, height);
+		const { origin: originProp } = this.props;
+		const origin = functor(originProp);
+		const [x, y] = origin(width, height);
 
 		const { sourcePath, windowSize, multiplier, movingAverageType } = options;
 		const tooltipLabel = `BB(${sourcePath}, ${windowSize}, ${multiplier}, ${movingAverageType}): `;

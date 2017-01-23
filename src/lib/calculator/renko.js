@@ -7,25 +7,26 @@ import atr from "./atr";
 import { Renko as defaultOptions } from "./defaultOptionsForComputation";
 
 export default function() {
-	var options = defaultOptions;
+	let options = defaultOptions;
 
-	var dateAccessor = d => d.date;
-	var dateMutator = (d, date) => { d.date = date; };
+	let dateAccessor = d => d.date;
+	let dateMutator = (d, date) => { d.date = date; };
 
 	function calculator(rawData) {
-		var { reversalType, fixedBrickSize, sourcePath, windowSize } = options;
+		const { reversalType, fixedBrickSize, sourcePath, windowSize } = options;
 
-		var source = sourcePath === "high/low"
+		const source = sourcePath === "high/low"
 			? d => { return { high: d.high, low: d.low }; }
 			: d => { return { high: d.close, low: d.close }; };
 
-		var pricingMethod = source, brickSize;
+		const pricingMethod = source;
+		let brickSize;
 
 		if (reversalType === "ATR") {
 			// calculateATR(rawData, period);
-			var atrAlgorithm = atr().options({ windowSize });
+			const atrAlgorithm = atr().options({ windowSize });
 
-			var atrCalculator = merge()
+			const atrCalculator = merge()
 				.algorithm(atrAlgorithm)
 				.merge((d, c) => { d["atr" + windowSize] = c; } );
 
@@ -35,10 +36,10 @@ export default function() {
 			brickSize = functor(fixedBrickSize);
 		}
 
-		var renkoData = [];
+		const renkoData = [];
 
-		var index = 0, prevBrickClose = rawData[index].open, prevBrickOpen = rawData[index].open;
-		var brick = {}, direction = 0;
+		let index = 0, prevBrickClose = rawData[index].open, prevBrickOpen = rawData[index].open;
+		let brick = {}, direction = 0;
 
 		rawData.forEach(function(d, idx) {
 			if (isNotDefined(brick.from)) {
@@ -56,7 +57,7 @@ export default function() {
 			}
 			brick.volume = (brick.volume || 0) + d.volume;
 
-			var prevCloseToHigh = (prevBrickClose - pricingMethod(d).high),
+			const prevCloseToHigh = (prevBrickClose - pricingMethod(d).high),
 				prevCloseToLow = (prevBrickClose - pricingMethod(d).low),
 				prevOpenToHigh = (prevBrickOpen - pricingMethod(d).high),
 				prevOpenToLow = (prevBrickOpen - pricingMethod(d).low),
@@ -103,7 +104,7 @@ export default function() {
 
 			// d.brick = JSON.stringify(brick);
 			if (brickSize(d)) {
-				var noOfBricks = Math.floor(priceMovement / brickSize(d));
+				const noOfBricks = Math.floor(priceMovement / brickSize(d));
 
 				brick.open = (Math.abs(prevCloseToHigh) < Math.abs(prevOpenToHigh)
 					|| Math.abs(prevCloseToLow) < Math.abs(prevOpenToLow))
@@ -129,7 +130,7 @@ export default function() {
 						prevBrickClose = brick.close;
 						prevBrickOpen = brick.open;
 
-						var newBrick = {
+						const newBrick = {
 							high: brick.high,
 							low: brick.low,
 							open: brick.close,

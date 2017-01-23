@@ -5,19 +5,19 @@ import { ForceIndex as defaultOptions } from "./defaultOptionsForComputation";
 
 export default function() {
 
-	var options = defaultOptions;
+	let options = defaultOptions;
 
 	function calculator(data) {
-		var { sourcePath, volumePath } = options;
+		const { sourcePath, volumePath } = options;
 
-		var source = path(sourcePath);
-		var volume = path(volumePath);
+		const source = path(sourcePath);
+		const volume = path(volumePath);
 
-		var forceIndexCalulator = slidingWindow()
+		const forceIndexCalulator = slidingWindow()
 			.windowSize(2)
 			.accumulator(([prev, curr]) => (source(curr) - source(prev)) * volume(curr));
 
-		var forceIndex = forceIndexCalulator(data);
+		const forceIndex = forceIndexCalulator(data);
 
 		return forceIndex;
 	}

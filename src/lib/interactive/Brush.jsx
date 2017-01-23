@@ -22,9 +22,9 @@ class Brush extends Component {
 		});
 	}
 	handleDrawBrush() {
-		var moreProps = this.refs.component.getMoreProps();
+		const moreProps = this.refs.component.getMoreProps();
 
-		var {
+		const {
 			xScale,
 			mouseXY,
 			currentItem,
@@ -32,23 +32,23 @@ class Brush extends Component {
 			xAccessor,
 		} = moreProps;
 
-		var { enabled } = this.props;
+		const { enabled } = this.props;
 
-		var { startClick, startItem } = this.state;
+		const { startClick, startItem } = this.state;
 
 		if (enabled && isDefined(startItem)) {
-			var { yScale } = chartConfig;
+			const { yScale } = chartConfig;
 
-			var y1Value = yScale.invert(startClick[1]);
-			var y2Value = yScale.invert(mouseXY[1]);
+			const y1Value = yScale.invert(startClick[1]);
+			const y2Value = yScale.invert(mouseXY[1]);
 
-			var x1 = xScale(xAccessor(startItem));
-			var y1 = yScale(y1Value);
-			var x2 = xScale(xAccessor(currentItem));
-			var y2 = yScale(y2Value);
+			const x1 = xScale(xAccessor(startItem));
+			const y1 = yScale(y1Value);
+			const x2 = xScale(xAccessor(currentItem));
+			const y2 = yScale(y2Value);
 
-			var height = Math.abs(y2 - y1);
-			var width = Math.abs(x2 - x1);
+			const height = Math.abs(y2 - y1);
+			const width = Math.abs(x2 - x1);
 
 			this.setState({
 				rect: {
@@ -61,22 +61,22 @@ class Brush extends Component {
 		}
 	}
 	handleStartAndEnd(e) {
-		var moreProps = this.refs.component.getMoreProps();
+		const moreProps = this.refs.component.getMoreProps();
 
-		var {
+		const {
 			mouseXY,
 			currentItem,
 			chartConfig,
 			xAccessor,
 		} = moreProps;
 
-		var { enabled, onBrush } = this.props;
+		const { enabled, onBrush } = this.props;
 
 		if (enabled) {
-			var { x1, y1, startItem, startClick } = this.state;
-			var { yScale } = chartConfig;
-			var xValue = xAccessor(currentItem);
-			var yValue = yScale.invert(mouseXY[1]);
+			const { x1, y1, startItem, startClick } = this.state;
+			const { yScale } = chartConfig;
+			const xValue = xAccessor(currentItem);
+			const yValue = yScale.invert(mouseXY[1]);
 
 			if (isDefined(startItem)) {
 				// brush complete
@@ -105,9 +105,9 @@ class Brush extends Component {
 		}
 	}
 	render() {
-		var { rect } = this.state;
-		var { fill, stroke, opacity } = this.props;
-		var rectProps = { fill, stroke, opacity };
+		const { rect } = this.state;
+		const { fill, stroke, opacity } = this.props;
+		const rectProps = { fill, stroke, opacity };
 
 		return <g>
 			{ isDefined(rect) ? <rect {...rect} {...rectProps} /> : null }

@@ -14,13 +14,13 @@ class MouseCoordinateY extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var props = helper(this.props, moreProps);
+		const props = helper(this.props, moreProps);
 		if (isNotDefined(props)) return null;
 
 		drawOnCanvas(ctx, props);
 	}
 	renderSVG(moreProps) {
-		var props = helper(this.props, moreProps);
+		const props = helper(this.props, moreProps);
 		if (isNotDefined(props)) return null;
 
 		return renderSVG(props);
@@ -57,27 +57,27 @@ MouseCoordinateY.defaultProps = {
 };
 
 function helper(props, moreProps) {
-	var { chartId, width } = moreProps;
-	var { show, currentCharts, chartConfig: { yScale, origin }, mouseXY } = moreProps;
+	const { chartId, width } = moreProps;
+	const { show, currentCharts, chartConfig: { yScale, origin }, mouseXY } = moreProps;
 
 	if (isNotDefined(mouseXY)) return null;
 
 	if (currentCharts.indexOf(chartId) < 0) return null;
 
-	var { orient, at, rectWidth, rectHeight, displayFormat, dx } = props;
-	var { fill, opacity, fontFamily, fontSize, textFill, arrowWidth } = props;
+	const { orient, at, rectWidth, rectHeight, displayFormat, dx } = props;
+	const { fill, opacity, fontFamily, fontSize, textFill, arrowWidth } = props;
 
-	var x1 = 0, x2 = width;
-	var edgeAt = (at === "right")
+	const x1 = 0, x2 = width;
+	const edgeAt = (at === "right")
 		? width
 		: 0;
 
-	var type = "horizontal";
-	var y = mouseXY[1] - origin[1];
-	var coordinate = displayFormat(yScale.invert(y));
-	var hideLine = true;
+	const type = "horizontal";
+	const y = mouseXY[1] - origin[1];
+	const coordinate = displayFormat(yScale.invert(y));
+	const hideLine = true;
 
-	var coordinateProps = {
+	const coordinateProps = {
 		coordinate,
 		show,
 		type,

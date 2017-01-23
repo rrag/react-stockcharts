@@ -16,18 +16,18 @@ class SingleValueTooltip extends Component {
 	}
 	renderSVG(moreProps) {
 
-		var { onClick, fontFamily, fontSize, labelStroke, valueStroke, className } = this.props;
-		var { xDisplayFormat, yDisplayFormat, xLabel, yLabel, xAccessor, yAccessor } = this.props;
+		const { onClick, fontFamily, fontSize, labelStroke, valueStroke, className } = this.props;
+		const { xDisplayFormat, yDisplayFormat, xLabel, yLabel, xAccessor, yAccessor } = this.props;
 
-		var { chartConfig: { width, height } } = moreProps;
-		var { currentItem } = moreProps;
+		const { chartConfig: { width, height } } = moreProps;
+		const { currentItem } = moreProps;
 
-		var xDisplayValue = isDefined(currentItem) && isDefined(xAccessor(currentItem)) ? xDisplayFormat(xAccessor(currentItem)) : "n/a";
-		var yDisplayValue = isDefined(currentItem) && isDefined(yAccessor(currentItem)) ? yDisplayFormat(yAccessor(currentItem)) : "n/a";
+		const xDisplayValue = isDefined(currentItem) && isDefined(xAccessor(currentItem)) ? xDisplayFormat(xAccessor(currentItem)) : "n/a";
+		const yDisplayValue = isDefined(currentItem) && isDefined(yAccessor(currentItem)) ? yDisplayFormat(yAccessor(currentItem)) : "n/a";
 
-		var { origin: originProp } = this.props;
-		var origin = functor(originProp);
-		var [x, y] = origin(width, height);
+		const { origin: originProp } = this.props;
+		const origin = functor(originProp);
+		const [x, y] = origin(width, height);
 
 		return (
 			<g className={className} transform={`translate(${ x }, ${ y })`} onClick={onClick}>

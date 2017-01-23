@@ -23,12 +23,12 @@ function calc(prev, now) {
 
 export default function() {
 
-	var options = defaultOptions;
+	let options = defaultOptions;
 
 	function calculator(data) {
-		var { accelerationFactor, maxAccelerationFactor } = options;
+		const { accelerationFactor, maxAccelerationFactor } = options;
 
-		var algorithm = mappedSlidingWindow()
+		const algorithm = mappedSlidingWindow()
 			.windowSize(2)
 			.undefinedValue(({ high, low }) => {
 				return {
@@ -83,7 +83,7 @@ export default function() {
 						risingSar: Math.min(prev.fallingEp, now.low),
 					};
 
-				var { date, high, low } = now;
+				const { date, high, low } = now;
 				return {
 					date,
 					high,
@@ -94,7 +94,7 @@ export default function() {
 				};
 			});
 
-		var calculatedData = algorithm(data).map(d => d.sar);
+		const calculatedData = algorithm(data).map(d => d.sar);
 		// console.log(calculatedData);
 
 		return calculatedData;

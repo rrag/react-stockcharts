@@ -9,12 +9,12 @@ const ALGORITHM_TYPE = "PointAndFigure";
 
 export default function() {
 
-	var base = baseIndicator()
+	const base = baseIndicator()
 		.type(ALGORITHM_TYPE);
 
-	var underlyingAlgorithm = pointAndFigure();
+	const underlyingAlgorithm = pointAndFigure();
 
-	var indicator = underlyingAlgorithm;
+	const indicator = underlyingAlgorithm;
 
 	rebind(indicator, base, "id", "stroke", "fill", "echo", "type");
 	rebind(indicator, underlyingAlgorithm, "dateAccessor", "dateMutator");

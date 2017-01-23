@@ -10,16 +10,16 @@ import baseIndicator from "./baseIndicator";
 const ALGORITHM_TYPE = "STO";
 
 export default function() {
-	var base = baseIndicator()
+	const base = baseIndicator()
 		.type(ALGORITHM_TYPE);
 
-	var underlyingAlgorithm = sto();
+	const underlyingAlgorithm = sto();
 
-	var mergedAlgorithm = merge()
+	const mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
 		.merge((datum, indicator) => { datum.sto = indicator; });
 
-	var indicator = function(data, options = { merge: true }) {
+	const indicator = function(data, options = { merge: true }) {
 		if (options.merge) {
 			if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
 			return mergedAlgorithm(data);

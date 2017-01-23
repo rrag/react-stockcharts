@@ -23,7 +23,7 @@ class FibonacciRetracement extends Component {
 		this.state = this.props.init;
 	}
 	removeLast() {
-		var { retracements } = this.state;
+		const { retracements } = this.state;
 		if (isDefined(retracements) && retracements.length > 0) {
 			this.setState({
 				retracements: retracements.slice(0, retracements.length - 1),
@@ -37,7 +37,7 @@ class FibonacciRetracement extends Component {
 		});
 	}
 	handleStartAndEnd(xyValue) {
-		var { current, retracements } = this.state;
+		const { current, retracements } = this.state;
 
 		if (isNotDefined(current) || isNotDefined(current.x1)) {
 			this.setState({
@@ -60,7 +60,7 @@ class FibonacciRetracement extends Component {
 		}
 	}
 	handleDrawRetracement(xyValue) {
-		var { current } = this.state;
+		const { current } = this.state;
 
 		if (isDefined(current) && isDefined(current.x1)) {
 			this.setState({
@@ -73,9 +73,9 @@ class FibonacciRetracement extends Component {
 		}
 	}
 	handleDrag(echo, newXYValue, origXYValue) {
-		var { retracements } = this.state;
-		var { index } = echo;
-		var dy = origXYValue.y1Value - newXYValue.y1Value;
+		const { retracements } = this.state;
+		const { index } = echo;
+		const dy = origXYValue.y1Value - newXYValue.y1Value;
 
 		this.setState({
 			override: {
@@ -88,10 +88,10 @@ class FibonacciRetracement extends Component {
 		});
 	}
 	handleEdge1Drag(echo, newXYValue, origXYValue) {
-		var { retracements } = this.state;
-		var { index } = echo;
+		const { retracements } = this.state;
+		const { index } = echo;
 
-		var dx = origXYValue.x1Value - newXYValue.x1Value;
+		const dx = origXYValue.x1Value - newXYValue.x1Value;
 
 		this.setState({
 			override: {
@@ -104,10 +104,10 @@ class FibonacciRetracement extends Component {
 		});
 	}
 	handleEdge2Drag(echo, newXYValue, origXYValue) {
-		var { retracements } = this.state;
-		var { index } = echo;
+		const { retracements } = this.state;
+		const { index } = echo;
 
-		var dx = origXYValue.x2Value - newXYValue.x2Value;
+		const dx = origXYValue.x2Value - newXYValue.x2Value;
 
 		this.setState({
 			override: {
@@ -120,12 +120,12 @@ class FibonacciRetracement extends Component {
 		});
 	}
 	handleDragComplete() {
-		var { retracements, override } = this.state;
+		const { retracements, override } = this.state;
 
 		if (isDefined(override)) {
-			var { index, ...rest } = override;
+			const { index, ...rest } = override;
 
-			var newRetracements = retracements
+			const newRetracements = retracements
 				.map((each, idx) => idx === index
 					? rest
 					: each);
@@ -137,20 +137,20 @@ class FibonacciRetracement extends Component {
 		}
 	}
 	render() {
-		var { retracements, current, override } = this.state;
-		var { stroke, strokeWidth, opacity, fontFamily, fontSize, fontStroke, type } = this.props;
+		const { retracements, current, override } = this.state;
+		const { stroke, strokeWidth, opacity, fontFamily, fontSize, fontStroke, type } = this.props;
 
-		var lineType = type === "EXTEND" ? "XLINE" : "LINE";
+		const lineType = type === "EXTEND" ? "XLINE" : "LINE";
 
-		var { enabled } = this.props;
+		const { enabled } = this.props;
 
-		var currentRetracement = null;
+		let currentRetracement = null;
 		if (isDefined(current) && isDefined(current.x2)) {
-			var lines = helper(current);
-			var dir = head(lines).y1 > last(lines).y1 ? 3 : -1.3;
+			const lines = helper(current);
+			const dir = head(lines).y1 > last(lines).y1 ? 3 : -1.3;
 
 			currentRetracement = lines.map((line, idx) => {
-				var text = `${ line.y.toFixed(2) } (${ line.percent.toFixed(2) }%)`;
+				const text = `${ line.y.toFixed(2) } (${ line.percent.toFixed(2) }%)`;
 
 				return <InteractiveLine key={idx}
 					type={lineType}
@@ -169,11 +169,11 @@ class FibonacciRetracement extends Component {
 
 		return <g>
 			{retracements.map((each, idx) => {
-				var lines = helper(isDefined(override) && override.index === idx ? override : each);
+				const lines = helper(isDefined(override) && override.index === idx ? override : each);
 
-				var dir = head(lines).y1 > last(lines).y1 ? 3 : -1.3;
+				const dir = head(lines).y1 > last(lines).y1 ? 3 : -1.3;
 				return lines.map((line, j) => {
-					var text = `${ line.y.toFixed(2) } (${ line.percent.toFixed(2) }%)`;
+					const text = `${ line.y.toFixed(2) } (${ line.percent.toFixed(2) }%)`;
 
 					return <InteractiveLine key={`${idx}-${j}`} withEdge
 						echo={{ index: idx, idx: j }} type={lineType}
@@ -208,8 +208,8 @@ class FibonacciRetracement extends Component {
 /* eslint-disable react/prop-types */
 
 function retracementText({ xScale, chartConfig }, props, modLine) {
-	var { text, dir, fontStroke, fontFamily, fontSize } = props.childProps;
-	var { x1, y1, x2 } = modLine;
+	const { text, dir, fontStroke, fontFamily, fontSize } = props.childProps;
+	const { x1, y1, x2 } = modLine;
 	return <text
 		x={xScale(Math.min(x1, x2)) + 10}
 		y={chartConfig.yScale(y1) + dir * 4}
@@ -220,8 +220,8 @@ function retracementText({ xScale, chartConfig }, props, modLine) {
 /* eslint-enable react/prop-types */
 
 function helper({ x1, y1, x2, y2 }) {
-	var dy = y2 - y1;
-	var retracements = [100, 61.8, 50, 38.2, 23.6, 0]
+	const dy = y2 - y1;
+	const retracements = [100, 61.8, 50, 38.2, 23.6, 0]
 		.map(each => ({
 			percent: each,
 			x1,

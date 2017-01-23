@@ -32,42 +32,42 @@ import { isDefined, zipper } from "../utils";
 import { MACD as defaultOptions } from "./defaultOptionsForComputation";
 
 export default function() {
-	var options = defaultOptions;
+	let options = defaultOptions;
 
 	function calculator(data) {
-		var { fast, slow, signal, sourcePath } = options;
+		const { fast, slow, signal, sourcePath } = options;
 
-		var fastEMA = ema()
+		const fastEMA = ema()
 			.options({ windowSize: fast, sourcePath });
 
-		var slowEMA = ema()
+		const slowEMA = ema()
 			.options({ windowSize: slow, sourcePath });
 
-		var signalEMA = ema()
+		const signalEMA = ema()
 			.options({ windowSize: signal, sourcePath: undefined });
 
-		var macdCalculator = zipper()
+		const macdCalculator = zipper()
 			.combine((fastEMA, slowEMA) => (isDefined(fastEMA) && isDefined(slowEMA)) ? fastEMA - slowEMA : undefined);
 
-		var macdArray = macdCalculator(fastEMA(data), slowEMA(data));
+		const macdArray = macdCalculator(fastEMA(data), slowEMA(data));
 
-		var undefinedArray = new Array(slow);
-		var signalArray = undefinedArray.concat(signalEMA(macdArray.slice(slow)));
+		const undefinedArray = new Array(slow);
+		const signalArray = undefinedArray.concat(signalEMA(macdArray.slice(slow)));
 
-		var zip = zipper()
+		const zip = zipper()
 			.combine((macd, signal) => ({
 				macd,
 				signal,
 				divergence: (isDefined(macd) && isDefined(signal)) ? macd - signal : undefined,
 			}));
 
-		var macd = zip(macdArray, signalArray);
+		const macd = zip(macdArray, signalArray);
 
 		return macd;
 	}
 
 	calculator.undefinedLength = function() {
-		var { slow, signal } = options;
+		const { slow, signal } = options;
 		return slow + signal - 1;
 	};
 	calculator.options = function(x) {

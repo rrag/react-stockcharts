@@ -15,11 +15,11 @@ class SingleMAToolTip extends Component {
 		this.handleClick = this.handleClick.bind(this);
 	}
 	handleClick(e) {
-		var { onClick, forChart, options } = this.props;
+		const { onClick, forChart, options } = this.props;
 		onClick({ chartId: forChart, ...options }, e);
 	}
 	render() {
-		var translate = "translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")";
+		const translate = "translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")";
 		return (
 			<g transform={translate}>
 				<line x1={0} y1={2} x2={0} y2={28} stroke={this.props.color} strokeWidth="4px"/>
@@ -54,27 +54,27 @@ class MovingAverageTooltip extends Component {
 		this.renderSVG = this.renderSVG.bind(this);
 	}
 	renderSVG(moreProps) {
-		var { chartId } = moreProps;
-		var { chartConfig, currentItem } = moreProps;
+		const { chartId } = moreProps;
+		const { chartConfig, currentItem } = moreProps;
 
-		var { className, onClick, width, fontFamily, fontSize } = this.props;
-		var { origin: originProp, displayFormat, options } = this.props;
-		var { chartConfig: { height } } = moreProps;
+		const { className, onClick, width, fontFamily, fontSize } = this.props;
+		const { origin: originProp, displayFormat, options } = this.props;
+		const { chartConfig: { height } } = moreProps;
 
-		var config = chartConfig;
+		const config = chartConfig;
 
-		var origin = functor(originProp);
-		var [x, y] = origin(width, height);
-		var [ox, oy] = config.origin;
+		const origin = functor(originProp);
+		const [x, y] = origin(width, height);
+		const [ox, oy] = config.origin;
 
 		return (
 			<g transform={`translate(${ ox + x }, ${ oy + y })`} className={className}>
 				{options
 					.map((each, idx) => {
-						var yValue = currentItem && each.yAccessor(currentItem);
+						const yValue = currentItem && each.yAccessor(currentItem);
 
-						var tooltipLabel = `${each.type} (${each.windowSize})`;
-						var yDisplayValue = yValue ? displayFormat(yValue) : "n/a";
+						const tooltipLabel = `${each.type} (${each.windowSize})`;
+						const yDisplayValue = yValue ? displayFormat(yValue) : "n/a";
 						return <SingleMAToolTip
 							key={idx}
 							origin={[width * idx, 0]}

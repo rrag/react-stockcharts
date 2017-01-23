@@ -23,7 +23,7 @@ class Label extends Component {
 			/>;
 	}
 	renderSVG(moreProps) {
-		var { chartConfig } = moreProps;
+		const { chartConfig } = moreProps;
 
 		return <LabelAnnotation yScale={getYScale(chartConfig)} {...this.props} text={getText(this.props)}/>;
 	}
@@ -62,7 +62,7 @@ Label.defaultProps = {
 function drawOnCanvas2(ctx, props, context, moreProps) {
 	ctx.save();
 
-	var { canvasOriginX, canvasOriginY, margin, ratio } = context;
+	const { canvasOriginX, canvasOriginY, margin, ratio } = context;
 	ctx.setTransform(1, 0, 0, 1, 0, 0);
 	ctx.scale(ratio, ratio);
 
@@ -79,12 +79,12 @@ function drawOnCanvas2(ctx, props, context, moreProps) {
 }
 
 function drawOnCanvas(ctx, props, moreProps) {
-	var { textAnchor, fontFamily, fontSize, opacity, rotate } = props;
-	var { xScale, chartConfig, xAccessor } = moreProps;
+	const { textAnchor, fontFamily, fontSize, opacity, rotate } = props;
+	const { xScale, chartConfig, xAccessor } = moreProps;
 
-	var { xPos, yPos, fill, text } = helper(props, xAccessor, xScale, getYScale(chartConfig));
+	const { xPos, yPos, fill, text } = helper(props, xAccessor, xScale, getYScale(chartConfig));
 
-	var radians = (rotate / 180) * Math.PI;
+	const radians = (rotate / 180) * Math.PI;
 	ctx.save();
 	ctx.translate(xPos, yPos);
 	ctx.rotate(radians);

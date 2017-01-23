@@ -38,9 +38,9 @@ class AxisZoomCapture extends Component {
 		e.stopPropagation();
 		e.preventDefault();
 
-		var { onContextMenu } = this.props;
+		const { onContextMenu } = this.props;
 
-		var mouseXY = mousePosition(e, this.node.getBoundingClientRect());
+		const mouseXY = mousePosition(e, this.node.getBoundingClientRect());
 
 		select(d3Window(this.node))
 			.on(MOUSEMOVE, null)
@@ -54,8 +54,8 @@ class AxisZoomCapture extends Component {
 		this.contextMenuClicked = true;
 	}
 	handleDragStart(e) {
-		var { getScale, getMoreProps } = this.props;
-		var startScale = getScale(getMoreProps());
+		const { getScale, getMoreProps } = this.props;
+		const startScale = getScale(getMoreProps());
 		this.dragHappened = false;
 
 		if (startScale.invert) {
@@ -63,8 +63,8 @@ class AxisZoomCapture extends Component {
 				.on(MOUSEMOVE, this.handleDrag)
 				.on(MOUSEUP, this.handleDragEnd);
 
-			var startXY = mousePosition(e);
-			var leftX = e.pageX - startXY[0],
+			const startXY = mousePosition(e);
+			const leftX = e.pageX - startXY[0],
 				topY = e.pageY - startXY[1];
 
 			this.setState({
@@ -79,31 +79,31 @@ class AxisZoomCapture extends Component {
 		e.preventDefault();
 	}
 	handleDrag() {
-		var e = d3Event;
+		const e = d3Event;
 		e.preventDefault();
 
-		var { startPosition } = this.state;
-		var { getMouseDelta, inverted } = this.props;
+		const { startPosition } = this.state;
+		const { getMouseDelta, inverted } = this.props;
 
 		this.dragHappened = true;
 		if (isDefined(startPosition)) {
-			var { startScale } = startPosition;
-			var { startXY, leftX, topY } = startPosition;
+			const { startScale } = startPosition;
+			const { startXY, leftX, topY } = startPosition;
 
-			var mouseXY = [e.pageX - leftX, e.pageY - topY];
+			const mouseXY = [e.pageX - leftX, e.pageY - topY];
 
-			var diff = getMouseDelta(startXY, mouseXY);
+			const diff = getMouseDelta(startXY, mouseXY);
 
-			var center = mean(startScale.range());
+			const center = mean(startScale.range());
 
-			var tempRange = startScale.range()
+			const tempRange = startScale.range()
 				.map(d => inverted ? d - sign(d - center) * diff : d + sign(d - center) * diff);
 
-			var newDomain = tempRange.map(startScale.invert);
+			const newDomain = tempRange.map(startScale.invert);
 
 			if (sign(last(startScale.range()) - first(startScale.range())) === sign(last(tempRange) - first(tempRange))) {
 
-				var { axisZoomCallback } = this.props;
+				const { axisZoomCallback } = this.props;
 				// console.log(startXScale.domain(), newXDomain)
 				axisZoomCallback(newDomain);
 			}
@@ -113,9 +113,9 @@ class AxisZoomCapture extends Component {
 
 		if (!this.dragHappened) {
 			if (this.clicked) {
-				var e = d3Event;
-				var mouseXY = mousePosition(e, this.node.getBoundingClientRect());
-				var { onDoubleClick } = this.props;
+				const e = d3Event;
+				const mouseXY = mousePosition(e, this.node.getBoundingClientRect());
+				const { onDoubleClick } = this.props;
 
 				onDoubleClick(mouseXY, e);
 			} else {
@@ -134,9 +134,9 @@ class AxisZoomCapture extends Component {
 		});
 	}
 	render() {
-		var { bg, zoomCursorClassName } = this.props;
+		const { bg, zoomCursorClassName } = this.props;
 
-		var cursor = isDefined(this.state.startPosition)
+		const cursor = isDefined(this.state.startPosition)
 			? zoomCursorClassName
 			: "react-stockcharts-default-cursor";
 

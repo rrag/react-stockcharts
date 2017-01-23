@@ -16,20 +16,20 @@ class OHLCTooltip extends Component {
 		this.renderSVG = this.renderSVG.bind(this);
 	}
 	renderSVG(moreProps) {
-		var { className } = this.props;
-		var { chartConfig: { width, height } } = moreProps;
-		var { currentItem } = moreProps;
+		const { className } = this.props;
+		const { chartConfig: { width, height } } = moreProps;
+		const { currentItem } = moreProps;
 
-		var { onClick, xDisplayFormat, fontFamily, fontSize, accessor, volumeFormat, ohlcFormat } = this.props;
+		const { onClick, xDisplayFormat, fontFamily, fontSize, accessor, volumeFormat, ohlcFormat } = this.props;
 
-		var displayDate, open, high, low, close, volume;
+		let displayDate, open, high, low, close, volume;
 
 		displayDate = open = high = low = close = volume = "n/a";
 
 		if (isDefined(currentItem)
 				&& isDefined(accessor(currentItem))
 				&& isDefined(accessor(currentItem).close)) {
-			var item = accessor(currentItem);
+			const item = accessor(currentItem);
 			volume = isDefined(item.volume)
 				? volumeFormat(item.volume)
 				: "n/a";
@@ -41,9 +41,9 @@ class OHLCTooltip extends Component {
 			close = ohlcFormat(item.close);
 		}
 
-		var { origin: originProp } = this.props;
-		var origin = functor(originProp);
-		var [x, y] = origin(width, height);
+		const { origin: originProp } = this.props;
+		const origin = functor(originProp);
+		const [x, y] = origin(width, height);
 
 		return (
 			<g className={`react-stockcharts-toottip-hover ${className}`}

@@ -13,32 +13,32 @@ class Chart extends PureComponent {
 		this.listener = this.listener.bind(this);
 	}
 	componentWillMount() {
-		var { id } = this.props;
-		var { subscribe } = this.context;
+		const { id } = this.props;
+		const { subscribe } = this.context;
 		subscribe("chart_" + id, this.listener);
 	}
 	componentWillUnmount() {
-		var { id } = this.props;
-		var { unsubscribe } = this.context;
+		const { id } = this.props;
+		const { unsubscribe } = this.context;
 		unsubscribe("chart_" + id);
 	}
 	listener(type, moreProps, state, e) {
-		var { id, onContextMenu } = this.props;
+		const { id, onContextMenu } = this.props;
 
 		if (type === "contextmenu") {
-			var { currentCharts } = moreProps;
+			const { currentCharts } = moreProps;
 			if (currentCharts.indexOf(id) > -1) {
 				onContextMenu(moreProps, e);
 			}
 		}
 	}
 	yScale() {
-		var chartConfig = this.context.chartConfig.filter((each) => each.id === this.props.id)[0];
+		const chartConfig = this.context.chartConfig.filter((each) => each.id === this.props.id)[0];
 		return chartConfig.yScale.copy();
 	}
 	getChildContext() {
-		var { id: chartId } = this.props;
-		var chartConfig = this.context.chartConfig.filter((each) => each.id === chartId)[0];
+		const { id: chartId } = this.props;
+		const chartConfig = this.context.chartConfig.filter((each) => each.id === chartId)[0];
 
 		return {
 			chartId,
@@ -46,8 +46,8 @@ class Chart extends PureComponent {
 		};
 	}
 	render() {
-		var { origin } = this.context.chartConfig.filter((each) => each.id === this.props.id)[0];
-		var [x, y] = origin;
+		const { origin } = this.context.chartConfig.filter((each) => each.id === this.props.id)[0];
+		const [x, y] = origin;
 
 		return <g transform={`translate(${ x }, ${ y })`}>{this.props.children}</g>;
 	}

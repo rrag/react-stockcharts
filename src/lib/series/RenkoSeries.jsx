@@ -12,17 +12,17 @@ class RenkoSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { xAccessor } = moreProps;
-		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+		const { xAccessor } = moreProps;
+		const { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
-		var { yAccessor } = this.props;
+		const { yAccessor } = this.props;
 
-		var candles = getRenko(this.props, plotData, xScale, xAccessor, yScale, yAccessor);
+		const candles = getRenko(this.props, plotData, xScale, xAccessor, yScale, yAccessor);
 
 		drawOnCanvas(ctx, candles);
 	}
 	render() {
-		var { clip } = this.props;
+		const { clip } = this.props;
 
 		return <GenericChartComponent
 			canvasToDraw={getAxisCanvas}
@@ -33,12 +33,12 @@ class RenkoSeries extends Component {
 			/>;
 	}
 	renderSVG(moreProps) {
-		var { xAccessor } = moreProps;
-		var { xScale, chartConfig: { yScale }, plotData } = moreProps;
+		const { xAccessor } = moreProps;
+		const { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
-		var { yAccessor } = this.props;
+		const { yAccessor } = this.props;
 
-		var candles = getRenko(this.props, plotData, xScale, xAccessor, yScale, yAccessor)
+		const candles = getRenko(this.props, plotData, xScale, xAccessor, yScale, yAccessor)
 			.map((each, idx) => (<rect key={idx} className={each.className}
 								fill={each.fill}
 								x={each.x}
@@ -106,24 +106,24 @@ function drawOnCanvas(ctx, renko) {
 }
 
 function getRenko(props, plotData, xScale, xAccessor, yScale, yAccessor) {
-	var { classNames, fill } = props;
-	var width = xScale(xAccessor(plotData[plotData.length - 1]))
+	const { classNames, fill } = props;
+	const width = xScale(xAccessor(plotData[plotData.length - 1]))
 		- xScale(xAccessor(plotData[0]));
 
-	var candleWidth = (width / (plotData.length - 1));
-	var candles = plotData
+	const candleWidth = (width / (plotData.length - 1));
+	const candles = plotData
 			.filter(d => isDefined(yAccessor(d).close))
 			.map(d => {
-				var ohlc = yAccessor(d);
-				var x = xScale(xAccessor(d)) - 0.5 * candleWidth,
+				const ohlc = yAccessor(d);
+				const x = xScale(xAccessor(d)) - 0.5 * candleWidth,
 					y = yScale(Math.max(ohlc.open, ohlc.close)),
 					height = Math.abs(yScale(ohlc.open) - yScale(ohlc.close)),
-					className = (ohlc.open <= ohlc.close) ? classNames.up : classNames.down,
-					svgfill = (ohlc.open <= ohlc.close) ? fill.up : fill.down;
+					className = (ohlc.open <= ohlc.close) ? classNames.up : classNames.down;
 
-				if (!d.fullyFormed) {
-					svgfill = fill.partial;
-				}
+				const svgfill = d.fullyFormed
+					? (ohlc.open <= ohlc.close ? fill.up : fill.down)
+					: fill.partial;
+
 				return {
 					className: className,
 					fill: svgfill,

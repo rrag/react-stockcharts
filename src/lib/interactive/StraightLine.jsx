@@ -22,12 +22,12 @@ class StraightLine extends Component {
 		this.node = node;
 	}
 	isHover(moreProps) {
-		var { tolerance, noHover } = this.props;
+		const { tolerance, noHover } = this.props;
 
 		if (!noHover) {
-			var { x1Value, x2Value, y1Value, y2Value, type } = this.props;
-			var { mouseXY, xScale } = moreProps;
-			var { chartConfig: { yScale } } = moreProps;
+			const { x1Value, x2Value, y1Value, y2Value, type } = this.props;
+			const { mouseXY, xScale } = moreProps;
+			const { chartConfig: { yScale } } = moreProps;
 
 			const [mouseX] = mouseXY;
 
@@ -55,8 +55,8 @@ class StraightLine extends Component {
 		return false;
 	}
 	drawOnCanvas(ctx, moreProps) {
-		var { stroke, strokeWidth, opacity, selected } = this.props;
-		var { hovering } = moreProps;
+		const { stroke, strokeWidth, opacity, selected } = this.props;
+		const { hovering } = moreProps;
 		const { x1, y1, x2, y2 } = helper(this.props, moreProps);
 
 		ctx.lineWidth = (hovering || selected)
@@ -69,8 +69,8 @@ class StraightLine extends Component {
 		ctx.stroke();
 	}
 	renderSVG(moreProps) {
-		var { stroke, strokeWidth, opacity, selected } = this.props;
-		var { hovering } = moreProps;
+		const { stroke, strokeWidth, opacity, selected } = this.props;
+		const { hovering } = moreProps;
 
 		const lineWidth = (hovering || selected)
 			? strokeWidth + 2
@@ -86,8 +86,8 @@ class StraightLine extends Component {
 
 	}
 	render() {
-		var { selected, onSelect } = this.props;
-		var { onDragStart, onDrag, onDragComplete } = this.props;
+		const { selected, onSelect } = this.props;
+		const { onDragStart, onDrag, onDragComplete } = this.props;
 
 		return <GenericChartComponent ref={this.saveNode}
 			selected={selected}
@@ -105,26 +105,26 @@ class StraightLine extends Component {
 }
 
 function isHovering(start, end, [mouseX, mouseY], tolerance) {
-	var m = getSlope(start, end);
-	var b = getYIntercept(m, end);
+	const m = getSlope(start, end);
+	const b = getYIntercept(m, end);
 	const y = m * mouseX + b;
 	return (mouseY < y + tolerance) && mouseY > (y - tolerance);
 }
 
 function helper(props, moreProps) {
-	var { x1Value, x2Value, y1Value, y2Value, type } = props;
+	const { x1Value, x2Value, y1Value, y2Value, type } = props;
 
-	var { xScale, chartConfig: { yScale }, plotData } = moreProps;
-	var { xAccessor } = moreProps;
+	const { xScale, chartConfig: { yScale }, plotData } = moreProps;
+	const { xAccessor } = moreProps;
 
-	var modLine = generateLine(type,
+	const modLine = generateLine(type,
 		[x1Value, y1Value],
 		[x2Value, y2Value], xAccessor, plotData);
 
-	var x1 = xScale(modLine.x1);
-	var y1 = yScale(modLine.y1);
-	var x2 = xScale(modLine.x2);
-	var y2 = yScale(modLine.y2);
+	const x1 = xScale(modLine.x1);
+	const y1 = yScale(modLine.y1);
+	const x2 = xScale(modLine.x2);
+	const y2 = yScale(modLine.y2);
 
 	return {
 		x1, y1, x2, y2
@@ -132,33 +132,33 @@ function helper(props, moreProps) {
 }
 
 function getSlope(start, end) {
-	var m /* slope */ = end[0] === start[0]
+	const m /* slope */ = end[0] === start[0]
 		? 0
 		: (end[1] - start[1]) / (end[0] - start[0]);
 	return m;
 }
 function getYIntercept(m, end) {
-	var b /* y intercept */ = -1 * m * end[0] + end[1];
+	const b /* y intercept */ = -1 * m * end[0] + end[1];
 	return b;
 }
 
 function generateLine(type, start, end, xAccessor, plotData) {
-	var m /* slope */ = getSlope(start, end);
+	const m /* slope */ = getSlope(start, end);
 	// console.log(end[0] - start[0], m)
-	var b /* y intercept */ = getYIntercept(m, end);
+	const b /* y intercept */ = getYIntercept(m, end);
 	// y = m * x + b
-	var x1 = type === "XLINE"
+	const x1 = type === "XLINE"
 		? xAccessor(head(plotData))
 		: start[0]; // RAY or LINE start is the same
 
-	var y1 = m * x1 + b;
+	const y1 = m * x1 + b;
 
-	var x2 = type === "XLINE"
+	const x2 = type === "XLINE"
 		? xAccessor(last(plotData))
 		: type === "RAY"
 			? end[0] > start[0] ? xAccessor(last(plotData)) : xAccessor(head(plotData))
 			: end[0];
-	var y2 = m * x2 + b;
+	const y2 = m * x2 + b;
 	return { x1, y1, x2, y2 };
 }
 

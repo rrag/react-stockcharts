@@ -7,12 +7,12 @@ import { SMA as defaultOptions } from "./defaultOptionsForComputation";
 
 export default function() {
 
-	var options = defaultOptions;
+	let options = defaultOptions;
 
 	function calculator(data) {
-		var { windowSize, sourcePath } = options;
+		const { windowSize, sourcePath } = options;
 
-		var average = slidingWindow()
+		const average = slidingWindow()
 			.windowSize(windowSize)
 			.sourcePath(sourcePath)
 			.accumulator(values => mean(values));
@@ -20,7 +20,7 @@ export default function() {
 		return average(data);
 	}
 	calculator.undefinedLength = function() {
-		var { windowSize } = options;
+		const { windowSize } = options;
 		return windowSize - 1;
 	};
 	calculator.options = function(x) {
