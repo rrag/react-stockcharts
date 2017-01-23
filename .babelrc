@@ -8,14 +8,14 @@
 	],
 	"env": {
 		"cjs": {
-			"presets": ["latest"],
+			"presets": [["latest"]],
 		},
 		"es": {
-			"presets": ["latest", {
+			"presets": [["latest", {
 				"es2015": {
 					"modules": false 
 				}
-			}]
+			}]]
 		},
 		"watch": {
 			"presets": [
