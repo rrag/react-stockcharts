@@ -146,6 +146,8 @@ class InteractiveLine extends Component {
 			edgeStrokeWidth,
 			edgeFill,
 			edgeStroke,
+			edgeInteractiveCursor,
+			lineInteractiveCursor,
 		} = this.props;
 		const { selected } = this.state;
 
@@ -161,6 +163,7 @@ class InteractiveLine extends Component {
 				stroke={stroke}
 				strokeWidth={strokeWidth}
 				opacity={opacity}
+				interactiveCursorClass={lineInteractiveCursor}
 				onDragStart={this.handleLineDragStart}
 				onDrag={this.handleLineDrag}
 				onDragComplete={this.handleLineComplete} />
@@ -173,6 +176,7 @@ class InteractiveLine extends Component {
 				stroke={edgeStroke}
 				strokeWidth={edgeStrokeWidth}
 				opacity={1}
+				interactiveCursorClass={edgeInteractiveCursor}
 				onDrag={this.handleEdge1Drag}
 				onDragComplete={this.handleEdge1DragComplete} />
 			<ClickableCircle
@@ -184,6 +188,7 @@ class InteractiveLine extends Component {
 				stroke={edgeStroke}
 				strokeWidth={edgeStrokeWidth}
 				opacity={1}
+				interactiveCursorClass={edgeInteractiveCursor}
 				onDrag={this.handleEdge2Drag}
 				onDragComplete={this.handleEdge2DragComplete} />
 		</g>;
@@ -226,6 +231,8 @@ InteractiveLine.propTypes = {
 
 	edgeStrokeWidth: PropTypes.number.isRequired,
 	edgeStroke: PropTypes.string.isRequired,
+	edgeInteractiveCursor: PropTypes.string.isRequired,
+	lineInteractiveCursor: PropTypes.string.isRequired,
 	edgeFill: PropTypes.string.isRequired,
 	children: PropTypes.func.isRequired,
 };

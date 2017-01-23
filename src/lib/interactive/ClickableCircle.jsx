@@ -58,10 +58,12 @@ class ClickableCircle extends Component {
 			/>;
 	}
 	render() {
+		const { interactiveCursorClass } = this.props;
 		const { show, onDrag, onDragComplete } = this.props;
 
 		return show
 			? <GenericChartComponent ref={this.saveNode}
+				interactiveCursorClass={interactiveCursorClass}
 				selected
 				onDrag={onDrag}
 				onDragComplete={onDragComplete}
@@ -97,6 +99,7 @@ ClickableCircle.propTypes = {
 	className: PropTypes.string.isRequired,
 	show: PropTypes.bool.isRequired,
 	opacity: PropTypes.number.isRequired,
+	interactiveCursorClass: PropTypes.string,
 };
 
 

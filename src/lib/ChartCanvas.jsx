@@ -266,12 +266,17 @@ class ChartCanvas extends Component {
 		this.subscribe = this.subscribe.bind(this);
 		this.unsubscribe = this.unsubscribe.bind(this);
 		this.amIOnTop = this.amIOnTop.bind(this);
+		this.saveEventCaptureNode = this.saveEventCaptureNode.bind(this);
+		this.setCursorClass = this.setCursorClass.bind(this);
 		// this.canvasDrawCallbackList = [];
 		this.interactiveState = [];
 		this.panInProgress = false;
 
 		this.state = {};
 		this.lastSubscriptionId = 0;
+	}
+	saveEventCaptureNode(node) {
+		this.eventCaptureNode = node;
 	}
 	getDataInfo() {
 		return {
@@ -332,6 +337,9 @@ class ChartCanvas extends Component {
 	isSomethingSelectedAndHovering() {
 		return this.subscriptions
 			.filter(each => each.isDraggable()).length > 0;
+	}
+	setCursorClass(className) {
+		this.eventCaptureNode.setCursorClass(className);
 	}
 	amIOnTop(id) {
 		const dragableComponents = this.subscriptions
@@ -520,6 +528,10 @@ class ChartCanvas extends Component {
 					return each;
 				}
 			});
+
+		/* this.triggerEvent("zoom", {
+			chartConfig,
+		});*/
 
 		this.setState({
 			chartConfig,
@@ -723,6 +735,7 @@ class ChartCanvas extends Component {
 			unsubscribe: this.unsubscribe,
 			generateSubscriptionId: this.generateSubscriptionId,
 			amIOnTop: this.amIOnTop,
+			setCursorClass: this.setCursorClass,
 		};
 	}
 	componentWillMount() {
@@ -844,6 +857,7 @@ class ChartCanvas extends Component {
 					</defs>
 					<g transform={`translate(${margin.left + 0.5}, ${margin.top + 0.5})`}>
 						<EventCapture
+							ref={this.saveEventCaptureNode}
 							mouseMove={mouseMoveEvent && interaction}
 							zoom={zoomEvent && interaction}
 							pan={panEvent && interaction && !drawMode}
@@ -1002,6 +1016,7 @@ ChartCanvas.childContextTypes = {
 	amIOnTop: PropTypes.func,
 	subscribe: PropTypes.func,
 	unsubscribe: PropTypes.func,
+	setCursorClass: PropTypes.func,
 	generateSubscriptionId: PropTypes.func,
 };
 

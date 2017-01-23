@@ -56,7 +56,7 @@ class GenericComponent extends Component {
 		this.evaluateType(type, e);
 	}
 	evaluateType(type, e) {
-		this.props.debug(type);
+		// console.log("type ->", type);
 
 		switch (type) {
 		case "zoom":
@@ -86,6 +86,11 @@ class GenericComponent extends Component {
 				this.props.onSelect({
 					selected
 				}, e);
+
+				const { setCursorClass } = this.context;
+				setCursorClass(selected
+					? this.props.interactiveCursorClass
+					: null);
 			}
 			if (this.moreProps.hovering && this.props.onClick) {
 				this.props.onClick(e);
@@ -100,6 +105,7 @@ class GenericComponent extends Component {
 					this.props.onDragStart(this.getMoreProps(), e);
 				}
 			}
+			this.someDragInProgress = true;
 			break;
 		}
 		case "dragend": {
@@ -107,6 +113,7 @@ class GenericComponent extends Component {
 				this.props.onDragComplete(this.getMoreProps(), e);
 			}
 			this.dragInProgress = false;
+			this.someDragInProgress = false;
 			break;
 		}
 		case "drag": {
@@ -126,6 +133,19 @@ class GenericComponent extends Component {
 					&& this.drawOnNextTick) {
 				this.props.onMouseMove(e);
 			}
+
+			const { amIOnTop, setCursorClass } = this.context;
+
+			if (this.moreProps.hovering
+					&& this.props.selected
+					&& amIOnTop(this.suscriberId)) {
+				setCursorClass(this.props.interactiveCursorClass);
+				this.iSetTheCursorClass = true;
+			} else if (this.iSetTheCursorClass) {
+				this.iSetTheCursorClass = false;
+				setCursorClass(null);
+			}
+
 			// prevMouseXY is used in interactive components
 			this.prevMouseXY = this.moreProps.mouseXY;
 
@@ -200,7 +220,14 @@ class GenericComponent extends Component {
 		this.props.debug("updated");
 
 		if (isDefined(canvasDraw)
-				&& !this.props.selected // prevent double draw of interactive elements
+				&& !(this.someDragInProgress && this.props.selected)
+				/*
+				prevent double draw of interactive elements
+				during dragging.
+				When any drag is in progress, it has to be for the
+				selected elements. When drag is happening
+				no selected components are left behind
+				*/
 				&& chartCanvasType !== "svg") {
 			this.drawOnCanvas();
 		}
@@ -278,6 +305,7 @@ GenericComponent.propTypes = {
 	clip: PropTypes.bool.isRequired,
 	edgeClip: PropTypes.bool.isRequired,
 	drawOnMouseExitOfCanvas: PropTypes.bool.isRequired,
+	interactiveCursorClass: PropTypes.string,
 
 	selected: PropTypes.bool.isRequired,
 
@@ -343,6 +371,7 @@ GenericComponent.contextTypes = {
 	amIOnTop: PropTypes.func.isRequired,
 	subscribe: PropTypes.func.isRequired,
 	unsubscribe: PropTypes.func.isRequired,
+	setCursorClass: PropTypes.func.isRequired,
 };
 
 export default GenericComponent;

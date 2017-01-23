@@ -33,6 +33,7 @@ class EventCapture extends Component {
 		this.handleDrag = this.handleDrag.bind(this);
 		this.handleDragEnd = this.handleDragEnd.bind(this);
 
+		this.setCursorClass = this.setCursorClass.bind(this);
 		this.saveNode = this.saveNode.bind(this);
 		this.lastTouch = {};
 		this.initialPinch = {};
@@ -361,6 +362,13 @@ class EventCapture extends Component {
 
 		// console.log("handleTouchMove", e);
 	}
+	setCursorClass(cursorOverrideClass) {
+		if (cursorOverrideClass !== this.state.cursorOverrideClass) {
+			this.setState({
+				cursorOverrideClass
+			});
+		}
+	}
 	handleTouchEnd(e) {
 		// TODO enableMouseInteraction
 		const { pan: panEnabled, onPanEnd } = this.props;
@@ -383,7 +391,12 @@ class EventCapture extends Component {
 	}
 	render() {
 		const { height, width } = this.props;
-		const className = this.state.panInProgress ? "react-stockcharts-grabbing-cursor" : "react-stockcharts-crosshair-cursor";
+		const className = this.state.cursorOverrideClass != null
+			? this.state.cursorOverrideClass
+			: this.state.panInProgress
+				? "react-stockcharts-grabbing-cursor"
+				: "react-stockcharts-crosshair-cursor";
+
 		return (
 			<rect ref={this.saveNode}
 				className={className}

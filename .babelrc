@@ -23,7 +23,7 @@
 					"targets": {
 						"chrome": 55
 					},
-					"modules": false,
+					"modules": false
 				}]
 			]
 		}

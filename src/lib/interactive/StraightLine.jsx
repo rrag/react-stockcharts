@@ -83,13 +83,13 @@ class StraightLine extends Component {
 				stroke={stroke} strokeWidth={lineWidth}
 				opacity={opacity} />
 		);
-
 	}
 	render() {
-		const { selected, onSelect } = this.props;
+		const { selected, onSelect, interactiveCursorClass } = this.props;
 		const { onDragStart, onDrag, onDragComplete } = this.props;
 
 		return <GenericChartComponent ref={this.saveNode}
+			interactiveCursorClass={interactiveCursorClass}
 			selected={selected}
 			onSelect={onSelect}
 			canvasToDraw={getAxisCanvas}
@@ -168,6 +168,7 @@ StraightLine.propTypes = {
 	y1Value: PropTypes.any.isRequired,
 	y2Value: PropTypes.any.isRequired,
 
+	interactiveCursorClass: PropTypes.string,
 	stroke: PropTypes.string.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
 	type: PropTypes.oneOf([

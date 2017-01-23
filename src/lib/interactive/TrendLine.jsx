@@ -225,6 +225,8 @@ class EachTrendLine extends Component {
 			opacity={opacity}
 			onDrag={this.handleDragLine}
 			onDragComplete={this.handleDragLineComplete}
+			edgeInteractiveCursor="react-stockcharts-move-cursor"
+			lineInteractiveCursor="react-stockcharts-move-cursor"
 			/>;
 	}
 
