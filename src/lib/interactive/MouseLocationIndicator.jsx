@@ -22,8 +22,7 @@ class MouseLocationIndicator extends Component {
 	saveNode(node) {
 		this.node = node;
 	}
-	handleMouseDown(e) {
-		const moreProps = this.node.getMoreProps();
+	handleMouseDown(moreProps, e) {
 		const pos = this.xy(moreProps, e);
 		if (isDefined(pos)) {
 			const { xValue, yValue, x, y } = pos;
@@ -31,8 +30,7 @@ class MouseLocationIndicator extends Component {
 			this.props.onMouseDown([xValue, yValue], e);
 		}
 	}
-	handleClick(e) {
-		const moreProps = this.node.getMoreProps();
+	handleClick(moreProps, e) {
 		const pos = this.xy(moreProps, e);
 		if (isDefined(pos)) {
 			const { xValue, yValue, x, y } = pos;
@@ -46,7 +44,6 @@ class MouseLocationIndicator extends Component {
 		const { enabled, snap, shouldDisableSnap, snapTo } = this.props;
 
 		if (enabled && isDefined(currentItem) && isDefined(e)) {
-
 			const xValue = xAccessor(currentItem);
 			const yValue = snap && !shouldDisableSnap(e)
 				? getClosestValue(snapTo(currentItem), yScale.invert(mouseXY[1]))
@@ -58,11 +55,7 @@ class MouseLocationIndicator extends Component {
 			return { xValue, yValue, x, y };
 		}
 	}
-	handleMousePosChange(e) {
-		// var { idx, onMouseEnter } = this.props;
-		const moreProps = this.node.getMoreProps();
-		// var prevMoreProps = this.node.getPrevMoreProps();
-
+	handleMousePosChange(moreProps, e) {
 		if (!shallowEqual(moreProps.mousXY, this.node.prevMouseXY)) {
 			const pos = this.xy(moreProps, e);
 			// console.log("HERE11", pos)

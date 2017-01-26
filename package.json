@@ -44,7 +44,7 @@
     "d3fc-rebind": "^4.1.1",
     "debug": "^2.6.0",
     "lodash.flattendeep": "^4.4.0",
-    "save-svg-as-png": "^1.0.3"
+    "save-svg-as-png": "^1.1.0"
   },
   "peerDependencies": {
     "react": "^15.0.0",
@@ -65,7 +65,7 @@
     "css-loader": "^0.26.1",
     "d3-dsv": "^1.0.3",
     "es6-promise": "^4.0.5",
-    "eslint": "^3.14.0",
+    "eslint": "^3.14.1",
     "eslint-plugin-babel": "^4.0.1",
     "eslint-plugin-const-immutable": "^2.0.0",
     "eslint-plugin-flowtype": "^2.30.0",

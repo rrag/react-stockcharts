@@ -55,12 +55,12 @@ class StraightLine extends Component {
 		return false;
 	}
 	drawOnCanvas(ctx, moreProps) {
-		const { stroke, strokeWidth, opacity, selected } = this.props;
+		const { stroke, strokeWidth, hoverStrokeWidth, opacity, selected } = this.props;
 		const { hovering } = moreProps;
 		const { x1, y1, x2, y2 } = helper(this.props, moreProps);
 
 		ctx.lineWidth = (hovering || selected)
-			? strokeWidth + 2
+			? hoverStrokeWidth
 			: strokeWidth;
 		ctx.strokeStyle = hexToRGBA(stroke, opacity);
 		ctx.beginPath();
@@ -70,10 +70,11 @@ class StraightLine extends Component {
 	}
 	renderSVG(moreProps) {
 		const { stroke, strokeWidth, opacity, selected } = this.props;
+		const { hoverStrokeWidth } = this.props;
 		const { hovering } = moreProps;
 
 		const lineWidth = (hovering || selected)
-			? strokeWidth + 2
+			? hoverStrokeWidth
 			: strokeWidth;
 
 		const { x1, y1, x2, y2 } = helper(this.props, moreProps);
@@ -85,20 +86,25 @@ class StraightLine extends Component {
 		);
 	}
 	render() {
-		const { selected, onSelect, interactiveCursorClass } = this.props;
-		const { onDragStart, onDrag, onDragComplete } = this.props;
+		const { selected, onClick, onClickOutside, interactiveCursorClass } = this.props;
+		const { onDragStart, onDrag, onDragComplete, onHover, onBlur, isHover } = this.props;
 
-		return <GenericChartComponent ref={this.saveNode}
+		return <GenericChartComponent ref={this.saveNode} foobar
 			interactiveCursorClass={interactiveCursorClass}
 			selected={selected}
-			onSelect={onSelect}
+
+			onClick={onClick}
+			onClickOutside={onClickOutside}
+
 			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
-			isHover={this.isHover}
+			isHover={isHover || this.isHover}
 			onDragStart={onDragStart}
 			onDrag={onDrag}
 			onDragComplete={onDragComplete}
+			onHover={onHover}
+			onBlur={onBlur}
 			drawOnPan
 			/>;
 	}
@@ -142,7 +148,7 @@ function getYIntercept(m, end) {
 	return b;
 }
 
-function generateLine(type, start, end, xAccessor, plotData) {
+export function generateLine(type, start, end, xAccessor, plotData) {
 	const m /* slope */ = getSlope(start, end);
 	// console.log(end[0] - start[0], m)
 	const b /* y intercept */ = getYIntercept(m, end);
@@ -171,6 +177,7 @@ StraightLine.propTypes = {
 	interactiveCursorClass: PropTypes.string,
 	stroke: PropTypes.string.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
+	hoverStrokeWidth: PropTypes.number.isRequired,
 	type: PropTypes.oneOf([
 		"XLINE", // extends from -Infinity to +Infinity
 		"RAY", // extends to +/-Infinity in one direction
@@ -181,19 +188,26 @@ StraightLine.propTypes = {
 	onDragStart: PropTypes.func.isRequired,
 	onDrag: PropTypes.func.isRequired,
 	onDragComplete: PropTypes.func.isRequired,
-	r: PropTypes.number.isRequired,
+	onClick: PropTypes.func.isRequired,
+	onClickOutside: PropTypes.func.isRequired,
+
+	onHover: PropTypes.func.isRequired,
+	onBlur: PropTypes.func.isRequired,
+
 	opacity: PropTypes.number.isRequired,
-	edgeFill: PropTypes.string.isRequired,
 	defaultClassName: PropTypes.string,
-	echo: PropTypes.any,
+
+	r: PropTypes.number.isRequired,
+	edgeFill: PropTypes.string.isRequired,
 	edgeStroke: PropTypes.string.isRequired,
 	edgeStrokeWidth: PropTypes.number.isRequired,
 	withEdge: PropTypes.bool.isRequired,
-	onSelect: PropTypes.func.isRequired,
 	children: PropTypes.func.isRequired,
 	tolerance: PropTypes.number.isRequired,
 	selected: PropTypes.bool.isRequired,
 	noHover: PropTypes.bool.isRequired,
+
+	isHover: PropTypes.func,
 };
 
 StraightLine.defaultProps = {
@@ -202,13 +216,19 @@ StraightLine.defaultProps = {
 	onDragStart: noop,
 	onDrag: noop,
 	onDragComplete: noop,
+
+	onHover: noop,
+	onBlur: noop,
+	onClick: noop,
+	onClickOutside: noop,
+
 	edgeStrokeWidth: 3,
 	edgeStroke: "#000000",
 	edgeFill: "#FFFFFF",
 	r: 10,
 	withEdge: false,
+	hoverStrokeWidth: 2,
 	strokeWidth: 1,
-	onSelect: noop,
 	children: noop,
 	tolerance: 4,
 	selected: false,

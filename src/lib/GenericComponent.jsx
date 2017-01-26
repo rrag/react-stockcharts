@@ -24,7 +24,6 @@ class GenericComponent extends Component {
 		this.postCanvasDraw = this.postCanvasDraw.bind(this);
 		this.getRef = this.getRef.bind(this);
 		this.isDraggable = this.isDraggable.bind(this);
-		this.saveNode = this.saveNode.bind(this);
 
 		const { generateSubscriptionId } = context;
 		this.suscriberId = generateSubscriptionId();
@@ -36,9 +35,6 @@ class GenericComponent extends Component {
 			updateCount: 0,
 			selected: false,
 		};
-	}
-	saveNode(node) {
-		this.node = node;
 	}
 	getRef(ref) {
 		return this.refs[ref];
@@ -52,8 +48,9 @@ class GenericComponent extends Component {
 		if (isDefined(moreProps)) {
 			this.updateMoreProps(moreProps);
 		}
-
+		this.evaluationInProgress = true;
 		this.evaluateType(type, e);
+		this.evaluationInProgress = false;
 	}
 	evaluateType(type, e) {
 		// console.log("type ->", type);
@@ -65,35 +62,23 @@ class GenericComponent extends Component {
 			break;
 		case "contextmenu": {
 			if (this.moreProps.hovering && this.props.onContextMenu) {
-				this.props.onContextMenu(e);
+				this.props.onContextMenu(this.getMoreProps(), e);
 			}
 			break;
 		}
 		case "mousedown": {
 			if (this.moreProps.hovering) {
 				if (this.props.onMouseDown) {
-					this.props.onMouseDown(e);
+					this.props.onMouseDown(this.getMoreProps(), e);
 				}
 			}
 			break;
 		}
 		case "click": {
-			if (this.props.onSelect) {
-				const selected = this.moreProps.hovering
-					? !this.props.selected
-					: false;
-
-				this.props.onSelect({
-					selected
-				}, e);
-
-				const { setCursorClass } = this.context;
-				setCursorClass(selected
-					? this.props.interactiveCursorClass
-					: null);
-			}
-			if (this.moreProps.hovering && this.props.onClick) {
-				this.props.onClick(e);
+			if (this.moreProps.hovering) {
+				this.props.onClick(this.getMoreProps(), e);
+			} else {
+				this.props.onClickOutside(this.getMoreProps(), e);
 			}
 			break;
 		}
@@ -127,11 +112,23 @@ class GenericComponent extends Component {
 			this.drawOnNextTick = this.props.drawOnMouseMove
 				|| isDefined(this.props.isHover);
 
+			const prevHover = this.moreProps.hovering;
 			this.moreProps.hovering = this.isHover(e);
+
+			if (this.moreProps.hovering && !prevHover) {
+				if (this.props.onHover) {
+					this.props.onHover(this.getMoreProps(), e);
+				}
+			}
+			if (prevHover && !this.moreProps.hovering) {
+				if (this.props.onBlur) {
+					this.props.onBlur(this.getMoreProps(), e);
+				}
+			}
 
 			if (this.props.onMouseMove
 					&& this.drawOnNextTick) {
-				this.props.onMouseMove(e);
+				this.props.onMouseMove(this.getMoreProps(), e);
 			}
 
 			const { amIOnTop, setCursorClass } = this.context;
@@ -153,7 +150,7 @@ class GenericComponent extends Component {
 		}
 		case "dblclick": {
 			if (this.moreProps.hovering && this.props.onDoubleClick) {
-				this.props.onDoubleClick(e);
+				this.props.onDoubleClick(this.getMoreProps(), e);
 			}
 			break;
 		}
@@ -211,22 +208,24 @@ class GenericComponent extends Component {
 		unsubscribe(this.suscriberId);
 	}
 	componentDidMount() {
-		this.componentDidUpdate();
+		this.componentDidUpdate(this.props);
 	}
-	componentDidUpdate() {
+	componentDidUpdate(prevProps) {
 		const { chartCanvasType } = this.context;
-		const { canvasDraw } = this.props;
+		const { canvasDraw, selected, interactiveCursorClass } = this.props;
 
-		this.props.debug("updated");
-
+		if (prevProps.selected !== selected) {
+			const { setCursorClass } = this.context;
+			setCursorClass((selected && this.moreProps.hovering)
+				? interactiveCursorClass
+				: null);
+		}
 		if (isDefined(canvasDraw)
-				&& !(this.someDragInProgress && this.props.selected)
+				&& !this.evaluationInProgress
+				// && !(this.someDragInProgress && this.props.selected)
 				/*
 				prevent double draw of interactive elements
-				during dragging.
-				When any drag is in progress, it has to be for the
-				selected elements. When drag is happening
-				no selected components are left behind
+				during dragging / hover / click etc.
 				*/
 				&& chartCanvasType !== "svg") {
 			this.drawOnCanvas();
@@ -286,14 +285,14 @@ class GenericComponent extends Component {
 		const { canvasDraw, clip, svgDraw } = this.props;
 
 		if (isDefined(canvasDraw) && chartCanvasType !== "svg") {
-			return <g ref={this.saveNode} />;
+			return null;
 		}
 
 		const suffix = isDefined(chartId) ? "-" + chartId : "";
 
 		const style = clip ? { "clipPath": `url(#chart-area-clip${suffix})` } : null;
 
-		return <g ref={this.saveNode} style={style}>{svgDraw(this.getMoreProps())}</g>;
+		return <g style={style}>{svgDraw(this.getMoreProps())}</g>;
 	}
 }
 
@@ -314,7 +313,8 @@ GenericComponent.propTypes = {
 	isHover: PropTypes.func,
 
 	onClick: PropTypes.func,
-	onSelect: PropTypes.func,
+	onClickOutside: PropTypes.func,
+
 	onDragStart: PropTypes.func,
 	onDrag: PropTypes.func,
 	onDragComplete: PropTypes.func,
@@ -322,6 +322,8 @@ GenericComponent.propTypes = {
 	onContextMenu: PropTypes.func,
 	onMouseMove: PropTypes.func,
 	onMouseDown: PropTypes.func,
+	onHover: PropTypes.func,
+	onBlur: PropTypes.func,
 
 	debug: PropTypes.func,
 };
@@ -336,6 +338,9 @@ GenericComponent.defaultProps = {
 	clip: true,
 	edgeClip: false,
 	selected: false,
+
+	onClickOutside: noop,
+	onClick: noop,
 	onDragStart: noop,
 	onMouseMove: noop,
 	onMouseDown: noop,

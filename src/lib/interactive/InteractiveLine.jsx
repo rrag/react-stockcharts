@@ -10,6 +10,7 @@ class InteractiveLine extends Component {
 	constructor(props) {
 		super(props);
 		this.handleSelect = this.handleSelect.bind(this);
+		this.handleUnSelect = this.handleUnSelect.bind(this);
 		this.handleEdge1Drag = this.handleEdge1Drag.bind(this);
 		this.handleEdge1DragComplete = this.handleEdge1DragComplete.bind(this);
 		this.handleEdge2Drag = this.handleEdge2Drag.bind(this);
@@ -22,10 +23,17 @@ class InteractiveLine extends Component {
 			selected: false,
 		};
 	}
-	handleSelect({ selected }) {
+	handleSelect() {
 		this.setState({
-			selected
+			selected: !this.state.selected
 		});
+	}
+	handleUnSelect() {
+		if (this.state.selected) {
+			this.setState({
+				selected: false
+			});
+		}
 	}
 	handleLineDragStart() {
 		const {
@@ -151,10 +159,12 @@ class InteractiveLine extends Component {
 		} = this.props;
 		const { selected } = this.state;
 
+		// console.log("SELECTED ->", selected);
 		return <g>
 			<StraightLine
 				selected={selected}
-				onSelect={this.handleSelect}
+				onClick={this.handleSelect}
+				onClickOutside={this.handleUnSelect}
 				x1Value={x1Value}
 				y1Value={y1Value}
 				x2Value={x2Value}
@@ -195,7 +205,7 @@ class InteractiveLine extends Component {
 	}
 }
 
-function getNewXY(moreProps) {
+export function getNewXY(moreProps) {
 	const { xScale, chartConfig: { yScale }, xAccessor, plotData, mouseXY } = moreProps;
 	const [, mouseY] = mouseXY;
 
@@ -234,7 +244,6 @@ InteractiveLine.propTypes = {
 	edgeInteractiveCursor: PropTypes.string.isRequired,
 	lineInteractiveCursor: PropTypes.string.isRequired,
 	edgeFill: PropTypes.string.isRequired,
-	children: PropTypes.func.isRequired,
 };
 
 InteractiveLine.defaultProps = {
@@ -244,10 +253,9 @@ InteractiveLine.defaultProps = {
 	onDragComplete: noop,
 	edgeStroke: "#000000",
 	edgeFill: "#FFFFFF",
+	edgeStrokeWidth: 2,
 	r: 5,
 	strokeWidth: 1,
-	edgeStrokeWidth: 2,
-	children: noop,
 	opacity: 1,
 };
 

@@ -77,3 +77,7 @@ export function getAxisCanvas(contexts, { hoverEnabled }) {
 		? contexts.hover
 		: contexts.axes;
 }
+
+export function getInteractiveCanvas(contexts) {
+	return contexts.hover;
+}

@@ -538,6 +538,7 @@ class ChartCanvas extends Component {
 		});
 	}
 	triggerEvent(type, props, e) {
+		// console.log("triggering ->", type);
 		this.subscriptions.forEach(each => {
 			const state = {
 				...this.state,
@@ -665,12 +666,19 @@ class ChartCanvas extends Component {
 	}
 	handleDragEnd(mousePosition, e) {
 		this.triggerEvent("dragend", { mousePosition }, e);
+
+		requestAnimationFrame(() => {
+			this.clearMouseCanvas();
+			this.draw();
+		});
 	}
 	handleClick(mousePosition, e) {
 		this.triggerEvent("click", {}, e);
 
-		this.clearMouseCanvas();
-		this.draw();
+		requestAnimationFrame(() => {
+			this.clearMouseCanvas();
+			this.draw();
+		});
 	}
 	handleDoubleClick(mousePosition, e) {
 		this.triggerEvent("dblclick", {}, e);

@@ -3,7 +3,10 @@
 import React, { PropTypes, Component } from "react";
 import { select, event as d3Event } from "d3-selection";
 
-import { isDefined, mousePosition, touchPosition, d3Window, MOUSEMOVE, MOUSEUP } from "./utils";
+import {
+	isDefined, mousePosition, touchPosition,
+	d3Window, MOUSEMOVE, MOUSEUP, noop
+} from "./utils";
 import { getCurrentCharts } from "./utils/ChartDataUtil";
 
 function getTouchProps(touch) {
@@ -111,6 +114,7 @@ class EventCapture extends Component {
 	handleDrag() {
 		const e = d3Event;
 		if (this.props.onDrag) {
+			this.dragHappened = true;
 			const rect = this.node.getBoundingClientRect();
 			const mouseXY = [
 				Math.round(e.pageX - rect.left),
@@ -124,38 +128,42 @@ class EventCapture extends Component {
 	}
 	handleDragEnd() {
 		const e = d3Event;
-		if (this.props.onDragComplete) {
-			const rect = this.node.getBoundingClientRect();
-			const mouseXY = [Math.round(e.pageX - rect.left), Math.round(e.pageY - rect.top)];
+		const rect = this.node.getBoundingClientRect();
+		const mouseXY = [Math.round(e.pageX - rect.left), Math.round(e.pageY - rect.top)];
 
-			this.props.onDragComplete({
-				startPos: this.state.dragStartPosition,
-				mouseXY
-			}, e);
 
-			this.mouseInteraction = true;
+		const win = d3Window(this.node);
+		select(win)
+			.on(MOUSEMOVE, null)
+			.on(MOUSEUP, null);
 
-			const win = d3Window(this.node);
+		this.props.onDragComplete({
+			startPos: this.state.dragStartPosition,
+			mouseXY
+		}, e);
 
-			select(win)
-				.on(MOUSEMOVE, null)
-				.on(MOUSEUP, null);
+		const { onClick } = this.props;
+		if (!this.dragHappened) {
+			setTimeout(() => {
+				onClick(mouseXY, e);
+			}, 100);
 		}
+
+		this.mouseInteraction = true;
 	}
 	handleMouseDown(e) {
 		const { pan: panEnabled, xScale, chartConfig, onMouseDown } = this.props;
 		const { isSomethingSelectedAndHovering } = this.props;
 
 		this.panHappened = false;
+		this.dragHappened = false;
 		this.focus = true;
 
 		if (!this.state.panInProgress
 				&& this.mouseInteraction) {
 
 			const mouseXY = mousePosition(e);
-
 			const currentCharts = getCurrentCharts(chartConfig, mouseXY);
-
 			const somethingSelected = isSomethingSelectedAndHovering();
 
 			const pan = panEnabled && !somethingSelected;
@@ -180,6 +188,7 @@ class EventCapture extends Component {
 				});
 				this.props.onDragStart(e);
 				this.mouseInteraction = false;
+
 				const win = d3Window(this.node);
 				select(win)
 					.on(MOUSEMOVE, this.handleDrag)
@@ -453,6 +462,7 @@ EventCapture.defaultProps = {
 	pan: false,
 	panSpeedMultiplier: 1,
 	focus: false,
+	onDragComplete: noop,
 };
 
 export default EventCapture;

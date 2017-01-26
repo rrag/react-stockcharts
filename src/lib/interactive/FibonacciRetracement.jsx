@@ -2,9 +2,9 @@
 
 import React, { PropTypes, Component } from "react";
 
-import { isDefined, isNotDefined, head, last, noop } from "../utils";
+import { isDefined, isNotDefined, noop } from "../utils";
 
-import InteractiveLine from "./InteractiveLine";
+import EachFibRetracement from "./EachFibRetracement";
 import MouseLocationIndicator from "./MouseLocationIndicator";
 
 class FibonacciRetracement extends Component {
@@ -72,18 +72,11 @@ class FibonacciRetracement extends Component {
 			});
 		}
 	}
-	handleDrag(echo, newXYValue, origXYValue) {
-		const { retracements } = this.state;
-		const { index } = echo;
-		const dy = origXYValue.y1Value - newXYValue.y1Value;
-
+	handleDrag(index, xy) {
 		this.setState({
 			override: {
 				index,
-				x1: newXYValue.x1Value,
-				y1: retracements[index].y1 - dy,
-				x2: newXYValue.x2Value,
-				y2: retracements[index].y2 - dy,
+				...xy
 			}
 		});
 	}
@@ -139,97 +132,58 @@ class FibonacciRetracement extends Component {
 	render() {
 		const { retracements, current, override } = this.state;
 		const { stroke, strokeWidth, opacity, fontFamily, fontSize, fontStroke, type } = this.props;
-
-		const lineType = type === "EXTEND" ? "XLINE" : "LINE";
+		const {
+			currentPositionStroke,
+			currentPositionOpacity,
+			currentPositionStrokeWidth,
+			currentPositionRadius,
+		} = this.props;
 
 		const { enabled } = this.props;
+		const overrideIndex = isDefined(override) ? override.index : null;
 
-		let currentRetracement = null;
-		if (isDefined(current) && isDefined(current.x2)) {
-			const lines = helper(current);
-			const dir = head(lines).y1 > last(lines).y1 ? 3 : -1.3;
-
-			currentRetracement = lines.map((line, idx) => {
-				const text = `${ line.y.toFixed(2) } (${ line.percent.toFixed(2) }%)`;
-
-				return <InteractiveLine key={idx}
-					type={lineType}
-					x1Value={line.x1}
-					y1Value={line.y}
-					x2Value={line.x2}
-					y2Value={line.y}
-
-					childProps={{ dir, text, fontFamily, fontSize, fontStroke }}
-
-					stroke={stroke} strokeWidth={strokeWidth} opacity={opacity}>
-					{retracementText}
-				</InteractiveLine>;
-			});
-		}
+		const currentRetracement = isDefined(current) && isDefined(current.x2)
+			? <EachFibRetracement
+				interactive={false}
+				type={type}
+				stroke={stroke}
+				strokeWidth={strokeWidth}
+				opacity={opacity}
+				fontFamily={fontFamily}
+				fontSize={fontSize}
+				fontStroke={fontStroke}
+				{...current}
+				/>
+			: null;
 
 		return <g>
 			{retracements.map((each, idx) => {
-				const lines = helper(isDefined(override) && override.index === idx ? override : each);
-
-				const dir = head(lines).y1 > last(lines).y1 ? 3 : -1.3;
-				return lines.map((line, j) => {
-					const text = `${ line.y.toFixed(2) } (${ line.percent.toFixed(2) }%)`;
-
-					return <InteractiveLine key={`${idx}-${j}`} withEdge
-						echo={{ index: idx, idx: j }} type={lineType}
-						defaultClassName="react-stockcharts-enable-interaction react-stockcharts-move-cursor"
-						x1Value={line.x1}
-						y1Value={line.y}
-						x2Value={line.x2}
-						y2Value={line.y}
-
-						childProps={{ dir, text, fontFamily, fontSize, fontStroke }}
-
-						stroke={stroke} strokeWidth={strokeWidth} opacity={opacity}
-						onEdge1Drag={this.handleEdge1Drag}
-						onEdge2Drag={this.handleEdge2Drag}
-						onDrag={this.handleDrag}
-						onDragComplete={this.handleDragComplete}>
-						{retracementText}
-					</InteractiveLine>;
-				});
+				return <EachFibRetracement key={idx}
+					index={idx}
+					type={type}
+					stroke={stroke}
+					strokeWidth={strokeWidth}
+					opacity={opacity}
+					fontFamily={fontFamily}
+					fontSize={fontSize}
+					fontStroke={fontStroke}
+					{...(idx === overrideIndex ? override : each)}
+					onDrag={this.handleDrag}
+					onDragComplete={this.handleDragComplete}
+					/>;
 			})}
 			{currentRetracement}
 			<MouseLocationIndicator
 				enabled={enabled}
 				snap={false}
-				r={0}
+				r={currentPositionRadius}
+				stroke={currentPositionStroke}
+				opacity={currentPositionOpacity}
+				strokeWidth={currentPositionStrokeWidth}
 				onMouseDown={this.handleStartAndEnd}
 				onMouseMove={this.handleDrawRetracement} />
 		</g>;
 	}
-}
-
-/* eslint-disable react/prop-types */
-
-function retracementText({ xScale, chartConfig }, props, modLine) {
-	const { text, dir, fontStroke, fontFamily, fontSize } = props.childProps;
-	const { x1, y1, x2 } = modLine;
-	return <text
-		x={xScale(Math.min(x1, x2)) + 10}
-		y={chartConfig.yScale(y1) + dir * 4}
-		fontFamily={fontFamily}
-		fontSize={fontSize}
-		fill={fontStroke}>{text}</text>;
-}
-/* eslint-enable react/prop-types */
-
-function helper({ x1, y1, x2, y2 }) {
-	const dy = y2 - y1;
-	const retracements = [100, 61.8, 50, 38.2, 23.6, 0]
-		.map(each => ({
-			percent: each,
-			x1,
-			x2,
-			y: (y2 - (each / 100) * dy),
-		}));
-
-	return retracements;
 }
 
 FibonacciRetracement.propTypes = {
@@ -237,7 +191,6 @@ FibonacciRetracement.propTypes = {
 	fontFamily: PropTypes.string.isRequired,
 	fontSize: PropTypes.number.isRequired,
 	chartCanvasType: PropTypes.string,
-	interactive: PropTypes.object,
 	width: PropTypes.number,
 	strokeWidth: PropTypes.number,
 	stroke: PropTypes.string,
@@ -249,10 +202,12 @@ FibonacciRetracement.propTypes = {
 		"EXTEND", // extends from -Infinity to +Infinity
 		"BOUND", // extends between the set bounds
 	]).isRequired,
-	mouseXY: PropTypes.array,
-	currentItem: PropTypes.object,
-	interactiveState: PropTypes.object,
-	overrideInteractive: PropTypes.func,
+
+	currentPositionStroke: PropTypes.string,
+	currentPositionStrokeWidth: PropTypes.number,
+	currentPositionOpacity: PropTypes.number,
+	currentPositionRadius: PropTypes.number,
+
 	childProps: PropTypes.any,
 	init: PropTypes.object.isRequired,
 };
@@ -261,7 +216,7 @@ FibonacciRetracement.defaultProps = {
 	enabled: true,
 	stroke: "#000000",
 	strokeWidth: 1,
-	opacity: 0.4,
+	opacity: .9,
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 10,
 	fontStroke: "#000000",
@@ -269,6 +224,12 @@ FibonacciRetracement.defaultProps = {
 	init: { retracements: [] },
 	onStart: noop,
 	onComplete: noop,
+
+	currentPositionStroke: "#000000",
+	currentPositionOpacity: 1,
+	currentPositionStrokeWidth: 3,
+	currentPositionRadius: 4,
+
 };
 
 export default FibonacciRetracement;

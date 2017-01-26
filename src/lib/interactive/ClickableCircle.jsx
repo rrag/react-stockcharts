@@ -40,8 +40,8 @@ class ClickableCircle extends Component {
 
 		ctx.beginPath();
 		ctx.arc(x, y, r, 0, 2 * Math.PI, false);
-		ctx.stroke();
 		ctx.fill();
+		ctx.stroke();
 
 	}
 	renderSVG(moreProps) {
