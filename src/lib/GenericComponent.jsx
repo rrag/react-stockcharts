@@ -168,6 +168,10 @@ class GenericComponent extends Component {
 			this.drawOnNextTick = this.props.drawOnPan;
 			break;
 		}
+		case "redraw": {
+			this.draw();
+			break;
+		}
 		case "draw": {
 			if (this.drawOnNextTick
 					|| this.props.selected /* this is to draw as soon as you select */

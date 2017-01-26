@@ -27,6 +27,8 @@ class TrendLine extends Component {
 		if (isDefined(trends) && trends.length > 0) {
 			this.setState({
 				trends: trends.slice(0, trends.length - 1),
+			}, () => {
+				this.context.redraw();
 			});
 		}
 	}
@@ -187,6 +189,10 @@ TrendLine.defaultProps = {
 	endPointCircleFill: "#000000",
 	endPointCircleRadius: 5,
 	init: { trends: [] },
+};
+
+TrendLine.contextTypes = {
+	redraw: PropTypes.func.isRequired,
 };
 
 class EachTrendLine extends Component {

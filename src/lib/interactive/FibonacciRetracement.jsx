@@ -27,6 +27,8 @@ class FibonacciRetracement extends Component {
 		if (isDefined(retracements) && retracements.length > 0) {
 			this.setState({
 				retracements: retracements.slice(0, retracements.length - 1),
+			}, () => {
+				this.context.redraw();
 			});
 		}
 	}
@@ -230,6 +232,10 @@ FibonacciRetracement.defaultProps = {
 	currentPositionStrokeWidth: 3,
 	currentPositionRadius: 4,
 
+};
+
+FibonacciRetracement.contextTypes = {
+	redraw: PropTypes.func.isRequired,
 };
 
 export default FibonacciRetracement;

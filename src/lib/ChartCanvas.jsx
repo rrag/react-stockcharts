@@ -258,6 +258,7 @@ class ChartCanvas extends Component {
 		this.calculateStateForDomain = this.calculateStateForDomain.bind(this);
 		this.generateSubscriptionId = this.generateSubscriptionId.bind(this);
 		this.draw = this.draw.bind(this);
+		this.redraw = this.redraw.bind(this);
 		this.isSomethingSelectedAndHovering = this.isSomethingSelectedAndHovering.bind(this);
 
 		this.pinchCoordinates = this.pinchCoordinates.bind(this);
@@ -551,6 +552,10 @@ class ChartCanvas extends Component {
 	draw() {
 		this.triggerEvent("draw");
 	}
+	redraw() {
+		this.clearThreeCanvas();
+		this.triggerEvent("redraw");
+	}
 	panHelper(mouseXY, initialXScale, panOrigin, chartsToPan) {
 		const { xAccessor, chartConfig: initialChartConfig } = this.state;
 		const { filterData } = this.state;
@@ -739,6 +744,7 @@ class ChartCanvas extends Component {
 			xAxisZoom: this.xAxisZoom,
 			yAxisZoom: this.yAxisZoom,
 			getCanvasContexts: this.getCanvasContexts,
+			redraw: this.redraw,
 			subscribe: this.subscribe,
 			unsubscribe: this.unsubscribe,
 			generateSubscriptionId: this.generateSubscriptionId,
@@ -1022,6 +1028,7 @@ ChartCanvas.childContextTypes = {
 	xAxisZoom: PropTypes.func,
 	yAxisZoom: PropTypes.func,
 	amIOnTop: PropTypes.func,
+	redraw: PropTypes.func,
 	subscribe: PropTypes.func,
 	unsubscribe: PropTypes.func,
 	setCursorClass: PropTypes.func,

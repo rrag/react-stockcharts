@@ -4,7 +4,9 @@
 - Delete the last drawn line - Press DEL
 - Get out of draw mode - Press ESC
 - When not in draw mode
-	- click and drag the edges of the trend line, or the trend line itself
+	- hover and click to select
+	- move the line or edges
+	- click outside to unselect
 
 More Work in progress to implement - modifying indicators after it is drawn - [#94](https://github.com/rrag/react-stockcharts/issues/94)
 
