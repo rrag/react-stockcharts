@@ -8,7 +8,5 @@
 	- move the line or edges
 	- click outside to unselect
 
-More Work in progress to implement - modifying indicators after it is drawn - [#94](https://github.com/rrag/react-stockcharts/issues/94)
-
 
 [source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickChartWithInteractiveIndicator.jsx), [block](http://bl.ocks.org/rrag/63f666ef1159691d76cc), [plunker](http://plnkr.co/edit/gist:63f666ef1159691d76cc?p=preview)
