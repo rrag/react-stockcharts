@@ -202,13 +202,14 @@ class EachFibRetracement extends Component {
 						? this.handleLineNSResizeBottom
 						: this.handleLineMove;
 
+				const hoverHandler = interactive
+					? { onHover: this.handleHover, onBlur: this.handleHover }
+					: {};
 				return <g key={j}>
 					<StraightLine
-						noHover={!interactive}
 						selected={selected}
 
-						onHover={this.handleHover}
-						onBlur={this.handleHover}
+						{...hoverHandler}
 						onClick={this.handleSelect}
 						onClickOutside={this.handleUnSelect}
 
@@ -218,7 +219,6 @@ class EachFibRetracement extends Component {
 						x2Value={line.x2}
 						y2Value={line.y}
 						stroke={stroke}
-						hoverStrokeWidth={(hover || selected) ? strokeWidth + 1 : strokeWidth}
 						strokeWidth={(hover || selected) ? strokeWidth + 1 : strokeWidth}
 						opacity={opacity}
 						interactiveCursorClass={interactiveCursorClass}

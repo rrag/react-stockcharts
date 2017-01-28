@@ -19,8 +19,11 @@ class InteractiveLine extends Component {
 		this.handleLineDrag = this.handleLineDrag.bind(this);
 		this.handleLineComplete = this.handleLineComplete.bind(this);
 
+		this.handleHover = this.handleHover.bind(this);
+
 		this.state = {
 			selected: false,
+			hover: false,
 		};
 	}
 	handleSelect() {
@@ -140,6 +143,13 @@ class InteractiveLine extends Component {
 			y2Value,
 		});
 	}
+	handleHover(moreProps) {
+		if (this.state.hover !== moreProps.hovering) {
+			this.setState({
+				hover: moreProps.hovering
+			});
+		}
+	}
 	render() {
 		const {
 			x1Value,
@@ -157,12 +167,14 @@ class InteractiveLine extends Component {
 			edgeInteractiveCursor,
 			lineInteractiveCursor,
 		} = this.props;
-		const { selected } = this.state;
+		const { selected, hover } = this.state;
 
 		// console.log("SELECTED ->", selected);
 		return <g>
 			<StraightLine
 				selected={selected}
+				onHover={this.handleHover}
+				onBlur={this.handleHover}
 				onClick={this.handleSelect}
 				onClickOutside={this.handleUnSelect}
 				x1Value={x1Value}
@@ -171,7 +183,7 @@ class InteractiveLine extends Component {
 				y2Value={y2Value}
 				type={type}
 				stroke={stroke}
-				strokeWidth={strokeWidth}
+				strokeWidth={(hover || selected) ? strokeWidth + 1 : strokeWidth}
 				opacity={opacity}
 				interactiveCursorClass={lineInteractiveCursor}
 				onDragStart={this.handleLineDragStart}
@@ -237,7 +249,6 @@ InteractiveLine.propTypes = {
 	r: PropTypes.number.isRequired,
 	opacity: PropTypes.number.isRequired,
 	defaultClassName: PropTypes.string,
-	echo: PropTypes.any,
 
 	edgeStrokeWidth: PropTypes.number.isRequired,
 	edgeStroke: PropTypes.string.isRequired,

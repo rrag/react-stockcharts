@@ -43,7 +43,9 @@ function getCursorStyle(useCrossHairStyleCursor) {
 	const style = `
 	.react-stockcharts-grabbing-cursor {
 		pointer-events: all;
+		cursor: -moz-grabbing;
 		cursor: -webkit-grabbing;
+		cursor: grabbing;
 	}
 	.react-stockcharts-crosshair-cursor {
 		pointer-events: all;
@@ -69,6 +71,9 @@ function getCursorStyle(useCrossHairStyleCursor) {
 	}
 	.react-stockcharts-move-cursor {
 		cursor: move;
+	}
+	.react-stockcharts-pointer-cursor {
+		cursor: pointer;
 	}
 	.react-stockcharts-ns-resize-cursor {
 		cursor: ns-resize;
@@ -345,7 +350,9 @@ class ChartCanvas extends Component {
 	amIOnTop(id) {
 		const dragableComponents = this.subscriptions
 			.filter(each => each.isDraggable());
-		return last(dragableComponents).id === id;
+
+		return dragableComponents.length > 0
+			&& last(dragableComponents).id === id;
 	}
 	handleContextMenu(mouseXY, e) {
 		const { xAccessor, chartConfig, plotData, xScale } = this.state;

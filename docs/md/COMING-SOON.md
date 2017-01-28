@@ -9,9 +9,26 @@
 	- double click listener
 1. Explore refactoring of interactive indicators to use canvas (again)
 
+#### New Interactive components
+1. Parallel trend lines
+1. Fib Circles
+1. Fib Arc
+1. Fib Fan
+1. Show hover tooltip next to interactive components on mouse hover
+1. Continious line
+1. Pitch fork
+1. Gantt square
+1. Arbitrary Shapes
+	- Rectangle
+	- Text
+	- Circle
+	- Ellipse
+	- Arrow
+
 #### New Chart types
 1. Line break
 1. Better Renko/Mean Renko (Tentative)
+
 
 ## v0.8
 

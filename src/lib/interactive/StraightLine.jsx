@@ -2,7 +2,7 @@ import React, { PropTypes, Component } from "react";
 
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 
-import { head, last, noop, hexToRGBA } from "../utils";
+import { isDefined, head, last, noop, hexToRGBA } from "../utils";
 
 function getX1Y1(x1Value, y1Value, xScale, yScale) {
 	return [xScale(x1Value), yScale(y1Value)];
@@ -13,18 +13,15 @@ function getX2Y2(x2Value, y2Value, xScale, yScale) {
 class StraightLine extends Component {
 	constructor(props) {
 		super(props);
-		this.saveNode = this.saveNode.bind(this);
+
 		this.renderSVG = this.renderSVG.bind(this);
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 		this.isHover = this.isHover.bind(this);
 	}
-	saveNode(node) {
-		this.node = node;
-	}
 	isHover(moreProps) {
-		const { tolerance, noHover } = this.props;
+		const { tolerance, onHover } = this.props;
 
-		if (!noHover) {
+		if (isDefined(onHover)) {
 			const { x1Value, x2Value, y1Value, y2Value, type } = this.props;
 			const { mouseXY, xScale } = moreProps;
 			const { chartConfig: { yScale } } = moreProps;
@@ -55,13 +52,10 @@ class StraightLine extends Component {
 		return false;
 	}
 	drawOnCanvas(ctx, moreProps) {
-		const { stroke, strokeWidth, hoverStrokeWidth, opacity, selected } = this.props;
-		const { hovering } = moreProps;
+		const { stroke, strokeWidth, opacity } = this.props;
 		const { x1, y1, x2, y2 } = helper(this.props, moreProps);
 
-		ctx.lineWidth = (hovering || selected)
-			? hoverStrokeWidth
-			: strokeWidth;
+		ctx.lineWidth = strokeWidth;
 		ctx.strokeStyle = hexToRGBA(stroke, opacity);
 		ctx.beginPath();
 		ctx.moveTo(x1, y1);
@@ -69,13 +63,9 @@ class StraightLine extends Component {
 		ctx.stroke();
 	}
 	renderSVG(moreProps) {
-		const { stroke, strokeWidth, opacity, selected } = this.props;
-		const { hoverStrokeWidth } = this.props;
-		const { hovering } = moreProps;
+		const { stroke, strokeWidth, opacity } = this.props;
 
-		const lineWidth = (hovering || selected)
-			? hoverStrokeWidth
-			: strokeWidth;
+		const lineWidth = strokeWidth;
 
 		const { x1, y1, x2, y2 } = helper(this.props, moreProps);
 		return (
@@ -87,19 +77,19 @@ class StraightLine extends Component {
 	}
 	render() {
 		const { selected, onClick, onClickOutside, interactiveCursorClass } = this.props;
-		const { onDragStart, onDrag, onDragComplete, onHover, onBlur, isHover } = this.props;
+		const { onDragStart, onDrag, onDragComplete, onHover, onBlur } = this.props;
 
-		return <GenericChartComponent ref={this.saveNode} foobar
+		return <GenericChartComponent
+			canvasToDraw={getAxisCanvas}
+			svgDraw={this.renderSVG}
+			canvasDraw={this.drawOnCanvas}
+			isHover={this.isHover}
+
 			interactiveCursorClass={interactiveCursorClass}
 			selected={selected}
 
 			onClick={onClick}
 			onClickOutside={onClickOutside}
-
-			canvasToDraw={getAxisCanvas}
-			svgDraw={this.renderSVG}
-			canvasDraw={this.drawOnCanvas}
-			isHover={isHover || this.isHover}
 			onDragStart={onDragStart}
 			onDrag={onDrag}
 			onDragComplete={onDragComplete}
@@ -177,12 +167,12 @@ StraightLine.propTypes = {
 	interactiveCursorClass: PropTypes.string,
 	stroke: PropTypes.string.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
-	hoverStrokeWidth: PropTypes.number.isRequired,
 	type: PropTypes.oneOf([
 		"XLINE", // extends from -Infinity to +Infinity
 		"RAY", // extends to +/-Infinity in one direction
 		"LINE", // extends between the set bounds
 	]).isRequired,
+
 	onEdge1Drag: PropTypes.func.isRequired,
 	onEdge2Drag: PropTypes.func.isRequired,
 	onDragStart: PropTypes.func.isRequired,
@@ -190,9 +180,8 @@ StraightLine.propTypes = {
 	onDragComplete: PropTypes.func.isRequired,
 	onClick: PropTypes.func.isRequired,
 	onClickOutside: PropTypes.func.isRequired,
-
-	onHover: PropTypes.func.isRequired,
-	onBlur: PropTypes.func.isRequired,
+	onHover: PropTypes.func,
+	onBlur: PropTypes.func,
 
 	opacity: PropTypes.number.isRequired,
 	defaultClassName: PropTypes.string,
@@ -205,9 +194,6 @@ StraightLine.propTypes = {
 	children: PropTypes.func.isRequired,
 	tolerance: PropTypes.number.isRequired,
 	selected: PropTypes.bool.isRequired,
-	noHover: PropTypes.bool.isRequired,
-
-	isHover: PropTypes.func,
 };
 
 StraightLine.defaultProps = {
@@ -217,8 +203,6 @@ StraightLine.defaultProps = {
 	onDrag: noop,
 	onDragComplete: noop,
 
-	onHover: noop,
-	onBlur: noop,
 	onClick: noop,
 	onClickOutside: noop,
 
@@ -227,12 +211,10 @@ StraightLine.defaultProps = {
 	edgeFill: "#FFFFFF",
 	r: 10,
 	withEdge: false,
-	hoverStrokeWidth: 2,
 	strokeWidth: 1,
 	children: noop,
 	tolerance: 4,
 	selected: false,
-	noHover: false,
 };
 
 export default StraightLine;

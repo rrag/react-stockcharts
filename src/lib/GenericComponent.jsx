@@ -115,6 +115,25 @@ class GenericComponent extends Component {
 			const prevHover = this.moreProps.hovering;
 			this.moreProps.hovering = this.isHover(e);
 
+			const { amIOnTop, setCursorClass } = this.context;
+
+			if (this.moreProps.hovering
+					&& !prevHover
+					&& isDefined(this.props.onHover)) {
+				setCursorClass("react-stockcharts-pointer-cursor");
+				this.iSetTheCursorClass = true;
+			} else if (this.moreProps.hovering
+					&& this.props.selected
+					&& amIOnTop(this.suscriberId)) {
+				setCursorClass(this.props.interactiveCursorClass);
+				this.iSetTheCursorClass = true;
+			} else if (prevHover
+					&& !this.moreProps.hovering
+					&& this.iSetTheCursorClass) {
+				this.iSetTheCursorClass = false;
+				setCursorClass(null);
+			}
+
 			if (this.moreProps.hovering && !prevHover) {
 				if (this.props.onHover) {
 					this.props.onHover(this.getMoreProps(), e);
@@ -129,18 +148,6 @@ class GenericComponent extends Component {
 			if (this.props.onMouseMove
 					&& this.drawOnNextTick) {
 				this.props.onMouseMove(this.getMoreProps(), e);
-			}
-
-			const { amIOnTop, setCursorClass } = this.context;
-
-			if (this.moreProps.hovering
-					&& this.props.selected
-					&& amIOnTop(this.suscriberId)) {
-				setCursorClass(this.props.interactiveCursorClass);
-				this.iSetTheCursorClass = true;
-			} else if (this.iSetTheCursorClass) {
-				this.iSetTheCursorClass = false;
-				setCursorClass(null);
 			}
 
 			// prevMouseXY is used in interactive components
@@ -202,9 +209,12 @@ class GenericComponent extends Component {
 	}
 	componentWillMount() {
 		const { subscribe } = this.context;
-		subscribe(this.suscriberId, this.listener, {
-			isDraggable: this.isDraggable,
-		});
+		subscribe(this.suscriberId,
+			this.listener,
+			{
+				isDraggable: this.isDraggable,
+			}
+		);
 		this.componentWillReceiveProps(this.props, this.context);
 	}
 	componentWillUnmount() {
