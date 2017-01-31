@@ -10,6 +10,11 @@
 1. Explore refactoring of interactive indicators to use canvas (again)
 
 #### New Interactive components
+
+Do not store any state state in the interactive components other than hover & selected
+Use onComplete/onDragComplete callback to pass the [] back to owner component
+Experiment with a single component
+
 1. Parallel trend lines
 1. Fib Circles
 1. Fib Arc

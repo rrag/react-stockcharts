@@ -118,6 +118,7 @@ class GenericComponent extends Component {
 			const { amIOnTop, setCursorClass } = this.context;
 
 			if (this.moreProps.hovering
+					&& !this.props.selected
 					&& !prevHover
 					&& isDefined(this.props.onHover)) {
 				setCursorClass("react-stockcharts-pointer-cursor");
