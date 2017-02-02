@@ -22,7 +22,6 @@ class GenericComponent extends Component {
 		this.isHover = this.isHover.bind(this);
 		this.preCanvasDraw = this.preCanvasDraw.bind(this);
 		this.postCanvasDraw = this.postCanvasDraw.bind(this);
-		this.getRef = this.getRef.bind(this);
 		this.isDraggable = this.isDraggable.bind(this);
 
 		const { generateSubscriptionId } = context;
@@ -35,9 +34,6 @@ class GenericComponent extends Component {
 			updateCount: 0,
 			selected: false,
 		};
-	}
-	getRef(ref) {
-		return this.refs[ref];
 	}
 	updateMoreProps(moreProps) {
 		// this.prevMoreProps = this.moreProps;

@@ -65,7 +65,6 @@ class MouseLocationIndicator extends Component {
 				this.props.onMouseMove([xValue, yValue], e);
 			}
 		}
-		// console.log(this.node.getRef("capture"))
 	}
 	drawOnCanvas(ctx, moreProps) {
 		const { enabled, r, stroke, strokeWidth } = this.props;

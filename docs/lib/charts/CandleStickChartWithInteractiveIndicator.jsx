@@ -48,7 +48,8 @@ class CandlestickChart extends React.Component {
 		this.onKeyPress = this.onKeyPress.bind(this);
 		this.onTrendLineComplete = this.onTrendLineComplete.bind(this);
 		this.state = {
-			enableTrendLine: true
+			enableTrendLine: true,
+			trends: [],
 		};
 	}
 	componentDidMount() {
@@ -57,17 +58,23 @@ class CandlestickChart extends React.Component {
 	componentWillUnmount() {
 		document.removeEventListener("keyup", this.onKeyPress);
 	}
-	onTrendLineComplete() {
+	onTrendLineComplete(trends) {
+		// this gets called on
+		// 1. draw complete of trendline
+		// 2. drag complete of trendline
 		this.setState({
-			enableTrendLine: false
+			enableTrendLine: false,
+			trends
 		});
 	}
 	onKeyPress(e) {
-		var keyCode = e.which;
+		const keyCode = e.which;
 		console.log(keyCode);
 		switch (keyCode) {
 		case 46: { // DEL
-			this.refs.trend.removeLast();
+			this.setState({
+				trends: this.state.trends.slice(0, this.state.trends.length - 2)
+			});
 			break;
 		}
 		case 27: { // ESC
@@ -87,19 +94,19 @@ class CandlestickChart extends React.Component {
 		}
 	}
 	render() {
-		var ema26 = ema()
+		const ema26 = ema()
 			.id(0)
 			.options({ windowSize: 26 })
 			.merge((d, c) => { d.ema26 = c; })
 			.accessor(d => d.ema26);
 
-		var ema12 = ema()
+		const ema12 = ema()
 			.id(1)
 			.options({ windowSize: 12 })
 			.merge((d, c) => {d.ema12 = c;})
 			.accessor(d => d.ema12);
 
-		var macdCalculator = macd()
+		const macdCalculator = macd()
 			.options({
 				fast: 12,
 				slow: 26,
@@ -108,7 +115,8 @@ class CandlestickChart extends React.Component {
 			.merge((d, c) => {d.macd = c;})
 			.accessor(d => d.macd);
 
-		var { type, data: initialData, width, ratio } = this.props;
+		const { type, data: initialData, width, ratio } = this.props;
+		const { trends } = this.state;
 
 		const calculatedData = macdCalculator(ema12(ema26(initialData)));
 		const xScaleProvider = discontinuousTimeScaleProvider
@@ -151,7 +159,6 @@ class CandlestickChart extends React.Component {
 					<LineSeries yAccessor={ema26.accessor()} stroke={ema26.stroke()}/>
 					<LineSeries yAccessor={ema12.accessor()} stroke={ema12.stroke()}/>
 
-
 					<CurrentCoordinate yAccessor={ema26.accessor()} fill={ema26.stroke()} />
 					<CurrentCoordinate yAccessor={ema12.accessor()} fill={ema12.stroke()} />
 
@@ -178,13 +185,14 @@ class CandlestickChart extends React.Component {
 							},
 						]}
 						/>
-					<TrendLine ref="trend"
+					<TrendLine
 						enabled={this.state.enableTrendLine}
 						type="LINE"
 						snap={true}
 						snapTo={d => [d.high, d.low]}
 						onStart={() => console.log("START")}
 						onComplete={this.onTrendLineComplete}
+						trends={trends}
 						/>
 				</Chart>
 				<Chart id={2} height={150}

@@ -11,13 +11,11 @@ class InteractiveLine extends Component {
 		super(props);
 		this.handleSelect = this.handleSelect.bind(this);
 		this.handleUnSelect = this.handleUnSelect.bind(this);
+
 		this.handleEdge1Drag = this.handleEdge1Drag.bind(this);
-		this.handleEdge1DragComplete = this.handleEdge1DragComplete.bind(this);
 		this.handleEdge2Drag = this.handleEdge2Drag.bind(this);
-		this.handleEdge2DragComplete = this.handleEdge2DragComplete.bind(this);
 		this.handleLineDragStart = this.handleLineDragStart.bind(this);
 		this.handleLineDrag = this.handleLineDrag.bind(this);
-		this.handleLineComplete = this.handleLineComplete.bind(this);
 
 		this.handleHover = this.handleHover.bind(this);
 
@@ -80,9 +78,6 @@ class InteractiveLine extends Component {
 			y2Value: newY2Value,
 		});
 	}
-	handleLineComplete() {
-		//
-	}
 	handleEdge1Drag(moreProps) {
 		const { onDrag } = this.props;
 		const {
@@ -98,21 +93,6 @@ class InteractiveLine extends Component {
 			y2Value,
 		});
 	}
-	handleEdge1DragComplete(moreProps) {
-		const { onDragComplete } = this.props;
-		const {
-			x2Value, y2Value,
-		} = this.props;
-
-		const [x1Value, y1Value] = getNewXY(moreProps);
-
-		onDragComplete({
-			x1Value,
-			y1Value,
-			x2Value,
-			y2Value,
-		});
-	}
 	handleEdge2Drag(moreProps) {
 		const { onDrag } = this.props;
 		const {
@@ -122,21 +102,6 @@ class InteractiveLine extends Component {
 		const [x2Value, y2Value] = getNewXY(moreProps);
 
 		onDrag({
-			x1Value,
-			y1Value,
-			x2Value,
-			y2Value,
-		});
-	}
-	handleEdge2DragComplete(moreProps) {
-		const { onDragComplete } = this.props;
-		const {
-			x1Value, y1Value,
-		} = this.props;
-
-		const [x2Value, y2Value] = getNewXY(moreProps);
-
-		onDragComplete({
 			x1Value,
 			y1Value,
 			x2Value,
@@ -166,6 +131,8 @@ class InteractiveLine extends Component {
 			edgeStroke,
 			edgeInteractiveCursor,
 			lineInteractiveCursor,
+
+			onDragComplete,
 		} = this.props;
 		const { selected, hover } = this.state;
 
@@ -188,7 +155,7 @@ class InteractiveLine extends Component {
 				interactiveCursorClass={lineInteractiveCursor}
 				onDragStart={this.handleLineDragStart}
 				onDrag={this.handleLineDrag}
-				onDragComplete={this.handleLineComplete} />
+				onDragComplete={onDragComplete} />
 			<ClickableCircle
 				show={selected}
 				cx={x1Value}
@@ -200,7 +167,7 @@ class InteractiveLine extends Component {
 				opacity={1}
 				interactiveCursorClass={edgeInteractiveCursor}
 				onDrag={this.handleEdge1Drag}
-				onDragComplete={this.handleEdge1DragComplete} />
+				onDragComplete={onDragComplete} />
 			<ClickableCircle
 				show={selected}
 				cx={x2Value}
@@ -212,7 +179,7 @@ class InteractiveLine extends Component {
 				opacity={1}
 				interactiveCursorClass={edgeInteractiveCursor}
 				onDrag={this.handleEdge2Drag}
-				onDragComplete={this.handleEdge2DragComplete} />
+				onDragComplete={onDragComplete} />
 		</g>;
 	}
 }

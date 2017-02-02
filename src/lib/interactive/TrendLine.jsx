@@ -20,17 +20,7 @@ class TrendLine extends Component {
 		this.handleDragLine = this.handleDragLine.bind(this);
 		this.handleDragLineComplete = this.handleDragLineComplete.bind(this);
 
-		this.state = this.props.init;
-	}
-	removeLast() {
-		const { trends } = this.state;
-		if (isDefined(trends) && trends.length > 0) {
-			this.setState({
-				trends: trends.slice(0, trends.length - 1),
-			}, () => {
-				this.context.redraw();
-			});
-		}
+		this.state = {};
 	}
 	terminate() {
 		this.setState({
@@ -47,7 +37,8 @@ class TrendLine extends Component {
 		});
 	}
 	handleDragLineComplete() {
-		const { trends, override } = this.state;
+		const { override } = this.state;
+		const { trends } = this.props;
 		const newTrends = trends
 			.map((each, idx) => idx === override.index
 				? {
@@ -56,8 +47,10 @@ class TrendLine extends Component {
 				}
 				: each);
 		this.setState({
-			trends: newTrends,
 			override: null
+		}, () => {
+			this.props.onComplete(newTrends);
+
 		});
 	}
 	handleDrawLine(xyValue) {
@@ -73,7 +66,8 @@ class TrendLine extends Component {
 		}
 	}
 	handleStartAndEnd(xyValue) {
-		const { current, trends } = this.state;
+		const { current } = this.state;
+		const { trends } = this.props;
 
 		if (isNotDefined(current) || isNotDefined(current.start)) {
 			this.setState({
@@ -86,20 +80,21 @@ class TrendLine extends Component {
 			});
 		} else {
 			this.setState({
-				trends: trends.concat({ start: current.start, end: xyValue }),
 				current: null,
 			}, () => {
-				this.props.onComplete();
+				const newTrends = trends.concat({ start: current.start, end: xyValue });
+				this.props.onComplete(newTrends);
 			});
 		}
 	}
 	render() {
-		const { stroke, opacity, strokeWidth } = this.props;
+		const { stroke, opacity, strokeWidth, trends } = this.props;
 		const { enabled, snap, shouldDisableSnap, snapTo, type } = this.props;
 		const { currentPositionRadius, currentPositionStroke } = this.props;
 		const { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
-		const { trends, current, override } = this.state;
+		const { current, override } = this.state;
 
+		console.log("trends ->", trends)
 		const tempLine = isDefined(current) && isDefined(current.end)
 			? <StraightLine type={type}
 					noHover
@@ -167,7 +162,7 @@ TrendLine.propTypes = {
 	]),
 	endPointCircleFill: PropTypes.string,
 	endPointCircleRadius: PropTypes.number,
-	init: PropTypes.object.isRequired,
+	trends: PropTypes.array.isRequired,
 };
 
 TrendLine.contextTypes = {
@@ -188,7 +183,7 @@ TrendLine.defaultProps = {
 	currentPositionRadius: 4,
 	endPointCircleFill: "#000000",
 	endPointCircleRadius: 5,
-	init: { trends: [] },
+	trends: [],
 };
 
 TrendLine.contextTypes = {
@@ -199,15 +194,10 @@ class EachTrendLine extends Component {
 	constructor(props) {
 		super(props);
 		this.handleDragLine = this.handleDragLine.bind(this);
-		this.handleDragLineComplete = this.handleDragLineComplete.bind(this);
 	}
 	handleDragLine(...rest) {
 		const { index, onDrag } = this.props;
 		onDrag(index, ...rest);
-	}
-	handleDragLineComplete(...rest) {
-		const { index, onDragComplete } = this.props;
-		onDragComplete(index, ...rest);
 	}
 	render() {
 		const {
@@ -219,6 +209,7 @@ class EachTrendLine extends Component {
 			stroke,
 			strokeWidth,
 			opacity,
+			onDragComplete,
 		} = this.props;
 		return <InteractiveLine
 			type={type}
@@ -230,7 +221,7 @@ class EachTrendLine extends Component {
 			strokeWidth={strokeWidth}
 			opacity={opacity}
 			onDrag={this.handleDragLine}
-			onDragComplete={this.handleDragLineComplete}
+			onDragComplete={onDragComplete}
 			edgeInteractiveCursor="react-stockcharts-move-cursor"
 			lineInteractiveCursor="react-stockcharts-move-cursor"
 			/>;
