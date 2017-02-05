@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from "react";
 
 import GenericChartComponent from "../GenericChartComponent";
-import { getInteractiveCanvas } from "../GenericComponent";
+import { getMouseCanvas } from "../GenericComponent";
 
 class Text extends Component {
 	constructor(props) {
@@ -54,7 +54,7 @@ class Text extends Component {
 
 			svgDraw={this.renderSVG}
 
-			canvasToDraw={getInteractiveCanvas}
+			canvasToDraw={getMouseCanvas}
 			canvasDraw={this.drawOnCanvas}
 
 			drawOn={["mousemove", "pan", "drag"]}

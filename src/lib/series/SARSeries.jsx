@@ -3,7 +3,7 @@
 import React, { PropTypes, Component } from "react";
 
 import GenericChartComponent from "../GenericChartComponent";
-import { getAxisCanvas, getInteractiveCanvas } from "../GenericComponent";
+import { getAxisCanvas, getMouseCanvas } from "../GenericComponent";
 
 import { first, last, hexToRGBA } from "../utils";
 
@@ -67,7 +67,7 @@ class SARSeries extends Component {
 			? {
 				isHover: this.isHover,
 				drawOn: ["mousemove", "pan"],
-				canvasToDraw: getInteractiveCanvas
+				canvasToDraw: getMouseCanvas
 			}
 			: {
 				drawOn: ["pan"],

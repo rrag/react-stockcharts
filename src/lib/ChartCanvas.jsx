@@ -304,7 +304,7 @@ class ChartCanvas extends Component {
 		if (canvases && canvases.axes) {
 			clearCanvas([
 				canvases.axes,
-				canvases.hover,
+				// canvases.hover,
 				canvases.mouseCoord
 			], this.props.ratio);
 		}
@@ -314,7 +314,7 @@ class ChartCanvas extends Component {
 		if (canvases && canvases.mouseCoord) {
 			clearCanvas([
 				canvases.mouseCoord,
-				canvases.hover,
+				// canvases.hover,
 			], this.props.ratio);
 		}
 	}
@@ -323,7 +323,7 @@ class ChartCanvas extends Component {
 		if (canvases && canvases.axes) {
 			clearCanvas([
 				canvases.axes,
-				canvases.hover,
+				// canvases.hover,
 				canvases.mouseCoord,
 				canvases.bg
 			], this.props.ratio);
@@ -554,7 +554,8 @@ class ChartCanvas extends Component {
 	}
 	draw(props) {
 		this.subscriptions.forEach(each => {
-			each.draw(props);
+			if (isDefined(each.draw))
+				each.draw(props);
 		});
 	}
 	redraw() {
@@ -635,13 +636,16 @@ class ChartCanvas extends Component {
 		const { chartConfig, plotData, xScale, xAccessor } = this.state;
 		const currentCharts = getCurrentCharts(chartConfig, mouseXY);
 		const currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
-
 		this.triggerEvent("mousemove", {
 			show: true,
 			mouseXY,
+			// prevMouseXY is used in interactive components
+			prevMouseXY: this.prevMouseXY,
 			currentItem,
 			currentCharts,
 		}, e);
+
+		this.prevMouseXY = mouseXY;
 
 		requestAnimationFrame(() => {
 			this.clearMouseCanvas();

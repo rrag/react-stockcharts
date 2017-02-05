@@ -20,17 +20,7 @@ class FibonacciRetracement extends Component {
 		this.handleDrag = this.handleDrag.bind(this);
 		this.handleDragComplete = this.handleDragComplete.bind(this);
 
-		this.state = this.props.init;
-	}
-	removeLast() {
-		const { retracements } = this.state;
-		if (isDefined(retracements) && retracements.length > 0) {
-			this.setState({
-				retracements: retracements.slice(0, retracements.length - 1),
-			}, () => {
-				this.context.redraw();
-			});
-		}
+		this.state = {};
 	}
 	terminate() {
 		this.setState({
@@ -39,7 +29,8 @@ class FibonacciRetracement extends Component {
 		});
 	}
 	handleStartAndEnd(xyValue) {
-		const { current, retracements } = this.state;
+		const { retracements } = this.props;
+		const { current } = this.state;
 
 		if (isNotDefined(current) || isNotDefined(current.x1)) {
 			this.setState({
@@ -53,11 +44,13 @@ class FibonacciRetracement extends Component {
 				this.props.onStart();
 			});
 		} else {
+			const newRetracements = retracements
+				.concat({ ...current, x2: xyValue[0], y2: xyValue[1] });
+
 			this.setState({
-				retracements: retracements.concat({ ...current, x2: xyValue[0], y2: xyValue[1] }),
 				current: null,
 			}, () => {
-				this.props.onComplete();
+				this.props.onComplete(newRetracements);
 			});
 		}
 	}
@@ -115,7 +108,8 @@ class FibonacciRetracement extends Component {
 		});
 	}
 	handleDragComplete() {
-		const { retracements, override } = this.state;
+		const { retracements, } = this.props;
+		const { override } = this.state;
 
 		if (isDefined(override)) {
 			const { index, ...rest } = override;
@@ -127,12 +121,14 @@ class FibonacciRetracement extends Component {
 
 			this.setState({
 				override: null,
-				retracements: newRetracements
+			}, () => {
+				this.props.onComplete(newRetracements);
 			});
 		}
 	}
 	render() {
-		const { retracements, current, override } = this.state;
+		const { current, override } = this.state;
+		const { retracements } = this.props;
 		const { stroke, strokeWidth, opacity, fontFamily, fontSize, fontStroke, type } = this.props;
 		const {
 			currentPositionStroke,
@@ -211,7 +207,7 @@ FibonacciRetracement.propTypes = {
 	currentPositionRadius: PropTypes.number,
 
 	childProps: PropTypes.any,
-	init: PropTypes.object.isRequired,
+	retracements: PropTypes.array.isRequired,
 };
 
 FibonacciRetracement.defaultProps = {
@@ -223,7 +219,7 @@ FibonacciRetracement.defaultProps = {
 	fontSize: 10,
 	fontStroke: "#000000",
 	type: "EXTEND",
-	init: { retracements: [] },
+	retracements: [],
 	onStart: noop,
 	onComplete: noop,
 

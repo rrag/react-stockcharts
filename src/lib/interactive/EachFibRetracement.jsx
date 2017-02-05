@@ -257,8 +257,6 @@ class EachFibRetracement extends Component {
 						interactiveCursorClass="react-stockcharts-ew-resize-cursor"
 						onDrag={this.handleEdge2Drag}
 						onDragComplete={this.handleDragComplete} />
-
-
 				</g>;
 			})}
 		</g>;

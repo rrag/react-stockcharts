@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from "react";
 
 import GenericChartComponent from "../GenericChartComponent";
-import { getInteractiveCanvas } from "../GenericComponent";
+import { getMouseCanvas } from "../GenericComponent";
 
 import { isDefined, getClosestValue, noop, shallowEqual, functor } from "../utils";
 // import { getCurrentCharts } from "../utils/ChartDataUtil";
@@ -99,7 +99,7 @@ class MouseLocationIndicator extends Component {
 			isHover={functor(true)}
 
 			canvasDraw={this.drawOnCanvas}
-			canvasToDraw={getInteractiveCanvas}
+			canvasToDraw={getMouseCanvas}
 
 			drawOn={["mousemove", "pan"]}
 			/>;

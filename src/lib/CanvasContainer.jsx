@@ -34,15 +34,16 @@ class CanvasContainer extends Component {
 					style={{ position: "absolute", width: width, height: height }} />
 				<canvas id="axes" ref={this.setDrawCanvas} width={width * ratio} height={height * ratio}
 					style={{ position: "absolute", width: width, height: height }} />
-				<canvas id="hover" ref={this.setDrawCanvas} width={width * ratio} height={height * ratio}
-					style={{ position: "absolute", width: width, height: height }} />
 				<canvas id="mouseCoord" ref={this.setDrawCanvas} width={width * ratio} height={height * ratio}
 					style={{ position: "absolute", width: width, height: height }} />
 			</div>
 		);
 	}
 }
-
+/*
+				<canvas id="hover" ref={this.setDrawCanvas} width={width * ratio} height={height * ratio}
+					style={{ position: "absolute", width: width, height: height }} />
+*/
 CanvasContainer.propTypes = {
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,

@@ -43,8 +43,9 @@ class GenericComponent extends Component {
 		};
 	}
 	updateMoreProps(moreProps) {
-		// this.prevMoreProps = this.moreProps;
-		this.moreProps = Object.assign(this.moreProps, moreProps);
+		Object.keys(moreProps).forEach(key => {
+			this.moreProps[key] = moreProps[key];
+		});
 	}
 	listener(type, moreProps, state, e) {
 		// console.log(e.shiftKey)
@@ -128,11 +129,6 @@ class GenericComponent extends Component {
 			break;
 		}
 		case "mousemove": {
-			/*
-			const drawOnMouseMove = this.props.drawOn.indexOf(type) > -1;
-			this.drawOnNextTick = drawOnMouseMove
-				|| isDefined(this.props.isHover);
-			*/
 
 			const prevHover = this.moreProps.hovering;
 			this.moreProps.hovering = this.isHover(e);
@@ -171,10 +167,6 @@ class GenericComponent extends Component {
 			if (this.props.onMouseMove) {
 				this.props.onMouseMove(this.getMoreProps(), e);
 			}
-
-			// prevMouseXY is used in interactive components
-			this.moreProps.prevMouseXY = this.moreProps.mouseXY;
-
 			break;
 		}
 		case "dblclick": {
@@ -185,10 +177,6 @@ class GenericComponent extends Component {
 		}
 		case "pan": {
 			this.moreProps.hovering = false;
-			/*
-			const drawOnPan = this.props.drawOn.indexOf(type) > -1;
-			this.drawOnNextTick = drawOnPan;
-			*/
 			break;
 		}
 		}
@@ -412,8 +400,4 @@ export function getAxisCanvas(contexts) {
 
 export function getMouseCanvas(contexts) {
 	return contexts.mouseCoord;
-}
-
-export function getInteractiveCanvas(contexts) {
-	return contexts.hover;
 }

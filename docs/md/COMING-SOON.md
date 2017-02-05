@@ -11,7 +11,7 @@
 
 #### New Interactive components
 
-Do not store any state state in the interactive components other than hover & selected
+Do not store any state in the interactive components other than hover & selected
 Use onComplete/onDragComplete callback to pass the [] back to owner component
 Experiment with a single component and use isHover on that for the entire component
 `prevMouseXY` -> move this to ChartCanvas

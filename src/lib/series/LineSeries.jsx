@@ -4,7 +4,7 @@ import React, { PropTypes, Component } from "react";
 import { line as d3Line } from "d3-shape";
 
 import GenericChartComponent from "../GenericChartComponent";
-import { getAxisCanvas, getInteractiveCanvas } from "../GenericComponent";
+import { getAxisCanvas, getMouseCanvas } from "../GenericComponent";
 
 import { first, getClosestItemIndexes, strokeDashTypes, getStrokeDasharray } from "../utils";
 
@@ -112,7 +112,7 @@ class LineSeries extends Component {
 			? {
 				isHover: this.isHover,
 				drawOn: ["mousemove", "pan"],
-				canvasToDraw: getInteractiveCanvas
+				canvasToDraw: getMouseCanvas
 			}
 			: {
 				drawOn: ["pan"],

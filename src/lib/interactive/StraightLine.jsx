@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from "react";
 
 import GenericChartComponent from "../GenericChartComponent";
-import { getInteractiveCanvas } from "../GenericComponent";
+import { getMouseCanvas } from "../GenericComponent";
 
 import { isDefined, head, last, noop, hexToRGBA } from "../utils";
 
@@ -84,7 +84,7 @@ class StraightLine extends Component {
 			isHover={this.isHover}
 
 			svgDraw={this.renderSVG}
-			canvasToDraw={getInteractiveCanvas}
+			canvasToDraw={getMouseCanvas}
 			canvasDraw={this.drawOnCanvas}
 
 			interactiveCursorClass={interactiveCursorClass}

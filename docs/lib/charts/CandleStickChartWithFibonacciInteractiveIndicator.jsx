@@ -48,7 +48,8 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 		this.onKeyPress = this.onKeyPress.bind(this);
 		this.onFibComplete = this.onFibComplete.bind(this);
 		this.state = {
-			enableFib: true
+			enableFib: true,
+			retracements: [],
 		};
 	}
 	componentDidMount() {
@@ -57,16 +58,21 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 	componentWillUnmount() {
 		document.removeEventListener("keyup", this.onKeyPress);
 	}
-	onFibComplete() {
+	onFibComplete(retracements) {
 		this.setState({
+			retracements,
 			enableFib: false
 		});
 	}
 	onKeyPress(e) {
-		var keyCode = e.which;
+		const keyCode = e.which;
 		switch (keyCode) {
 		case 46: { // DEL
-			this.refs.fib.removeLast();
+			const rest = this.state.retracements
+				.slice(0, this.state.retracements.length - 1);
+			this.setState({
+				retracements: rest,
+			});
 			break;
 		}
 		case 27: { // ESC
@@ -87,20 +93,20 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 
 	}
 	render() {
-		var { type, data: initialData, width, ratio } = this.props;
-		var ema26 = ema()
+		const { type, data: initialData, width, ratio } = this.props;
+		const ema26 = ema()
 			.id(0)
 			.options({ windowSize: 26 })
 			.merge((d, c) => { d.ema26 = c; })
 			.accessor(d => d.ema26);
 
-		var ema12 = ema()
+		const ema12 = ema()
 			.id(1)
 			.options({ windowSize: 12 })
 			.merge((d, c) => {d.ema12 = c;})
 			.accessor(d => d.ema12);
 
-		var macdCalculator = macd()
+		const macdCalculator = macd()
 			.options({
 				fast: 12,
 				slow: 26,
@@ -109,7 +115,7 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 			.merge((d, c) => {d.macd = c;})
 			.accessor(d => d.macd);
 
-		var smaVolume50 = sma()
+		const smaVolume50 = sma()
 			.id(3)
 			.options({
 				windowSize: 50,
@@ -187,9 +193,10 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 						]}
 						/>
 
-					<FibonacciRetracement ref="fib"
+					<FibonacciRetracement
 						enabled={this.state.enableFib}
 						type="BOUND"
+						retracements={this.state.retracements}
 						onComplete={this.onFibComplete}/>
 				</Chart>
 				<Chart id={2} height={150}
