@@ -4,6 +4,7 @@ import React, { PropTypes, Component } from "react";
 
 import GenericChartComponent from "../GenericChartComponent";
 import { isNotDefined } from "../utils";
+import { getMouseCanvas } from "../GenericComponent";
 
 class CurrentCoordinate extends Component {
 	constructor(props) {
@@ -34,9 +35,8 @@ class CurrentCoordinate extends Component {
 		return <GenericChartComponent
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
-			drawOnMouseMove
-			drawOnPan
-			drawOnMouseExitOfCanvas
+			canvasToDraw={getMouseCanvas}
+			drawOn={["mousemove", "pan"]}
 			/>;
 	}
 }

@@ -3,7 +3,9 @@
 import { merge } from "d3-array";
 
 import React, { PropTypes, Component } from "react";
-import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
+
+import GenericChartComponent from "../GenericChartComponent";
+import { getAxisCanvas } from "../GenericComponent";
 
 import { drawOnCanvas2, getBarsSVG2 } from "./StackedBarSeries";
 import { isDefined, isNotDefined, first, last, functor } from "../utils";
@@ -37,11 +39,11 @@ class OverlayBarSeries extends Component {
 		const { clip } = this.props;
 
 		return <GenericChartComponent
-			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
+			canvasToDraw={getAxisCanvas}
 			canvasDraw={this.drawOnCanvas}
 			clip={clip}
-			drawOnPan
+			drawOn={["pan"]}
 			/>;
 	}
 }

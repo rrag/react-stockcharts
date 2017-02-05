@@ -44,7 +44,6 @@ class GenericChartComponent extends GenericComponent {
 		ctx.restore();
 	}
 	updateMoreProps(moreProps) {
-		// console.log(type, moreProps, e)
 		super.updateMoreProps(moreProps);
 		const { chartConfig: chartConfigList } = moreProps;
 
@@ -71,13 +70,3 @@ GenericChartComponent.contextTypes = {
 };
 
 export default GenericChartComponent;
-
-export function getAxisCanvas(contexts, { hoverEnabled }) {
-	return hoverEnabled
-		? contexts.hover
-		: contexts.axes;
-}
-
-export function getInteractiveCanvas(contexts) {
-	return contexts.hover;
-}

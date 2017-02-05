@@ -3,7 +3,9 @@
 import React, { PropTypes, Component } from "react";
 import { area as d3Area } from "d3-shape";
 
-import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
+import GenericChartComponent from "../GenericChartComponent";
+import { getAxisCanvas } from "../GenericComponent";
+
 import { hexToRGBA, isDefined, first, functor } from "../utils";
 
 class AreaOnlySeries extends Component {
@@ -61,10 +63,10 @@ class AreaOnlySeries extends Component {
 	}
 	render() {
 		return <GenericChartComponent
-			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
-			drawOnPan
+			canvasToDraw={getAxisCanvas}
+			drawOn={["pan"]}
 			/>;
 	}
 }

@@ -53,7 +53,7 @@ class MACDTooltip extends Component {
 		return <GenericChartComponent
 			clip={false}
 			svgDraw={this.renderSVG}
-			drawOnMouseMove
+			drawOn={["mousemove"]}
 			/>;
 	}
 }

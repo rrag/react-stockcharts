@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from "react";
 
-import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
+import GenericChartComponent from "../GenericChartComponent";
+import { getInteractiveCanvas } from "../GenericComponent";
 
 import { noop, hexToRGBA } from "../utils";
 
@@ -65,13 +66,17 @@ class ClickableCircle extends Component {
 			? <GenericChartComponent ref={this.saveNode}
 				interactiveCursorClass={interactiveCursorClass}
 				selected
+				isHover={this.isHover}
+
 				onDrag={onDrag}
 				onDragComplete={onDragComplete}
-				canvasToDraw={getAxisCanvas}
+
 				svgDraw={this.renderSVG}
+
 				canvasDraw={this.drawOnCanvas}
-				isHover={this.isHover}
-				drawOnPan
+				canvasToDraw={getInteractiveCanvas}
+
+				drawOn={["pan", "mousemove", "drag"]}
 				/>
 			: null;
 	}

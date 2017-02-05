@@ -4,6 +4,7 @@ import React, { PropTypes, Component } from "react";
 
 import { drawOnCanvas, renderSVG } from "./EdgeCoordinateV2";
 import GenericChartComponent from "../GenericChartComponent";
+import { getMouseCanvas } from "../GenericComponent";
 
 import { isNotDefined } from "../utils";
 
@@ -30,9 +31,8 @@ class MouseCoordinateX extends Component {
 			svgDraw={this.renderSVG}
 			clip={false}
 			canvasDraw={this.drawOnCanvas}
-			drawOnMouseMove
-			drawOnPan
-			drawOnMouseExitOfCanvas
+			canvasToDraw={getMouseCanvas}
+			drawOn={["mousemove", "pan"/*  , "mouseleave"*/]}
 			/>;
 	}
 }

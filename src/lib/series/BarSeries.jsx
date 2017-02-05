@@ -2,7 +2,8 @@
 
 import React, { PropTypes, Component } from "react";
 
-import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
+import GenericChartComponent from "../GenericChartComponent";
+import { getAxisCanvas } from "../GenericComponent";
 
 import StackedBarSeries, {
 	drawOnCanvasHelper,
@@ -31,11 +32,13 @@ class BarSeries extends Component {
 		const { clip } = this.props;
 
 		return <GenericChartComponent
-			canvasToDraw={getAxisCanvas}
-			svgDraw={this.renderSVG}
-			canvasDraw={this.drawOnCanvas}
 			clip={clip}
-			drawOnPan
+			svgDraw={this.renderSVG}
+
+			canvasToDraw={getAxisCanvas}
+			canvasDraw={this.drawOnCanvas}
+
+			drawOn={["pan"]}
 			/>;
 	}
 }

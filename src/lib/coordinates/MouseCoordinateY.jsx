@@ -4,6 +4,7 @@ import React, { PropTypes, Component } from "react";
 
 import { drawOnCanvas, renderSVG } from "./EdgeCoordinateV2";
 import GenericChartComponent from "../GenericChartComponent";
+import { getMouseCanvas } from "../GenericComponent";
 
 import { isNotDefined } from "../utils";
 
@@ -27,12 +28,11 @@ class MouseCoordinateY extends Component {
 	}
 	render() {
 		return <GenericChartComponent
+			clip={false}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
-			clip={false}
-			drawOnMouseMove
-			drawOnPan
-			drawOnMouseExitOfCanvas
+			canvasToDraw={getMouseCanvas}
+			drawOn={["mousemove", "pan"/*  , "mouseleave"*/]}
 			/>;
 	}
 }

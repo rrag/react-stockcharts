@@ -6,9 +6,10 @@ import { nest as d3Nest } from "d3-collection";
 import { merge } from "d3-array";
 import { stack as d3Stack } from "d3-shape";
 
-import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
-import { identity, hexToRGBA, first, last, functor } from "../utils";
+import GenericChartComponent from "../GenericChartComponent";
+import { getAxisCanvas } from "../GenericComponent";
 
+import { identity, hexToRGBA, first, last, functor } from "../utils";
 
 class StackedBarSeries extends Component {
 	constructor(props) {
@@ -31,11 +32,11 @@ class StackedBarSeries extends Component {
 		const { clip } = this.props;
 
 		return <GenericChartComponent
-			canvasToDraw={getAxisCanvas}
+			clip={clip}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
-			clip={clip}
-			drawOnPan
+			canvasToDraw={getAxisCanvas}
+			drawOn={["pan"]}
 			/>;
 	}
 }

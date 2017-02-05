@@ -2,7 +2,8 @@
 
 import { nest } from "d3-collection";
 import React, { PropTypes, Component } from "react";
-import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
+import GenericChartComponent from "../GenericChartComponent";
+import { getAxisCanvas } from "../GenericComponent";
 
 import { isDefined, functor } from "../utils";
 
@@ -24,11 +25,11 @@ class OHLCSeries extends Component {
 		const { clip } = this.props;
 
 		return <GenericChartComponent
-			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
+			canvasToDraw={getAxisCanvas}
 			canvasDraw={this.drawOnCanvas}
 			clip={clip}
-			drawOnPan
+			drawOn={["pan"]}
 			/>;
 	}
 	renderSVG(moreProps) {

@@ -228,6 +228,7 @@ class EachFibRetracement extends Component {
 						onDragComplete={this.handleDragComplete}
 						/>
 					<Text
+						selected={selected}
 						xyProvider={xyProvider}
 						fontFamily={fontFamily}
 						fontSize={fontSize}

@@ -12,7 +12,7 @@ class Annotate extends Component {
 	render() {
 		return <GenericChartComponent
 			svgDraw={this.renderSVG}
-			drawOnPan
+			drawOn={["pan"]}
 			/>;
 	}
 	renderSVG(moreProps) {

@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from "react";
 
-import GenericChartComponent, { getInteractiveCanvas } from "../GenericChartComponent";
+import GenericChartComponent from "../GenericChartComponent";
+import { getInteractiveCanvas } from "../GenericComponent";
 
 class Text extends Component {
 	constructor(props) {
@@ -50,11 +51,13 @@ class Text extends Component {
 
 		return <GenericChartComponent
 			selected={selected}
+
+			svgDraw={this.renderSVG}
+
 			canvasToDraw={getInteractiveCanvas}
 			canvasDraw={this.drawOnCanvas}
-			svgDraw={this.renderSVG}
-			isHover={this.isHover}
-			drawOnPan
+
+			drawOn={["mousemove", "pan", "drag"]}
 			/>;
 	}
 }

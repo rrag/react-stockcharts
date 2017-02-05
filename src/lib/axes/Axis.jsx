@@ -4,7 +4,8 @@ import React, { PropTypes, Component } from "react";
 import { forceSimulation, forceX, forceCollide } from "d3-force";
 import { range as d3Range } from "d3-array";
 
-import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
+import GenericChartComponent from "../GenericChartComponent";
+import { getAxisCanvas } from "../GenericComponent";
 import AxisZoomCapture from "./AxisZoomCapture";
 
 import { first, last, hexToRGBA, isNotDefined, isDefined, identity, zipper, strokeDashTypes, getStrokeDasharray } from "../utils";
@@ -59,8 +60,8 @@ class Axis extends Component {
 				getMouseDelta={getMouseDelta}
 				axisZoomCallback={axisZoomCallback}
 				zoomCursorClassName={zoomCursorClassName}
-				onContextMenu={onContextMenu}
 				inverted={inverted}
+				onContextMenu={onContextMenu}
 				onDoubleClick={onDoubleClick}
 				/>
 			: null;
@@ -73,7 +74,7 @@ class Axis extends Component {
 				edgeClip={edgeClip}
 				svgDraw={this.renderSVG}
 				canvasDraw={this.drawOnCanvas}
-				drawOnPan
+				drawOn={["pan"]}
 				/>
 		</g>;
 	}

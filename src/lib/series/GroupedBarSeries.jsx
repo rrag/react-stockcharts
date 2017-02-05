@@ -2,7 +2,8 @@
 
 import React, { PropTypes, Component } from "react";
 
-import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
+import GenericChartComponent from "../GenericChartComponent";
+import { getAxisCanvas } from "../GenericComponent";
 import StackedBarSeries, { drawOnCanvasHelper, svgHelper, identityStack } from "./StackedBarSeries";
 
 class GroupedBarSeries extends Component {
@@ -25,10 +26,10 @@ class GroupedBarSeries extends Component {
 	}
 	render() {
 		return <GenericChartComponent
-			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
-			drawOnPan
+			canvasToDraw={getAxisCanvas}
+			drawOn={["pan"]}
 			/>;
 	}
 }

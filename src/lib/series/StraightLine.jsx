@@ -3,7 +3,9 @@
 import React, { PropTypes, Component } from "react";
 
 import { hexToRGBA, isDefined, isNotDefined, strokeDashTypes, getStrokeDasharray } from "../utils";
-import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
+
+import GenericChartComponent from "../GenericChartComponent";
+import { getAxisCanvas } from "../GenericComponent";
 
 class StraightLine extends Component {
 	constructor(props) {
@@ -31,10 +33,10 @@ class StraightLine extends Component {
 	}
 	render() {
 		return <GenericChartComponent
-			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
-			drawOnPan
+			canvasToDraw={getAxisCanvas}
+			drawOn={["pan"]}
 			/>;
 	}
 	renderSVG(moreProps) {

@@ -18,9 +18,11 @@ export { default as PureComponent } from "./PureComponent";
 export * from "./strokeDasharray";
 
 export function getLogger(prefix) {
-	return (process.env.NODE_ENV !== "production")
-		? require("debug")("react-stockcharts:" + prefix)
-		: noop;
+	let logger = noop;
+	if (process.env.NODE_ENV !== "production") {
+		logger = require("debug")("react-stockcharts:" + prefix);
+	}
+	return logger;
 }
 
 export function path(loc = []) {

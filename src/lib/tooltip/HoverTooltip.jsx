@@ -23,9 +23,7 @@ class HoverTooltip extends Component {
 		return <GenericComponent
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
-			drawOnMouseMove
-			drawOnPan
-			drawOnMouseExitOfCanvas
+			drawOn={["mousemove", "pan"/* , "mouseleave" */]}
 			/>;
 	}
 	renderSVG(moreProps) {

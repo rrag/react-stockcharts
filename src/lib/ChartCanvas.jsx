@@ -329,11 +329,11 @@ class ChartCanvas extends Component {
 			], this.props.ratio);
 		}
 	}
-	subscribe(id, callback, rest = { isDraggable: functor(false) }) {
-		const { isDraggable } = rest;
+	subscribe(id, rest) {
+		const { isDraggable = functor(false) } = rest;
 		this.subscriptions = this.subscriptions.concat({
 			id,
-			callback,
+			...rest,
 			isDraggable,
 		});
 	}
@@ -495,7 +495,6 @@ class ChartCanvas extends Component {
 			plotData,
 			chartConfig,
 		}, () => {
-			// this.draw();
 			if (start < end) {
 				onLoadMore(start, end);
 			}
@@ -537,31 +536,30 @@ class ChartCanvas extends Component {
 				}
 			});
 
-		/* this.triggerEvent("zoom", {
-			chartConfig,
-		});*/
-
 		this.setState({
 			chartConfig,
 		});
 	}
 	triggerEvent(type, props, e) {
 		// console.log("triggering ->", type);
+
 		this.subscriptions.forEach(each => {
 			const state = {
 				...this.state,
 				fullData: this.fullData,
 				subscriptions: this.subscriptions,
 			};
-			each.callback(type, props, state, e);
+			each.listener(type, props, state, e);
 		});
 	}
-	draw() {
-		this.triggerEvent("draw");
+	draw(props) {
+		this.subscriptions.forEach(each => {
+			each.draw(props);
+		});
 	}
 	redraw() {
 		this.clearThreeCanvas();
-		this.triggerEvent("redraw");
+		this.draw({ force: true });
 	}
 	panHelper(mouseXY, initialXScale, panOrigin, chartsToPan) {
 		const { xAccessor, chartConfig: initialChartConfig } = this.state;
@@ -588,10 +586,9 @@ class ChartCanvas extends Component {
 		const updatedScale = initialXScale.copy().domain(domain);
 		const plotData = postCalculator(beforePlotData);
 		// console.log(last(plotData));
+
 		const currentItem = getCurrentItem(updatedScale, xAccessor, mouseXY, plotData);
-
 		const chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData, updatedScale.domain(), dy, chartsToPan);
-
 		const currentCharts = getCurrentCharts(chartConfig, mouseXY);
 
 		// console.log(initialXScale.domain(), newDomain, updatedScale.domain());
@@ -623,7 +620,7 @@ class ChartCanvas extends Component {
 
 		requestAnimationFrame(() => {
 			this.clearBothCanvas();
-			this.draw();
+			this.draw({ trigger: "pan" });
 		});
 	}
 	handleMouseDown(mousePosition, currentCharts, e) {
@@ -648,13 +645,13 @@ class ChartCanvas extends Component {
 
 		requestAnimationFrame(() => {
 			this.clearMouseCanvas();
-			this.draw();
+			this.draw({ trigger: "mousemove" });
 		});
 	}
 	handleMouseLeave(e) {
 		this.triggerEvent("mouseleave", { show: false }, e);
 		this.clearMouseCanvas();
-		this.draw();
+		this.draw({ trigger: "mouseleave" });
 	}
 	handleDragStart(mousePosition, e) {
 		this.triggerEvent("dragstart", { mousePosition }, e);
@@ -673,7 +670,7 @@ class ChartCanvas extends Component {
 
 		requestAnimationFrame(() => {
 			this.clearMouseCanvas();
-			this.draw();
+			this.draw({ trigger: "drag" });
 		});
 	}
 	handleDragEnd(mousePosition, e) {
@@ -681,7 +678,7 @@ class ChartCanvas extends Component {
 
 		requestAnimationFrame(() => {
 			this.clearMouseCanvas();
-			this.draw();
+			this.draw({ trigger: "dragend" });
 		});
 	}
 	handleClick(mousePosition, e) {
@@ -689,7 +686,7 @@ class ChartCanvas extends Component {
 
 		requestAnimationFrame(() => {
 			this.clearMouseCanvas();
-			this.draw();
+			this.draw({ trigger: "click" });
 		});
 	}
 	handleDoubleClick(mousePosition, e) {

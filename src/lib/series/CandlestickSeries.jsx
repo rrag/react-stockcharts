@@ -4,7 +4,9 @@ import { nest } from "d3-collection";
 
 import React, { PropTypes, Component } from "react";
 
-import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
+import GenericChartComponent from "../GenericChartComponent";
+import { getAxisCanvas } from "../GenericComponent";
+
 import { first, last, hexToRGBA, isDefined, functor } from "../utils";
 
 class CandlestickSeries extends Component {
@@ -32,11 +34,11 @@ class CandlestickSeries extends Component {
 	render() {
 		const { clip } = this.props;
 		return <GenericChartComponent
-			canvasToDraw={getAxisCanvas}
+			clip={clip}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
-			clip={clip}
-			drawOnPan
+			canvasToDraw={getAxisCanvas}
+			drawOn={["pan"]}
 			/>;
 	}
 }

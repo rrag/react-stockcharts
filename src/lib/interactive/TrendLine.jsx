@@ -94,7 +94,6 @@ class TrendLine extends Component {
 		const { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
 		const { current, override } = this.state;
 
-		console.log("trends ->", trends)
 		const tempLine = isDefined(current) && isDefined(current.end)
 			? <StraightLine type={type}
 					noHover

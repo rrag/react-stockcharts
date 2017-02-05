@@ -3,7 +3,8 @@
 import React, { PropTypes, Component } from "react";
 import { line, curveStepBefore } from "d3-shape";
 
-import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
+import GenericChartComponent from "../GenericChartComponent";
+import { getAxisCanvas } from "../GenericComponent";
 import { isDefined, isNotDefined } from "../utils";
 
 class KagiSeries extends Component {
@@ -19,10 +20,10 @@ class KagiSeries extends Component {
 	}
 	render() {
 		return <GenericChartComponent
-			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
+			canvasToDraw={getAxisCanvas}
 			canvasDraw={this.drawOnCanvas}
-			drawOnPan
+			drawOn={["pan"]}
 			/>;
 	}
 	renderSVG(moreProps) {

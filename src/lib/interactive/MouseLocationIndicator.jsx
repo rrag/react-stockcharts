@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from "react";
 
-import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
+import GenericChartComponent from "../GenericChartComponent";
+import { getInteractiveCanvas } from "../GenericComponent";
 
 import { isDefined, getClosestValue, noop, shallowEqual, functor } from "../utils";
 // import { getCurrentCharts } from "../utils/ChartDataUtil";
@@ -13,14 +14,9 @@ class MouseLocationIndicator extends Component {
 
 		this.handleMousePosChange = this.handleMousePosChange.bind(this);
 		this.handleMouseDown = this.handleMouseDown.bind(this);
-		this.handleClick = this.handleClick.bind(this);
 		this.xy = this.xy.bind(this);
-		this.saveNode = this.saveNode.bind(this);
 
 		this.mutableState = {};
-	}
-	saveNode(node) {
-		this.node = node;
 	}
 	handleMouseDown(moreProps, e) {
 		const pos = this.xy(moreProps, e);
@@ -28,14 +24,6 @@ class MouseLocationIndicator extends Component {
 			const { xValue, yValue, x, y } = pos;
 			this.mutableState = { x, y };
 			this.props.onMouseDown([xValue, yValue], e);
-		}
-	}
-	handleClick(moreProps, e) {
-		const pos = this.xy(moreProps, e);
-		if (isDefined(pos)) {
-			const { xValue, yValue, x, y } = pos;
-			this.mutableState = { x, y };
-			this.props.onClick([xValue, yValue], e);
 		}
 	}
 	xy(moreProps, e) {
@@ -56,7 +44,7 @@ class MouseLocationIndicator extends Component {
 		}
 	}
 	handleMousePosChange(moreProps, e) {
-		if (!shallowEqual(moreProps.mousXY, this.node.prevMouseXY)) {
+		if (!shallowEqual(moreProps.mousXY, moreProps.prevMouseXY)) {
 			const pos = this.xy(moreProps, e);
 			// console.log("HERE11", pos)
 			if (isDefined(pos)) {
@@ -102,15 +90,18 @@ class MouseLocationIndicator extends Component {
 
 	}
 	render() {
-		return <GenericChartComponent ref={this.saveNode}
-			canvasToDraw={getAxisCanvas}
-			svgDraw={this.renderSVG}
-			canvasDraw={this.drawOnCanvas}
+		return <GenericChartComponent
 			onMouseMove={this.handleMousePosChange}
 			onMouseDown={this.handleMouseDown}
-			onClick={this.handleClick}
 			onContextMenu={this.handleContextMenu}
+
+			svgDraw={this.renderSVG}
 			isHover={functor(true)}
+
+			canvasDraw={this.drawOnCanvas}
+			canvasToDraw={getInteractiveCanvas}
+
+			drawOn={["mousemove", "pan"]}
 			/>;
 	}
 }
@@ -123,7 +114,6 @@ MouseLocationIndicator.propTypes = {
 
 	onMouseMove: PropTypes.func.isRequired,
 	onMouseDown: PropTypes.func.isRequired,
-	onClick: PropTypes.func.isRequired,
 	r: PropTypes.number.isRequired,
 	stroke: PropTypes.string.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
@@ -133,7 +123,6 @@ MouseLocationIndicator.propTypes = {
 MouseLocationIndicator.defaultProps = {
 	onMouseMove: noop,
 	onMouseDown: noop,
-	onClick: noop,
 	shouldDisableSnap: functor(false),
 	stroke: "#000000",
 	strokeWidth: 1,

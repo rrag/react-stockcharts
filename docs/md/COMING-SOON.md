@@ -14,7 +14,12 @@
 Do not store any state state in the interactive components other than hover & selected
 Use onComplete/onDragComplete callback to pass the [] back to owner component
 Experiment with a single component and use isHover on that for the entire component
-
+`prevMouseXY` -> move this to ChartCanvas
+change the interactive components to axis canvas after drawing
+when mouse hover (over 20ms) happens move it to interactive canvas
+on blur move it back to axis canvas
+when selected keep it on interactive canvas
+on unselect move to axis canvas
 
 1. Parallel trend lines
 1. Fib Circles
@@ -22,8 +27,8 @@ Experiment with a single component and use isHover on that for the entire compon
 1. Fib Fan
 1. Show hover tooltip next to interactive components on mouse hover
 1. Continious line
-1. Pitch fork
-1. Gantt square
+1. Andrews Pitch fork
+1. Gann square
 1. Arbitrary Shapes
 	- Rectangle
 	- Text

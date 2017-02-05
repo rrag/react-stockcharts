@@ -1,6 +1,7 @@
 import React, { PropTypes, Component } from "react";
 
-import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
+import GenericChartComponent from "../GenericChartComponent";
+import { getInteractiveCanvas } from "../GenericComponent";
 
 import { isDefined, head, last, noop, hexToRGBA } from "../utils";
 
@@ -80,10 +81,11 @@ class StraightLine extends Component {
 		const { onDragStart, onDrag, onDragComplete, onHover, onBlur } = this.props;
 
 		return <GenericChartComponent
-			canvasToDraw={getAxisCanvas}
-			svgDraw={this.renderSVG}
-			canvasDraw={this.drawOnCanvas}
 			isHover={this.isHover}
+
+			svgDraw={this.renderSVG}
+			canvasToDraw={getInteractiveCanvas}
+			canvasDraw={this.drawOnCanvas}
 
 			interactiveCursorClass={interactiveCursorClass}
 			selected={selected}
@@ -95,7 +97,8 @@ class StraightLine extends Component {
 			onDragComplete={onDragComplete}
 			onHover={onHover}
 			onBlur={onBlur}
-			drawOnPan
+
+			drawOn={["mousemove", "pan", "drag"]}
 			/>;
 	}
 }

@@ -1,7 +1,8 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
+import GenericChartComponent from "../GenericChartComponent";
+import { getAxisCanvas } from "../GenericComponent";
 
 import { isDefined } from "../utils";
 
@@ -25,11 +26,11 @@ class RenkoSeries extends Component {
 		const { clip } = this.props;
 
 		return <GenericChartComponent
-			canvasToDraw={getAxisCanvas}
+			clip={clip}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
-			clip={clip}
-			drawOnPan
+			canvasToDraw={getAxisCanvas}
+			drawOn={["pan"]}
 			/>;
 	}
 	renderSVG(moreProps) {

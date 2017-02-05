@@ -15,7 +15,11 @@ class Chart extends PureComponent {
 	componentWillMount() {
 		const { id } = this.props;
 		const { subscribe } = this.context;
-		subscribe("chart_" + id, this.listener);
+		subscribe("chart_" + id,
+			{
+				listener: this.listener,
+			}
+		);
 	}
 	componentWillUnmount() {
 		const { id } = this.props;

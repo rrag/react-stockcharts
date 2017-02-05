@@ -3,7 +3,9 @@
 import React, { PropTypes, Component } from "react";
 import { line as d3Line } from "d3-shape";
 
-import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
+import GenericChartComponent from "../GenericChartComponent";
+import { getAxisCanvas, getInteractiveCanvas } from "../GenericComponent";
+
 import { first, getClosestItemIndexes, strokeDashTypes, getStrokeDasharray } from "../utils";
 
 class LineSeries extends Component {
@@ -107,18 +109,25 @@ class LineSeries extends Component {
 	render() {
 		const { highlightOnHover } = this.props;
 		const hoverProps = highlightOnHover
-			? { isHover: this.isHover }
-			: {};
+			? {
+				isHover: this.isHover,
+				drawOn: ["mousemove", "pan"],
+				canvasToDraw: getInteractiveCanvas
+			}
+			: {
+				drawOn: ["pan"],
+				canvasToDraw: getAxisCanvas
+			};
 
 		return <GenericChartComponent
-			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
+
 			canvasDraw={this.drawOnCanvas}
-			{...hoverProps}
+
 			onClick={this.props.onClick}
 			onDoubleClick={this.props.onDoubleClick}
 			onContextMenu={this.props.onContextMenu}
-			drawOnPan
+			{...hoverProps}
 			/>;
 	}
 }

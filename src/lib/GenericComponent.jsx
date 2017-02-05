@@ -10,6 +10,15 @@ import {
 	identity,
 } from "./utils";
 
+const aliases = {
+	// mouseleave: "mousemove",
+	mousedown: "mousemove",
+	click: "mousemove",
+	dblclick: "mousemove",
+	dragstart: "drag",
+	dragend: "drag",
+};
+
 class GenericComponent extends Component {
 	constructor(props, context) {
 		super(props, context);
@@ -28,11 +37,9 @@ class GenericComponent extends Component {
 		this.suscriberId = generateSubscriptionId();
 
 		this.moreProps = {};
-		this.prevMouseXY = null;
-		this.drawOnNextTick = false;
+
 		this.state = {
 			updateCount: 0,
-			selected: false,
 		};
 	}
 	updateMoreProps(moreProps) {
@@ -49,10 +56,27 @@ class GenericComponent extends Component {
 		this.evaluationInProgress = false;
 	}
 	evaluateType(type, e) {
-		// console.log("type ->", type);
+		const newType = aliases[type] || type;
+		const proceed = this.props.drawOn.indexOf(newType) > -1;
+
+		// console.log("type ->", type, proceed);
+		if (!proceed) return;
 
 		switch (type) {
 		case "zoom":
+		case "mouseleave": {
+			/*
+			const drawOnMouseExitOfCanvas = this.props.drawOn.indexOf(type) > -1;
+
+			// when you move the mouse fast enough, that mouseleave
+			// is triggered before the draw after mousemove is triggered
+			// This or condition below avoids having a blank hover
+			// canvas
+			this.drawOnNextTick = this.drawOnNextTick
+				|| drawOnMouseExitOfCanvas;
+			*/
+			break;
+		}
 		case "mouseenter":
 				// DO NOT DRAW FOR THESE EVENTS
 			break;
@@ -103,10 +127,12 @@ class GenericComponent extends Component {
 			}
 			break;
 		}
-		// eslint-disable-next-line no-fallthrough
 		case "mousemove": {
-			this.drawOnNextTick = this.props.drawOnMouseMove
+			/*
+			const drawOnMouseMove = this.props.drawOn.indexOf(type) > -1;
+			this.drawOnNextTick = drawOnMouseMove
 				|| isDefined(this.props.isHover);
+			*/
 
 			const prevHover = this.moreProps.hovering;
 			this.moreProps.hovering = this.isHover(e);
@@ -142,13 +168,12 @@ class GenericComponent extends Component {
 				}
 			}
 
-			if (this.props.onMouseMove
-					&& this.drawOnNextTick) {
+			if (this.props.onMouseMove) {
 				this.props.onMouseMove(this.getMoreProps(), e);
 			}
 
 			// prevMouseXY is used in interactive components
-			this.prevMouseXY = this.moreProps.mouseXY;
+			this.moreProps.prevMouseXY = this.moreProps.mouseXY;
 
 			break;
 		}
@@ -158,30 +183,12 @@ class GenericComponent extends Component {
 			}
 			break;
 		}
-		case "mouseleave": {
-			// when you move the mouse fast enough, that mouseleave
-			// is triggered before the draw after mousemove is triggered
-			// This or condition below avoids having a blank hover
-			// canvas
-			this.drawOnNextTick = this.drawOnNextTick
-				|| this.props.drawOnMouseExitOfCanvas;
-			break;
-		}
 		case "pan": {
 			this.moreProps.hovering = false;
-			this.drawOnNextTick = this.props.drawOnPan;
-			break;
-		}
-		case "redraw": {
-			this.draw();
-			break;
-		}
-		case "draw": {
-			if (this.drawOnNextTick
-					|| this.props.selected /* this is to draw as soon as you select */
-					) {
-				this.draw();
-			}
+			/*
+			const drawOnPan = this.props.drawOn.indexOf(type) > -1;
+			this.drawOnNextTick = drawOnPan;
+			*/
 			break;
 		}
 		}
@@ -191,24 +198,36 @@ class GenericComponent extends Component {
 			? this.props.isHover(this.getMoreProps(), e)
 			: false;
 	}
-	draw() {
-		const { chartCanvasType } = this.context;
-		const { canvasDraw } = this.props;
+	draw({ trigger, force } = { force: false }) {
+		const type = aliases[trigger] || trigger;
+		const proceed = this.props.drawOn.indexOf(type) > -1;
 
-		if (isNotDefined(canvasDraw) || chartCanvasType === "svg") {
-			const { updateCount } = this.state;
-			this.setState({
-				updateCount: updateCount + 1,
-			});
-		} else {
-			this.drawOnCanvas();
+		if (proceed
+			|| this.props.selected /* this is to draw as soon as you select */
+			|| force
+			) {
+			const { chartCanvasType } = this.context;
+			const { canvasDraw } = this.props;
+
+			if (isNotDefined(canvasDraw) || chartCanvasType === "svg") {
+				const { updateCount } = this.state;
+				this.setState({
+					updateCount: updateCount + 1,
+				});
+			} else {
+				this.drawOnCanvas();
+			}
 		}
 	}
 	componentWillMount() {
-		const { subscribe } = this.context;
+		const { subscribe, chartId } = this.context;
+		const { clip, edgeClip } = this.props;
+
 		subscribe(this.suscriberId,
-			this.listener,
 			{
+				chartId, clip, edgeClip,
+				listener: this.listener,
+				draw: this.draw,
 				isDraggable: this.isDraggable,
 			}
 		);
@@ -281,11 +300,8 @@ class GenericComponent extends Component {
 		const { getCanvasContexts } = this.context;
 
 		const moreProps = this.getMoreProps();
-		const extra = {
-			hoverEnabled: isDefined(this.props.isHover)
-		};
 
-		const ctx = canvasToDraw(getCanvasContexts(), extra);
+		const ctx = canvasToDraw(getCanvasContexts());
 
 		this.preCanvasDraw(ctx, moreProps);
 		canvasDraw(ctx, moreProps);
@@ -310,11 +326,11 @@ class GenericComponent extends Component {
 GenericComponent.propTypes = {
 	svgDraw: PropTypes.func.isRequired,
 	canvasDraw: PropTypes.func,
-	drawOnMouseMove: PropTypes.bool.isRequired,
-	drawOnPan: PropTypes.bool.isRequired,
+
+	drawOn: PropTypes.array.isRequired,
+
 	clip: PropTypes.bool.isRequired,
 	edgeClip: PropTypes.bool.isRequired,
-	drawOnMouseExitOfCanvas: PropTypes.bool.isRequired,
 	interactiveCursorClass: PropTypes.string,
 
 	selected: PropTypes.bool.isRequired,
@@ -337,14 +353,12 @@ GenericComponent.propTypes = {
 	onBlur: PropTypes.func,
 
 	debug: PropTypes.func,
+	// owner: PropTypes.string.isRequired,
 };
 
 GenericComponent.defaultProps = {
 	svgDraw: functor(null),
-	drawOnMouseMove: false,
-	drawOnPan: false,
-	drawOnHover: false,
-	drawOnMouseExitOfCanvas: false,
+	draw: [],
 	canvasToDraw: contexts => contexts.mouseCoord,
 	clip: true,
 	edgeClip: false,
@@ -391,3 +405,15 @@ GenericComponent.contextTypes = {
 };
 
 export default GenericComponent;
+
+export function getAxisCanvas(contexts) {
+	return contexts.axes;
+}
+
+export function getMouseCanvas(contexts) {
+	return contexts.mouseCoord;
+}
+
+export function getInteractiveCanvas(contexts) {
+	return contexts.hover;
+}

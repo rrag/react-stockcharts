@@ -1,12 +1,11 @@
 "use strict";
 
-import React, { PropTypes } from "react";
-import GenericComponent from "../GenericComponent";
-import PureComponent from "../utils/PureComponent";
+import React, { PropTypes, Component } from "react";
+import GenericComponent, { getMouseCanvas } from "../GenericComponent";
 
 import { hexToRGBA, isDefined, isNotDefined, strokeDashTypes, getStrokeDasharray } from "../utils";
 
-class CrossHairCursor extends PureComponent {
+class CrossHairCursor extends Component {
 	constructor(props) {
 		super(props);
 		this.renderSVG = this.renderSVG.bind(this);
@@ -62,9 +61,8 @@ class CrossHairCursor extends PureComponent {
 			svgDraw={this.renderSVG}
 			clip={false}
 			canvasDraw={this.drawOnCanvas}
-			drawOnMouseMove
-			drawOnPan
-			drawOnMouseExitOfCanvas
+			canvasToDraw={getMouseCanvas}
+			drawOn={["mousemove", "pan"]}
 			/>;
 	}
 }
@@ -77,9 +75,8 @@ CrossHairCursor.propTypes = {
 CrossHairCursor.contextTypes = {
 	margin: PropTypes.object.isRequired,
 	ratio: PropTypes.number.isRequired,
-
 	// xScale for getting update event upon pan end, this is needed to get past the PureComponent shouldComponentUpdate
-	xScale: PropTypes.func.isRequired,
+	// xScale: PropTypes.func.isRequired,
 };
 
 CrossHairCursor.defaultProps = {

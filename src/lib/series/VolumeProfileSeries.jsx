@@ -6,7 +6,9 @@ import { ascending, descending, sum, max, merge, zip, histogram as d3Histogram }
 import { nest } from "d3-collection";
 import { scaleLinear } from "d3-scale";
 
-import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
+import GenericChartComponent from "../GenericChartComponent";
+import { getAxisCanvas } from "../GenericComponent";
+
 import { head, last, hexToRGBA, accumulatingWindow, identity, functor } from "../utils";
 
 class VolumeProfileSeries extends Component {
@@ -23,10 +25,10 @@ class VolumeProfileSeries extends Component {
 	}
 	render() {
 		return <GenericChartComponent
-			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
-			drawOnPan
+			canvasToDraw={getAxisCanvas}
+			drawOn={["pan"]}
 			/>;
 	}
 	renderSVG(moreProps) {

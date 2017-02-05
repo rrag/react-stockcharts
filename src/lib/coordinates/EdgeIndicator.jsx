@@ -4,7 +4,8 @@ import React, { Component, PropTypes } from "react";
 import { format } from "d3-format";
 
 import { drawOnCanvas, renderSVG } from "./EdgeCoordinateV2";
-import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
+import GenericChartComponent from "../GenericChartComponent";
+import { getAxisCanvas } from "../GenericComponent";
 
 import { first, last, isDefined, functor } from "../utils";
 
@@ -32,12 +33,12 @@ class EdgeIndicator extends Component {
 	}
 	render() {
 		return <GenericChartComponent
-			canvasToDraw={getAxisCanvas}
 			edgeClip
 			clip={false}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
-			drawOnPan
+			canvasToDraw={getAxisCanvas}
+			drawOn={["pan"]}
 			/>;
 	}
 }

@@ -3,7 +3,9 @@
 import React, { PropTypes, Component } from "react";
 import { nest as d3Nest } from "d3-collection";
 
-import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
+import GenericChartComponent from "../GenericChartComponent";
+import { getAxisCanvas } from "../GenericComponent";
+
 import { hexToRGBA, functor } from "../utils";
 
 class ScatterSeries extends Component {
@@ -34,10 +36,10 @@ class ScatterSeries extends Component {
 	}
 	render() {
 		return <GenericChartComponent
-			canvasToDraw={getAxisCanvas}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
-			drawOnPan
+			canvasToDraw={getAxisCanvas}
+			drawOn={["pan"]}
 			/>;
 	}
 }

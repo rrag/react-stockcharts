@@ -20,6 +20,7 @@ class Label extends Component {
 			canvasToDraw={this.props.selectCanvas}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
+			drawOn={[]}
 			/>;
 	}
 	renderSVG(moreProps) {
