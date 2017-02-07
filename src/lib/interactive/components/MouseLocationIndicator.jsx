@@ -1,9 +1,9 @@
 import React, { PropTypes, Component } from "react";
 
-import GenericChartComponent from "../GenericChartComponent";
-import { getMouseCanvas } from "../GenericComponent";
+import GenericChartComponent from "../../GenericChartComponent";
+import { getMouseCanvas } from "../../GenericComponent";
 
-import { isDefined, getClosestValue, noop, shallowEqual, functor } from "../utils";
+import { isDefined, getClosestValue, noop, shallowEqual, functor } from "../../utils";
 // import { getCurrentCharts } from "../utils/ChartDataUtil";
 
 class MouseLocationIndicator extends Component {
@@ -77,8 +77,7 @@ class MouseLocationIndicator extends Component {
 
 		// console.log(stroke, strokeWidth, opacity)
 		return enabled && show && isDefined(x)
-			? <circle ref="capture"
-				className="react-stockcharts-avoid-interaction"
+			? <circle
 				cx={x}
 				cy={y}
 				r={r}

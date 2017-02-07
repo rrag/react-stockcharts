@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from "react";
 
-import { isDefined, head, last, noop } from "../utils";
-import { getCurrentItem } from "../utils/ChartDataUtil";
+import { isDefined, head, last, noop } from "../../utils";
+import { getCurrentItem } from "../../utils/ChartDataUtil";
 
 import { getNewXY } from "./InteractiveLine";
 import StraightLine, { generateLine } from "./StraightLine";

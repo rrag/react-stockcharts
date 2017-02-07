@@ -21,6 +21,8 @@ on blur move it back to axis canvas
 when selected keep it on interactive canvas
 on unselect move to axis canvas
 
+https://www.metatrader5.com/en/terminal/help/objects
+
 1. Parallel trend lines
 1. Fib Circles
 1. Fib Arc

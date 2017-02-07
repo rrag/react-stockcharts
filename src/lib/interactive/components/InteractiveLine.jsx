@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from "react";
 
-import { noop } from "../utils";
-import { getCurrentItem } from "../utils/ChartDataUtil";
+import { noop } from "../../utils";
+import { getCurrentItem } from "../../utils/ChartDataUtil";
 
 import StraightLine from "./StraightLine";
 import ClickableCircle from "./ClickableCircle";

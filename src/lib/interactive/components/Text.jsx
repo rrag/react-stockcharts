@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from "react";
 
-import GenericChartComponent from "../GenericChartComponent";
-import { getMouseCanvas } from "../GenericComponent";
+import GenericChartComponent from "../../GenericChartComponent";
+import { getMouseCanvas } from "../../GenericComponent";
 
 class Text extends Component {
 	constructor(props) {

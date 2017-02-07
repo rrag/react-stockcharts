@@ -1,9 +1,9 @@
 import React, { PropTypes, Component } from "react";
 
-import GenericChartComponent from "../GenericChartComponent";
-import { getMouseCanvas } from "../GenericComponent";
+import GenericChartComponent from "../../GenericChartComponent";
+import { getMouseCanvas } from "../../GenericComponent";
 
-import { noop, hexToRGBA } from "../utils";
+import { noop, hexToRGBA } from "../../utils";
 
 class ClickableCircle extends Component {
 	constructor(props) {
@@ -60,7 +60,8 @@ class ClickableCircle extends Component {
 	}
 	render() {
 		const { interactiveCursorClass } = this.props;
-		const { show, onDrag, onDragComplete } = this.props;
+		const { show } = this.props;
+		const { onDragStart, onDrag, onDragComplete } = this.props;
 
 		return show
 			? <GenericChartComponent ref={this.saveNode}
@@ -68,6 +69,7 @@ class ClickableCircle extends Component {
 				selected
 				isHover={this.isHover}
 
+				onDragStart={onDragStart}
 				onDrag={onDrag}
 				onDragComplete={onDragComplete}
 
@@ -93,6 +95,7 @@ function helper(props, moreProps) {
 	return [x, y];
 }
 ClickableCircle.propTypes = {
+	onDragStart: PropTypes.func.isRequired,
 	onDrag: PropTypes.func.isRequired,
 	onDragComplete: PropTypes.func.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
@@ -110,6 +113,7 @@ ClickableCircle.propTypes = {
 
 ClickableCircle.defaultProps = {
 	className: "react-stockcharts-interactive-line-edge",
+	onDragStart: noop,
 	onDrag: noop,
 	onDragComplete: noop,
 	onMove: noop,

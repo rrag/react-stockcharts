@@ -4,8 +4,8 @@ import React, { PropTypes, Component } from "react";
 
 import { isDefined, isNotDefined, noop } from "../utils";
 
-import EachFibRetracement from "./EachFibRetracement";
-import MouseLocationIndicator from "./MouseLocationIndicator";
+import EachFibRetracement from "./components/EachFibRetracement";
+import MouseLocationIndicator from "./components/MouseLocationIndicator";
 
 class FibonacciRetracement extends Component {
 	constructor(props) {

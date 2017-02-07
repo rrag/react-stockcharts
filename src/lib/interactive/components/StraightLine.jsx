@@ -1,16 +1,14 @@
 import React, { PropTypes, Component } from "react";
 
-import GenericChartComponent from "../GenericChartComponent";
-import { getMouseCanvas } from "../GenericComponent";
+import GenericChartComponent from "../../GenericChartComponent";
+import { getMouseCanvas } from "../../GenericComponent";
 
-import { isDefined, head, last, noop, hexToRGBA } from "../utils";
+import { isDefined, head, last, noop, hexToRGBA } from "../../utils";
 
-function getX1Y1(x1Value, y1Value, xScale, yScale) {
-	return [xScale(x1Value), yScale(y1Value)];
+function getXY(xValue, yValue, xScale, yScale) {
+	return [xScale(xValue), yScale(yValue)];
 }
-function getX2Y2(x2Value, y2Value, xScale, yScale) {
-	return [xScale(x2Value), yScale(y2Value)];
-}
+
 class StraightLine extends Component {
 	constructor(props) {
 		super(props);
@@ -30,12 +28,12 @@ class StraightLine extends Component {
 			const [mouseX] = mouseXY;
 
 			const start = (x1Value < x2Value
-				? getX1Y1(x1Value, y1Value, xScale, yScale)
-				: getX2Y2(x2Value, y2Value, xScale, yScale));
+				? getXY(x1Value, y1Value, xScale, yScale)
+				: getXY(x2Value, y2Value, xScale, yScale));
 
 			const end = x1Value > x2Value
-				? getX1Y1(x1Value, y1Value, xScale, yScale)
-				: getX2Y2(x2Value, y2Value, xScale, yScale);
+				? getXY(x1Value, y1Value, xScale, yScale)
+				: getXY(x2Value, y2Value, xScale, yScale);
 
 			const isWithinLineBounds = type === "LINE"
 				&& (mouseX >= start[0] && mouseX <= end[0]);
@@ -103,7 +101,7 @@ class StraightLine extends Component {
 	}
 }
 
-function isHovering(start, end, [mouseX, mouseY], tolerance) {
+export function isHovering(start, end, [mouseX, mouseY], tolerance) {
 	const m = getSlope(start, end);
 	const b = getYIntercept(m, end);
 	const y = m * mouseX + b;
@@ -130,13 +128,13 @@ function helper(props, moreProps) {
 	};
 }
 
-function getSlope(start, end) {
+export function getSlope(start, end) {
 	const m /* slope */ = end[0] === start[0]
 		? 0
 		: (end[1] - start[1]) / (end[0] - start[0]);
 	return m;
 }
-function getYIntercept(m, end) {
+export function getYIntercept(m, end) {
 	const b /* y intercept */ = -1 * m * end[0] + end[1];
 	return b;
 }

@@ -7,7 +7,6 @@ import { timeFormat } from "d3-time-format";
 import { ChartCanvas, Chart } from "react-stockcharts";
 import {
 	BarSeries,
-	AreaSeries,
 	CandlestickSeries,
 	LineSeries,
 	MACDSeries,
@@ -27,9 +26,9 @@ import {
 	MovingAverageTooltip,
 	MACDTooltip,
 } from "react-stockcharts/lib/tooltip";
-import { ema, macd, sma } from "react-stockcharts/lib/indicator";
-import { FibonacciRetracement } from "react-stockcharts/lib/interactive";
+import { ema, macd } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
+import { EquidistantChannel } from "react-stockcharts/lib/interactive";
 import { last } from "react-stockcharts/lib/utils";
 
 const macdAppearance = {
@@ -42,14 +41,14 @@ const macdAppearance = {
 	},
 };
 
-class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component {
+class CandleStickChartWithEquidistantChannel extends React.Component {
 	constructor(props) {
 		super(props);
 		this.onKeyPress = this.onKeyPress.bind(this);
-		this.onFibComplete = this.onFibComplete.bind(this);
+		this.onDrawComplete = this.onDrawComplete.bind(this);
 		this.state = {
-			enableFib: true,
-			retracements: [],
+			enableInteractiveObject: true,
+			channels: [],
 		};
 	}
 	componentDidMount() {
@@ -58,41 +57,42 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 	componentWillUnmount() {
 		document.removeEventListener("keyup", this.onKeyPress);
 	}
-	onFibComplete(retracements) {
+	onDrawComplete(channels) {
+		// this gets called on
+		// 1. draw complete of drawing object
+		// 2. drag complete of drawing object
 		this.setState({
-			retracements,
-			enableFib: false
+			enableInteractiveObject: false,
+			channels
 		});
 	}
 	onKeyPress(e) {
 		const keyCode = e.which;
+		console.log(keyCode);
 		switch (keyCode) {
 		case 46: { // DEL
-			const rest = this.state.retracements
-				.slice(0, this.state.retracements.length - 1);
 			this.setState({
-				retracements: rest,
+				channels: this.state.channels.slice(0, this.state.channels.length - 2)
 			});
 			break;
 		}
 		case 27: { // ESC
-			this.refs.fib.terminate();
+			this.refs.trend.terminate();
 			this.setState({
-				enableFib: false
+				enableInteractiveObject: false
 			});
 			break;
 		}
-		case 68:   // D - Draw Fib
-		case 69: { // E - Enable Fib
+		case 68:   // D - Draw drawing object
+		case 69: { // E - Enable drawing object
 			this.setState({
-				enableFib: true
+				enableInteractiveObject: true
 			});
 			break;
 		}
 		}
 	}
 	render() {
-		const { type, data: initialData, width, ratio } = this.props;
 		const ema26 = ema()
 			.id(0)
 			.options({ windowSize: 26 })
@@ -114,17 +114,10 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 			.merge((d, c) => {d.macd = c;})
 			.accessor(d => d.macd);
 
-		const smaVolume50 = sma()
-			.id(3)
-			.options({
-				windowSize: 50,
-				sourcePath: "volume",
-			})
-			.merge((d, c) => {d.smaVolume50 = c;})
-			.accessor(d => d.smaVolume50);
+		const { type, data: initialData, width, ratio } = this.props;
+		const { channels } = this.state;
 
-
-		const calculatedData = macdCalculator(smaVolume50(ema12(ema26(initialData))));
+		const calculatedData = macdCalculator(ema12(ema26(initialData)));
 		const xScaleProvider = discontinuousTimeScaleProvider
 			.inputDateAccessor(d => d.date);
 		const {
@@ -150,8 +143,7 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 					xAccessor={xAccessor}
 					displayXAccessor={displayXAccessor}
 					xExtents={xExtents}
-					drawMode={this.state.enableFib}>
-
+					drawMode={this.state.enableInteractiveObject}>
 				<Chart id={1} height={400}
 						yExtents={[d => [d.high, d.low], ema26.accessor(), ema12.accessor()]}
 						padding={{ top: 10, bottom: 20 }}>
@@ -173,6 +165,7 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 
 					<OHLCTooltip origin={[-40, 0]}/>
+
 					<MovingAverageTooltip
 						onClick={e => console.log(e)}
 						origin={[-38, 15]}
@@ -191,15 +184,16 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 							},
 						]}
 						/>
-
-					<FibonacciRetracement
-						enabled={this.state.enableFib}
-						type="BOUND"
-						retracements={this.state.retracements}
-						onComplete={this.onFibComplete}/>
+					<EquidistantChannel
+						enabled={this.state.enableInteractiveObject}
+						type="LINE"
+						onStart={() => console.log("START")}
+						onComplete={this.onDrawComplete}
+						channels={channels}
+						/>
 				</Chart>
 				<Chart id={2} height={150}
-						yExtents={[d => d.volume, smaVolume50.accessor()]}
+						yExtents={[d => d.volume]}
 						origin={(w, h) => [0, h - 300]}>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
 
@@ -209,13 +203,13 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 						displayFormat={format(".4s")} />
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
-					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
 				</Chart>
 				<Chart id={3} height={150}
 						yExtents={macdCalculator.accessor()}
 						origin={(w, h) => [0, h - 150]} padding={{ top: 10, bottom: 10 }} >
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={2} />
+
 					<MouseCoordinateX
 						at="bottom"
 						orient="bottom"
@@ -239,17 +233,18 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 		);
 	}
 }
-CandleStickChartWithFibonacciInteractiveIndicator.propTypes = {
+
+CandleStickChartWithEquidistantChannel.propTypes = {
 	data: React.PropTypes.array.isRequired,
 	width: React.PropTypes.number.isRequired,
 	ratio: React.PropTypes.number.isRequired,
 	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
-CandleStickChartWithFibonacciInteractiveIndicator.defaultProps = {
+CandleStickChartWithEquidistantChannel.defaultProps = {
 	type: "svg",
 };
 
-CandleStickChartWithFibonacciInteractiveIndicator = fitWidth(CandleStickChartWithFibonacciInteractiveIndicator);
+CandleStickChartWithEquidistantChannel = fitWidth(CandleStickChartWithEquidistantChannel);
 
-export default CandleStickChartWithFibonacciInteractiveIndicator;
+export default CandleStickChartWithEquidistantChannel;

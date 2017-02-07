@@ -7,7 +7,6 @@ import { timeFormat } from "d3-time-format";
 import { ChartCanvas, Chart } from "react-stockcharts";
 import {
 	BarSeries,
-	AreaSeries,
 	CandlestickSeries,
 	LineSeries,
 	MACDSeries,

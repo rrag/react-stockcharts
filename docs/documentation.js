@@ -100,6 +100,7 @@ var INTERACTIVE = {
 	pages: [
 		require("./lib/page/TrendLineInteractiveIndicatorPage").default,
 		require("./lib/page/FibonacciInteractiveIndicatorPage").default,
+		require("./lib/page/EquidistantChannelPage").default,
 		require("./lib/page/ClickHandlerCallbackPage").default,
 		require("./lib/page/BrushSupportPage").default,
 	]
