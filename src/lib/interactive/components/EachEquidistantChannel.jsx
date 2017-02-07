@@ -5,6 +5,7 @@ import { getCurrentItem } from "../../utils/ChartDataUtil";
 
 import ClickableCircle from "./ClickableCircle";
 import ChannelWithArea from "./ChannelWithArea";
+import HoverTextNearMouse from "./HoverTextNearMouse";
 
 class EachEquidistantChannel extends Component {
 	constructor(props) {
@@ -249,6 +250,10 @@ class EachEquidistantChannel extends Component {
 				/>
 			{line1Edge}
 			{line2Edge}
+			<HoverTextNearMouse show={hover && !selected}
+				bgHeight={18}
+				bgWidth={120}
+				children="Click to select object" />
 		</g>;
 	}
 }
