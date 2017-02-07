@@ -174,16 +174,16 @@ class EachEquidistantChannel extends Component {
 		const { onDragComplete } = this.props;
 		onDragComplete();
 	}
-	getEdgeCircle(xy, dragHandler, cursor) {
+	getEdgeCircle({ xy, dragHandler, cursor, fill }) {
 		const { selected } = this.state;
-		const { edgeStroke, edgeFill, edgeStrokeWidth, r } = this.props;
+		const { edgeStroke, edgeStrokeWidth, r } = this.props;
 
 		return <ClickableCircle
 			show={selected}
 			cx={xy[0]}
 			cy={xy[1]}
 			r={r}
-			fill={edgeFill}
+			fill={fill}
 			stroke={edgeStroke}
 			strokeWidth={edgeStrokeWidth}
 			opacity={1}
@@ -195,7 +195,7 @@ class EachEquidistantChannel extends Component {
 	}
 	render() {
 		const { startXY, endXY, dy } = this.props;
-		const { interactive } = this.props;
+		const { interactive, edgeFill } = this.props;
 		const { stroke, strokeWidth, fill, opacity } = this.props;
 		const { selected, hover } = this.state;
 
@@ -205,25 +205,34 @@ class EachEquidistantChannel extends Component {
 
 		const line1Edge = isDefined(startXY) && isDefined(endXY)
 			? <g>
-				{this.getEdgeCircle(
-					startXY,
-					this.handleLine1Edge1Drag,
-					"react-stockcharts-move-cursor")}
-				{this.getEdgeCircle(
-					endXY,
-					this.handleLine1Edge2Drag,
-					"react-stockcharts-move-cursor")}
+				{this.getEdgeCircle({
+					xy: startXY,
+					dragHandler: this.handleLine1Edge1Drag,
+					cursor: "react-stockcharts-move-cursor",
+					fill: edgeFill
+				})}
+				{this.getEdgeCircle({
+					xy: endXY,
+					dragHandler: this.handleLine1Edge2Drag,
+					cursor: "react-stockcharts-move-cursor",
+					fill: edgeFill
+				})}
 			</g>
 			: null;
 		const line2Edge = isDefined(dy)
 			? <g>
-				{this.getEdgeCircle(
-					[startXY[0], startXY[1] + dy],
-					this.handleChannelHeightChange,
-					"react-stockcharts-ns-resize-cursor")}
-				{this.getEdgeCircle([endXY[0], endXY[1] + dy],
-					this.handleChannelHeightChange,
-					"react-stockcharts-ns-resize-cursor")}
+				{this.getEdgeCircle({
+					xy: [startXY[0], startXY[1] + dy],
+					dragHandler: this.handleChannelHeightChange,
+					cursor: "react-stockcharts-ns-resize-cursor",
+					fill: "#250B98"
+				})}
+				{this.getEdgeCircle({
+					xy: [endXY[0], endXY[1] + dy],
+					dragHandler: this.handleChannelHeightChange,
+					cursor: "react-stockcharts-ns-resize-cursor",
+					fill: "#250B98"
+				})}
 			</g>
 			: null;
 
