@@ -3,11 +3,34 @@
 import React from "react";
 import { TypeChooser } from "react-stockcharts/lib/helper";
 
+import {
+	curveLinear,
+	curveStep,
+	curveStepBefore,
+	curveStepAfter,
+	curveBasis,
+	curveCardinal,
+	curveMonotoneX,
+	curveCatmullRom,
+} from "d3-shape";
+
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 
 import LineAndScatterChartGrid from "lib/charts/LineAndScatterChartGrid";
+
+const options = {
+	none: undefined,
+	curveLinear: curveLinear,
+	curveStep: curveStep,
+	curveStepBefore: curveStepBefore,
+	curveStepAfter: curveStepAfter,
+	curveBasis: curveBasis,
+	curveCardinal: curveCardinal,
+	curveMonotoneX: curveMonotoneX,
+	curveCatmullRom: curveCatmullRom,
+};
 
 class GridPage extends React.Component {
 	constructor(params) {
@@ -15,10 +38,12 @@ class GridPage extends React.Component {
 		this.handleGridChange = this.handleGridChange.bind(this);
 		this.handleGridOpacityChange = this.handleGridOpacityChange.bind(this);
 		this.handleGridWidthChange = this.handleGridWidthChange.bind(this);
+		this.handleInterpolationChange = this.handleInterpolationChange.bind(this);
 		this.state = {
 			tickStrokeDasharray: "Solid",
 			tickStrokeOpacity: 0.2,
-			tickStrokeWidth: 1
+			tickStrokeWidth: 1,
+			interpolation: "none",
 		};
 	}
 	handleGridChange(e) {
@@ -31,13 +56,24 @@ class GridPage extends React.Component {
 		   tickStrokeOpacity: parseFloat(e.target.value)
 		});
 	}
+	handleInterpolationChange(e) {
+		this.setState({
+		   interpolation: e.target.value
+		});
+	}
 	handleGridWidthChange(e) {
 		this.setState({
 		   tickStrokeWidth: parseInt(e.target.value)
 		});
 	}
 	render() {
-		const { tickStrokeDasharray, tickStrokeOpacity, tickStrokeWidth } = this.state;
+		const {
+			tickStrokeDasharray,
+			tickStrokeOpacity,
+			tickStrokeWidth,
+			interpolation,
+		} = this.state;
+
 		return (
 			<ContentSection title={GridPage.title}>
 				<Row>
@@ -50,10 +86,25 @@ class GridPage extends React.Component {
 										tickStrokeDasharray,
 										tickStrokeWidth
 									}}
+									interpolation={options[interpolation]}
 									data={this.props.someData}
 									type={type} />
 							)}
 						</TypeChooser>
+					</Section>
+				</Row>
+				<Row>
+					<Section colSpan={2}>
+						Interpolation:
+						<select onChange={this.handleInterpolationChange} value={interpolation}>
+							{Object.keys(options)
+								.map((each, idx) => <option key={idx} value={each}>{each}</option>)}
+						</select>
+                        <hr />
+					</Section>
+				</Row>
+				<Row>
+					<Section colSpan={2}>
 						Grid style:
 						<select onChange={this.handleGridChange} value={tickStrokeDasharray}>
 							<option value="Solid">Solid</option>
@@ -86,7 +137,7 @@ class GridPage extends React.Component {
 						Stroke width:
 						<input type="number" value={tickStrokeWidth} onChange={this.handleGridWidthChange} />
                         <hr />
-					</Section>
+                    </Section>
 				</Row>
 				<Row>
 					<Section colSpan={2}>

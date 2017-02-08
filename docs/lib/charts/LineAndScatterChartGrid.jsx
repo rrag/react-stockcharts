@@ -26,7 +26,7 @@ import { last } from "react-stockcharts/lib/utils";
 
 class LineAndScatterChartGrid extends React.Component {
 	render() {
-		var { type, data: initialData, width, ratio } = this.props;
+		var { type, data: initialData, width, ratio, interpolation } = this.props;
 		var { gridProps } = this.props;
 		var margin = { left: 70, right: 70, top: 20, bottom: 30 };
 
@@ -89,12 +89,9 @@ class LineAndScatterChartGrid extends React.Component {
 
 					<LineSeries
 						yAccessor={d => d.close}
+						interpolation={interpolation}
 						stroke="#ff7f0e"
 					/>
-					<ScatterSeries
-						yAccessor={d => d.close}
-						marker={SquareMarker}
-						markerProps={{ width: 6, stroke: "#ff7f0e", fill: "#ff7f0e" }} />
 					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
 				</Chart>
 

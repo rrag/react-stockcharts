@@ -6,7 +6,7 @@ import { line as d3Line } from "d3-shape";
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas, getMouseCanvas } from "../GenericComponent";
 
-import { first, getClosestItemIndexes, strokeDashTypes, getStrokeDasharray } from "../utils";
+import { isDefined, getClosestItemIndexes, strokeDashTypes, getStrokeDasharray } from "../utils";
 
 class LineSeries extends Component {
 	constructor(props) {
@@ -57,9 +57,14 @@ class LineSeries extends Component {
 		}
 	}
 	drawOnCanvas(ctx, moreProps) {
-		const { yAccessor, stroke, strokeWidth, hoverStrokeWidth, defined, connectNulls, strokeDasharray } = this.props;
-		const { xAccessor } = moreProps;
+		const {
+			yAccessor, stroke, strokeWidth, hoverStrokeWidth,
+			defined, strokeDasharray, interpolation
+		} = this.props;
 
+		const { connectNulls } = this.props;
+
+		const { xAccessor } = moreProps;
 		const { xScale, chartConfig: { yScale }, plotData, hovering } = moreProps;
 
 		ctx.lineWidth = hovering ? hoverStrokeWidth : strokeWidth;
@@ -67,6 +72,21 @@ class LineSeries extends Component {
 		ctx.strokeStyle = stroke;
 		ctx.setLineDash(getStrokeDasharray(strokeDasharray).split(","));
 
+		const dataSeries = d3Line()
+			.x(d => xScale(xAccessor(d)))
+			.y(d => yScale(yAccessor(d)));
+
+		if (isDefined(interpolation)) {
+			dataSeries.curve(interpolation);
+		}
+		if (!connectNulls) {
+			dataSeries.defined(d => defined(yAccessor(d)));
+		}
+
+		ctx.beginPath();
+		dataSeries.context(ctx)(plotData);
+		ctx.stroke();
+		/*
 		let points = [];
 		for (let i = 0; i < plotData.length; i++) {
 			const d = plotData[i];
@@ -80,19 +100,26 @@ class LineSeries extends Component {
 			}
 		}
 
-		if (points.length) segment(points, ctx);
+		if (points.length) segment(points, ctx);*/
 	}
 	renderSVG(moreProps) {
 		const { yAccessor, stroke, strokeWidth, hoverStrokeWidth, defined, strokeDasharray } = this.props;
+		const { connectNulls } = this.props;
+		const { interpolation } = this.props;
 		const { xAccessor } = moreProps;
 
 		const { xScale, chartConfig: { yScale }, plotData, hovering } = moreProps;
 
 		const dataSeries = d3Line()
-			.defined(d => defined(yAccessor(d)))
 			.x(d => xScale(xAccessor(d)))
 			.y(d => yScale(yAccessor(d)));
 
+		if (isDefined(interpolation)) {
+			dataSeries.curve(interpolation);
+		}
+		if (!connectNulls) {
+			dataSeries.defined(d => defined(yAccessor(d)));
+		}
 		const d = dataSeries(plotData);
 
 		const { fill, className } = this.props;
@@ -105,7 +132,6 @@ class LineSeries extends Component {
 			fill={fill}
 			/>;
 	}
-
 	render() {
 		const { highlightOnHover } = this.props;
 		const hoverProps = highlightOnHover
@@ -132,6 +158,7 @@ class LineSeries extends Component {
 	}
 }
 
+/*
 function segment(points, ctx) {
 	ctx.beginPath();
 
@@ -144,6 +171,7 @@ function segment(points, ctx) {
 
 	ctx.stroke();
 }
+*/
 
 LineSeries.propTypes = {
 	className: PropTypes.string,
@@ -160,6 +188,7 @@ LineSeries.propTypes = {
 	onContextMenu: PropTypes.func,
 	yAccessor: PropTypes.func,
 	connectNulls: PropTypes.bool,
+	interpolation: PropTypes.func,
 };
 
 LineSeries.defaultProps = {
