@@ -1,17 +1,13 @@
 import React, { PropTypes, Component } from "react";
-import { deviation } from "d3-array";
+import { sum, deviation } from "d3-array";
 
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
-import { generateLine, isHovering } from "./StraightLine";
+import { isHovering } from "./StraightLine";
 
-import { isDefined, getClosestItemIndexes, noop, hexToRGBA } from "../../utils";
+import { isDefined, getClosestItemIndexes, noop, zipper, hexToRGBA } from "../../utils";
 
-function getXY(xValue, yValue, xScale, yScale) {
-	return [xScale(xValue), yScale(yValue)];
-}
-
-class SDChannelWithArea extends Component {
+class LinearRegressionChannelWithArea extends Component {
 	constructor(props) {
 		super(props);
 
@@ -23,27 +19,12 @@ class SDChannelWithArea extends Component {
 		const { tolerance, onHover } = this.props;
 
 		if (isDefined(onHover)) {
+			const { mouseXY } = moreProps;
 
-			const { x1Value, x2Value, y1Value, y2Value } = this.props;
-			const { mouseXY, xScale } = moreProps;
-			const { chartConfig: { yScale } } = moreProps;
+			const { x1, y1, x2, y2 } = helper(this.props, moreProps);
 
-			const [mouseX] = mouseXY;
-
-			const start = (x1Value < x2Value
-				? getXY(x1Value, y1Value, xScale, yScale)
-				: getXY(x2Value, y2Value, xScale, yScale));
-
-			const end = x1Value > x2Value
-				? getXY(x1Value, y1Value, xScale, yScale)
-				: getXY(x2Value, y2Value, xScale, yScale);
-
-			const isWithinLineBounds = (mouseX >= start[0] && mouseX <= end[0]);
-
-			if (isWithinLineBounds) {
-				const hovering = isHovering(start, end, mouseXY, tolerance);
-				return hovering;
-			}
+			const hovering = isHovering([x1, y1], [x2, y2], mouseXY, tolerance);
+			return hovering;
 		}
 		return false;
 	}
@@ -106,42 +87,83 @@ class SDChannelWithArea extends Component {
 	}
 }
 
-function helper(props, moreProps) {
-	const { x1Value, x2Value, y1Value, y2Value } = props;
+export function edge1Provider(props) {
+	return function(moreProps) {
+		const { x1, y1 } = helper(props, moreProps);
+		return [x1, y1];
+	};
+}
 
-	const { xScale, chartConfig: { yScale }, plotData } = moreProps;
+export function edge2Provider(props) {
+	return function(moreProps) {
+		const { x2, y2 } = helper(props, moreProps);
+		return [x2, y2];
+	};
+}
+
+
+function helper(props, moreProps) {
+	const { x1Value, x2Value, type } = props;
+
+	const { xScale, chartConfig: { yScale }, fullData } = moreProps;
 	const { xAccessor } = moreProps;
 
-	const modLine = generateLine("LINE",
-		[x1Value, y1Value],
-		[x2Value, y2Value], xAccessor, plotData);
+	/*
+	http://www.metastock.com/Customer/Resources/TAAZ/?p=65
+	y = a + bx
+	n = length of array
+	b = (n * sum(x*y) - sum(xs) * sum(ys)) / (n * sum(xSquareds) - (sum(xs) ^ 2))
+	a = (sum of closes)
+	*/
 
-	const x1 = xScale(modLine.x1);
-	const y1 = yScale(modLine.y1);
-	const x2 = xScale(modLine.x2);
-	const y2 = yScale(modLine.y2);
-
-	const { left } = getClosestItemIndexes(plotData, x1Value, xAccessor);
-	const { right } = getClosestItemIndexes(plotData, x2Value, xAccessor);
+	const { left } = getClosestItemIndexes(fullData, x1Value, xAccessor);
+	const { right } = getClosestItemIndexes(fullData, x2Value, xAccessor);
 
 	const startIndex = Math.min(left, right);
 	const endIndex = Math.max(left, right) + 1;
 
-	const array = plotData.slice(startIndex, endIndex);
-	const stdDev = deviation(array, d => d.close);
+	const array = fullData.slice(startIndex, endIndex);
 
-	const dy = yScale(modLine.y1 - stdDev) - y1;
+	const xs = array.map(d => xAccessor(d).valueOf());
+	const ys = array.map(d => d.close);
+	const n = array.length;
+
+	const combine = zipper()
+		.combine((x, y) => x * y);
+
+	const xys = combine(xs, ys);
+	const xSquareds = xs.map(x => Math.pow(x, 2));
+
+	const b = (n * sum(xys) - sum(xs) * sum(ys)) / (n * sum(xSquareds) - Math.pow(sum(xs), 2));
+	const a = (sum(ys) - b * sum(xs)) / n;
+
+	const newy1 = a + b * x1Value;
+	const newy2 = a + b * x2Value;
+
+	const x1 = xScale(x1Value);
+	const y1 = yScale(newy1);
+	const x2 = xScale(x2Value);
+	const y2 = yScale(newy2);
+
+	const stdDev = type === "SD"
+		? deviation(array, d => d.close)
+		: 0;
+
+	const dy = yScale(newy1 - stdDev) - y1;
 
 	return {
 		x1, y1, x2, y2, dy
 	};
 }
 
-SDChannelWithArea.propTypes = {
+LinearRegressionChannelWithArea.propTypes = {
 	x1Value: PropTypes.any.isRequired,
 	x2Value: PropTypes.any.isRequired,
-	y1Value: PropTypes.any.isRequired,
-	y2Value: PropTypes.any.isRequired,
+
+	type: PropTypes.oneOf([
+		"SD", // standard deviation channel
+		"Raff", // Raff Regression Channel
+	]).isRequired,
 
 	interactiveCursorClass: PropTypes.string,
 	stroke: PropTypes.string.isRequired,
@@ -163,7 +185,7 @@ SDChannelWithArea.propTypes = {
 	selected: PropTypes.bool.isRequired,
 };
 
-SDChannelWithArea.defaultProps = {
+LinearRegressionChannelWithArea.defaultProps = {
 	onDragStart: noop,
 	onDrag: noop,
 	onDragComplete: noop,
@@ -171,9 +193,11 @@ SDChannelWithArea.defaultProps = {
 	onClick: noop,
 	onClickOutside: noop,
 
+	type: "SD", // standard dev
+
 	strokeWidth: 1,
 	tolerance: 4,
 	selected: false,
 };
 
-export default SDChannelWithArea;
+export default LinearRegressionChannelWithArea;

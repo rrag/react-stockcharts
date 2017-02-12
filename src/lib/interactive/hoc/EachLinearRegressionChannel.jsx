@@ -4,10 +4,15 @@ import { noop } from "../../utils";
 import { getCurrentItem } from "../../utils/ChartDataUtil";
 
 import HoverTextNearMouse from "../components/HoverTextNearMouse";
-import SDChannelWithArea from "../components/SDChannelWithArea";
+import {
+	default as LinearRegressionChannelWithArea,
+	edge1Provider,
+	edge2Provider
+} from "../components/LinearRegressionChannelWithArea";
+
 import ClickableCircle from "../components/ClickableCircle";
 
-class EachSDChannel extends Component {
+class EachLinearRegressionChannel extends Component {
 	constructor(props) {
 		super(props);
 		this.handleSelect = this.handleSelect.bind(this);
@@ -38,31 +43,27 @@ class EachSDChannel extends Component {
 	handleEdge1Drag(moreProps) {
 		const { index, onDrag, snapTo } = this.props;
 		const {
-			x2Value, y2Value,
+			x2Value,
 		} = this.props;
 
-		const [x1Value, y1Value] = getNewXY(moreProps, snapTo);
+		const [x1Value] = getNewXY(moreProps, snapTo);
 
 		onDrag(index, {
 			x1Value,
-			y1Value,
 			x2Value,
-			y2Value,
 		});
 	}
 	handleEdge2Drag(moreProps) {
 		const { index, onDrag, snapTo } = this.props;
 		const {
-			x1Value, y1Value,
+			x1Value,
 		} = this.props;
 
-		const [x2Value, y2Value] = getNewXY(moreProps, snapTo);
+		const [x2Value] = getNewXY(moreProps, snapTo);
 
 		onDrag(index, {
 			x1Value,
-			y1Value,
 			x2Value,
-			y2Value,
 		});
 	}
 	handleHover(moreProps) {
@@ -75,9 +76,7 @@ class EachSDChannel extends Component {
 	render() {
 		const {
 			x1Value,
-			y1Value,
 			x2Value,
-			y2Value,
 			stroke,
 			strokeWidth,
 			fill,
@@ -100,23 +99,20 @@ class EachSDChannel extends Component {
 
 		// console.log("SELECTED ->", selected);
 		return <g>
-			<SDChannelWithArea
+			<LinearRegressionChannelWithArea
 				selected={selected}
 				{...hoverHandler}
 				onClick={this.handleSelect}
 				onClickOutside={this.handleUnSelect}
 				x1Value={x1Value}
-				y1Value={y1Value}
 				x2Value={x2Value}
-				y2Value={y2Value}
 				fill={fill}
 				stroke={stroke}
 				strokeWidth={(hover || selected) ? strokeWidth + 1 : strokeWidth}
 				opacity={opacity} />
 			<ClickableCircle
 				show={selected}
-				cx={x1Value}
-				cy={y1Value}
+				xyProvider={edge1Provider(this.props)}
 				r={r}
 				fill={edgeFill}
 				stroke={edgeStroke}
@@ -127,8 +123,7 @@ class EachSDChannel extends Component {
 				onDragComplete={onDragComplete} />
 			<ClickableCircle
 				show={selected}
-				cx={x2Value}
-				cy={y2Value}
+				xyProvider={edge2Provider(this.props)}
 				r={r}
 				fill={edgeFill}
 				stroke={edgeStroke}
@@ -155,11 +150,9 @@ export function getNewXY(moreProps, snapTo) {
 	return [x, y];
 }
 
-EachSDChannel.propTypes = {
+EachLinearRegressionChannel.propTypes = {
 	x1Value: PropTypes.any.isRequired,
 	x2Value: PropTypes.any.isRequired,
-	y1Value: PropTypes.any.isRequired,
-	y2Value: PropTypes.any.isRequired,
 
 	index: PropTypes.number,
 
@@ -182,7 +175,7 @@ EachSDChannel.propTypes = {
 	edgeFill: PropTypes.string.isRequired,
 };
 
-EachSDChannel.defaultProps = {
+EachLinearRegressionChannel.defaultProps = {
 	onDrag: noop,
 	onDragComplete: noop,
 	edgeStroke: "#000000",
@@ -195,4 +188,4 @@ EachSDChannel.defaultProps = {
 	fill: "#8AAFE2",
 };
 
-export default EachSDChannel;
+export default EachLinearRegressionChannel;

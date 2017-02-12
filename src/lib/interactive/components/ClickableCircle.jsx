@@ -3,7 +3,7 @@ import React, { PropTypes, Component } from "react";
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
 
-import { noop, hexToRGBA } from "../../utils";
+import { isDefined, noop, hexToRGBA } from "../../utils";
 
 class ClickableCircle extends Component {
 	constructor(props) {
@@ -17,10 +17,9 @@ class ClickableCircle extends Component {
 		this.node = node;
 	}
 	isHover(moreProps) {
-		const { mouseXY, xScale, chartConfig: { yScale } } = moreProps;
-		const { cx, cy, r } = this.props;
-		const x = xScale(cx);
-		const y = yScale(cy);
+		const { mouseXY } = moreProps;
+		const { r } = this.props;
+		const [x, y] = helper(this.props, moreProps);
 
 		const [mx, my] = mouseXY;
 		const hover = (x - r) < mx && mx < (x + r)
@@ -85,16 +84,22 @@ class ClickableCircle extends Component {
 }
 
 function helper(props, moreProps) {
-	const { cx, cy } = props;
+	const { xyProvider, cx, cy } = props;
+
+	if (isDefined(xyProvider)) {
+		return xyProvider(moreProps);
+	}
 
 	const { xScale, chartConfig: { yScale } } = moreProps;
 
 	const x = xScale(cx);
 	const y = yScale(cy);
-
 	return [x, y];
+
 }
 ClickableCircle.propTypes = {
+	xyProvider: PropTypes.func,
+
 	onDragStart: PropTypes.func.isRequired,
 	onDrag: PropTypes.func.isRequired,
 	onDragComplete: PropTypes.func.isRequired,
@@ -102,8 +107,10 @@ ClickableCircle.propTypes = {
 	stroke: PropTypes.string.isRequired,
 	fill: PropTypes.string.isRequired,
 	r: PropTypes.number.isRequired,
-	cx: PropTypes.number.isRequired,
-	cy: PropTypes.number.isRequired,
+
+	cx: PropTypes.number,
+	cy: PropTypes.number,
+
 	className: PropTypes.string.isRequired,
 	show: PropTypes.bool.isRequired,
 	opacity: PropTypes.number.isRequired,

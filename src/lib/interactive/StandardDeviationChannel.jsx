@@ -6,7 +6,7 @@ import { isDefined, isNotDefined, noop } from "../utils";
 
 import { getValueFromOverride } from "./utils";
 
-import EachSDChannel from "./hoc/EachSDChannel";
+import EachLinearRegressionChannel from "./hoc/EachLinearRegressionChannel";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
 
 
@@ -95,12 +95,10 @@ class StandardDeviationChannel extends Component {
 		const { current, override } = this.state;
 
 		const tempLine = isDefined(current) && isDefined(current.end)
-			? <EachSDChannel
+			? <EachLinearRegressionChannel
 					interactive={false}
 					x1Value={current.start[0]}
-					y1Value={current.start[1]}
 					x2Value={current.end[0]}
-					y2Value={current.end[1]}
 					stroke={stroke}
 					strokeWidth={strokeWidth}
 					opacity={opacity} />
@@ -108,13 +106,11 @@ class StandardDeviationChannel extends Component {
 
 		return <g>
 			{channels.map((each, idx) => {
-				return <EachSDChannel
+				return <EachLinearRegressionChannel
 					key={idx}
 					index={idx}
 					x1Value={getValueFromOverride(override, idx, "x1Value", each.start[0])}
-					y1Value={getValueFromOverride(override, idx, "y1Value", each.start[1])}
 					x2Value={getValueFromOverride(override, idx, "x2Value", each.end[0])}
-					y2Value={getValueFromOverride(override, idx, "y2Value", each.end[1])}
 					stroke={stroke}
 					strokeWidth={strokeWidth}
 					opacity={opacity}
@@ -127,8 +123,7 @@ class StandardDeviationChannel extends Component {
 			{tempLine}
 			<MouseLocationIndicator
 				enabled={enabled}
-				snap={true}
-				snapTo={snapTo}
+				snap={false}
 				r={currentPositionRadius}
 				stroke={currentPositionStroke}
 				opacity={currentPositionOpacity}
