@@ -55,7 +55,9 @@ export function getClosestItemIndexes2(array, value, accessor) {
 	return { left, right };
 }
 
-export function getClosestValue(values, currentValue) {
+export function getClosestValue(inputValue, currentValue) {
+	const values = isArray(inputValue) ? inputValue : [inputValue];
+
 	const diff = values
 		.map(each => each - currentValue)
 		.reduce((diff1, diff2) => Math.abs(diff1) < Math.abs(diff2) ? diff1 : diff2);
@@ -85,8 +87,8 @@ export function getClosestItemIndexes(array, value, accessor, log) {
 	}
 	// for Date object === does not work, so using the <= in combination with >=
 	// the same code works for both dates and numbers
-	if (accessor(array[lo]) >= value && accessor(array[lo]) <= value) hi = lo;
-	if (accessor(array[hi]) >= value && accessor(array[hi]) <= value) lo = hi;
+	if (accessor(array[lo]).valueOf() === value.valueOf()) hi = lo;
+	if (accessor(array[hi]).valueOf() === value.valueOf()) lo = hi;
 
 	if (accessor(array[lo]) < value && accessor(array[hi]) < value) lo = hi;
 	if (accessor(array[lo]) > value && accessor(array[hi]) > value) hi = lo;

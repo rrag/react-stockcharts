@@ -4,7 +4,7 @@ import React, { PropTypes, Component } from "react";
 
 import { isDefined, isNotDefined, noop } from "../utils";
 
-import EachFibRetracement from "./components/EachFibRetracement";
+import EachFibRetracement from "./hoc/EachFibRetracement";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
 
 class FibonacciRetracement extends Component {
@@ -228,10 +228,6 @@ FibonacciRetracement.defaultProps = {
 	currentPositionStrokeWidth: 3,
 	currentPositionRadius: 4,
 
-};
-
-FibonacciRetracement.contextTypes = {
-	redraw: PropTypes.func.isRequired,
 };
 
 export default FibonacciRetracement;

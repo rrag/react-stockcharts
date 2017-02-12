@@ -6,7 +6,7 @@ import { isDefined, isNotDefined, noop } from "../utils";
 
 import { getValueFromOverride } from "./utils";
 
-import InteractiveLine from "./components/InteractiveLine";
+import EachTrendLine from "./hoc/EachTrendLine";
 import StraightLine from "./components/StraightLine";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
 
@@ -122,6 +122,8 @@ class TrendLine extends Component {
 					opacity={opacity}
 					onDrag={this.handleDragLine}
 					onDragComplete={this.handleDragLineComplete}
+					edgeInteractiveCursor="react-stockcharts-move-cursor"
+					lineInteractiveCursor="react-stockcharts-move-cursor"
 					/>;
 			})}
 			{tempLine}
@@ -165,10 +167,6 @@ TrendLine.propTypes = {
 	trends: PropTypes.array.isRequired,
 };
 
-TrendLine.contextTypes = {
-	xAccessor: PropTypes.func.isRequired,
-};
-
 TrendLine.defaultProps = {
 	stroke: "#000000",
 	type: "XLINE",
@@ -184,63 +182,6 @@ TrendLine.defaultProps = {
 	endPointCircleFill: "#000000",
 	endPointCircleRadius: 5,
 	trends: [],
-};
-
-TrendLine.contextTypes = {
-	redraw: PropTypes.func.isRequired,
-};
-
-class EachTrendLine extends Component {
-	constructor(props) {
-		super(props);
-		this.handleDragLine = this.handleDragLine.bind(this);
-	}
-	handleDragLine(...rest) {
-		const { index, onDrag } = this.props;
-		onDrag(index, ...rest);
-	}
-	render() {
-		const {
-			type,
-			x1Value,
-			y1Value,
-			x2Value,
-			y2Value,
-			stroke,
-			strokeWidth,
-			opacity,
-			onDragComplete,
-		} = this.props;
-		return <InteractiveLine
-			type={type}
-			x1Value={x1Value}
-			y1Value={y1Value}
-			x2Value={x2Value}
-			y2Value={y2Value}
-			stroke={stroke}
-			strokeWidth={strokeWidth}
-			opacity={opacity}
-			onDrag={this.handleDragLine}
-			onDragComplete={onDragComplete}
-			edgeInteractiveCursor="react-stockcharts-move-cursor"
-			lineInteractiveCursor="react-stockcharts-move-cursor"
-			/>;
-	}
-
-}
-
-EachTrendLine.propTypes = {
-	index: PropTypes.number.isRequired,
-	type: PropTypes.string,
-	stroke: PropTypes.string,
-	strokeWidth: PropTypes.number.isRequired,
-	opacity: PropTypes.number,
-	onDrag: PropTypes.func,
-	onDragComplete: PropTypes.func,
-	x1Value: PropTypes.any.isRequired,
-	y1Value: PropTypes.any.isRequired,
-	x2Value: PropTypes.any.isRequired,
-	y2Value: PropTypes.any.isRequired,
 };
 
 export default TrendLine;

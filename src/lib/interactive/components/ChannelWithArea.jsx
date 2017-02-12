@@ -92,17 +92,7 @@ class ChannelWithArea extends Component {
 		}
 	}
 	renderSVG(moreProps) {
-		const { stroke, strokeWidth, opacity } = this.props;
-
-		const lineWidth = strokeWidth;
-
-		const { x1, y1, x2, y2 } = helper(this.props, moreProps);
-		return (
-			<line
-				x1={x1} y1={y1} x2={x2} y2={y2}
-				stroke={stroke} strokeWidth={lineWidth}
-				opacity={opacity} />
-		);
+		throw new Error("svg not implemented", moreProps);
 	}
 	render() {
 		const { selected, onClick, onClickOutside, interactiveCursorClass } = this.props;

@@ -7,7 +7,7 @@ import React, { PropTypes, Component } from "react";
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
 
-import { first, last, hexToRGBA, isDefined, functor } from "../utils";
+import { head, last, hexToRGBA, isDefined, functor } from "../utils";
 
 class CandlestickSeries extends Component {
 	constructor(props) {
@@ -163,18 +163,25 @@ function drawOnCanvas(ctx, props, moreProps) {
 		.key(d => d.fill)
 		.entries(candleData);
 
+
 	candleNest.forEach(outer => {
 		const { key: strokeKey, values: strokeValues } = outer;
 		if (strokeKey !== "none") {
 			ctx.strokeStyle = strokeKey;
 			ctx.lineWidth = candleStrokeWidth;
+
+
 		}
 		strokeValues.forEach(inner => {
 			const { key, values } = inner;
-			ctx.fillStyle = hexToRGBA(key, opacity);
+			if (head(values).width <= 1) {
+				ctx.strokeStyle = key;
+			} else {
+				ctx.fillStyle = hexToRGBA(key, opacity);
+			}
 
 			values.forEach(d => {
-				if (d.width < 0) {
+				if (d.width <= 1) {
 					// <line className={d.className} key={idx} x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height}/>
 					ctx.beginPath();
 					ctx.moveTo(d.x, d.y);
@@ -235,7 +242,7 @@ function getCandleData(props, xAccessor, xScale, yScale, plotData) {
 	const stroke = functor(strokeProp);
 	// console.log(plotData);
 	const width = xScale(xAccessor(last(plotData)))
-		- xScale(xAccessor(first(plotData)));
+		- xScale(xAccessor(head(plotData)));
 	const cw = (width / (plotData.length - 1) * widthRatio);
 	const candleWidth = Math.round(cw); // Math.floor(cw) % 2 === 0 ? Math.floor(cw) : Math.round(cw);
 

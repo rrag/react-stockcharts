@@ -89,7 +89,7 @@ HoverTextNearMouse.defaultProps = {
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 12,
 	fill: "#000000",
-	bgFill: "#BDD0F7",
+	bgFill: "#FA9325",
 	bgOpacity: 0.5,
 };
 

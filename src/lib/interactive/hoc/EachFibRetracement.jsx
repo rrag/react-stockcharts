@@ -3,10 +3,10 @@ import React, { PropTypes, Component } from "react";
 import { isDefined, head, last, noop } from "../../utils";
 import { getCurrentItem } from "../../utils/ChartDataUtil";
 
-import { getNewXY } from "./InteractiveLine";
-import StraightLine, { generateLine } from "./StraightLine";
-import ClickableCircle from "./ClickableCircle";
-import Text from "./Text";
+import { getNewXY } from "./EachTrendLine";
+import StraightLine, { generateLine } from "../components/StraightLine";
+import ClickableCircle from "../components/ClickableCircle";
+import Text from "../components/Text";
 
 class EachFibRetracement extends Component {
 	constructor(props) {

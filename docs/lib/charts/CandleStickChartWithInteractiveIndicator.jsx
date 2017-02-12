@@ -45,7 +45,7 @@ class CandlestickChart extends React.Component {
 	constructor(props) {
 		super(props);
 		this.onKeyPress = this.onKeyPress.bind(this);
-		this.onTrendLineComplete = this.onTrendLineComplete.bind(this);
+		this.onDrawComplete = this.onDrawComplete.bind(this);
 		this.state = {
 			enableTrendLine: true,
 			trends: [],
@@ -57,7 +57,7 @@ class CandlestickChart extends React.Component {
 	componentWillUnmount() {
 		document.removeEventListener("keyup", this.onKeyPress);
 	}
-	onTrendLineComplete(trends) {
+	onDrawComplete(trends) {
 		// this gets called on
 		// 1. draw complete of trendline
 		// 2. drag complete of trendline
@@ -190,7 +190,7 @@ class CandlestickChart extends React.Component {
 						snap={true}
 						snapTo={d => [d.high, d.low]}
 						onStart={() => console.log("START")}
-						onComplete={this.onTrendLineComplete}
+						onComplete={this.onDrawComplete}
 						trends={trends}
 						/>
 				</Chart>
@@ -247,6 +247,6 @@ CandlestickChart.defaultProps = {
 	type: "svg",
 };
 
-var CandleStickChartWithInteractiveIndicator = fitWidth(CandlestickChart);
+const CandleStickChartWithInteractiveIndicator = fitWidth(CandlestickChart);
 
 export default CandleStickChartWithInteractiveIndicator;

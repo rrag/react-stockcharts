@@ -4,18 +4,20 @@ import React, { PropTypes, Component } from "react";
 
 import { isDefined, isNotDefined, noop } from "../utils";
 
-import EachEquidistantChannel from "./hoc/EachEquidistantChannel";
-import { getSlope, getYIntercept } from "./components/StraightLine";
+import { getValueFromOverride } from "./utils";
+
+import EachSDChannel from "./hoc/EachSDChannel";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
 
-class EquidistantChannel extends Component {
+
+class StandardDeviationChannel extends Component {
 	constructor(props) {
 		super(props);
 
 		this.handleStartAndEnd = this.handleStartAndEnd.bind(this);
-		this.handleDrawChannel = this.handleDrawChannel.bind(this);
-		this.handleDragChannel = this.handleDragChannel.bind(this);
-		this.handleDragChannelComplete = this.handleDragChannelComplete.bind(this);
+		this.handleDrawLine = this.handleDrawLine.bind(this);
+		this.handleDragLine = this.handleDragLine.bind(this);
+		this.handleDragLineComplete = this.handleDragLineComplete.bind(this);
 
 		this.state = {};
 	}
@@ -25,7 +27,7 @@ class EquidistantChannel extends Component {
 			override: null,
 		});
 	}
-	handleDragChannel(index, newXYValue) {
+	handleDragLine(index, newXYValue) {
 		this.setState({
 			override: {
 				index,
@@ -33,134 +35,116 @@ class EquidistantChannel extends Component {
 			}
 		});
 	}
-	handleDragChannelComplete() {
+	handleDragLineComplete() {
 		const { override } = this.state;
-		const { channels } = this.props;
 		if (isDefined(override)) {
-			const { index, ...rest } = override;
-			const newChannels = channels
-				.map((each, idx) => idx === index
-					? rest
+			const { channels } = this.props;
+			const newTrends = channels
+				.map((each, idx) => idx === override.index
+					? {
+						start: [override.x1Value, override.y1Value],
+						end: [override.x2Value, override.y2Value],
+					}
 					: each);
 			this.setState({
 				override: null
 			}, () => {
-				this.props.onComplete(newChannels);
-
+				this.props.onComplete(newTrends);
 			});
 		}
 	}
-	handleDrawChannel(xyValue) {
+	handleDrawLine(xyValue) {
 		const { current } = this.state;
 
-		if (isDefined(current)
-				&& isDefined(current.startXY)) {
-
-			if (isNotDefined(current.dy)) {
-				this.setState({
-					current: {
-						startXY: current.startXY,
-						endXY: xyValue,
-					}
-				});
-			} else {
-				const m = getSlope(current.startXY, current.endXY);
-				const b = getYIntercept(m, current.endXY);
-				const y = m * xyValue[0] + b;
-				const dy = xyValue[1] - y;
-
-				this.setState({
-					current: {
-						...current,
-						dy,
-					}
-				});
-			}
+		if (isDefined(current) && isDefined(current.start)) {
+			this.setState({
+				current: {
+					start: current.start,
+					end: xyValue,
+				}
+			});
 		}
 	}
 	handleStartAndEnd(xyValue) {
 		const { current } = this.state;
 		const { channels } = this.props;
 
-		if (isNotDefined(current) || isNotDefined(current.startXY)) {
+		if (isNotDefined(current) || isNotDefined(current.start)) {
 			this.setState({
 				current: {
-					startXY: xyValue,
-					endXY: null,
+					start: xyValue,
+					end: null,
 				}
 			}, () => {
 				this.props.onStart();
-			});
-		} else if (isNotDefined(current.dy)) {
-			this.setState({
-				current: {
-					...current,
-					dy: 0
-				}
 			});
 		} else {
 			this.setState({
 				current: null,
 			}, () => {
-				const newChannels = channels
-					.concat(current);
-				this.props.onComplete(newChannels);
+				const newTrends = channels.concat({ start: current.start, end: xyValue });
+				this.props.onComplete(newTrends);
 			});
 		}
 	}
 	render() {
-		const { stroke, opacity, strokeWidth, fill } = this.props;
-		const { enabled, channels } = this.props;
+		const { stroke, opacity, strokeWidth, channels } = this.props;
+		const { enabled, snapTo } = this.props;
 		const { currentPositionRadius, currentPositionStroke } = this.props;
 		const { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
 		const { current, override } = this.state;
-		const overrideIndex = isDefined(override) ? override.index : null;
 
-		const tempChannel = isDefined(current) && isDefined(current.endXY)
-			? <EachEquidistantChannel
+		const tempLine = isDefined(current) && isDefined(current.end)
+			? <EachSDChannel
 					interactive={false}
-					{...current}
+					x1Value={current.start[0]}
+					y1Value={current.start[1]}
+					x2Value={current.end[0]}
+					y2Value={current.end[1]}
 					stroke={stroke}
 					strokeWidth={strokeWidth}
-					fill={fill}
 					opacity={opacity} />
 			: null;
 
 		return <g>
 			{channels.map((each, idx) => {
-				return <EachEquidistantChannel
+				return <EachSDChannel
 					key={idx}
 					index={idx}
-					{...(idx === overrideIndex ? override : each)}
+					x1Value={getValueFromOverride(override, idx, "x1Value", each.start[0])}
+					y1Value={getValueFromOverride(override, idx, "y1Value", each.start[1])}
+					x2Value={getValueFromOverride(override, idx, "x2Value", each.end[0])}
+					y2Value={getValueFromOverride(override, idx, "y2Value", each.end[1])}
 					stroke={stroke}
 					strokeWidth={strokeWidth}
-					fill={fill}
 					opacity={opacity}
-					onDrag={this.handleDragChannel}
-					onDragComplete={this.handleDragChannelComplete}
+					snapTo={snapTo}
+					onDrag={this.handleDragLine}
+					onDragComplete={this.handleDragLineComplete}
+					edgeInteractiveCursor="react-stockcharts-move-cursor"
 					/>;
 			})}
-			{tempChannel}
+			{tempLine}
 			<MouseLocationIndicator
 				enabled={enabled}
-				snap={false}
+				snap={true}
+				snapTo={snapTo}
 				r={currentPositionRadius}
 				stroke={currentPositionStroke}
 				opacity={currentPositionOpacity}
 				strokeWidth={currentPositionStrokeWidth}
 				onMouseDown={this.handleStartAndEnd}
-				onMouseMove={this.handleDrawChannel} />
+				onMouseMove={this.handleDrawLine} />
 		</g>;
 	}
 }
 
-
-EquidistantChannel.propTypes = {
+StandardDeviationChannel.propTypes = {
 	enabled: PropTypes.bool.isRequired,
+	snapTo: PropTypes.func.isRequired,
 	onStart: PropTypes.func.isRequired,
 	onComplete: PropTypes.func.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
-	fill: PropTypes.string,
 	currentPositionStroke: PropTypes.string,
 	currentPositionStrokeWidth: PropTypes.number,
 	currentPositionOpacity: PropTypes.number,
@@ -172,8 +156,9 @@ EquidistantChannel.propTypes = {
 	channels: PropTypes.array.isRequired,
 };
 
-EquidistantChannel.defaultProps = {
+StandardDeviationChannel.defaultProps = {
 	stroke: "#000000",
+	snapTo: d => d.close,
 	opacity: 0.7,
 	strokeWidth: 1,
 	onStart: noop,
@@ -184,8 +169,7 @@ EquidistantChannel.defaultProps = {
 	currentPositionRadius: 4,
 	endPointCircleFill: "#000000",
 	endPointCircleRadius: 5,
-	fill: "#8AAFE2",
 	channels: [],
 };
 
-export default EquidistantChannel;
+export default StandardDeviationChannel;

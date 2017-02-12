@@ -7,8 +7,8 @@ import { csvParse, tsvParse } from  "d3-dsv";
 import { merge } from "d3-array";
 import { timeParse } from "d3-time-format";
 
-var parseDate = timeParse("%Y-%m-%d");
-var parseDateTime = timeParse("%Y-%m-%d %H:%M:%S");
+const parseDate = timeParse("%Y-%m-%d");
+const parseDateTime = timeParse("%Y-%m-%d %H:%M:%S");
 
 import "stylesheets/re-stock";
 
@@ -18,7 +18,7 @@ import MainContainer from "lib/main-container";
 import MenuGroup from "lib/menu-group";
 import MenuItem from "lib/MenuItem";
 
-var DOCUMENTATION = {
+const DOCUMENTATION = {
 	head: "Documentation",
 	pages: [
 		// require("./lib/page/GettingStartedPage").default,
@@ -31,7 +31,7 @@ var DOCUMENTATION = {
 	]
 };
 
-var CHART_FEATURES = {
+const CHART_FEATURES = {
 	head: "Chart features",
 	pages: [
 		require("./lib/page/MousePointerPage").default,
@@ -48,7 +48,7 @@ var CHART_FEATURES = {
 	]
 };
 
-var CHART_TYPES = {
+const CHART_TYPES = {
 	head: "Chart types",
 	pages: [
 		require("./lib/page/AreaChartPage").default,
@@ -70,7 +70,7 @@ var CHART_TYPES = {
 	]
 };
 
-var INDICATORS = {
+const INDICATORS = {
 	head: "Indicators",
 	pages: [
 		require("./lib/page/MAOverlayPage").default,
@@ -87,7 +87,7 @@ var INDICATORS = {
 		require("./lib/page/VolumeProfileBySessionPage").default,
 	]
 };
-var ALGORITHMIC_INDICATORS = {
+const ALGORITHMIC_INDICATORS = {
 	head: "Algorithmic Indicators",
 	pages: [
 		require("./lib/page/MovingAverageCrossoverAlgorithmPage").default,
@@ -95,18 +95,19 @@ var ALGORITHMIC_INDICATORS = {
 	]
 };
 
-var INTERACTIVE = {
+const INTERACTIVE = {
 	head: "Interactive",
 	pages: [
 		require("./lib/page/TrendLineInteractiveIndicatorPage").default,
 		require("./lib/page/FibonacciInteractiveIndicatorPage").default,
 		require("./lib/page/EquidistantChannelPage").default,
+		require("./lib/page/StandardDeviationChannelPage").default,
 		require("./lib/page/ClickHandlerCallbackPage").default,
 		require("./lib/page/BrushSupportPage").default,
 	]
 };
 
-var ALL_PAGES = [
+const ALL_PAGES = [
 	DOCUMENTATION,
 	CHART_FEATURES,
 	CHART_TYPES,
@@ -116,7 +117,7 @@ var ALL_PAGES = [
 	// CUSTOMIZATION, TODO
 ];
 
-var pages = merge(ALL_PAGES.map(_ => _.pages));
+const pages = merge(ALL_PAGES.map(_ => _.pages));
 
 function compressString(string) {
 	string = string.replace(/\s+/g, "_");
@@ -153,19 +154,19 @@ if (!window.Modernizr.fetch || !window.Modernizr.promises) {
 
 
 function loadPage() {
-	var promiseMSFT = fetch("data/MSFT.tsv")
+	const promiseMSFT = fetch("data/MSFT.tsv")
 		.then(response => response.text())
 		.then(data => tsvParse(data, parseData(parseDate)));
-	var promiseMSFTfull = fetch("data/MSFT_full.tsv")
+	const promiseMSFTfull = fetch("data/MSFT_full.tsv")
 		.then(response => response.text())
 		.then(data => tsvParse(data, parseData(parseDate)));
-	var promiseIntraDayContinuous = fetch("data/bitfinex_xbtusd_1m.csv")
+	const promiseIntraDayContinuous = fetch("data/bitfinex_xbtusd_1m.csv")
 		.then(response => response.text())
 		.then(data => csvParse(data, parseData(parseDateTime)));
-	var promiseIntraDayDiscontinuous = fetch("data/MSFT_INTRA_DAY.tsv")
+	const promiseIntraDayDiscontinuous = fetch("data/MSFT_INTRA_DAY.tsv")
 		.then(response => response.text())
 		.then(data => tsvParse(data, parseData(d => new Date(+d))));
-	var promiseCompare = fetch("data/comparison.tsv")
+	const promiseCompare = fetch("data/comparison.tsv")
 		.then(response => response.text())
 		.then(data => tsvParse(data, d => {
 			d = parseData(parseDate)(d);
@@ -174,18 +175,18 @@ function loadPage() {
 			d.GEClose = +d.GEClose;
 			return d;
 		}));
-	var promiseBubbleData = fetch("data/bubble.json")
+	const promiseBubbleData = fetch("data/bubble.json")
 		.then(response => response.json());
-	var promiseBarData = fetch("data/barData.json")
+	const promiseBarData = fetch("data/barData.json")
 		.then(response => response.json());
-	var promisegroupedBarData = fetch("data/groupedBarData.json")
+	const promisegroupedBarData = fetch("data/groupedBarData.json")
 		.then(response => response.json());
 
 	Promise.all([promiseMSFT, promiseMSFTfull, promiseIntraDayContinuous, promiseIntraDayDiscontinuous, promiseCompare, promiseBubbleData, promiseBarData, promisegroupedBarData])
 		.then(function(values) {
-			var [MSFT, MSFTfull, intraDayContinuous, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData] = values;
-			var horizontalBarData = barData.map(({ x, y }) => ({ x: y, y: x }));
-			var horizontalGroupedBarData = groupedBarData.map(d => {
+			const [MSFT, MSFTfull, intraDayContinuous, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData] = values;
+			const horizontalBarData = barData.map(({ x, y }) => ({ x: y, y: x }));
+			const horizontalGroupedBarData = groupedBarData.map(d => {
 				return {
 					y: d.x,
 					x1: d.y1,
@@ -201,10 +202,10 @@ function loadPage() {
 }
 
 function renderPage(data, dataFull, intraDayContinuous, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData) {
-	var selected = location.hash.replace("#/", "");
-	var selectedPage = pages.filter((page) => (compressString(page.title) === compressString(selected)));
+	const selected = location.hash.replace("#/", "");
+	const selectedPage = pages.filter((page) => (compressString(page.title) === compressString(selected)));
 
-	var firstPage = (selectedPage.length === 0) ? pages[0] : selectedPage[0];
+	const firstPage = (selectedPage.length === 0) ? pages[0] : selectedPage[0];
 
 	// console.log(selected, selectedPage, firstPage);
 	class ExamplesPage extends React.Component {

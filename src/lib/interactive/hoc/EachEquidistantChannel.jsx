@@ -3,9 +3,9 @@ import React, { PropTypes, Component } from "react";
 import { isDefined, noop } from "../../utils";
 import { getCurrentItem } from "../../utils/ChartDataUtil";
 
-import ClickableCircle from "./ClickableCircle";
-import ChannelWithArea from "./ChannelWithArea";
-import HoverTextNearMouse from "./HoverTextNearMouse";
+import ClickableCircle from "../components/ClickableCircle";
+import ChannelWithArea from "../components/ChannelWithArea";
+import HoverTextNearMouse from "../components/HoverTextNearMouse";
 
 class EachEquidistantChannel extends Component {
 	constructor(props) {

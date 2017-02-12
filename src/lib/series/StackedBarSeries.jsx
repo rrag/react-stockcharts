@@ -9,7 +9,7 @@ import { stack as d3Stack } from "d3-shape";
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
 
-import { identity, hexToRGBA, first, last, functor } from "../utils";
+import { identity, hexToRGBA, head, last, functor } from "../utils";
 
 class StackedBarSeries extends Component {
 	constructor(props) {
@@ -60,7 +60,7 @@ StackedBarSeries.propTypes = {
 };
 
 StackedBarSeries.defaultProps = {
-	baseAt: (xScale, yScale/* , d*/) => first(yScale.range()),
+	baseAt: (xScale, yScale/* , d*/) => head(yScale.range()),
 	direction: "up",
 	className: "bar",
 	stroke: true,
@@ -174,7 +174,7 @@ export function drawOnCanvas2(props, ctx, bars) {
 
 	nest.forEach(outer => {
 		const { key, values } = outer;
-		if (values[0].width <= 1) {
+		if (head(values).width <= 1) {
 			ctx.strokeStyle = hexToRGBA(key, props.opacity);
 		} else {
 			ctx.strokeStyle = key;
@@ -216,7 +216,7 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 	const getFill = functor(fill);
 	const getBase = functor(baseAt);
 
-	const width = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData))));
+	const width = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(head(plotData))));
 	const bw = (width / (plotData.length - 1) * widthRatio);
 	const barWidth = Math.round(bw);
 	// console.log(barWidth)
