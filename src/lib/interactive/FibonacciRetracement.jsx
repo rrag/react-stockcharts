@@ -188,12 +188,12 @@ FibonacciRetracement.propTypes = {
 	enabled: PropTypes.bool.isRequired,
 	fontFamily: PropTypes.string.isRequired,
 	fontSize: PropTypes.number.isRequired,
+	fontStroke: PropTypes.string,
 	chartCanvasType: PropTypes.string,
 	width: PropTypes.number,
 	strokeWidth: PropTypes.number,
 	stroke: PropTypes.string,
 	opacity: PropTypes.number,
-	fontStroke: PropTypes.string,
 	onStart: PropTypes.func,
 	onComplete: PropTypes.func,
 	type: PropTypes.oneOf([
