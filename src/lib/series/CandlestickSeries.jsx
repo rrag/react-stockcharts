@@ -189,11 +189,8 @@ function drawOnCanvas(ctx, props, moreProps) {
 					ctx.lineTo(d.x + d.width, d.y + d.height);
 					ctx.stroke();
 				} else {
-					ctx.beginPath();
-					ctx.rect(d.x, d.y, d.width, d.height);
-					ctx.closePath();
-					ctx.fill();
-					if (strokeKey !== "none") ctx.stroke();
+					ctx.fillRect(d.x, d.y, d.width, d.height);
+					ctx.strokeRect(d.x, d.y, d.width, d.height);
 				}
 			});
 		});
