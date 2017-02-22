@@ -279,7 +279,7 @@ class EventCapture extends Component {
 	handleTouchStart(e) {
 		this.mouseInteraction = false;
 
-		const { pan: panEnabled } = this.props;
+		const { pan: panEnabled, chartConfig } = this.props;
 
 		const { xScale, onPanEnd } = this.props;
 
@@ -291,12 +291,14 @@ class EventCapture extends Component {
 			if (panEnabled) {
 				const dx = touch.pageX - touchXY[0],
 					dy = touch.pageY - touchXY[1];
+				const currentCharts = getCurrentCharts(chartConfig, touchXY);
 
 				this.setState({
 					panInProgress: true,
 					panStart: {
 						panStartXScale: xScale,
 						panOrigin: touchXY,
+						chartsToPan: currentCharts,
 						dx, dy
 					}
 				});
@@ -308,7 +310,7 @@ class EventCapture extends Component {
 			const { panInProgress, panStart } = this.state;
 
 			if (panInProgress && panEnabled && onPanEnd) {
-				const { dx, dy, panStartXScale, panOrigin } = panStart;
+				const { dx, dy, panStartXScale, panOrigin, chartsToPan } = panStart;
 
 				// end pan first
 				const newPos = [touch1.pageX - dx, touch1.pageY - dy];
@@ -318,14 +320,14 @@ class EventCapture extends Component {
 					panInProgress: false,
 					panStart: null,
 				});
-				onPanEnd(newPos, panStartXScale, panOrigin, e);
+				onPanEnd(newPos, panStartXScale, panOrigin, chartsToPan, e);
 			}
 		}
 
 		if (e.touches.length !== 2) this.initialPinch = null;
 
 		// console.log("handleTouchStart", e);
-		e.preventDefault();
+		// e.preventDefault();
 	}
 	handleTouchMove(e) {
 		const { pan: panEnabled, zoom: zoomEnabled } = this.props;
@@ -367,16 +369,9 @@ class EventCapture extends Component {
 				}
 			}
 		}
-		e.preventDefault();
+		// e.preventDefault();
 
 		// console.log("handleTouchMove", e);
-	}
-	setCursorClass(cursorOverrideClass) {
-		if (cursorOverrideClass !== this.state.cursorOverrideClass) {
-			this.setState({
-				cursorOverrideClass
-			});
-		}
 	}
 	handleTouchEnd(e) {
 		// TODO enableMouseInteraction
@@ -396,7 +391,14 @@ class EventCapture extends Component {
 		}
 		// console.log("handleTouchEnd", dxdy, newPos, e);
 		this.mouseInteraction = true;
-		e.preventDefault();
+		// e.preventDefault();
+	}
+	setCursorClass(cursorOverrideClass) {
+		if (cursorOverrideClass !== this.state.cursorOverrideClass) {
+			this.setState({
+				cursorOverrideClass
+			});
+		}
 	}
 	render() {
 		const { height, width } = this.props;
