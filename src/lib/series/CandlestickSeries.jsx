@@ -146,13 +146,8 @@ function drawOnCanvas(ctx, props, moreProps) {
 		const { key, values } = outer;
 		ctx.strokeStyle = key;
 		values.forEach(d => {
-			ctx.beginPath();
-			ctx.moveTo(d.x, d.y1);
-			ctx.lineTo(d.x, d.y2);
-
-			ctx.moveTo(d.x, d.y3);
-			ctx.lineTo(d.x, d.y4);
-			ctx.stroke();
+			ctx.fillRect(d.x, d.y1, 1, d.y2 - d.y1);
+			ctx.fillRect(d.x, d.y3, 1, d.y4 - d.y3);
 		});
 	});
 
