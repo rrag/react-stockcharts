@@ -174,12 +174,10 @@ export function drawOnCanvas2(props, ctx, bars) {
 
 	nest.forEach(outer => {
 		const { key, values } = outer;
-		if (head(values).width <= 1) {
-			ctx.strokeStyle = hexToRGBA(key, props.opacity);
-		} else {
+		if (head(values).width > 1) {
 			ctx.strokeStyle = key;
-			ctx.fillStyle = hexToRGBA(key, props.opacity);
 		}
+		ctx.fillStyle = hexToRGBA(key, props.opacity);
 		values.forEach(d => {
 			if (d.width <= 1) {
 				/* <line key={idx} className={d.className}
@@ -187,10 +185,13 @@ export function drawOnCanvas2(props, ctx, bars) {
 							fill={fill}
 							x1={d.x} y1={d.y}
 							x2={d.x} y2={d.y + d.height} />*/
+				/*
 				ctx.beginPath();
 				ctx.moveTo(d.x, d.y);
 				ctx.lineTo(d.x, d.y + d.height);
 				ctx.stroke();
+				*/
+				ctx.fillRect(d.x - 0.5, d.y, 1, d.height);
 			} else {
 				/* <rect key={idx} className={d.className}
 						stroke={stroke}
@@ -199,10 +200,13 @@ export function drawOnCanvas2(props, ctx, bars) {
 						y={d.y}
 						width={d.width}
 						height={d.height} /> */
+				/*
 				ctx.beginPath();
 				ctx.rect(d.x, d.y, d.width, d.height);
 				ctx.fill();
-				if (stroke) ctx.stroke();
+				*/
+				ctx.fillRect(d.x, d.y, d.width, d.height);
+				if (stroke) ctx.strokeRect(d.x, d.y, d.width, d.height);
 			}
 
 		});

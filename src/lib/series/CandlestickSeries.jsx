@@ -145,14 +145,19 @@ function drawOnCanvas(ctx, props, moreProps) {
 	wickNest.forEach(outer => {
 		const { key, values } = outer;
 		ctx.strokeStyle = key;
+		ctx.fillStyle = key;
 		values.forEach(d => {
-			ctx.beginPath();
+			/*
 			ctx.moveTo(d.x, d.y1);
 			ctx.lineTo(d.x, d.y2);
 
+			ctx.beginPath();
 			ctx.moveTo(d.x, d.y3);
 			ctx.lineTo(d.x, d.y4);
-			ctx.stroke();
+			ctx.stroke(); */
+
+			ctx.fillRect(d.x - 0.5, d.y1, 1, d.y2 - d.y1);
+			ctx.fillRect(d.x - 0.5, d.y3, 1, d.y4 - d.y3);
 		});
 	});
 
@@ -169,36 +174,40 @@ function drawOnCanvas(ctx, props, moreProps) {
 		if (strokeKey !== "none") {
 			ctx.strokeStyle = strokeKey;
 			ctx.lineWidth = candleStrokeWidth;
-
-
 		}
 		strokeValues.forEach(inner => {
 			const { key, values } = inner;
-			if (head(values).width <= 1) {
-				ctx.strokeStyle = key;
-			} else {
-				ctx.fillStyle = hexToRGBA(key, opacity);
-			}
+			ctx.fillStyle = hexToRGBA(key, opacity);
 
 			values.forEach(d => {
 				if (d.width <= 1) {
 					// <line className={d.className} key={idx} x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height}/>
+					/*
 					ctx.beginPath();
 					ctx.moveTo(d.x, d.y);
 					ctx.lineTo(d.x, d.y + d.height);
 					ctx.stroke();
+					*/
+					ctx.fillRect(d.x - 0.5, d.y, 1, d.height);
 				} else if (d.height === 0) {
 					// <line key={idx} x1={d.x} y1={d.y} x2={d.x + d.width} y2={d.y + d.height} />
+					/*
 					ctx.beginPath();
 					ctx.moveTo(d.x, d.y);
 					ctx.lineTo(d.x + d.width, d.y + d.height);
 					ctx.stroke();
+					*/
+					ctx.fillRect(d.x, d.y - 0.5, d.width, 1);
 				} else {
+					/*
 					ctx.beginPath();
 					ctx.rect(d.x, d.y, d.width, d.height);
 					ctx.closePath();
 					ctx.fill();
 					if (strokeKey !== "none") ctx.stroke();
+					*/
+					ctx.fillRect(d.x, d.y, d.width, d.height);
+					if (strokeKey !== "none") ctx.strokeRect(d.x, d.y, d.width, d.height);
 				}
 			});
 		});
