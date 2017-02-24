@@ -26,6 +26,16 @@
 					"modules": false
 				}]
 			]
+		},
+		"server": {
+			"presets": [
+				["env", {
+					"targets": {
+						"node": 7.5
+					},
+					"loose": true,
+				}]
+			]
 		}
 	}
 }
