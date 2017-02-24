@@ -82,6 +82,8 @@ export function d3Window(node) {
 
 export const MOUSEMOVE = "mousemove.pan";
 export const MOUSEUP = "mouseup.pan";
+export const TOUCHMOVE = "touchmove.pan";
+export const TOUCHEND = "touchend.pan touchcancel.pan";
 
 export function getClosestItemIndexes(array, value, accessor, log) {
 	let lo = 0, hi = array.length - 1;

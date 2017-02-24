@@ -603,26 +603,32 @@ class ChartCanvas extends Component {
 		};
 	}
 	handlePan(mousePosition, panStartXScale, panOrigin, chartsToPan, e) {
-		this.hackyWayToStopPanBeyondBounds__plotData = this.hackyWayToStopPanBeyondBounds__plotData || this.state.plotData;
-		this.hackyWayToStopPanBeyondBounds__domain = this.hackyWayToStopPanBeyondBounds__domain || this.state.xScale.domain();
+		if (!this.waitingForPanFrame) {
+			this.waitingForPanFrame = true;
 
-		const state = this.panHelper(mousePosition, panStartXScale, panOrigin, chartsToPan);
+			this.hackyWayToStopPanBeyondBounds__plotData = this.hackyWayToStopPanBeyondBounds__plotData || this.state.plotData;
+			this.hackyWayToStopPanBeyondBounds__domain = this.hackyWayToStopPanBeyondBounds__domain || this.state.xScale.domain();
 
-		this.hackyWayToStopPanBeyondBounds__plotData = state.plotData;
-		this.hackyWayToStopPanBeyondBounds__domain = state.xScale.domain();
+			const state = this.panHelper(mousePosition, panStartXScale, panOrigin, chartsToPan);
 
-		this.panInProgress = true;
+			this.hackyWayToStopPanBeyondBounds__plotData = state.plotData;
+			this.hackyWayToStopPanBeyondBounds__domain = state.xScale.domain();
 
-		// Q: why cant panend be inside requestAnimationFrame
-		// A: the event e is a synthetic event and will be reused by react.
-		// Moving it inside the rAF means react cannot reuse the event
+			this.panInProgress = true;
+			// console.log(panStartXScale.domain(), state.xScale.domain())
 
-		this.triggerEvent("pan", state, e);
+			// Q: why cant pan be inside requestAnimationFrame
+			// A: the event e is a synthetic event and will be reused by react.
+			// Moving it inside the rAF means react cannot reuse the event
 
-		requestAnimationFrame(() => {
-			this.clearBothCanvas();
-			this.draw({ trigger: "pan" });
-		});
+			this.triggerEvent("pan", state, e);
+
+			requestAnimationFrame(() => {
+				this.waitingForPanFrame = false;
+				this.clearBothCanvas();
+				this.draw({ trigger: "pan" });
+			});
+		}
 	}
 	handleMouseDown(mousePosition, currentCharts, e) {
 		this.triggerEvent("mousedown", null, e);

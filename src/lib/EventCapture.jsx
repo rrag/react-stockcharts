@@ -1,11 +1,14 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import { select, event as d3Event } from "d3-selection";
+import { select, event as d3Event, mouse } from "d3-selection";
 
 import {
 	isDefined, mousePosition, touchPosition,
-	d3Window, MOUSEMOVE, MOUSEUP, noop
+	d3Window,
+	MOUSEMOVE, MOUSEUP,
+	TOUCHMOVE, TOUCHEND,
+	noop
 } from "./utils";
 import { getCurrentCharts } from "./utils/ChartDataUtil";
 
@@ -38,6 +41,9 @@ class EventCapture extends Component {
 
 		this.setCursorClass = this.setCursorClass.bind(this);
 		this.saveNode = this.saveNode.bind(this);
+
+		this.mouseInside = false;
+
 		this.lastTouch = {};
 		this.initialPinch = {};
 		this.mouseInteraction = true;
@@ -53,10 +59,25 @@ class EventCapture extends Component {
 	}
 	handleEnter(e) {
 		const { onMouseEnter } = this.props;
+
+		this.mouseInside = true;
+		if (!this.state.panInProgress) {
+			const win = d3Window(this.node);
+			select(win)
+				.on(MOUSEMOVE, this.handleMouseMove);
+		}
+
 		onMouseEnter(e);
 	}
 	handleLeave(e) {
 		const { onMouseLeave } = this.props;
+		this.mouseInside = false;
+		if (!this.state.panInProgress) {
+			const win = d3Window(this.node);
+			select(win)
+				.on(MOUSEMOVE, null);
+		}
+
 		onMouseLeave(e);
 	}
 	handleWheel(e) {
@@ -71,14 +92,16 @@ class EventCapture extends Component {
 			onZoom(zoomDir, newPos, e);
 		}
 	}
-	handleMouseMove(e) {
+	handleMouseMove() {
+		const e = d3Event;
+
 		const { onMouseMove, mouseMove } = this.props;
 
 		if (this.mouseInteraction
 				&& mouseMove
 				&& !this.state.panInProgress) {
 
-			const newPos = mousePosition(e);
+			const newPos = mouse(this.node);
 
 			onMouseMove(newPos, "mouse", e);
 		}
@@ -213,12 +236,13 @@ class EventCapture extends Component {
 	}
 	handlePan() {
 		const e = d3Event;
+		const event = this.mouseInteraction
+			? e
+			: e.touches[0];
+
 		const { pan: panEnabled, onPan } = this.props;
 
-		// console.log("moved from- ", startXY, " to ", newPos);
-
-		if (this.mouseInteraction
-				&& panEnabled
+		if (panEnabled
 				&& onPan
 				&& isDefined(this.state.panStart)) {
 
@@ -227,7 +251,7 @@ class EventCapture extends Component {
 			const { panStartXScale, panOrigin, chartsToPan } = this.state.panStart;
 
 			const rect = this.node.getBoundingClientRect();
-			const newPos = [Math.round(e.pageX - rect.left), Math.round(e.pageY - rect.top)];
+			const newPos = [Math.round(event.pageX - rect.left), Math.round(event.pageY - rect.top)];
 
 			onPan(newPos, panStartXScale, panOrigin, chartsToPan, e);
 		}
@@ -258,15 +282,17 @@ class EventCapture extends Component {
 				}
 			}
 
-			if (this.mouseInteraction
-					&& this.panHappened
+			if (this.panHappened
 					// && !this.contextMenuClicked
 					&& panEnabled
 					&& onPanEnd) {
 				const win = d3Window(this.node);
 				select(win)
-					.on(MOUSEMOVE, null)
-					.on(MOUSEUP, null);
+					.on(MOUSEMOVE, this.mouseInside ? this.handleMouseMove : null)
+					.on(MOUSEUP, null)
+					.on(TOUCHMOVE, null)
+					.on(TOUCHEND, null);
+
 				onPanEnd(newPos, panStartXScale, panOrigin, chartsToPan, e);
 			}
 
@@ -302,6 +328,12 @@ class EventCapture extends Component {
 						dx, dy
 					}
 				});
+
+				const win = d3Window(this.node);
+				select(win)
+					.on(TOUCHMOVE, this.handlePan)
+					.on(TOUCHEND, this.handlePanEnd);
+
 			}
 		} else if (e.touches.length === 2) {
 			// pinch zoom begin
@@ -330,8 +362,7 @@ class EventCapture extends Component {
 		// e.preventDefault();
 	}
 	handleTouchMove(e) {
-		const { pan: panEnabled, zoom: zoomEnabled } = this.props;
-		const { xScale, onPan, onPinchZoom } = this.props;
+		const { pan: panEnabled, onPan } = this.props;
 		const { panInProgress, panStart } = this.state;
 
 		if (e.touches.length === 1) {
@@ -343,30 +374,6 @@ class EventCapture extends Component {
 
 				const newPos = [touch.pageX - dx, touch.pageY - dy];
 				onPan(newPos, panStartXScale, panOrigin, chartsToPan, e);
-			}
-		} else if (e.touches.length === 2) {
-			// pinch zoom
-			if (zoomEnabled && onPinchZoom && focus) {
-				const touch1 = getTouchProps(e.touches[0]);
-				const touch2 = getTouchProps(e.touches[1]);
-
-				const touch1Pos = touchPosition(touch1, e);
-				const touch2Pos = touchPosition(touch2, e);
-
-				if (this.initialPinch === null) {
-					this.initialPinch = {
-						touch1Pos,
-						touch2Pos,
-						xScale,
-						range: xScale.range(),
-					};
-				} else if (this.initialPinch && !panInProgress) {
-					onPinchZoom(this.initialPinch, {
-						touch1Pos,
-						touch2Pos,
-						xScale,
-					});
-				}
 			}
 		}
 		// e.preventDefault();
@@ -393,6 +400,37 @@ class EventCapture extends Component {
 		this.mouseInteraction = true;
 		// e.preventDefault();
 	}
+	handlePinchZoom() {
+		/*
+		const { xScale, zoom: zoomEnabled, onPinchZoom } = this.props;
+
+ 		else if (e.touches.length === 2) {
+			// pinch zoom
+			if (zoomEnabled && onPinchZoom && focus) {
+				const touch1 = getTouchProps(e.touches[0]);
+				const touch2 = getTouchProps(e.touches[1]);
+
+				const touch1Pos = touchPosition(touch1, e);
+				const touch2Pos = touchPosition(touch2, e);
+
+				if (this.initialPinch === null) {
+					this.initialPinch = {
+						touch1Pos,
+						touch2Pos,
+						xScale,
+						range: xScale.range(),
+					};
+				} else if (this.initialPinch && !panInProgress) {
+					onPinchZoom(this.initialPinch, {
+						touch1Pos,
+						touch2Pos,
+						xScale,
+					});
+				}
+			}
+		}
+		*/
+	}
 	setCursorClass(cursorOverrideClass) {
 		if (cursorOverrideClass !== this.state.cursorOverrideClass) {
 			this.setState({
@@ -414,16 +452,19 @@ class EventCapture extends Component {
 				width={width} height={height} style={{ opacity: 0 }}
 				onMouseEnter={this.handleEnter}
 				onMouseLeave={this.handleLeave}
-				onMouseMove={this.handleMouseMove}
 				onWheel={this.handleWheel}
 				onMouseDown={this.handleMouseDown}
 				onContextMenu={this.handleRightClick}
 				onTouchStart={this.handleTouchStart}
-				onTouchEnd={this.handleTouchEnd}
-				onTouchMove={this.handleTouchMove} />
+				/>
 		);
 	}
 }
+/*
+				onMouseMove={this.handleMouseMove}
+				onTouchEnd={this.handleTouchEnd}
+ 				onTouchMove={this.handleTouchMove}
+*/
 
 EventCapture.propTypes = {
 	mouseMove: PropTypes.bool.isRequired,
