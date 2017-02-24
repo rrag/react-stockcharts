@@ -12,6 +12,7 @@ import {
 
 const aliases = {
 	// mouseleave: "mousemove",
+	pinchzoom: "pan",
 	mousedown: "mousemove",
 	click: "mousemove",
 	dblclick: "mousemove",

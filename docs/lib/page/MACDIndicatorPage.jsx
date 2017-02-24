@@ -21,7 +21,7 @@ class MACDIndicatorPage extends React.Component {
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser>
-							{(type) => (<CandleStickChartWithMACDIndicator data={this.props.someData} type={type} />)}
+							{(type) => (<CandleStickChartWithMACDIndicator data={this.props.lotsOfData} type={type} />)}
 						</TypeChooser>
 					</Section>
 				</Row>

@@ -15,8 +15,14 @@ class Axis extends Component {
 		super(props);
 		this.renderSVG = this.renderSVG.bind(this);
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+		this.saveNode = this.saveNode.bind(this);
 		this.getMoreProps = this.getMoreProps.bind(this);
-
+	}
+	saveNode(node) {
+		this.node = node;
+	}
+	getMoreProps() {
+		return this.node.getMoreProps();
 	}
 	drawOnCanvas(ctx, moreProps) {
 		const { showDomain, showTicks, transform, range, getScale } = this.props;
@@ -44,9 +50,6 @@ class Axis extends Component {
 			{domain}
 		</g>;
 	}
-	getMoreProps() {
-		return this.refs.propProvider.getMoreProps();
-	}
 	render() {
 		const { bg, axisZoomCallback, zoomCursorClassName, zoomEnabled, getScale, inverted } = this.props;
 		const { transform, getMouseDelta, edgeClip } = this.props;
@@ -68,7 +71,7 @@ class Axis extends Component {
 
 		return <g transform={`translate(${ transform[0] }, ${ transform[1] })`}>
 			{zoomCapture}
-			<GenericChartComponent ref="propProvider"
+			<GenericChartComponent ref={this.saveNode}
 				canvasToDraw={getAxisCanvas}
 				clip={false}
 				edgeClip={edgeClip}

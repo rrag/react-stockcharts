@@ -247,6 +247,7 @@ class ChartCanvas extends Component {
 		this.handleMouseLeave = this.handleMouseLeave.bind(this);
 		this.handleZoom = this.handleZoom.bind(this);
 		this.handlePinchZoom = this.handlePinchZoom.bind(this);
+		this.handlePinchZoomEnd = this.handlePinchZoomEnd.bind(this);
 		this.handlePan = this.handlePan.bind(this);
 		this.handlePanEnd = this.handlePanEnd.bind(this);
 		this.handleClick = this.handleClick.bind(this);
@@ -257,6 +258,8 @@ class ChartCanvas extends Component {
 		this.handleDrag = this.handleDrag.bind(this);
 		this.handleDragEnd = this.handleDragEnd.bind(this);
 
+		this.panHelper = this.panHelper.bind(this);
+		this.pinchZoomHelper = this.pinchZoomHelper.bind(this);
 		this.xAxisZoom = this.xAxisZoom.bind(this);
 		this.yAxisZoom = this.yAxisZoom.bind(this);
 		this.resetYDomain = this.resetYDomain.bind(this);
@@ -273,6 +276,7 @@ class ChartCanvas extends Component {
 		this.unsubscribe = this.unsubscribe.bind(this);
 		this.amIOnTop = this.amIOnTop.bind(this);
 		this.saveEventCaptureNode = this.saveEventCaptureNode.bind(this);
+		this.saveCanvasContainerNode = this.saveCanvasContainerNode.bind(this);
 		this.setCursorClass = this.setCursorClass.bind(this);
 		// this.canvasDrawCallbackList = [];
 		this.interactiveState = [];
@@ -284,6 +288,9 @@ class ChartCanvas extends Component {
 	saveEventCaptureNode(node) {
 		this.eventCaptureNode = node;
 	}
+	saveCanvasContainerNode(node) {
+		this.canvasContainerNode = node;
+	}
 	getDataInfo() {
 		return {
 			...this.state,
@@ -291,8 +298,8 @@ class ChartCanvas extends Component {
 		};
 	}
 	getCanvasContexts() {
-		if (this.refs && this.refs.canvases) {
-			return this.refs.canvases.getCanvasContexts();
+		if (this.canvasContainerNode) {
+			return this.canvasContainerNode.getCanvasContexts();
 		}
 	}
 	generateSubscriptionId() {
@@ -374,68 +381,6 @@ class ChartCanvas extends Component {
 			bottomRight: [Math.max(touch1Pos[0], touch2Pos[0]), Math.max(touch1Pos[1], touch2Pos[1])]
 		};
 	}
-	handlePinchZoom(initialPinch, finalPinch) {
-		const { xScale: initialPinchXScale } = initialPinch;
-
-		const { xScale: initialXScale, chartConfig: initialChartConfig, plotData: initialPlotData, xAccessor } = this.state;
-		const { filterData } = this.state;
-		const { fullData } = this;
-		const { postCalculator } = this.props;
-
-		const { topLeft: iTL, bottomRight: iBR } = this.pinchCoordinates(initialPinch);
-		const { topLeft: fTL, bottomRight: fBR } = this.pinchCoordinates(finalPinch);
-
-		const e = initialPinchXScale.range()[1];
-
-		// var fR1 = e - fTL[0];
-		// var fR2 = e - fBR[0];
-		// var iR1 = e - iTL[0];
-		// var iR2 = e - iBR[0];
-
-		const xDash = Math.round(-(iBR[0] * fTL[0] - iTL[0] * fBR[0]) / (iTL[0] - iBR[0]));
-		const yDash = Math.round(e + ((e - iBR[0]) * (e - fTL[0]) - (e - iTL[0]) * (e - fBR[0])) / ((e - iTL[0]) - (e - iBR[0])));
-
-
-		const x = Math.round(-xDash * iTL[0] / (-xDash + fTL[0]));
-		const y = Math.round(e - (yDash - e) * (e - iTL[0]) / (yDash + (e - fTL[0])));
-
-		// document.getElementById("debug_here").innerHTML = `**${[s, e]} to ${[xDash, yDash]} to ${[x, y]}`;
-		// var left = ((final.leftxy[0] - range[0]) / (final.rightxy[0] - final.leftxy[0])) * (initial.right - initial.left);
-		// var right = ((range[1] - final.rightxy[0]) / (final.rightxy[0] - final.leftxy[0])) * (initial.right - initial.left);
-
-		const newDomain = [x, y].map(initialPinchXScale.invert);
-		// var domainR = initial.right + right;
-
-		const { plotData: beforePlotData, domain } = filterData(fullData,
-			newDomain,
-			xAccessor,
-			initialPinchXScale,
-			initialPlotData,
-			initialXScale.domain());
-
-		const plotData = postCalculator(beforePlotData);
-		const updatedScale = initialXScale.copy().domain(domain);
-
-		const chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData, updatedScale.domain());
-
-		requestAnimationFrame(() => {
-			this.clearThreeCanvas();
-			// this.clearInteractiveCanvas();
-
-			// this.clearCanvasDrawCallbackList();
-			this.setState({
-				chartConfig,
-				xScale: updatedScale,
-				plotData,
-			});
-		});
-
-		// document.getElementById("debug_here").innerHTML = `${panInProgress}`;
-
-		// document.getElementById("debug_here").innerHTML = `${initial.left} - ${initial.right} to ${final.left} - ${final.right}`;
-		// document.getElementById("debug_here").innerHTML = `${id[1] - id[0]} = ${initial.left - id[0]} + ${initial.right - initial.left} + ${id[1] - initial.right}`;
-		// document.getElementById("debug_here").innerHTML = `${range[1] - range[0]}, ${i1[0]}, ${i2[0]}`;
-	}
 	calculateStateForDomain(newDomain) {
 		const { xAccessor, xScale: initialXScale, chartConfig: initialChartConfig, plotData: initialPlotData } = this.state;
 		const { filterData } = this.state;
@@ -458,6 +403,92 @@ class ChartCanvas extends Component {
 			plotData,
 			chartConfig,
 		};
+	}
+	pinchZoomHelper(initialPinch, finalPinch) {
+		const { xScale: initialPinchXScale } = initialPinch;
+
+		const { xScale: initialXScale, chartConfig: initialChartConfig, plotData: initialPlotData, xAccessor } = this.state;
+		const { filterData } = this.state;
+		const { fullData } = this;
+		const { postCalculator } = this.props;
+
+		const { topLeft: iTL, bottomRight: iBR } = this.pinchCoordinates(initialPinch);
+		const { topLeft: fTL, bottomRight: fBR } = this.pinchCoordinates(finalPinch);
+
+		const e = initialPinchXScale.range()[1];
+
+		const xDash = Math.round(-(iBR[0] * fTL[0] - iTL[0] * fBR[0]) / (iTL[0] - iBR[0]));
+		const yDash = Math.round(e + ((e - iBR[0]) * (e - fTL[0]) - (e - iTL[0]) * (e - fBR[0])) / ((e - iTL[0]) - (e - iBR[0])));
+
+		const x = Math.round(-xDash * iTL[0] / (-xDash + fTL[0]));
+		const y = Math.round(e - (yDash - e) * (e - iTL[0]) / (yDash + (e - fTL[0])));
+
+		const newDomain = [x, y].map(initialPinchXScale.invert);
+		// var domainR = initial.right + right;
+
+		const { plotData: beforePlotData, domain } = filterData(fullData,
+			newDomain,
+			xAccessor,
+			initialPinchXScale,
+			initialPlotData,
+			initialXScale.domain());
+
+		const plotData = postCalculator(beforePlotData);
+		const updatedScale = initialXScale.copy().domain(domain);
+
+		const mouseXY = finalPinch.touch1Pos;
+		const chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData, updatedScale.domain());
+		const currentItem = getCurrentItem(updatedScale, xAccessor, mouseXY, plotData);
+
+		return {
+			chartConfig,
+			xScale: updatedScale,
+			plotData,
+			mouseXY,
+			currentItem,
+		};
+	}
+	handlePinchZoom(initialPinch, finalPinch, e) {
+		if (!this.waitingForAnimationFrame) {
+			this.waitingForAnimationFrame = true;
+			const state = this.pinchZoomHelper(initialPinch, finalPinch);
+
+			this.triggerEvent("pinchzoom", state, e);
+
+			this.finalPinch = finalPinch;
+
+			requestAnimationFrame(() => {
+				this.clearBothCanvas();
+				this.draw({ trigger: "pinchzoom" });
+				this.waitingForAnimationFrame = false;
+			});
+		}
+	}
+	handlePinchZoomEnd(initialPinch, e) {
+		const { xAccessor } = this.state;
+
+		if (this.finalPinch) {
+			const state = this.pinchZoomHelper(initialPinch, this.finalPinch);
+			const { xScale } = state;
+			this.triggerEvent("pinchzoom", state, e);
+
+			this.finalPinch = null;
+
+			this.clearThreeCanvas();
+
+			const { fullData } = this;
+			const firstItem = first(fullData);
+
+			const start = first(xScale.domain());
+			const end = xAccessor(firstItem);
+			const { onLoadMore } = this.props;
+
+			this.setState(state, () => {
+				if (start < end) {
+					onLoadMore(start, end);
+				}
+			});
+		}
 	}
 	handleZoom(zoomDirection, mouseXY, e) {
 		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
@@ -596,15 +627,15 @@ class ChartCanvas extends Component {
 		return {
 			xScale: updatedScale,
 			plotData,
+			chartConfig,
 			mouseXY,
 			currentCharts,
-			chartConfig,
 			currentItem,
 		};
 	}
 	handlePan(mousePosition, panStartXScale, panOrigin, chartsToPan, e) {
-		if (!this.waitingForPanFrame) {
-			this.waitingForPanFrame = true;
+		if (!this.waitingForAnimationFrame) {
+			this.waitingForAnimationFrame = true;
 
 			this.hackyWayToStopPanBeyondBounds__plotData = this.hackyWayToStopPanBeyondBounds__plotData || this.state.plotData;
 			this.hackyWayToStopPanBeyondBounds__domain = this.hackyWayToStopPanBeyondBounds__domain || this.state.xScale.domain();
@@ -624,9 +655,9 @@ class ChartCanvas extends Component {
 			this.triggerEvent("pan", state, e);
 
 			requestAnimationFrame(() => {
-				this.waitingForPanFrame = false;
 				this.clearBothCanvas();
 				this.draw({ trigger: "pan" });
+				this.waitingForAnimationFrame = false;
 			});
 		}
 	}
@@ -639,24 +670,29 @@ class ChartCanvas extends Component {
 		}, e);
 	}
 	handleMouseMove(mouseXY, inputType, e) {
-		const { chartConfig, plotData, xScale, xAccessor } = this.state;
-		const currentCharts = getCurrentCharts(chartConfig, mouseXY);
-		const currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
-		this.triggerEvent("mousemove", {
-			show: true,
-			mouseXY,
-			// prevMouseXY is used in interactive components
-			prevMouseXY: this.prevMouseXY,
-			currentItem,
-			currentCharts,
-		}, e);
+		if (!this.waitingForAnimationFrame) {
+			this.waitingForAnimationFrame = true;
 
-		this.prevMouseXY = mouseXY;
+			const { chartConfig, plotData, xScale, xAccessor } = this.state;
+			const currentCharts = getCurrentCharts(chartConfig, mouseXY);
+			const currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
+			this.triggerEvent("mousemove", {
+				show: true,
+				mouseXY,
+				// prevMouseXY is used in interactive components
+				prevMouseXY: this.prevMouseXY,
+				currentItem,
+				currentCharts,
+			}, e);
 
-		requestAnimationFrame(() => {
-			this.clearMouseCanvas();
-			this.draw({ trigger: "mousemove" });
-		});
+			this.prevMouseXY = mouseXY;
+
+			requestAnimationFrame(() => {
+				this.clearMouseCanvas();
+				this.draw({ trigger: "mousemove" });
+				this.waitingForAnimationFrame = false;
+			});
+		}
 	}
 	handleMouseLeave(e) {
 		this.triggerEvent("mouseleave", { show: false }, e);
@@ -871,7 +907,10 @@ class ChartCanvas extends Component {
 		const cursor = getCursorStyle(useCrossHairStyleCursor && interaction);
 		return (
 			<div style={{ position: "relative", width, height }} className={className} onClick={onSelect}>
-				<CanvasContainer ref="canvases" width={width} height={height} ratio={ratio} type={type} zIndex={zIndex}/>
+				<CanvasContainer ref={this.saveCanvasContainerNode}
+					type={type}
+					ratio={ratio}
+					width={width} height={height} zIndex={zIndex}/>
 				<svg className={className} width={width} height={height} style={{ position: "absolute", zIndex: (zIndex + 5) }}>
 					{cursor}
 					<defs>
@@ -912,6 +951,7 @@ class ChartCanvas extends Component {
 
 							onZoom={this.handleZoom}
 							onPinchZoom={this.handlePinchZoom}
+							onPinchZoomEnd={this.handlePinchZoomEnd}
 							onPan={this.handlePan}
 							onPanEnd={this.handlePanEnd}
 							/>

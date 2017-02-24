@@ -306,7 +306,9 @@ class EventCapture extends Component {
 
 		const { xScale, onPanEnd } = this.props;
 
+		console.log("handleTouchStart", e.touches.length)
 		if (e.touches.length === 1) {
+
 			this.panHappened = false;
 			const touchXY = touchPosition(getTouchProps(e.touches[0]), e);
 			// onMouseMove(touchXY, "touch", e);
@@ -348,7 +350,16 @@ class EventCapture extends Component {
 				const touch1Pos = touchPosition(getTouchProps(e.touches[0]), e);
 				const touch2Pos = touchPosition(getTouchProps(e.touches[1]), e);
 
+				if (this.panHappened
+						// && !this.contextMenuClicked
+						&& panEnabled
+						&& onPanEnd) {
+
+					onPanEnd(this.lastNewPos, panStartXScale, panOrigin, chartsToPan, e);
+				}
+
 				this.setState({
+					panInProgress: false,
 					pinchZoomStart: {
 						xScale,
 						touch1Pos,
@@ -357,37 +368,45 @@ class EventCapture extends Component {
 						chartsToPan,
 					}
 				});
-
-				if (this.panHappened
-						// && !this.contextMenuClicked
-						&& panEnabled
-						&& onPanEnd) {
-
-					onPanEnd(this.lastNewPos, panStartXScale, panOrigin, chartsToPan, e);
-				}
 			}
 		}
 	}
 	handlePinchZoom() {
+		const e = d3Event;
 		const [touch1Pos, touch2Pos] = touches(this.node);
 		const { xScale, zoom: zoomEnabled, onPinchZoom } = this.props;
 
-		// eslint-disable-next-line
+		// eslint-disable-next-line no-unused-vars
 		const { chartsToPan, ...initialPinch } = this.state.pinchZoomStart;
 
-		if (zoomEnabled && onPinchZoom && focus) {
+		if (zoomEnabled && onPinchZoom) {
 			onPinchZoom(initialPinch, {
 				touch1Pos,
 				touch2Pos,
 				xScale,
-			});
+			}, e);
 		}
 	}
 	handlePinchZoomEnd() {
+		const e = d3Event;
+
 		const win = d3Window(this.node);
 		select(win)
 			.on(TOUCHMOVE, null)
 			.on(TOUCHEND, null);
+
+		const { zoom: zoomEnabled, onPinchZoomEnd } = this.props;
+
+		// eslint-disable-next-line no-unused-vars
+		const { chartsToPan, ...initialPinch } = this.state.pinchZoomStart;
+
+		if (zoomEnabled && onPinchZoomEnd) {
+			onPinchZoomEnd(initialPinch, e);
+		}
+
+		this.setState({
+			pinchZoomStart: null
+		});
 	}
 	setCursorClass(cursorOverrideClass) {
 		if (cursorOverrideClass !== this.state.cursorOverrideClass) {
@@ -441,6 +460,7 @@ EventCapture.propTypes = {
 	onMouseLeave: PropTypes.func,
 	onZoom: PropTypes.func,
 	onPinchZoom: PropTypes.func,
+	onPinchZoomEnd: PropTypes.func.isRequired,
 	onPan: PropTypes.func,
 	onPanEnd: PropTypes.func,
 	onDragStart: PropTypes.func,
