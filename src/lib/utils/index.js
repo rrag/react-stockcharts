@@ -85,6 +85,17 @@ export const MOUSEUP = "mouseup.pan";
 export const TOUCHMOVE = "touchmove.pan";
 export const TOUCHEND = "touchend.pan touchcancel.pan";
 
+
+export function getTouchProps(touch) {
+	if (!touch) return {};
+	return {
+		pageX: touch.pageX,
+		pageY: touch.pageY,
+		clientX: touch.clientX,
+		clientY: touch.clientY
+	};
+}
+
 export function getClosestItemIndexes(array, value, accessor, log) {
 	let lo = 0, hi = array.length - 1;
 	while (hi - lo > 1) {

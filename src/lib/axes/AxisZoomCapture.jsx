@@ -1,7 +1,7 @@
 "use strict";
 
 import React, { PropTypes, Component } from "react";
-import { select, event as d3Event } from "d3-selection";
+import { select, event as d3Event, mouse, touches } from "d3-selection";
 import { mean } from "d3-array";
 
 import {
@@ -13,6 +13,10 @@ import {
 	d3Window,
 	MOUSEMOVE,
 	MOUSEUP,
+	TOUCHMOVE,
+	TOUCHEND,
+	touchPosition,
+	getTouchProps,
 } from "../utils";
 
 function sign(x) {
@@ -22,7 +26,8 @@ function sign(x) {
 class AxisZoomCapture extends Component {
 	constructor(props) {
 		super(props);
-		this.handleDragStart = this.handleDragStart.bind(this);
+		this.handleDragStartMouse = this.handleDragStartMouse.bind(this);
+		this.handleDragStartTouch = this.handleDragStartTouch.bind(this);
 		this.handleDrag = this.handleDrag.bind(this);
 		this.handleDragEnd = this.handleDragEnd.bind(this);
 		this.handleRightClick = this.handleRightClick.bind(this);
@@ -53,44 +58,64 @@ class AxisZoomCapture extends Component {
 
 		this.contextMenuClicked = true;
 	}
-	handleDragStart(e) {
+	handleDragStartMouse(e) {
+		this.mouseInteraction = true;
+		console.log("handleDragStartMouse");
+
 		const { getScale, getMoreProps } = this.props;
 		const startScale = getScale(getMoreProps());
 		this.dragHappened = false;
 
 		if (startScale.invert) {
 			select(d3Window(this.node))
-				.on(MOUSEMOVE, this.handleDrag)
-				.on(MOUSEUP, this.handleDragEnd);
+				.on(MOUSEMOVE, this.handleDrag, false)
+				.on(MOUSEUP, this.handleDragEnd, false);
 
 			const startXY = mousePosition(e);
-			const leftX = e.pageX - startXY[0],
-				topY = e.pageY - startXY[1];
 
 			this.setState({
 				startPosition: {
 					startXY,
-					leftX,
-					topY,
 					startScale,
 				}
 			});
 		}
 		e.preventDefault();
 	}
-	handleDrag() {
-		const e = d3Event;
-		e.preventDefault();
+	handleDragStartTouch(e) {
+		this.mouseInteraction = false;
 
+		const { getScale, getMoreProps } = this.props;
+		const startScale = getScale(getMoreProps());
+		this.dragHappened = false;
+
+		if (e.touches.length === 1 && startScale.invert) {
+			select(d3Window(this.node))
+				.on(TOUCHMOVE, this.handleDrag)
+				.on(TOUCHEND, this.handleDragEnd);
+
+			const startXY = touchPosition(getTouchProps(e.touches[0]), e);
+
+			this.setState({
+				startPosition: {
+					startXY,
+					startScale,
+				}
+			});
+		}
+	}
+	handleDrag() {
 		const { startPosition } = this.state;
 		const { getMouseDelta, inverted } = this.props;
 
 		this.dragHappened = true;
 		if (isDefined(startPosition)) {
 			const { startScale } = startPosition;
-			const { startXY, leftX, topY } = startPosition;
+			const { startXY } = startPosition;
 
-			const mouseXY = [e.pageX - leftX, e.pageY - topY];
+			const mouseXY = this.mouseInteraction
+				? mouse(this.node)
+				: touches(this.node)[0];
 
 			const diff = getMouseDelta(startXY, mouseXY);
 
@@ -114,7 +139,9 @@ class AxisZoomCapture extends Component {
 		if (!this.dragHappened) {
 			if (this.clicked) {
 				const e = d3Event;
-				const mouseXY = mousePosition(e, this.node.getBoundingClientRect());
+				const mouseXY = this.mouseInteraction
+					? mouse(this.node)
+					: touches(this.node)[0];
 				const { onDoubleClick } = this.props;
 
 				onDoubleClick(mouseXY, e);
@@ -128,7 +155,10 @@ class AxisZoomCapture extends Component {
 
 		select(d3Window(this.node))
 			.on(MOUSEMOVE, null)
-			.on(MOUSEUP, null);
+			.on(MOUSEUP, null)
+			.on(TOUCHMOVE, null)
+			.on(TOUCHEND, null);
+
 		this.setState({
 			startPosition: null,
 		});
@@ -145,7 +175,8 @@ class AxisZoomCapture extends Component {
 			ref={this.saveNode}
 			x={bg.x} y={bg.y} opacity={0} height={bg.h} width={bg.w}
 			onContextMenu={this.handleRightClick}
-			onMouseDown={this.handleDragStart}
+			onMouseDown={this.handleDragStartMouse}
+			onTouchStart={this.handleDragStartTouch}
 			/>;
 	}
 }

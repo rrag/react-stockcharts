@@ -4,7 +4,7 @@ import React, { PropTypes, Component } from "react";
 import { select, event as d3Event, mouse, touches } from "d3-selection";
 
 import {
-	isDefined, mousePosition, touchPosition,
+	isDefined, mousePosition, touchPosition, getTouchProps,
 	d3Window,
 	MOUSEMOVE, MOUSEUP,
 	TOUCHMOVE, TOUCHEND,
@@ -12,15 +12,6 @@ import {
 } from "./utils";
 import { getCurrentCharts } from "./utils/ChartDataUtil";
 
-function getTouchProps(touch) {
-	if (!touch) return {};
-	return {
-		pageX: touch.pageX,
-		pageY: touch.pageY,
-		clientX: touch.clientX,
-		clientY: touch.clientY
-	};
-}
 
 class EventCapture extends Component {
 	constructor(props) {
@@ -303,10 +294,8 @@ class EventCapture extends Component {
 		this.mouseInteraction = false;
 
 		const { pan: panEnabled, chartConfig, onMouseMove } = this.props;
-
 		const { xScale, onPanEnd } = this.props;
 
-		console.log("handleTouchStart", e.touches.length)
 		if (e.touches.length === 1) {
 
 			this.panHappened = false;
