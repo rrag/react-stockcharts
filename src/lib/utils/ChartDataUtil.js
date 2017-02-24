@@ -46,9 +46,13 @@ export function getNewChartConfig(innerDimension, children) {
 
 	return React.Children.map(children, (each) => {
 		if (each.type === Chart) {
-			const { id, origin, padding, yExtents: yExtentsProp, yScale, flipYScale, yExtentsCalculator } = each.props;
-			const { width, height, availableWidth, availableHeight } = getDimensions(innerDimension, each.props);
-			const { yPan } = each.props;
+			const chartProps = {
+				...Chart.defaultProps,
+				...each.props
+			};
+			const { id, origin, padding, yExtents: yExtentsProp, yScale, flipYScale, yExtentsCalculator } = chartProps;
+			const { width, height, availableWidth, availableHeight } = getDimensions(innerDimension, chartProps);
+			const { yPan } = chartProps;
 			// var { yMousePointerRectWidth: rectWidth, yMousePointerRectHeight: rectHeight, yMousePointerArrowWidth: arrowWidth } = each.props;
 			// var mouseCoordinates = { at, yDisplayFormat, rectHeight, rectWidth, arrowWidth };
 			const yExtents = isDefined(yExtentsProp)
