@@ -30,6 +30,7 @@ class HoverTextNearMouse extends Component {
 		} = this.props;
 
 		const { mouseXY, height, width } = moreProps;
+		// console.log(moreProps)
 
 		if (show) {
 			const [x, y] = mouseXY;
@@ -60,7 +61,7 @@ class HoverTextNearMouse extends Component {
 	}
 	render() {
 
-		return <GenericChartComponent
+		return <GenericChartComponent foo
 
 			svgDraw={this.renderSVG}
 

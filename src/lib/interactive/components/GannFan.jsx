@@ -178,7 +178,7 @@ function helper(props, moreProps) {
 	const y2 = yScale(modLine.y2);
 
 	const m = getSlope([x1, y1], [x2, y2]);
-
+	const realSlope = getSlope(startXY, endXY);
 
 	const dx = x2 > x1 ? 10 : -10;
 	const dy = y2 < y1 ? -10 : 10;
@@ -190,6 +190,9 @@ function helper(props, moreProps) {
 			xy: [xScale(endXY[0]) + dx, yScale(endXY[1]) + dy]
 		},
 	};
+
+	if (realSlope === 0) return [];
+
 	const angle = degrees(Math.atan(m));
 
 	const mapper = each => {

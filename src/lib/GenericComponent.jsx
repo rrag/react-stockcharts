@@ -277,6 +277,8 @@ class GenericComponent extends Component {
 			...this.moreProps
 		};
 
+		if (this.props.foo) console.log(this.moreProps)
+
 		return (morePropsDecorator || identity)(moreProps);
 	}
 	preCanvasDraw() {

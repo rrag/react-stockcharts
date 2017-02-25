@@ -655,9 +655,9 @@ class ChartCanvas extends Component {
 			this.triggerEvent("pan", state, e);
 
 			requestAnimationFrame(() => {
+				this.waitingForAnimationFrame = false;
 				this.clearBothCanvas();
 				this.draw({ trigger: "pan" });
-				this.waitingForAnimationFrame = false;
 			});
 		}
 	}

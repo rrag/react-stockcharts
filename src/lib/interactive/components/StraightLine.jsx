@@ -3,7 +3,7 @@ import React, { PropTypes, Component } from "react";
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
 
-import { isDefined, head, last, noop, hexToRGBA } from "../../utils";
+import { isDefined, isNotDefined, head, last, noop, hexToRGBA } from "../../utils";
 
 function getXY(xValue, yValue, xScale, yScale) {
 	return [xScale(xValue), yScale(yValue)];
@@ -103,9 +103,15 @@ class StraightLine extends Component {
 
 export function isHovering(start, end, [mouseX, mouseY], tolerance) {
 	const m = getSlope(start, end);
-	const b = getYIntercept(m, end);
-	const y = m * mouseX + b;
-	return (mouseY < y + tolerance) && mouseY > (y - tolerance);
+
+	if (isDefined(m)) {
+		const b = getYIntercept(m, end);
+		const y = m * mouseX + b;
+		return (mouseY < y + tolerance) && mouseY > (y - tolerance);
+	} else {
+		return mouseY >= Math.min(start[1], end[1])
+			&& mouseY <= Math.max(start[1], end[1]);
+	}
 }
 
 function helper(props, moreProps) {
@@ -130,7 +136,7 @@ function helper(props, moreProps) {
 
 export function getSlope(start, end) {
 	const m /* slope */ = end[0] === start[0]
-		? 0
+		? undefined
 		: (end[1] - start[1]) / (end[0] - start[0]);
 	return m;
 }
@@ -142,20 +148,26 @@ export function getYIntercept(m, end) {
 export function generateLine(type, start, end, xAccessor, plotData) {
 	const m /* slope */ = getSlope(start, end);
 	// console.log(end[0] - start[0], m)
-	const b /* y intercept */ = getYIntercept(m, end);
+	const b /* y intercept */ = getYIntercept(m, start);
 	// y = m * x + b
 	const x1 = type === "XLINE"
 		? xAccessor(head(plotData))
 		: start[0]; // RAY or LINE start is the same
 
-	const y1 = m * x1 + b;
+	const y1 = isNotDefined(m)
+		? getYIntercept(0, start)
+		: m * x1 + b;
 
 	const x2 = type === "XLINE"
 		? xAccessor(last(plotData))
 		: type === "RAY"
 			? end[0] > start[0] ? xAccessor(last(plotData)) : xAccessor(head(plotData))
 			: end[0];
-	const y2 = m * x2 + b;
+
+	const y2 = isNotDefined(m)
+		? getYIntercept(0, end)
+		: m * x2 + b;
+
 	return { x1, y1, x2, y2 };
 }
 
