@@ -47,8 +47,10 @@ class CandlestickChart extends React.Component {
 		this.onKeyPress = this.onKeyPress.bind(this);
 		this.onDrawComplete = this.onDrawComplete.bind(this);
 		this.state = {
-			enableTrendLine: true,
-			trends: [],
+			enableTrendLine: false,
+			trends: [
+				{ start: [1606, 56], end: [1711, 53] }
+			],
 		};
 	}
 	componentDidMount() {
@@ -61,6 +63,7 @@ class CandlestickChart extends React.Component {
 		// this gets called on
 		// 1. draw complete of trendline
 		// 2. drag complete of trendline
+		console.log(trends);
 		this.setState({
 			enableTrendLine: false,
 			trends

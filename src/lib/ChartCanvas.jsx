@@ -236,6 +236,16 @@ function setXRange(xScale, dimensions, padding, direction = 1) {
 	return xScale;
 }
 
+function pinchCoordinates(pinch) {
+	const { touch1Pos, touch2Pos } = pinch;
+
+	return {
+		topLeft: [Math.min(touch1Pos[0], touch2Pos[0]), Math.min(touch1Pos[1], touch2Pos[1])],
+		bottomRight: [Math.max(touch1Pos[0], touch2Pos[0]), Math.max(touch1Pos[1], touch2Pos[1])]
+	};
+}
+
+
 class ChartCanvas extends Component {
 	constructor() {
 		super();
@@ -269,8 +279,6 @@ class ChartCanvas extends Component {
 		this.redraw = this.redraw.bind(this);
 		this.isSomethingSelectedAndHovering = this.isSomethingSelectedAndHovering.bind(this);
 
-		this.pinchCoordinates = this.pinchCoordinates.bind(this);
-
 		this.subscriptions = [];
 		this.subscribe = this.subscribe.bind(this);
 		this.unsubscribe = this.unsubscribe.bind(this);
@@ -278,11 +286,13 @@ class ChartCanvas extends Component {
 		this.saveEventCaptureNode = this.saveEventCaptureNode.bind(this);
 		this.saveCanvasContainerNode = this.saveCanvasContainerNode.bind(this);
 		this.setCursorClass = this.setCursorClass.bind(this);
+		this.getMutableState = this.getMutableState.bind(this);
 		// this.canvasDrawCallbackList = [];
 		this.interactiveState = [];
 		this.panInProgress = false;
 
 		this.state = {};
+		this.mutableState = {};
 		this.lastSubscriptionId = 0;
 	}
 	saveEventCaptureNode(node) {
@@ -290,6 +300,9 @@ class ChartCanvas extends Component {
 	}
 	saveCanvasContainerNode(node) {
 		this.canvasContainerNode = node;
+	}
+	getMutableState() {
+		return this.mutableState;
 	}
 	getDataInfo() {
 		return {
@@ -373,14 +386,6 @@ class ChartCanvas extends Component {
 			currentCharts,
 		}, e);
 	}
-	pinchCoordinates(pinch) {
-		const { touch1Pos, touch2Pos } = pinch;
-
-		return {
-			topLeft: [Math.min(touch1Pos[0], touch2Pos[0]), Math.min(touch1Pos[1], touch2Pos[1])],
-			bottomRight: [Math.max(touch1Pos[0], touch2Pos[0]), Math.max(touch1Pos[1], touch2Pos[1])]
-		};
-	}
 	calculateStateForDomain(newDomain) {
 		const { xAccessor, xScale: initialXScale, chartConfig: initialChartConfig, plotData: initialPlotData } = this.state;
 		const { filterData } = this.state;
@@ -412,8 +417,8 @@ class ChartCanvas extends Component {
 		const { fullData } = this;
 		const { postCalculator } = this.props;
 
-		const { topLeft: iTL, bottomRight: iBR } = this.pinchCoordinates(initialPinch);
-		const { topLeft: fTL, bottomRight: fBR } = this.pinchCoordinates(finalPinch);
+		const { topLeft: iTL, bottomRight: iBR } = pinchCoordinates(initialPinch);
+		const { topLeft: fTL, bottomRight: fBR } = pinchCoordinates(finalPinch);
 
 		const e = initialPinchXScale.range()[1];
 
@@ -654,6 +659,12 @@ class ChartCanvas extends Component {
 
 			this.triggerEvent("pan", state, e);
 
+			this.mutableState = {
+				mouseXY: state.mouseXY,
+				currentItem: state.currentItem,
+				currentCharts: state.currentCharts,
+			};
+
 			requestAnimationFrame(() => {
 				this.waitingForAnimationFrame = false;
 				this.clearBothCanvas();
@@ -686,6 +697,11 @@ class ChartCanvas extends Component {
 			}, e);
 
 			this.prevMouseXY = mouseXY;
+			this.mutableState = {
+				mouseXY,
+				currentItem,
+				currentCharts,
+			};
 
 			requestAnimationFrame(() => {
 				this.clearMouseCanvas();
@@ -798,6 +814,7 @@ class ChartCanvas extends Component {
 			subscribe: this.subscribe,
 			unsubscribe: this.unsubscribe,
 			generateSubscriptionId: this.generateSubscriptionId,
+			getMutableState: this.getMutableState,
 			amIOnTop: this.amIOnTop,
 			setCursorClass: this.setCursorClass,
 		};
@@ -1087,6 +1104,7 @@ ChartCanvas.childContextTypes = {
 	unsubscribe: PropTypes.func,
 	setCursorClass: PropTypes.func,
 	generateSubscriptionId: PropTypes.func,
+	getMutableState: PropTypes.func,
 };
 
 ChartCanvas.ohlcv = d => ({ date: d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume });

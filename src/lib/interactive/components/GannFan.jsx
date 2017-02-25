@@ -191,7 +191,7 @@ function helper(props, moreProps) {
 		},
 	};
 
-	if (realSlope === 0) return [];
+	if (isNotDefined(realSlope)) return [];
 
 	const angle = degrees(Math.atan(m));
 

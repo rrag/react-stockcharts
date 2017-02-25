@@ -11,7 +11,7 @@ import {
 } from "./utils";
 
 const aliases = {
-	// mouseleave: "mousemove",
+	mouseleave: "mousemove", // to draw interactive after mouse exit
 	pinchzoom: "pan",
 	mousedown: "mousemove",
 	click: "mousemove",
@@ -251,10 +251,18 @@ class GenericComponent extends Component {
 		}
 	}
 	componentWillReceiveProps(nextProps, nextContext) {
-		const { xScale, plotData, chartConfig } = nextContext;
+		const { xScale, plotData, chartConfig, getMutableState } = nextContext;
+
 		this.props.debug(nextContext);
 		this.moreProps = {
 			...this.moreProps,
+			...getMutableState(),
+			/*
+			^ this is so
+			mouseXY, currentCharts, currentItem are available to
+			newly created components like MouseHoverText which
+			is created right after a new interactive object is drawn
+			*/
 			xScale, plotData, chartConfig
 		};
 	}
@@ -274,10 +282,8 @@ class GenericComponent extends Component {
 			width, height,
 			chartId,
 			fullData,
-			...this.moreProps
+			...this.moreProps,
 		};
-
-		if (this.props.foo) console.log(this.moreProps)
 
 		return (morePropsDecorator || identity)(moreProps);
 	}
@@ -388,6 +394,7 @@ GenericComponent.contextTypes = {
 
 	morePropsDecorator: PropTypes.func,
 	generateSubscriptionId: PropTypes.func,
+	getMutableState: PropTypes.func.isRequired,
 
 	amIOnTop: PropTypes.func.isRequired,
 	subscribe: PropTypes.func.isRequired,

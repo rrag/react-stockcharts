@@ -6,6 +6,7 @@ import { getCurrentItem } from "../../utils/ChartDataUtil";
 import { getNewXY } from "./EachTrendLine";
 import StraightLine, { generateLine } from "../components/StraightLine";
 import ClickableCircle from "../components/ClickableCircle";
+import HoverTextNearMouse from "../components/HoverTextNearMouse";
 import Text from "../components/Text";
 
 class EachFibRetracement extends Component {
@@ -257,6 +258,10 @@ class EachFibRetracement extends Component {
 						interactiveCursorClass="react-stockcharts-ew-resize-cursor"
 						onDrag={this.handleEdge2Drag}
 						onDragComplete={this.handleDragComplete} />
+					<HoverTextNearMouse show={hover && !selected}
+						bgHeight={18}
+						bgWidth={120}
+						children="Click to select object" />
 				</g>;
 			})}
 		</g>;

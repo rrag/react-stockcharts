@@ -67,7 +67,6 @@ class EventCapture extends Component {
 			const win = d3Window(this.node);
 			select(win)
 				.on(MOUSEMOVE, null);
-
 		}
 		onMouseLeave(e);
 	}
@@ -129,11 +128,7 @@ class EventCapture extends Component {
 		const e = d3Event;
 		if (this.props.onDrag) {
 			this.dragHappened = true;
-			const rect = this.node.getBoundingClientRect();
-			const mouseXY = [
-				Math.round(e.pageX - rect.left),
-				Math.round(e.pageY - rect.top)
-			];
+			const mouseXY = mouse(this.node);
 			this.props.onDrag({
 				startPos: this.state.dragStartPosition,
 				mouseXY
@@ -142,13 +137,11 @@ class EventCapture extends Component {
 	}
 	handleDragEnd() {
 		const e = d3Event;
-		const rect = this.node.getBoundingClientRect();
-		const mouseXY = [Math.round(e.pageX - rect.left), Math.round(e.pageY - rect.top)];
-
+		const mouseXY = mouse(this.node);
 
 		const win = d3Window(this.node);
 		select(win)
-			.on(MOUSEMOVE, null)
+			.on(MOUSEMOVE, this.mouseInside ? this.handleMouseMove : null)
 			.on(MOUSEUP, null);
 
 		this.props.onDragComplete({
@@ -198,10 +191,12 @@ class EventCapture extends Component {
 					.on(MOUSEUP, this.handlePanEnd);
 			} else if (somethingSelected) {
 				this.setState({
+					panInProgress: false,
+					panStart: null,
 					dragStartPosition: mouseXY,
 				});
 				this.props.onDragStart(e);
-				this.mouseInteraction = false;
+				// this.mouseInteraction = false;
 
 				const win = d3Window(this.node);
 				select(win)

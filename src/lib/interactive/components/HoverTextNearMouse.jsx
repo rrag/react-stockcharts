@@ -29,10 +29,10 @@ class HoverTextNearMouse extends Component {
 			children,
 		} = this.props;
 
-		const { mouseXY, height, width } = moreProps;
+		const { mouseXY, height, width, show: mouseInsideCanvas } = moreProps;
 		// console.log(moreProps)
 
-		if (show) {
+		if (show && mouseInsideCanvas) {
 			const [x, y] = mouseXY;
 
 			const cx = x < width / 2
