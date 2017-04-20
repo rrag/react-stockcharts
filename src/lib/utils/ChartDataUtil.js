@@ -114,13 +114,17 @@ function yDomainFromYExtents(yExtents, yScale, plotData) {
 }
 
 
-export function getChartConfigWithUpdatedYScales(chartConfig, plotData, xDomain, dy, chartsToPan) {
+export function getChartConfigWithUpdatedYScales(chartConfig,
+		{ plotData, xAccessor, displayXAccessor, fullData },
+		xDomain,
+		dy,
+		chartsToPan) {
 
 	const yDomains = chartConfig
 		.map(({ yExtentsCalculator, yExtents, yScale }) => {
 
 			const realYDomain = isDefined(yExtentsCalculator)
-				? yExtentsCalculator(plotData, xDomain)
+				? yExtentsCalculator({ plotData, xDomain, xAccessor, displayXAccessor, fullData })
 				: yDomainFromYExtents(yExtents, yScale, plotData);
 
 			const yDomainDY = isDefined(dy)

@@ -125,13 +125,18 @@ function resetChart(props, firstCalculation = false) {
 	}
 
 	const state = calculateState(props);
+	const { xAccessor, displayXAccessor, fullData } = state;
 	const { plotData: initialPlotData, xScale } = state;
 	const { postCalculator, children } = props;
 
 	const plotData = postCalculator(initialPlotData);
 
 	const dimensions = getDimensions(props);
-	const chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData, xScale.domain());
+	const chartConfig = getChartConfigWithUpdatedYScales(
+		getNewChartConfig(dimensions, children),
+		{ plotData, xAccessor, displayXAccessor, fullData },
+		xScale.domain()
+	);
 
 	return {
 		...state,
@@ -143,7 +148,7 @@ function resetChart(props, firstCalculation = false) {
 
 function updateChart(newState, initialXScale, props, lastItemWasVisible) {
 
-	const { fullData, xScale, xAccessor, filterData } = newState;
+	const { fullData, xScale, xAccessor, displayXAccessor, filterData } = newState;
 
 	const lastItem = last(fullData);
 	const [start, end] = initialXScale.domain();
@@ -177,7 +182,11 @@ function updateChart(newState, initialXScale, props, lastItemWasVisible) {
 	}
 	// plotData = getDataOfLength(fullData, showingInterval, plotData.length)
 	const plotData = postCalculator(initialPlotData);
-	const chartConfig = getChartConfigWithUpdatedYScales(getNewChartConfig(dimensions, children), plotData, updatedXScale.domain());
+	const chartConfig = getChartConfigWithUpdatedYScales(
+		getNewChartConfig(dimensions, children),
+		{ plotData, xAccessor, displayXAccessor, fullData },
+		updatedXScale.domain()
+	);
 
 	return {
 		xScale: updatedXScale,
@@ -387,7 +396,13 @@ class ChartCanvas extends Component {
 		}, e);
 	}
 	calculateStateForDomain(newDomain) {
-		const { xAccessor, xScale: initialXScale, chartConfig: initialChartConfig, plotData: initialPlotData } = this.state;
+		const {
+			xAccessor,
+			displayXAccessor,
+			xScale: initialXScale,
+			chartConfig: initialChartConfig,
+			plotData: initialPlotData
+		} = this.state;
 		const { filterData } = this.state;
 		const { fullData } = this;
 		const { postCalculator } = this.props;
@@ -401,7 +416,11 @@ class ChartCanvas extends Component {
 
 		const plotData = postCalculator(beforePlotData);
 		const updatedScale = initialXScale.copy().domain(domain);
-		const chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData, updatedScale.domain());
+		const chartConfig = getChartConfigWithUpdatedYScales(
+			initialChartConfig,
+			{ plotData, xAccessor, displayXAccessor, fullData },
+			updatedScale.domain()
+		);
 
 		return {
 			xScale: updatedScale,
@@ -412,7 +431,13 @@ class ChartCanvas extends Component {
 	pinchZoomHelper(initialPinch, finalPinch) {
 		const { xScale: initialPinchXScale } = initialPinch;
 
-		const { xScale: initialXScale, chartConfig: initialChartConfig, plotData: initialPlotData, xAccessor } = this.state;
+		const {
+			xScale: initialXScale,
+			chartConfig: initialChartConfig,
+			plotData: initialPlotData,
+			xAccessor,
+			displayXAccessor,
+		} = this.state;
 		const { filterData } = this.state;
 		const { fullData } = this;
 		const { postCalculator } = this.props;
@@ -442,7 +467,11 @@ class ChartCanvas extends Component {
 		const updatedScale = initialXScale.copy().domain(domain);
 
 		const mouseXY = finalPinch.touch1Pos;
-		const chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData, updatedScale.domain());
+		const chartConfig = getChartConfigWithUpdatedYScales(
+			initialChartConfig,
+			{ plotData, xAccessor, displayXAccessor, fullData },
+			updatedScale.domain()
+		);
 		const currentItem = getCurrentItem(updatedScale, xAccessor, mouseXY, plotData);
 
 		return {
@@ -599,7 +628,7 @@ class ChartCanvas extends Component {
 		this.draw({ force: true });
 	}
 	panHelper(mouseXY, initialXScale, panOrigin, chartsToPan) {
-		const { xAccessor, chartConfig: initialChartConfig } = this.state;
+		const { xAccessor, displayXAccessor, chartConfig: initialChartConfig } = this.state;
 		const { filterData } = this.state;
 		const { fullData } = this;
 		const { postCalculator } = this.props;
@@ -625,7 +654,13 @@ class ChartCanvas extends Component {
 		// console.log(last(plotData));
 
 		const currentItem = getCurrentItem(updatedScale, xAccessor, mouseXY, plotData);
-		const chartConfig = getChartConfigWithUpdatedYScales(initialChartConfig, plotData, updatedScale.domain(), dy, chartsToPan);
+		const chartConfig = getChartConfigWithUpdatedYScales(
+			initialChartConfig,
+			{ plotData, xAccessor, displayXAccessor, fullData },
+			updatedScale.domain(),
+			dy,
+			chartsToPan
+		);
 		const currentCharts = getCurrentCharts(chartConfig, mouseXY);
 
 		// console.log(initialXScale.domain(), newDomain, updatedScale.domain());

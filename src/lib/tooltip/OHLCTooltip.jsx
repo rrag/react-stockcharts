@@ -17,7 +17,7 @@ class OHLCTooltip extends Component {
 	}
 	renderSVG(moreProps) {
 		const { className } = this.props;
-		const { chartConfig: { width, height } } = moreProps;
+		const { chartConfig: { width, height }, displayXAccessor } = moreProps;
 		const { currentItem } = moreProps;
 
 		const { onClick, xDisplayFormat, fontFamily, fontSize, accessor, volumeFormat, ohlcFormat } = this.props;
@@ -34,7 +34,7 @@ class OHLCTooltip extends Component {
 				? volumeFormat(item.volume)
 				: "n/a";
 
-			displayDate = xDisplayFormat(item.date);
+			displayDate = xDisplayFormat(displayXAccessor(item));
 			open = ohlcFormat(item.open);
 			high = ohlcFormat(item.high);
 			low = ohlcFormat(item.low);
