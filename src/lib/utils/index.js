@@ -80,6 +80,8 @@ export function d3Window(node) {
 	return d3win;
 }
 
+export const MOUSEENTER = "mouseenter.interaction";
+export const MOUSELEAVE = "mouseleave.interaction";
 export const MOUSEMOVE = "mousemove.pan";
 export const MOUSEUP = "mouseup.pan";
 export const TOUCHMOVE = "touchmove.pan";

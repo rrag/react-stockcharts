@@ -10,6 +10,8 @@ import { timeParse } from "d3-time-format";
 const parseDate = timeParse("%Y-%m-%d");
 const parseDateTime = timeParse("%Y-%m-%d %H:%M:%S");
 
+
+import { TypeChooser } from "react-stockcharts/lib/helper";
 import "stylesheets/re-stock";
 
 import Nav from "lib/navbar";
@@ -305,14 +307,14 @@ function renderPartialPage(data, dataFull, intraDayContinuous, intraDayDiscontin
 	// Kagi
 	// PointAndFigure
 	// Renko
-	var Chart = require("./lib/charts/CandleStickChartForDiscontinuousIntraDay").default;
+	var Chart = require("./lib/charts/CandleStickChartWithZoomPan").default;
 	// data, dataFull, compareData
 	class ExamplesPage extends React.Component {
 		render() {
 			return (
 				<div>
 					<TypeChooser type="hybrid">
-						{(type) => <Chart data={intraDayDiscontinuous} type={type} />}
+						{(type) => <Chart data={dataFull} type={type} />}
 					</TypeChooser>
 				</div>
 			);

@@ -49,7 +49,7 @@ class ZoomAndPanPage extends React.Component {
 						<TypeChooser>
 							{(type) => (<CandleStickChartWithZoomPan
 								ref={this.saveNode}
-								data={this.props.someData}
+								data={this.props.lotsOfData}
 								mouseMoveEvent={mouseMoveEvent}
 								panEvent={panEvent}
 								zoomEvent={zoomEvent}

@@ -7,6 +7,7 @@ import {
 	isDefined, mousePosition, touchPosition, getTouchProps,
 	d3Window,
 	MOUSEMOVE, MOUSEUP,
+	MOUSEENTER, MOUSELEAVE,
 	TOUCHMOVE, TOUCHEND,
 	noop
 } from "./utils";
@@ -48,9 +49,27 @@ class EventCapture extends Component {
 	componentWillMount() {
 		this.focus = this.props.focus;
 	}
-	handleEnter(e) {
-		const { onMouseEnter } = this.props;
+	componentDidMount() {
+		if (this.node) {
+			select(this.node)
+				.on(MOUSEENTER, this.handleEnter)
+				.on(MOUSELEAVE, this.handleLeave);
+		}
+	}
+	componentDidUpdate() {
+		this.componentDidMount();
+	}
+	componentWillUnmount() {
+		if (this.node) {
+			select(this.node)
+				.on(MOUSEENTER, null)
+				.on(MOUSELEAVE, null);
+		}
+	}
+	handleEnter() {
+		const e = d3Event;
 
+		const { onMouseEnter } = this.props;
 		this.mouseInside = true;
 		if (!this.state.panInProgress) {
 			const win = d3Window(this.node);
@@ -413,8 +432,6 @@ class EventCapture extends Component {
 				width={width}
 				height={height}
 				style={{ opacity: 0 }}
-				onMouseEnter={this.handleEnter}
-				onMouseLeave={this.handleLeave}
 				onWheel={this.handleWheel}
 				onMouseDown={this.handleMouseDown}
 				onContextMenu={this.handleRightClick}
@@ -423,6 +440,10 @@ class EventCapture extends Component {
 		);
 	}
 }
+
+// 				onMouseEnter={this.handleEnter}
+//				onMouseLeave={this.handleLeave}
+
 
 EventCapture.propTypes = {
 	mouseMove: PropTypes.bool.isRequired,

@@ -674,8 +674,8 @@ class ChartCanvas extends Component {
 		};
 	}
 	handlePan(mousePosition, panStartXScale, panOrigin, chartsToPan, e) {
-		if (!this.waitingForAnimationFrame) {
-			this.waitingForAnimationFrame = true;
+		if (!this.waitingForPanAnimationFrame) {
+			this.waitingForPanAnimationFrame = true;
 
 			this.hackyWayToStopPanBeyondBounds__plotData = this.hackyWayToStopPanBeyondBounds__plotData || this.state.plotData;
 			this.hackyWayToStopPanBeyondBounds__domain = this.hackyWayToStopPanBeyondBounds__domain || this.state.xScale.domain();
@@ -699,9 +699,9 @@ class ChartCanvas extends Component {
 				currentItem: state.currentItem,
 				currentCharts: state.currentCharts,
 			};
-
 			requestAnimationFrame(() => {
-				this.waitingForAnimationFrame = false;
+
+				this.waitingForPanAnimationFrame = false;
 				this.clearBothCanvas();
 				this.draw({ trigger: "pan" });
 			});
