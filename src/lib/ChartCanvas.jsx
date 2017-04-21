@@ -688,10 +688,6 @@ class ChartCanvas extends Component {
 			this.panInProgress = true;
 			// console.log(panStartXScale.domain(), state.xScale.domain())
 
-			// Q: why cant pan be inside requestAnimationFrame
-			// A: the event e is a synthetic event and will be reused by react.
-			// Moving it inside the rAF means react cannot reuse the event
-
 			this.triggerEvent("pan", state, e);
 
 			this.mutableState = {
