@@ -54,7 +54,7 @@ class CandleStickChartWithZoomPan extends React.Component {
 		const xExtents = [start, end];
 
 		return (
-			<ChartCanvas ref={this.saveNode} height={400}
+			<ChartCanvas ref={this.saveNode} height={900}
 					ratio={ratio}
 					width={width}
 					margin={{ left: 70, right: 70, top: 10, bottom: 30 }}
@@ -69,8 +69,7 @@ class CandleStickChartWithZoomPan extends React.Component {
 					data={data}
 					xScale={xScale}
 					xAccessor={xAccessor}
-					displayXAccessor={displayXAccessor}
-					xExtents={xExtents}>
+					displayXAccessor={displayXAccessor}>
 
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low]]}>

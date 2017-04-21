@@ -112,8 +112,8 @@ function getBars(props, moreProps) {
 			return {
 				// type: "line"
 				x,
-				y,
-				height: h,
+				y: Math.round(y),
+				height: Math.round(h),
 				width: barWidth,
 				fill: getFill(d, 0),
 				stroke: stroke ? getFill(d, 0) : "none",

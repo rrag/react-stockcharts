@@ -20,13 +20,16 @@ class CandlestickSeries extends Component {
 	}
 	renderSVG(moreProps) {
 		const { className, wickClassName, candleClassName } = this.props;
+		const { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
+
+		const candleData = getCandleData(this.props, xAccessor, xScale, yScale, plotData);
 
 		return <g className={className}>
 			<g className={wickClassName} key="wicks">
-				{getWicksSVG(this.props, moreProps)}
+				{getWicksSVG(candleData)}
 			</g>
 			<g className={candleClassName} key="candles">
-				{getCandlesSVG(this.props, moreProps)}
+				{getCandlesSVG(this.props, candleData)}
 			</g>
 		</g>;
 	}
@@ -86,31 +89,28 @@ CandlestickSeries.defaultProps = {
 	clip: true,
 };
 
-function getWicksSVG(props, moreProps) {
+function getWicksSVG(candleData) {
 
-	/* eslint-disable react/prop-types */
-	const { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
-	/* eslint-enable react/prop-types */
+	const wicks = candleData
+		.map((each, idx) => {
+			const d = each.wick;
+			return <path key={idx}
+				className={each.className}
+				stroke={d.stroke}
+				d={`M${d.x},${d.y1} L${d.x},${d.y2} M${d.x},${d.y3} L${d.x},${d.y4}`} />;
+		});
 
-	const wickData = getWickData(props, xAccessor, xScale, yScale, plotData);
-	const wicks = wickData
-		.map((d, idx) => <path key={idx}
-			className={d.className} stroke={d.stroke} style={{ shapeRendering: "crispEdges" }}
-			d={`M${d.x},${d.y1} L${d.x},${d.y2} M${d.x},${d.y3} L${d.x},${d.y4}`} />
-		);
 	return wicks;
 }
 
-function getCandlesSVG(props, moreProps) {
+function getCandlesSVG(props, candleData) {
 
 	/* eslint-disable react/prop-types */
 	const { opacity, candleStrokeWidth } = props;
-	const { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
 	/* eslint-enable react/prop-types */
 
-	const candleData = getCandleData(props, xAccessor, xScale, yScale, plotData);
 	const candles = candleData.map((d, idx) => {
-		if (d.width < 0)
+		if (d.width <= 1)
 			return (
 				<line className={d.className} key={idx}
 					x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height}
@@ -136,17 +136,18 @@ function drawOnCanvas(ctx, props, moreProps) {
 	const { opacity, candleStrokeWidth } = props;
 	const { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
 
-	const wickData = getWickData(props, xAccessor, xScale, yScale, plotData);
+	// const wickData = getWickData(props, xAccessor, xScale, yScale, plotData);
+	const candleData = getCandleData(props, xAccessor, xScale, yScale, plotData);
 
 	const wickNest = nest()
-		.key(d => d.stroke)
-		.entries(wickData);
+		.key(d => d.wick.stroke)
+		.entries(candleData);
 
 	wickNest.forEach(outer => {
 		const { key, values } = outer;
 		ctx.strokeStyle = key;
 		ctx.fillStyle = key;
-		values.forEach(d => {
+		values.forEach(each => {
 			/*
 			ctx.moveTo(d.x, d.y1);
 			ctx.lineTo(d.x, d.y2);
@@ -155,13 +156,14 @@ function drawOnCanvas(ctx, props, moreProps) {
 			ctx.moveTo(d.x, d.y3);
 			ctx.lineTo(d.x, d.y4);
 			ctx.stroke(); */
+			const d = each.wick;
 
 			ctx.fillRect(d.x - 0.5, d.y1, 1, d.y2 - d.y1);
 			ctx.fillRect(d.x - 0.5, d.y3, 1, d.y4 - d.y3);
 		});
 	});
 
-	const candleData = getCandleData(props, xAccessor, xScale, yScale, plotData);
+	// const candleData = getCandleData(props, xAccessor, xScale, yScale, plotData);
 
 	const candleNest = nest()
 		.key(d => d.stroke)
@@ -213,7 +215,7 @@ function drawOnCanvas(ctx, props, moreProps) {
 		});
 	});
 }
-
+/*
 function getWickData(props, xAccessor, xScale, yScale, plotData) {
 
 	const { classNames: classNameProp, wickStroke: wickStrokeProp, yAccessor } = props;
@@ -244,9 +246,16 @@ function getWickData(props, xAccessor, xScale, yScale, plotData) {
 			});
 	return wickData;
 }
+*/
 
 function getCandleData(props, xAccessor, xScale, yScale, plotData) {
+
+	const { wickStroke: wickStrokeProp } = props;
+	const wickStroke = functor(wickStrokeProp);
+
 	const { classNames, fill: fillProp, stroke: strokeProp, widthRatio, yAccessor } = props;
+	const className = functor(classNames);
+
 	const fill = functor(fillProp);
 	const stroke = functor(strokeProp);
 	// console.log(plotData);
@@ -261,16 +270,23 @@ function getCandleData(props, xAccessor, xScale, yScale, plotData) {
 			.map(d => {
 				const ohlc = yAccessor(d);
 				const x = Math.round(xScale(xAccessor(d)) - offset),
-					y = yScale(Math.max(ohlc.open, ohlc.close)),
-					height = Math.abs(yScale(ohlc.open) - yScale(ohlc.close)),
-					className = (ohlc.open <= ohlc.close) ? classNames.up : classNames.down;
+					y = Math.round(yScale(Math.max(ohlc.open, ohlc.close))),
+					height = Math.round(Math.abs(yScale(ohlc.open) - yScale(ohlc.close)));
 				return {
 					// type: "line"
 					x: x,
 					y: y,
+					wick: {
+						stroke: wickStroke(ohlc),
+						x: Math.round(xScale(xAccessor(d))),
+						y1: Math.round(yScale(ohlc.high)),
+						y2: Math.round(yScale(Math.max(ohlc.open, ohlc.close))),
+						y3: Math.round(yScale(Math.min(ohlc.open, ohlc.close))),
+						y4: Math.round(yScale(ohlc.low)),
+					},
 					height: height,
 					width: candleWidth,
-					className: className,
+					className: className(ohlc),
 					fill: fill(ohlc),
 					stroke: stroke(ohlc),
 					direction: (ohlc.close - ohlc.open),
