@@ -36,9 +36,9 @@ class CandleStickChartWithZoomPan extends React.Component {
 		this.node.resetYDomain();
 	}
 	render() {
-		var { type, data: initialData, width, ratio } = this.props;
-		var { mouseMoveEvent, panEvent, zoomEvent } = this.props;
-		var { clamp } = this.props;
+		const { type, data: initialData, width, ratio } = this.props;
+		const { mouseMoveEvent, panEvent, zoomEvent } = this.props;
+		const { clamp } = this.props;
 
 		const xScaleProvider = discontinuousTimeScaleProvider
 			.inputDateAccessor(d => d.date);
@@ -53,8 +53,19 @@ class CandleStickChartWithZoomPan extends React.Component {
 		const end = xAccessor(data[Math.max(0, data.length - 150)]);
 		const xExtents = [start, end];
 
+		const margin = { left: 70, right: 70, top: 20, bottom: 30 };
+
+		const height = 400;
+
+		const gridHeight = height - margin.top - margin.bottom;
+		const gridWidth = width - margin.left - margin.right;
+
+		const showGrid = true;
+		const yGrid = showGrid ? { innerTickSize: -1 * gridWidth, tickStrokeOpacity: 0.2 } : {};
+		const xGrid = showGrid ? { innerTickSize: -1 * gridHeight, tickStrokeOpacity: 0.2 } : {};
+
 		return (
-			<ChartCanvas ref={this.saveNode} height={900}
+			<ChartCanvas ref={this.saveNode} height={height}
 					ratio={ratio}
 					width={width}
 					margin={{ left: 70, right: 70, top: 10, bottom: 30 }}
@@ -68,13 +79,22 @@ class CandleStickChartWithZoomPan extends React.Component {
 					seriesName="MSFT"
 					data={data}
 					xScale={xScale}
+					xExtents={xExtents}
 					xAccessor={xAccessor}
 					displayXAccessor={displayXAccessor}>
 
 				<Chart id={1}
 						yExtents={[d => [d.high, d.low]]}>
-					<XAxis axisAt="bottom" orient="bottom" zoomEnabled={!zoomEvent} />
-					<YAxis axisAt="right" orient="right" ticks={5} zoomEnabled={!zoomEvent} />
+					<XAxis axisAt="bottom"
+						orient="bottom"
+						zoomEnabled={!zoomEvent}
+						{...xGrid} />
+					<YAxis axisAt="right"
+						orient="right"
+						ticks={5}
+						zoomEnabled={!zoomEvent}
+						{...yGrid}
+						/>
 
 					<MouseCoordinateY
 						at="right"
