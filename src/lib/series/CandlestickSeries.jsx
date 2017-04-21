@@ -258,40 +258,48 @@ function getCandleData(props, xAccessor, xScale, yScale, plotData) {
 
 	const fill = functor(fillProp);
 	const stroke = functor(strokeProp);
-	// console.log(plotData);
+
 	const width = xScale(xAccessor(last(plotData)))
 		- xScale(xAccessor(head(plotData)));
 	const cw = (width / (plotData.length - 1) * widthRatio);
-	const candleWidth = Math.round(cw); // Math.floor(cw) % 2 === 0 ? Math.floor(cw) : Math.round(cw);
+	const candleWidth = Math.round(cw);
 
 	const offset = (candleWidth === 1 ? 0 : 0.5 * cw);
-	const candles = plotData
-			.filter(d => isDefined(yAccessor(d).close))
-			.map(d => {
-				const ohlc = yAccessor(d);
-				const x = Math.round(xScale(xAccessor(d)) - offset),
-					y = Math.round(yScale(Math.max(ohlc.open, ohlc.close))),
-					height = Math.round(Math.abs(yScale(ohlc.open) - yScale(ohlc.close)));
-				return {
-					// type: "line"
-					x: x,
-					y: y,
-					wick: {
-						stroke: wickStroke(ohlc),
-						x: Math.round(xScale(xAccessor(d))),
-						y1: Math.round(yScale(ohlc.high)),
-						y2: Math.round(yScale(Math.max(ohlc.open, ohlc.close))),
-						y3: Math.round(yScale(Math.min(ohlc.open, ohlc.close))),
-						y4: Math.round(yScale(ohlc.low)),
-					},
-					height: height,
-					width: candleWidth,
-					className: className(ohlc),
-					fill: fill(ohlc),
-					stroke: stroke(ohlc),
-					direction: (ohlc.close - ohlc.open),
-				};
+
+	// eslint-disable-next-line prefer-const
+	let candles = [];
+
+	for (let i = 0; i < plotData.length; i++) {
+		const d = plotData[i];
+		if (isDefined(yAccessor(d).close)) {
+			const x = Math.round(xScale(xAccessor(d)) - offset);
+
+			const ohlc = yAccessor(d);
+			const y = Math.round(yScale(Math.max(ohlc.open, ohlc.close)));
+			const height = Math.round(Math.abs(yScale(ohlc.open) - yScale(ohlc.close)));
+
+			candles.push({
+				// type: "line"
+				x: x,
+				y: y,
+				wick: {
+					stroke: wickStroke(ohlc),
+					x: Math.round(xScale(xAccessor(d))),
+					y1: Math.round(yScale(ohlc.high)),
+					y2: y,
+					y3: y + height, // Math.round(yScale(Math.min(ohlc.open, ohlc.close))),
+					y4: Math.round(yScale(ohlc.low)),
+				},
+				height: height,
+				width: candleWidth,
+				className: className(ohlc),
+				fill: fill(ohlc),
+				stroke: stroke(ohlc),
+				direction: (ohlc.close - ohlc.open),
 			});
+		}
+	}
+
 	return candles;
 }
 
