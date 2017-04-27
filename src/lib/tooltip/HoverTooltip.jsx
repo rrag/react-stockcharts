@@ -249,7 +249,8 @@ function origin(props, moreProps, bgSize, pointWidth) {
 	var xValue = xAccessor(currentItem);
 	var x = Math.round(xScale(xValue));
 
-	if (isDefined(chartId) && isDefined(yAccessor)) {
+	if (isDefined(chartId) && isDefined(yAccessor)
+			&& isDefined(chartConfig) && && isDefined(chartConfig.findIndex)) {
 		var yValue = yAccessor(currentItem);
 		var chartIndex = chartConfig.findIndex(x => x.id === chartId);
 
