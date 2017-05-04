@@ -1,7 +1,8 @@
 "use strict";
 
 import { nest } from "d3-collection";
-import React, { PropTypes, Component } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
 

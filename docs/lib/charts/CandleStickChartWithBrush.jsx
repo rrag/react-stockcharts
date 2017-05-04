@@ -2,7 +2,9 @@
 
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
+
 import React from "react";
+import PropTypes from "prop-types";
 
 import { ChartCanvas, Chart } from "react-stockcharts";
 import {
@@ -28,7 +30,7 @@ import { fitWidth } from "react-stockcharts/lib/helper";
 import { Brush } from "react-stockcharts/lib/interactive";
 import { last } from "react-stockcharts/lib/utils";
 
-var ema26 = ema()
+const ema26 = ema()
 	.id(0)
 	.options({
 		windowSize: 26,
@@ -36,7 +38,7 @@ var ema26 = ema()
 	.merge((d, c) => { d.ema26 = c; })
 	.accessor(d => d.ema26);
 
-var ema12 = ema()
+const ema12 = ema()
 	.id(1)
 	.options({
 		windowSize: 12,
@@ -44,7 +46,7 @@ var ema12 = ema()
 	.merge((d, c) => { d.ema12 = c; })
 	.accessor(d => d.ema12);
 
-var macdCalculator = macd()
+const macdCalculator = macd()
 	.options({
 		fast: 12,
 		slow: 26,
@@ -53,7 +55,7 @@ var macdCalculator = macd()
 	.merge((d, c) => { d.macd = c; })
 	.accessor(d => d.macd);
 
-var smaVolume50 = sma()
+const smaVolume50 = sma()
 	.id(3)
 	.options({
 		windowSize: 10,
@@ -79,7 +81,7 @@ class CandlestickChart extends React.Component {
 		this.handleBrush = this.handleBrush.bind(this);
 		this.onKeyPress = this.onKeyPress.bind(this);
 
-		var { data: initialData } = props;
+		const { data: initialData } = props;
 
 		const calculatedData = macdCalculator(smaVolume50(ema12(ema26(initialData))));
 		const xScaleProvider = discontinuousTimeScaleProvider
@@ -109,7 +111,7 @@ class CandlestickChart extends React.Component {
 		document.removeEventListener("keyup", this.onKeyPress);
 	}
 	onKeyPress(e) {
-		var keyCode = e.which;
+		const keyCode = e.which;
 		console.log(keyCode);
 		switch (keyCode) {
 		case 27: { // ESC
@@ -119,11 +121,11 @@ class CandlestickChart extends React.Component {
 	}
 	handleBrush(brushCoords) {
 		console.log(arguments);
-		var left = Math.min(brushCoords.x1, brushCoords.x2);
-		var right = Math.max(brushCoords.x1, brushCoords.x2);
+		const left = Math.min(brushCoords.x1, brushCoords.x2);
+		const right = Math.max(brushCoords.x1, brushCoords.x2);
 
-		var low = Math.min(brushCoords.y1, brushCoords.y2);
-		var high = Math.max(brushCoords.y1, brushCoords.y2);
+		const low = Math.min(brushCoords.y1, brushCoords.y2);
+		const high = Math.max(brushCoords.y1, brushCoords.y2);
 
 		// uncomment the line below to make the brush to zoom
 		this.setState({
@@ -133,8 +135,8 @@ class CandlestickChart extends React.Component {
 		});
 	}
 	render() {
-		var { type, width, ratio } = this.props;
-		var { data, xExtents, xScale, xAccessor, displayXAccessor, brushEnabled } = this.state;
+		const { type, width, ratio } = this.props;
+		const { data, xExtents, xScale, xAccessor, displayXAccessor, brushEnabled } = this.state;
 
 		return (
 			<ChartCanvas height={600}
@@ -239,16 +241,16 @@ class CandlestickChart extends React.Component {
 }
 
 CandlestickChart.propTypes = {
-	data: React.PropTypes.array.isRequired,
-	width: React.PropTypes.number.isRequired,
-	ratio: React.PropTypes.number.isRequired,
-	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	data: PropTypes.array.isRequired,
+	width: PropTypes.number.isRequired,
+	ratio: PropTypes.number.isRequired,
+	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
 CandlestickChart.defaultProps = {
 	type: "svg",
 };
 
-var CandleStickChartWithBrush = fitWidth(CandlestickChart);
+const CandleStickChartWithBrush = fitWidth(CandlestickChart);
 
 export default CandleStickChartWithBrush;

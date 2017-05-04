@@ -3,7 +3,7 @@
 import React from "react";
 
 function getDisplayName(ChartComponent) {
-	var name = ChartComponent.displayName || ChartComponent.name || "ChartComponent";
+	const name = ChartComponent.displayName || ChartComponent.name || "ChartComponent";
 	return name;
 }
 
@@ -28,7 +28,7 @@ export default function updatingDataWrapper(ChartComponent) {
 			document.removeEventListener("keyup", this.onKeyPress);
 		}
 		onKeyPress(e) {
-			var keyCode = e.which;
+			const keyCode = e.which;
 			console.log(keyCode);
 			switch (keyCode) {
 			case 50: {
@@ -71,7 +71,7 @@ export default function updatingDataWrapper(ChartComponent) {
 			case 109:
 			case 189: {
 					// - (189, 109) - reduce the this.speed
-				var delta = Math.min(this.speed, 1000);
+				const delta = Math.min(this.speed, 1000);
 				this.speed = this.speed + delta;
 				break;
 			}
@@ -83,8 +83,8 @@ export default function updatingDataWrapper(ChartComponent) {
 			}
 		}
 		render() {
-			var { type } = this.props;
-			var { data } = this.state;
+			const { type } = this.props;
+			const { data } = this.state;
 
 			return <ChartComponent ref="component" data={data} type={type} />;
 		}

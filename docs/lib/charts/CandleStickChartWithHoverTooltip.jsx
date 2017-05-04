@@ -1,6 +1,8 @@
 "use strict";
 
 import React from "react";
+import PropTypes from "prop-types";
+
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
@@ -23,8 +25,8 @@ import { ema } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
 import { last } from "react-stockcharts/lib/utils";
 
-var dateFormat = timeFormat("%Y-%m-%d");
-var numberFormat = format(".2f");
+const dateFormat = timeFormat("%Y-%m-%d");
+const numberFormat = format(".2f");
 
 function tooltipContent(ys) {
 	return ({ currentItem, xAccessor }) => {
@@ -63,25 +65,25 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 	}
 
 	render() {
-		var { type, data: initialData, width, ratio } = this.props;
+		let { type, data: initialData, width, ratio } = this.props;
 
 		// remove some of the data to be able to see
 		// the tooltip resize
 		initialData = this.removeRandomValues(initialData);
 
-		var ema20 = ema()
+		const ema20 = ema()
 			.id(0)
 			.options({ windowSize: 20 })
 			.merge((d, c) => {d.ema20 = c;})
 			.accessor(d => d.ema20);
 
-		var ema50 = ema()
+		const ema50 = ema()
 			.id(2)
 			.options({ windowSize: 50 })
 			.merge((d, c) => {d.ema50 = c;})
 			.accessor(d => d.ema50);
 
-		var margin = { left: 80, right: 80, top: 30, bottom: 50 };
+		const margin = { left: 80, right: 80, top: 30, bottom: 50 };
 
 		const calculatedData = ema50(ema20(initialData));
 		const xScaleProvider = discontinuousTimeScaleProvider
@@ -155,10 +157,10 @@ class CandleStickChartWithHoverTooltip extends React.Component {
 }
 
 CandleStickChartWithHoverTooltip.propTypes = {
-	data: React.PropTypes.array.isRequired,
-	width: React.PropTypes.number.isRequired,
-	ratio: React.PropTypes.number.isRequired,
-	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	data: PropTypes.array.isRequired,
+	width: PropTypes.number.isRequired,
+	ratio: PropTypes.number.isRequired,
+	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
 CandleStickChartWithHoverTooltip.defaultProps = {

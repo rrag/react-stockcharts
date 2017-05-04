@@ -1,6 +1,8 @@
 "use strict";
 
 import React from "react";
+import PropTypes from "prop-types";
+
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
@@ -34,35 +36,35 @@ import { last } from "react-stockcharts/lib/utils";
 
 class CandleStickChartWithRSIIndicator extends React.Component {
 	render() {
-		var ema26 = ema()
+		const ema26 = ema()
 			.id(0)
 			.options({ windowSize: 26 })
 			.merge((d, c) => {d.ema26 = c;})
 			.accessor(d => d.ema26);
 
-		var ema12 = ema()
+		const ema12 = ema()
 			.id(1)
 			.options({ windowSize: 12 })
 			.merge((d, c) => {d.ema12 = c;})
 			.accessor(d => d.ema12);
 
-		var smaVolume50 = sma()
+		const smaVolume50 = sma()
 			.id(3)
 			.options({ windowSize: 50, sourcePath: "volume" })
 			.merge((d, c) => {d.smaVolume50 = c;})
 			.accessor(d => d.smaVolume50);
 
-		var rsiCalculator = rsi()
+		const rsiCalculator = rsi()
 			.options({ windowSize: 14 })
 			.merge((d, c) => {d.rsi = c;})
 			.accessor(d => d.rsi);
 
-		var atr14 = atr()
+		const atr14 = atr()
 			.options({ windowSize: 14 })
 			.merge((d, c) => {d.atr14 = c;})
 			.accessor(d => d.atr14);
 
-		var { type, data: initialData, width, ratio } = this.props;
+		const { type, data: initialData, width, ratio } = this.props;
 
 		const calculatedData = ema26(ema12(smaVolume50(rsiCalculator(atr14(initialData)))));
 		const xScaleProvider = discontinuousTimeScaleProvider
@@ -196,10 +198,10 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 }
 
 CandleStickChartWithRSIIndicator.propTypes = {
-	data: React.PropTypes.array.isRequired,
-	width: React.PropTypes.number.isRequired,
-	ratio: React.PropTypes.number.isRequired,
-	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	data: PropTypes.array.isRequired,
+	width: PropTypes.number.isRequired,
+	ratio: PropTypes.number.isRequired,
+	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
 CandleStickChartWithRSIIndicator.defaultProps = {

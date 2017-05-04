@@ -1,6 +1,8 @@
 "use strict";
 
 import React from "react";
+import PropTypes from "prop-types";
+
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
@@ -27,7 +29,7 @@ import { last } from "react-stockcharts/lib/utils";
 
 class CandleStickChartWithAnnotation extends React.Component {
 	render() {
-		var annotationProps = {
+		const annotationProps = {
 			fontFamily: "Glyphicons Halflings",
 			fontSize: 20,
 			fill: "#060F8F",
@@ -39,11 +41,11 @@ class CandleStickChartWithAnnotation extends React.Component {
 			// onMouseOver: console.log.bind(console),
 		};
 
-		var margin = { left: 80, right: 80, top: 30, bottom: 50 };
-		var height = 400;
-		var { type, data: initialData, width, ratio } = this.props;
+		const margin = { left: 80, right: 80, top: 30, bottom: 50 };
+		const height = 400;
+		const { type, data: initialData, width, ratio } = this.props;
 
-		var [yAxisLabelX, yAxisLabelY] = [
+		const [yAxisLabelX, yAxisLabelY] = [
 			width - margin.left - 40,
 			(height - margin.top - margin.bottom) / 2
 		];
@@ -118,10 +120,10 @@ class CandleStickChartWithAnnotation extends React.Component {
 }
 
 CandleStickChartWithAnnotation.propTypes = {
-	data: React.PropTypes.array.isRequired,
-	width: React.PropTypes.number.isRequired,
-	ratio: React.PropTypes.number.isRequired,
-	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	data: PropTypes.array.isRequired,
+	width: PropTypes.number.isRequired,
+	ratio: PropTypes.number.isRequired,
+	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
 CandleStickChartWithAnnotation.defaultProps = {

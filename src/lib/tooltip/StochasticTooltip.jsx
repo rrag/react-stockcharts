@@ -1,7 +1,8 @@
 "use strict";
 
 import { format } from "d3-format";
-import React, { PropTypes, Component } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import GenericChartComponent from "../GenericChartComponent";
 
 import { functor } from "../utils";

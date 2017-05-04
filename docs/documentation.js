@@ -313,7 +313,7 @@ function renderPartialPage(data, dataFull, intraDayContinuous, intraDayDiscontin
 		render() {
 			return (
 				<div>
-					<TypeChooser type="hybrid">
+					<TypeChooser type="hybrid" style={{ position: "absolute", top: 40, bottom: 0, left: 0, right: 0 }}>
 						{(type) => <Chart data={dataFull} type={type} />}
 					</TypeChooser>
 				</div>

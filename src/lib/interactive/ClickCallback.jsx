@@ -1,6 +1,7 @@
 "use strict";
 
-import React, { PropTypes, Component } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 import { noop, functor } from "../utils";
 import GenericChartComponent from "../GenericChartComponent";

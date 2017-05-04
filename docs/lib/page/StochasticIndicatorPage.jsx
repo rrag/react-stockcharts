@@ -20,7 +20,7 @@ class StochasticIndicatorPage extends React.Component {
 		this.chart = node;
 	}
 	saveChartAsImage() {
-		var container = ReactDOM.findDOMNode(this.chart); // eslint-disable-line react/no-find-dom-node
+		const container = ReactDOM.findDOMNode(this.chart); // eslint-disable-line react/no-find-dom-node
 		SaveChartAsImage.saveChartAsImage(container);
 	}
 	render() {

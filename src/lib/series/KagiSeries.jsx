@@ -1,6 +1,7 @@
 "use strict";
 
-import React, { PropTypes, Component } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { line, curveStepBefore } from "d3-shape";
 
 import GenericChartComponent from "../GenericChartComponent";

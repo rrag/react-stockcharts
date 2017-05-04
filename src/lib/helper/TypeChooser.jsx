@@ -1,6 +1,7 @@
 "use strict";
 
-import React, { PropTypes, Component } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 class TypeChooser extends Component {
 	constructor(props) {
@@ -24,7 +25,9 @@ class TypeChooser extends Component {
 					<option value="svg">svg</option>
 					<option value="hybrid">canvas + svg</option>
 				</select>
-				{this.props.children(this.state.type)}
+				<div style={this.props.style}>
+					{this.props.children(this.state.type)}
+				</div>
 			</div>
 		);
 	}
@@ -33,10 +36,12 @@ class TypeChooser extends Component {
 TypeChooser.propTypes = {
 	type: PropTypes.oneOf(["svg", "hybrid"]),
 	children: PropTypes.func.isRequired,
+	style: PropTypes.object.isRequired,
 };
 
 TypeChooser.defaultProps = {
-	type: "hybrid"
+	type: "hybrid",
+	style: {},
 };
 
 export default TypeChooser;

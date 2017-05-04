@@ -1,6 +1,8 @@
 "use strict";
 
 import React from "react";
+import PropTypes from "prop-types";
+
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
@@ -181,10 +183,10 @@ class MovingAverageCrossOverAlgorithmV2 extends React.Component {
 */
 
 MovingAverageCrossOverAlgorithmV2.propTypes = {
-	data: React.PropTypes.array.isRequired,
-	width: React.PropTypes.number.isRequired,
-	ratio: React.PropTypes.number.isRequired,
-	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	data: PropTypes.array.isRequired,
+	width: PropTypes.number.isRequired,
+	ratio: PropTypes.number.isRequired,
+	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
 MovingAverageCrossOverAlgorithmV2.defaultProps = {

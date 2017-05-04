@@ -1,6 +1,8 @@
 "use strict";
 
 import React from "react";
+import PropTypes from "prop-types";
+
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
@@ -36,7 +38,7 @@ const bbFill = "#4682B4";
 
 class CandleStickChartWithBollingerBandOverlay extends React.Component {
 	render() {
-		var ema20 = ema()
+		const ema20 = ema()
 			.options({
 				windowSize: 20, // optional will default to 10
 				sourcePath: "close", // optional will default to close as the source
@@ -46,28 +48,28 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 			.accessor(d => d.ema20) // Required, if not provided, log an error during calculation
 			.stroke("blue"); // Optional
 
-		var sma20 = sma()
+		const sma20 = sma()
 			.options({ windowSize: 20 })
 			.merge((d, c) => {d.sma20 = c;})
 			.accessor(d => d.sma20);
 
-		var ema50 = ema()
+		const ema50 = ema()
 			.options({ windowSize: 50 })
 			.merge((d, c) => {d.ema50 = c;})
 			.accessor(d => d.ema50);
 
-		var smaVolume50 = sma()
+		const smaVolume50 = sma()
 			.options({ windowSize: 20, sourcePath: "volume" })
 			.merge((d, c) => {d.smaVolume50 = c;})
 			.accessor(d => d.smaVolume50)
 			.stroke("#4682B4")
 			.fill("#4682B4");
 
-		var bb = bollingerBand()
+		const bb = bollingerBand()
 			.merge((d, c) => {d.bb = c;})
 			.accessor(d => d.bb);
 
-		var { type, data: initialData, width, ratio } = this.props;
+		const { type, data: initialData, width, ratio } = this.props;
 
 		const calculatedData = ema20(sma20(ema50(smaVolume50(bb(initialData)))));
 		const xScaleProvider = discontinuousTimeScaleProvider
@@ -181,10 +183,10 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 }
 
 CandleStickChartWithBollingerBandOverlay.propTypes = {
-	data: React.PropTypes.array.isRequired,
-	width: React.PropTypes.number.isRequired,
-	ratio: React.PropTypes.number.isRequired,
-	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	data: PropTypes.array.isRequired,
+	width: PropTypes.number.isRequired,
+	ratio: PropTypes.number.isRequired,
+	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
 CandleStickChartWithBollingerBandOverlay.defaultProps = {

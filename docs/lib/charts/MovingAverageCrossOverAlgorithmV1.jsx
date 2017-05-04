@@ -1,6 +1,8 @@
 "use strict";
 
 import React from "react";
+import PropTypes from "prop-types";
+
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
@@ -35,38 +37,38 @@ import { last } from "react-stockcharts/lib/utils";
 
 class MovingAverageCrossOverAlgorithmV1 extends React.Component {
 	render() {
-		var { type, data: initialData, width, ratio } = this.props;
+		const { type, data: initialData, width, ratio } = this.props;
 
-		var ema20 = ema()
+		const ema20 = ema()
 			.id(0)
 			.options({ windowSize: 13 })
 			.merge((d, c) => { d.ema20 = c; })
 			.accessor(d => d.ema20);
 
-		var ema50 = ema()
+		const ema50 = ema()
 			.id(2)
 			.options({ windowSize: 50 })
 			.merge((d, c) => { d.ema50 = c; })
 			.accessor(d => d.ema50);
 
-		var buySell = algo()
+		const buySell = algo()
 			.windowSize(2)
 			.accumulator(([prev, now]) => {
-				var { ema20: prevShortTerm, ema50: prevLongTerm } = prev;
-				var { ema20: nowShortTerm, ema50: nowLongTerm } = now;
+				const { ema20: prevShortTerm, ema50: prevLongTerm } = prev;
+				const { ema20: nowShortTerm, ema50: nowLongTerm } = now;
 				if (prevShortTerm < prevLongTerm && nowShortTerm > nowLongTerm) return "LONG";
 				if (prevShortTerm > prevLongTerm && nowShortTerm < nowLongTerm) return "SHORT";
 			})
 			.merge((d, c) => { d.longShort = c; });
 
-		var defaultAnnotationProps = {
+		const defaultAnnotationProps = {
 			fontFamily: "Glyphicons Halflings",
 			fontSize: 20,
 			opacity: 0.8,
 			onClick: console.log.bind(console),
 		};
 
-		var longAnnotationProps = {
+		const longAnnotationProps = {
 			...defaultAnnotationProps,
 			fill: "#006517",
 			text: "\ue093",
@@ -74,7 +76,7 @@ class MovingAverageCrossOverAlgorithmV1 extends React.Component {
 			tooltip: "Go long",
 		};
 
-		var shortAnnotationProps = {
+		const shortAnnotationProps = {
 			...defaultAnnotationProps,
 			fill: "#E20000",
 			text: "\ue094",
@@ -82,10 +84,10 @@ class MovingAverageCrossOverAlgorithmV1 extends React.Component {
 			tooltip: "Go short",
 		};
 
-		var margin = { left: 80, right: 80, top: 30, bottom: 50 };
-		var height = 400;
+		const margin = { left: 80, right: 80, top: 30, bottom: 50 };
+		const height = 400;
 
-		var [yAxisLabelX, yAxisLabelY] = [width - margin.left - 40, margin.top + (height - margin.top - margin.bottom) / 2];
+		const [yAxisLabelX, yAxisLabelY] = [width - margin.left - 40, margin.top + (height - margin.top - margin.bottom) / 2];
 
 		const calculatedData = buySell(ema50(ema20(initialData)));
 		const xScaleProvider = discontinuousTimeScaleProvider
@@ -177,10 +179,10 @@ class MovingAverageCrossOverAlgorithmV1 extends React.Component {
 }
 
 MovingAverageCrossOverAlgorithmV1.propTypes = {
-	data: React.PropTypes.array.isRequired,
-	width: React.PropTypes.number.isRequired,
-	ratio: React.PropTypes.number.isRequired,
-	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	data: PropTypes.array.isRequired,
+	width: PropTypes.number.isRequired,
+	ratio: PropTypes.number.isRequired,
+	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
 MovingAverageCrossOverAlgorithmV1.defaultProps = {

@@ -1,6 +1,8 @@
 "use strict";
 
 import React from "react";
+import PropTypes from "prop-types";
+
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
@@ -31,24 +33,24 @@ import { last } from "react-stockcharts/lib/utils";
 
 class CandleStickChartWithEdge extends React.Component {
 	render() {
-		var ema20 = ema()
+		const ema20 = ema()
 			.id(0)
 			.options({ windowSize: 20 })
 			.merge((d, c) => {d.ema20 = c;})
 			.accessor(d => d.ema20);
 
-		var ema50 = ema()
+		const ema50 = ema()
 			.id(2)
 			.options({ windowSize: 50 })
 			.merge((d, c) => {d.ema50 = c;})
 			.accessor(d => d.ema50);
 
-		var smaVolume70 = sma()
+		const smaVolume70 = sma()
 			.id(3)
 			.options({ windowSize: 70, sourcePath: "volume" })
 			.merge((d, c) => {d.smaVolume70 = c;})
 			.accessor(d => d.smaVolume70);
-		var { type, data: initialData, width, ratio } = this.props;
+		const { type, data: initialData, width, ratio } = this.props;
 
 		const calculatedData = ema20(ema50(smaVolume70(initialData)));
 		const xScaleProvider = discontinuousTimeScaleProvider
@@ -174,10 +176,10 @@ class CandleStickChartWithEdge extends React.Component {
 */
 
 CandleStickChartWithEdge.propTypes = {
-	data: React.PropTypes.array.isRequired,
-	width: React.PropTypes.number.isRequired,
-	ratio: React.PropTypes.number.isRequired,
-	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	data: PropTypes.array.isRequired,
+	width: PropTypes.number.isRequired,
+	ratio: PropTypes.number.isRequired,
+	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
 CandleStickChartWithEdge.defaultProps = {

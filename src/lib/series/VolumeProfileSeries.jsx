@@ -1,6 +1,7 @@
 "use strict";
 
-import React, { PropTypes, Component } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 import { ascending, descending, sum, max, merge, zip, histogram as d3Histogram } from "d3-array";
 import { nest } from "d3-collection";

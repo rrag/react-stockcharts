@@ -4,6 +4,7 @@ import { scaleTime } from "d3-scale";
 import { format } from "d3-format";
 
 import React from "react";
+import PropTypes from "prop-types";
 
 import { ChartCanvas, Chart } from "react-stockcharts";
 import { AreaSeries } from "react-stockcharts/lib/series";
@@ -12,7 +13,7 @@ import { fitWidth } from "react-stockcharts/lib/helper";
 
 class AreaChartWithYPercent extends React.Component {
 	render() {
-		var { data, type, width, ratio } = this.props;
+		const { data, type, width, ratio } = this.props;
 		return (
 			<ChartCanvas ratio={ratio} width={width} height={400}
 					margin={{ left: 50, right: 50, top: 10, bottom: 30 }}
@@ -33,10 +34,10 @@ class AreaChartWithYPercent extends React.Component {
 }
 
 AreaChartWithYPercent.propTypes = {
-	data: React.PropTypes.array.isRequired,
-	width: React.PropTypes.number.isRequired,
-	ratio: React.PropTypes.number.isRequired,
-	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	data: PropTypes.array.isRequired,
+	width: PropTypes.number.isRequired,
+	ratio: PropTypes.number.isRequired,
+	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
 AreaChartWithYPercent.defaultProps = {

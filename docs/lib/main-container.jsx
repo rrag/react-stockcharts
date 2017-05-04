@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 import React from "react";
 
 import Row from "lib/row";
@@ -11,4 +11,4 @@ export default class MainContainer extends React.Component {
 			</div>
 		);
 	}
-};
+}

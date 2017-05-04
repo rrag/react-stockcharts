@@ -1,6 +1,8 @@
 "use strict";
 
 import React from "react";
+import PropTypes from "prop-types";
+
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
@@ -26,17 +28,17 @@ import { last } from "react-stockcharts/lib/utils";
 
 class LineAndScatterChartGrid extends React.Component {
 	render() {
-		var { type, data: initialData, width, ratio, interpolation } = this.props;
-		var { gridProps } = this.props;
-		var margin = { left: 70, right: 70, top: 20, bottom: 30 };
+		const { type, data: initialData, width, ratio, interpolation } = this.props;
+		const { gridProps } = this.props;
+		const margin = { left: 70, right: 70, top: 20, bottom: 30 };
 
 		const height = 400;
-		var gridHeight = height - margin.top - margin.bottom;
-		var gridWidth = width - margin.left - margin.right;
+		const gridHeight = height - margin.top - margin.bottom;
+		const gridWidth = width - margin.left - margin.right;
 
-		var showGrid = true;
-		var yGrid = showGrid ? { innerTickSize: -1 * gridWidth } : {};
-		var xGrid = showGrid ? { innerTickSize: -1 * gridHeight } : {};
+		const showGrid = true;
+		const yGrid = showGrid ? { innerTickSize: -1 * gridWidth } : {};
+		const xGrid = showGrid ? { innerTickSize: -1 * gridHeight } : {};
 
 		const xScaleProvider = discontinuousTimeScaleProvider
 			.inputDateAccessor(d => d.date);
@@ -103,10 +105,10 @@ class LineAndScatterChartGrid extends React.Component {
 }
 
 LineAndScatterChartGrid.propTypes = {
-	data: React.PropTypes.array.isRequired,
-	width: React.PropTypes.number.isRequired,
-	ratio: React.PropTypes.number.isRequired,
-	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	data: PropTypes.array.isRequired,
+	width: PropTypes.number.isRequired,
+	ratio: PropTypes.number.isRequired,
+	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
 LineAndScatterChartGrid.defaultProps = {

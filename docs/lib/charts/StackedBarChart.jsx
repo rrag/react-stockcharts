@@ -1,6 +1,7 @@
 "use strict";
 
 import React from "react";
+import PropTypes from "prop-types";
 
 import { set } from "d3-collection";
 import { scaleOrdinal, schemeCategory10, scalePoint } from  "d3-scale";
@@ -14,12 +15,12 @@ import { fitWidth } from "react-stockcharts/lib/helper";
 
 class StackedBarChart extends React.Component {
 	render() {
-		var { data, type, width, ratio } = this.props;
+		const { data, type, width, ratio } = this.props;
 
-		var f = scaleOrdinal(schemeCategory10)
+		const f = scaleOrdinal(schemeCategory10)
 			.domain(set(data.map(d => d.region)));
 
-		var fill = (d, i) => f(i);
+		const fill = (d, i) => f(i);
 		return (
 			<ChartCanvas ratio={ratio} width={width} height={400}
 					margin={{ left: 40, right: 10, top: 20, bottom: 30 }} type={type}
@@ -41,10 +42,10 @@ class StackedBarChart extends React.Component {
 }
 
 StackedBarChart.propTypes = {
-	data: React.PropTypes.array.isRequired,
-	width: React.PropTypes.number.isRequired,
-	ratio: React.PropTypes.number.isRequired,
-	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	data: PropTypes.array.isRequired,
+	width: PropTypes.number.isRequired,
+	ratio: PropTypes.number.isRequired,
+	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
 StackedBarChart.defaultProps = {

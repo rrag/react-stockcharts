@@ -1,6 +1,8 @@
 "use strict";
 
 import React from "react";
+import PropTypes from "prop-types";
+
 import { scaleTime } from "d3-scale";
 
 import { ChartCanvas, Chart } from "react-stockcharts";
@@ -11,7 +13,7 @@ import { last } from "react-stockcharts/lib/utils";
 
 class CandleStickChart extends React.Component {
 	render() {
-		var { type, width, data, ratio } = this.props;
+		const { type, width, data, ratio } = this.props;
 		const xAccessor = d => d.date;
 		const xExtents = [
 			xAccessor(last(data)),
@@ -40,10 +42,10 @@ class CandleStickChart extends React.Component {
 }
 
 CandleStickChart.propTypes = {
-	data: React.PropTypes.array.isRequired,
-	width: React.PropTypes.number.isRequired,
-	ratio: React.PropTypes.number.isRequired,
-	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	data: PropTypes.array.isRequired,
+	width: PropTypes.number.isRequired,
+	ratio: PropTypes.number.isRequired,
+	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
 CandleStickChart.defaultProps = {

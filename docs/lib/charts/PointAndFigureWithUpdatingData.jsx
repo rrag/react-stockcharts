@@ -3,6 +3,6 @@
 import PointAndFigure from "./PointAndFigure";
 import updatingDataWrapper from "./updatingDataWrapper";
 
-var PointAndFigureWithUpdatingData = updatingDataWrapper(PointAndFigure);
+const PointAndFigureWithUpdatingData = updatingDataWrapper(PointAndFigure);
 
 export default PointAndFigureWithUpdatingData;

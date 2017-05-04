@@ -3,6 +3,6 @@
 import Kagi from "./Kagi";
 import updatingDataWrapper from "./updatingDataWrapper";
 
-var KagiWithUpdatingData = updatingDataWrapper(Kagi);
+const KagiWithUpdatingData = updatingDataWrapper(Kagi);
 
 export default KagiWithUpdatingData;

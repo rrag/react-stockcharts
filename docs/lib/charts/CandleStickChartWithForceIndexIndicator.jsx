@@ -1,6 +1,8 @@
 "use strict";
 
 import React from "react";
+import PropTypes from "prop-types";
+
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
@@ -30,17 +32,17 @@ import { last } from "react-stockcharts/lib/utils";
 
 class CandleStickChartWithForceIndexIndicator extends React.Component {
 	render() {
-		var fi = forceIndex()
+		const fi = forceIndex()
 			.merge((d, c) => {d.fi = c;})
 			.accessor(d => d.fi);
 
-		var fiEMA13 = ema()
+		const fiEMA13 = ema()
 			.id(1)
 			.options({ windowSize: 13, sourcePath: "fi" })
 			.merge((d, c) => {d.fiEMA13 = c;})
 			.accessor(d => d.fiEMA13);
 
-		var { type, data: initialData, width, ratio } = this.props;
+		const { type, data: initialData, width, ratio } = this.props;
 
 		const calculatedData = fiEMA13(fi(initialData));
 		const xScaleProvider = discontinuousTimeScaleProvider
@@ -152,10 +154,10 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 }
 
 CandleStickChartWithForceIndexIndicator.propTypes = {
-	data: React.PropTypes.array.isRequired,
-	width: React.PropTypes.number.isRequired,
-	ratio: React.PropTypes.number.isRequired,
-	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	data: PropTypes.array.isRequired,
+	width: PropTypes.number.isRequired,
+	ratio: PropTypes.number.isRequired,
+	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
 CandleStickChartWithForceIndexIndicator.defaultProps = {

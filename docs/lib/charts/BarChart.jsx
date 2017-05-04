@@ -2,6 +2,7 @@
 
 import { scalePoint } from  "d3-scale";
 import React from "react";
+import PropTypes from "prop-types";
 
 import { ChartCanvas, Chart } from "react-stockcharts";
 import { BarSeries } from "react-stockcharts/lib/series";
@@ -10,9 +11,9 @@ import { fitWidth } from "react-stockcharts/lib/helper";
 
 class BarChart extends React.Component {
 	render() {
-		var { data: unsortedData, type, width, ratio } = this.props;
+		const { data: unsortedData, type, width, ratio } = this.props;
 
-		var data = unsortedData.slice().sort((a, b) => a.income - b.income);
+		const data = unsortedData.slice().sort((a, b) => a.income - b.income);
 
 		return (
 			<ChartCanvas ratio={ratio} width={width} height={400}
@@ -35,10 +36,10 @@ class BarChart extends React.Component {
 }
 
 BarChart.propTypes = {
-	data: React.PropTypes.array.isRequired,
-	width: React.PropTypes.number.isRequired,
-	ratio: React.PropTypes.number.isRequired,
-	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	data: PropTypes.array.isRequired,
+	width: PropTypes.number.isRequired,
+	ratio: PropTypes.number.isRequired,
+	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
 BarChart.defaultProps = {

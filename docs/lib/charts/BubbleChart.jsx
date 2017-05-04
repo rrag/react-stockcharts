@@ -6,6 +6,7 @@ import { format } from "d3-format";
 import { extent } from "d3-array";
 
 import React from "react";
+import PropTypes from "prop-types";
 
 import { ChartCanvas, Chart } from "react-stockcharts";
 import { ScatterSeries, CircleMarker } from "react-stockcharts/lib/series";
@@ -20,18 +21,18 @@ import { fitWidth } from "react-stockcharts/lib/helper";
 
 class BubbleChart extends React.Component {
 	render() {
-		var { data: unsortedData, type, width, ratio } = this.props;
+		const { data: unsortedData, type, width, ratio } = this.props;
 
-		var data = unsortedData.slice().sort((a, b) => a.income - b.income);
-		var r = scaleLinear()
+		const data = unsortedData.slice().sort((a, b) => a.income - b.income);
+		const r = scaleLinear()
 			.range([2, 20])
 			.domain(extent(data, d => d.population));
 
-		var f = scaleOrdinal(schemeCategory10)
+		const f = scaleOrdinal(schemeCategory10)
 			.domain(set(data.map(d => d.region)));
 
-		var fill = d => f(d.region);
-		var radius = d => r(d.population);
+		const fill = d => f(d.region);
+		const radius = d => r(d.population);
 		return (
 			<ChartCanvas ratio={ratio} width={width} height={400}
 					margin={{ left: 70, right: 70, top: 20, bottom: 30 }} type={type}
@@ -69,10 +70,10 @@ class BubbleChart extends React.Component {
 }
 
 BubbleChart.propTypes = {
-	data: React.PropTypes.array.isRequired,
-	width: React.PropTypes.number.isRequired,
-	ratio: React.PropTypes.number.isRequired,
-	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	data: PropTypes.array.isRequired,
+	width: PropTypes.number.isRequired,
+	ratio: PropTypes.number.isRequired,
+	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
 BubbleChart.defaultProps = {

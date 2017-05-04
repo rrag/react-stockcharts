@@ -1,6 +1,8 @@
 "use strict";
 
 import React from "react";
+import PropTypes from "prop-types";
+
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
@@ -26,7 +28,7 @@ import { last } from "react-stockcharts/lib/utils";
 
 class CandleStickChartWithCompare extends React.Component {
 	render() {
-		var compareCalculator = compare()
+		const compareCalculator = compare()
 			.options({
 				basePath: "close",
 				mainKeys: ["open", "high", "low", "close"],
@@ -35,7 +37,7 @@ class CandleStickChartWithCompare extends React.Component {
 			.accessor(d => d.compare)
 			.merge((d, c) => { d.compare = c; });
 
-		var { type, data: initialData, width, ratio } = this.props;
+		const { type, data: initialData, width, ratio } = this.props;
 
 		const xScaleProvider = discontinuousTimeScaleProvider
 			.inputDateAccessor(d => d.date);
@@ -128,10 +130,10 @@ class CandleStickChartWithCompare extends React.Component {
 }
 
 CandleStickChartWithCompare.propTypes = {
-	data: React.PropTypes.array.isRequired,
-	width: React.PropTypes.number.isRequired,
-	ratio: React.PropTypes.number.isRequired,
-	type: React.PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	data: PropTypes.array.isRequired,
+	width: PropTypes.number.isRequired,
+	ratio: PropTypes.number.isRequired,
+	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
 CandleStickChartWithCompare.defaultProps = {
