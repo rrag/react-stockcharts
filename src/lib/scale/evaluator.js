@@ -21,8 +21,8 @@ function extentsWrapper(xAccessor, useWholeData, clamp, pointsPerPxThreshold) {
 
 		const filteredData = getFilteredResponse(data, left, right, xAccessor);
 		const clampedDomain = [
-			Math.max(left, xAccessor(first(data))),
-			Math.min(right, xAccessor(last(data)))
+			Math.max(left, xAccessor(first(data)) - 1),
+			Math.min(right, xAccessor(last(data)) + 1)
 		];
 
 		const realInputDomain = xAccessor === xAccessor
