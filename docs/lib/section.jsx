@@ -1,5 +1,6 @@
 'use strict';
 import React from "react";
+import PropTypes from 'prop-types';
 
 class Section extends React.Component {
 	render() {
@@ -15,8 +16,8 @@ class Section extends React.Component {
 }
 
 Section.propTypes = {
-	colSpan: React.PropTypes.number.isRequired,
-	title: React.PropTypes.string
+	colSpan: PropTypes.number.isRequired,
+	title: PropTypes.string
 };
 
 Section.defaultProps = {

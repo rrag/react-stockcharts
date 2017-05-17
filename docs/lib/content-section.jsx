@@ -1,6 +1,7 @@
 'use strict';
 
 import React from "react";
+import PropTypes from 'prop-types';
 
 class ContentSection extends React.Component {
 	render() {
@@ -15,7 +16,7 @@ class ContentSection extends React.Component {
 };
 
 ContentSection.propTypes = {
-	title: React.PropTypes.string.isRequired
+	title: PropTypes.string.isRequired
 };
 
 export default ContentSection;

@@ -1,6 +1,7 @@
 "use strict";
 
-import React, { PropTypes } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 import GenericComponent from "../GenericComponent";
 import PureComponent from "../utils/PureComponent";
 

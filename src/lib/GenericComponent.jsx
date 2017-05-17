@@ -1,6 +1,7 @@
 "use strict";
 
-import React, { PropTypes, Component } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { isNotDefined, isDefined, noop, functor, identity } from "./utils";
 
 class GenericComponent extends Component {

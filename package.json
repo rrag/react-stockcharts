@@ -44,6 +44,7 @@
     "d3fc-rebind": "^4.1.1",
     "debug": "^2.6.0",
     "lodash.flattendeep": "^4.4.0",
+    "prop-types": "^15.5.10",
     "save-svg-as-png": "^1.0.3"
   },
   "peerDependencies": {
