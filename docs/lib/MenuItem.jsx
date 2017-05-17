@@ -1,5 +1,6 @@
 'use strict';
 import React from "react";
+import PropTypes from 'prop-types';
 
 class MenuItem extends React.Component {
 	render() {
@@ -15,9 +16,9 @@ class MenuItem extends React.Component {
 }
 
 MenuItem.propTypes = {
-	current: React.PropTypes.bool.isRequired,
-	title: React.PropTypes.string.isRequired,
-	anchor: React.PropTypes.string.isRequired,
+	current: PropTypes.bool.isRequired,
+	title: PropTypes.string.isRequired,
+	anchor: PropTypes.string.isRequired,
 };
 
 MenuItem.defaultProps = {

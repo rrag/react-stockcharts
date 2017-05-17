@@ -1,6 +1,7 @@
 "use strict";
 
-import React, { PropTypes, Component } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 import { nest as d3Nest } from "d3-collection";
 import { merge } from "d3-array";

@@ -1,6 +1,7 @@
 "use strict";
 
-import React, { PropTypes, Component } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { forceSimulation, forceX, forceCollide } from "d3-force";
 import { range as d3Range } from "d3-array";
 

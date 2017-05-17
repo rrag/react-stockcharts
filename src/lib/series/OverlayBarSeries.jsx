@@ -2,7 +2,8 @@
 
 import { merge } from "d3-array";
 
-import React, { PropTypes, Component } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import GenericChartComponent, { getAxisCanvas } from "../GenericChartComponent";
 
 import { drawOnCanvas2, getBarsSVG2 } from "./StackedBarSeries";

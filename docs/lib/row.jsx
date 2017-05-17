@@ -1,5 +1,6 @@
 'use strict';
 import React from "react";
+import PropTypes from 'prop-types';
 
 class Row extends React.Component {
 	render() {
@@ -18,8 +19,8 @@ class Row extends React.Component {
 }
 
 Row.propTypes = {
-	title: React.PropTypes.string,
-	anchor: React.PropTypes.string
+	title: PropTypes.string,
+	anchor: PropTypes.string
 };
 
 export default Row;

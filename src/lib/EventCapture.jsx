@@ -1,6 +1,7 @@
 "use strict";
 
-import React, { PropTypes, Component } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { select, event as d3Event } from "d3-selection";
 
 import { isDefined, mousePosition, touchPosition, d3Window, MOUSEMOVE, MOUSEUP } from "./utils";

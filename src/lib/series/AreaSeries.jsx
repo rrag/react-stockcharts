@@ -1,6 +1,7 @@
 "use strict";
 
-import React, { PropTypes } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 
 import LineSeries from "./LineSeries";
 import AreaOnlySeries from "./AreaOnlySeries";
