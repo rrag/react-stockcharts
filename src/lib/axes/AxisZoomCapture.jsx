@@ -13,6 +13,9 @@ import {
 	d3Window,
 	MOUSEMOVE,
 	MOUSEUP,
+	TOUCHMOVE,
+	TOUCHEND,
+	getTouchProps
 } from "../utils";
 
 function sign(x) {
@@ -26,6 +29,9 @@ class AxisZoomCapture extends Component {
 		this.handleDrag = this.handleDrag.bind(this);
 		this.handleDragEnd = this.handleDragEnd.bind(this);
 		this.handleRightClick = this.handleRightClick.bind(this);
+		this.handleTouchStart = this.handleTouchStart.bind(this);
+		this.handleTouchDrag = this.handleTouchDrag.bind(this);
+		this.handleTouchDragEnd = this.handleTouchDragEnd.bind(this);
 		this.saveNode = this.saveNode.bind(this);
 		this.state = {
 			startPosition: null
@@ -133,6 +139,94 @@ class AxisZoomCapture extends Component {
 			startPosition: null,
 		});
 	}
+
+	handleTouchStart(e){
+		var { getScale, getMoreProps } = this.props;
+		var startScale = getScale(getMoreProps());
+		this.dragHappened = false;
+
+		if (startScale.invert) {
+			select(d3Window(this.node))
+				.on(TOUCHMOVE, this.handleTouchDrag)
+				.on(TOUCHEND, this.handleTouchDragEnd);
+
+			var touch = getTouchProps(e.touches[0]);
+			var startXY = (0, touchPosition)(touch, e);
+
+			var leftX = touch.pageX - startXY[0],
+					topY = touch.pageY - startXY[1];
+
+			this.setState({
+				startPosition: {
+					startXY: startXY,
+					leftX: leftX,
+					topY: topY,
+					startScale: startScale
+				}
+			});
+		}
+		e.preventDefault();
+	}
+
+	handleTouchDrag(e){
+		var e = d3Event;
+		e.preventDefault();
+
+		var { startPosition } = this.state;
+		var { getMouseDelta, inverted } = this.props;
+
+		this.dragHappened = true;
+		if (isDefined(startPosition)) {
+			var { startScale } = startPosition;
+			var { startXY, leftX, topY } = startPosition;
+
+			var touch = getTouchProps(e.touches[0]);
+			var mouseXY = [touch.pageX - leftX, touch.pageY - topY];
+
+			var diff = getMouseDelta(startXY, mouseXY);
+
+			var center = mean(startScale.range());
+
+			var tempRange = startScale.range()
+				.map(d => inverted ? d - sign(d - center) * diff : d + sign(d - center) * diff);
+
+			var newDomain = tempRange.map(startScale.invert);
+
+			if (sign(last(startScale.range()) - first(startScale.range())) === sign(last(tempRange) - first(tempRange))) {
+
+				var { axisZoomCallback } = this.props;
+				// console.log(startXScale.domain(), newXDomain)
+				axisZoomCallback(newDomain);
+			}
+		}
+	}
+
+	handleTouchDragEnd(e){
+
+		if (!this.dragHappened) {
+			if (this.clicked) {
+				var e = d3Event
+				var touch = getTouchProps(e.touches[0]);
+				var mouseXY = (0, touchPosition)(touch, e, his.node.getBoundingClientRect());
+				var onDoubleClick = this.props.onDoubleClick;
+				onDoubleClick(mouseXY, e);
+			} else {
+				this.clicked = true;
+				setTimeout(function () {
+					_this2.clicked = false;
+				}, 300);
+			}
+		}
+
+		select(d3Window(this.node))
+			.on(TOUCHMOVE, null)
+			.on(TOUCHEND, null);
+		this.setState({
+			startPosition: null,
+		});
+
+	}
+
 	render() {
 		var { bg, zoomCursorClassName } = this.props;
 

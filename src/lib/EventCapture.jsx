@@ -5,16 +5,8 @@ import { select, event as d3Event } from "d3-selection";
 
 import { isDefined, mousePosition, touchPosition, d3Window, MOUSEMOVE, MOUSEUP } from "./utils";
 import { getCurrentCharts } from "./utils/ChartDataUtil";
+import { getTouchProps } from "./utils";
 
-function getTouchProps(touch) {
-	if (!touch) return {};
-	return {
-		pageX: touch.pageX,
-		pageY: touch.pageY,
-		clientX: touch.clientX,
-		clientY: touch.clientY
-	};
-}
 
 class EventCapture extends Component {
 	constructor(props) {

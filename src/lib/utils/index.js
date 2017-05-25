@@ -79,6 +79,8 @@ export function d3Window(node) {
 
 export const MOUSEMOVE = "mousemove.pan";
 export const MOUSEUP = "mouseup.pan";
+export const TOUCHMOVE = "touchmove.drag";
+export const TOUCHEND = "touchend.drag";
 
 export function getClosestItemIndexes(array, value, accessor, log) {
 	var lo = 0, hi = array.length - 1;
@@ -222,4 +224,14 @@ export function hexToRGBA(inputHex, opacity) {
 		return result;
 	}
 	return inputHex;
+}
+
+export function getTouchProps(touch) {
+	if (!touch) return {};
+	return {
+		pageX: touch.pageX,
+		pageY: touch.pageY,
+		clientX: touch.clientX,
+		clientY: touch.clientY
+	};
 }
