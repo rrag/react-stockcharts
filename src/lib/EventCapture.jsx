@@ -3,9 +3,8 @@
 import React, { PropTypes, Component } from "react";
 import { select, event as d3Event } from "d3-selection";
 
-import { isDefined, mousePosition, touchPosition, d3Window, MOUSEMOVE, MOUSEUP } from "./utils";
+import { isDefined, mousePosition, touchPosition, d3Window, MOUSEMOVE, MOUSEUP, getTouchProps } from "./utils";
 import { getCurrentCharts } from "./utils/ChartDataUtil";
-import { getTouchProps } from "./utils";
 
 
 class EventCapture extends Component {

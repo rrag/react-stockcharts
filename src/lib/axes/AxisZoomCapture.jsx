@@ -15,7 +15,8 @@ import {
 	MOUSEUP,
 	TOUCHMOVE,
 	TOUCHEND,
-	getTouchProps
+	getTouchProps,
+	touchPosition
 } from "../utils";
 
 function sign(x) {
@@ -140,7 +141,7 @@ class AxisZoomCapture extends Component {
 		});
 	}
 
-	handleTouchStart(e){
+	handleTouchStart(e) {
 		var { getScale, getMoreProps } = this.props;
 		var startScale = getScale(getMoreProps());
 		this.dragHappened = false;
@@ -154,7 +155,7 @@ class AxisZoomCapture extends Component {
 			var startXY = (0, touchPosition)(touch, e);
 
 			var leftX = touch.pageX - startXY[0],
-					topY = touch.pageY - startXY[1];
+				topY = touch.pageY - startXY[1];
 
 			this.setState({
 				startPosition: {
@@ -168,8 +169,7 @@ class AxisZoomCapture extends Component {
 		e.preventDefault();
 	}
 
-	handleTouchDrag(e){
-		var e = d3Event;
+	handleTouchDrag(e) {
 		e.preventDefault();
 
 		var { startPosition } = this.state;
@@ -201,19 +201,18 @@ class AxisZoomCapture extends Component {
 		}
 	}
 
-	handleTouchDragEnd(e){
+	handleTouchDragEnd(e) {
 
 		if (!this.dragHappened) {
 			if (this.clicked) {
-				var e = d3Event
 				var touch = getTouchProps(e.touches[0]);
-				var mouseXY = (0, touchPosition)(touch, e, his.node.getBoundingClientRect());
+				var mouseXY = (0, touchPosition)(touch, e, this.node.getBoundingClientRect());
 				var onDoubleClick = this.props.onDoubleClick;
 				onDoubleClick(mouseXY, e);
 			} else {
 				this.clicked = true;
-				setTimeout(function () {
-					_this2.clicked = false;
+				setTimeout(function() {
+					this.clicked = false;
 				}, 300);
 			}
 		}
@@ -240,6 +239,7 @@ class AxisZoomCapture extends Component {
 			x={bg.x} y={bg.y} opacity={0} height={bg.h} width={bg.w}
 			onContextMenu={this.handleRightClick}
 			onMouseDown={this.handleDragStart}
+			onTouchStart={this.handleTouchStart}
 			/>;
 	}
 }
