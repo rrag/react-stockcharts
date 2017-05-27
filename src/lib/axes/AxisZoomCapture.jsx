@@ -170,6 +170,7 @@ class AxisZoomCapture extends Component {
 	}
 
 	handleTouchDrag(e) {
+		var e = d3Event;
 		e.preventDefault();
 
 		var { startPosition } = this.state;
@@ -205,6 +206,7 @@ class AxisZoomCapture extends Component {
 
 		if (!this.dragHappened) {
 			if (this.clicked) {
+				var e = d3Event;
 				var touch = getTouchProps(e.touches[0]);
 				var mouseXY = (0, touchPosition)(touch, e, this.node.getBoundingClientRect());
 				var onDoubleClick = this.props.onDoubleClick;
