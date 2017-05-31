@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
 
-import { head, last, hexToRGBA, isDefined, functor } from "../utils";
+import { hexToRGBA, isDefined, functor, plotDataLengthBarWidth } from "../utils";
 
 class CandlestickSeries extends Component {
 	constructor(props) {
@@ -51,6 +51,7 @@ CandlestickSeries.propTypes = {
 	className: PropTypes.string,
 	wickClassName: PropTypes.string,
 	candleClassName: PropTypes.string,
+	width: PropTypes.func.isRequired,
 	widthRatio: PropTypes.number.isRequired,
 	classNames: PropTypes.oneOfType([
 		PropTypes.func,
@@ -78,6 +79,7 @@ CandlestickSeries.defaultProps = {
 	candleClassName: "react-stockcharts-candlestick-candle",
 	yAccessor: d => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
 	classNames: d => d.close > d.open ? "up" : "down",
+	width: plotDataLengthBarWidth,
 	widthRatio: 0.8,
 	wickStroke: "#000000",
 	// wickStroke: d => d.close > d.open ? "#6BA583" : "#FF0000",
@@ -254,15 +256,14 @@ function getCandleData(props, xAccessor, xScale, yScale, plotData) {
 	const { wickStroke: wickStrokeProp } = props;
 	const wickStroke = functor(wickStrokeProp);
 
-	const { classNames, fill: fillProp, stroke: strokeProp, widthRatio, yAccessor } = props;
+	const { classNames, fill: fillProp, stroke: strokeProp, width, widthRatio, yAccessor } = props;
 	const className = functor(classNames);
 
 	const fill = functor(fillProp);
 	const stroke = functor(strokeProp);
 
-	const width = xScale(xAccessor(last(plotData)))
-		- xScale(xAccessor(head(plotData)));
-	const cw = (width / (plotData.length - 1) * widthRatio);
+	const baseWidth = width(xScale, xAccessor, plotData);
+	const cw = baseWidth * widthRatio;
 	const candleWidth = Math.round(cw);
 
 	const offset = (candleWidth === 1 ? 0 : 0.5 * cw);
