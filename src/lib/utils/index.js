@@ -15,6 +15,7 @@ export { default as mappedSlidingWindow } from "./mappedSlidingWindow";
 export { default as accumulatingWindow } from "./accumulatingWindow";
 export { default as PureComponent } from "./PureComponent";
 
+export * from "./barWidth";
 export * from "./strokeDasharray";
 
 export function getLogger(prefix) {

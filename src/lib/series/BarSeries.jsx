@@ -58,6 +58,7 @@ BarSeries.propTypes = {
 		PropTypes.func,
 	]).isRequired,
 	stroke: PropTypes.bool.isRequired,
+	width: PropTypes.func.isRequired,
 	widthRatio: PropTypes.number.isRequired,
 	yAccessor: PropTypes.func.isRequired,
 	opacity: PropTypes.number.isRequired,
@@ -86,14 +87,14 @@ export default BarSeries;
  to create bars
 */
 function getBars(props, moreProps) {
-	const { baseAt, fill, stroke, widthRatio, yAccessor } = props;
+	const { baseAt, fill, stroke, width, widthRatio, yAccessor } = props;
 	const { xScale, xAccessor, plotData, chartConfig: { yScale } } = moreProps;
 
 	const getFill = functor(fill);
 	const getBase = functor(baseAt);
 
-	const width = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(head(plotData))));
-	const bw = (width / (plotData.length - 1) * widthRatio);
+	const baseWidth = width(xScale, xAccessor, plotData);
+	const bw = (baseWidth * widthRatio);
 	const barWidth = Math.round(bw);
 	const offset = (barWidth === 1 ? 0 : 0.5 * bw);
 

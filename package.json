@@ -40,6 +40,7 @@
     "d3-scale": "^1.0.5",
     "d3-selection": "^1.0.5",
     "d3-shape": "^1.0.6",
+    "d3-time": "^1.0.6",
     "d3-time-format": "^2.0.5",
     "d3fc-rebind": "^4.1.1",
     "debug": "^2.6.6",
