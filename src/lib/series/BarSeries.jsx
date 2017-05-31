@@ -14,7 +14,7 @@ import StackedBarSeries, {
 	// identityStack
 } from "./StackedBarSeries";
 
-import { functor, last, head } from "../utils";
+import { functor } from "../utils";
 
 class BarSeries extends Component {
 	constructor(props) {
