@@ -3,14 +3,18 @@
 import { head, last } from "../utils";
 
 /**
- * Bar width is based on the amount of items in the plot data and the distance between the first and last of those items.
- * @param scale the scale of the axis.
- * @param accessor the accessor to retrieve the value on the axis.
- * @param plotData the plot data.
+ * Bar width is based on the amount of items in the plot data and the distance between the first and last of those
+ * items.
+ * @param props the props passed to the series.
+ * @param moreProps an object holding the xScale, xAccessor and plotData.
  * @return {number} the bar width.
  */
-export function plotDataLengthBarWidth(scale, accessor, plotData) {
-	return Math.abs((scale(accessor(last(plotData))) - scale(accessor(head(plotData)))) / (plotData.length - 1));
+export function plotDataLengthBarWidth(props, moreProps) {
+	const { widthRatio: widthRatio = 0.8 } = props;
+	const { xScale: scale, xAccessor: accessor, plotData } = moreProps;
+
+	const width = Math.abs((scale(accessor(last(plotData))) - scale(accessor(head(plotData)))) / (plotData.length - 1));
+	return width * widthRatio;
 }
 
 /**
@@ -19,8 +23,11 @@ export function plotDataLengthBarWidth(scale, accessor, plotData) {
  * @return {Function} the width function.
  */
 export function timeIntervalBarWidth(interval) {
-	return function(scale, accessor, plotData) {
+	return function(props, moreProps) {
+		const { widthRatio: widthRatio = 0.8 } = props;
+		const { xScale: scale, xAccessor: accessor, plotData } = moreProps;
+
 		const first = accessor(head(plotData));
-		return Math.abs(scale(interval.offset(first, 1)) - scale(first));
+		return Math.abs(scale(interval.offset(first, 1)) - scale(first)) * widthRatio;
 	};
 }

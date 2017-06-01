@@ -51,8 +51,10 @@ CandlestickSeries.propTypes = {
 	className: PropTypes.string,
 	wickClassName: PropTypes.string,
 	candleClassName: PropTypes.string,
-	width: PropTypes.func.isRequired,
-	widthRatio: PropTypes.number.isRequired,
+	width: PropTypes.oneOfType([
+		PropTypes.number,
+		PropTypes.func
+	]).isRequired,
 	classNames: PropTypes.oneOfType([
 		PropTypes.func,
 		PropTypes.string
@@ -80,7 +82,6 @@ CandlestickSeries.defaultProps = {
 	yAccessor: d => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
 	classNames: d => d.close > d.open ? "up" : "down",
 	width: plotDataLengthBarWidth,
-	widthRatio: 0.8,
 	wickStroke: "#000000",
 	// wickStroke: d => d.close > d.open ? "#6BA583" : "#FF0000",
 	fill: d => d.close > d.open ? "#6BA583" : "#FF0000",
@@ -256,17 +257,22 @@ function getCandleData(props, xAccessor, xScale, yScale, plotData) {
 	const { wickStroke: wickStrokeProp } = props;
 	const wickStroke = functor(wickStrokeProp);
 
-	const { classNames, fill: fillProp, stroke: strokeProp, width, widthRatio, yAccessor } = props;
+	const { classNames, fill: fillProp, stroke: strokeProp, yAccessor } = props;
 	const className = functor(classNames);
 
 	const fill = functor(fillProp);
 	const stroke = functor(strokeProp);
 
-	const baseWidth = width(xScale, xAccessor, plotData);
-	const cw = baseWidth * widthRatio;
-	const candleWidth = Math.round(cw);
+	const widthFunctor = functor(props.width);
+	const width = widthFunctor(props, {
+		xScale,
+		xAccessor,
+		plotData
+	});
 
-	const offset = (candleWidth === 1 ? 0 : 0.5 * cw);
+	const candleWidth = Math.round(width);
+
+	const offset = (candleWidth === 1 ? 0 : 0.5 * width);
 
 	// eslint-disable-next-line prefer-const
 	let candles = [];
