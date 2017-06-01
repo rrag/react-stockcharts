@@ -49,8 +49,10 @@ StackedBarSeries.propTypes = {
 	]).isRequired,
 	direction: PropTypes.oneOf(["up", "down"]).isRequired,
 	stroke: PropTypes.bool.isRequired,
-	width: PropTypes.func.isRequired,
-	widthRatio: PropTypes.number.isRequired,
+	width: PropTypes.oneOfType([
+		PropTypes.number,
+		PropTypes.func
+	]).isRequired,
 	opacity: PropTypes.number.isRequired,
 	fill: PropTypes.oneOfType([
 		PropTypes.func, PropTypes.string
@@ -69,7 +71,6 @@ StackedBarSeries.defaultProps = {
 	fill: "#4682B4",
 	opacity: 0.5,
 	width: plotDataLengthBarWidth,
-	widthRatio: 0.8,
 	clip: true,
 };
 
@@ -217,20 +218,24 @@ export function drawOnCanvas2(props, ctx, bars) {
 }
 
 export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, stack = identityStack, after = identity) {
-	const { baseAt, className, fill, stroke, width, widthRatio, spaceBetweenBar = 0 } = props;
+	const { baseAt, className, fill, stroke, spaceBetweenBar = 0 } = props;
 
 	const getClassName = functor(className);
 	const getFill = functor(fill);
 	const getBase = functor(baseAt);
 
-	const baseWidth = width(xScale, xAccessor, plotData);
-	const bw = (baseWidth * widthRatio);
-	const barWidth = Math.round(bw);
-	// console.log(barWidth)
+	const widthFunctor = functor(props.width);
+	const width = widthFunctor(props, {
+		xScale,
+		xAccessor,
+		plotData
+	});
+
+	const barWidth = Math.round(width);
 
 	const eachBarWidth = (barWidth - spaceBetweenBar * (yAccessor.length - 1)) / yAccessor.length;
 
-	const offset = (barWidth === 1 ? 0 : 0.5 * bw);
+	const offset = (barWidth === 1 ? 0 : 0.5 * width);
 
 	const ds = plotData
 		.map(each => {
@@ -301,7 +306,7 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 					...d.data.appearance,
 					// series: d.series,
 					// i: d.x,
-					x: Math.round(xScale(d.data.x) - bw / 2),
+					x: Math.round(xScale(d.data.x) - width / 2),
 					y: y,
 					groupOffset: Math.round(offset - (d.data.i > 0 ? (eachBarWidth + spaceBetweenBar) * d.data.i : 0)),
 					groupWidth: Math.round(eachBarWidth),
