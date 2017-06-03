@@ -36,6 +36,7 @@ const DOCUMENTATION = {
 const CHART_FEATURES = {
 	head: "Chart features",
 	pages: [
+		require("./lib/page/PriceMarkerPage").default,
 		require("./lib/page/MousePointerPage").default,
 		require("./lib/page/ZoomAndPanPage").default,
 		require("./lib/page/IntraDayContinuousDataPage").default,
