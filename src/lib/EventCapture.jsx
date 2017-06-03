@@ -144,6 +144,7 @@ class EventCapture extends Component {
 
 		this.contextMenuClicked = true;
 	}
+		
 	handleDrag() {
 		const e = d3Event;
 		if (this.props.onDrag) {
