@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
 
-import { head, last, hexToRGBA, isDefined, functor } from "../utils";
+import { hexToRGBA, isDefined, functor, plotDataLengthBarWidth } from "../utils";
 
 class CandlestickSeries extends Component {
 	constructor(props) {
@@ -51,7 +51,10 @@ CandlestickSeries.propTypes = {
 	className: PropTypes.string,
 	wickClassName: PropTypes.string,
 	candleClassName: PropTypes.string,
-	widthRatio: PropTypes.number.isRequired,
+	width: PropTypes.oneOfType([
+		PropTypes.number,
+		PropTypes.func
+	]).isRequired,
 	classNames: PropTypes.oneOfType([
 		PropTypes.func,
 		PropTypes.string
@@ -78,7 +81,7 @@ CandlestickSeries.defaultProps = {
 	candleClassName: "react-stockcharts-candlestick-candle",
 	yAccessor: d => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
 	classNames: d => d.close > d.open ? "up" : "down",
-	widthRatio: 0.8,
+	width: plotDataLengthBarWidth,
 	wickStroke: "#000000",
 	// wickStroke: d => d.close > d.open ? "#6BA583" : "#FF0000",
 	fill: d => d.close > d.open ? "#6BA583" : "#FF0000",
@@ -254,18 +257,22 @@ function getCandleData(props, xAccessor, xScale, yScale, plotData) {
 	const { wickStroke: wickStrokeProp } = props;
 	const wickStroke = functor(wickStrokeProp);
 
-	const { classNames, fill: fillProp, stroke: strokeProp, widthRatio, yAccessor } = props;
+	const { classNames, fill: fillProp, stroke: strokeProp, yAccessor } = props;
 	const className = functor(classNames);
 
 	const fill = functor(fillProp);
 	const stroke = functor(strokeProp);
 
-	const width = xScale(xAccessor(last(plotData)))
-		- xScale(xAccessor(head(plotData)));
-	const cw = (width / (plotData.length - 1) * widthRatio);
-	const candleWidth = Math.round(cw);
+	const widthFunctor = functor(props.width);
+	const width = widthFunctor(props, {
+		xScale,
+		xAccessor,
+		plotData
+	});
 
-	const offset = (candleWidth === 1 ? 0 : 0.5 * cw);
+	const candleWidth = Math.round(width);
+
+	const offset = (candleWidth === 1 ? 0 : 0.5 * width);
 
 	// eslint-disable-next-line prefer-const
 	let candles = [];

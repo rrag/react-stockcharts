@@ -10,7 +10,7 @@ import { stack as d3Stack } from "d3-shape";
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
 
-import { identity, hexToRGBA, head, last, functor } from "../utils";
+import { identity, hexToRGBA, head, functor, plotDataLengthBarWidth } from "../utils";
 
 class StackedBarSeries extends Component {
 	constructor(props) {
@@ -49,7 +49,10 @@ StackedBarSeries.propTypes = {
 	]).isRequired,
 	direction: PropTypes.oneOf(["up", "down"]).isRequired,
 	stroke: PropTypes.bool.isRequired,
-	widthRatio: PropTypes.number.isRequired,
+	width: PropTypes.oneOfType([
+		PropTypes.number,
+		PropTypes.func
+	]).isRequired,
 	opacity: PropTypes.number.isRequired,
 	fill: PropTypes.oneOfType([
 		PropTypes.func, PropTypes.string
@@ -67,7 +70,7 @@ StackedBarSeries.defaultProps = {
 	stroke: true,
 	fill: "#4682B4",
 	opacity: 0.5,
-	widthRatio: 0.8,
+	width: plotDataLengthBarWidth,
 	clip: true,
 };
 
@@ -215,20 +218,24 @@ export function drawOnCanvas2(props, ctx, bars) {
 }
 
 export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, stack = identityStack, after = identity) {
-	const { baseAt, className, fill, stroke, widthRatio, spaceBetweenBar = 0 } = props;
+	const { baseAt, className, fill, stroke, spaceBetweenBar = 0 } = props;
 
 	const getClassName = functor(className);
 	const getFill = functor(fill);
 	const getBase = functor(baseAt);
 
-	const width = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(head(plotData))));
-	const bw = (width / (plotData.length - 1) * widthRatio);
-	const barWidth = Math.round(bw);
-	// console.log(barWidth)
+	const widthFunctor = functor(props.width);
+	const width = widthFunctor(props, {
+		xScale,
+		xAccessor,
+		plotData
+	});
+
+	const barWidth = Math.round(width);
 
 	const eachBarWidth = (barWidth - spaceBetweenBar * (yAccessor.length - 1)) / yAccessor.length;
 
-	const offset = (barWidth === 1 ? 0 : 0.5 * bw);
+	const offset = (barWidth === 1 ? 0 : 0.5 * width);
 
 	const ds = plotData
 		.map(each => {
@@ -299,7 +306,7 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 					...d.data.appearance,
 					// series: d.series,
 					// i: d.x,
-					x: Math.round(xScale(d.data.x) - bw / 2),
+					x: Math.round(xScale(d.data.x) - width / 2),
 					y: y,
 					groupOffset: Math.round(offset - (d.data.i > 0 ? (eachBarWidth + spaceBetweenBar) * d.data.i : 0)),
 					groupWidth: Math.round(eachBarWidth),
