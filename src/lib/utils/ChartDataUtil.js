@@ -46,7 +46,7 @@ function values(func) {
 export function getNewChartConfig(innerDimension, children) {
 
 	return React.Children.map(children, (each) => {
-		if (each.type === Chart) {
+		if (each.type.toString() === Chart.toString()) {
 			var { id, origin, padding, yExtents: yExtentsProp, yScale, flipYScale, yExtentsCalculator } = each.props;
 			var { width, height, availableWidth, availableHeight } = getDimensions(innerDimension, each.props);
 			var { yPan } = each.props;
