@@ -283,6 +283,7 @@ class ChartCanvas extends Component {
 		this.xAxisZoom = this.xAxisZoom.bind(this);
 		this.yAxisZoom = this.yAxisZoom.bind(this);
 		this.resetYDomain = this.resetYDomain.bind(this);
+		this.resetXDomain = this.resetXDomain.bind(this);
 		this.calculateStateForDomain = this.calculateStateForDomain.bind(this);
 		this.generateSubscriptionId = this.generateSubscriptionId.bind(this);
 		this.draw = this.draw.bind(this);
@@ -297,6 +298,7 @@ class ChartCanvas extends Component {
 		this.saveCanvasContainerNode = this.saveCanvasContainerNode.bind(this);
 		this.setCursorClass = this.setCursorClass.bind(this);
 		this.getMutableState = this.getMutableState.bind(this);
+		this.getChartCanvas = this.getChartCanvas.bind(this);
 		// this.canvasDrawCallbackList = [];
 		this.interactiveState = [];
 		this.panInProgress = false;
@@ -313,6 +315,9 @@ class ChartCanvas extends Component {
 	}
 	getMutableState() {
 		return this.mutableState;
+	}
+	getChartCanvas(){
+		return this;
 	}
 	getDataInfo() {
 		return {
@@ -849,6 +854,7 @@ class ChartCanvas extends Component {
 			getMutableState: this.getMutableState,
 			amIOnTop: this.amIOnTop,
 			setCursorClass: this.setCursorClass,
+			getChartCanvas: this.getChartCanvas
 		};
 	}
 	componentWillMount() {
@@ -940,6 +946,12 @@ class ChartCanvas extends Component {
 			});
 		}
 	}
+
+	resetXDomain(){
+		var originalDomain = this.props.xScale.domain()
+		this.xAxisZoom(originalDomain);
+	}
+
 	shouldComponentUpdate() {
 		return !this.panInProgress;
 	}
@@ -1137,6 +1149,7 @@ ChartCanvas.childContextTypes = {
 	setCursorClass: PropTypes.func,
 	generateSubscriptionId: PropTypes.func,
 	getMutableState: PropTypes.func,
+	getChartCanvas: PropTypes.func
 };
 
 ChartCanvas.ohlcv = d => ({ date: d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume });

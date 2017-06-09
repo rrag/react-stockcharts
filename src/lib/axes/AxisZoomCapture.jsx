@@ -17,21 +17,25 @@ import {
 	TOUCHMOVE,
 	TOUCHEND,
 	touchPosition,
-	getTouchProps,
+	getTouchProps
 } from "../utils";
+
+import { getCurrentCharts } from "../utils/ChartDataUtil";
+
 
 function sign(x) {
 	return (x > 0) - (x < 0);
 }
 
 class AxisZoomCapture extends Component {
-	constructor(props) {
-		super(props);
+	constructor(props, context) {
+		super(props, context);
 		this.handleDragStartMouse = this.handleDragStartMouse.bind(this);
 		this.handleDragStartTouch = this.handleDragStartTouch.bind(this);
 		this.handleDrag = this.handleDrag.bind(this);
 		this.handleDragEnd = this.handleDragEnd.bind(this);
 		this.handleRightClick = this.handleRightClick.bind(this);
+		this.handleDoubleClick = this.handleDoubleClick.bind(this);
 		this.saveNode = this.saveNode.bind(this);
 		this.state = {
 			startPosition: null
@@ -58,6 +62,15 @@ class AxisZoomCapture extends Component {
 		onContextMenu(mouseXY, e);
 
 		this.contextMenuClicked = true;
+	}
+	handleDoubleClick(e){
+		const { getChartCanvas } = this.context;
+		const chartCanvas = getChartCanvas();
+		const mouseXY = mousePosition(e);
+		const charts = getCurrentCharts([this.props.getMoreProps().chartConfig], mouseXY);
+		const { axisResetZoom } = this.props;
+		axisResetZoom(chartCanvas, charts[0]);
+
 	}
 	handleDragStartMouse(e) {
 		this.mouseInteraction = true;
@@ -178,6 +191,7 @@ class AxisZoomCapture extends Component {
 			onContextMenu={this.handleRightClick}
 			onMouseDown={this.handleDragStartMouse}
 			onTouchStart={this.handleDragStartTouch}
+			onDoubleClick={this.handleDoubleClick}
 			/>;
 	}
 }
@@ -193,6 +207,7 @@ AxisZoomCapture.propTypes = {
 	showDomain: PropTypes.bool,
 	showTicks: PropTypes.bool,
 	className: PropTypes.string,
+	axisResetZoom: PropTypes.func,
 	axisZoomCallback: PropTypes.func,
 	inverted: PropTypes.bool,
 	bg: PropTypes.object.isRequired,
@@ -208,6 +223,10 @@ AxisZoomCapture.defaultProps = {
 	onDoubleClick: noop,
 	onContextMenu: noop,
 	inverted: true
+};
+
+AxisZoomCapture.contextTypes = {
+	getChartCanvas: PropTypes.func.isRequired,
 };
 
 export default AxisZoomCapture;

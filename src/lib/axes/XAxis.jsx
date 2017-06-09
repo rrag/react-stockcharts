@@ -13,6 +13,9 @@ class XAxis extends Component {
 		const { xAxisZoom } = this.context;
 		xAxisZoom(newXDomain);
 	}
+	axisResetZoom(chartCanvas, chartId){
+		chartCanvas.resetXDomain();
+	}
 	render() {
 		const { showTicks } = this.props;
 		const moreProps = helper(this.props, this.context);
@@ -20,6 +23,7 @@ class XAxis extends Component {
 		return <Axis {...this.props} {...moreProps} x
 			zoomEnabled={this.props.zoomEnabled && showTicks}
 			axisZoomCallback={this.axisZoomCallback}
+			axisResetZoom={this.axisResetZoom}
 			zoomCursorClassName="react-stockcharts-ew-resize-cursor" />;
 	}
 }

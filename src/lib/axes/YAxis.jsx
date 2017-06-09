@@ -8,10 +8,14 @@ class YAxis extends Component {
 	constructor(props, context) {
 		super(props, context);
 		this.axisZoomCallback = this.axisZoomCallback.bind(this);
+		this.axisResetZoom = this.axisResetZoom.bind(this);
 	}
 	axisZoomCallback(newYDomain) {
 		const { chartId, yAxisZoom } = this.context;
 		yAxisZoom(chartId, newYDomain);
+	}
+	axisResetZoom(chartCanvas, chartId){
+		chartCanvas.resetYDomain(chartId);
 	}
 	render() {
 		const { zoomEnabled, ...moreProps } = helper(this.props, this.context);
@@ -19,6 +23,7 @@ class YAxis extends Component {
 			zoomEnabled={this.props.zoomEnabled && zoomEnabled}
 			edgeClip
 			axisZoomCallback={this.axisZoomCallback}
+			axisResetZoom={this.axisResetZoom}
 			zoomCursorClassName="react-stockcharts-ns-resize-cursor" />;
 	}
 }
