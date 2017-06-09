@@ -66,15 +66,17 @@ class AxisZoomCapture extends Component {
 	handleDoubleClick(e){
 		const { getChartCanvas } = this.context;
 		const chartCanvas = getChartCanvas();
-		const mouseXY = mousePosition(e);
+		const mouseXY = this.mouseInteraction ? mousePosition(e) : this.state.startPosition.startXY
 		const charts = getCurrentCharts([this.props.getMoreProps().chartConfig], mouseXY);
 		const { axisResetZoom } = this.props;
 		axisResetZoom(chartCanvas, charts[0]);
 
 	}
 	handleDragStartMouse(e) {
+		if(this.clicked){
+			return; // needed because the 2nd tap is invoking this function
+		}
 		this.mouseInteraction = true;
-		console.log("handleDragStartMouse");
 
 		const { getScale, getMoreProps } = this.props;
 		const startScale = getScale(getMoreProps());
@@ -98,7 +100,6 @@ class AxisZoomCapture extends Component {
 	}
 	handleDragStartTouch(e) {
 		this.mouseInteraction = false;
-
 		const { getScale, getMoreProps } = this.props;
 		const startScale = getScale(getMoreProps());
 		this.dragHappened = false;
@@ -158,7 +159,7 @@ class AxisZoomCapture extends Component {
 					: touches(this.node)[0];
 				const { onDoubleClick } = this.props;
 
-				onDoubleClick(mouseXY, e);
+				this.handleDoubleClick(e);
 			} else {
 				this.clicked = true;
 				setTimeout(() => {
