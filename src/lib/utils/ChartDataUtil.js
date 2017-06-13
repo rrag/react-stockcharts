@@ -45,7 +45,7 @@ function values(func) {
 export function getNewChartConfig(innerDimension, children) {
 
 	return React.Children.map(children, (each) => {
-		if (each.type === Chart) {
+		if (each.type.toString() === Chart.toString()) {
 			const chartProps = {
 				...Chart.defaultProps,
 				...each.props
