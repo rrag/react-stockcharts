@@ -28,8 +28,11 @@ export const themes = {
 		},
 		FullStochasticOscillator: {
 			stroke: {
-				D: "#17becf",
-				K: "#ff7f0e",
+				top: "#37a600",
+				middle: "#b8ab00",
+				bottom: "#37a600",
+				dLine: "#17becf",
+				kLine: "#ff7f0e",
 			},
 		},
 	},
@@ -60,9 +63,12 @@ export const themes = {
 		},
 		FullStochasticOscillator: {
 			stroke: {
-				D: "#ea2bff",
-				K: "#74d400",
-			},
+				top: "#37a600",
+				middle: "#b8ab00",
+				bottom: "#37a600",
+				dLine: "#ea2bff",
+				kLine: "#74d400"
+			}
 		},
 	}
 };

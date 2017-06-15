@@ -19,8 +19,10 @@ export default function() {
 		const { smoothingType, smoothingWindow } = options;
 		const { sourcePath, volumePath } = options;
 
-		const force = underlyingAlgorithm(data)
+		const algo = underlyingAlgorithm
 			.options({ sourcePath, volumePath });
+
+		const force = algo(data);
 
 		const ma = smoothingType === "ema" ? ema() : sma();
 		const forceMA = ma
