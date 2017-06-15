@@ -203,6 +203,16 @@ function calculateState(props) {
 
 	const { xAccessor: inputXAccesor, xExtents: xExtentsProp, data, padding, flipXScale } = props;
 
+	if (process.env.NODE_ENV !== "production") {
+		for (let i = 1; i < data.length; i++) {
+			const prev = data[i - 1];
+			const curr = data[i];
+			if (inputXAccesor(prev) > inputXAccesor(curr)) {
+				throw new Error("'data' is not sorted on 'xAccessor', send 'data' sorted in assending order of 'xAccessor'");
+			}
+		}
+	}
+
 	const direction = getXScaleDirection(flipXScale);
 	const dimensions = getDimensions(props);
 
@@ -215,6 +225,9 @@ function calculateState(props) {
 
 	const { plotData, domain } = filterData(fullData, extent, inputXAccesor, updatedXScale);
 
+	if (process.env.NODE_ENV !== "production" && plotData.length <= 1) {
+		throw new Error(`Showing ${plotData.length} datapoints, review the 'xExtents' prop of ChartCanvas`);
+	}
 	return {
 		plotData,
 		xScale: updatedXScale.domain(domain),
@@ -1067,6 +1080,7 @@ ChartCanvas.propTypes = {
 	},
 	mouseMoveEvent: PropTypes.bool.isRequired,
 	panEvent: PropTypes.bool.isRequired,
+	clamp: PropTypes.bool.isRequired,
 	zoomEvent: PropTypes.bool.isRequired,
 	onSelect: PropTypes.func,
 };
@@ -1091,6 +1105,7 @@ ChartCanvas.defaultProps = {
 	panEvent: true,
 	zoomEvent: true,
 	zoomMultiplier: 1.1,
+	clamp: false,
 	// ratio: 2,
 };
 
