@@ -17,7 +17,7 @@ class RSITooltip extends Component {
 	}
 	renderSVG(moreProps) {
 		const { onClick, fontFamily, fontSize, yAccessor, displayFormat, className } = this.props;
-		const { options } = this.props;
+		const { options, labelFill, textFill } = this.props;
 		const { chartConfig: { width, height } } = moreProps;
 		const { currentItem } = moreProps;
 
@@ -33,8 +33,8 @@ class RSITooltip extends Component {
 			<g className={className} transform={`translate(${ x }, ${ y })`} onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={fontFamily} fontSize={fontSize}>
-					<ToolTipTSpanLabel>{tooltipLabel}</ToolTipTSpanLabel>
-					<tspan>{value}</tspan>
+					<ToolTipTSpanLabel fill={labelFill}>{tooltipLabel}</ToolTipTSpanLabel>
+					<tspan  fill={textFill}>{value}</tspan>
 				</ToolTipText>
 			</g>
 		);
@@ -62,6 +62,8 @@ RSITooltip.propTypes = {
 	onClick: PropTypes.func,
 	yAccessor: PropTypes.func.isRequired,
 	displayFormat: PropTypes.func.isRequired,
+	textFill: PropTypes.string,
+	labelFill: PropTypes.string,
 };
 
 RSITooltip.defaultProps = {

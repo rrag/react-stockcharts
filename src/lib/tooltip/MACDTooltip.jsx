@@ -16,7 +16,7 @@ class MACDTooltip extends Component {
 	}
 	renderSVG(moreProps) {
 		const { onClick, fontFamily, fontSize, displayFormat, className } = this.props;
-		const { yAccessor, options, appearance } = this.props;
+		const { yAccessor, options, appearance, labelFill } = this.props;
 		const { chartConfig: { width, height } } = moreProps;
 		const { currentItem } = moreProps;
 
@@ -34,17 +34,17 @@ class MACDTooltip extends Component {
 			<g className={className} transform={`translate(${ x }, ${ y })`} onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={fontFamily} fontSize={fontSize}>
-					<ToolTipTSpanLabel>MACD (</ToolTipTSpanLabel>
+					<ToolTipTSpanLabel fill={labelFill}>MACD (</ToolTipTSpanLabel>
 					<tspan fill={appearance.stroke.macd}>{options.slow}</tspan>
-					<ToolTipTSpanLabel>, </ToolTipTSpanLabel>
+					<ToolTipTSpanLabel fill={labelFill}>, </ToolTipTSpanLabel>
 					<tspan fill={appearance.stroke.macd}>{options.fast}</tspan>
-					<ToolTipTSpanLabel>): </ToolTipTSpanLabel>
+					<ToolTipTSpanLabel fill={labelFill}>): </ToolTipTSpanLabel>
 					<tspan fill={appearance.stroke.macd}>{macd}</tspan>
-					<ToolTipTSpanLabel> Signal (</ToolTipTSpanLabel>
+					<ToolTipTSpanLabel fill={labelFill}> Signal (</ToolTipTSpanLabel>
 					<tspan fill={appearance.stroke.signal}>{options.signal}</tspan>
-					<ToolTipTSpanLabel>): </ToolTipTSpanLabel>
+					<ToolTipTSpanLabel fill={labelFill}>): </ToolTipTSpanLabel>
 					<tspan fill={appearance.stroke.signal}>{signal}</tspan>
-					<ToolTipTSpanLabel> Divergence: </ToolTipTSpanLabel>
+					<ToolTipTSpanLabel fill={labelFill}> Divergence: </ToolTipTSpanLabel>
 					<tspan fill={appearance.fill.divergence}>{divergence}</tspan>
 				</ToolTipText>
 			</g>
@@ -67,6 +67,8 @@ MACDTooltip.propTypes = {
 	className: PropTypes.string,
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
+	labelFill: PropTypes.string,
+
 	yAccessor: PropTypes.func.isRequired,
 	options: PropTypes.shape({
 		slow: PropTypes.number.isRequired,

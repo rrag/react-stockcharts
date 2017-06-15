@@ -20,14 +20,15 @@ class SingleMAToolTip extends Component {
 		onClick({ chartId: forChart, ...options }, e);
 	}
 	render() {
+		const { textFill, labelFill } = this.props;
 		const translate = "translate(" + this.props.origin[0] + ", " + this.props.origin[1] + ")";
 		return (
 			<g transform={translate}>
 				<line x1={0} y1={2} x2={0} y2={28} stroke={this.props.color} strokeWidth="4px"/>
 				<ToolTipText x={5} y={11}
 					fontFamily={this.props.fontFamily} fontSize={this.props.fontSize}>
-					<ToolTipTSpanLabel>{this.props.displayName}</ToolTipTSpanLabel>
-					<tspan x="5" dy="15">{this.props.value}</tspan>
+					<ToolTipTSpanLabel fill={labelFill}>{this.props.displayName}</ToolTipTSpanLabel>
+					<tspan x="5" dy="15" fill={textFill}>{this.props.value}</tspan>
 				</ToolTipText>
 				<rect x={0} y={0} width={55} height={30}
 					onClick={this.handleClick}
@@ -44,6 +45,8 @@ SingleMAToolTip.propTypes = {
 	value: PropTypes.string.isRequired,
 	onClick: PropTypes.func,
 	fontFamily: PropTypes.string,
+	textFill: PropTypes.string,
+	labelFill: PropTypes.string,
 	fontSize: PropTypes.number,
 	forChart: PropTypes.number.isRequired,
 	options: PropTypes.object.isRequired,
@@ -58,7 +61,7 @@ class MovingAverageTooltip extends Component {
 		const { chartId } = moreProps;
 		const { chartConfig, currentItem } = moreProps;
 
-		const { className, onClick, width, fontFamily, fontSize } = this.props;
+		const { className, onClick, width, fontFamily, fontSize, textFill, labelFill } = this.props;
 		const { origin: originProp, displayFormat, options } = this.props;
 		const { chartConfig: { height } } = moreProps;
 
@@ -83,8 +86,13 @@ class MovingAverageTooltip extends Component {
 							displayName={tooltipLabel}
 							value={yDisplayValue}
 							options={each}
-							forChart={chartId} onClick={onClick}
-							fontFamily={fontFamily} fontSize={fontSize} />;
+							forChart={chartId}
+							onClick={onClick}
+							fontFamily={fontFamily}
+							fontSize={fontSize}
+							textFill={textFill}
+							labelFill={labelFill}
+							/>;
 					})}
 			</g>
 		);
@@ -103,6 +111,8 @@ MovingAverageTooltip.propTypes = {
 	displayFormat: PropTypes.func.isRequired,
 	origin: PropTypes.array.isRequired,
 	onClick: PropTypes.func,
+	textFill: PropTypes.string,
+	labelFill: PropTypes.string,
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
 	width: PropTypes.number,

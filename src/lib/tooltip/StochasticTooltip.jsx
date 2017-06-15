@@ -17,7 +17,7 @@ class StochasticTooltip extends Component {
 	}
 	renderSVG(moreProps) {
 		const { onClick, fontFamily, fontSize, yAccessor, displayFormat, label } = this.props;
-		const { className, options, appearance } = this.props;
+		const { className, options, appearance, labelFill } = this.props;
 		const { chartConfig: { width, height } } = moreProps;
 		const { currentItem } = moreProps;
 
@@ -34,13 +34,13 @@ class StochasticTooltip extends Component {
 		return (
 			<g className={className} transform={`translate(${ x }, ${ y })`} onClick={onClick}>
 				<ToolTipText x={0} y={0} fontFamily={fontFamily} fontSize={fontSize}>
-					<ToolTipTSpanLabel>{`${ label } %K(`}</ToolTipTSpanLabel>
+					<ToolTipTSpanLabel fill={labelFill}>{`${ label } %K(`}</ToolTipTSpanLabel>
 					<tspan fill={stroke.kLine}>{`${options.windowSize}, ${options.kWindowSize}`}</tspan>
-					<ToolTipTSpanLabel>): </ToolTipTSpanLabel>
+					<ToolTipTSpanLabel fill={labelFill}>): </ToolTipTSpanLabel>
 					<tspan fill={stroke.kLine}>{K}</tspan>
-					<ToolTipTSpanLabel> %D (</ToolTipTSpanLabel>
+					<ToolTipTSpanLabel fill={labelFill}> %D (</ToolTipTSpanLabel>
 					<tspan fill={stroke.dLine}>{options.dWindowSize}</tspan>
-					<ToolTipTSpanLabel>): </ToolTipTSpanLabel>
+					<ToolTipTSpanLabel fill={labelFill}>): </ToolTipTSpanLabel>
 					<tspan fill={stroke.dLine}>{D}</tspan>
 				</ToolTipText>
 			</g>
@@ -63,6 +63,8 @@ StochasticTooltip.propTypes = {
 	className: PropTypes.string,
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
+	labelFill: PropTypes.string,
+
 	onClick: PropTypes.func,
 	yAccessor: PropTypes.func.isRequired,
 	options: PropTypes.shape({

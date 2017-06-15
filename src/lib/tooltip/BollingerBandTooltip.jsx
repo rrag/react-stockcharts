@@ -16,7 +16,7 @@ class BollingerBandTooltip extends Component {
 		this.renderSVG = this.renderSVG.bind(this);
 	}
 	renderSVG(moreProps) {
-		const { onClick, displayFormat, yAccessor, options } = this.props;
+		const { onClick, displayFormat, yAccessor, options, textFill, labelFill } = this.props;
 		const { chartConfig: { width, height } } = moreProps;
 		const { currentItem } = moreProps;
 
@@ -43,8 +43,8 @@ class BollingerBandTooltip extends Component {
 					className={this.props.className} onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={this.props.fontFamily} fontSize={this.props.fontSize}>
-					<ToolTipTSpanLabel>{tooltipLabel}</ToolTipTSpanLabel>
-					<tspan>{tooltipValue}</tspan>
+					<ToolTipTSpanLabel fill={labelFill}>{tooltipLabel}</ToolTipTSpanLabel>
+					<tspan fill={textFill}>{tooltipValue}</tspan>
 				</ToolTipText>
 			</g>
 		);
@@ -70,6 +70,8 @@ BollingerBandTooltip.propTypes = {
 		multiplier: PropTypes.number.isRequired,
 		movingAverageType: PropTypes.string.isRequired,
 	}).isRequired,
+	textFill: PropTypes.string,
+	labelFill: PropTypes.string,
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
 };

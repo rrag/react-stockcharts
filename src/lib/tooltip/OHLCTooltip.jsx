@@ -17,7 +17,7 @@ class OHLCTooltip extends Component {
 		this.renderSVG = this.renderSVG.bind(this);
 	}
 	renderSVG(moreProps) {
-		const { className } = this.props;
+		const { className, textFill, labelFill } = this.props;
 		const { chartConfig: { width, height }, displayXAccessor } = moreProps;
 		const { currentItem } = moreProps;
 
@@ -51,13 +51,13 @@ class OHLCTooltip extends Component {
 				transform={`translate(${ x }, ${ y })`} onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={fontFamily} fontSize={fontSize}>
-					<ToolTipTSpanLabel key="label" x={0} dy="5">Date: </ToolTipTSpanLabel>
-					<tspan key="value">{displayDate}</tspan>
-					<ToolTipTSpanLabel key="label_O"> O: </ToolTipTSpanLabel><tspan key="value_O">{open}</tspan>
-					<ToolTipTSpanLabel key="label_H"> H: </ToolTipTSpanLabel><tspan key="value_H">{high}</tspan>
-					<ToolTipTSpanLabel key="label_L"> L: </ToolTipTSpanLabel><tspan key="value_L">{low}</tspan>
-					<ToolTipTSpanLabel key="label_C"> C: </ToolTipTSpanLabel><tspan key="value_C">{close}</tspan>
-					<ToolTipTSpanLabel key="label_Vol"> Vol: </ToolTipTSpanLabel><tspan key="value_Vol">{volume}</tspan>
+					<ToolTipTSpanLabel fill={labelFill} key="label" x={0} dy="5">Date: </ToolTipTSpanLabel>
+					<tspan key="value" fill={textFill}>{displayDate}</tspan>
+					<ToolTipTSpanLabel fill={labelFill} key="label_O"> O: </ToolTipTSpanLabel><tspan key="value_O" fill={textFill}>{open}</tspan>
+					<ToolTipTSpanLabel fill={labelFill} key="label_H"> H: </ToolTipTSpanLabel><tspan key="value_H" fill={textFill}>{high}</tspan>
+					<ToolTipTSpanLabel fill={labelFill} key="label_L"> L: </ToolTipTSpanLabel><tspan key="value_L" fill={textFill}>{low}</tspan>
+					<ToolTipTSpanLabel fill={labelFill} key="label_C"> C: </ToolTipTSpanLabel><tspan key="value_C" fill={textFill}>{close}</tspan>
+					<ToolTipTSpanLabel fill={labelFill} key="label_Vol"> Vol: </ToolTipTSpanLabel><tspan key="value_Vol" fill={textFill}>{volume}</tspan>
 				</ToolTipText>
 			</g>
 		);
@@ -84,6 +84,8 @@ OHLCTooltip.propTypes = {
 	fontSize: PropTypes.number,
 	onClick: PropTypes.func,
 	volumeFormat: PropTypes.func,
+	textFill: PropTypes.string,
+	labelFill: PropTypes.string,
 };
 
 OHLCTooltip.defaultProps = {
