@@ -7,7 +7,7 @@ export { default as GenericChartComponent } from "./lib/GenericChartComponent";
 export { default as GenericComponent } from "./lib/GenericComponent";
 export { default as BackgroundText } from "./lib/BackgroundText";
 
-export const version = "0.7.0-beta.1";
+export const version = "0.7.0-beta.2";
 
 /*
 // chart types & Series
