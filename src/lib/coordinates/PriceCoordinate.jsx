@@ -15,14 +15,6 @@ class PriceCoordinate extends Component {
 		this.renderSVG = this.renderSVG.bind(this);
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
-
-	componentDidMount() {
-		// This is needed to trigger the render code before any mouse movements
-		// to force the marker to show the instant the chart is loaded. Otherwise,
-		// it will only appear when it detects mouse movement.
-		this.refs.genericChartComponent.draw({ trigger: "pan", force: true });
-	}
-
 	drawOnCanvas(ctx, moreProps) {
 		const props = helper(this.props, moreProps);
 		if (isNotDefined(props)) return null;
@@ -35,12 +27,11 @@ class PriceCoordinate extends Component {
 	}
 	render() {
 		return <GenericChartComponent
-			ref="genericChartComponent"
 			clip={false}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
 			canvasToDraw={getMouseCanvas}
-			drawOn={["mousemove", "pan"/*  , "mouseleave"*/]}
+			drawOn={["pan"]}
 			/>;
 	}
 }
