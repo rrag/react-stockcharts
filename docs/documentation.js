@@ -36,12 +36,12 @@ const DOCUMENTATION = {
 const CHART_FEATURES = {
 	head: "Chart features",
 	pages: [
-		require("./lib/page/PriceMarkerPage").default,
 		require("./lib/page/MousePointerPage").default,
 		require("./lib/page/ZoomAndPanPage").default,
 		require("./lib/page/IntraDayContinuousDataPage").default,
 		require("./lib/page/EquityIntraDayDataPage").default,
 		require("./lib/page/EdgeCoordinatesPage").default,
+		require("./lib/page/PriceMarkerPage").default,
 		require("./lib/page/AnnotationsPage").default,
 		require("./lib/page/MouseFollowingTooltipPage").default,
 		require("./lib/page/UpdatingDataPageForCandleStick").default,
