@@ -103,14 +103,14 @@ function getBars(props, moreProps) {
 	});
 
 	const barWidth = Math.round(width);
-	const offset = (barWidth === 1 ? 0 : 0.5 * barWidth);
+	const offset = Math.round(barWidth === 1 ? 0 : 0.5 * barWidth);
 
 	const bars = plotData
 		.map(d => {
 			const yValue = yAccessor(d);
 			let y = yScale(yValue);
 
-			const x = Math.round(xScale(xAccessor(d)) - offset);
+			const x = Math.round(xScale(xAccessor(d))) - offset;
 			let h = getBase(xScale, yScale, d) - yScale(yValue);
 
 			if (h < 0) {
@@ -123,7 +123,7 @@ function getBars(props, moreProps) {
 				x,
 				y: Math.round(y),
 				height: Math.round(h),
-				width: barWidth,
+				width: offset * 2,
 				fill: getFill(d, 0),
 				stroke: stroke ? getFill(d, 0) : "none",
 			};

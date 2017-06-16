@@ -51,6 +51,7 @@ CandlestickSeries.propTypes = {
 	className: PropTypes.string,
 	wickClassName: PropTypes.string,
 	candleClassName: PropTypes.string,
+	widthRatio: PropTypes.number,
 	width: PropTypes.oneOfType([
 		PropTypes.number,
 		PropTypes.func
@@ -89,6 +90,7 @@ CandlestickSeries.defaultProps = {
 	stroke: "#000000",
 	candleStrokeWidth: 0.5,
 	// stroke: "none",
+	widthRatio: 0.8,
 	opacity: 0.5,
 	clip: true,
 };
@@ -272,7 +274,7 @@ function getCandleData(props, xAccessor, xScale, yScale, plotData) {
 
 	const candleWidth = Math.round(width);
 
-	const offset = (candleWidth === 1 ? 0 : 0.5 * width);
+	const offset = Math.round(candleWidth === 1 ? 0 : 0.5 * width);
 
 	// eslint-disable-next-line prefer-const
 	let candles = [];
@@ -280,7 +282,8 @@ function getCandleData(props, xAccessor, xScale, yScale, plotData) {
 	for (let i = 0; i < plotData.length; i++) {
 		const d = plotData[i];
 		if (isDefined(yAccessor(d).close)) {
-			const x = Math.round(xScale(xAccessor(d)) - offset);
+			const x = Math.round(xScale(xAccessor(d)));
+			// const x = Math.round(xScale(xAccessor(d)) - offset);
 
 			const ohlc = yAccessor(d);
 			const y = Math.round(yScale(Math.max(ohlc.open, ohlc.close)));
@@ -288,18 +291,18 @@ function getCandleData(props, xAccessor, xScale, yScale, plotData) {
 
 			candles.push({
 				// type: "line"
-				x: x,
+				x: x - offset,
 				y: y,
 				wick: {
 					stroke: wickStroke(ohlc),
-					x: Math.round(xScale(xAccessor(d))),
+					x: x,
 					y1: Math.round(yScale(ohlc.high)),
 					y2: y,
 					y3: y + height, // Math.round(yScale(Math.min(ohlc.open, ohlc.close))),
 					y4: Math.round(yScale(ohlc.low)),
 				},
 				height: height,
-				width: candleWidth,
+				width: offset * 2,
 				className: className(ohlc),
 				fill: fill(ohlc),
 				stroke: stroke(ohlc),
