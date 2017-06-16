@@ -80,7 +80,7 @@ SingleValueTooltip.defaultProps = {
 	yDisplayFormat: format(".2f"),
 	xAccessor: noop,
 	yAccessor: identity,
-	className: "react-stockcharts-toottip",
+	className: "react-stockcharts-tooltip",
 };
 
 export default SingleValueTooltip;
