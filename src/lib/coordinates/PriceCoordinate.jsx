@@ -20,7 +20,7 @@ class PriceCoordinate extends Component {
 		// This is needed to trigger the render code before any mouse movements
 		// to force the marker to show the instant the chart is loaded. Otherwise,
 		// it will only appear when it detects mouse movement.
-		this.refs.genericChartComponent.draw({trigger:"pan", force:true});
+		this.refs.genericChartComponent.draw({ trigger: "pan", force: true });
 	}
 
 	drawOnCanvas(ctx, moreProps) {
@@ -40,7 +40,7 @@ class PriceCoordinate extends Component {
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
 			canvasToDraw={getMouseCanvas}
-			drawOn={["mousemove","pan"/*  , "mouseleave"*/]}
+			drawOn={["mousemove", "pan"/*  , "mouseleave"*/]}
 			/>;
 	}
 }
@@ -60,7 +60,7 @@ PriceCoordinate.defaultProps = {
 	arrowWidth: 0,
 	fill: "#BAB8b8",
 	opacity: 1,
-  lineOpacity: 0.2,
+	lineOpacity: 0.2,
 	lineStroke: "#000000",
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 13,
@@ -68,16 +68,16 @@ PriceCoordinate.defaultProps = {
 };
 
 function helper(props, moreProps) {
-	const { chartId, width } = moreProps;
-	var { show, chartConfig: { yScale, origin } } = moreProps;
+	const { width } = moreProps;
+	const { chartConfig: { yScale } } = moreProps;
 	const lowerPrice = yScale.domain()[0];
 	const upperPrice = yScale.domain()[1];
-	const lowerYValue = yScale.range()[0]
+	const lowerYValue = yScale.range()[0];
 	const upperYValue = yScale.range()[1];
 	const rangeSlope = (lowerPrice - upperPrice) / (lowerYValue - upperYValue);
 
 	const { orient, at, rectWidth, rectHeight, displayFormat, dx, price } = props;
-	const { fill, opacity, fontFamily, fontSize, textFill, arrowWidth, lineOpacity, lineStroke} = props;
+	const { fill, opacity, fontFamily, fontSize, textFill, arrowWidth, lineOpacity, lineStroke } = props;
 
 	const x1 = 0, x2 = width;
 	const edgeAt = (at === "right")
@@ -86,13 +86,15 @@ function helper(props, moreProps) {
 
 	const type = "horizontal";
 	const priceShowTolerance = 5;
-	var y = 0
 
-	if(price < (upperPrice + priceShowTolerance) || price > (lowerPrice - priceShowTolerance)){
+	let y = 0;
+	let show;
+
+	if (price < (upperPrice + priceShowTolerance)
+			|| price > (lowerPrice - priceShowTolerance)) {
 		y = (price / rangeSlope) + (lowerYValue - (lowerPrice / rangeSlope));
 		show = true;
-	}
-	else{
+	}	else {
 		show = false;
 	}
 

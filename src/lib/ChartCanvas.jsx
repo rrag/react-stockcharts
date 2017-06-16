@@ -203,7 +203,7 @@ function calculateState(props) {
 
 	const { xAccessor: inputXAccesor, xExtents: xExtentsProp, data, padding, flipXScale } = props;
 
-	if (process.env.NODE_ENV !== "production") {
+	if (process.env.NODE_ENV !== "production" && isDefined(props.xScale.invert)) {
 		for (let i = 1; i < data.length; i++) {
 			const prev = data[i - 1];
 			const curr = data[i];
