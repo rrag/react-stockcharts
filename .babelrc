@@ -8,10 +8,10 @@
 	],
 	"env": {
 		"cjs": {
-			"presets": [["latest"]],
+			"presets": [["env"]],
 		},
 		"es": {
-			"presets": [["latest", {
+			"presets": [["env", {
 				"es2015": {
 					"modules": false 
 				}
@@ -21,7 +21,7 @@
 			"presets": [
 				["env", {
 					"targets": {
-						"chrome": 55
+						"chrome": 58
 					},
 					"modules": false
 				}]
