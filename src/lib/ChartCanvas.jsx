@@ -870,7 +870,7 @@ ChartCanvas.propTypes = {
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 	margin: PropTypes.object,
-	ratio: PropTypes.number.isRequired,
+	ratio: PropTypes.number,
 	// interval: PropTypes.oneOf(["D", "W", "M"]), // ,"m1", "m5", "m15", "W", "M"
 	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 	pointsPerPxThreshold: PropTypes.number,
@@ -943,7 +943,7 @@ ChartCanvas.defaultProps = {
 	panEvent: true,
 	zoomEvent: true,
 	zoomMultiplier: 1.1,
-	// ratio: 2,
+	ratio: window.devicePixelRatio || 1,
 };
 
 ChartCanvas.childContextTypes = {
