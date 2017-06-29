@@ -47,7 +47,7 @@ class OHLCTooltip extends Component {
 		const [x, y] = origin(width, height);
 
 		return (
-			<g className={`react-stockcharts-toottip-hover ${className}`}
+			<g className={`react-stockcharts-tooltip-hover ${className}`}
 				transform={`translate(${ x }, ${ y })`} onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={fontFamily} fontSize={fontSize}>

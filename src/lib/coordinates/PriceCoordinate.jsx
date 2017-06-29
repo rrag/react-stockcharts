@@ -17,12 +17,10 @@ class PriceCoordinate extends Component {
 	}
 	drawOnCanvas(ctx, moreProps) {
 		const props = helper(this.props, moreProps);
-		if (isNotDefined(props)) return null;
 		drawOnCanvas(ctx, props);
 	}
 	renderSVG(moreProps) {
 		const props = helper(this.props, moreProps);
-		if (isNotDefined(props)) return null;
 		return renderSVG(props);
 	}
 	render() {

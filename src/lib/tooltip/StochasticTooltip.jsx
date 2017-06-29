@@ -85,7 +85,7 @@ StochasticTooltip.propTypes = {
 StochasticTooltip.defaultProps = {
 	displayFormat: format(".2f"),
 	origin: [0, 0],
-	className: "react-stockcharts-toottip",
+	className: "react-stockcharts-tooltip",
 	label: "STO",
 };
 

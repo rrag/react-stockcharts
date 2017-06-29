@@ -126,7 +126,7 @@ MovingAverageTooltip.propTypes = {
 };
 
 MovingAverageTooltip.defaultProps = {
-	className: "react-stockcharts-toottip react-stockcharts-moving-average-tooltip",
+	className: "react-stockcharts-tooltip react-stockcharts-moving-average-tooltip",
 	displayFormat: format(".2f"),
 	origin: [0, 10],
 	width: 65,

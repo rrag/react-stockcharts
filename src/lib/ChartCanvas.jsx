@@ -52,7 +52,7 @@ function getCursorStyle(useCrossHairStyleCursor) {
 		pointer-events: all;
 		cursor: crosshair;
 	}
-	.react-stockcharts-toottip-hover {
+	.react-stockcharts-tooltip-hover {
 		pointer-events: all;
 		cursor: pointer;
 	}`;
@@ -63,7 +63,7 @@ function getCursorStyle(useCrossHairStyleCursor) {
 	.react-stockcharts-enable-interaction {
 		pointer-events: all;
 	}
-	.react-stockcharts-toottip {
+	.react-stockcharts-tooltip {
 		pointer-events: all;
 		cursor: pointer;
 	}

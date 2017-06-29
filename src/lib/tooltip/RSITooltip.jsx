@@ -69,7 +69,7 @@ RSITooltip.propTypes = {
 RSITooltip.defaultProps = {
 	displayFormat: format(".2f"),
 	origin: [0, 0],
-	className: "react-stockcharts-toottip",
+	className: "react-stockcharts-tooltip",
 };
 
 export default RSITooltip;
