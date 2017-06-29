@@ -30,15 +30,15 @@ class EdgeCoordinate extends Component {
 
 			coordinateBase = edge.orient === "left" || edge.orient === "right"
 				? <g transform={`translate(${edge.coordinateBase.edgeXRect},${edge.coordinateBase.edgeYRect})`}>
-						<path d={path} key={1} className="react-stockchart-text-background"
-							height={rectHeight} width={rectWidth}
-							fill={edge.coordinateBase.fill} opacity={edge.coordinateBase.opacity} />
-					</g>
-				: <rect key={1} className="react-stockchart-text-background"
-						x={edge.coordinateBase.edgeXRect}
-						y={edge.coordinateBase.edgeYRect}
+					<path d={path} key={1} className="react-stockchart-text-background"
 						height={rectHeight} width={rectWidth}
-						fill={edge.coordinateBase.fill} opacity={edge.coordinateBase.opacity} />;
+						fill={edge.coordinateBase.fill} opacity={edge.coordinateBase.opacity} />
+				</g>
+				: <rect key={1} className="react-stockchart-text-background"
+					x={edge.coordinateBase.edgeXRect}
+					y={edge.coordinateBase.edgeYRect}
+					height={rectHeight} width={rectWidth}
+					fill={edge.coordinateBase.fill} opacity={edge.coordinateBase.opacity} />;
 
 			coordinate = (<text key={2} x={edge.coordinate.edgeXText}
 				y={edge.coordinate.edgeYText}

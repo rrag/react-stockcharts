@@ -68,7 +68,7 @@ class AreaOnlySeries extends Component {
 			canvasDraw={this.drawOnCanvas}
 			canvasToDraw={getAxisCanvas}
 			drawOn={["pan"]}
-			/>;
+		/>;
 	}
 }
 

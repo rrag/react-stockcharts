@@ -128,10 +128,10 @@ class LineSeries extends Component {
 		return <path className={`${className} ${stroke ? "" : " line-stroke"}`}
 			d={d}
 			stroke={stroke}
-            strokeWidth={hovering ? hoverStrokeWidth : strokeWidth}
-            strokeDasharray={getStrokeDasharray(strokeDasharray)}
+			strokeWidth={hovering ? hoverStrokeWidth : strokeWidth}
+			strokeDasharray={getStrokeDasharray(strokeDasharray)}
 			fill={fill}
-			/>;
+		/>;
 	}
 	render() {
 		const { highlightOnHover } = this.props;
@@ -155,7 +155,7 @@ class LineSeries extends Component {
 			onDoubleClick={this.props.onDoubleClick}
 			onContextMenu={this.props.onContextMenu}
 			{...hoverProps}
-			/>;
+		/>;
 	}
 }
 

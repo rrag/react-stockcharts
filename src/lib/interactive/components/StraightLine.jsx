@@ -98,7 +98,7 @@ class StraightLine extends Component {
 			onBlur={onBlur}
 
 			drawOn={["mousemove", "pan", "drag"]}
-			/>;
+		/>;
 	}
 }
 

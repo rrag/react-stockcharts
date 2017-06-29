@@ -178,7 +178,7 @@ class AxisZoomCapture extends Component {
 			onContextMenu={this.handleRightClick}
 			onMouseDown={this.handleDragStartMouse}
 			onTouchStart={this.handleDragStartTouch}
-			/>;
+		/>;
 	}
 }
 

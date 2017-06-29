@@ -67,7 +67,7 @@ class Axis extends Component {
 				inverted={inverted}
 				onContextMenu={onContextMenu}
 				onDoubleClick={onDoubleClick}
-				/>
+			/>
 			: null;
 
 		return <g transform={`translate(${ transform[0] }, ${ transform[1] })`}>
@@ -79,7 +79,7 @@ class Axis extends Component {
 				svgDraw={this.renderSVG}
 				canvasDraw={this.drawOnCanvas}
 				drawOn={["pan"]}
-				/>
+			/>
 		</g>;
 	}
 }
@@ -142,8 +142,8 @@ function tickHelper(props, scale) {
 	}
 
 	const baseFormat = scale.tickFormat
-			? scale.tickFormat(tickArguments)
-			: identity;
+		? scale.tickFormat(tickArguments)
+		: identity;
 
 	const format = isNotDefined(tickFormat)
 		? baseFormat

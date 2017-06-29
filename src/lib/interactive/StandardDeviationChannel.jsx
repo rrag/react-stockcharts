@@ -97,12 +97,12 @@ class StandardDeviationChannel extends Component {
 
 		const tempLine = isDefined(current) && isDefined(current.end)
 			? <EachLinearRegressionChannel
-					interactive={false}
-					x1Value={current.start[0]}
-					x2Value={current.end[0]}
-					stroke={stroke}
-					strokeWidth={strokeWidth}
-					opacity={opacity} />
+				interactive={false}
+				x1Value={current.start[0]}
+				x2Value={current.end[0]}
+				stroke={stroke}
+				strokeWidth={strokeWidth}
+				opacity={opacity} />
 			: null;
 
 		return <g>
@@ -119,7 +119,7 @@ class StandardDeviationChannel extends Component {
 					onDrag={this.handleDragLine}
 					onDragComplete={this.handleDragLineComplete}
 					edgeInteractiveCursor="react-stockcharts-move-cursor"
-					/>;
+				/>;
 			})}
 			{tempLine}
 			<MouseLocationIndicator

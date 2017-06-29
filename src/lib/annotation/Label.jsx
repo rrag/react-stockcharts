@@ -22,7 +22,7 @@ class Label extends Component {
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
 			drawOn={[]}
-			/>;
+		/>;
 	}
 	renderSVG(moreProps) {
 		const { chartConfig } = moreProps;

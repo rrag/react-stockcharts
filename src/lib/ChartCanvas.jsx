@@ -101,8 +101,8 @@ function calculateFullData(props) {
 	const { xAccessor, displayXAccessor } = props;
 
 	const useWholeData = isDefined(plotFull)
-			? plotFull
-			: xAccessor === identity;
+		? plotFull
+		: xAccessor === identity;
 
 	const filterData = evaluator({
 		xAccessor,
@@ -1016,7 +1016,7 @@ class ChartCanvas extends Component {
 							onPinchZoomEnd={this.handlePinchZoomEnd}
 							onPan={this.handlePan}
 							onPanEnd={this.handlePanEnd}
-							/>
+						/>
 
 						<g className="react-stockcharts-avoid-interaction">
 							{this.props.children}

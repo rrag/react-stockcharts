@@ -56,7 +56,7 @@ class ClickableCircle extends Component {
 			stroke={stroke}
 			fill={fill}
 			opacity={opacity}
-			/>;
+		/>;
 	}
 	render() {
 		const { interactiveCursorClass } = this.props;
@@ -79,7 +79,7 @@ class ClickableCircle extends Component {
 				canvasToDraw={getMouseCanvas}
 
 				drawOn={["pan", "mousemove", "drag"]}
-				/>
+			/>
 			: null;
 	}
 }

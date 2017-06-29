@@ -30,7 +30,7 @@ class VolumeProfileSeries extends Component {
 			canvasDraw={this.drawOnCanvas}
 			canvasToDraw={getAxisCanvas}
 			drawOn={["pan"]}
-			/>;
+		/>;
 	}
 	renderSVG(moreProps) {
 		const { className, opacity } = this.props;
@@ -46,13 +46,13 @@ class VolumeProfileSeries extends Component {
 		return <g className={className}>
 			{sessionBgSvg}
 			{rects.map((d, i) => <g key={i}>
-					<rect x={d.x} y={d.y}
-						width={d.w1} height={d.height}
-						fill={d.fill1} stroke={d.stroke1} fillOpacity={opacity} />
-					<rect x={d.x + d.w1} y={d.y}
-						width={d.w2} height={d.height}
-						fill={d.fill2} stroke={d.stroke2} fillOpacity={opacity} />
-				</g>)}
+				<rect x={d.x} y={d.y}
+					width={d.w1} height={d.height}
+					fill={d.fill1} stroke={d.stroke1} fillOpacity={opacity} />
+				<rect x={d.x + d.w1} y={d.y}
+					width={d.w2} height={d.height}
+					fill={d.fill2} stroke={d.stroke2} fillOpacity={opacity} />
+			</g>)}
 		</g>;
 	}
 }
@@ -98,12 +98,12 @@ function helper(props, moreProps, xAccessor, width) {
 	const { bins, maxProfileWidthPercent, source, volume, absoluteChange, orient, fill, stroke } = props;
 
 	const sessionBuilder = accumulatingWindow()
-			.discardTillStart(!partialStartOK)
-			.discardTillEnd(!partialEndOK)
-			.accumulateTill((d, i) => {
-				return sessionStart({ d, i, plotData });
-			})
-			.accumulator(identity);
+		.discardTillStart(!partialStartOK)
+		.discardTillEnd(!partialEndOK)
+		.accumulateTill((d, i) => {
+			return sessionStart({ d, i, plotData });
+		})
+		.accumulator(identity);
 
 	const dx = plotData.length > 1 ? realXScale(xAccessor(plotData[1])) - realXScale(xAccessor(head(plotData))) : 0;
 
@@ -122,38 +122,38 @@ function helper(props, moreProps, xAccessor, width) {
 				.bins(bins);*/
 
 		const histogram2 = d3Histogram()
-				// .domain(xScale.domain())
-				.value(source)
-				.thresholds(bins);
+			// .domain(xScale.domain())
+			.value(source)
+			.thresholds(bins);
 
 		// console.log(bins, histogram(session))
 		// console.log(bins, histogram2(session))
 		const rollup = nest()
-				.key(d => d.direction)
-				.sortKeys(orient === "right" ? descending : ascending)
-				.rollup(leaves => sum(leaves, d => d.volume));
+			.key(d => d.direction)
+			.sortKeys(orient === "right" ? descending : ascending)
+			.rollup(leaves => sum(leaves, d => d.volume));
 
 		const values = histogram2(session);
 		// console.log("values", values)
 
 		const volumeInBins = values
-				.map(arr => arr.map(d => absoluteChange(d) > 0 ? { direction: "up", volume: volume(d) } : { direction: "down", volume: volume(d) }))
-				.map(arr => rollup.entries(arr));
+			.map(arr => arr.map(d => absoluteChange(d) > 0 ? { direction: "up", volume: volume(d) } : { direction: "down", volume: volume(d) }))
+			.map(arr => rollup.entries(arr));
 
 		// console.log("volumeInBins", volumeInBins)
 		const volumeValues = volumeInBins
-				.map(each => sum(each.map(d => d.value)));
+			.map(each => sum(each.map(d => d.value)));
 
 		// console.log("volumeValues", volumeValues)
 		const base = xScale => head(xScale.range());
 
 		const [start, end] = orient === "right"
-				? [begin, begin + sessionWidth * maxProfileWidthPercent / 100]
-				: [finish, finish - sessionWidth * (100 - maxProfileWidthPercent) / 100];
+			? [begin, begin + sessionWidth * maxProfileWidthPercent / 100]
+			: [finish, finish - sessionWidth * (100 - maxProfileWidthPercent) / 100];
 
 		const xScale = scaleLinear()
-				.domain([0, max(volumeValues)])
-				.range([start, end]);
+			.domain([0, max(volumeValues)])
+			.range([start, end]);
 
 		// console.log(xScale.domain())
 
@@ -176,25 +176,25 @@ function helper(props, moreProps, xAccessor, width) {
 		// console.log("totalVolumes", totalVolumes)
 
 		const rects = zip(values, totalVolumes)
-				.map(([d, { x, ws }]) => {
-					const w1 = ws[0] || { type: "up", width: 0 };
-					const w2 = ws[1] || { type: "down", width: 0 };
+			.map(([d, { x, ws }]) => {
+				const w1 = ws[0] || { type: "up", width: 0 };
+				const w2 = ws[1] || { type: "down", width: 0 };
 
-					return {
-						// y: yScale(d.x + d.dx),
-						y: yScale(d.x1),
-						// height: yScale(d.x - d.dx) - yScale(d.x),
-						height: yScale(d.x1) - yScale(d.x0),
-						x,
-						width,
-						w1: w1.width,
-						w2: w2.width,
-						stroke1: functor(stroke)(w1),
-						stroke2: functor(stroke)(w2),
-						fill1: functor(fill)(w1),
-						fill2: functor(fill)(w2),
-					};
-				});
+				return {
+					// y: yScale(d.x + d.dx),
+					y: yScale(d.x1),
+					// height: yScale(d.x - d.dx) - yScale(d.x),
+					height: yScale(d.x1) - yScale(d.x0),
+					x,
+					width,
+					w1: w1.width,
+					w2: w2.width,
+					stroke1: functor(stroke)(w1),
+					stroke2: functor(stroke)(w2),
+					fill1: functor(fill)(w1),
+					fill2: functor(fill)(w2),
+				};
+			});
 
 		// console.log("rects", rects)
 

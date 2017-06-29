@@ -44,7 +44,7 @@ class RSITooltip extends Component {
 			clip={false}
 			svgDraw={this.renderSVG}
 			drawOn={["mousemove"]}
-			/>;
+		/>;
 	}
 }
 

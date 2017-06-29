@@ -40,7 +40,7 @@ class BollingerBandTooltip extends Component {
 		const tooltipValue = `${top}, ${middle}, ${bottom}`;
 		return (
 			<g transform={`translate(${ x }, ${ y })`}
-					className={this.props.className} onClick={onClick}>
+				className={this.props.className} onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={this.props.fontFamily} fontSize={this.props.fontSize}>
 					<ToolTipTSpanLabel fill={labelFill}>{tooltipLabel}</ToolTipTSpanLabel>
@@ -54,7 +54,7 @@ class BollingerBandTooltip extends Component {
 			clip={false}
 			svgDraw={this.renderSVG}
 			drawOn={["mousemove"]}
-			/>;
+		/>;
 	}
 }
 

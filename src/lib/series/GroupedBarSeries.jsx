@@ -31,7 +31,7 @@ class GroupedBarSeries extends Component {
 			canvasDraw={this.drawOnCanvas}
 			canvasToDraw={getAxisCanvas}
 			drawOn={["pan"]}
-			/>;
+		/>;
 	}
 }
 

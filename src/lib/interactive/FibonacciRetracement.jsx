@@ -152,7 +152,7 @@ class FibonacciRetracement extends Component {
 				fontSize={fontSize}
 				fontStroke={fontStroke}
 				{...current}
-				/>
+			/>
 			: null;
 
 		return <g>
@@ -169,7 +169,7 @@ class FibonacciRetracement extends Component {
 					{...(idx === overrideIndex ? override : each)}
 					onDrag={this.handleDrag}
 					onDragComplete={this.handleDragComplete}
-					/>;
+				/>;
 			})}
 			{currentRetracement}
 			<MouseLocationIndicator

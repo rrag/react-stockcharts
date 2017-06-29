@@ -13,14 +13,14 @@ const ALGORITHM_TYPE = "WMA";
 export default function() {
 
 	const base = baseIndicator()
-            .type(ALGORITHM_TYPE)
-            .accessor(d => d.wma);
+		.type(ALGORITHM_TYPE)
+		.accessor(d => d.wma);
 
 	const underlyingAlgorithm = wma();
 
 	const mergedAlgorithm = merge()
-        .algorithm(underlyingAlgorithm)
-        .merge((datum, indicator) => { datum.wma = indicator; });
+		.algorithm(underlyingAlgorithm)
+		.merge((datum, indicator) => { datum.wma = indicator; });
 
 	const indicator = function(data, options = { merge: true }) {
 		if (options.merge) {

@@ -118,7 +118,7 @@ class GannFan extends Component {
 			onBlur={onBlur}
 
 			drawOn={["mousemove", "mouseleave", "pan", "drag"]}
-			/>;
+		/>;
 	}
 }
 

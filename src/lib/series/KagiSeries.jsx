@@ -25,7 +25,7 @@ class KagiSeries extends Component {
 			canvasToDraw={getAxisCanvas}
 			canvasDraw={this.drawOnCanvas}
 			drawOn={["pan"]}
-			/>;
+		/>;
 	}
 	renderSVG(moreProps) {
 		const { xAccessor } = moreProps;

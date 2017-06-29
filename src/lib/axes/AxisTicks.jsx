@@ -114,8 +114,8 @@ AxisTicks.helper = (props, scale) => {
 		: tickValues;
 
 	const baseFormat = scale.tickFormat
-			? scale.tickFormat.apply(scale, tickArguments)
-			: identity;
+		? scale.tickFormat.apply(scale, tickArguments)
+		: identity;
 
 	const format = isNotDefined(tickFormat)
 		? baseFormat

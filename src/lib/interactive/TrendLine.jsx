@@ -98,14 +98,14 @@ class TrendLine extends Component {
 
 		const tempLine = isDefined(current) && isDefined(current.end)
 			? <StraightLine type={type}
-					noHover
-					x1Value={current.start[0]}
-					y1Value={current.start[1]}
-					x2Value={current.end[0]}
-					y2Value={current.end[1]}
-					stroke={stroke}
-					strokeWidth={strokeWidth}
-					opacity={opacity} />
+				noHover
+				x1Value={current.start[0]}
+				y1Value={current.start[1]}
+				x2Value={current.end[0]}
+				y2Value={current.end[1]}
+				stroke={stroke}
+				strokeWidth={strokeWidth}
+				opacity={opacity} />
 			: null;
 
 		return <g>
@@ -125,7 +125,7 @@ class TrendLine extends Component {
 					onDragComplete={this.handleDragLineComplete}
 					edgeInteractiveCursor="react-stockcharts-move-cursor"
 					lineInteractiveCursor="react-stockcharts-move-cursor"
-					/>;
+				/>;
 			})}
 			{tempLine}
 			<MouseLocationIndicator

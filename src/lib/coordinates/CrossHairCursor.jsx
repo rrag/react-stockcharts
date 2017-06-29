@@ -64,7 +64,7 @@ class CrossHairCursor extends Component {
 			canvasDraw={this.drawOnCanvas}
 			canvasToDraw={getMouseCanvas}
 			drawOn={["mousemove", "pan"]}
-			/>;
+		/>;
 	}
 }
 

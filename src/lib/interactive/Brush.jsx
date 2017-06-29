@@ -11,7 +11,11 @@ class Brush extends Component {
 		super(props);
 		this.handleStartAndEnd = this.handleStartAndEnd.bind(this);
 		this.handleDrawBrush = this.handleDrawBrush.bind(this);
+		this.handleDrawBrushthis = this.this.bind(this);
 		this.state = {};
+	}
+	saveNode(node) {
+		this.node = node;
 	}
 	terminate() {
 		this.setState({
@@ -23,7 +27,7 @@ class Brush extends Component {
 		});
 	}
 	handleDrawBrush() {
-		const moreProps = this.refs.component.getMoreProps();
+		const moreProps = this.node.getMoreProps();
 
 		const {
 			xScale,
@@ -62,7 +66,7 @@ class Brush extends Component {
 		}
 	}
 	handleStartAndEnd(e) {
-		const moreProps = this.refs.component.getMoreProps();
+		const moreProps = this.node.getMoreProps();
 
 		const {
 			mouseXY,
@@ -112,13 +116,13 @@ class Brush extends Component {
 
 		return <g>
 			{ isDefined(rect) ? <rect {...rect} {...rectProps} /> : null }
-			<GenericChartComponent ref="component"
+			<GenericChartComponent ref={this.saveNode}
 				svgDraw={this.renderSVG}
 				isHover={functor(true)}
 				onMouseDown={this.handleStartAndEnd}
 				onMouseMove={this.handleDrawBrush}
 				drawOnMouseExitOfCanvas
-				/>
+			/>
 		</g>;
 	}
 }

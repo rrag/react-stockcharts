@@ -257,13 +257,13 @@ class EachEquidistantChannel extends Component {
 				onDragStart={this.handleDragStart}
 				onDrag={this.handleChannelDrag}
 				onDragComplete={this.handleDragComplete}
-				/>
+			/>
 			{line1Edge}
 			{line2Edge}
 			<HoverTextNearMouse show={hover && !selected}
 				bgHeight={18}
 				bgWidth={120}
-				children="Click to select object" />
+				text="Click to select object" />
 		</g>;
 	}
 }

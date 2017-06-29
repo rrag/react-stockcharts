@@ -26,12 +26,12 @@ class LabelAnnotation extends Component {
 		return (<g className={className}>
 			<title>{tooltip}</title>
 			<text x={xPos} y={yPos}
-					fontFamily={fontFamily} fontSize={fontSize}
-					fill={fill}
-					opacity={opacity}
-					transform={`rotate(${rotate}, ${xPos}, ${yPos})`}
-					onClick={this.handleClick}
-					textAnchor={textAnchor}>{text}</text>
+				fontFamily={fontFamily} fontSize={fontSize}
+				fill={fill}
+				opacity={opacity}
+				transform={`rotate(${rotate}, ${xPos}, ${yPos})`}
+				onClick={this.handleClick}
+				textAnchor={textAnchor}>{text}</text>
 		</g>);
 	}
 }

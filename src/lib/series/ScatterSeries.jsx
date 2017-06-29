@@ -41,7 +41,7 @@ class ScatterSeries extends Component {
 			canvasDraw={this.drawOnCanvas}
 			canvasToDraw={getAxisCanvas}
 			drawOn={["pan"]}
-			/>;
+		/>;
 	}
 }
 

@@ -53,7 +53,7 @@ class ClickCallback extends Component {
 			isHover={functor(true)}
 			onClick={this.handleClick}
 			onContextMenu={this.handleContextMenu}
-			/>;
+		/>;
 	}
 }
 

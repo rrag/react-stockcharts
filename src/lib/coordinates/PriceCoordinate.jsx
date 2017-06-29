@@ -7,8 +7,6 @@ import { drawOnCanvas, renderSVG } from "./EdgeCoordinateV2";
 import GenericChartComponent from "../GenericChartComponent";
 import { getMouseCanvas } from "../GenericComponent";
 
-import { isNotDefined } from "../utils";
-
 class PriceCoordinate extends Component {
 	constructor(props) {
 		super(props);
@@ -30,7 +28,7 @@ class PriceCoordinate extends Component {
 			canvasDraw={this.drawOnCanvas}
 			canvasToDraw={getMouseCanvas}
 			drawOn={["pan"]}
-			/>;
+		/>;
 	}
 }
 

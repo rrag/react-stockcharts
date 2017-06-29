@@ -38,7 +38,7 @@ class StackedBarSeries extends Component {
 			canvasDraw={this.drawOnCanvas}
 			canvasToDraw={getAxisCanvas}
 			drawOn={["pan"]}
-			/>;
+		/>;
 	}
 }
 
@@ -154,18 +154,18 @@ export function getBarsSVG2(props, bars) {
 	return bars.map((d, idx) => {
 		if (d.width <= 1) {
 			return <line key={idx} className={d.className}
-						stroke={d.fill}
-						x1={d.x} y1={d.y}
-						x2={d.x} y2={d.y + d.height} />;
+				stroke={d.fill}
+				x1={d.x} y1={d.y}
+				x2={d.x} y2={d.y + d.height} />;
 		}
 		return <rect key={idx} className={d.className}
-					stroke={d.stroke}
-					fill={d.fill}
-					x={d.x}
-					y={d.y}
-					width={d.width}
-					fillOpacity={opacity}
-					height={d.height} />;
+			stroke={d.stroke}
+			fill={d.fill}
+			x={d.x}
+			y={d.y}
+			width={d.width}
+			fillOpacity={opacity}
+			height={d.height} />;
 	});
 }
 
@@ -283,39 +283,39 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 	// console.log(merge(newData));
 
 	const bars = merge(newData)
-			// .filter(d => isDefined(d.y))
-			.map(d => {
-				// let baseValue = yScale.invert(getBase(xScale, yScale, d.datum));
-				let y = yScale(d[1]);
-				/* let h = isDefined(d.y0) && d.y0 !== 0 && !isNaN(d.y0)
+		// .filter(d => isDefined(d.y))
+		.map(d => {
+			// let baseValue = yScale.invert(getBase(xScale, yScale, d.datum));
+			let y = yScale(d[1]);
+			/* let h = isDefined(d.y0) && d.y0 !== 0 && !isNaN(d.y0)
 					? yScale(d.y0) - y
 					: getBase(xScale, yScale, d.datum) - yScale(d.y)*/
-				let h = getBase(xScale, yScale, d.data) - yScale(d[1] - d[0]);
-				// console.log(d.y, yScale.domain(), yScale.range())
-				// let h = ;
-				// if (d.y < 0) h = -h;
-				// console.log(d, y, h)
-				if (h < 0) {
-					y = y + h;
-					h = -h;
-				}
-				// console.log(d.data.i, Math.round(offset - (d.data.i > 0 ? (eachBarWidth + spaceBetweenBar) * d.data.i : 0)))
-				/* console.log(d.series, d.datum.date, d.x,
+			let h = getBase(xScale, yScale, d.data) - yScale(d[1] - d[0]);
+			// console.log(d.y, yScale.domain(), yScale.range())
+			// let h = ;
+			// if (d.y < 0) h = -h;
+			// console.log(d, y, h)
+			if (h < 0) {
+				y = y + h;
+				h = -h;
+			}
+			// console.log(d.data.i, Math.round(offset - (d.data.i > 0 ? (eachBarWidth + spaceBetweenBar) * d.data.i : 0)))
+			/* console.log(d.series, d.datum.date, d.x,
 					getBase(xScale, yScale, d.datum), `d.y=${d.y}, d.y0=${d.y0}, y=${y}, h=${h}`)*/
-				return {
-					...d.data.appearance,
-					// series: d.series,
-					// i: d.x,
-					x: Math.round(xScale(d.data.x) - width / 2),
-					y: y,
-					groupOffset: Math.round(offset - (d.data.i > 0 ? (eachBarWidth + spaceBetweenBar) * d.data.i : 0)),
-					groupWidth: Math.round(eachBarWidth),
-					offset: Math.round(offset),
-					height: h,
-					width: barWidth,
-				};
-			})
-			.filter(bar => !isNaN(bar.y));
+			return {
+				...d.data.appearance,
+				// series: d.series,
+				// i: d.x,
+				x: Math.round(xScale(d.data.x) - width / 2),
+				y: y,
+				groupOffset: Math.round(offset - (d.data.i > 0 ? (eachBarWidth + spaceBetweenBar) * d.data.i : 0)),
+				groupWidth: Math.round(eachBarWidth),
+				offset: Math.round(offset),
+				height: h,
+				width: barWidth,
+			};
+		})
+		.filter(bar => !isNaN(bar.y));
 
 	return after(bars);
 }

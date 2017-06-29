@@ -10,9 +10,9 @@ export default function() {
 
 	const underlyingAlgorithm = forceIndex();
 	const merge = zipper()
-			.combine((force, smoothed) => {
-				return { force, smoothed };
-			});
+		.combine((force, smoothed) => {
+			return { force, smoothed };
+		});
 
 	let options = defaultOptions;
 	function calculator(data) {

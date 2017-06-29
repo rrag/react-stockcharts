@@ -22,7 +22,7 @@ function Square(props) {
 			fill={fill}
 			width={w}
 			height={w}
-			/>
+		/>
 	);
 }
 Square.propTypes = {

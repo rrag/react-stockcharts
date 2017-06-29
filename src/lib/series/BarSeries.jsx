@@ -48,7 +48,7 @@ class BarSeries extends Component {
 			canvasDraw={this.drawOnCanvas}
 
 			drawOn={["pan"]}
-			/>;
+		/>;
 	}
 }
 

@@ -51,7 +51,7 @@ class StochasticTooltip extends Component {
 			clip={false}
 			svgDraw={this.renderSVG}
 			drawOn={["mousemove"]}
-			/>;
+		/>;
 	}
 }
 

@@ -81,7 +81,7 @@ class GenericComponent extends Component {
 			break;
 		}
 		case "mouseenter":
-				// DO NOT DRAW FOR THESE EVENTS
+			// DO NOT DRAW FOR THESE EVENTS
 			break;
 		case "contextmenu": {
 			if (this.moreProps.hovering && this.props.onContextMenu) {
@@ -195,7 +195,7 @@ class GenericComponent extends Component {
 		if (proceed
 			|| this.props.selected /* this is to draw as soon as you select */
 			|| force
-			) {
+		) {
 			const { chartCanvasType } = this.context;
 			const { canvasDraw } = this.props;
 

@@ -137,8 +137,8 @@ export function getClosestItem(array, value, accessor, log) {
 	}
 
 	const closest = (Math.abs(accessor(array[left]) - value) < Math.abs(accessor(array[right]) - value))
-						? array[left]
-						: array[right];
+		? array[left]
+		: array[right];
 	if (log) {
 		console.log(array[left], array[right], closest, left, right);
 	}

@@ -80,13 +80,13 @@ export const SMA = {
 };
 
 export const WMA = {
-    // source: d => d.close, // "high", "low", "open", "close"
+	// source: d => d.close, // "high", "low", "open", "close"
 	sourcePath: "close",
 	windowSize: 10,
 };
 
 export const TMA = {
-    // source: d => d.close, // "high", "low", "open", "close"
+	// source: d => d.close, // "high", "low", "open", "close"
 	sourcePath: "close",
 	windowSize: 10,
 };

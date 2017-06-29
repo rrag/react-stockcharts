@@ -38,7 +38,7 @@ class StraightLine extends Component {
 			canvasDraw={this.drawOnCanvas}
 			canvasToDraw={getAxisCanvas}
 			drawOn={["pan"]}
-			/>;
+		/>;
 	}
 	renderSVG(moreProps) {
 		const { width, height } = moreProps;

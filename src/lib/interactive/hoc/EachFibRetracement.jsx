@@ -228,7 +228,7 @@ class EachFibRetracement extends Component {
 						onDragStart={this.handleLineDragStart}
 						onDrag={dragHandler}
 						onDragComplete={this.handleDragComplete}
-						/>
+					/>
 					<Text
 						selected={selected}
 						xyProvider={xyProvider}
@@ -262,7 +262,7 @@ class EachFibRetracement extends Component {
 					<HoverTextNearMouse show={hover && !selected}
 						bgHeight={18}
 						bgWidth={120}
-						children="Click to select object" />
+						text="Click to select object" />
 				</g>;
 			})}
 		</g>;

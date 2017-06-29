@@ -25,7 +25,7 @@ class HoverTooltip extends Component {
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
 			drawOn={["mousemove", "pan"/* , "mouseleave" */]}
-			/>;
+		/>;
 	}
 	renderSVG(moreProps) {
 		const pointer = helper(this.props, moreProps);

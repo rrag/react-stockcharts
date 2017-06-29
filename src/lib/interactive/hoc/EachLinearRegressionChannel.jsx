@@ -136,7 +136,7 @@ class EachLinearRegressionChannel extends Component {
 			<HoverTextNearMouse show={hover && !selected}
 				bgHeight={18}
 				bgWidth={120}
-				children="Click to select object" />
+				text="Click to select object" />
 		</g>;
 	}
 }

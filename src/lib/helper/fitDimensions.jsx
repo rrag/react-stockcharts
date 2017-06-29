@@ -90,7 +90,7 @@ export default function fitDimensions(WrappedComponent, props = {}) {
 					ratio={this.state.ratio}
 					{...this.props}
 					{...ref}
-					/>;
+				/>;
 			} else {
 				return <div {...ref}>
 					<canvas ref={this.setTestCanvas}  />

@@ -40,7 +40,7 @@ class EdgeIndicator extends Component {
 			canvasDraw={this.drawOnCanvas}
 			canvasToDraw={getAxisCanvas}
 			drawOn={["pan"]}
-			/>;
+		/>;
 	}
 }
 
@@ -120,8 +120,8 @@ function getEdge(props, moreProps, item) {
 
 	const [left, right] = xScale.range();
 	const edgeX = edgeAt === "left"
-			? left - yAxisPad
-			: right + yAxisPad;
+		? left - yAxisPad
+		: right + yAxisPad;
 
 	return {
 		// ...props,

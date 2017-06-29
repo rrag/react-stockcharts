@@ -102,7 +102,7 @@ class MouseLocationIndicator extends Component {
 			canvasToDraw={getMouseCanvas}
 
 			drawOn={["mousemove", "pan"]}
-			/>;
+		/>;
 	}
 }
 

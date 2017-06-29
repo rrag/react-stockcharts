@@ -55,7 +55,7 @@ class MACDTooltip extends Component {
 			clip={false}
 			svgDraw={this.renderSVG}
 			drawOn={["mousemove"]}
-			/>;
+		/>;
 	}
 }
 

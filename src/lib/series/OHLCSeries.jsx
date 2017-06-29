@@ -31,7 +31,7 @@ class OHLCSeries extends Component {
 			canvasDraw={this.drawOnCanvas}
 			clip={clip}
 			drawOn={["pan"]}
-			/>;
+		/>;
 	}
 	renderSVG(moreProps) {
 		const { className, yAccessor } = this.props;
@@ -115,23 +115,23 @@ function getOHLCBars(props, xAccessor, yAccessor, xScale, yScale, plotData) {
 	const strokeWidth = Math.min(barWidth, 6);
 
 	const bars = plotData
-			.filter(d => isDefined(yAccessor(d).close))
-			.map(d => {
-				const ohlc = yAccessor(d),
-					x = Math.round(xScale(xAccessor(d))),
-					y1 = yScale(ohlc.high),
-					y2 = yScale(ohlc.low),
-					openX1 = x - barWidth,
-					openX2 = x + strokeWidth / 2,
-					openY = yScale(ohlc.open),
-					closeX1 = x - strokeWidth / 2,
-					closeX2 = x + barWidth,
-					closeY = yScale(ohlc.close),
-					className = classNameFunc(d),
-					stroke = strokeFunc(d);
+		.filter(d => isDefined(yAccessor(d).close))
+		.map(d => {
+			const ohlc = yAccessor(d),
+				x = Math.round(xScale(xAccessor(d))),
+				y1 = yScale(ohlc.high),
+				y2 = yScale(ohlc.low),
+				openX1 = x - barWidth,
+				openX2 = x + strokeWidth / 2,
+				openY = yScale(ohlc.open),
+				closeX1 = x - strokeWidth / 2,
+				closeX2 = x + barWidth,
+				closeY = yScale(ohlc.close),
+				className = classNameFunc(d),
+				stroke = strokeFunc(d);
 
-				return { x, y1, y2, openX1, openX2, openY, closeX1, closeX2, closeY, stroke, className };
-			});
+			return { x, y1, y2, openX1, openX2, openY, closeX1, closeX2, closeY, stroke, className };
+		});
 	return { barWidth, strokeWidth, bars };
 }
 

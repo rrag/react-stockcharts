@@ -84,7 +84,7 @@ class SARSeries extends Component {
 			onDoubleClick={this.props.onDoubleClick}
 			onContextMenu={this.props.onContextMenu}
 			{...hoverProps}
-			/>;
+		/>;
 	}
 }
 

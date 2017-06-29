@@ -119,12 +119,12 @@ class EquidistantChannel extends Component {
 
 		const tempChannel = isDefined(current) && isDefined(current.endXY)
 			? <EachEquidistantChannel
-					interactive={false}
-					{...current}
-					stroke={stroke}
-					strokeWidth={strokeWidth}
-					fill={fill}
-					opacity={opacity} />
+				interactive={false}
+				{...current}
+				stroke={stroke}
+				strokeWidth={strokeWidth}
+				fill={fill}
+				opacity={opacity} />
 			: null;
 
 		return <g>
@@ -139,7 +139,7 @@ class EquidistantChannel extends Component {
 					opacity={opacity}
 					onDrag={this.handleDragChannel}
 					onDragComplete={this.handleDragChannelComplete}
-					/>;
+				/>;
 			})}
 			{tempChannel}
 			<MouseLocationIndicator

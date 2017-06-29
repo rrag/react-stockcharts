@@ -31,8 +31,8 @@ const MAX_LEVEL = 17;
 const tickLevelBisector = bisector(function(d) { return d.target; }).left;
 
 export default function financeDiscontinuousScale(index,
-		interval,
-		backingLinearScale = scaleLinear()) {
+	interval,
+	backingLinearScale = scaleLinear()) {
 
 	if (isNotDefined(index) /* || isNotDefined(interval) */)
 		throw new Error("Use the discontinuousTimeScaleProvider to create financeDiscontinuousScale");

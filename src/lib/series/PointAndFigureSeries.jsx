@@ -29,7 +29,7 @@ class PointAndFigureSeries extends Component {
 			canvasDraw={this.drawOnCanvas}
 			canvasToDraw={getAxisCanvas}
 			drawOn={["pan"]}
-			/>;
+		/>;
 	}
 	renderSVG(moreProps) {
 		const { xAccessor } = moreProps;
@@ -148,22 +148,22 @@ function getColumns(xScale, xAccessor, yScale, plotData) {
 	const boxHeight = Math.abs(yScale(anyBox.open) - yScale(anyBox.close));
 
 	const columns = plotData
-			.filter(d => isDefined(d.close))
-			.map(d => {
-				const boxes = d.boxes.map((box) => ({
-					columnWidth: columnWidth,
-					boxHeight: boxHeight,
-					open: yScale(box.open),
-					close: yScale(box.close),
-				}));
+		.filter(d => isDefined(d.close))
+		.map(d => {
+			const boxes = d.boxes.map((box) => ({
+				columnWidth: columnWidth,
+				boxHeight: boxHeight,
+				open: yScale(box.open),
+				close: yScale(box.close),
+			}));
 
-				const xOffset = (xScale(xAccessor(d)) - (columnWidth / 2));
-				return {
-					boxes: boxes,
-					direction: d.direction,
-					offset: [xOffset, 0],
-				};
-			});
+			const xOffset = (xScale(xAccessor(d)) - (columnWidth / 2));
+			return {
+				boxes: boxes,
+				direction: d.direction,
+				offset: [xOffset, 0],
+			};
+		});
 	return columns;
 }
 

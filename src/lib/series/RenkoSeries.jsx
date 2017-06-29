@@ -32,7 +32,7 @@ class RenkoSeries extends Component {
 			canvasDraw={this.drawOnCanvas}
 			canvasToDraw={getAxisCanvas}
 			drawOn={["pan"]}
-			/>;
+		/>;
 	}
 	renderSVG(moreProps) {
 		const { xAccessor } = moreProps;
@@ -42,11 +42,11 @@ class RenkoSeries extends Component {
 
 		const candles = getRenko(this.props, plotData, xScale, xAccessor, yScale, yAccessor)
 			.map((each, idx) => (<rect key={idx} className={each.className}
-								fill={each.fill}
-								x={each.x}
-								y={each.y}
-								width={each.width}
-								height={each.height} />));
+				fill={each.fill}
+				x={each.x}
+				y={each.y}
+				width={each.width}
+				height={each.height} />));
 
 		return (
 			<g>
@@ -114,27 +114,27 @@ function getRenko(props, plotData, xScale, xAccessor, yScale, yAccessor) {
 
 	const candleWidth = (width / (plotData.length - 1));
 	const candles = plotData
-			.filter(d => isDefined(yAccessor(d).close))
-			.map(d => {
-				const ohlc = yAccessor(d);
-				const x = xScale(xAccessor(d)) - 0.5 * candleWidth,
-					y = yScale(Math.max(ohlc.open, ohlc.close)),
-					height = Math.abs(yScale(ohlc.open) - yScale(ohlc.close)),
-					className = (ohlc.open <= ohlc.close) ? classNames.up : classNames.down;
+		.filter(d => isDefined(yAccessor(d).close))
+		.map(d => {
+			const ohlc = yAccessor(d);
+			const x = xScale(xAccessor(d)) - 0.5 * candleWidth,
+				y = yScale(Math.max(ohlc.open, ohlc.close)),
+				height = Math.abs(yScale(ohlc.open) - yScale(ohlc.close)),
+				className = (ohlc.open <= ohlc.close) ? classNames.up : classNames.down;
 
-				const svgfill = d.fullyFormed
-					? (ohlc.open <= ohlc.close ? fill.up : fill.down)
-					: fill.partial;
+			const svgfill = d.fullyFormed
+				? (ohlc.open <= ohlc.close ? fill.up : fill.down)
+				: fill.partial;
 
-				return {
-					className: className,
-					fill: svgfill,
-					x: x,
-					y: y,
-					height: height,
-					width: candleWidth,
-				};
-			});
+			return {
+				className: className,
+				fill: svgfill,
+				x: x,
+				y: y,
+				height: height,
+				width: candleWidth,
+			};
+		});
 	return candles;
 }
 

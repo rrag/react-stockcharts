@@ -14,7 +14,7 @@ class Annotate extends Component {
 		return <GenericChartComponent
 			svgDraw={this.renderSVG}
 			drawOn={["pan"]}
-			/>;
+		/>;
 	}
 	renderSVG(moreProps) {
 		const { xAccessor } = moreProps;
@@ -26,12 +26,12 @@ class Annotate extends Component {
 		return (
 			<g className={`react-stockcharts-enable-interaction ${className}`}>
 				{data.map((d, idx) => <Annotation key={idx}
-						{...usingProps}
-						xScale={xScale}
-						yScale={yScale}
-						xAccessor={xAccessor}
-						plotData={plotData}
-						datum={d} />)}
+					{...usingProps}
+					xScale={xScale}
+					yScale={yScale}
+					xAccessor={xAccessor}
+					plotData={plotData}
+					datum={d} />)}
 			</g>
 		);
 	}

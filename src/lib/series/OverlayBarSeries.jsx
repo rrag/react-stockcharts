@@ -45,7 +45,7 @@ class OverlayBarSeries extends Component {
 			canvasDraw={this.drawOnCanvas}
 			clip={clip}
 			drawOn={["pan"]}
-			/>;
+		/>;
 	}
 }
 
@@ -100,40 +100,40 @@ function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData) {
 	// console.log(xScale.domain(), yScale.domain());
 
 	const bars = plotData
-			.map(d => {
-				// eslint-disable-next-line prefer-const
-				let innerBars = yAccessor.map((eachYAccessor, i) => {
-					const yValue = eachYAccessor(d);
-					if (isNotDefined(yValue)) return undefined;
+		.map(d => {
+			// eslint-disable-next-line prefer-const
+			let innerBars = yAccessor.map((eachYAccessor, i) => {
+				const yValue = eachYAccessor(d);
+				if (isNotDefined(yValue)) return undefined;
 
-					const xValue = xAccessor(d);
-					const x = Math.round(xScale(xValue)) - offset;
-					const y = yScale(yValue);
-					// console.log(yValue, y, xValue, x)
-					return {
-						width: barWidth,
-						x: x,
-						y: y,
-						className: getClassName(d, i),
-						stroke: stroke ? getFill(d, i) : "none",
-						fill: getFill(d, i),
-						i,
-					};
-				}).filter(yValue => isDefined(yValue));
+				const xValue = xAccessor(d);
+				const x = Math.round(xScale(xValue)) - offset;
+				const y = yScale(yValue);
+				// console.log(yValue, y, xValue, x)
+				return {
+					width: barWidth,
+					x: x,
+					y: y,
+					className: getClassName(d, i),
+					stroke: stroke ? getFill(d, i) : "none",
+					fill: getFill(d, i),
+					i,
+				};
+			}).filter(yValue => isDefined(yValue));
 
-				let b = getBase(xScale, yScale, d);
-				let h;
-				for (let i = innerBars.length - 1; i >= 0; i--) {
-					h = b - innerBars[i].y;
-					if (h < 0) {
-						innerBars[i].y = b;
-						h = -1 * h;
-					}
-					innerBars[i].height = h;
-					b = innerBars[i].y;
+			let b = getBase(xScale, yScale, d);
+			let h;
+			for (let i = innerBars.length - 1; i >= 0; i--) {
+				h = b - innerBars[i].y;
+				if (h < 0) {
+					innerBars[i].y = b;
+					h = -1 * h;
 				}
-				return innerBars;
-			});
+				innerBars[i].height = h;
+				b = innerBars[i].y;
+			}
+			return innerBars;
+		});
 
 	return merge(bars);
 }

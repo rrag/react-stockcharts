@@ -92,7 +92,7 @@ class MovingAverageTooltip extends Component {
 							fontSize={fontSize}
 							textFill={textFill}
 							labelFill={labelFill}
-							/>;
+						/>;
 					})}
 			</g>
 		);
@@ -102,7 +102,7 @@ class MovingAverageTooltip extends Component {
 			clip={false}
 			svgDraw={this.renderSVG}
 			drawOn={["mousemove"]}
-			/>;
+		/>;
 	}
 }
 

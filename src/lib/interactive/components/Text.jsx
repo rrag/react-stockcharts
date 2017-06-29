@@ -59,7 +59,7 @@ class Text extends Component {
 			canvasDraw={this.drawOnCanvas}
 
 			drawOn={["mousemove", "pan", "drag"]}
-			/>;
+		/>;
 	}
 }
 

@@ -98,19 +98,19 @@ class GannFan extends Component {
 
 		const tempChannel = isDefined(current) && isDefined(current.endXY)
 			? <EachGannFan
-					interactive={false}
-					{...current}
-					stroke={stroke}
-					strokeWidth={strokeWidth}
-					fill={fill}
-					opacity={opacity}
-					fillOpacity={fillOpacity}
+				interactive={false}
+				{...current}
+				stroke={stroke}
+				strokeWidth={strokeWidth}
+				fill={fill}
+				opacity={opacity}
+				fillOpacity={fillOpacity}
 
-					fontFamily={fontFamily}
-					fontSize={fontSize}
-					fontStroke={fontStroke}
+				fontFamily={fontFamily}
+				fontSize={fontSize}
+				fontStroke={fontStroke}
 
-					/>
+			/>
 			: null;
 
 		return <g>
@@ -131,7 +131,7 @@ class GannFan extends Component {
 
 					onDrag={this.handleDragChannel}
 					onDragComplete={this.handleDragChannelComplete}
-					/>;
+				/>;
 			})}
 			{tempChannel}
 			<MouseLocationIndicator

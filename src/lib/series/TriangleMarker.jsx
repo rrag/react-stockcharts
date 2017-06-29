@@ -24,7 +24,7 @@ function Triangle(props) {
 			strokeWidth={strokeWidth}
 			fillOpacity={opacity}
 			fill={fill}
-			/>
+		/>
 	);
 }
 Triangle.propTypes = {

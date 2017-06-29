@@ -27,7 +27,7 @@ class HoverTextNearMouse extends Component {
 			bgOpacity,
 			bgWidth,
 			bgHeight,
-			children,
+			text,
 		} = this.props;
 
 		const { mouseXY, height, width, show: mouseInsideCanvas } = moreProps;
@@ -54,7 +54,7 @@ class HoverTextNearMouse extends Component {
 			ctx.fillStyle = fill;
 			ctx.beginPath();
 
-			ctx.fillText(children, cx + PADDING / 2, cy + fontSize);
+			ctx.fillText(text, cx + PADDING / 2, cy + fontSize);
 		}
 	}
 	renderSVG(moreProps) {
@@ -70,7 +70,7 @@ class HoverTextNearMouse extends Component {
 			canvasDraw={this.drawOnCanvas}
 
 			drawOn={["mousemove"]}
-			/>;
+		/>;
 	}
 }
 
@@ -78,7 +78,7 @@ HoverTextNearMouse.propTypes = {
 	fontFamily: PropTypes.string.isRequired,
 	fontSize: PropTypes.number.isRequired,
 	fill: PropTypes.string.isRequired,
-	children: PropTypes.string.isRequired,
+	text: PropTypes.string.isRequired,
 	bgFill: PropTypes.string.isRequired,
 	bgOpacity: PropTypes.number.isRequired,
 	bgWidth: PropTypes.number.isRequired,

@@ -139,8 +139,8 @@ export default function() {
 					box.toDate = dateAccessor(d);
 					box.open = column.open;
 					const noOfBoxes = column.direction > 0
-										? Math.floor(upwardMovement / boxSize)
-										: Math.floor(downwardMovement / boxSize);
+						? Math.floor(upwardMovement / boxSize)
+						: Math.floor(downwardMovement / boxSize);
 					for (let i = 0; i < noOfBoxes; i++) {
 						box.close = box.open + column.direction * boxSize;
 						const prevBoxClose = box.close;
@@ -188,8 +188,8 @@ export default function() {
 						direction: -1 * column.direction
 					};
 					const noOfBoxes = column.direction > 0
-										? Math.floor(upwardMovement / boxSize)
-										: Math.floor(downwardMovement / boxSize);
+						? Math.floor(upwardMovement / boxSize)
+						: Math.floor(downwardMovement / boxSize);
 					for (let i = 0; i < noOfBoxes; i++) {
 						box.close = box.open + column.direction * boxSize;
 						const prevBoxClose = box.close;

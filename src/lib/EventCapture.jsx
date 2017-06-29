@@ -438,7 +438,7 @@ class EventCapture extends Component {
 				onMouseDown={this.handleMouseDown}
 				onContextMenu={this.handleRightClick}
 				onTouchStart={this.handleTouchStart}
-				/>
+			/>
 		);
 	}
 }

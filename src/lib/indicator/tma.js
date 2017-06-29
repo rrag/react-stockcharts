@@ -13,14 +13,14 @@ const ALGORITHM_TYPE = "TMA";
 export default function() {
 
 	const base = baseIndicator()
-        .type(ALGORITHM_TYPE)
-        .accessor(d => d.tma);
+		.type(ALGORITHM_TYPE)
+		.accessor(d => d.tma);
 
 	const underlyingAlgorithm = tma();
 
 	const mergedAlgorithm = merge()
-        .algorithm(underlyingAlgorithm)
-        .merge((datum, indicator) => { datum.tma = indicator; });
+		.algorithm(underlyingAlgorithm)
+		.merge((datum, indicator) => { datum.tma = indicator; });
 
 	const indicator = function(data, options = { merge: true }) {
 		if (options.merge) {

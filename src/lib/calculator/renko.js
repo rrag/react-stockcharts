@@ -108,16 +108,16 @@ export default function() {
 
 				brick.open = (Math.abs(prevCloseToHigh) < Math.abs(prevOpenToHigh)
 					|| Math.abs(prevCloseToLow) < Math.abs(prevOpenToLow))
-								? prevBrickClose
-								: prevBrickOpen;
+					? prevBrickClose
+					: prevBrickOpen;
 
 				if (noOfBricks >= 1) {
 					let j = 0;
 					for (j = 0; j < noOfBricks; j++) {
 						brick.close = (brick.open < pricingMethod(d).high)
-										// if brick open is less than current price it means it is green/hollow brick
-											? brick.open + brickSize(d)
-											: brick.open - brickSize(d);
+							// if brick open is less than current price it means it is green/hollow brick
+							? brick.open + brickSize(d)
+							: brick.open - brickSize(d);
 						direction = brick.close > brick.open ? 1 : -1;
 						brick.direction = direction;
 						brick.to = idx;

@@ -118,7 +118,7 @@ class ChannelWithArea extends Component {
 			onBlur={onBlur}
 
 			drawOn={["mousemove", "mouseleave", "pan", "drag"]}
-			/>;
+		/>;
 	}
 }
 function helper(props, moreProps) {
