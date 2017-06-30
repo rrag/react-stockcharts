@@ -41,7 +41,7 @@ export default function() {
 
 		const source = path(sourcePath);
 		const meanAlgorithm = movingAverageType === "ema"
-			? ema().windowSize(windowSize).sourcePath(sourcePath)
+			? ema().options({ windowSize, sourcePath })
 			: slidingWindow().windowSize(windowSize)
 				.accumulator(values => mean(values)).sourcePath(sourcePath);
 

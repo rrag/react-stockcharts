@@ -42,7 +42,7 @@ export default function() {
 		const { windowSize, sourcePath, movingAverageType } = options;
 
 		const meanAlgorithm = movingAverageType === "ema"
-			? ema().windowSize(windowSize).sourcePath(sourcePath)
+			? ema().options({ windowSize, sourcePath })
 			: slidingWindow().windowSize(windowSize).accumulator(values => mean(values)).sourcePath(sourcePath);
 
 		const zip = zipper()
