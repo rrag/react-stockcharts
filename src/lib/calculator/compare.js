@@ -17,7 +17,14 @@ export default function() {
 			let result = {};
 
 			mainKeys.forEach(key => {
-				result[key] = (d[key] - b) / b;
+				if (typeof d[key] === "object") {
+					result[key] = {};
+					Object.keys(d[key]).forEach(subkey => {
+						result[key][subkey] = (d[key][subkey] - b) / b;
+					});
+				} else {
+					result[key] = (d[key] - b) / b;
+				}
 			});
 
 			compareKeys.forEach(key => {
