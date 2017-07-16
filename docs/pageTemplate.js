@@ -108,7 +108,6 @@ module.exports = function(params) {
 		${page === "index" ? getIndexContent() : getDocumentationContent()}
 
 		<!-- Placed at the end of the document so the pages load faster -->
-		<script type="text/javascript" src="${chunks["react-stockcharts"].entry}"></script>
 		${page === "index"
 			? `<script type="text/javascript" src="${chunks["react-stockcharts-home"].entry}"></script>`
 			: `<script type="text/javascript" src="${chunks["react-stockcharts-documentation"].entry}"></script>`}
