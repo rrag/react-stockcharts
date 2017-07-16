@@ -11,11 +11,9 @@
 			"presets": [["env"]],
 		},
 		"es": {
-			"presets": [["env", {
-				"es2015": {
-					"modules": false 
-				}
-			}]]
+			"presets": [
+				["env", { "modules": false  }]
+			]
 		},
 		"watch": {
 			"presets": [
