@@ -162,12 +162,14 @@ export function discontinuousTimeScaleProviderBuilder() {
 
 	// eslint-disable-next-line prefer-const
 	let discontinuousTimeScaleProvider = function(data) {
+		/*
 		console.warn("Are you sure you want to use a discontinuousTimeScale?"
 			+ " Use this only if you have discontinuous data which"
 			+ " needs to be displayed as continuous."
 			+ " If you have continuous data use a d3 scale like"
 			+ " `d3.scaleTime`"
 		);
+		*/
 
 		let index = withIndex;
 		let interval = withInterval;
