@@ -1,4 +1,3 @@
-"use strict";
 
 import CandleStickChartWithMACDIndicator from "./CandleStickChartWithMACDIndicator";
 import updatingDataWrapper from "./updatingDataWrapper";

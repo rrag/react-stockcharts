@@ -1,4 +1,3 @@
-"use strict";
 
 import { set } from "d3-collection";
 import { scaleOrdinal, schemeCategory10, scaleLinear, scaleLog } from  "d3-scale";

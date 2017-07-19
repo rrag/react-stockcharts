@@ -1,4 +1,3 @@
-"use strict";
 
 import Kagi from "./Kagi";
 import updatingDataWrapper from "./updatingDataWrapper";

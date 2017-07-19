@@ -15,7 +15,7 @@ class HorizontalBarChartPage extends React.Component {
 			<ContentSection title={HorizontalBarChartPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<TypeChooser ref="container">
+						<TypeChooser>
 							{(type) => (<HorizontalBarChart data={this.props.horizontalBarData} type={type} />)}
 						</TypeChooser>
 					</Section>

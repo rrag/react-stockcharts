@@ -1,4 +1,3 @@
-"use strict";
 
 import PointAndFigure from "./PointAndFigure";
 import updatingDataWrapper from "./updatingDataWrapper";

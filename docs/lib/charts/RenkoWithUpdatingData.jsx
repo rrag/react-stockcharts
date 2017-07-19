@@ -1,4 +1,3 @@
-"use strict";
 
 import Renko from "./Renko";
 import updatingDataWrapper from "./updatingDataWrapper";

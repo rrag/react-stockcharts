@@ -166,7 +166,13 @@ function loadPage() {
 		.then(data => tsvParse(data, parseData(parseDate)));
 	const promiseIntraDayContinuous = fetch("data/bitfinex_xbtusd_1m.csv")
 		.then(response => response.text())
-		.then(data => csvParse(data, parseData(parseDateTime)));
+		.then(data => csvParse(data, parseData(parseDateTime)))
+		.then(data => {
+			data.sort((a, b) => {
+				return a.date.valueOf() - b.date.valueOf();
+			});
+			return data;
+		});
 	const promiseIntraDayDiscontinuous = fetch("data/MSFT_INTRA_DAY.tsv")
 		.then(response => response.text())
 		.then(data => tsvParse(data, parseData(d => new Date(+d))));
@@ -199,6 +205,7 @@ function loadPage() {
 					x4: d.y4,
 				};
 			});
+
 
 			renderPage(MSFT, MSFTfull, intraDayContinuous, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
 			// renderPartialPage(MSFT, MSFTfull, intraDayContinuous, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);

@@ -866,7 +866,6 @@ class ChartCanvas extends Component {
 	}
 	componentWillMount() {
 		const { fullData, ...state } = resetChart(this.props, true);
-
 		this.setState(state);
 		this.fullData = fullData;
 	}

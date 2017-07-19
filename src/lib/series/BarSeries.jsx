@@ -7,11 +7,11 @@ import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
 
 import StackedBarSeries, {
-	// drawOnCanvasHelper,
+	drawOnCanvasHelper,
 	drawOnCanvas2,
 	getBarsSVG2,
-	// svgHelper,
-	// identityStack
+	svgHelper,
+	identityStack
 } from "./StackedBarSeries";
 
 import { functor } from "../utils";
@@ -23,19 +23,25 @@ class BarSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		// const { xAccessor } = moreProps;
 
-		// drawOnCanvasHelper(ctx, this.props, moreProps, xAccessor, identityStack);
-		const bars = getBars(this.props, moreProps);
-		drawOnCanvas2(this.props, ctx, bars);
+		if (this.props.swapScales) {
+			const { xAccessor } = moreProps;
+			drawOnCanvasHelper(ctx, this.props, moreProps, xAccessor, identityStack);
+		} else {
+			const bars = getBars(this.props, moreProps);
+			drawOnCanvas2(this.props, ctx, bars);
+		}
+
 	}
 	renderSVG(moreProps) {
-		// const { xAccessor } = moreProps;
+		if (this.props.swapScales) {
+			const { xAccessor } = moreProps;
+			return <g>{svgHelper(this.props, moreProps, xAccessor, identityStack)}</g>;
+		} else {
+			const bars = getBars(this.props, moreProps);
+			return <g>{getBarsSVG2(this.props, bars)}</g>;
+		}
 
-		// return <g>{svgHelper(this.props, moreProps, xAccessor, identityStack)}</g>;
-
-		const bars = getBars(this.props, moreProps);
-		return <g>{getBarsSVG2(this.props, bars)}</g>;
 	}
 	render() {
 		const { clip } = this.props;
@@ -71,6 +77,7 @@ BarSeries.propTypes = {
 		PropTypes.func, PropTypes.string
 	]).isRequired,
 	clip: PropTypes.bool.isRequired,
+	swapScales: PropTypes.bool.isRequired,
 };
 
 
@@ -96,6 +103,7 @@ function getBars(props, moreProps) {
 	const getBase = functor(baseAt);
 
 	const widthFunctor = functor(props.width);
+
 	const width = widthFunctor(props, {
 		xScale,
 		xAccessor,

@@ -1,4 +1,3 @@
-"use strict";
 
 import { scalePoint } from  "d3-scale";
 import React from "react";

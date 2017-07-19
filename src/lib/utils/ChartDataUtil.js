@@ -12,6 +12,7 @@ import {
 	getClosestItem,
 	zipper,
 	isDefined,
+	isNotDefined,
 	functor,
 } from "./index";
 
@@ -87,9 +88,11 @@ export function getCurrentCharts(chartConfig, mouseXY) {
 }
 
 function setRange(scale, height, padding, flipYScale) {
-	if (scale.rangeRoundPoints) {
+
+	if (scale.rangeRoundPoints || isNotDefined(scale.invert)) {
 		if (isNaN(padding)) throw new Error("padding has to be a number for ordinal scale");
-		scale.rangeRoundPoints(flipYScale ? [0, height] : [height, 0], padding);
+		if (scale.rangeRoundPoints) scale.rangeRoundPoints(flipYScale ? [0, height] : [height, 0], padding);
+		if (scale.rangeRound) scale.range(flipYScale ? [0, height] : [height, 0]).padding(padding);
 	} else {
 		const { top, bottom } = isNaN(padding)
 			? padding
@@ -147,7 +150,7 @@ export function getChartConfigWithUpdatedYScales(chartConfig,
 			const domain = yPan && yPanEnabled
 				? another ? yDomainDY : prevYDomain
 				: realYDomain;
-			// console.log(yPan, yPanEnabled, properYDomain, domain, realYDomain)
+			// console.log(yPan, yPanEnabled, another, domain, realYDomain, prevYDomain);
 			return {
 				...config,
 				yScale: setRange(yScale.copy().domain(domain), height, padding, flipYScale),

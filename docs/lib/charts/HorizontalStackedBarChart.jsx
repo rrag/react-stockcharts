@@ -1,4 +1,3 @@
-"use strict";
 
 import { scaleOrdinal, schemeCategory10, scaleLinear, scalePoint } from  "d3-scale";
 import { set } from "d3-collection";
@@ -32,7 +31,7 @@ class HorizontalStackedBarChart extends React.Component {
 				<Chart id={1}
 						yExtents={data.map(d => d.y)}
 						yScale={scalePoint()}
-						padding={1}>
+						padding={.5}>
 					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="left" orient="left" />
 					<StackedBarSeries

@@ -72,6 +72,7 @@ StackedBarSeries.defaultProps = {
 	opacity: 0.5,
 	width: plotDataLengthBarWidth,
 	clip: true,
+	swapScales: false,
 };
 
 export function identityStack() {

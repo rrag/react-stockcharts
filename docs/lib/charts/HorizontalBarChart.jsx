@@ -1,4 +1,3 @@
-"use strict";
 
 import { max } from "d3-array";
 import { scaleLinear, scalePoint } from  "d3-scale";
@@ -28,7 +27,7 @@ class HorizontalBarChart extends React.Component {
 				<Chart id={1}
 						yExtents={data.map(d => d.y)}
 						yScale={scalePoint()}
-						padding={1}>
+						padding={.5}>
 					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="left" orient="left" />
 					<BarSeries yAccessor={d => d.y} xAccessor={d => d.x} swapScales />

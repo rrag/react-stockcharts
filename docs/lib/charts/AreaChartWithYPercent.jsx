@@ -1,4 +1,3 @@
-"use strict";
 
 import { scaleTime } from "d3-scale";
 import { format } from "d3-format";
