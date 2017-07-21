@@ -89,7 +89,7 @@ export default function() {
 			const priceMovement = (source(d) - line.close);
 
 			// console.log(source(d), priceMovement)
-			if ((line.close > line.open /* going up */ && priceMovement > 0 /* and moving in same direction */)
+			if ((line.close >= line.open /* going up */ && priceMovement > 0 /* and moving in same direction */)
 					|| (line.close < line.open /* going down */ && priceMovement < 0 /* and moving in same direction */)) {
 				line.close = source(d);
 				if (prevTrough && line.close < prevTrough) {
@@ -110,7 +110,7 @@ export default function() {
 						// line.startAs = "yin";
 					}
 				}
-			} else if ((line.close > line.open /* going up */
+			} else if ((line.close >= line.open /* going up */
 							&& priceMovement < 0 /* and moving in other direction */
 							&& Math.abs(priceMovement) > reversalThreshold(d) /* and the movement is big enough for reversal */)
 					|| (line.close < line.open /* going down */
@@ -161,7 +161,7 @@ export default function() {
 			}
 			line.current = source(d);
 			let dir = line.close - line.open;
-			dir = dir / Math.abs(dir);
+			dir = dir === 0 ? 1 : dir / Math.abs(dir);
 			line.reverseAt = dir > 0 ? line.close - reversalThreshold(d) : line.open - reversalThreshold(d);
 		});
 		if (!line.added) kagiData.push(line);
