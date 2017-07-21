@@ -190,7 +190,7 @@ class CandlestickChart extends React.Component {
 						/>
 					<TrendLine
 						enabled={this.state.enableTrendLine}
-						type="LINE"
+						type="RAY"
 						snap={true}
 						snapTo={d => [d.high, d.low]}
 						onStart={() => console.log("START")}
