@@ -173,14 +173,20 @@ class EachEquidistantChannel extends Component {
 	}
 	handleDragComplete() {
 		const { onDragComplete } = this.props;
+
+		if (!this.state.selected) {
+			this.setState({
+				selected: true,
+			});
+		}
 		onDragComplete();
 	}
 	getEdgeCircle({ xy, dragHandler, cursor, fill }) {
-		const { selected } = this.state;
+		const { selected, hover } = this.state;
 		const { edgeStroke, edgeStrokeWidth, r } = this.props;
 
 		return <ClickableCircle
-			show={selected}
+			show={selected || hover}
 			cx={xy[0]}
 			cy={xy[1]}
 			r={r}
@@ -196,9 +202,10 @@ class EachEquidistantChannel extends Component {
 	}
 	render() {
 		const { startXY, endXY, dy } = this.props;
-		const { interactive, edgeFill } = this.props;
+		const { interactive, edgeFill, hoverText } = this.props;
 		const { stroke, strokeWidth, fill, opacity } = this.props;
 		const { selected, hover } = this.state;
+		const { enable: hoverTextEnabled, ...restHoverTextProps } = hoverText;
 
 		const hoverHandler = interactive
 			? { onHover: this.handleHover, onBlur: this.handleHover }
@@ -239,7 +246,7 @@ class EachEquidistantChannel extends Component {
 
 		return <g>
 			<ChannelWithArea
-				selected={selected}
+				selected={selected || hover}
 
 				{...hoverHandler}
 				onClick={this.handleSelect}
@@ -260,10 +267,9 @@ class EachEquidistantChannel extends Component {
 			/>
 			{line1Edge}
 			{line2Edge}
-			<HoverTextNearMouse show={hover && !selected}
-				bgHeight={18}
-				bgWidth={120}
-				text="Click to select object" />
+			<HoverTextNearMouse
+				show={hoverTextEnabled && hover && !selected}
+				{...restHoverTextProps} />
 		</g>;
 	}
 }
@@ -284,6 +290,7 @@ EachEquidistantChannel.propTypes = {
 	edgeFill: PropTypes.string.isRequired,
 	edgeStroke: PropTypes.string.isRequired,
 	edgeStrokeWidth: PropTypes.number.isRequired,
+	hoverText: PropTypes.object.isRequired,
 
 	index: PropTypes.number,
 	onDrag: PropTypes.func.isRequired,
@@ -299,6 +306,9 @@ EachEquidistantChannel.defaultProps = {
 	r: 5,
 	onDrag: noop,
 	onDragComplete: noop,
+	hoverText: {
+		enable: false,
+	}
 };
 
 export default EachEquidistantChannel;

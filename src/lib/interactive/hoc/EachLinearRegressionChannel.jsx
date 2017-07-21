@@ -22,6 +22,8 @@ class EachLinearRegressionChannel extends Component {
 		this.handleEdge1Drag = this.handleEdge1Drag.bind(this);
 		this.handleEdge2Drag = this.handleEdge2Drag.bind(this);
 
+		this.handleDragComplete = this.handleDragComplete.bind(this);
+
 		this.handleHover = this.handleHover.bind(this);
 
 		this.state = {
@@ -67,6 +69,16 @@ class EachLinearRegressionChannel extends Component {
 			x2Value,
 		});
 	}
+	handleDragComplete() {
+		const { onDragComplete } = this.props;
+
+		if (!this.state.selected) {
+			this.setState({
+				selected: true,
+			});
+		}
+		onDragComplete();
+	}
 	handleHover(moreProps) {
 		if (this.state.hover !== moreProps.hovering) {
 			this.setState({
@@ -87,21 +99,20 @@ class EachLinearRegressionChannel extends Component {
 			edgeFill,
 			edgeStroke,
 			edgeInteractiveCursor,
-
+			hoverText,
 			interactive,
-
-			onDragComplete,
 		} = this.props;
 		const { selected, hover } = this.state;
 
 		const hoverHandler = interactive
 			? { onHover: this.handleHover, onBlur: this.handleHover }
 			: {};
+		const { enable: hoverTextEnabled, ...restHoverTextProps } = hoverText;
 
 		// console.log("SELECTED ->", selected);
 		return <g>
 			<LinearRegressionChannelWithArea
-				selected={selected}
+				selected={selected || hover}
 				{...hoverHandler}
 				onClick={this.handleSelect}
 				onClickOutside={this.handleUnSelect}
@@ -112,7 +123,7 @@ class EachLinearRegressionChannel extends Component {
 				strokeWidth={(hover || selected) ? strokeWidth + 1 : strokeWidth}
 				opacity={opacity} />
 			<ClickableCircle
-				show={selected}
+				show={selected || hover}
 				xyProvider={edge1Provider(this.props)}
 				r={r}
 				fill={edgeFill}
@@ -121,9 +132,9 @@ class EachLinearRegressionChannel extends Component {
 				opacity={1}
 				interactiveCursorClass={edgeInteractiveCursor}
 				onDrag={this.handleEdge1Drag}
-				onDragComplete={onDragComplete} />
+				onDragComplete={this.handleDragComplete} />
 			<ClickableCircle
-				show={selected}
+				show={selected || hover}
 				xyProvider={edge2Provider(this.props)}
 				r={r}
 				fill={edgeFill}
@@ -132,11 +143,10 @@ class EachLinearRegressionChannel extends Component {
 				opacity={1}
 				interactiveCursorClass={edgeInteractiveCursor}
 				onDrag={this.handleEdge2Drag}
-				onDragComplete={onDragComplete} />
-			<HoverTextNearMouse show={hover && !selected}
-				bgHeight={18}
-				bgWidth={120}
-				text="Click to select object" />
+				onDragComplete={this.handleDragComplete} />
+			<HoverTextNearMouse
+				show={hoverTextEnabled && hover && !selected}
+				{...restHoverTextProps} />
 		</g>;
 	}
 }
@@ -174,6 +184,7 @@ EachLinearRegressionChannel.propTypes = {
 	edgeStroke: PropTypes.string.isRequired,
 	edgeInteractiveCursor: PropTypes.string,
 	edgeFill: PropTypes.string.isRequired,
+	hoverText: PropTypes.object.isRequired,
 };
 
 EachLinearRegressionChannel.defaultProps = {
@@ -187,6 +198,13 @@ EachLinearRegressionChannel.defaultProps = {
 	opacity: 1,
 	interactive: true,
 	fill: "#8AAFE2",
+	hoverText: {
+		...HoverTextNearMouse.defaultProps,
+		enable: true,
+		bgHeight: 18,
+		bgWidth: 175,
+		text: "Click and drag the edge circles",
+	}
 };
 
 export default EachLinearRegressionChannel;

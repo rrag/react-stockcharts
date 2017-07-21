@@ -6,6 +6,7 @@ import { getCurrentItem } from "../../utils/ChartDataUtil";
 
 import StraightLine from "../components/StraightLine";
 import ClickableCircle from "../components/ClickableCircle";
+import HoverTextNearMouse from "../components/HoverTextNearMouse";
 
 class EachTrendLine extends Component {
 	constructor(props) {
@@ -17,6 +18,7 @@ class EachTrendLine extends Component {
 		this.handleEdge2Drag = this.handleEdge2Drag.bind(this);
 		this.handleLineDragStart = this.handleLineDragStart.bind(this);
 		this.handleLineDrag = this.handleLineDrag.bind(this);
+		this.handleDragComplete = this.handleDragComplete.bind(this);
 
 		this.handleHover = this.handleHover.bind(this);
 
@@ -109,6 +111,16 @@ class EachTrendLine extends Component {
 			y2Value,
 		});
 	}
+	handleDragComplete() {
+		const { onDragComplete } = this.props;
+
+		if (!this.state.selected) {
+			this.setState({
+				selected: true,
+			});
+		}
+		onDragComplete();
+	}
 	handleHover(moreProps) {
 		if (this.state.hover !== moreProps.hovering) {
 			this.setState({
@@ -132,15 +144,18 @@ class EachTrendLine extends Component {
 			edgeStroke,
 			edgeInteractiveCursor,
 			lineInteractiveCursor,
+			hoverText,
 
 			onDragComplete,
 		} = this.props;
 		const { selected, hover } = this.state;
 
 		// console.log("SELECTED ->", selected);
+		const { enable: hoverTextEnabled, ...restHoverTextProps } = hoverText;
+
 		return <g>
 			<StraightLine
-				selected={selected}
+				selected={selected || hover}
 				onHover={this.handleHover}
 				onBlur={this.handleHover}
 				onClick={this.handleSelect}
@@ -156,9 +171,9 @@ class EachTrendLine extends Component {
 				interactiveCursorClass={lineInteractiveCursor}
 				onDragStart={this.handleLineDragStart}
 				onDrag={this.handleLineDrag}
-				onDragComplete={onDragComplete} />
+				onDragComplete={this.handleDragComplete} />
 			<ClickableCircle
-				show={selected}
+				show={selected || hover}
 				cx={x1Value}
 				cy={y1Value}
 				r={r}
@@ -170,7 +185,7 @@ class EachTrendLine extends Component {
 				onDrag={this.handleEdge1Drag}
 				onDragComplete={onDragComplete} />
 			<ClickableCircle
-				show={selected}
+				show={selected || hover}
 				cx={x2Value}
 				cy={y2Value}
 				r={r}
@@ -180,7 +195,10 @@ class EachTrendLine extends Component {
 				opacity={1}
 				interactiveCursorClass={edgeInteractiveCursor}
 				onDrag={this.handleEdge2Drag}
-				onDragComplete={onDragComplete} />
+				onDragComplete={this.handleDragComplete} />
+			<HoverTextNearMouse
+				show={hoverTextEnabled && hover && !selected}
+				{...restHoverTextProps} />
 		</g>;
 	}
 }
@@ -225,6 +243,7 @@ EachTrendLine.propTypes = {
 	edgeInteractiveCursor: PropTypes.string.isRequired,
 	lineInteractiveCursor: PropTypes.string.isRequired,
 	edgeFill: PropTypes.string.isRequired,
+	hoverText: PropTypes.object.isRequired,
 };
 
 EachTrendLine.defaultProps = {
@@ -238,6 +257,9 @@ EachTrendLine.defaultProps = {
 	r: 5,
 	strokeWidth: 1,
 	opacity: 1,
+	hoverText: {
+		enable: false,
+	}
 };
 
 export default EachTrendLine;

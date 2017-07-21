@@ -7,15 +7,16 @@ import { isDefined, isNotDefined, noop } from "../utils";
 
 import EachGannFan from "./hoc/EachGannFan";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
+import HoverTextNearMouse from "./components/HoverTextNearMouse";
 
 class GannFan extends Component {
 	constructor(props) {
 		super(props);
 
 		this.handleStartAndEnd = this.handleStartAndEnd.bind(this);
-		this.handleDrawChannel = this.handleDrawChannel.bind(this);
-		this.handleDragChannel = this.handleDragChannel.bind(this);
-		this.handleDragChannelComplete = this.handleDragChannelComplete.bind(this);
+		this.handleDrawFan = this.handleDrawFan.bind(this);
+		this.handleDragFan = this.handleDragFan.bind(this);
+		this.handleDragFanComplete = this.handleDragFanComplete.bind(this);
 
 		this.state = {};
 	}
@@ -25,7 +26,7 @@ class GannFan extends Component {
 			override: null,
 		});
 	}
-	handleDragChannel(index, newXYValue) {
+	handleDragFan(index, newXYValue) {
 		this.setState({
 			override: {
 				index,
@@ -33,7 +34,7 @@ class GannFan extends Component {
 			}
 		});
 	}
-	handleDragChannelComplete() {
+	handleDragFanComplete() {
 		const { override } = this.state;
 		const { fans } = this.props;
 		if (isDefined(override)) {
@@ -50,7 +51,7 @@ class GannFan extends Component {
 			});
 		}
 	}
-	handleDrawChannel(xyValue) {
+	handleDrawFan(xyValue) {
 		const { current } = this.state;
 
 		if (isDefined(current)
@@ -93,6 +94,7 @@ class GannFan extends Component {
 		const { enabled, fans } = this.props;
 		const { currentPositionRadius, currentPositionStroke } = this.props;
 		const { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
+		const { hoverText } = this.props;
 		const { current, override } = this.state;
 		const overrideIndex = isDefined(override) ? override.index : null;
 
@@ -105,6 +107,7 @@ class GannFan extends Component {
 				fill={fill}
 				opacity={opacity}
 				fillOpacity={fillOpacity}
+				hoverText={hoverText}
 
 				fontFamily={fontFamily}
 				fontSize={fontSize}
@@ -124,13 +127,14 @@ class GannFan extends Component {
 					fill={fill}
 					opacity={opacity}
 					fillOpacity={fillOpacity}
+					hoverText={hoverText}
 
 					fontFamily={fontFamily}
 					fontSize={fontSize}
 					fontStroke={fontStroke}
 
-					onDrag={this.handleDragChannel}
-					onDragComplete={this.handleDragChannelComplete}
+					onDrag={this.handleDragFan}
+					onDragComplete={this.handleDragFanComplete}
 				/>;
 			})}
 			{tempChannel}
@@ -142,7 +146,7 @@ class GannFan extends Component {
 				opacity={currentPositionOpacity}
 				strokeWidth={currentPositionStrokeWidth}
 				onMouseDown={this.handleStartAndEnd}
-				onMouseMove={this.handleDrawChannel} />
+				onMouseMove={this.handleDrawFan} />
 		</g>;
 	}
 }
@@ -168,6 +172,8 @@ GannFan.propTypes = {
 	fillOpacity: PropTypes.number,
 	endPointCircleFill: PropTypes.string,
 	endPointCircleRadius: PropTypes.number,
+	hoverText: PropTypes.object.isRequired,
+
 	fans: PropTypes.array.isRequired,
 };
 
@@ -199,6 +205,13 @@ GannFan.defaultProps = {
 		"#e377c2",
 		"#7f7f7f",
 	],
+	hoverText: {
+		...HoverTextNearMouse.defaultProps,
+		enable: true,
+		bgHeight: 18,
+		bgWidth: 120,
+		text: "Click to select object",
+	},
 	fans: [],
 };
 

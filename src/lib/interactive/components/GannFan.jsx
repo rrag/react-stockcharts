@@ -158,7 +158,8 @@ const FAN_LINES_2 = [
 function helper(props, moreProps) {
 	const { startXY, endXY } = props;
 
-	const { xScale, chartConfig: { yScale }, plotData } = moreProps;
+	const { xScale, chartConfig, plotData } = moreProps;
+	const { yScale } = chartConfig;
 	const { xAccessor } = moreProps;
 
 	if (isNotDefined(startXY) || isNotDefined(endXY)) {
@@ -169,9 +170,12 @@ function helper(props, moreProps) {
 		return [];
 	}
 
-	const modLine = generateLine("RAY",
-		[startXY[0], startXY[1]],
-		[endXY[0], endXY[1]], xAccessor, plotData);
+	const modLine = generateLine({
+		type: "RAY",
+		start: startXY,
+		end: endXY,
+		xScale,
+	});
 
 	const x1 = xScale(modLine.x1);
 	const y1 = yScale(modLine.y1);

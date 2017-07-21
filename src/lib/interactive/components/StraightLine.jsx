@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
 
-import { isDefined, isNotDefined, head, last, noop, hexToRGBA } from "../../utils";
+import { isDefined, isNotDefined, noop, hexToRGBA } from "../../utils";
 
 function getXY(xValue, yValue, xScale, yScale) {
 	return [xScale(xValue), yScale(yValue)];
@@ -118,12 +118,14 @@ export function isHovering(start, end, [mouseX, mouseY], tolerance) {
 function helper(props, moreProps) {
 	const { x1Value, x2Value, y1Value, y2Value, type } = props;
 
-	const { xScale, chartConfig: { yScale }, plotData } = moreProps;
-	const { xAccessor } = moreProps;
+	const { xScale, chartConfig: { yScale } } = moreProps;
 
-	const modLine = generateLine(type,
-		[x1Value, y1Value],
-		[x2Value, y2Value], xAccessor, plotData);
+	const modLine = generateLine({
+		type,
+		start: [x1Value, y1Value],
+		end: [x2Value, y2Value],
+		xScale,
+	});
 
 	const x1 = xScale(modLine.x1);
 	const y1 = yScale(modLine.y1);
@@ -146,24 +148,25 @@ export function getYIntercept(m, end) {
 	return b;
 }
 
-export function generateLine(type, start, end, xAccessor, plotData) {
+export function generateLine({
+	type, start, end, xScale
+}) {
 	const m /* slope */ = getSlope(start, end);
 	// console.log(end[0] - start[0], m)
 	const b /* y intercept */ = getYIntercept(m, start);
 	// y = m * x + b
+	const [begin, finish] = xScale.domain();
 	const x1 = type === "XLINE"
-		? xAccessor(head(plotData))
+		? end[0] > start[0] ? begin : finish
 		: start[0]; // RAY or LINE start is the same
 
 	const y1 = isNotDefined(m)
 		? getYIntercept(0, start)
 		: m * x1 + b;
 
-	const x2 = type === "XLINE"
-		? xAccessor(last(plotData))
-		: type === "RAY"
-			? end[0] > start[0] ? xAccessor(last(plotData)) : xAccessor(head(plotData))
-			: end[0];
+	const x2 = (type === "XLINE" || type === "RAY")
+		? end[0] > start[0] ? finish : begin
+		: end[0];
 
 	const y2 = isNotDefined(m)
 		? getYIntercept(0, end)

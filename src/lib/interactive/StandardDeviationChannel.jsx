@@ -9,7 +9,7 @@ import { getValueFromOverride } from "./utils";
 
 import EachLinearRegressionChannel from "./hoc/EachLinearRegressionChannel";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
-
+import HoverTextNearMouse from "./components/HoverTextNearMouse";
 
 class StandardDeviationChannel extends Component {
 	constructor(props) {
@@ -93,6 +93,7 @@ class StandardDeviationChannel extends Component {
 		const { enabled, snapTo } = this.props;
 		const { currentPositionRadius, currentPositionStroke } = this.props;
 		const { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
+		const { hoverText } = this.props;
 		const { current, override } = this.state;
 
 		const tempLine = isDefined(current) && isDefined(current.end)
@@ -102,6 +103,7 @@ class StandardDeviationChannel extends Component {
 				x2Value={current.end[0]}
 				stroke={stroke}
 				strokeWidth={strokeWidth}
+				hoverText={hoverText}
 				opacity={opacity} />
 			: null;
 
@@ -114,6 +116,7 @@ class StandardDeviationChannel extends Component {
 					x2Value={getValueFromOverride(override, idx, "x2Value", each.end[0])}
 					stroke={stroke}
 					strokeWidth={strokeWidth}
+					hoverText={hoverText}
 					opacity={opacity}
 					snapTo={snapTo}
 					onDrag={this.handleDragLine}
@@ -149,6 +152,7 @@ StandardDeviationChannel.propTypes = {
 	opacity: PropTypes.number,
 	endPointCircleFill: PropTypes.string,
 	endPointCircleRadius: PropTypes.number,
+	hoverText: PropTypes.object.isRequired,
 	channels: PropTypes.array.isRequired,
 };
 
@@ -165,6 +169,13 @@ StandardDeviationChannel.defaultProps = {
 	currentPositionRadius: 4,
 	endPointCircleFill: "#000000",
 	endPointCircleRadius: 5,
+	hoverText: {
+		...HoverTextNearMouse.defaultProps,
+		enable: true,
+		bgHeight: 18,
+		bgWidth: 175,
+		text: "Click and drag the edge circles",
+	},
 	channels: [],
 };
 

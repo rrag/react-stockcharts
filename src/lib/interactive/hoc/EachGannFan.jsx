@@ -173,14 +173,20 @@ class EachGannFan extends Component {
 	}
 	handleDragComplete() {
 		const { onDragComplete } = this.props;
+
+		if (!this.state.selected) {
+			this.setState({
+				selected: true,
+			});
+		}
 		onDragComplete();
 	}
 	getEdgeCircle({ xy, dragHandler, cursor, fill }) {
-		const { selected } = this.state;
+		const { selected, hover } = this.state;
 		const { edgeStroke, edgeStrokeWidth, r } = this.props;
 
 		return <ClickableCircle
-			show={selected}
+			show={selected || hover}
 			cx={xy[0]}
 			cy={xy[1]}
 			r={r}
@@ -195,11 +201,13 @@ class EachGannFan extends Component {
 			onDragComplete={this.handleDragComplete} />;
 	}
 	render() {
-		const { startXY, endXY, dy } = this.props;
+		const { startXY, endXY } = this.props;
 		const { interactive, edgeFill } = this.props;
 		const { stroke, strokeWidth, fill, opacity, fillOpacity } = this.props;
 		const { fontFamily, fontSize, fontStroke } = this.props;
+		const { hoverText } = this.props;
 		const { selected, hover } = this.state;
+		const { enable: hoverTextEnabled, ...restHoverTextProps } = hoverText;
 
 		const hoverHandler = interactive
 			? { onHover: this.handleHover, onBlur: this.handleHover }
@@ -221,26 +229,10 @@ class EachGannFan extends Component {
 				})}
 			</g>
 			: null;
-		const line2Edge = isDefined(dy)
-			? <g>
-				{this.getEdgeCircle({
-					xy: [startXY[0], startXY[1] + dy],
-					dragHandler: this.handleChannelHeightChange,
-					cursor: "react-stockcharts-ns-resize-cursor",
-					fill: "#250B98"
-				})}
-				{this.getEdgeCircle({
-					xy: [endXY[0], endXY[1] + dy],
-					dragHandler: this.handleChannelHeightChange,
-					cursor: "react-stockcharts-ns-resize-cursor",
-					fill: "#250B98"
-				})}
-			</g>
-			: null;
 
 		return <g>
 			<GannFan
-				selected={selected}
+				selected={hover || selected}
 
 				{...hoverHandler}
 				onClick={this.handleSelect}
@@ -248,7 +240,6 @@ class EachGannFan extends Component {
 
 				startXY={startXY}
 				endXY={endXY}
-				dy={dy}
 				stroke={stroke}
 				strokeWidth={(hover || selected) ? strokeWidth + 1 : strokeWidth}
 				fill={fill}
@@ -264,11 +255,9 @@ class EachGannFan extends Component {
 				onDragComplete={this.handleDragComplete}
 			/>
 			{line1Edge}
-			{line2Edge}
-			<HoverTextNearMouse show={hover && !selected}
-				bgHeight={18}
-				bgWidth={120}
-				text="Click to select object" />
+			<HoverTextNearMouse
+				show={hoverTextEnabled && hover && !selected}
+				{...restHoverTextProps} />
 		</g>;
 	}
 }
@@ -294,6 +283,7 @@ EachGannFan.propTypes = {
 	edgeFill: PropTypes.string.isRequired,
 	edgeStroke: PropTypes.string.isRequired,
 	edgeStrokeWidth: PropTypes.number.isRequired,
+	hoverText: PropTypes.object.isRequired,
 
 	index: PropTypes.number,
 	onDrag: PropTypes.func.isRequired,
@@ -309,6 +299,14 @@ EachGannFan.defaultProps = {
 	r: 5,
 	onDrag: noop,
 	onDragComplete: noop,
+
+	hoverText: {
+		...HoverTextNearMouse.defaultProps,
+		enable: true,
+		bgHeight: 18,
+		bgWidth: 120,
+		text: "Click to select object",
+	}
 };
 
 export default EachGannFan;

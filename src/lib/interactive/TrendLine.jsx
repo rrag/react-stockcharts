@@ -10,6 +10,7 @@ import { getValueFromOverride } from "./utils";
 import EachTrendLine from "./hoc/EachTrendLine";
 import StraightLine from "./components/StraightLine";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
+import HoverTextNearMouse from "./components/HoverTextNearMouse";
 
 
 class TrendLine extends Component {
@@ -94,6 +95,7 @@ class TrendLine extends Component {
 		const { enabled, snap, shouldDisableSnap, snapTo, type } = this.props;
 		const { currentPositionRadius, currentPositionStroke } = this.props;
 		const { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
+		const { hoverText } = this.props;
 		const { current, override } = this.state;
 
 		const tempLine = isDefined(current) && isDefined(current.end)
@@ -121,6 +123,7 @@ class TrendLine extends Component {
 					stroke={stroke}
 					strokeWidth={strokeWidth}
 					opacity={opacity}
+					hoverText={hoverText}
 					onDrag={this.handleDragLine}
 					onDragComplete={this.handleDragLineComplete}
 					edgeInteractiveCursor="react-stockcharts-move-cursor"
@@ -163,6 +166,8 @@ TrendLine.propTypes = {
 		"RAY", // extends to +/-Infinity in one direction
 		"LINE", // extends between the set bounds
 	]),
+	hoverText: PropTypes.object.isRequired,
+
 	endPointCircleFill: PropTypes.string,
 	endPointCircleRadius: PropTypes.number,
 	trends: PropTypes.array.isRequired,
@@ -183,6 +188,13 @@ TrendLine.defaultProps = {
 	endPointCircleFill: "#000000",
 	endPointCircleRadius: 5,
 	trends: [],
+	hoverText: {
+		...HoverTextNearMouse.defaultProps,
+		enable: true,
+		bgHeight: 18,
+		bgWidth: 120,
+		text: "Click to select object",
+	},
 };
 
 export default TrendLine;

@@ -162,6 +162,11 @@ class EachFibRetracement extends Component {
 	}
 	handleDragComplete() {
 		const { onDragComplete } = this.props;
+		if (!this.state.selected) {
+			this.setState({
+				selected: true,
+			});
+		}
 		onDragComplete();
 	}
 	render() {
@@ -169,9 +174,11 @@ class EachFibRetracement extends Component {
 		const { interactive, yDisplayFormat, type } = this.props;
 		const { stroke, strokeWidth, opacity } = this.props;
 		const { fontFamily, fontSize, fontStroke } = this.props;
-		const { edgeStroke, edgeFill, edgeStrokeWidth, r } = this.props;
+		const { edgeStroke, edgeFill, nsEdgeFill, edgeStrokeWidth, r } = this.props;
+		const { hoverText } = this.props;
 		const { selected, hover } = this.state;
 		const lines = helper({ x1, x2, y1, y2 });
+		const { enable: hoverTextEnabled, ...restHoverTextProps } = hoverText;
 
 		const lineType = type === "EXTEND" ? "XLINE" : "LINE";
 		const dir = head(lines).y1 > last(lines).y1 ? 3 : -1.3;
@@ -180,12 +187,13 @@ class EachFibRetracement extends Component {
 			{lines.map((line, j) => {
 				const text = `${yDisplayFormat(line.y)} (${line.percent.toFixed(2)}%)`;
 
-				const xyProvider = ({ xScale, chartConfig, xAccessor, plotData }) => {
-					const { x1, y1, x2 } = generateLine(lineType,
-						[line.x1, line.y],
-						[line.x2, line.y],
-						xAccessor,
-						plotData);
+				const xyProvider = ({ xScale, chartConfig }) => {
+					const { x1, y1, x2 } = generateLine({
+						type: lineType,
+						start: [line.x1, line.y],
+						end: [line.x2, line.y],
+						xScale,
+					});
 
 					const x = xScale(Math.min(x1, x2)) + 10;
 					const y = chartConfig.yScale(y1) + dir * 4;
@@ -198,18 +206,33 @@ class EachFibRetracement extends Component {
 					? "react-stockcharts-ns-resize-cursor"
 					: "react-stockcharts-move-cursor";
 
+				const interactiveEdgeCursorClass = firstOrLast
+					? "react-stockcharts-ns-resize-cursor"
+					: "react-stockcharts-ew-resize-cursor";
+
 				const dragHandler = j === 0
 					? this.handleLineNSResizeTop
 					: j === lines.length - 1
 						? this.handleLineNSResizeBottom
 						: this.handleLineMove;
 
+				const edge1DragHandler = j === 0
+					? this.handleLineNSResizeTop
+					: j === lines.length - 1
+						? this.handleLineNSResizeBottom
+						: this.handleEdge1Drag;
+				const edge2DragHandler = j === 0
+					? this.handleLineNSResizeTop
+					: j === lines.length - 1
+						? this.handleLineNSResizeBottom
+						: this.handleEdge2Drag;
+
 				const hoverHandler = interactive
 					? { onHover: this.handleHover, onBlur: this.handleHover }
 					: {};
 				return <g key={j}>
 					<StraightLine
-						selected={selected}
+						selected={selected || hover}
 
 						{...hoverHandler}
 						onClick={this.handleSelect}
@@ -236,33 +259,32 @@ class EachFibRetracement extends Component {
 						fontSize={fontSize}
 						fill={fontStroke}>{text}</Text>
 					<ClickableCircle
-						show={selected}
+						show={selected || hover}
 						cx={line.x1}
 						cy={line.y}
 						r={r}
-						fill={edgeFill}
+						fill={firstOrLast ? nsEdgeFill : edgeFill}
 						stroke={edgeStroke}
 						strokeWidth={edgeStrokeWidth}
 						opacity={1}
-						interactiveCursorClass="react-stockcharts-ew-resize-cursor"
-						onDrag={this.handleEdge1Drag}
+						interactiveCursorClass={interactiveEdgeCursorClass}
+						onDrag={edge1DragHandler}
 						onDragComplete={this.handleDragComplete} />
 					<ClickableCircle
-						show={selected}
+						show={selected || hover}
 						cx={line.x2}
 						cy={line.y}
 						r={r}
-						fill={edgeFill}
+						fill={firstOrLast ? nsEdgeFill : edgeFill}
 						stroke={edgeStroke}
 						strokeWidth={edgeStrokeWidth}
 						opacity={1}
-						interactiveCursorClass="react-stockcharts-ew-resize-cursor"
-						onDrag={this.handleEdge2Drag}
+						interactiveCursorClass={interactiveEdgeCursorClass}
+						onDrag={edge2DragHandler}
 						onDragComplete={this.handleDragComplete} />
-					<HoverTextNearMouse show={hover && !selected}
-						bgHeight={18}
-						bgWidth={120}
-						text="Click to select object" />
+					<HoverTextNearMouse
+						show={hoverTextEnabled && hover && !selected}
+						{...restHoverTextProps} />
 				</g>;
 			})}
 		</g>;
@@ -303,9 +325,11 @@ EachFibRetracement.propTypes = {
 	interactive: PropTypes.bool.isRequired,
 
 	r: PropTypes.number.isRequired,
+	nsEdgeFill: PropTypes.string.isRequired,
 	edgeFill: PropTypes.string.isRequired,
 	edgeStroke: PropTypes.string.isRequired,
 	edgeStrokeWidth: PropTypes.number.isRequired,
+	hoverText: PropTypes.object.isRequired,
 
 	index: PropTypes.number,
 	onDrag: PropTypes.func.isRequired,
@@ -317,10 +341,15 @@ EachFibRetracement.defaultProps = {
 	interactive: true,
 	edgeStroke: "#000000",
 	edgeFill: "#FFFFFF",
+	nsEdgeFill: "#000000",
 	edgeStrokeWidth: 1,
 	r: 5,
 	onDrag: noop,
 	onDragComplete: noop,
+
+	hoverText: {
+		enable: false,
+	}
 };
 
 export default EachFibRetracement;

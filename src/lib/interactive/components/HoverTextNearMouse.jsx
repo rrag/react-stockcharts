@@ -87,7 +87,6 @@ HoverTextNearMouse.propTypes = {
 };
 
 HoverTextNearMouse.defaultProps = {
-	selected: false,
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 12,
 	fill: "#000000",

@@ -8,6 +8,7 @@ import { isDefined, isNotDefined, noop } from "../utils";
 import EachEquidistantChannel from "./hoc/EachEquidistantChannel";
 import { getSlope, getYIntercept } from "./components/StraightLine";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
+import HoverTextNearMouse from "./components/HoverTextNearMouse";
 
 class EquidistantChannel extends Component {
 	constructor(props) {
@@ -114,6 +115,7 @@ class EquidistantChannel extends Component {
 		const { enabled, channels } = this.props;
 		const { currentPositionRadius, currentPositionStroke } = this.props;
 		const { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
+		const { hoverText } = this.props;
 		const { current, override } = this.state;
 		const overrideIndex = isDefined(override) ? override.index : null;
 
@@ -124,6 +126,7 @@ class EquidistantChannel extends Component {
 				stroke={stroke}
 				strokeWidth={strokeWidth}
 				fill={fill}
+				hoverText={hoverText}
 				opacity={opacity} />
 			: null;
 
@@ -136,6 +139,7 @@ class EquidistantChannel extends Component {
 					stroke={stroke}
 					strokeWidth={strokeWidth}
 					fill={fill}
+					hoverText={hoverText}
 					opacity={opacity}
 					onDrag={this.handleDragChannel}
 					onDragComplete={this.handleDragChannelComplete}
@@ -170,6 +174,7 @@ EquidistantChannel.propTypes = {
 	opacity: PropTypes.number,
 	endPointCircleFill: PropTypes.string,
 	endPointCircleRadius: PropTypes.number,
+	hoverText: PropTypes.object.isRequired,
 	channels: PropTypes.array.isRequired,
 };
 
@@ -186,6 +191,13 @@ EquidistantChannel.defaultProps = {
 	endPointCircleFill: "#000000",
 	endPointCircleRadius: 5,
 	fill: "#8AAFE2",
+	hoverText: {
+		...HoverTextNearMouse.defaultProps,
+		enable: true,
+		bgHeight: 18,
+		bgWidth: 120,
+		text: "Click to select object",
+	},
 	channels: [],
 };
 

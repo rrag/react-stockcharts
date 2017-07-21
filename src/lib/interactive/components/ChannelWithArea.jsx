@@ -124,15 +124,17 @@ class ChannelWithArea extends Component {
 function helper(props, moreProps) {
 	const { startXY, endXY, dy, type } = props;
 
-	const { xScale, chartConfig: { yScale }, plotData } = moreProps;
-	const { xAccessor } = moreProps;
+	const { xScale, chartConfig: { yScale } } = moreProps;
 
 	if (isNotDefined(startXY) || isNotDefined(endXY)) {
 		return {};
 	}
-	const modLine = generateLine(type,
-		[startXY[0], startXY[1]],
-		[endXY[0], endXY[1]], xAccessor, plotData);
+	const modLine = generateLine({
+		type,
+		start: startXY,
+		end: endXY,
+		xScale,
+	});
 
 	const x1 = xScale(modLine.x1);
 	const y1 = yScale(modLine.y1);

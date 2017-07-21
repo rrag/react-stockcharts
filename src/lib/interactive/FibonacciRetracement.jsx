@@ -7,6 +7,7 @@ import { isDefined, isNotDefined, noop } from "../utils";
 
 import EachFibRetracement from "./hoc/EachFibRetracement";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
+import HoverTextNearMouse from "./components/HoverTextNearMouse";
 
 class FibonacciRetracement extends Component {
 	constructor(props) {
@@ -138,7 +139,7 @@ class FibonacciRetracement extends Component {
 			currentPositionRadius,
 		} = this.props;
 
-		const { enabled } = this.props;
+		const { enabled, hoverText } = this.props;
 		const overrideIndex = isDefined(override) ? override.index : null;
 
 		const currentRetracement = isDefined(current) && isDefined(current.x2)
@@ -151,6 +152,7 @@ class FibonacciRetracement extends Component {
 				fontFamily={fontFamily}
 				fontSize={fontSize}
 				fontStroke={fontStroke}
+				hoverText={hoverText}
 				{...current}
 			/>
 			: null;
@@ -166,6 +168,7 @@ class FibonacciRetracement extends Component {
 					fontFamily={fontFamily}
 					fontSize={fontSize}
 					fontStroke={fontStroke}
+					hoverText={hoverText}
 					{...(idx === overrideIndex ? override : each)}
 					onDrag={this.handleDrag}
 					onDragComplete={this.handleDragComplete}
@@ -201,6 +204,7 @@ FibonacciRetracement.propTypes = {
 		"EXTEND", // extends from -Infinity to +Infinity
 		"BOUND", // extends between the set bounds
 	]).isRequired,
+	hoverText: PropTypes.object.isRequired,
 
 	currentPositionStroke: PropTypes.string,
 	currentPositionStrokeWidth: PropTypes.number,
@@ -223,7 +227,13 @@ FibonacciRetracement.defaultProps = {
 	retracements: [],
 	onStart: noop,
 	onComplete: noop,
-
+	hoverText: {
+		...HoverTextNearMouse.defaultProps,
+		enable: true,
+		bgHeight: 18,
+		bgWidth: 120,
+		text: "Click to select object",
+	},
 	currentPositionStroke: "#000000",
 	currentPositionOpacity: 1,
 	currentPositionStrokeWidth: 3,
