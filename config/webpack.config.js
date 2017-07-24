@@ -102,7 +102,7 @@ function buildConfig(mode) {
 			// "d3": "d3",
 		},
 		resolve: {
-			extensions: [".js", ".jsx", ".scss", ".md"],
+			extensions: [".js", ".scss", ".md"],
 			alias: {
 				"react-stockcharts": path.join(rootPath, "src"),
 			},
