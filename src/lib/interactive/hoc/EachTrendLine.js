@@ -29,7 +29,7 @@ class EachTrendLine extends Component {
 	}
 	handleSelect() {
 		this.setState({
-			selected: !this.state.selected
+			selected: true
 		});
 	}
 	handleUnSelect() {
