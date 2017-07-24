@@ -45,9 +45,9 @@ class Brush extends Component {
 		const { rect } = this.state;
 		if (isDefined(rect)) {
 			const { x, y, height, width } = rect;
-			const { stroke, opacity } = this.props;
+			const { stroke, opacity, strokeDashArray } = this.props;
 
-			const dashArray = getStrokeDasharray("ShortDash")
+			const dashArray = getStrokeDasharray(strokeDashArray)
 				.split(",")
 				.map(d => +d);
 
@@ -57,8 +57,28 @@ class Brush extends Component {
 			ctx.strokeRect(x, y, width, height);
 		}
 	}
-	renderSVG(moreProps) {
-		return null;
+	renderSVG() {
+		const { rect } = this.state;
+		if (isDefined(rect)) {
+			const { x, y, height, width } = rect;
+			const { stroke, opacity, strokeDashArray } = this.props;
+
+			const dashArray = getStrokeDasharray(strokeDashArray)
+				.split(",")
+				.map(d => +d);
+
+			return (
+				<rect strokeDasharray={dashArray}
+					stroke={stroke}
+					fill="none"
+					strokeOpacity={opacity}
+					x={x}
+					y={y}
+					width={width}
+					height={height}
+				/>
+			);
+		}
 	}
 	handleZoomStart(moreProps) {
 		this.zoomHappening = false;
@@ -165,6 +185,7 @@ Brush.propTypes = {
 	fill: PropTypes.string,
 	opacity: PropTypes.number,
 	interactiveState: PropTypes.object,
+	strokeDashArray: PropTypes.string,
 };
 
 Brush.defaultProps = {
@@ -174,6 +195,7 @@ Brush.defaultProps = {
 	fill: "#3h3h3h",
 	onBrush: noop,
 	onStart: noop,
+	strokeDashArray: "ShortDash",
 };
 
 export default Brush;
