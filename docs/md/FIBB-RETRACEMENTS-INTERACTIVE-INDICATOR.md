@@ -11,4 +11,5 @@
 	- move the edge circles East/West
 	- Click outside to unselect
 
-[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickChartWithFibonacciInteractiveIndicator.jsx), [block](http://bl.ocks.org/rrag/82bc46e6566618e429d9), [plunker](http://plnkr.co/edit/gist:82bc46e6566618e429d9?p=preview)
+[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickChartWithFibonacciInteractiveIndicator.js), [codesandbox](https://codesandbox.io/s/github/rrag/react-stockcharts-examples2/tree/master/examples/CandleStickChartWithFibonacciInteractiveIndicator)
+

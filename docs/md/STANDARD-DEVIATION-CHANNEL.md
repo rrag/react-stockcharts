@@ -14,4 +14,5 @@ And the formula for linear regression is from http://www.metastock.com/Customer/
 	- move the edge circles
 	- Click outside to unselect
 
-[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/TBD.jsx), [block](http://bl.ocks.org/rrag/TBD), [plunker](http://plnkr.co/edit/gist:TBD?p=preview)
+[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickChartWithStandardDeviationChannel.js), [codesandbox](https://codesandbox.io/s/github/rrag/react-stockcharts-examples2/tree/master/examples/CandleStickChartWithStandardDeviationChannel)
+

@@ -1,5 +1,5 @@
 
-[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/AreaChart.jsx), [block](http://bl.ocks.org/rrag/b9658ffa431f1ffb8d6b), [plunker](http://plnkr.co/edit/gist:b9658ffa431f1ffb8d6b?p=preview)
+[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/AreaChart.js), [codesandbox](https://codesandbox.io/s/github/rrag/react-stockcharts-examples2/tree/master/examples/AreaChart)
 
 `data.tsv`
 
@@ -80,7 +80,7 @@ With SVG & Canvas it is important to understand the coordinate system and where 
 
 ![alt text](http://www.w3.org/TR/SVG/images/coords/InitialCoords.png "SVG/Canvas coordinate system")
 
-For more details about the coordinate system see [here](http://www.w3.org/TR/SVG/coords.jsx)
+For more details about the coordinate system see [here](http://www.w3.org/TR/SVG/coords.js)
 
 Back to scales,
 

@@ -20,6 +20,11 @@ class LoadMoreDataPage extends React.Component {
 						</TypeChooser>
 					</Section>
 				</Row>
+				<Row>
+					<Section colSpan={2}>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/LOAD-ON-PAN") }}></aside>
+					</Section>
+				</Row>
 			</ContentSection>
 		);
 	}

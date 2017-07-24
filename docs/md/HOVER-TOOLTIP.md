@@ -1,1 +1,2 @@
-[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickChartWithHoverTooltip.jsx), [block](http://bl.ocks.org/rrag/9a070195e699d133932b3f368fe702d3), [plunker](http://plnkr.co/edit/gist:9a070195e699d133932b3f368fe702d3?p=preview)
+[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickChartWithHoverTooltip.js), [codesandbox](https://codesandbox.io/s/github/rrag/react-stockcharts-examples2/tree/master/examples/CandleStickChartWithHoverTooltip)
+

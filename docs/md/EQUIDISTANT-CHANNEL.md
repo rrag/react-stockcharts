@@ -8,4 +8,4 @@
 	- move the edge circles and the top/bottom lines
 	- Click outside to unselect
 
-[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/TBD.jsx), [block](http://bl.ocks.org/rrag/TBD), [plunker](http://plnkr.co/edit/gist:TBD?p=preview)
+[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickChartWithEquidistantChannel.js), [codesandbox](https://codesandbox.io/s/github/rrag/react-stockcharts-examples2/tree/master/examples/CandleStickChartWithEquidistantChannel)

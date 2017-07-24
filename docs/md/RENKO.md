@@ -4,4 +4,4 @@ Brick size defaults to ATR (14)
 
 Learn more about it [here](http://stockcharts.com/school/doku.php?id=chart_school:chart_analysis:renko)
 
-[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/Renko.jsx), [block](http://bl.ocks.org/rrag/df51fa445c26e123beb9), [plunker](http://plnkr.co/edit/gist:df51fa445c26e123beb9?p=preview)
+[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/Renko.js), [codesandbox](https://codesandbox.io/s/github/rrag/react-stockcharts-examples2/tree/master/examples/Renko)

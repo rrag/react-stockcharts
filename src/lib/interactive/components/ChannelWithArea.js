@@ -170,7 +170,7 @@ function getPath(line1, line2) {
 	ctx.lineTo(line1.x1, line2.y1);
 
 	ctx.closePath();
-	return ctx.toString()
+	return ctx.toString();
 }
 
 function helper(props, moreProps) {

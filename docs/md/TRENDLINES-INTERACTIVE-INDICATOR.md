@@ -9,4 +9,5 @@
 	- click outside to unselect
 
 
-[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickChartWithInteractiveIndicator.jsx), [block](http://bl.ocks.org/rrag/63f666ef1159691d76cc), [plunker](http://plnkr.co/edit/gist:63f666ef1159691d76cc?p=preview)
+[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickChartWithInteractiveIndicator.js), [codesandbox](https://codesandbox.io/s/github/rrag/react-stockcharts-examples2/tree/master/examples/CandleStickChartWithInteractiveIndicator)
+

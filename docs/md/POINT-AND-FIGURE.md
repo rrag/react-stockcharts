@@ -4,4 +4,4 @@ Learn more about it [here](http://stockcharts.com/docs/doku.php?id=other-tools:p
 
 default is 3 box reversal.
 
-[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/PointAndFigure.jsx), [block](http://bl.ocks.org/rrag/d43ef867bead0f1de663), [plunker](http://plnkr.co/edit/gist:d43ef867bead0f1de663?p=preview)
+[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/PointAndFigure.js), [codesandbox](https://codesandbox.io/s/github/rrag/react-stockcharts-examples2/tree/master/examples/PointAndFigure)

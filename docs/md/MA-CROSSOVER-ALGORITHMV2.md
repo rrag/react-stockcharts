@@ -1,1 +1,1 @@
-[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/MovingAverageCrossOverAlgorithmV2.jsx), [block](http://bl.ocks.org/rrag/b944f7ef22a42956198d3384c05f1777), [plunker](http://plnkr.co/edit/gist:b944f7ef22a42956198d3384c05f1777?p=preview)
+[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/MovingAverageCrossOverAlgorithmV2.js), [codesandbox](https://codesandbox.io/s/github/rrag/react-stockcharts-examples2/tree/master/examples/MovingAverageCrossOverAlgorithmV2)

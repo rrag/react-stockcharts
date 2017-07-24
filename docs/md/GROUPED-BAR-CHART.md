@@ -1,1 +1,1 @@
-[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/GroupedBarChart.jsx), [block](http://bl.ocks.org/rrag/f683b0c93d839ac8af55), [plunker](http://plnkr.co/edit/gist:f683b0c93d839ac8af55?p=preview)
+[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/GroupedBarChart.js), [codesandbox](https://codesandbox.io/s/github/rrag/react-stockcharts-examples2/tree/master/examples/GroupedBarChart)

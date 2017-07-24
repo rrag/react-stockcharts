@@ -7,6 +7,8 @@ Create highly customizable stock charts
 
 Built with [React JS](http://facebook.github.io/react/) and [d3](http://d3js.org/)
 
+Multiple [quick start examples](https://github.com/rrag/react-stockcharts-examples2)
+
 - svg and canvas for improved performance. 
 - pan and zoom, on touch devices too
 
@@ -24,6 +26,9 @@ Built with [React JS](http://facebook.github.io/react/) and [d3](http://d3js.org
 
 #### Indicators
 
+- EMA, SMA, WMA, TMA
+- Bollinger band
+- SAR
 - MACD
 - RSI
 - ATR
@@ -31,6 +36,7 @@ Built with [React JS](http://facebook.github.io/react/) and [d3](http://d3js.org
 - ForceIndex
 - ElderRay
 - Elder Impulse
+
 (more to come), 
 
 and it is simple to create your own indicator too
@@ -39,21 +45,26 @@ and it is simple to create your own indicator too
 
 - Trendline
 - Fibonacci Retracements
+- Gann Fan
+- Channel
+- Linear regression channel
 
 ---
 
 ### Installation
 ```sh
-npm install react-stockcharts --save
+npm install  --save react-stockcharts@next
 ```
 
 ### Documentation
 
-[Getting started](http://rrag.github.io/react-stockcharts/documentation.html#/getting_started)
+[Documentation](http://rrag.github.io/react-stockcharts)
+
+[Ready to use Examples](https://github.com/rrag/react-stockcharts-examples2)
 
 ### Demo
 
-A [demo](http://rrag.github.io/stockcharts-demo/) built with react-stockcharts
+A [demo](http://rrag.github.io/stockcharts-demo/) (closed source) built with react-stockcharts
 
 ### Contributing
 
