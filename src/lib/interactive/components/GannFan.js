@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import { pairs } from "d3-array";
+import { path as d3Path } from "d3-path";
 
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
@@ -57,27 +58,20 @@ class GannFan extends Component {
 	}
 	drawOnCanvas(ctx, moreProps) {
 		const { stroke, strokeWidth, opacity, fill, fillOpacity } = this.props;
-		// const { fontSize, fontFamily, fontStroke } = this.props;
 
 		const lines = helper(this.props, moreProps);
 
 		ctx.lineWidth = strokeWidth;
 		ctx.strokeStyle = hexToRGBA(stroke, opacity);
 
-		// ctx.font = `${ fontSize }px ${fontFamily}`;
-		// ctx.fillStyle = fontStroke;
 
 		lines.forEach(line => {
-			const { x1, y1, x2, y2/* , text */ } = line;
-			// const { label, xy: [x, y] } = text;
+			const { x1, y1, x2, y2 } = line;
 
 			ctx.beginPath();
 			ctx.moveTo(x1, y1);
 			ctx.lineTo(x2, y2);
 			ctx.stroke();
-
-			// ctx.beginPath();
-			// ctx.fillText(label, x, y);
 		});
 		const pairsOfLines = pairs(lines);
 
@@ -93,7 +87,44 @@ class GannFan extends Component {
 		});
 	}
 	renderSVG(moreProps) {
-		throw new Error("svg not implemented", moreProps);
+		const { stroke, strokeWidth, opacity, fill, fillOpacity } = this.props;
+
+		const lines = helper(this.props, moreProps);
+		const pairsOfLines = pairs(lines);
+
+		return (
+			<g>
+				{lines.map((each, idx) => {
+					const { x1, y1, x2, y2 } = each;
+					return (
+						<line key={idx}
+							strokeWidth={strokeWidth}
+							stroke={stroke}
+							strokeOpacity={opacity}
+							x1={x1}
+							y1={y1}
+							x2={x2}
+							y2={y2}
+						/>
+					);
+				})}
+				{pairsOfLines.map(([line1, line2], idx) => {
+					const ctx = d3Path();
+					ctx.moveTo(line1.x1, line1.y1);
+					ctx.lineTo(line1.x2, line1.y2);
+					ctx.lineTo(line2.x2, line2.y2);
+					ctx.closePath();
+					return (
+						<path key={idx}
+							stroke="none"
+							fill={fill[idx]}
+							fillOpacity={fillOpacity}
+							d={ctx.toString()}
+						/>
+					);
+				})}
+			</g>
+		);
 	}
 	render() {
 		const { selected, onClick, onClickOutside, interactiveCursorClass } = this.props;

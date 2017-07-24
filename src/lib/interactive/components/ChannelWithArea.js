@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
+import { path as d3Path } from "d3-path";
+
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
 import { generateLine, isHovering } from "./StraightLine";
@@ -93,7 +95,46 @@ class ChannelWithArea extends Component {
 		}
 	}
 	renderSVG(moreProps) {
-		throw new Error("svg not implemented", moreProps);
+		const { stroke, strokeWidth, opacity, fill } = this.props;
+		const { line1, line2 } = helper(this.props, moreProps);
+
+		if (isDefined(line1)) {
+			const { x1, y1, x2, y2 } = line1;
+			const line = isDefined(line2)
+				? <line
+					strokeWidth={strokeWidth}
+					stroke={stroke}
+					strokeOpacity={opacity}
+					x1={x1}
+					y1={line2.y1}
+					x2={x2}
+					y2={line2.y2}
+				/>
+				: null;
+			const area = isDefined(line2)
+				? <path
+					fill={fill}
+					fillOpacity={opacity}
+					d={getPath(line1, line2)}
+				/>
+				: null;
+
+			return (
+				<g>
+					<line
+						strokeWidth={strokeWidth}
+						stroke={stroke}
+						strokeOpacity={opacity}
+						x1={x1}
+						y1={y1}
+						x2={x2}
+						y2={y2}
+					/>
+					{line}
+					{area}
+				</g>
+			);
+		}
 	}
 	render() {
 		const { selected, onClick, onClickOutside, interactiveCursorClass } = this.props;
@@ -121,6 +162,17 @@ class ChannelWithArea extends Component {
 		/>;
 	}
 }
+function getPath(line1, line2) {
+	const ctx = d3Path();
+	ctx.moveTo(line1.x1, line1.y1);
+	ctx.lineTo(line1.x2, line1.y2);
+	ctx.lineTo(line1.x2, line2.y2);
+	ctx.lineTo(line1.x1, line2.y1);
+
+	ctx.closePath();
+	return ctx.toString()
+}
+
 function helper(props, moreProps) {
 	const { startXY, endXY, dy, type } = props;
 

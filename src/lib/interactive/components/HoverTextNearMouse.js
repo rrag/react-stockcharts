@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
-import { hexToRGBA } from "../../utils";
+import { isDefined, hexToRGBA } from "../../utils";
 
 const PADDING = 10;
 
@@ -12,41 +12,26 @@ class HoverTextNearMouse extends Component {
 		super(props);
 		this.renderSVG = this.renderSVG.bind(this);
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
-		this.isHover = this.isHover.bind(this);
-	}
-	isHover() {
-		return false;
 	}
 	drawOnCanvas(ctx, moreProps) {
 		const {
-			show,
 			fontFamily,
 			fontSize,
 			fill,
 			bgFill,
 			bgOpacity,
-			bgWidth,
-			bgHeight,
-			text,
 		} = this.props;
 
-		const { mouseXY, height, width, show: mouseInsideCanvas } = moreProps;
 		// console.log(moreProps)
+		const textMetaData = helper(this.props, moreProps);
 
-		if (show && mouseInsideCanvas) {
-			const [x, y] = mouseXY;
-
-			const cx = x < width / 2
-				? x + PADDING
-				: x - bgWidth - PADDING;
-			const cy = y < height / 2
-				? y + PADDING
-				: y - bgHeight - PADDING;
+		if (isDefined(textMetaData)) {
+			const { rect, text } = textMetaData;
 
 			ctx.strokeStyle = bgFill;
 			ctx.fillStyle = hexToRGBA(bgFill, bgOpacity);
 			ctx.beginPath();
-			ctx.rect(cx, cy, bgWidth, bgHeight);
+			ctx.rect(rect.x, rect.y, rect.width, rect.height);
 			ctx.fill();
 			ctx.stroke();
 
@@ -54,11 +39,42 @@ class HoverTextNearMouse extends Component {
 			ctx.fillStyle = fill;
 			ctx.beginPath();
 
-			ctx.fillText(text, cx + PADDING / 2, cy + fontSize);
+			ctx.fillText(text.text, text.x, text.y);
 		}
 	}
 	renderSVG(moreProps) {
-		throw new Error("svg not implemented", moreProps);
+		const {
+			fontFamily,
+			fontSize,
+			fill,
+			bgFill,
+			bgOpacity,
+		} = this.props;
+
+		// console.log(moreProps)
+		const textMetaData = helper(this.props, moreProps);
+
+		if (isDefined(textMetaData)) {
+			const { rect, text } = textMetaData;
+
+			return (
+				<g>
+					<rect
+						fill={bgFill}
+						fillOpacity={bgOpacity}
+						stroke={bgFill}
+						{...rect}
+					/>
+					<text
+						fontSize={fontSize}
+						fontFamily={fontFamily}
+						textAnchor="start"
+						fill={fill}
+						x={text.x}
+						y={text.y}>{text.text}</text>
+				</g>
+			);
+		}
 	}
 	render() {
 
@@ -93,5 +109,44 @@ HoverTextNearMouse.defaultProps = {
 	bgFill: "#FA9325",
 	bgOpacity: 0.5,
 };
+
+function helper(props, moreProps) {
+	const {
+		show,
+		fontSize,
+		bgWidth,
+		bgHeight,
+	} = props;
+
+	const { mouseXY, height, width, show: mouseInsideCanvas } = moreProps;
+
+	if (show && mouseInsideCanvas) {
+		const [x, y] = mouseXY;
+
+		const cx = x < width / 2
+			? x + PADDING
+			: x - bgWidth - PADDING;
+		const cy = y < height / 2
+			? y + PADDING
+			: y - bgHeight - PADDING;
+
+		const rect = {
+			x: cx,
+			y: cy,
+			width: bgWidth,
+			height: bgHeight,
+		};
+		const text = {
+			text: props.text,
+			x: cx + PADDING / 2,
+			y: cy + fontSize
+		};
+
+		return {
+			rect,
+			text
+		};
+	}
+}
 
 export default HoverTextNearMouse;

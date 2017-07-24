@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 
 import { drawOnCanvas, renderSVG } from "./EdgeCoordinateV2";
 import GenericChartComponent from "../GenericChartComponent";
-import { getMouseCanvas } from "../GenericComponent";
+import { getAxisCanvas } from "../GenericComponent";
 
 class PriceCoordinate extends Component {
 	constructor(props) {
@@ -26,7 +26,7 @@ class PriceCoordinate extends Component {
 			clip={false}
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
-			canvasToDraw={getMouseCanvas}
+			canvasToDraw={getAxisCanvas}
 			drawOn={["pan"]}
 		/>;
 	}

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { sum, deviation } from "d3-array";
+import { path as d3Path } from "d3-path";
 
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
@@ -61,7 +62,49 @@ class LinearRegressionChannelWithArea extends Component {
 		ctx.stroke();
 	}
 	renderSVG(moreProps) {
-		throw new Error("svg not implemented", moreProps);
+		const { stroke, strokeWidth, opacity, fill } = this.props;
+		const { x1, y1, x2, y2, dy } = helper(this.props, moreProps);
+		const line = {
+			strokeWidth,
+			stroke,
+			strokeOpacity: opacity,
+		};
+		const ctx = d3Path();
+		ctx.moveTo(x1, y1 - dy);
+		ctx.lineTo(x2, y2 - dy);
+		ctx.lineTo(x2, y2 + dy);
+		ctx.lineTo(x1, y1 + dy);
+		ctx.closePath();
+		return (
+			<g>
+				<line
+					{...line}
+					x1={x1}
+					y1={y1 - dy}
+					x2={x2}
+					y2={y2 - dy}
+				/>
+				<line
+					{...line}
+					x1={x1}
+					y1={y1 + dy}
+					x2={x2}
+					y2={y2 + dy}
+				/>
+				<path
+					d={ctx.toString()}
+					fill={fill}
+					opacity={opacity}
+				/>
+				<line
+					{...line}
+					x1={x1}
+					y1={y1}
+					x2={x2}
+					y2={y2}
+				/>
+			</g>
+		);
 	}
 	render() {
 		const { selected, onClick, onClickOutside, interactiveCursorClass } = this.props;
