@@ -4,9 +4,10 @@
 - Delete the last drawn line - Press DEL
 - Get out of draw mode - Press ESC
 - When not in draw mode
-	- click and drag the edges of the trend line, or the trend line itself
+	- hover and click to select
+	- move the line or edges
+	- click outside to unselect
 
-More Work in progress to implement - modifying indicators after it is drawn - [#94](https://github.com/rrag/react-stockcharts/issues/94)
 
+[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickChartWithInteractiveIndicator.js), [codesandbox](https://codesandbox.io/s/github/rrag/react-stockcharts-examples2/tree/master/examples/CandleStickChartWithInteractiveIndicator)
 
-[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickChartWithInteractiveIndicator.jsx), [block](http://bl.ocks.org/rrag/63f666ef1159691d76cc), [plunker](http://plnkr.co/edit/gist:63f666ef1159691d76cc?p=preview)

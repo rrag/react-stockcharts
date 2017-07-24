@@ -6,7 +6,7 @@ import { scaleLinear } from "d3-scale";
 
 import { isNotDefined, head, last } from "../utils";
 
-var tickLevels = [
+const tickLevels = [
 	{ target: 50e2, level: 0 },
 	{ target: 50e3, level: 1 },
 	{ target: 10e4, level: 2 },
@@ -26,13 +26,13 @@ var tickLevels = [
 	{ target: 10e20, level: 16 },
 ];
 
-var MAX_LEVEL = 17;
+const MAX_LEVEL = 17;
 
-var tickLevelBisector = bisector(function(d) { return d.target; }).left;
+const tickLevelBisector = bisector(function(d) { return d.target; }).left;
 
 export default function financeDiscontinuousScale(index,
-		interval,
-		backingLinearScale = scaleLinear()) {
+	interval,
+	backingLinearScale = scaleLinear()) {
 
 	if (isNotDefined(index) /* || isNotDefined(interval) */)
 		throw new Error("Use the discontinuousTimeScaleProvider to create financeDiscontinuousScale");
@@ -41,7 +41,7 @@ export default function financeDiscontinuousScale(index,
 		return backingLinearScale(x);
 	}
 	scale.invert = function(x) {
-		var inverted = backingLinearScale.invert(x);
+		const inverted = backingLinearScale.invert(x);
 		return Math.round(inverted * 10000) / 10000;
 	};
 	scale.domain = function(x) {
@@ -68,19 +68,19 @@ export default function financeDiscontinuousScale(index,
 		return scale;
 	};
 	scale.ticks = function(m, flexTicks) {
-		var backingTicks = backingLinearScale.ticks(m);
-		var ticksMap = map();
+		const backingTicks = backingLinearScale.ticks(m);
+		const ticksMap = map();
 
-		var [domainStart, domainEnd] = backingLinearScale.domain();
+		const [domainStart, domainEnd] = backingLinearScale.domain();
 
-		var start = Math.max(Math.ceil(domainStart), head(index).index) + Math.abs(head(index).index);
-		var end = Math.min(Math.floor(domainEnd), last(index).index) + Math.abs(head(index).index);
+		const start = Math.max(Math.ceil(domainStart), head(index).index) + Math.abs(head(index).index);
+		const end = Math.min(Math.floor(domainEnd), last(index).index) + Math.abs(head(index).index);
 
-		var desiredTickCount = Math.ceil((end - start) / (domainEnd - domainStart) * backingTicks.length);
+		const desiredTickCount = Math.ceil((end - start) / (domainEnd - domainStart) * backingTicks.length);
 
 		for (let i = MAX_LEVEL; i >= 0; i--) {
-			var ticksAtLevel = ticksMap.get(i);
-			var temp = isNotDefined(ticksAtLevel)
+			const ticksAtLevel = ticksMap.get(i);
+			const temp = isNotDefined(ticksAtLevel)
 				? []
 				: ticksAtLevel.slice();
 
@@ -93,23 +93,23 @@ export default function financeDiscontinuousScale(index,
 			ticksMap.set(i, temp);
 		}
 
-		var unsortedTicks = [];
+		let unsortedTicks = [];
 		for (let i = MAX_LEVEL; i >= 0; i--) {
 			if ((ticksMap.get(i).length + unsortedTicks.length) > desiredTickCount * 1.5) break;
 			unsortedTicks = unsortedTicks.concat(ticksMap.get(i).map(d => d.index));
 		}
 
-		var ticks = unsortedTicks.sort(ascending);
+		const ticks = unsortedTicks.sort(ascending);
 
 		// console.log(backingTicks.length, desiredTickCount, ticks, ticksMap);
 
 		if (!flexTicks && end - start > ticks.length) {
-			var ticksSet = set(ticks);
+			const ticksSet = set(ticks);
 
-			var d = Math.abs(head(index).index);
+			const d = Math.abs(head(index).index);
 
 			// ignore ticks within this distance
-			var distance = Math.ceil(
+			const distance = Math.ceil(
 				(backingTicks.length > 0
 					? (last(backingTicks) - head(backingTicks)) / (backingTicks.length) / 4
 					: 1) * 1.5);
@@ -122,7 +122,7 @@ export default function financeDiscontinuousScale(index,
 				}
 			}
 
-			var tickValues = ticksSet.values().map(d => parseInt(d, 10));
+			const tickValues = ticksSet.values().map(d => parseInt(d, 10));
 
 			// console.log(ticks.length, tickValues, level);
 			// console.log(ticks, tickValues, distance);
@@ -134,63 +134,63 @@ export default function financeDiscontinuousScale(index,
 	};
 	scale.ticksv1 = function(m) {
 
-		var [domainStart, domainEnd] = backingLinearScale.domain();
+		const [domainStart, domainEnd] = backingLinearScale.domain();
 
-		var start = Math.max(Math.ceil(domainStart), head(index).index) + Math.abs(head(index).index);
-		var end = Math.min(Math.floor(domainEnd), last(index).index) + Math.abs(head(index).index);
+		const start = Math.max(Math.ceil(domainStart), head(index).index) + Math.abs(head(index).index);
+		const end = Math.min(Math.floor(domainEnd), last(index).index) + Math.abs(head(index).index);
 
 		// console.log(index.length, domainStart, domainEnd, start, end)
 
-		var newM = ((end - start) / (domainEnd - domainStart)) * m;
+		const newM = ((end - start) / (domainEnd - domainStart)) * m;
 		// newM = newM <= 0 ? m : newM;
-		var target = Math.round((end - start + 1) * interval / newM);
+		const target = Math.round((end - start + 1) * interval / newM);
 
 		// var subList = index.slice(start, end + 1);
-		var levelIndex = tickLevelBisector(tickLevels, target);
-		var { level } = tickLevels[levelIndex];
+		const levelIndex = tickLevelBisector(tickLevels, target);
+		const { level } = tickLevels[levelIndex];
 		// console.log(target, level, levelIndex)
 
 		// console.log(target.toExponential(), level);
 
-		var backingTicks = backingLinearScale.ticks(m);
+		const backingTicks = backingLinearScale.ticks(m);
 
 		// console.log(backingTicks.length, ratio, distance, level)
 
-		var ticks = [];
+		const ticks = [];
 		for (let i = start; i < end + 1; i++) {
 			if (index[i].level >= level) ticks.push(index[i].index);
 		}
 
 		// subList.filter(each => each.level >= level).map(d => d.index);
 
-		var ticksSet = set(ticks);
+		const ticksSet = set(ticks);
 		// console.log(ticks);
 
-		var d = Math.abs(head(index).index);
+		const d = Math.abs(head(index).index);
 
 		// ignore ticks within this distance
-		var distance = Math.ceil(
+		const distance = Math.ceil(
 			(backingTicks.length > 0
 				? (last(backingTicks) - head(backingTicks)) / (backingTicks.length) / 4
 				: 1) * 1.5);
 
 		for (let i = 0; i < ticks.length - 1; i++) {
-			for (var j = i + 1; j < ticks.length; j++) {
+			for (let j = i + 1; j < ticks.length; j++) {
 				if (ticks[j] - ticks[i] < distance) {
 					ticksSet.remove(index[ticks[i] + d].level >= index[ticks[j] + d].level ? ticks[j] : ticks[i]);
 				}
 			}
 		}
 
-		var tickValues = ticksSet.values().map(d => parseInt(d, 10));
+		const tickValues = ticksSet.values().map(d => parseInt(d, 10));
 		// console.log(ticks.length, tickValues, level, distance);
 		return tickValues;
 	};
 	scale.tickFormat = function() {
 		return function(x) {
 			// console.log(x)
-			var d = Math.abs(head(index).index);
-			var { format, date } = index[x + d];
+			const d = Math.abs(head(index).index);
+			const { format, date } = index[x + d];
 			return format(date);
 		};
 	};

@@ -8,10 +8,32 @@
 	],
 	"env": {
 		"cjs": {
-			"presets": ["es2015"],
+			"presets": [["env"]],
 		},
 		"es": {
-			"presets": [["es2015", { "modules": false }]],
+			"presets": [
+				["env", { "modules": false  }]
+			]
+		},
+		"watch": {
+			"presets": [
+				["env", {
+					"targets": {
+						"chrome": 58
+					},
+					"modules": false
+				}]
+			]
+		},
+		"server": {
+			"presets": [
+				["env", {
+					"targets": {
+						"node": 7.5
+					},
+					"loose": true,
+				}]
+			]
 		}
 	}
 }

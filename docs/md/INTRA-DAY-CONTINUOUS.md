@@ -1,1 +1,1 @@
-[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickChartWithZoomPan.jsx), [block](http://bl.ocks.org/rrag/f11fcc9d0867a34789c2efd346ca112a), [plunker](http://plnkr.co/edit/gist:f11fcc9d0867a34789c2efd346ca112a?p=preview)
+[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickChartWithZoomPan.js), [codesandbox](https://codesandbox.io/s/github/rrag/react-stockcharts-examples2/tree/master/examples/CandleStickChartWithZoomPan)

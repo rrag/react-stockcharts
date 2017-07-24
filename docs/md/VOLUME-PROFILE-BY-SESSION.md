@@ -1,1 +1,1 @@
-[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/VolumeProfileBySessionChart.jsx), [block](http://bl.ocks.org/rrag/91f4d66273e693b2054161dc8ff170a2), [plunker](http://plnkr.co/edit/gist:91f4d66273e693b2054161dc8ff170a2?p=preview)
+[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/VolumeProfileBySessionChart.js), [codesandbox](https://codesandbox.io/s/github/rrag/react-stockcharts-examples2/tree/master/examples/VolumeProfileBySessionChart)

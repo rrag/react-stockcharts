@@ -34,19 +34,20 @@ import { functor } from "./index";
 
 export default function() {
 
-	var accumulateTill = functor(false),
+	let accumulateTill = functor(false),
 		accumulator = noop,
 		value = identity,
 		discardTillStart = false,
 		discardTillEnd = false;
 
-	var accumulatingWindow = function(data) {
-		var accumulatedWindow = discardTillStart ? undefined : [];
-		var response = [];
-		var accumulatorIdx = 0;
-		var i = 0;
+	// eslint-disable-next-line prefer-const
+	let accumulatingWindow = function(data) {
+		let accumulatedWindow = discardTillStart ? undefined : [];
+		const response = [];
+		let accumulatorIdx = 0;
+		let i = 0;
 		for (i = 0; i < data.length; i++) {
-			var d = data[i];
+			const d = data[i];
 			// console.log(d, accumulateTill(d));
 			if (accumulateTill(d, i)) {
 				if (accumulatedWindow && accumulatedWindow.length > 0) response.push(accumulator(accumulatedWindow, i, accumulatorIdx++));

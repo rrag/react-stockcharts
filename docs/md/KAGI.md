@@ -6,4 +6,4 @@ Kagi consists of *Yin* and *Yang*, which is represented as red and green respect
 
 ATR(14) is used as the default reversal amount.
 
-[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/Kagi.jsx), [block](http://bl.ocks.org/rrag/d1e5b75ac12f754bb21d), [plunker](http://plnkr.co/edit/gist:d1e5b75ac12f754bb21d?p=preview)
+[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/Kagi.js), [codesandbox](https://codesandbox.io/s/github/rrag/react-stockcharts-examples2/tree/master/examples/Kagi)

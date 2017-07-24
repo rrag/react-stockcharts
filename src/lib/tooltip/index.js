@@ -1,25 +1,10 @@
-import MACDTooltip from "./MACDTooltip";
-// import TooltipContainer from "./TooltipContainer";
-import OHLCTooltip from "./OHLCTooltip";
-import SingleValueTooltip from "./SingleValueTooltip";
-import MovingAverageTooltip from "./MovingAverageTooltip";
-import BollingerBandTooltip from "./BollingerBandTooltip";
-import RSITooltip from "./RSITooltip";
-import StochasticTooltip from "./StochasticTooltip";
-import HoverTooltip from "./HoverTooltip";
-import ToolTipText from "./ToolTipText";
-import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
-
-export {
-	MACDTooltip,
-//	TooltipContainer,
-	OHLCTooltip,
-	SingleValueTooltip,
-	MovingAverageTooltip,
-	BollingerBandTooltip,
-	RSITooltip,
-	StochasticTooltip,
-	HoverTooltip,
-	ToolTipText,
-	ToolTipTSpanLabel
-};
+export { default as MACDTooltip } from "./MACDTooltip";
+export { default as OHLCTooltip } from "./OHLCTooltip";
+export { default as SingleValueTooltip } from "./SingleValueTooltip";
+export { default as MovingAverageTooltip } from "./MovingAverageTooltip";
+export { default as BollingerBandTooltip } from "./BollingerBandTooltip";
+export { default as RSITooltip } from "./RSITooltip";
+export { default as StochasticTooltip } from "./StochasticTooltip";
+export { default as HoverTooltip } from "./HoverTooltip";
+export { default as ToolTipText } from "./ToolTipText";
+export { default as ToolTipTSpanLabel } from "./ToolTipTSpanLabel";

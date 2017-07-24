@@ -11,7 +11,7 @@ try {
 	delete pkg.scripts;
 	delete pkg.browserify;
 	pkg.main = "index.js";
-	pkg["jsnext:main"] = "es/index.js";
+	pkg.module = "es/index.js";
 
 	const buildPackage = JSON.stringify(pkg, null, 2);
 

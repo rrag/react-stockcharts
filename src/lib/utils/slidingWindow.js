@@ -33,7 +33,7 @@ import { path, functor } from "./index";
 
 export default function() {
 
-	var undefinedValue = undefined,
+	let undefinedValue = undefined,
 		windowSize = 10,
 		accumulator = noop,
 		sourcePath,
@@ -41,13 +41,14 @@ export default function() {
 		skipInitial = 0,
 		misc;
 
-	var slidingWindow = function(data) {
-		var sourceFunction = source || path(sourcePath);
+	// eslint-disable-next-line prefer-const
+	let slidingWindow = function(data) {
+		const sourceFunction = source || path(sourcePath);
 
-		var size = functor(windowSize).apply(this, arguments);
-		var windowData = data.slice(skipInitial, size + skipInitial).map(sourceFunction);
-		var accumulatorIdx = 0;
-		var undef = functor(undefinedValue);
+		const size = functor(windowSize).apply(this, arguments);
+		const windowData = data.slice(skipInitial, size + skipInitial).map(sourceFunction);
+		let accumulatorIdx = 0;
+		const undef = functor(undefinedValue);
 		// console.log(skipInitial, size, data.length, windowData.length);
 		return data.map(function(d, i) {
 			// console.log(d, i);

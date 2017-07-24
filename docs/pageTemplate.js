@@ -82,7 +82,7 @@ module.exports = function(params) {
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 		<meta name="description" content="Highly customizable stock charts">
 		<meta name="author" content="rrag">
 		<!--
@@ -108,7 +108,6 @@ module.exports = function(params) {
 		${page === "index" ? getIndexContent() : getDocumentationContent()}
 
 		<!-- Placed at the end of the document so the pages load faster -->
-		<script type="text/javascript" src="${chunks["react-stockcharts"].entry}"></script>
 		${page === "index"
 			? `<script type="text/javascript" src="${chunks["react-stockcharts-home"].entry}"></script>`
 			: `<script type="text/javascript" src="${chunks["react-stockcharts-documentation"].entry}"></script>`}

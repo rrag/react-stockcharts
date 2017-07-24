@@ -1,14 +1,15 @@
 "use strict";
 
 // common components
-import ChartCanvas from "./lib/ChartCanvas";
-import Chart from "./lib/Chart";
+export { default as ChartCanvas } from "./lib/ChartCanvas";
+export { default as Chart } from "./lib/Chart";
+export { default as GenericChartComponent } from "./lib/GenericChartComponent";
+export { default as GenericComponent } from "./lib/GenericComponent";
+export { default as BackgroundText } from "./lib/BackgroundText";
 
-import GenericChartComponent, { getAxisCanvas } from "./lib/GenericChartComponent";
-import GenericComponent from "./lib/GenericComponent";
+export const version = "0.7.0-beta.10";
 
-import BackgroundText from "./lib/BackgroundText";
-
+/*
 // chart types & Series
 import * as series from "./lib/series";
 import * as scale from "./lib/scale";
@@ -26,25 +27,4 @@ import * as helper from "./lib/helper";
 import * as interactive from "./lib/interactive";
 import * as utils from "./lib/utils";
 
-const version = "0.6.1";
-
-export {
-	ChartCanvas,
-	Chart,
-	GenericChartComponent,
-	GenericComponent,
-	BackgroundText,
-	series,
-	coordinates,
-	indicator,
-	algorithm,
-	axes,
-	scale,
-	tooltip,
-	annotation,
-	helper,
-	interactive,
-	version,
-	utils,
-	getAxisCanvas,
-};
+*/

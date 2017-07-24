@@ -1,4 +1,5 @@
-[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickStockScaleChartWithVolumeBarV2.jsx), [block](http://bl.ocks.org/rrag/0a54ca33b05001f17f8f), [plunker](http://plnkr.co/edit/gist:0a54ca33b05001f17f8f?p=preview)
+[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/CandleStickStockScaleChartWithVolumeBarV2.js), [codesandbox](https://codesandbox.io/s/github/rrag/react-stockcharts-examples2/tree/master/examples/CandleStickStockScaleChartWithVolumeBarV2)
+
 
 ```js
 import { format } from "d3-format";
@@ -35,7 +36,7 @@ the chart has a defined `height` of 150.
 
 `(w, h) => [0, h - 150]` is the same as `function (w, h) { return [0, h - 150]; }`
 
-given the `width` and `height` available inside the `ChartCanvas` as input, this function returns an origin of `[0, height - 150]` to draw the volume histogram
+given the `width` and `height` available inside the `ChartCanvas` as input, this function returns an origin of `[0, height - 150]` to draw the volume bar
 
 Similarly the `fill` of `BarSeries` accepts either
 - a function which returns a string representing the color
@@ -46,4 +47,4 @@ Similarly the `fill` of `BarSeries` accepts either
 ```
 
 #### Another Version
-In this you can see how the volume histogram and the candlestick chart do not overlap.
+In this you can see how the volume bar and the candlestick chart do not overlap.

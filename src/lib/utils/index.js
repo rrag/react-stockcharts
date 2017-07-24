@@ -3,45 +3,37 @@
 
 import { scaleOrdinal, schemeCategory10 } from  "d3-scale";
 import { bisector } from "d3-array";
-
-import zipper from "./zipper";
-import merge from "./merge";
-import slidingWindow from "./slidingWindow";
-import identity from "./identity";
 import noop from "./noop";
-import shallowEqual from "./shallowEqual";
-import mappedSlidingWindow from "./mappedSlidingWindow";
-import accumulatingWindow from "./accumulatingWindow";
-import PureComponent from "./PureComponent";
 
-export {
-	accumulatingWindow,
-	mappedSlidingWindow,
-	merge,
-	identity,
-	noop,
-	shallowEqual,
-	slidingWindow,
-	zipper,
-	PureComponent,
-};
+export { default as zipper } from "./zipper";
+export { default as merge } from "./merge";
+export { default as slidingWindow } from "./slidingWindow";
+export { default as identity } from "./identity";
+export { default as noop } from "./noop";
+export { default as shallowEqual } from "./shallowEqual";
+export { default as mappedSlidingWindow } from "./mappedSlidingWindow";
+export { default as accumulatingWindow } from "./accumulatingWindow";
+export { default as PureComponent } from "./PureComponent";
 
+export * from "./barWidth";
 export * from "./strokeDasharray";
 
 export function getLogger(prefix) {
-	return (process.env.NODE_ENV !== "production")
-		? require("debug")("react-stockcharts:" + prefix)
-		: noop;
+	let logger = noop;
+	if (process.env.NODE_ENV !== "production") {
+		logger = require("debug")("react-stockcharts:" + prefix);
+	}
+	return logger;
 }
 
 export function path(loc = []) {
-	var key = Array.isArray(loc) ? loc : [loc];
-	var length = key.length;
+	const key = Array.isArray(loc) ? loc : [loc];
+	const length = key.length;
 
 	return function(obj, defaultValue) {
 		if (length === 0) return isDefined(obj) ? obj : defaultValue;
 
-		var index = 0;
+		let index = 0;
 		while (obj != null && index < length) {
 			obj = obj[key[index++]];
 		}
@@ -54,36 +46,63 @@ export function functor(v) {
 }
 
 export function getClosestItemIndexes2(array, value, accessor) {
-	var left = bisector(accessor).left(array, value);
+	let left = bisector(accessor).left(array, value);
 	left = Math.max(left - 1, 0);
-	var right = Math.min(left + 1, array.length - 1);
+	let right = Math.min(left + 1, array.length - 1);
 
-	var item = accessor(array[left]);
+	const item = accessor(array[left]);
 	if (item >= value && item <= value) right = left;
 
 	return { left, right };
 }
 
-export function getClosestValue(values, currentValue) {
-	var diff = values
+export function degrees(radians) {
+	return radians * 180 / Math.PI;
+}
+
+export function radians(degrees) {
+	return degrees * Math.PI / 180;
+}
+
+export function getClosestValue(inputValue, currentValue) {
+	const values = isArray(inputValue) ? inputValue : [inputValue];
+
+	const diff = values
 		.map(each => each - currentValue)
 		.reduce((diff1, diff2) => Math.abs(diff1) < Math.abs(diff2) ? diff1 : diff2);
 	return currentValue + diff;
 }
 
-
 export function d3Window(node) {
-	var d3win = node && (node.ownerDocument && node.ownerDocument.defaultView || node.document && node || node.defaultView);
+	const d3win = node
+		&& (node.ownerDocument && node.ownerDocument.defaultView
+			|| node.document && node
+			|| node.defaultView);
 	return d3win;
 }
 
+export const MOUSEENTER = "mouseenter.interaction";
+export const MOUSELEAVE = "mouseleave.interaction";
 export const MOUSEMOVE = "mousemove.pan";
 export const MOUSEUP = "mouseup.pan";
+export const TOUCHMOVE = "touchmove.pan";
+export const TOUCHEND = "touchend.pan touchcancel.pan";
+
+
+export function getTouchProps(touch) {
+	if (!touch) return {};
+	return {
+		pageX: touch.pageX,
+		pageY: touch.pageY,
+		clientX: touch.clientX,
+		clientY: touch.clientY
+	};
+}
 
 export function getClosestItemIndexes(array, value, accessor, log) {
-	var lo = 0, hi = array.length - 1;
+	let lo = 0, hi = array.length - 1;
 	while (hi - lo > 1) {
-		var mid = Math.round((lo + hi) / 2);
+		const mid = Math.round((lo + hi) / 2);
 		if (accessor(array[mid]) <= value) {
 			lo = mid;
 		} else {
@@ -92,8 +111,8 @@ export function getClosestItemIndexes(array, value, accessor, log) {
 	}
 	// for Date object === does not work, so using the <= in combination with >=
 	// the same code works for both dates and numbers
-	if (accessor(array[lo]) >= value && accessor(array[lo]) <= value) hi = lo;
-	if (accessor(array[hi]) >= value && accessor(array[hi]) <= value) lo = hi;
+	if (accessor(array[lo]).valueOf() === value.valueOf()) hi = lo;
+	if (accessor(array[hi]).valueOf() === value.valueOf()) lo = hi;
 
 	if (accessor(array[lo]) < value && accessor(array[hi]) < value) lo = hi;
 	if (accessor(array[lo]) > value && accessor(array[hi]) > value) hi = lo;
@@ -111,15 +130,15 @@ export function getClosestItemIndexes(array, value, accessor, log) {
 }
 
 export function getClosestItem(array, value, accessor, log) {
-	var { left, right } = getClosestItemIndexes(array, value, accessor, log);
+	const { left, right } = getClosestItemIndexes(array, value, accessor, log);
 
 	if (left === right) {
 		return array[left];
 	}
 
-	var closest = (Math.abs(accessor(array[left]) - value) < Math.abs(accessor(array[right]) - value))
-						? array[left]
-						: array[right];
+	const closest = (Math.abs(accessor(array[left]) - value) < Math.abs(accessor(array[right]) - value))
+		? array[left]
+		: array[right];
 	if (log) {
 		console.log(array[left], array[right], closest, left, right);
 	}
@@ -130,8 +149,8 @@ export const overlayColors = scaleOrdinal(schemeCategory10);
 
 export function head(array, accessor) {
 	if (accessor && array) {
-		var value;
-		for (var i = 0; i < array.length; i++) {
+		let value;
+		for (let i = 0; i < array.length; i++) {
 			value = array[i];
 			if (isDefined(accessor(value))) return value;
 		}
@@ -151,14 +170,14 @@ export const first = head;
 
 export function last(array, accessor) {
 	if (accessor && array) {
-		var value;
-		for (var i = array.length - 1; i >= 0; i--) {
+		let value;
+		for (let i = array.length - 1; i >= 0; i--) {
 			value = array[i];
 			if (isDefined(accessor(value))) return value;
 		}
 		return undefined;
 	}
-	var length = array ? array.length : 0;
+	const length = array ? array.length : 0;
 	return length ? array[length - 1] : undefined;
 }
 
@@ -177,7 +196,7 @@ export function isObject(d) {
 export const isArray = Array.isArray;
 
 export function touchPosition(touch, e) {
-	var container = e.target,
+	const container = e.target,
 		rect = container.getBoundingClientRect(),
 		x = touch.clientX - rect.left - container.clientLeft,
 		y = touch.clientY - rect.top - container.clientTop,
@@ -186,8 +205,8 @@ export function touchPosition(touch, e) {
 }
 
 export function mousePosition(e, defaultRect) {
-	var container = e.currentTarget;
-	var rect = defaultRect || container.getBoundingClientRect(),
+	const container = e.currentTarget;
+	const rect = defaultRect || container.getBoundingClientRect(),
 		x = e.clientX - rect.left - container.clientLeft,
 		y = e.clientY - rect.top - container.clientTop,
 		xy = [Math.round(x), Math.round(y)];
@@ -208,16 +227,16 @@ export function capitalizeFirst(str) {
 }
 
 export function hexToRGBA(inputHex, opacity) {
-	var hex = inputHex.replace("#", "");
+	const hex = inputHex.replace("#", "");
 	if (inputHex.indexOf("#") > -1 && (hex.length === 3 || hex.length === 6)) {
 
-		var multiplier = (hex.length === 3) ? 1 : 2;
+		const multiplier = (hex.length === 3) ? 1 : 2;
 
-		var r = parseInt(hex.substring(0, 1 * multiplier), 16);
-		var g = parseInt(hex.substring(1 * multiplier, 2 * multiplier), 16);
-		var b = parseInt(hex.substring(2 * multiplier, 3 * multiplier), 16);
+		const r = parseInt(hex.substring(0, 1 * multiplier), 16);
+		const g = parseInt(hex.substring(1 * multiplier, 2 * multiplier), 16);
+		const b = parseInt(hex.substring(2 * multiplier, 3 * multiplier), 16);
 
-		var result = `rgba(${ r }, ${ g }, ${ b }, ${ opacity })`;
+		const result = `rgba(${ r }, ${ g }, ${ b }, ${ opacity })`;
 
 		return result;
 	}

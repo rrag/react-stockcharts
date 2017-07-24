@@ -4,21 +4,21 @@ import { merge, slidingWindow, identity } from "../utils";
 
 export default function() {
 
-	var windowSize = 1,
+	let windowSize = 1,
 		accumulator = identity,
 		mergeAs = identity;
 
 	function algorithm(data) {
 
-		var defaultAlgorithm = slidingWindow()
+		const defaultAlgorithm = slidingWindow()
 			.windowSize(windowSize)
 			.accumulator(accumulator);
 
-		var calculator = merge()
+		const calculator = merge()
 			.algorithm(defaultAlgorithm)
 			.merge(mergeAs);
 
-		var newData = calculator(data);
+		const newData = calculator(data);
 
 		return newData;
 	}

@@ -9,9 +9,39 @@
 	- double click listener
 1. Explore refactoring of interactive indicators to use canvas (again)
 
+#### New Interactive components
+
+Do not store any state in the interactive components other than hover & selected
+Use onComplete/onDragComplete callback to pass the [] back to owner component
+Experiment with a single component and use isHover on that for the entire component
+`prevMouseXY` -> move this to ChartCanvas
+change the interactive components to axis canvas after drawing
+when mouse hover (over 20ms) happens move it to interactive canvas
+on blur move it back to axis canvas
+when selected keep it on interactive canvas
+on unselect move to axis canvas
+
+https://www.metatrader5.com/en/terminal/help/objects
+
+1. Parallel trend lines
+1. Fib Circles
+1. Fib Arc
+1. Fib Fan
+1. Show hover tooltip next to interactive components on mouse hover
+1. Continious line
+1. Andrews Pitch fork
+1. Gann square
+1. Arbitrary Shapes
+	- Rectangle
+	- Text
+	- Circle
+	- Ellipse
+	- Arrow
+
 #### New Chart types
 1. Line break
 1. Better Renko/Mean Renko (Tentative)
+
 
 ## v0.8
 

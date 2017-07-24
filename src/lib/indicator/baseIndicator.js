@@ -2,11 +2,11 @@
 
 import { overlayColors } from "../utils";
 
-var i = 0;
+let i = 0;
 
 export default function() {
 
-	var id = i++, accessor, stroke, fill, echo, type, tooltipLabel, domain, tickValues;
+	let id = i++, accessor, stroke, fill, echo, type;
 
 	function baseIndicator() {
 	}
@@ -39,24 +39,6 @@ export default function() {
 	baseIndicator.type = function(x) {
 		if (!arguments.length) return type;
 		type = x;
-		return baseIndicator;
-	};
-	baseIndicator.tooltipLabel = function(x) {
-		if (!arguments.length) {
-			if (typeof tooltipLabel === "function") return tooltipLabel();
-			return tooltipLabel;
-		}
-		tooltipLabel = x;
-		return baseIndicator;
-	};
-	baseIndicator.domain = function(x) {
-		if (!arguments.length) return domain;
-		domain = x;
-		return baseIndicator;
-	};
-	baseIndicator.tickValues = function(x) {
-		if (!arguments.length) return tickValues;
-		tickValues = x;
 		return baseIndicator;
 	};
 	return baseIndicator;

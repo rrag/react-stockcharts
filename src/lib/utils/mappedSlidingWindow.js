@@ -6,22 +6,23 @@ import { functor } from "./index";
 
 export default function() {
 
-	var undefinedValue = undefined,
+	let undefinedValue = undefined,
 		windowSize = 10,
 		accumulator = noop,
 		source = identity,
 		skipInitial = 0;
 
-	var mappedSlidingWindow = function(data) {
-		var size = functor(windowSize).apply(this, arguments);
-		var windowData = [];
-		var accumulatorIdx = 0;
-		var undef = functor(undefinedValue);
+	// eslint-disable-next-line prefer-const
+	let mappedSlidingWindow = function(data) {
+		const size = functor(windowSize).apply(this, arguments);
+		const windowData = [];
+		let accumulatorIdx = 0;
+		const undef = functor(undefinedValue);
 		// console.log(skipInitial, size, data.length, windowData.length);
-		var result = [];
+		const result = [];
 		data.forEach(function(d, i) {
 			// console.log(d, i, windowData.length);
-			var mapped;
+			let mapped;
 			if (i < (skipInitial + size - 1)) {
 				mapped = undef(d, i);
 				result.push(mapped);

@@ -4,7 +4,7 @@
 
 1. Weighted Moving Average indicator PR [#200](https://github.com/rrag/react-stockcharts/pull/200)- Thank you [@mgeri](https://github.com/mgeri)
 1. Triangular Moving Average indicator PR [#204](https://github.com/rrag/react-stockcharts/pull/204)- Thank you [@mgeri](https://github.com/mgeri)
-1. SAR
+1. SAR indicator
 
 #### Bug fixes
 

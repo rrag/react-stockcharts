@@ -1,8 +1,7 @@
 {
 	"plugins": [
-		"import", "flowtype", "jsx-a11y", "react"
+		"import", "flowtype", "jsx-a11y", "react", "const-immutable"
 	],
-	"parser": "babel-eslint",
 	"parserOptions": {
 		"ecmaVersion": 6,
 		"sourceType": "module",
@@ -41,7 +40,6 @@
 	],
 	"rules": {
 		"jsx-a11y/aria-role": "warn",
-		"jsx-a11y/img-has-alt": "warn",
 		"jsx-a11y/img-redundant-alt": "warn",
 		"jsx-a11y/no-access-key": "warn",
 		"flowtype/define-flow-type": "warn",
@@ -57,6 +55,10 @@
 		"react/prop-types": 1,
 		"react/react-in-jsx-scope": 1,
 
+		"const-immutable/no-mutation": 2,
+
+		"no-var": "error",
+		"prefer-const": "error",
 		"array-bracket-spacing": [2, "never"],
 		"block-scoped-var": 2,
 		"brace-style": [2, "1tbs", { "allowSingleLine": true }],

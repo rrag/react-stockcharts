@@ -7,14 +7,17 @@ import { min } from "d3-array";
 import identity from "./identity";
 
 export default function zipper() {
-	var combine = identity;
+	let combine = identity;
 
 	function zip() {
-		var n = arguments.length;
+		const n = arguments.length;
 		if (!n) return [];
-		var i, m = min(arguments, d3_zipLength), zips = new Array(m);
+		const m = min(arguments, d3_zipLength);
+
+		// eslint-disable-next-line prefer-const
+		let i, zips = new Array(m);
 		for (i = -1; ++i < m; ) {
-			for (var j = -1, zip = zips[i] = new Array(n); ++j < n; ) {
+			for (let j = -1, zip = zips[i] = new Array(n); ++j < n; ) {
 				zip[j] = arguments[j][i];
 			}
 			zips[i] = combine.apply(this, zips[i]);

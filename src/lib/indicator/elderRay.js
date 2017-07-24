@@ -3,7 +3,7 @@
 import { rebind } from "d3fc-rebind";
 
 import { merge } from "../utils";
-import { elderRay } from "./algorithm";
+import { elderRay } from "../calculator";
 
 import baseIndicator from "./baseIndicator";
 
@@ -11,25 +11,26 @@ const ALGORITHM_TYPE = "ElderRay";
 
 export default function() {
 
-	var base = baseIndicator()
+	const base = baseIndicator()
 		.type(ALGORITHM_TYPE)
 		.accessor(d => d.elderRay);
 
-	var underlyingAlgorithm = elderRay();
+	const underlyingAlgorithm = elderRay();
 
-	var mergedAlgorithm = merge()
+	const mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
 		.merge((datum, indicator) => { datum.elderRay = indicator; });
 
-	var indicator = function(data) {
-		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
-		return mergedAlgorithm(data);
+	const indicator = function(data, options = { merge: true }) {
+		if (options.merge) {
+			if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
+			return mergedAlgorithm(data);
+		}
+		return underlyingAlgorithm(data);
 	};
 
-	base.tooltipLabel(`${ALGORITHM_TYPE}: `);
-
-	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
-	rebind(indicator, underlyingAlgorithm, "windowSize", "movingAverageType", "sourcePath");
+	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type");
+	rebind(indicator, underlyingAlgorithm, "options");
 	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;

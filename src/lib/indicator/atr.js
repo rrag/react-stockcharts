@@ -3,35 +3,33 @@
 import { rebind } from "d3fc-rebind";
 
 import { merge } from "../utils";
-import { atr } from "./algorithm";
+import { atr } from "../calculator";
 
 import baseIndicator from "./baseIndicator";
-import { ATR as defaultOptions } from "./defaultOptionsForComputation";
 
 const ALGORITHM_TYPE = "ATR";
 
 export default function() {
 
-	var base = baseIndicator()
-		.type(ALGORITHM_TYPE)
-		.accessor(d => d.atr);
+	const base = baseIndicator()
+		.type(ALGORITHM_TYPE);
 
-	var underlyingAlgorithm = atr()
-		.windowSize(defaultOptions.period);
+	const underlyingAlgorithm = atr();
 
-	var mergedAlgorithm = merge()
+	const mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
 		.merge((datum, indicator) => { datum.atr = indicator; });
 
-	var indicator = function(data) {
-		if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
-		return mergedAlgorithm(data);
+	const indicator = function(data, options = { merge: true }) {
+		if (options.merge) {
+			if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
+			return mergedAlgorithm(data);
+		}
+		return underlyingAlgorithm(data);
 	};
 
-	base.tooltipLabel(() => `${ALGORITHM_TYPE}(${underlyingAlgorithm.windowSize()})`);
-
-	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type", "tooltipLabel");
-	rebind(indicator, underlyingAlgorithm, "windowSize");
+	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type");
+	rebind(indicator, underlyingAlgorithm, "options");
 	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;

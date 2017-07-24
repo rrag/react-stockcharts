@@ -7,11 +7,11 @@ import { csvParse, tsvParse } from  "d3-dsv";
 import { merge } from "d3-array";
 import { timeParse } from "d3-time-format";
 
-import { helper } from "react-stockcharts";
+const parseDate = timeParse("%Y-%m-%d");
+const parseDateTime = timeParse("%Y-%m-%d %H:%M:%S");
 
-var parseDate = timeParse("%Y-%m-%d");
-var parseDateTime = timeParse("%Y-%m-%d %H:%M:%S");
 
+import { TypeChooser } from "react-stockcharts/lib/helper";
 import "stylesheets/re-stock";
 
 import Nav from "lib/navbar";
@@ -20,7 +20,7 @@ import MainContainer from "lib/main-container";
 import MenuGroup from "lib/menu-group";
 import MenuItem from "lib/MenuItem";
 
-var DOCUMENTATION = {
+const DOCUMENTATION = {
 	head: "Documentation",
 	pages: [
 		// require("./lib/page/GettingStartedPage").default,
@@ -33,7 +33,25 @@ var DOCUMENTATION = {
 	]
 };
 
-var CHART_TYPES = {
+const CHART_FEATURES = {
+	head: "Chart features",
+	pages: [
+		require("./lib/page/MousePointerPage").default,
+		require("./lib/page/ZoomAndPanPage").default,
+		require("./lib/page/IntraDayContinuousDataPage").default,
+		require("./lib/page/EquityIntraDayDataPage").default,
+		require("./lib/page/EdgeCoordinatesPage").default,
+		require("./lib/page/PriceMarkerPage").default,
+		require("./lib/page/AnnotationsPage").default,
+		require("./lib/page/MouseFollowingTooltipPage").default,
+		require("./lib/page/UpdatingDataPageForCandleStick").default,
+		require("./lib/page/LoadMoreDataPage").default,
+		require("./lib/page/DarkThemePage").default,
+		require("./lib/page/GridPage").default,
+	]
+};
+
+const CHART_TYPES = {
 	head: "Chart types",
 	pages: [
 		require("./lib/page/AreaChartPage").default,
@@ -55,24 +73,7 @@ var CHART_TYPES = {
 	]
 };
 
-var CHART_FEATURES = {
-	head: "Chart features",
-	pages: [
-		require("./lib/page/MousePointerPage").default,
-		require("./lib/page/ZoomAndPanPage").default,
-		require("./lib/page/IntraDayContinuousDataPage").default,
-		require("./lib/page/EquityIntraDayDataPage").default,
-		require("./lib/page/EdgeCoordinatesPage").default,
-		require("./lib/page/AnnotationsPage").default,
-		require("./lib/page/MouseFollowingTooltipPage").default,
-		require("./lib/page/UpdatingDataPageForCandleStick").default,
-		require("./lib/page/LoadMoreDataPage").default,
-		require("./lib/page/DarkThemePage").default,
-		require("./lib/page/GridPage").default,
-	]
-};
-
-var INDICATORS = {
+const INDICATORS = {
 	head: "Indicators",
 	pages: [
 		require("./lib/page/MAOverlayPage").default,
@@ -89,7 +90,7 @@ var INDICATORS = {
 		require("./lib/page/VolumeProfileBySessionPage").default,
 	]
 };
-var ALGORITHMIC_INDICATORS = {
+const ALGORITHMIC_INDICATORS = {
 	head: "Algorithmic Indicators",
 	pages: [
 		require("./lib/page/MovingAverageCrossoverAlgorithmPage").default,
@@ -97,35 +98,30 @@ var ALGORITHMIC_INDICATORS = {
 	]
 };
 
-var INTERACTIVE = {
+const INTERACTIVE = {
 	head: "Interactive",
 	pages: [
 		require("./lib/page/TrendLineInteractiveIndicatorPage").default,
 		require("./lib/page/FibonacciInteractiveIndicatorPage").default,
-		require("./lib/page/ClickHandlerCallbackPage").default,
+		require("./lib/page/EquidistantChannelPage").default,
+		require("./lib/page/StandardDeviationChannelPage").default,
+		require("./lib/page/GannFanPage").default,
+		// require("./lib/page/ClickHandlerCallbackPage").default,
 		require("./lib/page/BrushSupportPage").default,
 	]
 };
 
-var CUSTOMIZATION = {
-	head: "Customization",
-	pages: [
-		require("./lib/page/CreatingCustomIndicatorPage").default,
-		require("./lib/page/CreatingCustomChartSeriesPage").default,
-	]
-};
-
-var ALL_PAGES = [
+const ALL_PAGES = [
 	DOCUMENTATION,
-	CHART_TYPES,
 	CHART_FEATURES,
+	CHART_TYPES,
 	INDICATORS,
 	ALGORITHMIC_INDICATORS,
 	INTERACTIVE,
 	// CUSTOMIZATION, TODO
 ];
 
-var pages = merge(ALL_PAGES.map(_ => _.pages));
+const pages = merge(ALL_PAGES.map(_ => _.pages));
 
 function compressString(string) {
 	string = string.replace(/\s+/g, "_");
@@ -162,19 +158,25 @@ if (!window.Modernizr.fetch || !window.Modernizr.promises) {
 
 
 function loadPage() {
-	var promiseMSFT = fetch("data/MSFT.tsv")
+	const promiseMSFT = fetch("data/MSFT.tsv")
 		.then(response => response.text())
 		.then(data => tsvParse(data, parseData(parseDate)));
-	var promiseMSFTfull = fetch("data/MSFT_full.tsv")
+	const promiseMSFTfull = fetch("data/MSFT_full.tsv")
 		.then(response => response.text())
 		.then(data => tsvParse(data, parseData(parseDate)));
-	var promiseIntraDayContinuous = fetch("data/bitfinex_xbtusd_1m.csv")
+	const promiseIntraDayContinuous = fetch("data/bitfinex_xbtusd_1m.csv")
 		.then(response => response.text())
-		.then(data => csvParse(data, parseData(parseDateTime)));
-	var promiseIntraDayDiscontinuous = fetch("data/MSFT_INTRA_DAY.tsv")
+		.then(data => csvParse(data, parseData(parseDateTime)))
+		.then(data => {
+			data.sort((a, b) => {
+				return a.date.valueOf() - b.date.valueOf();
+			});
+			return data;
+		});
+	const promiseIntraDayDiscontinuous = fetch("data/MSFT_INTRA_DAY.tsv")
 		.then(response => response.text())
 		.then(data => tsvParse(data, parseData(d => new Date(+d))));
-	var promiseCompare = fetch("data/comparison.tsv")
+	const promiseCompare = fetch("data/comparison.tsv")
 		.then(response => response.text())
 		.then(data => tsvParse(data, d => {
 			d = parseData(parseDate)(d);
@@ -183,18 +185,18 @@ function loadPage() {
 			d.GEClose = +d.GEClose;
 			return d;
 		}));
-	var promiseBubbleData = fetch("data/bubble.json")
+	const promiseBubbleData = fetch("data/bubble.json")
 		.then(response => response.json());
-	var promiseBarData = fetch("data/barData.json")
+	const promiseBarData = fetch("data/barData.json")
 		.then(response => response.json());
-	var promisegroupedBarData = fetch("data/groupedBarData.json")
+	const promisegroupedBarData = fetch("data/groupedBarData.json")
 		.then(response => response.json());
 
 	Promise.all([promiseMSFT, promiseMSFTfull, promiseIntraDayContinuous, promiseIntraDayDiscontinuous, promiseCompare, promiseBubbleData, promiseBarData, promisegroupedBarData])
 		.then(function(values) {
-			var [MSFT, MSFTfull, intraDayContinuous, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData] = values;
-			var horizontalBarData = barData.map(({ x, y }) => ({ x: y, y: x }));
-			var horizontalGroupedBarData = groupedBarData.map(d => {
+			const [MSFT, MSFTfull, intraDayContinuous, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData] = values;
+			const horizontalBarData = barData.map(({ x, y }) => ({ x: y, y: x }));
+			const horizontalGroupedBarData = groupedBarData.map(d => {
 				return {
 					y: d.x,
 					x1: d.y1,
@@ -204,16 +206,17 @@ function loadPage() {
 				};
 			});
 
+
 			renderPage(MSFT, MSFTfull, intraDayContinuous, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
 			// renderPartialPage(MSFT, MSFTfull, intraDayContinuous, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData);
 		});
 }
 
 function renderPage(data, dataFull, intraDayContinuous, intraDayDiscontinuous, compareData, bubbleData, barData, groupedBarData, horizontalBarData, horizontalGroupedBarData) {
-	var selected = location.hash.replace("#/", "");
-	var selectedPage = pages.filter((page) => (compressString(page.title) === compressString(selected)));
+	const selected = location.hash.replace("#/", "");
+	const selectedPage = pages.filter((page) => (compressString(page.title) === compressString(selected)));
 
-	var firstPage = (selectedPage.length === 0) ? pages[0] : selectedPage[0];
+	const firstPage = (selectedPage.length === 0) ? pages[0] : selectedPage[0];
 
 	// console.log(selected, selectedPage, firstPage);
 	class ExamplesPage extends React.Component {
@@ -312,16 +315,14 @@ function renderPartialPage(data, dataFull, intraDayContinuous, intraDayDiscontin
 	// Kagi
 	// PointAndFigure
 	// Renko
-	var Chart = require("./lib/charts/CandleStickChartForDiscontinuousIntraDay").default;
-	var { TypeChooser } = helper;
-
+	var Chart = require("./lib/charts/CandleStickChartWithZoomPan").default;
 	// data, dataFull, compareData
 	class ExamplesPage extends React.Component {
 		render() {
 			return (
 				<div>
-					<TypeChooser type="hybrid">
-						{(type) => <Chart data={intraDayDiscontinuous} type={type} />}
+					<TypeChooser type="hybrid" style={{ position: "absolute", top: 40, bottom: 0, left: 0, right: 0 }}>
+						{(type) => <Chart data={dataFull} type={type} />}
 					</TypeChooser>
 				</div>
 			);

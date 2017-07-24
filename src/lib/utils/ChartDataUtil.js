@@ -12,12 +12,12 @@ import {
 	getClosestItem,
 	zipper,
 	isDefined,
-	isArray,
+	isNotDefined,
 	functor,
 } from "./index";
 
 export function getChartOrigin(origin, contextWidth, contextHeight) {
-	var originCoordinates = typeof origin === "function"
+	const originCoordinates = typeof origin === "function"
 		? origin(contextWidth, contextHeight)
 		: origin;
 	return originCoordinates;
@@ -25,8 +25,8 @@ export function getChartOrigin(origin, contextWidth, contextHeight) {
 
 export function getDimensions({ width, height }, chartProps) {
 
-	var chartWidth = (chartProps.width || width);
-	var chartHeight = (chartProps.height || height);
+	const chartWidth = (chartProps.width || width);
+	const chartHeight = (chartProps.height || height);
 
 	return {
 		availableWidth: width,
@@ -38,7 +38,7 @@ export function getDimensions({ width, height }, chartProps) {
 
 function values(func) {
 	return (d) => {
-		var obj = func(d);
+		const obj = func(d);
 		return isObject(obj) ? Object.keys(obj).map(key => obj[key]) : obj;
 	};
 }
@@ -46,13 +46,17 @@ function values(func) {
 export function getNewChartConfig(innerDimension, children) {
 
 	return React.Children.map(children, (each) => {
-		if (each.type === Chart) {
-			var { id, origin, padding, yExtents: yExtentsProp, yScale, flipYScale, yExtentsCalculator } = each.props;
-			var { width, height, availableWidth, availableHeight } = getDimensions(innerDimension, each.props);
-			var { yPan } = each.props;
+		if (each.type.toString() === Chart.toString()) {
+			const chartProps = {
+				...Chart.defaultProps,
+				...each.props
+			};
+			const { id, origin, padding, yExtents: yExtentsProp, yScale, flipYScale, yExtentsCalculator } = chartProps;
+			const { width, height, availableWidth, availableHeight } = getDimensions(innerDimension, chartProps);
+			const { yPan } = chartProps;
 			// var { yMousePointerRectWidth: rectWidth, yMousePointerRectHeight: rectHeight, yMousePointerArrowWidth: arrowWidth } = each.props;
 			// var mouseCoordinates = { at, yDisplayFormat, rectHeight, rectWidth, arrowWidth };
-			var yExtents = isDefined(yExtentsProp)
+			const yExtents = isDefined(yExtentsProp)
 				? (Array.isArray(yExtentsProp) ? yExtentsProp : [yExtentsProp]).map(functor)
 				: undefined;
 			// console.log(yExtentsProp, yExtents);
@@ -74,9 +78,9 @@ export function getNewChartConfig(innerDimension, children) {
 	}).filter(each => isDefined(each));
 }
 export function getCurrentCharts(chartConfig, mouseXY) {
-	var currentCharts = chartConfig.filter(eachConfig => {
-		var top = eachConfig.origin[1];
-		var bottom = top + eachConfig.height;
+	const currentCharts = chartConfig.filter(eachConfig => {
+		const top = eachConfig.origin[1];
+		const bottom = top + eachConfig.height;
 		return (mouseXY[1] > top && mouseXY[1] < bottom);
 	}).map(config => config.id);
 
@@ -84,11 +88,13 @@ export function getCurrentCharts(chartConfig, mouseXY) {
 }
 
 function setRange(scale, height, padding, flipYScale) {
-	if (scale.rangeRoundPoints) {
+
+	if (scale.rangeRoundPoints || isNotDefined(scale.invert)) {
 		if (isNaN(padding)) throw new Error("padding has to be a number for ordinal scale");
-		scale.rangeRoundPoints(flipYScale ? [0, height] : [height, 0], padding);
+		if (scale.rangeRoundPoints) scale.rangeRoundPoints(flipYScale ? [0, height] : [height, 0], padding);
+		if (scale.rangeRound) scale.range(flipYScale ? [0, height] : [height, 0]).padding(padding);
 	} else {
-		var { top, bottom } = isNaN(padding)
+		const { top, bottom } = isNaN(padding)
 			? padding
 			: { top: padding, bottom: padding };
 
@@ -98,12 +104,12 @@ function setRange(scale, height, padding, flipYScale) {
 }
 
 function yDomainFromYExtents(yExtents, yScale, plotData) {
-	var yValues = yExtents.map(eachExtent =>
+	const yValues = yExtents.map(eachExtent =>
 		plotData.map(values(eachExtent)));
 
-	var allYValues = flattenDeep(yValues);
+	const allYValues = flattenDeep(yValues);
 
-	var realYDomain =  (yScale.invert)
+	const realYDomain =  (yScale.invert)
 		? extent(allYValues)
 		: set(allYValues).values();
 
@@ -111,18 +117,22 @@ function yDomainFromYExtents(yExtents, yScale, plotData) {
 }
 
 
-export function getChartConfigWithUpdatedYScales(chartConfig, plotData, xDomain, dy, chartsToPan) {
+export function getChartConfigWithUpdatedYScales(chartConfig,
+	{ plotData, xAccessor, displayXAccessor, fullData },
+	xDomain,
+	dy,
+	chartsToPan) {
 
-	var yDomains = chartConfig
+	const yDomains = chartConfig
 		.map(({ yExtentsCalculator, yExtents, yScale }) => {
 
-			var realYDomain = isDefined(yExtentsCalculator)
-				? yExtentsCalculator(plotData, xDomain)
+			const realYDomain = isDefined(yExtentsCalculator)
+				? yExtentsCalculator({ plotData, xDomain, xAccessor, displayXAccessor, fullData })
 				: yDomainFromYExtents(yExtents, yScale, plotData);
 
-			var yDomainDY = isDefined(dy)
-					? yScale.range().map(each => each - dy).map(yScale.invert)
-					: yScale.domain();
+			const yDomainDY = isDefined(dy)
+				? yScale.range().map(each => each - dy).map(yScale.invert)
+				: yScale.domain();
 			return {
 				realYDomain,
 				yDomainDY,
@@ -130,17 +140,17 @@ export function getChartConfigWithUpdatedYScales(chartConfig, plotData, xDomain,
 			};
 		});
 
-	var combine = zipper()
+	const combine = zipper()
 		.combine((config, { realYDomain, yDomainDY, prevYDomain }) => {
-			var { id, padding, height, yScale, yPan, flipYScale, yPanEnabled = false } = config;
+			const { id, padding, height, yScale, yPan, flipYScale, yPanEnabled = false } = config;
 
-			var another = (isDefined(chartsToPan) && isArray(chartsToPan))
+			const another = isDefined(chartsToPan)
 				? chartsToPan.indexOf(id) > -1
 				: true;
-			var domain = yPan && yPanEnabled
+			const domain = yPan && yPanEnabled
 				? another ? yDomainDY : prevYDomain
 				: realYDomain;
-			// console.log(yPan, yPanEnabled, properYDomain, domain, realYDomain)
+			// console.log(yPan, yPanEnabled, another, domain, realYDomain, prevYDomain);
 			return {
 				...config,
 				yScale: setRange(yScale.copy().domain(domain), height, padding, flipYScale),
@@ -149,17 +159,17 @@ export function getChartConfigWithUpdatedYScales(chartConfig, plotData, xDomain,
 			// return { ...config, yScale: yScale.copy().domain(domain).range([height - padding, padding]) };
 		});
 
-	var updatedChartConfig = combine(chartConfig, yDomains);
+	const updatedChartConfig = combine(chartConfig, yDomains);
 	return updatedChartConfig;
 }
 
 export function getCurrentItem(xScale, xAccessor, mouseXY, plotData) {
-	var xValue, item;
+	let xValue, item;
 	if (xScale.invert) {
 		xValue = xScale.invert(mouseXY[0]);
 		item = getClosestItem(plotData, xValue, xAccessor);
 	} else {
-		var d = xScale.range().map((d, idx) => ({ x: Math.abs(d - mouseXY[0]), idx })).reduce((a, b) => a.x < b.x ? a : b);
+		const d = xScale.range().map((d, idx) => ({ x: Math.abs(d - mouseXY[0]), idx })).reduce((a, b) => a.x < b.x ? a : b);
 		item = isDefined(d) ? plotData[d.idx] : plotData[0];
 		// console.log(d, item);
 	}

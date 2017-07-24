@@ -2,24 +2,23 @@
 
 import { rebind } from "d3fc-rebind";
 
-import { kagi } from "./algorithm";
+import { kagi } from "../calculator";
 import baseIndicator from "./baseIndicator";
 
 const ALGORITHM_TYPE = "Kagi";
 
 export default function() {
 
-	var base = baseIndicator()
+	const base = baseIndicator()
 		.type(ALGORITHM_TYPE);
 
-	var underlyingAlgorithm = kagi();
+	const underlyingAlgorithm = kagi();
 
-	var indicator = underlyingAlgorithm;
+	const indicator = underlyingAlgorithm;
 
 	rebind(indicator, base, "id", "stroke", "fill", "echo", "type");
 	rebind(indicator, underlyingAlgorithm, "dateAccessor", "dateMutator");
-	rebind(indicator, underlyingAlgorithm, "reversalType", "windowSize", "reversal", "sourcePath");
-	// rebind(indicator, mergedAlgorithm, "merge"/*, "skipUndefined"*/);
+	rebind(indicator, underlyingAlgorithm, "options");
 
 	return indicator;
 }

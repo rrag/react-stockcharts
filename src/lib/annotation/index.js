@@ -1,12 +1,10 @@
 "use strict";
 
 
-import Annotate from "./Annotate";
-import LabelAnnotation from "./LabelAnnotation";
-import SvgPathAnnotation from "./SvgPathAnnotation";
-import Label from "./Label";
-
-export { Annotate, LabelAnnotation, SvgPathAnnotation, Label };
+export { default as Annotate } from "./Annotate";
+export { default as LabelAnnotation } from "./LabelAnnotation";
+export { default as SvgPathAnnotation } from "./SvgPathAnnotation";
+export { default as Label } from "./Label";
 
 const halfWidth = 10;
 const bottomWidth = 3;

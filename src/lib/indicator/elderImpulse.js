@@ -11,15 +11,15 @@ const ALGORITHM_TYPE = "ElderImpulse";
 
 export default function() {
 
-	var macdSource, emaSource;
+	let macdSource, emaSource;
 
-	var base = baseIndicator()
+	const base = baseIndicator()
 		.type(ALGORITHM_TYPE)
 		// .stroke(d => stroke[d.elderImpulse])
 		.stroke(appearanceOptions.stroke)
 		.fill(undefined);
 
-	var underlyingAlgorithm = slidingWindow()
+	const underlyingAlgorithm = slidingWindow()
 		.windowSize(2)
 		.undefinedValue("neutral")
 		.accumulator(([prev, curr]) => {
@@ -27,11 +27,11 @@ export default function() {
 			if (isNotDefined(emaSource)) throw new Error(`emaSource not defined for ${ALGORITHM_TYPE} calculator`);
 
 			if (isDefined(macdSource(prev)) && isDefined(emaSource(prev))) {
-				var prevMACDDivergence = macdSource(prev).divergence;
-				var currMACDDivergence = macdSource(curr).divergence;
+				const prevMACDDivergence = macdSource(prev).divergence;
+				const currMACDDivergence = macdSource(curr).divergence;
 
-				var prevEMA = emaSource(prev);
-				var currEMA = emaSource(curr);
+				const prevEMA = emaSource(prev);
+				const currEMA = emaSource(curr);
 
 				if (currMACDDivergence >= prevMACDDivergence
 					&& currEMA >= prevEMA) return "up";
@@ -42,12 +42,16 @@ export default function() {
 			return "neutral";
 		});
 
-	var mergedAlgorithm = merge()
+	const mergedAlgorithm = merge()
 		.algorithm(underlyingAlgorithm)
 		.merge((datum, indicator) => { datum.elderImpulse = indicator; });
 
-	var indicator = function(data) {
-		var newData = mergedAlgorithm(data);
+	// eslint-disable-next-line prefer-const
+	let indicator = function(data, options = { merge: true }) {
+		const newData = options.merge
+			? mergedAlgorithm(data)
+			: underlyingAlgorithm(data);
+
 		return newData;
 	};
 	indicator.macdSource = function(x) {

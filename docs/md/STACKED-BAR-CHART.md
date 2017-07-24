@@ -1,1 +1,1 @@
-[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/StackedBarChart.jsx), [block](http://bl.ocks.org/rrag/df6a83dce5fdf71fc73e), [plunker](http://plnkr.co/edit/gist:df6a83dce5fdf71fc73e?p=preview)
+[source](https://github.com/rrag/react-stockcharts/blob/master/docs/lib/charts/StackedBarChart.js), [codesandbox](https://codesandbox.io/s/github/rrag/react-stockcharts-examples2/tree/master/examples/StackedBarChart)
