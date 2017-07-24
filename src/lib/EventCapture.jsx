@@ -72,18 +72,19 @@ class EventCapture extends Component {
 
 		const { onMouseEnter } = this.props;
 		this.mouseInside = true;
-		if (!this.state.panInProgress) {
+		if (!this.state.panInProgress
+				&& !this.state.dragInProgress) {
 			const win = d3Window(this.node);
 			select(win)
 				.on(MOUSEMOVE, this.handleMouseMove);
-
 		}
 		onMouseEnter(e);
 	}
 	handleLeave(e) {
 		const { onMouseLeave } = this.props;
 		this.mouseInside = false;
-		if (!this.state.panInProgress) {
+		if (!this.state.panInProgress
+				&& !this.state.dragInProgress) {
 			const win = d3Window(this.node);
 			select(win)
 				.on(MOUSEMOVE, null);
@@ -156,6 +157,17 @@ class EventCapture extends Component {
 			}, e);
 		}
 	}
+	cancelDrag() {
+		const win = d3Window(this.node);
+		select(win)
+			.on(MOUSEMOVE, this.mouseInside ? this.handleMouseMove : null)
+			.on(MOUSEUP, null);
+
+		this.setState({
+			dragInProgress: false,
+		});
+		this.mouseInteraction = true;
+	}
 	handleDragEnd() {
 		const e = d3Event;
 		const mouseXY = mouse(this.node);
@@ -176,7 +188,9 @@ class EventCapture extends Component {
 				onClick(mouseXY, e);
 			}, 100);
 		}
-
+		this.setState({
+			dragInProgress: false,
+		});
 		this.mouseInteraction = true;
 	}
 	handleMouseDown(e) {
@@ -213,6 +227,7 @@ class EventCapture extends Component {
 			} else if (somethingSelected) {
 				this.setState({
 					panInProgress: false,
+					dragInProgress: true,
 					panStart: null,
 					dragStartPosition: mouseXY,
 				});

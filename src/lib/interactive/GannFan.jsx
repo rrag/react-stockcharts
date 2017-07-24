@@ -17,6 +17,7 @@ class GannFan extends Component {
 		this.handleDrawFan = this.handleDrawFan.bind(this);
 		this.handleDragFan = this.handleDragFan.bind(this);
 		this.handleDragFanComplete = this.handleDragFanComplete.bind(this);
+		this.terminate = this.terminate.bind(this);
 
 		this.state = {};
 	}

@@ -48,10 +48,18 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 		super(props);
 		this.onKeyPress = this.onKeyPress.bind(this);
 		this.onFibComplete = this.onFibComplete.bind(this);
+		this.saveInteractiveNode = this.saveInteractiveNode.bind(this);
+		this.saveCanvasNode = this.saveCanvasNode.bind(this);
 		this.state = {
 			enableFib: true,
 			retracements: [],
 		};
+	}
+	saveInteractiveNode(node) {
+		this.node = node;
+	}
+	saveCanvasNode(node) {
+		this.canvasNode = node;
 	}
 	componentDidMount() {
 		document.addEventListener("keyup", this.onKeyPress);
@@ -77,7 +85,8 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 			break;
 		}
 		case 27: { // ESC
-			this.refs.fib.terminate();
+			this.node.terminate();
+			this.canvasNode.cancelDrag();
 			this.setState({
 				enableFib: false
 			});
@@ -140,22 +149,25 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 		const xExtents = [start, end];
 
 		return (
-			<ChartCanvas height={600}
-					width={width}
-					ratio={ratio}
-					margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
-					type={type}
-					seriesName="MSFT"
-					data={data}
-					xScale={xScale}
-					xAccessor={xAccessor}
-					displayXAccessor={displayXAccessor}
-					xExtents={xExtents}
-					drawMode={this.state.enableFib}>
+			<ChartCanvas ref={this.saveCanvasNode}
+				height={600}
+				width={width}
+				ratio={ratio}
+				margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
+				type={type}
+				seriesName="MSFT"
+				data={data}
+				xScale={xScale}
+				xAccessor={xAccessor}
+				displayXAccessor={displayXAccessor}
+				xExtents={xExtents}
+				drawMode={this.state.enableFib}
+			>
 
 				<Chart id={1} height={400}
-						yExtents={[d => [d.high, d.low], ema26.accessor(), ema12.accessor()]}
-						padding={{ top: 10, bottom: 20 }}>
+					yExtents={[d => [d.high, d.low], ema26.accessor(), ema12.accessor()]}
+					padding={{ top: 10, bottom: 20 }}
+				>
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<MouseCoordinateY
@@ -191,17 +203,19 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 								windowSize: ema12.options().windowSize,
 							},
 						]}
-						/>
+					/>
 
 					<FibonacciRetracement
+						ref={this.saveInteractiveNode}
 						enabled={this.state.enableFib}
 						type="BOUND"
 						retracements={this.state.retracements}
 						onComplete={this.onFibComplete}/>
 				</Chart>
 				<Chart id={2} height={150}
-						yExtents={[d => d.volume, smaVolume50.accessor()]}
-						origin={(w, h) => [0, h - 300]}>
+					yExtents={[d => d.volume, smaVolume50.accessor()]}
+					origin={(w, h) => [0, h - 300]}
+				>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
 
 					<MouseCoordinateY
@@ -213,8 +227,9 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
 				</Chart>
 				<Chart id={3} height={150}
-						yExtents={macdCalculator.accessor()}
-						origin={(w, h) => [0, h - 150]} padding={{ top: 10, bottom: 10 }} >
+					yExtents={macdCalculator.accessor()}
+					origin={(w, h) => [0, h - 150]} padding={{ top: 10, bottom: 10 }}
+				>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={2} />
 					<MouseCoordinateX
@@ -233,7 +248,7 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 						yAccessor={d => d.macd}
 						options={macdCalculator.options()}
 						appearance={macdAppearance}
-						/>
+					/>
 				</Chart>
 				<CrossHairCursor />
 			</ChartCanvas>

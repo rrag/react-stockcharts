@@ -47,12 +47,21 @@ class CandlestickChart extends React.Component {
 		super(props);
 		this.onKeyPress = this.onKeyPress.bind(this);
 		this.onDrawComplete = this.onDrawComplete.bind(this);
+		this.saveInteractiveNode = this.saveInteractiveNode.bind(this);
+		this.saveCanvasNode = this.saveCanvasNode.bind(this);
+
 		this.state = {
 			enableTrendLine: false,
 			trends: [
 				{ start: [1606, 56], end: [1711, 53] }
 			],
 		};
+	}
+	saveInteractiveNode(node) {
+		this.node = node;
+	}
+	saveCanvasNode(node) {
+		this.canvasNode = node;
 	}
 	componentDidMount() {
 		document.addEventListener("keyup", this.onKeyPress);
@@ -81,7 +90,8 @@ class CandlestickChart extends React.Component {
 			break;
 		}
 		case 27: { // ESC
-			this.refs.trend.terminate();
+			this.node.terminate();
+			this.canvasNode.cancelDrag();
 			this.setState({
 				enableTrendLine: false
 			});
@@ -136,21 +146,24 @@ class CandlestickChart extends React.Component {
 		const xExtents = [start, end];
 
 		return (
-			<ChartCanvas height={600}
-					width={width}
-					ratio={ratio}
-					margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
-					type={type}
-					seriesName="MSFT"
-					data={data}
-					xScale={xScale}
-					xAccessor={xAccessor}
-					displayXAccessor={displayXAccessor}
-					xExtents={xExtents}
-					drawMode={this.state.enableTrendLine}>
+			<ChartCanvas ref={this.saveCanvasNode}
+				height={600}
+				width={width}
+				ratio={ratio}
+				margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
+				type={type}
+				seriesName="MSFT"
+				data={data}
+				xScale={xScale}
+				xAccessor={xAccessor}
+				displayXAccessor={displayXAccessor}
+				xExtents={xExtents}
+				drawMode={this.state.enableTrendLine}
+			>
 				<Chart id={1} height={400}
-						yExtents={[d => [d.high, d.low], ema26.accessor(), ema12.accessor()]}
-						padding={{ top: 10, bottom: 20 }}>
+					yExtents={[d => [d.high, d.low], ema26.accessor(), ema12.accessor()]}
+					padding={{ top: 10, bottom: 20 }}
+				>
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<MouseCoordinateY
@@ -187,8 +200,9 @@ class CandlestickChart extends React.Component {
 								windowSize: ema12.options().windowSize,
 							},
 						]}
-						/>
+					/>
 					<TrendLine
+						ref={this.saveInteractiveNode}
 						enabled={this.state.enableTrendLine}
 						type="RAY"
 						snap={true}
@@ -196,11 +210,12 @@ class CandlestickChart extends React.Component {
 						onStart={() => console.log("START")}
 						onComplete={this.onDrawComplete}
 						trends={trends}
-						/>
+					/>
 				</Chart>
 				<Chart id={2} height={150}
-						yExtents={[d => d.volume]}
-						origin={(w, h) => [0, h - 300]}>
+					yExtents={[d => d.volume]}
+					origin={(w, h) => [0, h - 300]}
+				>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
 
 					<MouseCoordinateY
@@ -211,8 +226,9 @@ class CandlestickChart extends React.Component {
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
 				<Chart id={3} height={150}
-						yExtents={macdCalculator.accessor()}
-						origin={(w, h) => [0, h - 150]} padding={{ top: 10, bottom: 10 }} >
+					yExtents={macdCalculator.accessor()}
+					origin={(w, h) => [0, h - 150]} padding={{ top: 10, bottom: 10 }} 
+				>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={2} />
 
@@ -232,7 +248,7 @@ class CandlestickChart extends React.Component {
 						yAccessor={d => d.macd}
 						options={macdCalculator.options()}
 						appearance={macdAppearance}
-						/>
+					/>
 				</Chart>
 				<CrossHairCursor />
 			</ChartCanvas>

@@ -33,7 +33,7 @@ class MouseCoordinateY extends Component {
 			svgDraw={this.renderSVG}
 			canvasDraw={this.drawOnCanvas}
 			canvasToDraw={getMouseCanvas}
-			drawOn={["mousemove", "pan"/*  , "mouseleave"*/]}
+			drawOn={["mousemove", "pan", "drag"]}
 		/>;
 	}
 }

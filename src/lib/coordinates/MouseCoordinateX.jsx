@@ -33,7 +33,7 @@ class MouseCoordinateX extends Component {
 			clip={false}
 			canvasDraw={this.drawOnCanvas}
 			canvasToDraw={getMouseCanvas}
-			drawOn={["mousemove", "pan"/*  , "mouseleave"*/]}
+			drawOn={["mousemove", "pan", "drag"]}
 		/>;
 	}
 }

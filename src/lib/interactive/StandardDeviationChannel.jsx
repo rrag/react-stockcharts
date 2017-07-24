@@ -19,6 +19,7 @@ class StandardDeviationChannel extends Component {
 		this.handleDrawLine = this.handleDrawLine.bind(this);
 		this.handleDragLine = this.handleDragLine.bind(this);
 		this.handleDragLineComplete = this.handleDragLineComplete.bind(this);
+		this.terminate = this.terminate.bind(this);
 
 		this.state = {};
 	}

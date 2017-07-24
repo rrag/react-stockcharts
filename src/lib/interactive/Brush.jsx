@@ -3,127 +3,155 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import { isDefined, noop, functor } from "../utils";
+import {
+	isDefined,
+	noop,
+	getStrokeDasharray,
+	hexToRGBA,
+} from "../utils";
 import GenericChartComponent from "../GenericChartComponent";
+import { getMouseCanvas } from "../GenericComponent";
+
+const yes = () => true;
 
 class Brush extends Component {
-	constructor(props) {
-		super(props);
-		this.handleStartAndEnd = this.handleStartAndEnd.bind(this);
-		this.handleDrawBrush = this.handleDrawBrush.bind(this);
-		this.handleDrawBrushthis = this.this.bind(this);
-		this.state = {};
+	constructor(props, context) {
+		super(props, context);
+		this.handleZoomStart = this.handleZoomStart.bind(this);
+		this.handleDrawSquare = this.handleDrawSquare.bind(this);
+		this.handleZoomComplete = this.handleZoomComplete.bind(this);
+
+		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+		this.renderSVG = this.renderSVG.bind(this);
+		this.saveNode = this.saveNode.bind(this);
+		this.terminate = this.terminate.bind(this);
+		this.state = {
+			rect: null,
+		};
+	}
+	terminate() {
+		this.zoomHappening = false;
+		this.setState({
+			x1y1: null,
+			start: null,
+			end: null,
+			rect: null,
+		});
 	}
 	saveNode(node) {
 		this.node = node;
 	}
-	terminate() {
+	drawOnCanvas(ctx) {
+		const { rect } = this.state;
+		if (isDefined(rect)) {
+			const { x, y, height, width } = rect;
+			const { stroke, opacity } = this.props;
+
+			const dashArray = getStrokeDasharray("ShortDash")
+				.split(",")
+				.map(d => +d);
+
+			ctx.strokeStyle = hexToRGBA(stroke, opacity);
+			ctx.setLineDash(dashArray);
+			ctx.beginPath();
+			ctx.strokeRect(x, y, width, height);
+		}
+	}
+	renderSVG(moreProps) {
+		return null;
+	}
+	handleZoomStart(moreProps) {
+		this.zoomHappening = false;
+		const {
+			mouseXY: [, mouseY],
+			currentItem,
+			chartConfig: { yScale },
+			xAccessor,
+			xScale,
+		} = moreProps;
+
+		const x1y1 = [
+			xScale(xAccessor(currentItem)),
+			mouseY
+		];
+
 		this.setState({
-			x1: null, y1: null,
-			x2: null, y2: null,
-			startItem: null,
-			startClick: null,
-			rect: null,
+			selected: true,
+			x1y1,
+			start: {
+				item: currentItem,
+				xValue: xAccessor(currentItem),
+				yValue: yScale.invert(mouseY),
+			},
 		});
 	}
-	handleDrawBrush() {
-		const moreProps = this.node.getMoreProps();
+	handleDrawSquare(moreProps) {
+		if (this.state.x1y1 == null) return;
+
+		this.zoomHappening = true;
 
 		const {
+			mouseXY: [, mouseY],
+			currentItem,
+			chartConfig: { yScale },
+			xAccessor,
 			xScale,
-			mouseXY,
-			currentItem,
-			chartConfig,
-			xAccessor,
 		} = moreProps;
 
-		const { enabled } = this.props;
+		const [x2, y2] = [
+			xScale(xAccessor(currentItem)),
+			mouseY
+		];
 
-		const { startClick, startItem } = this.state;
+		const { x1y1: [x1, y1] } = this.state;
 
-		if (enabled && isDefined(startItem)) {
-			const { yScale } = chartConfig;
+		const x = Math.min(x1, x2);
+		const y = Math.min(y1, y2);
+		const height = Math.abs(y2 - y1);
+		const width = Math.abs(x2 - x1);
 
-			const y1Value = yScale.invert(startClick[1]);
-			const y2Value = yScale.invert(mouseXY[1]);
-
-			const x1 = xScale(xAccessor(startItem));
-			const y1 = yScale(y1Value);
-			const x2 = xScale(xAccessor(currentItem));
-			const y2 = yScale(y2Value);
-
-			const height = Math.abs(y2 - y1);
-			const width = Math.abs(x2 - x1);
-
-			this.setState({
-				rect: {
-					x: Math.min(x1, x2),
-					y: Math.min(y1, y2),
-					height,
-					width,
-				}
-			});
-		}
+		this.setState({
+			selected: true,
+			end: {
+				item: currentItem,
+				xValue: xAccessor(currentItem),
+				yValue: yScale.invert(mouseY),
+			},
+			rect: {
+				x, y, height, width
+			},
+		});
 	}
-	handleStartAndEnd(e) {
-		const moreProps = this.node.getMoreProps();
-
-		const {
-			mouseXY,
-			currentItem,
-			chartConfig,
-			xAccessor,
-		} = moreProps;
-
-		const { enabled, onBrush } = this.props;
-
-		if (enabled) {
-			const { x1, y1, startItem, startClick } = this.state;
-			const { yScale } = chartConfig;
-			const xValue = xAccessor(currentItem);
-			const yValue = yScale.invert(mouseXY[1]);
-
-			if (isDefined(startItem)) {
-				// brush complete
-				onBrush({
-					x1,
-					y1,
-					x2: xAccessor(currentItem),
-					y2: yValue,
-					startItem,
-					currentItem,
-					startClick,
-					mouseXY,
-				}, e);
-				this.terminate();
-			} else {
-				// brush start
-				this.setState({
-					x1: xValue,
-					y1: yValue,
-					x2: null,
-					y2: null,
-					startItem: currentItem,
-					startClick: mouseXY,
-				});
-			}
+	handleZoomComplete(moreProps) {
+		if (this.zoomHappening) {
+			const { onBrush } = this.props;
+			const { start, end } = this.state;
+			onBrush({ start, end }, moreProps);
 		}
+		this.setState({
+			selected: false,
+		});
 	}
 	render() {
-		const { rect } = this.state;
-		const { fill, stroke, opacity } = this.props;
-		const rectProps = { fill, stroke, opacity };
+		const { enabled } = this.props;
+		if (!enabled) return null;
 
-		return <g>
-			{ isDefined(rect) ? <rect {...rect} {...rectProps} /> : null }
-			<GenericChartComponent ref={this.saveNode}
+		return (
+			<GenericChartComponent
+				ref={this.saveNode}
+				isHover={yes}
+				selected
 				svgDraw={this.renderSVG}
-				isHover={functor(true)}
-				onMouseDown={this.handleStartAndEnd}
-				onMouseMove={this.handleDrawBrush}
-				drawOnMouseExitOfCanvas
+				canvasToDraw={getMouseCanvas}
+				canvasDraw={this.drawOnCanvas}
+
+				onDragStart={this.handleZoomStart}
+				onDrag={this.handleDrawSquare}
+				onDragComplete={this.handleZoomComplete}
+
+				drawOn={["mousemove", "pan", "drag"]}
 			/>
-		</g>;
+		);
 	}
 }
 

@@ -19,6 +19,7 @@ const aliases = {
 	dblclick: "mousemove",
 	dragstart: "drag",
 	dragend: "drag",
+	dragcancel: "drag",
 };
 
 class GenericComponent extends Component {
@@ -122,6 +123,13 @@ class GenericComponent extends Component {
 			}
 			this.dragInProgress = false;
 			this.someDragInProgress = false;
+			break;
+		}
+		case "dragcancel": {
+			if (this.dragInProgress) {
+				const { setCursorClass } = this.context;
+				setCursorClass(null);
+			}
 			break;
 		}
 		case "drag": {

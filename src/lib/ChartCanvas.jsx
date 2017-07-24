@@ -496,6 +496,10 @@ class ChartCanvas extends Component {
 			currentItem,
 		};
 	}
+	cancelDrag() {
+		this.eventCaptureNode.cancelDrag();
+		this.triggerEvent("dragcancel");
+	}
 	handlePinchZoom(initialPinch, finalPinch, e) {
 		if (!this.waitingForAnimationFrame) {
 			this.waitingForAnimationFrame = true;
@@ -774,6 +778,12 @@ class ChartCanvas extends Component {
 			currentItem,
 			currentCharts,
 		}, e);
+
+		this.mutableState = {
+			mouseXY,
+			currentItem,
+			currentCharts,
+		};
 
 		requestAnimationFrame(() => {
 			this.clearMouseCanvas();

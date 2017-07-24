@@ -79,6 +79,7 @@ class CandlestickChart extends React.Component {
 		super(props);
 		this.handleBrush = this.handleBrush.bind(this);
 		this.onKeyPress = this.onKeyPress.bind(this);
+		this.saveBrush = this.saveBrush.bind(this);
 
 		const { data: initialData } = props;
 
@@ -109,22 +110,31 @@ class CandlestickChart extends React.Component {
 	componentWillUnmount() {
 		document.removeEventListener("keyup", this.onKeyPress);
 	}
+	saveBrush(node) {
+		this.node = node;
+	}
+	saveCanvasNode(node) {
+		this.canvasNode = node;
+	}
 	onKeyPress(e) {
 		const keyCode = e.which;
 		console.log(keyCode);
 		switch (keyCode) {
 		case 27: { // ESC
-			this.refs.brush.terminate();
+			this.node.terminate();
+			this.setState({
+				brushEnabled: false,
+			});
 		}
 		}
 	}
-	handleBrush(brushCoords) {
-		console.log(arguments);
-		const left = Math.min(brushCoords.x1, brushCoords.x2);
-		const right = Math.max(brushCoords.x1, brushCoords.x2);
+	handleBrush(brushCoords, moreProps) {
+		const { start, end } = brushCoords;
+		const left = Math.min(start.xValue, end.xValue);
+		const right = Math.max(start.xValue, end.xValue);
 
-		const low = Math.min(brushCoords.y1, brushCoords.y2);
-		const high = Math.max(brushCoords.y1, brushCoords.y2);
+		const low = Math.min(start.yValue, end.yValue);
+		const high = Math.max(start.yValue, end.yValue);
 
 		// uncomment the line below to make the brush to zoom
 		this.setState({
@@ -138,22 +148,23 @@ class CandlestickChart extends React.Component {
 		const { data, xExtents, xScale, xAccessor, displayXAccessor, brushEnabled } = this.state;
 
 		return (
-			<ChartCanvas height={600}
-					width={width}
-					ratio={ratio}
-					margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
-					type={type}
-					seriesName="MSFT"
-					data={data}
-					xScale={xScale}
-					xAccessor={xAccessor}
-					displayXAccessor={displayXAccessor}
-					xExtents={xExtents}
-					drawMode={brushEnabled}>
-
+			<ChartCanvas
+				height={600}
+				width={width}
+				ratio={ratio}
+				margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
+				type={type}
+				seriesName="MSFT"
+				data={data}
+				xScale={xScale}
+				xAccessor={xAccessor}
+				displayXAccessor={displayXAccessor}
+				xExtents={xExtents}
+			>
 				<Chart id={1} height={400}
-						yExtents={this.state.yExtents}
-						padding={{ top: 10, bottom: 20 }}>
+					yExtents={this.state.yExtents}
+					padding={{ top: 10, bottom: 20 }}
+				>
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right" orient="right" ticks={5} />
 
@@ -169,8 +180,12 @@ class CandlestickChart extends React.Component {
 					<CurrentCoordinate yAccessor={ema26.accessor()} fill={ema26.stroke()} />
 					<CurrentCoordinate yAccessor={ema12.accessor()} fill={ema12.stroke()} />
 
-					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
-						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
+					<EdgeIndicator
+						itemType="last"
+						orient="right"
+						edgeAt="right"
+						yAccessor={d => d.close}
+						fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 
 					<OHLCTooltip origin={[-40, 0]}/>
 
@@ -191,15 +206,17 @@ class CandlestickChart extends React.Component {
 								windowSize: ema12.options().windowSize,
 							},
 						]}
-						/>
-					<Brush ref="brush"
-						enabled={true}
+					/>
+					<Brush
+						ref={this.saveBrush}
+						enabled={brushEnabled}
 						type={BRUSH_TYPE}
 						onBrush={this.handleBrush}/>
 				</Chart>
 				<Chart id={2} height={150}
-						yExtents={[d => d.volume, smaVolume50.accessor()]}
-						origin={(w, h) => [0, h - 300]}>
+					yExtents={[d => d.volume, smaVolume50.accessor()]}
+					origin={(w, h) => [0, h - 300]}
+				>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
 
 					<MouseCoordinateY
@@ -211,8 +228,9 @@ class CandlestickChart extends React.Component {
 					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
 				</Chart>
 				<Chart id={3} height={150}
-						yExtents={macdCalculator.accessor()}
-						origin={(w, h) => [0, h - 150]} padding={{ top: 10, bottom: 10 }} >
+					yExtents={macdCalculator.accessor()}
+					origin={(w, h) => [0, h - 150]} padding={{ top: 10, bottom: 10 }}
+				>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={2} />
 					<MouseCoordinateX
@@ -231,8 +249,8 @@ class CandlestickChart extends React.Component {
 						yAccessor={d => d.macd}
 						options={macdCalculator.options()}
 						appearance={macdAppearance}
-						/>
-					</Chart>
+					/>
+				</Chart>
 				<CrossHairCursor />
 			</ChartCanvas>
 		);

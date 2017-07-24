@@ -30,10 +30,19 @@ class CandleStickChartWithGannFan extends React.Component {
 		super(props);
 		this.onKeyPress = this.onKeyPress.bind(this);
 		this.onDrawComplete = this.onDrawComplete.bind(this);
+		this.saveInteractiveNode = this.saveInteractiveNode.bind(this);
+		this.saveCanvasNode = this.saveCanvasNode.bind(this);
+
 		this.state = {
 			enableInteractiveObject: true,
 			fans: [],
 		};
+	}
+	saveInteractiveNode(node) {
+		this.node = node;
+	}
+	saveCanvasNode(node) {
+		this.canvasNode = node;
 	}
 	componentDidMount() {
 		document.addEventListener("keyup", this.onKeyPress);
@@ -61,7 +70,8 @@ class CandleStickChartWithGannFan extends React.Component {
 			break;
 		}
 		case 27: { // ESC
-			this.refs.trend.terminate();
+			this.node.terminate();
+			this.canvasNode.cancelDrag();
 			this.setState({
 				enableInteractiveObject: false
 			});
@@ -94,21 +104,24 @@ class CandleStickChartWithGannFan extends React.Component {
 		const xExtents = [start, end];
 
 		return (
-			<ChartCanvas height={400}
-					width={width}
-					ratio={ratio}
-					margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
-					type={type}
-					seriesName="MSFT"
-					data={data}
-					xScale={xScale}
-					xAccessor={xAccessor}
-					displayXAccessor={displayXAccessor}
-					xExtents={xExtents}
-					drawMode={this.state.enableInteractiveObject}>
+			<ChartCanvas ref={this.saveCanvasNode}
+				height={400}
+				width={width}
+				ratio={ratio}
+				margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
+				type={type}
+				seriesName="MSFT"
+				data={data}
+				xScale={xScale}
+				xAccessor={xAccessor}
+				displayXAccessor={displayXAccessor}
+				xExtents={xExtents}
+				drawMode={this.state.enableInteractiveObject}
+			>
 				<Chart id={1}
-						yExtents={[d => [d.high, d.low]]}
-						padding={{ top: 10, bottom: 20 }}>
+					yExtents={[d => [d.high, d.low]]}
+					padding={{ top: 10, bottom: 20 }}
+				>
 
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<XAxis axisAt="bottom" orient="bottom"/>
@@ -129,11 +142,12 @@ class CandleStickChartWithGannFan extends React.Component {
 					<OHLCTooltip origin={[-40, 0]}/>
 
 					<GannFan
+						ref={this.saveInteractiveNode}
 						enabled={this.state.enableInteractiveObject}
 						onStart={() => console.log("START")}
 						onComplete={this.onDrawComplete}
 						fans={fans}
-						/>
+					/>
 				</Chart>
 				<CrossHairCursor />
 			</ChartCanvas>
