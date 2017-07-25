@@ -570,10 +570,13 @@ class ChartCanvas extends Component {
 		const { onLoadMore } = this.props;
 
 		this.triggerEvent("zoom", {
-			show: true,
+            xScale,
+            plotData,
+            chartConfig,
 			mouseXY,
 			currentCharts,
 			currentItem,
+			show: true,
 		}, e);
 
 		this.setState({
