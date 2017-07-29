@@ -71,3 +71,27 @@ is the only difference in `<ChartCanvas>`
 ```
 
 Same as for `AreaChart` example.
+
+## Customizing Candles
+
+You can change the looks of the candles by adding this to the top of your file:
+
+```
+const candlesAppearance = {
+  wickStroke: "#000000",
+  fill: function fill(d) {
+    return d.close > d.open ? "rgba(196, 205, 211, 0.8)" : "rgba(22, 22, 22, 0.8)";
+  },
+  stroke: "#000000",
+  candleStrokeWidth: 1,
+  widthRatio: 0.8,
+  opacity: 1,
+}
+``
+
+Then, make sure to rendre the CandlestickSeries component as such:
+
+```
+<CandlestickSeries
+   {...candlesAppearance} />
+```
