@@ -569,10 +569,16 @@ class ChartCanvas extends Component {
 		const end = xAccessor(firstItem);
 		const { onLoadMore } = this.props;
 
+		this.mutableState = {
+			mouseXY: mouseXY,
+			currentItem: currentItem,
+			currentCharts: currentCharts,
+		};
+
 		this.triggerEvent("zoom", {
-            xScale,
-            plotData,
-            chartConfig,
+			xScale,
+			plotData,
+			chartConfig,
 			mouseXY,
 			currentCharts,
 			currentItem,
