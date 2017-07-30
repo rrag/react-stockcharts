@@ -78,6 +78,12 @@ class GenericComponent extends Component {
 			if (this.props.onContextMenu) {
 				this.props.onContextMenu(this.getMoreProps(), e);
 			}
+			if (
+				this.moreProps.hovering
+				&& this.props.onContextMenuWhenHover
+			) {
+				this.props.onContextMenuWhenHover(this.getMoreProps(), e);
+			}
 			break;
 		}
 		case "mousedown": {
@@ -141,6 +147,12 @@ class GenericComponent extends Component {
 		case "dblclick": {
 			if (this.props.onDoubleClick) {
 				this.props.onDoubleClick(this.getMoreProps(), e);
+			}
+			if (
+				this.moreProps.hovering
+				&& this.props.onDoubleClickWhenHover
+			) {
+				this.props.onDoubleClickWhenHover(this.getMoreProps(), e);
 			}
 			break;
 		}
@@ -359,7 +371,9 @@ GenericComponent.propTypes = {
 	onDrag: PropTypes.func,
 	onDragComplete: PropTypes.func,
 	onDoubleClick: PropTypes.func,
+	onDoubleClickWhenHover: PropTypes.func,
 	onContextMenu: PropTypes.func,
+	onContextMenuWhenHover: PropTypes.func,
 	onMouseMove: PropTypes.func,
 	onMouseDown: PropTypes.func,
 	onHover: PropTypes.func,

@@ -80,9 +80,9 @@ class SARSeries extends Component {
 
 			canvasDraw={this.drawOnCanvas}
 
-			onClick={this.props.onClick}
-			onDoubleClick={this.props.onDoubleClick}
-			onContextMenu={this.props.onContextMenu}
+			onClickWhenHover={this.props.onClick}
+			onDoubleClickWhenHover={this.props.onDoubleClick}
+			onContextMenuWhenHover={this.props.onContextMenu}
 			{...hoverProps}
 		/>;
 	}

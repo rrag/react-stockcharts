@@ -33,7 +33,7 @@ class InteractiveText extends Component {
 		return false;
 	}
 	componentWillReceiveProps(nextProps) {
-		this.calculateTextWidth = (nextProps.text !== this.props.text)
+		this.calculateTextWidth = (nextProps.text !== this.props.text);
 	}
 	drawOnCanvas(ctx, moreProps) {
 		const {

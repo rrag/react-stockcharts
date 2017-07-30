@@ -50,7 +50,7 @@ class FibonacciRetracement extends Component {
 	handleEnd(xyValue) {
 		const { retracements } = this.props;
 		const { current } = this.state;
-		console.log("handleEnd this.mouseMoved ", this.mouseMoved)
+		console.log("handleEnd this.mouseMoved ", this.mouseMoved);
 
 		if (this.mouseMoved
 			&& isDefined(current)
