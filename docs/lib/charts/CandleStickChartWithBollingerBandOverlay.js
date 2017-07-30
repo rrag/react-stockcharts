@@ -86,26 +86,27 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 
 		return (
 			<ChartCanvas height={400}
-					width={width}
-					ratio={ratio}
-					margin={{ left: 70, right: 70, top: 10, bottom: 30 }}
-					type={type}
-					seriesName="MSFT"
-					data={data}
-					xScale={xScale}
-					xAccessor={xAccessor}
-					displayXAccessor={displayXAccessor}
-					xExtents={xExtents}>
+				width={width}
+				ratio={ratio}
+				margin={{ left: 70, right: 70, top: 10, bottom: 30 }}
+				type={type}
+				seriesName="MSFT"
+				data={data}
+				xScale={xScale}
+				xAccessor={xAccessor}
+				displayXAccessor={displayXAccessor}
+				xExtents={xExtents}
+			>
 				<Chart id={1}
-						yExtents={[d => [d.high, d.low], sma20.accessor(), ema20.accessor(), ema50.accessor(), bb.accessor()]}
-						padding={{ top: 10, bottom: 20 }}
-						onContextMenu={(...rest) => { console.log("chart - context menu", rest); }}
-						>
+					yExtents={[d => [d.high, d.low], sma20.accessor(), ema20.accessor(), ema50.accessor(), bb.accessor()]}
+					padding={{ top: 10, bottom: 20 }}
+					onContextMenu={(...rest) => { console.log("chart - context menu", rest); }}
+				>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5}
 						onDoubleClick={(...rest) => { console.log("yAxis - double click", rest); }}
 						onContextMenu={(...rest) => { console.log("yAxis - context menu", rest); }}
-						/>
+					/>
 
 					<MouseCoordinateX
 						at="bottom"
@@ -153,16 +154,16 @@ class CandleStickChartWithBollingerBandOverlay extends React.Component {
 								windowSize: ema50.options().windowSize,
 							},
 						]}
-						/>
+					/>
 					<BollingerBandTooltip
 						origin={[-38, 60]}
 						yAccessor={d => d.bb}
 						options={bb.options()} />
-
 				</Chart>
 				<Chart id={2}
-						yExtents={[d => d.volume, smaVolume50.accessor()]}
-						height={150} origin={(w, h) => [0, h - 150]}>
+					yExtents={[d => d.volume, smaVolume50.accessor()]}
+					height={150} origin={(w, h) => [0, h - 150]}
+				>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
 
 					<MouseCoordinateY

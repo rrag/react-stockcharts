@@ -300,7 +300,7 @@ class ChartCanvas extends Component {
 		this.generateSubscriptionId = this.generateSubscriptionId.bind(this);
 		this.draw = this.draw.bind(this);
 		this.redraw = this.redraw.bind(this);
-		this.isSomethingSelectedAndHovering = this.isSomethingSelectedAndHovering.bind(this);
+		this.getAllPanConditions = this.getAllPanConditions.bind(this);
 
 		this.subscriptions = [];
 		this.subscribe = this.subscribe.bind(this);
@@ -373,26 +373,29 @@ class ChartCanvas extends Component {
 		}
 	}
 	subscribe(id, rest) {
-		const { isDraggable = functor(false) } = rest;
+		const { getPanConditions = functor({
+			draggable: false,
+			panEnabled: true,
+		}) } = rest;
 		this.subscriptions = this.subscriptions.concat({
 			id,
 			...rest,
-			isDraggable,
+			getPanConditions,
 		});
 	}
 	unsubscribe(id) {
 		this.subscriptions = this.subscriptions.filter(each => each.id !== id);
 	}
-	isSomethingSelectedAndHovering() {
+	getAllPanConditions() {
 		return this.subscriptions
-			.filter(each => each.isDraggable()).length > 0;
+			.map(each => each.getPanConditions());
 	}
 	setCursorClass(className) {
 		this.eventCaptureNode.setCursorClass(className);
 	}
 	amIOnTop(id) {
 		const dragableComponents = this.subscriptions
-			.filter(each => each.isDraggable());
+			.filter(each => each.getPanConditions().draggable);
 
 		return dragableComponents.length > 0
 			&& last(dragableComponents).id === id;
@@ -799,7 +802,7 @@ class ChartCanvas extends Component {
 		});
 	}
 	handleClick(mousePosition, e) {
-		this.triggerEvent("click", {}, e);
+		this.triggerEvent("click", this.mutableState, e);
 
 		requestAnimationFrame(() => {
 			this.clearMouseCanvas();
@@ -968,7 +971,7 @@ class ChartCanvas extends Component {
 	render() {
 
 		const { type, height, width, margin, className, zIndex, defaultFocus, ratio, mouseMoveEvent, panEvent, zoomEvent } = this.props;
-		const { useCrossHairStyleCursor, drawMode, onSelect } = this.props;
+		const { useCrossHairStyleCursor, onSelect } = this.props;
 
 		const { plotData, xScale, xAccessor, chartConfig } = this.state;
 		const dimensions = getDimensions(this.props);
@@ -998,7 +1001,7 @@ class ChartCanvas extends Component {
 							ref={this.saveEventCaptureNode}
 							mouseMove={mouseMoveEvent && interaction}
 							zoom={zoomEvent && interaction}
-							pan={panEvent && interaction && !drawMode}
+							pan={panEvent && interaction}
 
 							width={dimensions.width}
 							height={dimensions.height}
@@ -1007,7 +1010,7 @@ class ChartCanvas extends Component {
 							xAccessor={xAccessor}
 							focus={defaultFocus}
 
-							isSomethingSelectedAndHovering={this.isSomethingSelectedAndHovering}
+							getAllPanConditions={this.getAllPanConditions}
 							onContextMenu={this.handleContextMenu}
 							onClick={this.handleClick}
 							onDoubleClick={this.handleDoubleClick}
@@ -1066,7 +1069,6 @@ ChartCanvas.propTypes = {
 	postCalculator: PropTypes.func.isRequired,
 	flipXScale: PropTypes.bool.isRequired,
 	useCrossHairStyleCursor: PropTypes.bool.isRequired,
-	drawMode: PropTypes.bool.isRequired,
 	padding: PropTypes.oneOfType([
 		PropTypes.number,
 		PropTypes.shape({
@@ -1106,7 +1108,6 @@ ChartCanvas.defaultProps = {
 	xAccessor: identity,
 	flipXScale: false,
 	useCrossHairStyleCursor: true,
-	drawMode: false,
 	defaultFocus: true,
 	onLoadMore: noop,
 	onSelect: noop,

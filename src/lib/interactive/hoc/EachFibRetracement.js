@@ -228,14 +228,14 @@ class EachFibRetracement extends Component {
 						: this.handleEdge2Drag;
 
 				const hoverHandler = interactive
-					? { onHover: this.handleHover, onBlur: this.handleHover }
+					? { onHover: this.handleHover, onUnHover: this.handleHover }
 					: {};
 				return <g key={j}>
 					<StraightLine
 						selected={selected || hover}
 
 						{...hoverHandler}
-						onClick={this.handleSelect}
+						onClickWhenHovering={this.handleSelect}
 						onClickOutside={this.handleUnSelect}
 
 						type={lineType}

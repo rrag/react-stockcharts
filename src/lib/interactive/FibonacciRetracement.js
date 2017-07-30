@@ -13,7 +13,8 @@ class FibonacciRetracement extends Component {
 	constructor(props) {
 		super(props);
 
-		this.handleStartAndEnd = this.handleStartAndEnd.bind(this);
+		this.handleStart = this.handleStart.bind(this);
+		this.handleEnd = this.handleEnd.bind(this);
 		this.handleDrawRetracement = this.handleDrawRetracement.bind(this);
 
 		this.handleEdge1Drag = this.handleEdge1Drag.bind(this);
@@ -30,11 +31,10 @@ class FibonacciRetracement extends Component {
 			override: null,
 		});
 	}
-	handleStartAndEnd(xyValue) {
-		const { retracements } = this.props;
+	handleStart(xyValue) {
 		const { current } = this.state;
-
 		if (isNotDefined(current) || isNotDefined(current.x1)) {
+			this.mouseMoved = false;
 			this.setState({
 				current: {
 					x1: xyValue[0],
@@ -45,7 +45,17 @@ class FibonacciRetracement extends Component {
 			}, () => {
 				this.props.onStart();
 			});
-		} else {
+		}
+	}
+	handleEnd(xyValue) {
+		const { retracements } = this.props;
+		const { current } = this.state;
+		console.log("handleEnd this.mouseMoved ", this.mouseMoved)
+
+		if (this.mouseMoved
+			&& isDefined(current)
+			&& isDefined(current.x1)
+		) {
 			const newRetracements = retracements
 				.concat({ ...current, x2: xyValue[0], y2: xyValue[1] });
 
@@ -58,8 +68,8 @@ class FibonacciRetracement extends Component {
 	}
 	handleDrawRetracement(xyValue) {
 		const { current } = this.state;
-
 		if (isDefined(current) && isDefined(current.x1)) {
+			this.mouseMoved = true;
 			this.setState({
 				current: {
 					...current,
@@ -156,7 +166,6 @@ class FibonacciRetracement extends Component {
 				{...current}
 			/>
 			: null;
-
 		return <g>
 			{retracements.map((each, idx) => {
 				return <EachFibRetracement key={idx}
@@ -182,7 +191,8 @@ class FibonacciRetracement extends Component {
 				stroke={currentPositionStroke}
 				opacity={currentPositionOpacity}
 				strokeWidth={currentPositionStrokeWidth}
-				onMouseDown={this.handleStartAndEnd}
+				onMouseDown={this.handleStart}
+				onClick={this.handleEnd}
 				onMouseMove={this.handleDrawRetracement} />
 		</g>;
 	}

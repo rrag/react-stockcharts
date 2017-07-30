@@ -17,7 +17,8 @@ class TrendLine extends Component {
 	constructor(props) {
 		super(props);
 
-		this.handleStartAndEnd = this.handleStartAndEnd.bind(this);
+		this.handleStart = this.handleStart.bind(this);
+		this.handleEnd = this.handleEnd.bind(this);
 		this.handleDrawLine = this.handleDrawLine.bind(this);
 		this.handleDragLine = this.handleDragLine.bind(this);
 		this.handleDragLineComplete = this.handleDragLineComplete.bind(this);
@@ -59,8 +60,8 @@ class TrendLine extends Component {
 	}
 	handleDrawLine(xyValue) {
 		const { current } = this.state;
-
 		if (isDefined(current) && isDefined(current.start)) {
+			this.mouseMoved = true;
 			this.setState({
 				current: {
 					start: current.start,
@@ -69,11 +70,11 @@ class TrendLine extends Component {
 			});
 		}
 	}
-	handleStartAndEnd(xyValue) {
+	handleStart(xyValue) {
 		const { current } = this.state;
-		const { trends } = this.props;
 
 		if (isNotDefined(current) || isNotDefined(current.start)) {
+			this.mouseMoved = false;
 			this.setState({
 				current: {
 					start: xyValue,
@@ -82,7 +83,17 @@ class TrendLine extends Component {
 			}, () => {
 				this.props.onStart();
 			});
-		} else {
+		}
+	}
+	handleEnd(xyValue) {
+		const { current } = this.state;
+		const { trends } = this.props;
+
+		if (this.mouseMoved
+			&& isDefined(current)
+			&& isDefined(current.start)
+		) {
+
 			this.setState({
 				current: null,
 			}, () => {
@@ -141,8 +152,10 @@ class TrendLine extends Component {
 				stroke={currentPositionStroke}
 				opacity={currentPositionOpacity}
 				strokeWidth={currentPositionStrokeWidth}
-				onMouseDown={this.handleStartAndEnd}
-				onMouseMove={this.handleDrawLine} />
+				onMouseDown={this.handleStart}
+				onClick={this.handleEnd}
+				onMouseMove={this.handleDrawLine}
+			/>
 		</g>;
 	}
 }

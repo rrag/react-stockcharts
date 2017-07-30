@@ -79,14 +79,15 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 		case 46: { // DEL
 			const rest = this.state.retracements
 				.slice(0, this.state.retracements.length - 1);
+			this.canvasNode.cancelDrag();
 			this.setState({
 				retracements: rest,
 			});
 			break;
 		}
 		case 27: { // ESC
-			this.node.terminate();
 			this.canvasNode.cancelDrag();
+			this.node.terminate();
 			this.setState({
 				enableFib: false
 			});
@@ -161,7 +162,6 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 				xAccessor={xAccessor}
 				displayXAccessor={displayXAccessor}
 				xExtents={xExtents}
-				drawMode={this.state.enableFib}
 			>
 
 				<Chart id={1} height={400}

@@ -9,9 +9,11 @@ import { isHovering } from "./StraightLine";
 
 import { isDefined, getClosestItemIndexes, noop, zipper, hexToRGBA } from "../../utils";
 
-class LinearRegressionChannelWithArea extends Component {
+class InteractiveText extends Component {
 	constructor(props) {
 		super(props);
+
+		this.calculateTextWidth = true;
 
 		this.renderSVG = this.renderSVG.bind(this);
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
@@ -30,36 +32,42 @@ class LinearRegressionChannelWithArea extends Component {
 		}
 		return false;
 	}
+	componentWillReceiveProps(nextProps) {
+		this.calculateTextWidth = (nextProps.text !== this.props.text)
+	}
 	drawOnCanvas(ctx, moreProps) {
-		const { stroke, strokeWidth, opacity, fill } = this.props;
-		const { x1, y1, x2, y2, dy } = helper(this.props, moreProps);
+		const {
+			bgFill,
+			bgOpacity,
+			textFill,
+			fontFamily,
+			fontSize,
+			text,
+		} = this.props;
 
-		ctx.lineWidth = strokeWidth;
-		ctx.strokeStyle = hexToRGBA(stroke, opacity);
-		ctx.fillStyle = hexToRGBA(fill, opacity);
+		if (this.calculateTextWidth) {
+			ctx.font = `${ fontSize }px ${fontFamily}`;
+			const { width } = ctx.measureText(text);
+			this.textWidth = width;
+			this.calculateTextWidth = false;
+		}
+
+		const { selected } = this.props;
+
+		const { x, y, rect } = helper(this.props, moreProps, this.textWidth);
+
+		ctx.fillStyle = textFill;
+		ctx.textBaseline = "middle";
+		ctx.textAlign = "center";
 
 		ctx.beginPath();
-		ctx.moveTo(x1, y1 - dy);
-		ctx.lineTo(x2, y2 - dy);
-		ctx.stroke();
+		ctx.fillText(text, x, y);
 
-		ctx.beginPath();
-		ctx.moveTo(x2, y2 + dy);
-		ctx.lineTo(x1, y1 + dy);
-		ctx.stroke();
-
-		ctx.beginPath();
-		ctx.moveTo(x1, y1 - dy);
-		ctx.lineTo(x2, y2 - dy);
-		ctx.lineTo(x2, y2 + dy);
-		ctx.lineTo(x1, y1 + dy);
-		ctx.closePath();
-		ctx.fill();
-
-		ctx.beginPath();
-		ctx.moveTo(x2, y2);
-		ctx.lineTo(x1, y1);
-		ctx.stroke();
+		if (true) {
+			ctx.fillStyle = hexToRGBA(bgFill, bgOpacity);
+			ctx.beginPath();
+			ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+		}
 	}
 	renderSVG(moreProps) {
 		const { stroke, strokeWidth, opacity, fill } = this.props;
@@ -107,9 +115,8 @@ class LinearRegressionChannelWithArea extends Component {
 		);
 	}
 	render() {
-		const { selected, onClickWhenHovering, onClickOutside, interactiveCursorClass } = this.props;
-		const { onHover, onUnHover } = this.props;
-
+		const { selected, interactiveCursorClass } = this.props;
+		const { onHover, onUnHover, onClickWhenHovering, onClickOutside } = this.props;
 
 		return <GenericChartComponent
 			isHover={this.isHover}
@@ -131,23 +138,8 @@ class LinearRegressionChannelWithArea extends Component {
 	}
 }
 
-export function edge1Provider(props) {
-	return function(moreProps) {
-		const { x1, y1 } = helper(props, moreProps);
-		return [x1, y1];
-	};
-}
-
-export function edge2Provider(props) {
-	return function(moreProps) {
-		const { x2, y2 } = helper(props, moreProps);
-		return [x2, y2];
-	};
-}
-
-
-function helper(props, moreProps) {
-	const { x1Value, x2Value, type } = props;
+function helper(props, moreProps, textWidth) {
+	const { position, text, fontSize } = props;
 
 	const { xScale, chartConfig: { yScale }, fullData } = moreProps;
 	const { xAccessor } = moreProps;
@@ -159,61 +151,29 @@ function helper(props, moreProps) {
 	b = (n * sum(x*y) - sum(xs) * sum(ys)) / (n * sum(xSquareds) - (sum(xs) ^ 2))
 	a = (sum of closes)
 	*/
+	const [xValue, yValue] = position;
+	const x = xScale(xValue);
+	const y = yScale(yValue);
 
-	const { left } = getClosestItemIndexes(fullData, x1Value, xAccessor);
-	const { right } = getClosestItemIndexes(fullData, x2Value, xAccessor);
-
-	const startIndex = Math.min(left, right);
-	const endIndex = Math.max(left, right) + 1;
-
-	const array = fullData.slice(startIndex, endIndex);
-
-	const xs = array.map(d => xAccessor(d).valueOf());
-	const ys = array.map(d => d.close);
-	const n = array.length;
-
-	const combine = zipper()
-		.combine((x, y) => x * y);
-
-	const xys = combine(xs, ys);
-	const xSquareds = xs.map(x => Math.pow(x, 2));
-
-	const b = (n * sum(xys) - sum(xs) * sum(ys)) / (n * sum(xSquareds) - Math.pow(sum(xs), 2));
-	const a = (sum(ys) - b * sum(xs)) / n;
-
-	const newy1 = a + b * x1Value;
-	const newy2 = a + b * x2Value;
-
-	const x1 = xScale(x1Value);
-	const y1 = yScale(newy1);
-	const x2 = xScale(x2Value);
-	const y2 = yScale(newy2);
-
-	const stdDev = type === "SD"
-		? deviation(array, d => d.close)
-		: 0;
-
-	const dy = yScale(newy1 - stdDev) - y1;
+	const rect = {
+		x: x - textWidth / 2 - fontSize,
+		y: y - fontSize,
+		width: textWidth + fontSize * 2,
+		height: fontSize * 2,
+	};
 
 	return {
-		x1, y1, x2, y2, dy
+		x, y, rect
 	};
 }
 
-LinearRegressionChannelWithArea.propTypes = {
-	x1Value: PropTypes.any.isRequired,
-	x2Value: PropTypes.any.isRequired,
-
-	type: PropTypes.oneOf([
-		"SD", // standard deviation channel
-		"Raff", // Raff Regression Channel
-	]).isRequired,
-
-	interactiveCursorClass: PropTypes.string,
-	stroke: PropTypes.string.isRequired,
-	strokeWidth: PropTypes.number.isRequired,
-	fill: PropTypes.string.isRequired,
-	opacity: PropTypes.number.isRequired,
+InteractiveText.propTypes = {
+	bgFill: PropTypes.string.isRequired,
+	bgOpacity: PropTypes.number.isRequired,
+	textFill: PropTypes.string.isRequired,
+	fontFamily: PropTypes.string.isRequired,
+	fontSize: PropTypes.number.isRequired,
+	text: PropTypes.string.isRequired,
 
 	onDragStart: PropTypes.func.isRequired,
 	onDrag: PropTypes.func.isRequired,
@@ -224,12 +184,13 @@ LinearRegressionChannelWithArea.propTypes = {
 	onUnHover: PropTypes.func,
 
 	defaultClassName: PropTypes.string,
+	interactiveCursorClass: PropTypes.string,
 
 	tolerance: PropTypes.number.isRequired,
 	selected: PropTypes.bool.isRequired,
 };
 
-LinearRegressionChannelWithArea.defaultProps = {
+InteractiveText.defaultProps = {
 	onDragStart: noop,
 	onDrag: noop,
 	onDragComplete: noop,
@@ -244,4 +205,4 @@ LinearRegressionChannelWithArea.defaultProps = {
 	selected: false,
 };
 
-export default LinearRegressionChannelWithArea;
+export default InteractiveText;

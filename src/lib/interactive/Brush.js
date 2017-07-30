@@ -8,11 +8,10 @@ import {
 	noop,
 	getStrokeDasharray,
 	hexToRGBA,
+	yes,
 } from "../utils";
 import GenericChartComponent from "../GenericChartComponent";
 import { getMouseCanvas } from "../GenericComponent";
-
-const yes = () => true;
 
 class Brush extends Component {
 	constructor(props, context) {

@@ -157,8 +157,8 @@ class EachTrendLine extends Component {
 			<StraightLine
 				selected={selected || hover}
 				onHover={this.handleHover}
-				onBlur={this.handleHover}
-				onClick={this.handleSelect}
+				onUnHover={this.handleHover}
+				onClickWhenHovering={this.handleSelect}
 				onClickOutside={this.handleUnSelect}
 				x1Value={x1Value}
 				y1Value={y1Value}

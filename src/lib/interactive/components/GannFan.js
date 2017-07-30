@@ -127,8 +127,8 @@ class GannFan extends Component {
 		);
 	}
 	render() {
-		const { selected, onClick, onClickOutside, interactiveCursorClass } = this.props;
-		const { onDragStart, onDrag, onDragComplete, onHover, onBlur } = this.props;
+		const { selected, onClickWhenHovering, onClickOutside, interactiveCursorClass } = this.props;
+		const { onDragStart, onDrag, onDragComplete, onHover, onUnHover } = this.props;
 
 		return <GenericChartComponent
 			isHover={this.isHover}
@@ -140,13 +140,13 @@ class GannFan extends Component {
 			interactiveCursorClass={interactiveCursorClass}
 			selected={selected}
 
-			onClick={onClick}
+			onClickWhenHovering={onClickWhenHovering}
 			onClickOutside={onClickOutside}
 			onDragStart={onDragStart}
 			onDrag={onDrag}
 			onDragComplete={onDragComplete}
 			onHover={onHover}
-			onBlur={onBlur}
+			onUnHover={onUnHover}
 
 			drawOn={["mousemove", "mouseleave", "pan", "drag"]}
 		/>;
@@ -283,10 +283,10 @@ GannFan.propTypes = {
 	onDragStart: PropTypes.func.isRequired,
 	onDrag: PropTypes.func.isRequired,
 	onDragComplete: PropTypes.func.isRequired,
-	onClick: PropTypes.func.isRequired,
+	onClickWhenHovering: PropTypes.func.isRequired,
 	onClickOutside: PropTypes.func.isRequired,
 	onHover: PropTypes.func,
-	onBlur: PropTypes.func,
+	onUnHover: PropTypes.func,
 
 	defaultClassName: PropTypes.string,
 
@@ -299,7 +299,7 @@ GannFan.defaultProps = {
 	onDrag: noop,
 	onDragComplete: noop,
 
-	onClick: noop,
+	onClickWhenHovering: noop,
 	onClickOutside: noop,
 
 	strokeWidth: 1,

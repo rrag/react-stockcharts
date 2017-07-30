@@ -105,7 +105,7 @@ class EachLinearRegressionChannel extends Component {
 		const { selected, hover } = this.state;
 
 		const hoverHandler = interactive
-			? { onHover: this.handleHover, onBlur: this.handleHover }
+			? { onHover: this.handleHover, onUnHover: this.handleHover }
 			: {};
 		const { enable: hoverTextEnabled, ...restHoverTextProps } = hoverText;
 
@@ -114,7 +114,7 @@ class EachLinearRegressionChannel extends Component {
 			<LinearRegressionChannelWithArea
 				selected={selected || hover}
 				{...hoverHandler}
-				onClick={this.handleSelect}
+				onClickWhenHovering={this.handleSelect}
 				onClickOutside={this.handleUnSelect}
 				x1Value={x1Value}
 				x2Value={x2Value}

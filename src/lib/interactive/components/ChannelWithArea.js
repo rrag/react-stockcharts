@@ -137,8 +137,8 @@ class ChannelWithArea extends Component {
 		}
 	}
 	render() {
-		const { selected, onClick, onClickOutside, interactiveCursorClass } = this.props;
-		const { onDragStart, onDrag, onDragComplete, onHover, onBlur } = this.props;
+		const { selected, onClickWhenHovering, onClickOutside, interactiveCursorClass } = this.props;
+		const { onDragStart, onDrag, onDragComplete, onHover, onUnHover } = this.props;
 
 		return <GenericChartComponent
 			isHover={this.isHover}
@@ -150,13 +150,13 @@ class ChannelWithArea extends Component {
 			interactiveCursorClass={interactiveCursorClass}
 			selected={selected}
 
-			onClick={onClick}
+			onClickWhenHovering={onClickWhenHovering}
 			onClickOutside={onClickOutside}
 			onDragStart={onDragStart}
 			onDrag={onDrag}
 			onDragComplete={onDragComplete}
 			onHover={onHover}
-			onBlur={onBlur}
+			onUnHover={onUnHover}
 
 			drawOn={["mousemove", "mouseleave", "pan", "drag"]}
 		/>;
@@ -224,10 +224,10 @@ ChannelWithArea.propTypes = {
 	onDragStart: PropTypes.func.isRequired,
 	onDrag: PropTypes.func.isRequired,
 	onDragComplete: PropTypes.func.isRequired,
-	onClick: PropTypes.func.isRequired,
+	onClickWhenHovering: PropTypes.func.isRequired,
 	onClickOutside: PropTypes.func.isRequired,
 	onHover: PropTypes.func,
-	onBlur: PropTypes.func,
+	onUnHover: PropTypes.func,
 
 	defaultClassName: PropTypes.string,
 
@@ -241,7 +241,7 @@ ChannelWithArea.defaultProps = {
 	onDragComplete: noop,
 	type: "LINE",
 
-	onClick: noop,
+	onClickWhenHovering: noop,
 	onClickOutside: noop,
 
 	strokeWidth: 1,

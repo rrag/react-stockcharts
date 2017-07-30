@@ -28,7 +28,8 @@
     "npm:publish:next": "npm run release && cd build && npm publish --tag next",
     "npm:publish:latest": "npm run release && cd build && npm publish",
     "info": "npm info react-stockcharts",
-    "sourcemap:visualize": "source-map-explorer build/dist/react-stockcharts.min.js build/dist/react-stockcharts.min.js.map"
+    "sourcemap:visualize": "source-map-explorer build/dist/react-stockcharts.min.js build/dist/react-stockcharts.min.js.map",
+    "server": "cd build && python3 -m http.server 8090"
   },
   "dependencies": {
     "d3-array": "^1.2.0",
@@ -81,6 +82,7 @@
     "prismjs": "^1.6.0",
     "progress-bar-webpack-plugin": "^1.9.3",
     "react": "^15.6.1",
+    "react-bootstrap": "^0.31.1",
     "react-dom": "^15.6.1",
     "remarkable-loader": "^0.2.1",
     "rimraf": "^2.6.1",

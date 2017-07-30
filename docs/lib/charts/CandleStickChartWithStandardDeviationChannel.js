@@ -115,7 +115,6 @@ class CandleStickChartWithStandardDeviationChannel extends React.Component {
 				xAccessor={xAccessor}
 				displayXAccessor={displayXAccessor}
 				xExtents={xExtents}
-				drawMode={this.state.enableInteractiveObject}
 			>
 				<Chart
 					id={1}

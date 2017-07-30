@@ -26,6 +26,8 @@ export function getLogger(prefix) {
 	return logger;
 }
 
+export const yes = () => true;
+
 export function path(loc = []) {
 	const key = Array.isArray(loc) ? loc : [loc];
 	const length = key.length;
@@ -241,4 +243,13 @@ export function hexToRGBA(inputHex, opacity) {
 		return result;
 	}
 	return inputHex;
+}
+
+export function findItem(array, predicate) {
+	for (let i = 0; i < array.length; i++) {
+		const each = array[i];
+		if (predicate(each)) {
+			return each;
+		}
+	}
 }

@@ -13,7 +13,8 @@ class GannFan extends Component {
 	constructor(props) {
 		super(props);
 
-		this.handleStartAndEnd = this.handleStartAndEnd.bind(this);
+		this.handleStart = this.handleStart.bind(this);
+		this.handleEnd = this.handleEnd.bind(this);
 		this.handleDrawFan = this.handleDrawFan.bind(this);
 		this.handleDragFan = this.handleDragFan.bind(this);
 		this.handleDragFanComplete = this.handleDragFanComplete.bind(this);
@@ -55,8 +56,8 @@ class GannFan extends Component {
 	handleDrawFan(xyValue) {
 		const { current } = this.state;
 
-		if (isDefined(current)
-				&& isDefined(current.startXY)) {
+		if (isDefined(current) && isDefined(current.startXY)) {
+			this.mouseMoved = true;
 
 			this.setState({
 				current: {
@@ -66,11 +67,12 @@ class GannFan extends Component {
 			});
 		}
 	}
-	handleStartAndEnd(xyValue) {
+	handleStart(xyValue) {
 		const { current } = this.state;
-		const { fans } = this.props;
 
 		if (isNotDefined(current) || isNotDefined(current.startXY)) {
+			this.mouseMoved = false;
+
 			this.setState({
 				current: {
 					startXY: xyValue,
@@ -79,7 +81,16 @@ class GannFan extends Component {
 			}, () => {
 				this.props.onStart();
 			});
-		} else {
+		}
+	}
+	handleEnd() {
+		const { current } = this.state;
+		const { fans } = this.props;
+
+		if (this.mouseMoved
+			&& isDefined(current)
+			&& isDefined(current.startXY)
+		) {
 			this.setState({
 				current: null,
 			}, () => {
@@ -146,8 +157,10 @@ class GannFan extends Component {
 				stroke={currentPositionStroke}
 				opacity={currentPositionOpacity}
 				strokeWidth={currentPositionStrokeWidth}
-				onMouseDown={this.handleStartAndEnd}
-				onMouseMove={this.handleDrawFan} />
+				onMouseDown={this.handleStart}
+				onClick={this.handleEnd}
+				onMouseMove={this.handleDrawFan}
+			/>
 		</g>;
 	}
 }

@@ -1,4 +1,3 @@
-
 import React from "react";
 import PropTypes from "prop-types";
 
@@ -6,36 +5,33 @@ import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
 import { ChartCanvas, Chart } from "react-stockcharts";
-import {
-	CandlestickSeries,
-} from "react-stockcharts/lib/series";
+import { CandlestickSeries } from "react-stockcharts/lib/series";
 import { XAxis, YAxis } from "react-stockcharts/lib/axes";
 import {
 	CrossHairCursor,
 	EdgeIndicator,
 	MouseCoordinateY,
-	MouseCoordinateX,
+	MouseCoordinateX
 } from "react-stockcharts/lib/coordinates";
 
 import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
-import {
-	OHLCTooltip,
-} from "react-stockcharts/lib/tooltip";
+import { OHLCTooltip } from "react-stockcharts/lib/tooltip";
 import { fitWidth } from "react-stockcharts/lib/helper";
-import { GannFan } from "react-stockcharts/lib/interactive";
+import { InteractiveText } from "react-stockcharts/lib/interactive";
 import { last } from "react-stockcharts/lib/utils";
 
-class CandleStickChartWithGannFan extends React.Component {
+class CandleStickChartWithText extends React.Component {
 	constructor(props) {
 		super(props);
 		this.onKeyPress = this.onKeyPress.bind(this);
 		this.onDrawComplete = this.onDrawComplete.bind(this);
+		this.handleChoosePosition = this.handleChoosePosition.bind(this);
 		this.saveInteractiveNode = this.saveInteractiveNode.bind(this);
 		this.saveCanvasNode = this.saveCanvasNode.bind(this);
 
 		this.state = {
 			enableInteractiveObject: true,
-			fans: [],
+			textList: []
 		};
 	}
 	saveInteractiveNode(node) {
@@ -44,32 +40,46 @@ class CandleStickChartWithGannFan extends React.Component {
 	saveCanvasNode(node) {
 		this.canvasNode = node;
 	}
+	handleChoosePosition(text) {
+		console.log(text)
+		this.setState({
+			textList: [
+				...this.state.textList,
+				text
+			]
+		});
+	}
 	componentDidMount() {
 		document.addEventListener("keyup", this.onKeyPress);
 	}
 	componentWillUnmount() {
 		document.removeEventListener("keyup", this.onKeyPress);
 	}
-	onDrawComplete(fans) {
+	onDrawComplete(channels) {
 		// this gets called on
 		// 1. draw complete of drawing object
 		// 2. drag complete of drawing object
 		this.setState({
 			enableInteractiveObject: false,
-			fans
+			channels
 		});
 	}
 	onKeyPress(e) {
 		const keyCode = e.which;
 		console.log(keyCode);
 		switch (keyCode) {
-		case 46: { // DEL
+		case 46: {
+			// DEL
 			this.setState({
-				fans: this.state.fans.slice(0, this.state.fans.length - 2)
+				channels: this.state.channels.slice(
+					0,
+					this.state.channels.length - 2
+				)
 			});
 			break;
 		}
-		case 27: { // ESC
+		case 27: {
+			// ESC
 			this.node.terminate();
 			this.canvasNode.cancelDrag();
 			this.setState({
@@ -77,8 +87,9 @@ class CandleStickChartWithGannFan extends React.Component {
 			});
 			break;
 		}
-		case 68:   // D - Draw drawing object
-		case 69: { // E - Enable drawing object
+		case 68: // D - Draw drawing object
+		case 69: {
+				// E - Enable drawing object
 			this.setState({
 				enableInteractiveObject: true
 			});
@@ -88,16 +99,14 @@ class CandleStickChartWithGannFan extends React.Component {
 	}
 	render() {
 		const { type, data: initialData, width, ratio } = this.props;
-		const { fans } = this.state;
+		const { textList } = this.state;
 
-		const xScaleProvider = discontinuousTimeScaleProvider
-			.inputDateAccessor(d => d.date);
-		const {
-			data,
-			xScale,
-			xAccessor,
-			displayXAccessor,
-		} = xScaleProvider(initialData);
+		const xScaleProvider = discontinuousTimeScaleProvider.inputDateAccessor(
+			d => d.date
+		);
+		const { data, xScale, xAccessor, displayXAccessor } = xScaleProvider(
+			initialData
+		);
 
 		const start = xAccessor(last(data));
 		const end = xAccessor(data[Math.max(0, data.length - 150)]);
@@ -117,35 +126,44 @@ class CandleStickChartWithGannFan extends React.Component {
 				displayXAccessor={displayXAccessor}
 				xExtents={xExtents}
 			>
-				<Chart id={1}
+				<Chart
+					id={1}
 					yExtents={[d => [d.high, d.low]]}
 					padding={{ top: 10, bottom: 20 }}
 				>
 
 					<YAxis axisAt="right" orient="right" ticks={5} />
-					<XAxis axisAt="bottom" orient="bottom"/>
+					<XAxis axisAt="bottom" orient="bottom" />
 
 					<MouseCoordinateY
 						at="right"
 						orient="right"
-						displayFormat={format(".2f")} />
+						displayFormat={format(".2f")}
+					/>
 					<MouseCoordinateX
 						at="bottom"
 						orient="bottom"
-						displayFormat={timeFormat("%Y-%m-%d")} />
+						displayFormat={timeFormat("%Y-%m-%d")}
+					/>
 					<CandlestickSeries />
 
-					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
-						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
+					<EdgeIndicator
+						itemType="last"
+						orient="right"
+						edgeAt="right"
+						yAccessor={d => d.close}
+						fill={d => (d.close > d.open ? "#6BA583" : "#FF0000")}
+					/>
 
-					<OHLCTooltip origin={[-40, 0]}/>
+					<OHLCTooltip origin={[-40, 0]} />
 
-					<GannFan
+					<InteractiveText
 						ref={this.saveInteractiveNode}
 						enabled={this.state.enableInteractiveObject}
-						onStart={() => console.log("START")}
+						text="Lorem ipsum..."
+						onChoosePosition={this.handleChoosePosition}
 						onComplete={this.onDrawComplete}
-						fans={fans}
+						textList={textList}
 					/>
 				</Chart>
 				<CrossHairCursor />
@@ -154,17 +172,19 @@ class CandleStickChartWithGannFan extends React.Component {
 	}
 }
 
-CandleStickChartWithGannFan.propTypes = {
+CandleStickChartWithText.propTypes = {
 	data: PropTypes.array.isRequired,
 	width: PropTypes.number.isRequired,
 	ratio: PropTypes.number.isRequired,
-	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired
 };
 
-CandleStickChartWithGannFan.defaultProps = {
-	type: "svg",
+CandleStickChartWithText.defaultProps = {
+	type: "svg"
 };
 
-CandleStickChartWithGannFan = fitWidth(CandleStickChartWithGannFan);
+const CandleStickChart = fitWidth(
+	CandleStickChartWithText
+);
 
-export default CandleStickChartWithGannFan;
+export default CandleStickChart;

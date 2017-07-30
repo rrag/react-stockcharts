@@ -29,6 +29,7 @@ class EventCapture extends Component {
 		this.handlePinchZoom = this.handlePinchZoom.bind(this);
 		this.handlePinchZoomEnd = this.handlePinchZoomEnd.bind(this);
 
+		this.handleClick = this.handleClick.bind(this);
 
 		this.handleRightClick = this.handleRightClick.bind(this);
 		this.handleDrag = this.handleDrag.bind(this);
@@ -117,10 +118,28 @@ class EventCapture extends Component {
 			onMouseMove(newPos, "mouse", e);
 		}
 	}
+	handleClick(e) {
+		const mouseXY = mousePosition(e);
+		const { onClick, onDoubleClick } = this.props;
+
+		if (!this.panHappened && !this.dragHappened) {
+			if (this.clicked) {
+				onDoubleClick(mouseXY, e);
+				this.clicked = false;
+			} else {
+				onClick(mouseXY, e);
+				this.clicked = true;
+				setTimeout(() => {
+					if (this.clicked) {
+						this.clicked = false;
+					}
+				}, 400);
+			}
+		}
+	}
 	handleRightClick(e) {
 		e.stopPropagation();
 		e.preventDefault();
-
 		const { onContextMenu, onPanEnd } = this.props;
 
 		const mouseXY = mousePosition(e, this.node.getBoundingClientRect());
@@ -142,8 +161,6 @@ class EventCapture extends Component {
 		}
 
 		onContextMenu(mouseXY, e);
-
-		this.contextMenuClicked = true;
 	}
 
 	handleDrag() {
@@ -182,31 +199,41 @@ class EventCapture extends Component {
 			mouseXY
 		}, e);
 
-		const { onClick } = this.props;
-		if (!this.dragHappened) {
-			setTimeout(() => {
-				onClick(mouseXY, e);
-			}, 100);
-		}
 		this.setState({
 			dragInProgress: false,
 		});
 		this.mouseInteraction = true;
 	}
 	handleMouseDown(e) {
-		const { pan: panEnabled, xScale, chartConfig, onMouseDown } = this.props;
-		const { isSomethingSelectedAndHovering } = this.props;
+		if (e.button !== 0) {
+			return;
+		}
+		const { pan: initialPanEnabled, xScale, chartConfig, onMouseDown } = this.props;
+		const { getAllPanConditions } = this.props;
 
 		this.panHappened = false;
 		this.dragHappened = false;
 		this.focus = true;
 
 		if (!this.state.panInProgress
-				&& this.mouseInteraction) {
+			&& this.mouseInteraction
+		) {
 
 			const mouseXY = mousePosition(e);
 			const currentCharts = getCurrentCharts(chartConfig, mouseXY);
-			const somethingSelected = isSomethingSelectedAndHovering();
+			const {
+				panEnabled,
+				draggable: somethingSelected
+			} = getAllPanConditions()
+					.reduce((returnObj, a) => {
+						return {
+							draggable: returnObj.draggable || a.draggable,
+							panEnabled: returnObj.panEnabled && a.panEnabled,
+						};
+					}, {
+						draggable: false,
+						panEnabled: initialPanEnabled,
+					});
 
 			const pan = panEnabled && !somethingSelected;
 
@@ -224,6 +251,7 @@ class EventCapture extends Component {
 				select(win)
 					.on(MOUSEMOVE, this.handlePan)
 					.on(MOUSEUP, this.handlePanEnd);
+
 			} else if (somethingSelected) {
 				this.setState({
 					panInProgress: false,
@@ -240,19 +268,9 @@ class EventCapture extends Component {
 					.on(MOUSEUP, this.handleDragEnd);
 			}
 
-			if (!panEnabled) {
-				// This block of code gets executed when
-				// drawMode is enabled,
-				// pan is disabled in draw mode
-				e.persist();
-				setTimeout(() => {
-					if (!this.contextMenuClicked) {
-						// console.log("NO RIGHT")
-						onMouseDown(mouseXY, currentCharts, e);
-					}
-					this.contextMenuClicked = false;
-				}, 100);
-			}
+			onMouseDown(mouseXY, currentCharts, e);
+			/* if (!panEnabled) {
+			} */
 		}
 		e.preventDefault();
 	}
@@ -279,26 +297,10 @@ class EventCapture extends Component {
 	}
 	handlePanEnd() {
 		const e = d3Event;
-
-		const { pan: panEnabled, onPanEnd, onClick, onDoubleClick } = this.props;
+		const { pan: panEnabled, onPanEnd } = this.props;
 
 		if (isDefined(this.state.panStart)) {
 			const { panStartXScale, panOrigin, chartsToPan } = this.state.panStart;
-
-			if (!this.panHappened) {
-				if (this.clicked) {
-					onDoubleClick(panOrigin, e);
-					this.clicked = false;
-				} else {
-					this.clicked = true;
-					setTimeout(() => {
-						if (this.clicked) {
-							onClick(panOrigin, e);
-							this.clicked = false;
-						}
-					}, 100);
-				}
-			}
 
 			const win = d3Window(this.node);
 			select(win)
@@ -451,6 +453,7 @@ class EventCapture extends Component {
 				style={{ opacity: 0 }}
 				onWheel={this.handleWheel}
 				onMouseDown={this.handleMouseDown}
+				onClick={this.handleClick}
 				onContextMenu={this.handleRightClick}
 				onTouchStart={this.handleTouchStart}
 			/>
@@ -475,7 +478,7 @@ EventCapture.propTypes = {
 	xScale: PropTypes.func.isRequired,
 	xAccessor: PropTypes.func.isRequired,
 
-	isSomethingSelectedAndHovering: PropTypes.func.isRequired,
+	getAllPanConditions: PropTypes.func.isRequired,
 
 	onMouseMove: PropTypes.func,
 	onMouseEnter: PropTypes.func,

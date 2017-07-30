@@ -210,7 +210,7 @@ class EachGannFan extends Component {
 		const { enable: hoverTextEnabled, ...restHoverTextProps } = hoverText;
 
 		const hoverHandler = interactive
-			? { onHover: this.handleHover, onBlur: this.handleHover }
+			? { onHover: this.handleHover, onUnHover: this.handleHover }
 			: {};
 
 		const line1Edge = isDefined(startXY) && isDefined(endXY)
@@ -235,7 +235,7 @@ class EachGannFan extends Component {
 				selected={hover || selected}
 
 				{...hoverHandler}
-				onClick={this.handleSelect}
+				onClickWhenHovering={this.handleSelect}
 				onClickOutside={this.handleUnSelect}
 
 				startXY={startXY}

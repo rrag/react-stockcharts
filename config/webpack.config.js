@@ -46,7 +46,7 @@ function buildConfig(mode) {
 			libraryTarget: "umd",
 			pathinfo: ifWatch(true, false), // since we have eval as devtool for watch, pathinfo gives line numbers which are close enough
 		},
-		devtool: "sourcemap", // ifWatch("cheap-module-eval-source-map", "sourcemap"),
+		devtool: ifWatch("cheap-source-map", "sourcemap"),
 		module: {
 			loaders: removeEmpty([
 				// { test: /\.json$/, loader: "json" },

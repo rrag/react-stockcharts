@@ -76,8 +76,8 @@ class StraightLine extends Component {
 		);
 	}
 	render() {
-		const { selected, onClick, onClickOutside, interactiveCursorClass } = this.props;
-		const { onDragStart, onDrag, onDragComplete, onHover, onBlur } = this.props;
+		const { selected, onClickWhenHovering, onClickOutside, interactiveCursorClass } = this.props;
+		const { onDragStart, onDrag, onDragComplete, onHover, onUnHover } = this.props;
 
 		return <GenericChartComponent
 			isHover={this.isHover}
@@ -89,13 +89,13 @@ class StraightLine extends Component {
 			interactiveCursorClass={interactiveCursorClass}
 			selected={selected}
 
-			onClick={onClick}
+			onClickWhenHovering={onClickWhenHovering}
 			onClickOutside={onClickOutside}
 			onDragStart={onDragStart}
 			onDrag={onDrag}
 			onDragComplete={onDragComplete}
 			onHover={onHover}
-			onBlur={onBlur}
+			onUnHover={onUnHover}
 
 			drawOn={["mousemove", "pan", "drag"]}
 		/>;
@@ -195,10 +195,10 @@ StraightLine.propTypes = {
 	onDragStart: PropTypes.func.isRequired,
 	onDrag: PropTypes.func.isRequired,
 	onDragComplete: PropTypes.func.isRequired,
-	onClick: PropTypes.func.isRequired,
+	onClickWhenHovering: PropTypes.func.isRequired,
 	onClickOutside: PropTypes.func.isRequired,
 	onHover: PropTypes.func,
-	onBlur: PropTypes.func,
+	onUnHover: PropTypes.func,
 
 	opacity: PropTypes.number.isRequired,
 	defaultClassName: PropTypes.string,
@@ -220,7 +220,7 @@ StraightLine.defaultProps = {
 	onDrag: noop,
 	onDragComplete: noop,
 
-	onClick: noop,
+	onClickWhenHovering: noop,
 	onClickOutside: noop,
 
 	edgeStrokeWidth: 3,

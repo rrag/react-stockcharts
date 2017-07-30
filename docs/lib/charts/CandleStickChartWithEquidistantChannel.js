@@ -156,7 +156,6 @@ class CandleStickChartWithEquidistantChannel extends React.Component {
 				xAccessor={xAccessor}
 				displayXAccessor={displayXAccessor}
 				xExtents={xExtents}
-				drawMode={this.state.enableInteractiveObject}
 			>
 				<Chart id={1} height={400}
 					yExtents={[d => [d.high, d.low], ema26.accessor(), ema12.accessor()]}

@@ -13,9 +13,11 @@ import {
 
 const aliases = {
 	mouseleave: "mousemove", // to draw interactive after mouse exit
+	panend: "pan",
 	pinchzoom: "pan",
 	mousedown: "mousemove",
 	click: "mousemove",
+	contextmenu: "mousemove",
 	dblclick: "mousemove",
 	dragstart: "drag",
 	dragend: "drag",
@@ -34,7 +36,7 @@ class GenericComponent extends Component {
 		this.isHover = this.isHover.bind(this);
 		this.preCanvasDraw = this.preCanvasDraw.bind(this);
 		this.postCanvasDraw = this.postCanvasDraw.bind(this);
-		this.isDraggable = this.isDraggable.bind(this);
+		this.getPanConditions = this.getPanConditions.bind(this);
 
 		const { generateSubscriptionId } = context;
 		this.suscriberId = generateSubscriptionId();
@@ -68,73 +70,30 @@ class GenericComponent extends Component {
 
 		switch (type) {
 		case "zoom":
-		case "mouseleave": {
-			/*
-			const drawOnMouseExitOfCanvas = this.props.drawOn.indexOf(type) > -1;
-
-			// when you move the mouse fast enough, that mouseleave
-			// is triggered before the draw after mousemove is triggered
-			// This or condition below avoids having a blank hover
-			// canvas
-			this.drawOnNextTick = this.drawOnNextTick
-				|| drawOnMouseExitOfCanvas;
-			*/
-			break;
-		}
+		case "mouseleave":
 		case "mouseenter":
 			// DO NOT DRAW FOR THESE EVENTS
 			break;
 		case "contextmenu": {
-			if (this.moreProps.hovering && this.props.onContextMenu) {
+			if (this.props.onContextMenu) {
 				this.props.onContextMenu(this.getMoreProps(), e);
 			}
 			break;
 		}
 		case "mousedown": {
-			if (this.moreProps.hovering) {
-				if (this.props.onMouseDown) {
-					this.props.onMouseDown(this.getMoreProps(), e);
-				}
+			if (this.props.onMouseDown) {
+				this.props.onMouseDown(this.getMoreProps(), e);
 			}
 			break;
 		}
 		case "click": {
 			if (this.moreProps.hovering) {
-				this.props.onClick(this.getMoreProps(), e);
+				this.props.onClickWhenHover(this.getMoreProps(), e);
 			} else {
 				this.props.onClickOutside(this.getMoreProps(), e);
 			}
-			break;
-		}
-		case "dragstart": {
-			if (this.moreProps.hovering && this.props.selected) {
-				const { amIOnTop } = this.context;
-				if (amIOnTop(this.suscriberId)) {
-					this.dragInProgress = true;
-					this.props.onDragStart(this.getMoreProps(), e);
-				}
-			}
-			this.someDragInProgress = true;
-			break;
-		}
-		case "dragend": {
-			if (this.dragInProgress && this.props.onDragComplete) {
-				this.props.onDragComplete(this.getMoreProps(), e);
-			}
-			this.dragInProgress = false;
-			this.someDragInProgress = false;
-			break;
-		}
-		case "dragcancel": {
-			if (this.dragInProgress) {
-				const { setCursorClass } = this.context;
-				setCursorClass(null);
-			}
-			break;
-		}
-		case "drag": {
-			if (this.dragInProgress && this.props.onDrag) {
-				this.props.onDrag(this.getMoreProps(), e);
+			if (this.props.onClick) {
+				this.props.onClick(this.getMoreProps(), e);
 			}
 			break;
 		}
@@ -169,8 +128,8 @@ class GenericComponent extends Component {
 				}
 			}
 			if (prevHover && !this.moreProps.hovering) {
-				if (this.props.onBlur) {
-					this.props.onBlur(this.getMoreProps(), e);
+				if (this.props.onUnHover) {
+					this.props.onUnHover(this.getMoreProps(), e);
 				}
 			}
 
@@ -180,13 +139,54 @@ class GenericComponent extends Component {
 			break;
 		}
 		case "dblclick": {
-			if (this.moreProps.hovering && this.props.onDoubleClick) {
+			if (this.props.onDoubleClick) {
 				this.props.onDoubleClick(this.getMoreProps(), e);
 			}
 			break;
 		}
 		case "pan": {
 			this.moreProps.hovering = false;
+			if (this.props.onPan) {
+				this.props.onPan(this.getMoreProps(), e);
+			}
+			break;
+		}
+		case "panend": {
+			if (this.props.onPanEnd) {
+				this.props.onPanEnd(this.getMoreProps(), e);
+			}
+			break;
+		}
+		case "dragstart": {
+			if (this.moreProps.hovering && this.props.selected) {
+				const { amIOnTop } = this.context;
+				if (amIOnTop(this.suscriberId)) {
+					this.dragInProgress = true;
+					this.props.onDragStart(this.getMoreProps(), e);
+				}
+			}
+			this.someDragInProgress = true;
+			break;
+		}
+		case "dragend": {
+			if (this.dragInProgress && this.props.onDragComplete) {
+				this.props.onDragComplete(this.getMoreProps(), e);
+			}
+			this.dragInProgress = false;
+			this.someDragInProgress = false;
+			break;
+		}
+		case "dragcancel": {
+			if (this.dragInProgress || this.iSetTheCursorClass) {
+				const { setCursorClass } = this.context;
+				setCursorClass(null);
+			}
+			break;
+		}
+		case "drag": {
+			if (this.dragInProgress && this.props.onDrag) {
+				this.props.onDrag(this.getMoreProps(), e);
+			}
 			break;
 		}
 		}
@@ -195,6 +195,15 @@ class GenericComponent extends Component {
 		return isDefined(this.props.isHover)
 			? this.props.isHover(this.getMoreProps(), e)
 			: false;
+	}
+	getPanConditions() {
+		const draggable = !!(this.props.selected
+			&& this.moreProps.hovering);
+
+		return {
+			draggable,
+			panEnabled: !this.props.disablePan,
+		};
 	}
 	draw({ trigger, force } = { force: false }) {
 		const type = aliases[trigger] || trigger;
@@ -226,7 +235,7 @@ class GenericComponent extends Component {
 				chartId, clip, edgeClip,
 				listener: this.listener,
 				draw: this.draw,
-				isDraggable: this.isDraggable,
+				getPanConditions: this.getPanConditions,
 			}
 		);
 		this.componentWillReceiveProps(this.props, this.context);
@@ -274,12 +283,6 @@ class GenericComponent extends Component {
 			*/
 			xScale, plotData, chartConfig
 		};
-	}
-	isDraggable() {
-		const draggable = this.props.selected
-			&& this.moreProps.hovering;
-
-		return draggable;
 	}
 	getMoreProps() {
 		const { xScale, plotData, chartConfig, morePropsDecorator, xAccessor, displayXAccessor, width, height } = this.context;
@@ -340,14 +343,18 @@ GenericComponent.propTypes = {
 	interactiveCursorClass: PropTypes.string,
 
 	selected: PropTypes.bool.isRequired,
+	disablePan: PropTypes.bool.isRequired,
 
 	canvasToDraw: PropTypes.func.isRequired,
 
 	isHover: PropTypes.func,
 
 	onClick: PropTypes.func,
+	onClickWhenHover: PropTypes.func,
 	onClickOutside: PropTypes.func,
 
+	onPan: PropTypes.func,
+	onPanEnd: PropTypes.func,
 	onDragStart: PropTypes.func,
 	onDrag: PropTypes.func,
 	onDragComplete: PropTypes.func,
@@ -356,7 +363,7 @@ GenericComponent.propTypes = {
 	onMouseMove: PropTypes.func,
 	onMouseDown: PropTypes.func,
 	onHover: PropTypes.func,
-	onBlur: PropTypes.func,
+	onUnHover: PropTypes.func,
 
 	debug: PropTypes.func,
 	// owner: PropTypes.string.isRequired,
@@ -369,17 +376,14 @@ GenericComponent.defaultProps = {
 	clip: true,
 	edgeClip: false,
 	selected: false,
+	disablePan: false,
 
 	onClickOutside: noop,
-	onClick: noop,
+	onClickWhenHover: noop,
 	onDragStart: noop,
 	onMouseMove: noop,
 	onMouseDown: noop,
 	debug: noop,
-};
-
-GenericComponent.childContextTypes = {
-	morePropsDecorator: PropTypes.func,
 };
 
 GenericComponent.contextTypes = {

@@ -14,7 +14,8 @@ class EquidistantChannel extends Component {
 	constructor(props) {
 		super(props);
 
-		this.handleStartAndEnd = this.handleStartAndEnd.bind(this);
+		this.handleStart = this.handleStart.bind(this);
+		this.handleEnd = this.handleEnd.bind(this);
 		this.handleDrawChannel = this.handleDrawChannel.bind(this);
 		this.handleDragChannel = this.handleDragChannel.bind(this);
 		this.handleDragChannelComplete = this.handleDragChannelComplete.bind(this);
@@ -57,7 +58,7 @@ class EquidistantChannel extends Component {
 
 		if (isDefined(current)
 				&& isDefined(current.startXY)) {
-
+			this.mouseMoved = true;
 			if (isNotDefined(current.dy)) {
 				this.setState({
 					current: {
@@ -80,11 +81,11 @@ class EquidistantChannel extends Component {
 			}
 		}
 	}
-	handleStartAndEnd(xyValue) {
+	handleStart(xyValue) {
 		const { current } = this.state;
-		const { channels } = this.props;
 
 		if (isNotDefined(current) || isNotDefined(current.startXY)) {
+			this.mouseMoved = false;
 			this.setState({
 				current: {
 					startXY: xyValue,
@@ -93,21 +94,33 @@ class EquidistantChannel extends Component {
 			}, () => {
 				this.props.onStart();
 			});
-		} else if (isNotDefined(current.dy)) {
-			this.setState({
-				current: {
-					...current,
-					dy: 0
-				}
-			});
-		} else {
-			this.setState({
-				current: null,
-			}, () => {
-				const newChannels = channels
-					.concat(current);
-				this.props.onComplete(newChannels);
-			});
+		}
+	}
+	handleEnd() {
+		const { current } = this.state;
+		const { channels } = this.props;
+
+		if (this.mouseMoved
+			&& isDefined(current)
+			&& isDefined(current.startXY)
+		) {
+
+			if (isNotDefined(current.dy)) {
+				this.setState({
+					current: {
+						...current,
+						dy: 0
+					}
+				});
+			} else {
+				this.setState({
+					current: null,
+				}, () => {
+					const newChannels = channels
+						.concat(current);
+					this.props.onComplete(newChannels);
+				});
+			}
 		}
 	}
 	render() {
@@ -153,7 +166,8 @@ class EquidistantChannel extends Component {
 				stroke={currentPositionStroke}
 				opacity={currentPositionOpacity}
 				strokeWidth={currentPositionStrokeWidth}
-				onMouseDown={this.handleStartAndEnd}
+				onMouseDown={this.handleStart}
+				onClick={this.handleEnd}
 				onMouseMove={this.handleDrawChannel} />
 		</g>;
 	}

@@ -208,7 +208,7 @@ class EachEquidistantChannel extends Component {
 		const { enable: hoverTextEnabled, ...restHoverTextProps } = hoverText;
 
 		const hoverHandler = interactive
-			? { onHover: this.handleHover, onBlur: this.handleHover }
+			? { onHover: this.handleHover, onUnHover: this.handleHover }
 			: {};
 
 		const line1Edge = isDefined(startXY) && isDefined(endXY)
@@ -249,7 +249,7 @@ class EachEquidistantChannel extends Component {
 				selected={selected || hover}
 
 				{...hoverHandler}
-				onClick={this.handleSelect}
+				onClickWhenHovering={this.handleSelect}
 				onClickOutside={this.handleUnSelect}
 
 				startXY={startXY}
