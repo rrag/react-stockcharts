@@ -120,13 +120,16 @@ class CandleStickChartWithText extends React.Component {
 			showModal: false,
 			enableInteractiveObject: false,
 		});
+		this.componentDidMount();
 	}
 	handleDialogClose() {
 		this.setState({
 			showModal: false,
 		});
+		this.componentDidMount();
 	}
 	handleChoosePosition(text) {
+		this.componentWillUnmount();
 		this.setState({
 			textList: [
 				...this.state.textList,
