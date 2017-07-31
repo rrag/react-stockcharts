@@ -94,7 +94,7 @@ class GenericComponent extends Component {
 		}
 		case "click": {
 			if (this.moreProps.hovering) {
-				this.props.onClickWhenHover(this.getMoreProps(), e);
+				this.props.onClickWhenHovering(this.getMoreProps(), e);
 			} else {
 				this.props.onClickOutside(this.getMoreProps(), e);
 			}
@@ -180,6 +180,12 @@ class GenericComponent extends Component {
 			this.someDragInProgress = true;
 			break;
 		}
+		case "drag": {
+			if (this.dragInProgress && this.props.onDrag) {
+				this.props.onDrag(this.getMoreProps(), e);
+			}
+			break;
+		}
 		case "dragend": {
 			if (this.dragInProgress && this.props.onDragComplete) {
 				this.props.onDragComplete(this.getMoreProps(), e);
@@ -192,12 +198,6 @@ class GenericComponent extends Component {
 			if (this.dragInProgress || this.iSetTheCursorClass) {
 				const { setCursorClass } = this.context;
 				setCursorClass(null);
-			}
-			break;
-		}
-		case "drag": {
-			if (this.dragInProgress && this.props.onDrag) {
-				this.props.onDrag(this.getMoreProps(), e);
 			}
 			break;
 		}
@@ -362,7 +362,7 @@ GenericComponent.propTypes = {
 	isHover: PropTypes.func,
 
 	onClick: PropTypes.func,
-	onClickWhenHover: PropTypes.func,
+	onClickWhenHovering: PropTypes.func,
 	onClickOutside: PropTypes.func,
 
 	onPan: PropTypes.func,
@@ -393,7 +393,7 @@ GenericComponent.defaultProps = {
 	disablePan: false,
 
 	onClickOutside: noop,
-	onClickWhenHover: noop,
+	onClickWhenHovering: noop,
 	onDragStart: noop,
 	onMouseMove: noop,
 	onMouseDown: noop,

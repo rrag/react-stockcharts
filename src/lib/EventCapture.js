@@ -194,10 +194,12 @@ class EventCapture extends Component {
 			.on(MOUSEMOVE, this.mouseInside ? this.handleMouseMove : null)
 			.on(MOUSEUP, null);
 
-		this.props.onDragComplete({
-			startPos: this.state.dragStartPosition,
-			mouseXY
-		}, e);
+		if (this.dragHappened) {
+			this.props.onDragComplete({
+				startPos: this.state.dragStartPosition,
+				mouseXY
+			}, e);
+		}
 
 		this.setState({
 			dragInProgress: false,

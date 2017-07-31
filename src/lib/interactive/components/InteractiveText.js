@@ -1,13 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { sum, deviation } from "d3-array";
-import { path as d3Path } from "d3-path";
 
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
-import { isHovering } from "./StraightLine";
 
-import { isDefined, getClosestItemIndexes, noop, zipper, hexToRGBA } from "../../utils";
+import { isDefined, noop, hexToRGBA } from "../../utils";
 
 class InteractiveText extends Component {
 	constructor(props) {
@@ -20,15 +17,24 @@ class InteractiveText extends Component {
 		this.isHover = this.isHover.bind(this);
 	}
 	isHover(moreProps) {
-		const { tolerance, onHover } = this.props;
+		const { onHover } = this.props;
 
-		if (isDefined(onHover)) {
-			const { mouseXY } = moreProps;
+		if (
+			isDefined(onHover)
+			&& isDefined(this.textWidth)
+			&& !this.calculateTextWidth
+		) {
+			const { rect } = helper(this.props, moreProps, this.textWidth);
+			const { mouseXY: [x, y] } = moreProps;
 
-			const { x1, y1, x2, y2 } = helper(this.props, moreProps);
-
-			const hovering = isHovering([x1, y1], [x2, y2], mouseXY, tolerance);
-			return hovering;
+			if (
+				x >= rect.x
+				&& y >= rect.y
+				&& x <= rect.x + rect.width
+				&& y <= rect.y + rect.height
+			) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -42,11 +48,12 @@ class InteractiveText extends Component {
 			textFill,
 			fontFamily,
 			fontSize,
+			fontWeight,
 			text,
 		} = this.props;
 
 		if (this.calculateTextWidth) {
-			ctx.font = `${ fontSize }px ${fontFamily}`;
+			ctx.font = `${fontWeight} ${ fontSize }px ${fontFamily}`;
 			const { width } = ctx.measureText(text);
 			this.textWidth = width;
 			this.calculateTextWidth = false;
@@ -59,64 +66,27 @@ class InteractiveText extends Component {
 		ctx.fillStyle = textFill;
 		ctx.textBaseline = "middle";
 		ctx.textAlign = "center";
+		ctx.font = `${fontWeight} ${ fontSize }px ${fontFamily}`;
 
 		ctx.beginPath();
 		ctx.fillText(text, x, y);
 
-		if (true) {
-			ctx.fillStyle = hexToRGBA(bgFill, bgOpacity);
-			ctx.beginPath();
-			ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+		ctx.fillStyle = hexToRGBA(bgFill, bgOpacity);
+		ctx.beginPath();
+		ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+
+		if (selected) {
+			ctx.strokeStyle = bgFill;
+			ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
 		}
 	}
-	renderSVG(moreProps) {
-		const { stroke, strokeWidth, opacity, fill } = this.props;
-		const { x1, y1, x2, y2, dy } = helper(this.props, moreProps);
-		const line = {
-			strokeWidth,
-			stroke,
-			strokeOpacity: opacity,
-		};
-		const ctx = d3Path();
-		ctx.moveTo(x1, y1 - dy);
-		ctx.lineTo(x2, y2 - dy);
-		ctx.lineTo(x2, y2 + dy);
-		ctx.lineTo(x1, y1 + dy);
-		ctx.closePath();
-		return (
-			<g>
-				<line
-					{...line}
-					x1={x1}
-					y1={y1 - dy}
-					x2={x2}
-					y2={y2 - dy}
-				/>
-				<line
-					{...line}
-					x1={x1}
-					y1={y1 + dy}
-					x2={x2}
-					y2={y2 + dy}
-				/>
-				<path
-					d={ctx.toString()}
-					fill={fill}
-					opacity={opacity}
-				/>
-				<line
-					{...line}
-					x1={x1}
-					y1={y1}
-					x2={x2}
-					y2={y2}
-				/>
-			</g>
-		);
+	renderSVG() {
+		throw new Error("svg not implemented");
 	}
 	render() {
 		const { selected, interactiveCursorClass } = this.props;
 		const { onHover, onUnHover, onClickWhenHovering, onClickOutside } = this.props;
+		const { onDragStart, onDrag, onDragComplete } = this.props;
 
 		return <GenericChartComponent
 			isHover={this.isHover}
@@ -130,6 +100,9 @@ class InteractiveText extends Component {
 
 			onClickWhenHovering={onClickWhenHovering}
 			onClickOutside={onClickOutside}
+			onDragStart={onDragStart}
+			onDrag={onDrag}
+			onDragComplete={onDragComplete}
 			onHover={onHover}
 			onUnHover={onUnHover}
 
@@ -139,18 +112,10 @@ class InteractiveText extends Component {
 }
 
 function helper(props, moreProps, textWidth) {
-	const { position, text, fontSize } = props;
+	const { position, fontSize } = props;
 
-	const { xScale, chartConfig: { yScale }, fullData } = moreProps;
-	const { xAccessor } = moreProps;
+	const { xScale, chartConfig: { yScale } } = moreProps;
 
-	/*
-	http://www.metastock.com/Customer/Resources/TAAZ/?p=65
-	y = a + bx
-	n = length of array
-	b = (n * sum(x*y) - sum(xs) * sum(ys)) / (n * sum(xSquareds) - (sum(xs) ^ 2))
-	a = (sum of closes)
-	*/
 	const [xValue, yValue] = position;
 	const x = xScale(xValue);
 	const y = yScale(yValue);
@@ -170,9 +135,14 @@ function helper(props, moreProps, textWidth) {
 InteractiveText.propTypes = {
 	bgFill: PropTypes.string.isRequired,
 	bgOpacity: PropTypes.number.isRequired,
+
 	textFill: PropTypes.string.isRequired,
 	fontFamily: PropTypes.string.isRequired,
 	fontSize: PropTypes.number.isRequired,
+	fontWeight: PropTypes.oneOfType([
+		PropTypes.number,
+		PropTypes.string,
+	]).isRequired,
 	text: PropTypes.string.isRequired,
 
 	onDragStart: PropTypes.func.isRequired,
@@ -199,6 +169,7 @@ InteractiveText.defaultProps = {
 	onClickOutside: noop,
 
 	type: "SD", // standard dev
+	fontWeight: "normal", // standard dev
 
 	strokeWidth: 1,
 	tolerance: 4,

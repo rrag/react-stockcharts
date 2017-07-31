@@ -3,7 +3,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import { isDefined, yes, noop, findItem } from "../utils";
+import { isDefined, noop } from "../utils";
 
 import { getValueFromOverride } from "./utils";
 
@@ -17,78 +17,40 @@ class InteractiveText extends Component {
 		super(props);
 
 		this.handleDraw = this.handleDraw.bind(this);
-		/*
-		this.handleDrawLine = this.handleDrawLine.bind(this);
-		this.handleDragLine = this.handleDragLine.bind(this);
-		this.handleDragLineComplete = this.handleDragLineComplete.bind(this);
-		*/
+		this.handleDrag = this.handleDrag.bind(this);
+		this.handleDragComplete = this.handleDragComplete.bind(this);
 		this.terminate = this.terminate.bind(this);
-		this.listener = this.listener.bind(this);
 
 		this.state = {};
-	}
-	componentWillMount() {
-		const { subscribe, generateSubscriptionId } = this.context;
-		this.id = generateSubscriptionId();
-
-		subscribe(this.id,
-			{
-				listener: this.listener,
-			}
-		);
-	}
-	componentWillUnmount() {
-		const { unsubscribe } = this.context;
-		unsubscribe(this.id);
-	}
-	listener(type, moreProps, state) {
-		if (type === "click") {
-			const { chartId } = this.context;
-			const { enabled } = this.props;
-			const { currentCharts } = moreProps;
-			if (enabled && currentCharts.indexOf(chartId) > -1) {
-				const {
-					chartConfig: chartConfigArray,
-					xAccessor
-				} = state;
-				const chartConfig = findItem(chartConfigArray, item => item.id === chartId);
-
-				this.handleDraw({
-					...moreProps,
-					xAccessor,
-					chartConfig,
-				});
-			}
-		}
 	}
 	terminate() {
 		this.setState({
 			override: null,
 		});
 	}
-	handleDragLine(index, newXYValue) {
+	handleDrag(index, position) {
 		this.setState({
 			override: {
 				index,
-				...newXYValue
+				position,
 			}
 		});
 	}
-	handleDragLineComplete() {
+	handleDragComplete() {
 		const { override } = this.state;
 		if (isDefined(override)) {
-			const { channels } = this.props;
-			const newTrends = channels
+			const { textList } = this.props;
+			const newTrends = textList
 				.map((each, idx) => idx === override.index
 					? {
-						start: [override.x1Value, override.y1Value],
-						end: [override.x2Value, override.y2Value],
+						...each,
+						position: override.position,
 					}
 					: each);
 			this.setState({
 				override: null
 			}, () => {
-				this.props.onComplete(newTrends);
+				this.props.onDragComplete(newTrends);
 			});
 		}
 	}
@@ -105,25 +67,28 @@ class InteractiveText extends Component {
 		}
 	}
 	handleDraw(moreProps) {
-		const {
-			mouseXY: [, mouseY],
-			chartConfig: { yScale },
-			xAccessor,
-			currentItem,
-		} = moreProps;
+		const { enabled } = this.props;
+		if (enabled) {
+			const {
+				mouseXY: [, mouseY],
+				chartConfig: { yScale },
+				xAccessor,
+				currentItem,
+			} = moreProps;
 
-		const xyValue = [xAccessor(currentItem), yScale.invert(mouseY)];
+			const xyValue = [xAccessor(currentItem), yScale.invert(mouseY)];
 
-		const { defaultText, onChoosePosition } = this.props;
+			const { defaultText, onChoosePosition } = this.props;
 
-		const newText = {
-			...defaultText,
-			position: xyValue,
-		};
-		onChoosePosition(newText);
+			const newText = {
+				...defaultText,
+				position: xyValue,
+			};
+			onChoosePosition(newText);
+		}
 	}
 	render() {
-		const { enabled, textList, defaultText } = this.props;
+		const { textList, defaultText } = this.props;
 		const { override } = this.state;
 		return <g>
 			{textList.map((each, idx) => {
@@ -131,31 +96,32 @@ class InteractiveText extends Component {
 					...defaultText,
 					...each,
 				};
-
 				return <EachText
 					key={idx}
 					index={idx}
-					position={getValueFromOverride(override, idx, "position", each.position)}
 					{...props}
+					position={getValueFromOverride(override, idx, "position", each.position)}
 
-					onDrag={this.handleDragLine}
-					onDragComplete={this.handleDragTextComplete}
+					onDrag={this.handleDrag}
+					onDragComplete={this.handleDragComplete}
 					edgeInteractiveCursor="react-stockcharts-move-cursor"
 				/>;
 			})}
+			<GenericChartComponent
+
+				onClick={this.handleDraw}
+
+				svgDraw={noop}
+				canvasDraw={noop}
+				canvasToDraw={getMouseCanvas}
+
+				drawOn={["mousemove", "pan"]}
+			/>;
 		</g>;
 	}
 }
-/* 			<MouseLocationIndicator
-				enabled={enabled}
-				snap={false}
-				r={0}
-				opacity={0}
-				onMouseDown={this.handleDraw} /> */
 
 InteractiveText.propTypes = {
-	enabled: PropTypes.bool.isRequired,
-
 	onChoosePosition: PropTypes.func.isRequired,
 	onDragComplete: PropTypes.func.isRequired,
 
@@ -170,6 +136,7 @@ InteractiveText.propTypes = {
 
 	hoverText: PropTypes.object.isRequired,
 	textList: PropTypes.array.isRequired,
+	enabled: PropTypes.bool.isRequired,
 };
 
 InteractiveText.defaultProps = {
@@ -178,10 +145,11 @@ InteractiveText.defaultProps = {
 
 	defaultText: {
 		bgFill: "#9E7523",
-		bgOpacity: 0.2,
+		bgOpacity: 0.01,
 		textFill: "#9E7523",
 		fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 		fontSize: 12,
+		fontWeight: "500",
 		text: "Lorem ipsum..."
 	},
 	hoverText: {

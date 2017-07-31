@@ -4,6 +4,14 @@ import PropTypes from "prop-types";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
+import {
+	Modal,
+	Button,
+	FormGroup,
+	ControlLabel,
+	FormControl,
+} from "react-bootstrap";
+
 import { ChartCanvas, Chart } from "react-stockcharts";
 import { CandlestickSeries } from "react-stockcharts/lib/series";
 import { XAxis, YAxis } from "react-stockcharts/lib/axes";
@@ -20,6 +28,58 @@ import { fitWidth } from "react-stockcharts/lib/helper";
 import { InteractiveText } from "react-stockcharts/lib/interactive";
 import { last } from "react-stockcharts/lib/utils";
 
+class Dialog extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			text: props.text,
+		};
+		this.handleChange = this.handleChange.bind(this);
+		this.handleSave = this.handleSave.bind(this);
+	}
+	componentWillReceiveProps(nextProps) {
+		this.setState({
+			text: nextProps.text,
+		});
+	}
+	handleChange(e) {
+		this.setState({
+			text: e.target.value
+		});
+	}
+	handleSave() {
+		this.props.onSave(this.state.text);
+	}
+	render() {
+		const {
+			showModal,
+			onClose,
+		} = this.props;
+		const { text } = this.state;
+
+		return (
+			<Modal show={showModal} onHide={onClose} >
+				<Modal.Header closeButton>
+					<Modal.Title>Edit text</Modal.Title>
+				</Modal.Header>
+
+				<Modal.Body>
+					<form>
+						<FormGroup controlId="text">
+							<ControlLabel>Text</ControlLabel>
+							<FormControl type="text" value={text} onChange={this.handleChange} />
+						</FormGroup>
+					</form>
+				</Modal.Body>
+
+				<Modal.Footer>
+					<Button bsStyle="primary" onClick={this.handleSave}>Save</Button>
+				</Modal.Footer>
+			</Modal>
+		);
+	}
+}
+
 class CandleStickChartWithText extends React.Component {
 	constructor(props) {
 		super(props);
@@ -29,9 +89,13 @@ class CandleStickChartWithText extends React.Component {
 		this.saveInteractiveNode = this.saveInteractiveNode.bind(this);
 		this.saveCanvasNode = this.saveCanvasNode.bind(this);
 
+		this.handleDialogClose = this.handleDialogClose.bind(this);
+		this.handleTextChange = this.handleTextChange.bind(this);
+
 		this.state = {
 			enableInteractiveObject: true,
-			textList: []
+			textList: [],
+			showModal: false,
 		};
 	}
 	saveInteractiveNode(node) {
@@ -40,13 +104,36 @@ class CandleStickChartWithText extends React.Component {
 	saveCanvasNode(node) {
 		this.canvasNode = node;
 	}
+	handleTextChange(text) {
+		const { textList } = this.state;
+		const allButLast = textList.slice(0, textList.length - 1);
+		const lastText = {
+			...last(textList),
+			text,
+		};
+
+		this.setState({
+			textList: [
+				...allButLast,
+				lastText
+			],
+			showModal: false,
+			enableInteractiveObject: false,
+		});
+	}
+	handleDialogClose() {
+		this.setState({
+			showModal: false,
+		});
+	}
 	handleChoosePosition(text) {
-		console.log(text)
 		this.setState({
 			textList: [
 				...this.state.textList,
 				text
-			]
+			],
+			showModal: true,
+			text: text.text
 		});
 	}
 	componentDidMount() {
@@ -55,13 +142,13 @@ class CandleStickChartWithText extends React.Component {
 	componentWillUnmount() {
 		document.removeEventListener("keyup", this.onKeyPress);
 	}
-	onDrawComplete(channels) {
+	onDrawComplete(textList) {
 		// this gets called on
 		// 1. draw complete of drawing object
 		// 2. drag complete of drawing object
 		this.setState({
 			enableInteractiveObject: false,
-			channels
+			textList
 		});
 	}
 	onKeyPress(e) {
@@ -71,9 +158,9 @@ class CandleStickChartWithText extends React.Component {
 		case 46: {
 			// DEL
 			this.setState({
-				channels: this.state.channels.slice(
+				textList: this.state.textList.slice(
 					0,
-					this.state.channels.length - 2
+					this.state.textList.length - 1
 				)
 			});
 			break;
@@ -99,7 +186,7 @@ class CandleStickChartWithText extends React.Component {
 	}
 	render() {
 		const { type, data: initialData, width, ratio } = this.props;
-		const { textList } = this.state;
+		const { textList, showModal, text } = this.state;
 
 		const xScaleProvider = discontinuousTimeScaleProvider.inputDateAccessor(
 			d => d.date
@@ -113,61 +200,69 @@ class CandleStickChartWithText extends React.Component {
 		const xExtents = [start, end];
 
 		return (
-			<ChartCanvas ref={this.saveCanvasNode}
-				height={400}
-				width={width}
-				ratio={ratio}
-				margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
-				type={type}
-				seriesName="MSFT"
-				data={data}
-				xScale={xScale}
-				xAccessor={xAccessor}
-				displayXAccessor={displayXAccessor}
-				xExtents={xExtents}
-			>
-				<Chart
-					id={1}
-					yExtents={[d => [d.high, d.low]]}
-					padding={{ top: 10, bottom: 20 }}
+			<div>
+				<ChartCanvas ref={this.saveCanvasNode}
+					height={400}
+					width={width}
+					ratio={ratio}
+					margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
+					type={type}
+					seriesName="MSFT"
+					data={data}
+					xScale={xScale}
+					xAccessor={xAccessor}
+					displayXAccessor={displayXAccessor}
+					xExtents={xExtents}
 				>
+					<Chart
+						id={1}
+						yExtents={[d => [d.high, d.low]]}
+						padding={{ top: 10, bottom: 20 }}
+					>
 
-					<YAxis axisAt="right" orient="right" ticks={5} />
-					<XAxis axisAt="bottom" orient="bottom" />
+						<YAxis axisAt="right" orient="right" ticks={5} />
+						<XAxis axisAt="bottom" orient="bottom" />
 
-					<MouseCoordinateY
-						at="right"
-						orient="right"
-						displayFormat={format(".2f")}
-					/>
-					<MouseCoordinateX
-						at="bottom"
-						orient="bottom"
-						displayFormat={timeFormat("%Y-%m-%d")}
-					/>
-					<CandlestickSeries />
+						<MouseCoordinateY
+							at="right"
+							orient="right"
+							displayFormat={format(".2f")}
+						/>
+						<MouseCoordinateX
+							at="bottom"
+							orient="bottom"
+							displayFormat={timeFormat("%Y-%m-%d")}
+						/>
+						<CandlestickSeries />
 
-					<EdgeIndicator
-						itemType="last"
-						orient="right"
-						edgeAt="right"
-						yAccessor={d => d.close}
-						fill={d => (d.close > d.open ? "#6BA583" : "#FF0000")}
-					/>
+						<EdgeIndicator
+							itemType="last"
+							orient="right"
+							edgeAt="right"
+							yAccessor={d => d.close}
+							fill={d => (d.close > d.open ? "#6BA583" : "#FF0000")}
+						/>
 
-					<OHLCTooltip origin={[-40, 0]} />
+						<OHLCTooltip origin={[-40, 0]} />
 
-					<InteractiveText
-						ref={this.saveInteractiveNode}
-						enabled={this.state.enableInteractiveObject}
-						text="Lorem ipsum..."
-						onChoosePosition={this.handleChoosePosition}
-						onComplete={this.onDrawComplete}
-						textList={textList}
-					/>
-				</Chart>
-				<CrossHairCursor />
-			</ChartCanvas>
+						<InteractiveText
+							ref={this.saveInteractiveNode}
+							enabled={this.state.enableInteractiveObject}
+							text="Lorem ipsum..."
+							onChoosePosition={this.handleChoosePosition}
+							onDragComplete={this.onDrawComplete}
+							textList={textList}
+						/>
+					</Chart>
+					<CrossHairCursor />
+				</ChartCanvas>
+				<Dialog
+					showModal={showModal}
+					text={text}
+					onClose={this.handleDialogClose}
+					onSave={this.handleTextChange}
+				/>
+			</div>
 		);
 	}
 }

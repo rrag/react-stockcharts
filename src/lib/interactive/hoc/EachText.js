@@ -15,6 +15,7 @@ class EachText extends Component {
 		this.handleSelect = this.handleSelect.bind(this);
 		this.handleUnSelect = this.handleUnSelect.bind(this);
 
+		this.handleDragStart = this.handleDragStart.bind(this);
 		this.handleDrag = this.handleDrag.bind(this);
 		this.handleDragComplete = this.handleDragComplete.bind(this);
 
@@ -35,18 +36,25 @@ class EachText extends Component {
 			});
 		}
 	}
-	handleDrag(moreProps) {
-		const { index, onDrag, snapTo } = this.props;
+	handleDragStart() {
 		const {
-			x2Value,
+			position,
 		} = this.props;
 
-		const [x1Value] = getNewXY(moreProps, snapTo);
+		this.dragStartPosition = position;
+	}
+	handleDrag(moreProps) {
+		const { index, onDrag } = this.props;
+		const {
+			mouseXY: [, mouseY],
+			chartConfig: { yScale },
+			xAccessor,
+			currentItem,
+		} = moreProps;
 
-		onDrag(index, {
-			x1Value,
-			x2Value,
-		});
+		const xyValue = [xAccessor(currentItem), yScale.invert(mouseY)];
+
+		onDrag(index, xyValue);
 	}
 	handleDragComplete() {
 		const { onDragComplete } = this.props;
@@ -85,7 +93,6 @@ class EachText extends Component {
 
 		const { enable: hoverTextEnabled, ...restHoverTextProps } = hoverText;
 
-		// console.log("SELECTED ->", selected);
 		return <g>
 			<InteractiveText
 				selected={selected || hover}
@@ -93,9 +100,14 @@ class EachText extends Component {
 				{...hoverHandler}
 				onClickWhenHovering={this.handleSelect}
 				onClickOutside={this.handleUnSelect}
+
+				onDragStart={this.handleDragStart}
+				onDrag={this.handleDrag}
+				onDragComplete={this.handleDragComplete}
+
 				position={position}
 				bgFill={bgFill}
-				bgOpacity={(hover || selected) ? bgOpacity : 0.8}
+				bgOpacity={(hover || selected) ? bgOpacity : 0.1}
 				textFill={textFill}
 				fontFamily={fontFamily}
 				fontSize={fontSize}
