@@ -53,12 +53,22 @@ export function getNewChartConfig(innerDimension, children) {
 			};
 			const { id, origin, padding, yExtents: yExtentsProp, yScale, flipYScale, yExtentsCalculator } = chartProps;
 			const { width, height, availableWidth, availableHeight } = getDimensions(innerDimension, chartProps);
-			const { yPan } = chartProps;
+			const { yPan, yPanEnabled = false } = chartProps;
 			// var { yMousePointerRectWidth: rectWidth, yMousePointerRectHeight: rectHeight, yMousePointerArrowWidth: arrowWidth } = each.props;
 			// var mouseCoordinates = { at, yDisplayFormat, rectHeight, rectWidth, arrowWidth };
 			const yExtents = isDefined(yExtentsProp)
 				? (Array.isArray(yExtentsProp) ? yExtentsProp : [yExtentsProp]).map(functor)
 				: undefined;
+
+			if (
+				Array.isArray(yExtentsProp)
+				&& yExtentsProp.length === 2
+			) {
+				const [a, b] = yExtentsProp;
+				if (typeof a == "number" && typeof b == "number") {
+					yScale.domain([a, b]);
+				}
+			}
 			// console.log(yExtentsProp, yExtents);
 			return {
 				id,
@@ -67,8 +77,9 @@ export function getNewChartConfig(innerDimension, children) {
 				yExtents,
 				yExtentsCalculator,
 				flipYScale,
-				yScale,
+				yScale: setRange(yScale.copy(), height, padding, flipYScale),
 				yPan,
+				yPanEnabled,
 				// mouseCoordinates,
 				width,
 				height

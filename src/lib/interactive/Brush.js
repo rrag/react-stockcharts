@@ -44,15 +44,17 @@ class Brush extends Component {
 		const { rect } = this.state;
 		if (isDefined(rect)) {
 			const { x, y, height, width } = rect;
-			const { stroke, opacity, strokeDashArray } = this.props;
+			const { stroke, fill, opacity, strokeDashArray } = this.props;
 
 			const dashArray = getStrokeDasharray(strokeDashArray)
 				.split(",")
 				.map(d => +d);
 
 			ctx.strokeStyle = hexToRGBA(stroke, opacity);
+			ctx.fillStyle = hexToRGBA(fill, opacity);
 			ctx.setLineDash(dashArray);
 			ctx.beginPath();
+			ctx.fillRect(x, y, width, height);
 			ctx.strokeRect(x, y, width, height);
 		}
 	}
@@ -149,6 +151,7 @@ class Brush extends Component {
 		}
 		this.setState({
 			selected: false,
+			rect: null,
 		});
 	}
 	render() {

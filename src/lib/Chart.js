@@ -76,8 +76,7 @@ Chart.propTypes = {
 	},
 	onContextMenu: PropTypes.func.isRequired,
 	yScale: PropTypes.func.isRequired,
-	yMousePointerDisplayLocation: PropTypes.oneOf(["left", "right"]),
-	yMousePointerDisplayFormat: PropTypes.func,
+
 	flipYScale: PropTypes.bool.isRequired,
 	padding: PropTypes.oneOfType([
 		PropTypes.number,

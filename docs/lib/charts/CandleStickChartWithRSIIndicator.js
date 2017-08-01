@@ -81,20 +81,22 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 
 		return (
 			<ChartCanvas height={600}
-					width={width}
-					ratio={ratio}
-					margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
-					type={type}
-					seriesName="MSFT"
-					data={data}
-					xScale={xScale}
-					xAccessor={xAccessor}
-					displayXAccessor={displayXAccessor}
-					xExtents={xExtents}>
+				width={width}
+				ratio={ratio}
+				margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
+				type={type}
+				seriesName="MSFT"
+				data={data}
+				xScale={xScale}
+				xAccessor={xAccessor}
+				displayXAccessor={displayXAccessor}
+				xExtents={xExtents}
+			>
 
 				<Chart id={1} height={300}
-						yExtents={[d => [d.high, d.low], ema26.accessor(), ema12.accessor()]}
-						padding={{ top: 10, bottom: 20 }}>
+					yExtents={[d => [d.high, d.low], ema26.accessor(), ema12.accessor()]}
+					padding={{ top: 10, bottom: 20 }}
+				>
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right" orient="right" ticks={5} />
 
@@ -132,12 +134,13 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 								windowSize: ema12.options().windowSize,
 							},
 						]}
-						/>
+					/>
 
 				</Chart>
 				<Chart id={2} height={150}
-						yExtents={[d => d.volume, smaVolume50.accessor()]}
-						origin={(w, h) => [0, h - 400]}>
+					yExtents={[d => d.volume, smaVolume50.accessor()]}
+					origin={(w, h) => [0, h - 400]}
+				>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
 
 					<MouseCoordinateY
@@ -149,8 +152,9 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
 				</Chart>
 				<Chart id={3}
-						yExtents={[0, 100]}
-						height={125} origin={(w, h) => [0, h - 250]} >
+					yExtents={[0, 100]}
+					height={125} origin={(w, h) => [0, h - 250]}
+				>
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right"
 						orient="right"
@@ -167,8 +171,9 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 						options={rsiCalculator.options()} />
 				</Chart>
 				<Chart id={8}
-						yExtents={atr14.accessor()}
-						height={125} origin={(w, h) => [0, h - 125]} padding={{ top: 10, bottom: 10 }} >
+					yExtents={atr14.accessor()}
+					height={125} origin={(w, h) => [0, h - 125]} padding={{ top: 10, bottom: 10 }}
+				>
 					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="right" orient="right" ticks={2}/>
 

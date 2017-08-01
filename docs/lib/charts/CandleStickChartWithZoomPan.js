@@ -67,25 +67,27 @@ class CandleStickChartWithZoomPan extends React.Component {
 
 		return (
 			<ChartCanvas ref={this.saveNode} height={height}
-					ratio={ratio}
-					width={width}
-					margin={{ left: 70, right: 70, top: 10, bottom: 30 }}
+				ratio={ratio}
+				width={width}
+				margin={{ left: 70, right: 70, top: 10, bottom: 30 }}
 
-					mouseMoveEvent={mouseMoveEvent}
-					panEvent={panEvent}
-					zoomEvent={zoomEvent}
-					clamp={clamp}
+				mouseMoveEvent={mouseMoveEvent}
+				panEvent={panEvent}
+				zoomEvent={zoomEvent}
+				clamp={clamp}
 
-					type={type}
-					seriesName="MSFT"
-					data={data}
-					xScale={xScale}
-					xExtents={xExtents}
-					xAccessor={xAccessor}
-					displayXAccessor={displayXAccessor}>
+				type={type}
+				seriesName="MSFT"
+				data={data}
+				xScale={xScale}
+				xExtents={xExtents}
+				xAccessor={xAccessor}
+				displayXAccessor={displayXAccessor}
+			>
 
 				<Chart id={1}
-						yExtents={[d => [d.high, d.low]]}>
+					yExtents={d => [d.high, d.low]}
+				>
 					<XAxis axisAt="bottom"
 						orient="bottom"
 						zoomEnabled={!zoomEvent}
@@ -95,7 +97,7 @@ class CandleStickChartWithZoomPan extends React.Component {
 						ticks={5}
 						zoomEnabled={!zoomEvent}
 						{...yGrid}
-						/>
+					/>
 
 					<MouseCoordinateY
 						at="right"
@@ -106,8 +108,9 @@ class CandleStickChartWithZoomPan extends React.Component {
 					<OHLCTooltip origin={[-40, 0]}/>
 				</Chart>
 				<Chart id={2}
-						yExtents={d => d.volume}
-						height={150} origin={(w, h) => [0, h - 150]}>
+					yExtents={d => d.volume}
+					height={150} origin={(w, h) => [0, h - 150]}
+				>
 					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")} zoomEnabled={!zoomEvent} />
 
 					<MouseCoordinateX
