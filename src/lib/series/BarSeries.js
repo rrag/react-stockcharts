@@ -73,6 +73,10 @@ BarSeries.propTypes = {
 	fill: PropTypes.oneOfType([
 		PropTypes.func, PropTypes.string
 	]).isRequired,
+    secondFill: PropTypes.oneOfType([
+		PropTypes.func, PropTypes.string
+	]).isRequired,
+    alternatingFill: _propTypes2.default.bool,
 	className: PropTypes.oneOfType([
 		PropTypes.func, PropTypes.string
 	]).isRequired,
@@ -96,10 +100,12 @@ export default BarSeries;
  to create bars
 */
 function getBars(props, moreProps) {
-	const { baseAt, fill, stroke, yAccessor } = props;
+	const { baseAt, fill, secondFill, alternativeFill, stroke, yAccessor } = props;
 	const { xScale, xAccessor, plotData, chartConfig: { yScale } } = moreProps;
 
 	const getFill = functor(fill);
+    const getSecondFill = (0, _utils.functor)(secondFill);
+
 	const getBase = functor(baseAt);
 
 	const widthFunctor = functor(props.width);
@@ -113,6 +119,7 @@ function getBars(props, moreProps) {
 	const barWidth = Math.round(width);
 	const offset = Math.round(barWidth === 1 ? 0 : 0.5 * barWidth);
 
+    var prevHeight = 0;
 	const bars = plotData
 		.map(d => {
 			const yValue = yAccessor(d);
@@ -120,6 +127,10 @@ function getBars(props, moreProps) {
 
 			const x = Math.round(xScale(xAccessor(d))) - offset;
 			let h = getBase(xScale, yScale, d) - yScale(yValue);
+            
+            var currentFill = Math.abs(prevHeight) > Math.abs(h)? getFill(d, 0) : getSecondFill(d, 0);
+            prevHeight = h;
+
 
 			if (h < 0) {
 				y = y + h;
@@ -132,7 +143,7 @@ function getBars(props, moreProps) {
 				y: Math.round(y),
 				height: Math.round(h),
 				width: offset * 2,
-				fill: getFill(d, 0),
+                fill: alternatingFill? currentFill: getFill(d, 0),
 				stroke: stroke ? getFill(d, 0) : "none",
 			};
 		});
