@@ -182,7 +182,11 @@ export function drawOnCanvas2(props, ctx, bars) {
 		if (head(values).width > 1) {
 			ctx.strokeStyle = key;
 		}
-		ctx.fillStyle = hexToRGBA(key, props.opacity);
+		const fillStyle = head(values).width <= 1
+			? key
+			: hexToRGBA(key, props.opacity);
+		ctx.fillStyle = fillStyle;
+
 		values.forEach(d => {
 			if (d.width <= 1) {
 				/* <line key={idx} className={d.className}

@@ -8,7 +8,9 @@ import PropTypes from "prop-types";
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
 
-import { hexToRGBA, isDefined, functor, plotDataLengthBarWidth } from "../utils";
+import {
+	hexToRGBA, isDefined, functor, plotDataLengthBarWidth, head
+} from "../utils";
 
 class CandlestickSeries extends Component {
 	constructor(props) {
@@ -185,7 +187,10 @@ function drawOnCanvas(ctx, props, moreProps) {
 		}
 		strokeValues.forEach(inner => {
 			const { key, values } = inner;
-			ctx.fillStyle = hexToRGBA(key, opacity);
+			const fillStyle = head(values).width <= 1
+				? key
+				: hexToRGBA(key, opacity);
+			ctx.fillStyle = fillStyle;
 
 			values.forEach(d => {
 				if (d.width <= 1) {
@@ -272,9 +277,12 @@ function getCandleData(props, xAccessor, xScale, yScale, plotData) {
 		plotData
 	});
 
+	/*
 	const candleWidth = Math.round(width);
-
 	const offset = Math.round(candleWidth === 1 ? 0 : 0.5 * width);
+	*/
+
+	const offset = Math.floor(0.5 * width);
 
 	// eslint-disable-next-line prefer-const
 	let candles = [];

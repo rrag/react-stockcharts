@@ -110,8 +110,11 @@ function getBars(props, moreProps) {
 		plotData
 	});
 
+	/*
 	const barWidth = Math.round(width);
 	const offset = Math.round(barWidth === 1 ? 0 : 0.5 * barWidth);
+	*/
+	const offset = Math.floor(0.5 * width);
 
 	const bars = plotData
 		.map(d => {
