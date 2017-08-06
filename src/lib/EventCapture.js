@@ -196,7 +196,6 @@ class EventCapture extends Component {
 
 		if (this.dragHappened) {
 			this.props.onDragComplete({
-				startPos: this.state.dragStartPosition,
 				mouseXY
 			}, e);
 		}
@@ -261,7 +260,7 @@ class EventCapture extends Component {
 					panStart: null,
 					dragStartPosition: mouseXY,
 				});
-				this.props.onDragStart(e);
+				this.props.onDragStart({ startPos: mouseXY }, e);
 				// this.mouseInteraction = false;
 
 				const win = d3Window(this.node);
@@ -271,8 +270,6 @@ class EventCapture extends Component {
 			}
 
 			onMouseDown(mouseXY, currentCharts, e);
-			/* if (!panEnabled) {
-			} */
 		}
 		e.preventDefault();
 	}

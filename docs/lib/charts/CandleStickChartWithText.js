@@ -13,7 +13,7 @@ import {
 } from "react-bootstrap";
 
 import { ChartCanvas, Chart } from "react-stockcharts";
-import { CandlestickSeries } from "react-stockcharts/lib/series";
+import { CandlestickSeries, BarSeries, MACDSeries } from "react-stockcharts/lib/series";
 import { XAxis, YAxis } from "react-stockcharts/lib/axes";
 import {
 	CrossHairCursor,
@@ -23,7 +23,9 @@ import {
 } from "react-stockcharts/lib/coordinates";
 
 import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
-import { OHLCTooltip } from "react-stockcharts/lib/tooltip";
+import { OHLCTooltip, MACDTooltip } from "react-stockcharts/lib/tooltip";
+import { macd } from "react-stockcharts/lib/indicator";
+
 import { fitWidth } from "react-stockcharts/lib/helper";
 import { InteractiveText } from "react-stockcharts/lib/interactive";
 import { last } from "react-stockcharts/lib/utils";
@@ -79,6 +81,15 @@ class Dialog extends React.Component {
 		);
 	}
 }
+const macdAppearance = {
+	stroke: {
+		macd: "#FF0000",
+		signal: "#00F300",
+	},
+	fill: {
+		divergence: "#4682B4"
+	},
+};
 
 class CandleStickChartWithText extends React.Component {
 	constructor(props) {
@@ -188,15 +199,28 @@ class CandleStickChartWithText extends React.Component {
 		}
 	}
 	render() {
+		const macdCalculator = macd()
+			.options({
+				fast: 12,
+				slow: 26,
+				signal: 9,
+			})
+			.merge((d, c) => {d.macd = c;})
+			.accessor(d => d.macd);
+
 		const { type, data: initialData, width, ratio } = this.props;
 		const { textList, showModal, text } = this.state;
 
-		const xScaleProvider = discontinuousTimeScaleProvider.inputDateAccessor(
-			d => d.date
-		);
-		const { data, xScale, xAccessor, displayXAccessor } = xScaleProvider(
-			initialData
-		);
+		const calculatedData = macdCalculator(initialData);
+		const xScaleProvider = discontinuousTimeScaleProvider
+			.inputDateAccessor(d => d.date);
+
+		const {
+			data,
+			xScale,
+			xAccessor,
+			displayXAccessor,
+		} = xScaleProvider(calculatedData);
 
 		const start = xAccessor(last(data));
 		const end = xAccessor(data[Math.max(0, data.length - 150)]);
@@ -205,7 +229,7 @@ class CandleStickChartWithText extends React.Component {
 		return (
 			<div>
 				<ChartCanvas ref={this.saveCanvasNode}
-					height={400}
+					height={600}
 					width={width}
 					ratio={ratio}
 					margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
@@ -217,36 +241,23 @@ class CandleStickChartWithText extends React.Component {
 					displayXAccessor={displayXAccessor}
 					xExtents={xExtents}
 				>
-					<Chart
-						id={1}
+					<Chart id={1} height={400}
 						yExtents={[d => [d.high, d.low]]}
 						padding={{ top: 10, bottom: 20 }}
 					>
-
+						<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 						<YAxis axisAt="right" orient="right" ticks={5} />
-						<XAxis axisAt="bottom" orient="bottom" />
-
 						<MouseCoordinateY
 							at="right"
 							orient="right"
-							displayFormat={format(".2f")}
-						/>
-						<MouseCoordinateX
-							at="bottom"
-							orient="bottom"
-							displayFormat={timeFormat("%Y-%m-%d")}
-						/>
+							displayFormat={format(".2f")} />
+
 						<CandlestickSeries />
 
-						<EdgeIndicator
-							itemType="last"
-							orient="right"
-							edgeAt="right"
-							yAccessor={d => d.close}
-							fill={d => (d.close > d.open ? "#6BA583" : "#FF0000")}
-						/>
+						<EdgeIndicator itemType="last" orient="right" edgeAt="right"
+							yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
 
-						<OHLCTooltip origin={[-40, 0]} />
+						<OHLCTooltip origin={[-40, 0]}/>
 
 						<InteractiveText
 							ref={this.saveInteractiveNode}
@@ -255,6 +266,56 @@ class CandleStickChartWithText extends React.Component {
 							onChoosePosition={this.handleChoosePosition}
 							onDragComplete={this.onDrawComplete}
 							textList={textList}
+						/>
+
+					</Chart>
+					<Chart id={2} height={150}
+						yExtents={[d => d.volume]}
+						origin={(w, h) => [0, h - 300]}
+					>
+						<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
+
+						<MouseCoordinateY
+							at="left"
+							orient="left"
+							displayFormat={format(".4s")} />
+
+						<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
+					</Chart>
+					<Chart id={3} height={150}
+						yExtents={macdCalculator.accessor()}
+						origin={(w, h) => [0, h - 150]}
+						padding={{ top: 10, bottom: 10 }}
+					>
+						<XAxis axisAt="bottom" orient="bottom"/>
+						<YAxis axisAt="right" orient="right" ticks={2} />
+
+						<MouseCoordinateX
+							at="bottom"
+							orient="bottom"
+							displayFormat={timeFormat("%Y-%m-%d")} />
+						<MouseCoordinateY
+							at="right"
+							orient="right"
+							displayFormat={format(".2f")} />
+
+						<MACDSeries yAccessor={d => d.macd}
+							{...macdAppearance} />
+
+						<InteractiveText
+							ref={this.saveInteractiveNode}
+							enabled={this.state.enableInteractiveObject}
+							text="Lorem ipsum..."
+							onChoosePosition={this.handleChoosePosition}
+							onDragComplete={this.onDrawComplete}
+							textList={textList}
+						/>
+
+						<MACDTooltip
+							origin={[-38, 15]}
+							yAccessor={d => d.macd}
+							options={macdCalculator.options()}
+							appearance={macdAppearance}
 						/>
 					</Chart>
 					<CrossHairCursor />
@@ -269,6 +330,7 @@ class CandleStickChartWithText extends React.Component {
 		);
 	}
 }
+
 
 CandleStickChartWithText.propTypes = {
 	data: PropTypes.array.isRequired,

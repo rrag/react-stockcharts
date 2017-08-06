@@ -4,6 +4,7 @@
 import { scaleOrdinal, schemeCategory10 } from  "d3-scale";
 import { bisector } from "d3-array";
 import noop from "./noop";
+import identity from "./identity";
 
 export { default as zipper } from "./zipper";
 export { default as merge } from "./merge";
@@ -252,4 +253,38 @@ export function findItem(array, predicate) {
 			return each;
 		}
 	}
+}
+
+// copied from https://github.com/lodash/lodash/blob/master/mapValue.js
+export function mapValue(object, iteratee) {
+	object = Object(object);
+	// eslint-disable-next-line prefer-const
+	let result = {};
+
+	Object.keys(object).forEach(key => {
+		result[key] = iteratee(object[key], key, object);
+	});
+	return result;
+}
+
+// copied from https://github.com/lodash/lodash/blob/master/mapObject.js
+export function mapObject(object, iteratee = identity) {
+	const props = Object.keys(object);
+
+	// eslint-disable-next-line prefer-const
+	let result = new Array(props.length);
+
+	props.forEach((key, index) => {
+		result[index] = iteratee(object[key], key, object);
+	});
+	return result;
+}
+
+export function replaceAtIndex(array, index, value) {
+	if (isDefined(array) && array.length > index) {
+		return array.slice(0, index)
+			.concat(value)
+			.concat(array.slice(index + 1));
+	}
+	return array;
 }

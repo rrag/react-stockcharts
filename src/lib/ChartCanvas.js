@@ -734,7 +734,7 @@ class ChartCanvas extends Component {
 		}
 	}
 	handleMouseDown(mousePosition, currentCharts, e) {
-		this.triggerEvent("mousedown", null, e);
+		this.triggerEvent("mousedown", this.mutableState, e);
 	}
 	handleMouseEnter(e) {
 		this.triggerEvent("mouseenter", {
@@ -776,8 +776,8 @@ class ChartCanvas extends Component {
 		this.clearMouseCanvas();
 		this.draw({ trigger: "mouseleave" });
 	}
-	handleDragStart(mousePosition, e) {
-		this.triggerEvent("dragstart", { mousePosition }, e);
+	handleDragStart({ startPos }, e) {
+		this.triggerEvent("dragstart", { startPos }, e);
 	}
 	handleDrag({ startPos, mouseXY }, e) {
 		const { chartConfig, plotData, xScale, xAccessor } = this.state;
@@ -802,8 +802,8 @@ class ChartCanvas extends Component {
 			this.draw({ trigger: "drag" });
 		});
 	}
-	handleDragEnd(mousePosition, e) {
-		this.triggerEvent("dragend", { mousePosition }, e);
+	handleDragEnd({ mouseXY }, e) {
+		this.triggerEvent("dragend", { mouseXY }, e);
 
 		requestAnimationFrame(() => {
 			this.clearMouseCanvas();

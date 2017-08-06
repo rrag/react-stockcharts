@@ -37,6 +37,8 @@ class GenericComponent extends Component {
 		this.preCanvasDraw = this.preCanvasDraw.bind(this);
 		this.postCanvasDraw = this.postCanvasDraw.bind(this);
 		this.getPanConditions = this.getPanConditions.bind(this);
+		this.shouldTypeProceed = this.shouldTypeProceed.bind(this);
+		this.preEvaluate = this.preEvaluate.bind(this);
 
 		const { generateSubscriptionId } = context;
 		this.suscriberId = generateSubscriptionId();
@@ -52,6 +54,11 @@ class GenericComponent extends Component {
 			this.moreProps[key] = moreProps[key];
 		});
 	}
+	shouldTypeProceed() {
+		return true;
+	}
+	preEvaluate() {
+	}
 	listener(type, moreProps, state, e) {
 		// console.log(e.shiftKey)
 		if (isDefined(moreProps)) {
@@ -66,13 +73,19 @@ class GenericComponent extends Component {
 		const proceed = this.props.drawOn.indexOf(newType) > -1;
 
 		// console.log("type ->", type, proceed);
+
 		if (!proceed) return;
+		// const moreProps = this.getMoreProps();
+		this.preEvaluate(type, this.moreProps, e);
+		if (!this.shouldTypeProceed(type, this.moreProps)) return;
 
 		switch (type) {
 		case "zoom":
-		case "mouseleave":
 		case "mouseenter":
 			// DO NOT DRAW FOR THESE EVENTS
+			break;
+		case "mouseleave":
+
 			break;
 		case "contextmenu": {
 			if (this.props.onContextMenu) {
@@ -93,13 +106,15 @@ class GenericComponent extends Component {
 			break;
 		}
 		case "click": {
+			const moreProps = this.getMoreProps();
 			if (this.moreProps.hovering) {
-				this.props.onClickWhenHovering(this.getMoreProps(), e);
+				console.error("TODO use this only for SAR, Line series")
+				// this.props.onClickWhenHovering(moreProps, e);
 			} else {
-				this.props.onClickOutside(this.getMoreProps(), e);
+				// this.props.onClickOutside(moreProps, e);
 			}
 			if (this.props.onClick) {
-				this.props.onClick(this.getMoreProps(), e);
+				this.props.onClick(moreProps, e);
 			}
 			break;
 		}
@@ -127,32 +142,35 @@ class GenericComponent extends Component {
 				this.iSetTheCursorClass = false;
 				setCursorClass(null);
 			}
+			const moreProps = this.getMoreProps();
 
 			if (this.moreProps.hovering && !prevHover) {
 				if (this.props.onHover) {
-					this.props.onHover(this.getMoreProps(), e);
+					this.props.onHover(moreProps, e);
 				}
 			}
 			if (prevHover && !this.moreProps.hovering) {
 				if (this.props.onUnHover) {
-					this.props.onUnHover(this.getMoreProps(), e);
+					this.props.onUnHover(moreProps, e);
 				}
 			}
 
 			if (this.props.onMouseMove) {
-				this.props.onMouseMove(this.getMoreProps(), e);
+				this.props.onMouseMove(moreProps, e);
 			}
 			break;
 		}
 		case "dblclick": {
+			const moreProps = this.getMoreProps();
+
 			if (this.props.onDoubleClick) {
-				this.props.onDoubleClick(this.getMoreProps(), e);
+				this.props.onDoubleClick(moreProps, e);
 			}
 			if (
 				this.moreProps.hovering
 				&& this.props.onDoubleClickWhenHover
 			) {
-				this.props.onDoubleClickWhenHover(this.getMoreProps(), e);
+				this.props.onDoubleClickWhenHover(moreProps, e);
 			}
 			break;
 		}
@@ -297,9 +315,37 @@ class GenericComponent extends Component {
 		};
 	}
 	getMoreProps() {
-		const { xScale, plotData, chartConfig, morePropsDecorator, xAccessor, displayXAccessor, width, height } = this.context;
+		const {
+			xScale,
+			plotData,
+			chartConfig,
+			morePropsDecorator,
+			xAccessor,
+			displayXAccessor,
+			width,
+			height,
+		} = this.context;
+
 		const { chartId, fullData } = this.context;
 
+		if (!Array.isArray(this.moreProps.chartConfig)) {
+			const { origin: [ox, oy] } = this.moreProps.chartConfig;
+
+			if (Array.isArray(this.moreProps.mouseXY)) {
+				const { mouseXY: [x, y] } = this.moreProps;
+				this.moreProps.mouseXY = [
+					x - ox,
+					y - oy
+				];
+			}
+			if (Array.isArray(this.moreProps.startPos)) {
+				const { startPos: [x, y] } = this.moreProps;
+				this.moreProps.startPos = [
+					x - ox,
+					y - oy
+				];
+			}
+		}
 		const moreProps = {
 			xScale, plotData, chartConfig,
 			xAccessor, displayXAccessor,
@@ -392,8 +438,8 @@ GenericComponent.defaultProps = {
 	selected: false,
 	disablePan: false,
 
-	onClickOutside: noop,
 	onClickWhenHovering: noop,
+	onClickOutside: noop,
 	onDragStart: noop,
 	onMouseMove: noop,
 	onMouseDown: noop,

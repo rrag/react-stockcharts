@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import { noop } from "../../utils";
+import { noop, mapObject } from "../../utils";
 import { getCurrentItem } from "../../utils/ChartDataUtil";
 
 import StraightLine from "../components/StraightLine";
@@ -11,8 +11,6 @@ import HoverTextNearMouse from "../components/HoverTextNearMouse";
 class EachTrendLine extends Component {
 	constructor(props) {
 		super(props);
-		this.handleSelect = this.handleSelect.bind(this);
-		this.handleUnSelect = this.handleUnSelect.bind(this);
 
 		this.handleEdge1Drag = this.handleEdge1Drag.bind(this);
 		this.handleEdge2Drag = this.handleEdge2Drag.bind(this);
@@ -21,23 +19,25 @@ class EachTrendLine extends Component {
 		this.handleDragComplete = this.handleDragComplete.bind(this);
 
 		this.handleHover = this.handleHover.bind(this);
+		this.isHover = this.isHover.bind(this);
 
+		this.saveNodeType = this.saveNodeType.bind(this);
+		this.nodes = {};
 		this.state = {
-			selected: false,
 			hover: false,
 		};
 	}
-	handleSelect() {
-		this.setState({
-			selected: true
-		});
+	saveNodeType(type) {
+		return node => {
+			this.nodes[type] = node;
+		};
 	}
-	handleUnSelect() {
-		if (this.state.selected) {
-			this.setState({
-				selected: false
+	isHover(moreProps) {
+		const hovering = mapObject(this.nodes, node => node.isHover(moreProps))
+			.reduce((a, b) => {
+				return a || b;
 			});
-		}
+		return hovering;
 	}
 	handleLineDragStart() {
 		const {
@@ -112,14 +112,10 @@ class EachTrendLine extends Component {
 		});
 	}
 	handleDragComplete() {
+		const { index } = this.props;
 		const { onDragComplete } = this.props;
 
-		if (!this.state.selected) {
-			this.setState({
-				selected: true,
-			});
-		}
-		onDragComplete();
+		onDragComplete(index);
 	}
 	handleHover(moreProps) {
 		if (this.state.hover !== moreProps.hovering) {
@@ -145,21 +141,21 @@ class EachTrendLine extends Component {
 			edgeInteractiveCursor,
 			lineInteractiveCursor,
 			hoverText,
+			selected,
 
 			onDragComplete,
 		} = this.props;
-		const { selected, hover } = this.state;
+		const { hover } = this.state;
 
 		// console.log("SELECTED ->", selected);
 		const { enable: hoverTextEnabled, ...restHoverTextProps } = hoverText;
 
 		return <g>
 			<StraightLine
+				ref={this.saveNodeType("line")}
 				selected={selected || hover}
 				onHover={this.handleHover}
 				onUnHover={this.handleHover}
-				onClickWhenHovering={this.handleSelect}
-				onClickOutside={this.handleUnSelect}
 				x1Value={x1Value}
 				y1Value={y1Value}
 				x2Value={x2Value}
@@ -173,6 +169,7 @@ class EachTrendLine extends Component {
 				onDrag={this.handleLineDrag}
 				onDragComplete={this.handleDragComplete} />
 			<ClickableCircle
+				ref={this.saveNodeType("edge1")}
 				show={selected || hover}
 				cx={x1Value}
 				cy={y1Value}
@@ -185,6 +182,7 @@ class EachTrendLine extends Component {
 				onDrag={this.handleEdge1Drag}
 				onDragComplete={onDragComplete} />
 			<ClickableCircle
+				ref={this.saveNodeType("edge2")}
 				show={selected || hover}
 				cx={x2Value}
 				cy={y2Value}
@@ -230,10 +228,14 @@ EachTrendLine.propTypes = {
 		"RAY", // extends to +/-Infinity in one direction
 		"LINE", // extends between the set bounds
 	]).isRequired,
+
 	onDrag: PropTypes.func.isRequired,
 	onEdge1Drag: PropTypes.func.isRequired,
 	onEdge2Drag: PropTypes.func.isRequired,
 	onDragComplete: PropTypes.func.isRequired,
+	onSelect: PropTypes.func.isRequired,
+	onUnSelect: PropTypes.func.isRequired,
+
 	r: PropTypes.number.isRequired,
 	opacity: PropTypes.number.isRequired,
 	defaultClassName: PropTypes.string,
@@ -251,6 +253,9 @@ EachTrendLine.defaultProps = {
 	onEdge1Drag: noop,
 	onEdge2Drag: noop,
 	onDragComplete: noop,
+	onSelect: noop,
+	onUnSelect: noop,
+
 	edgeStroke: "#000000",
 	edgeFill: "#FFFFFF",
 	edgeStrokeWidth: 2,

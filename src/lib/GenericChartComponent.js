@@ -2,6 +2,14 @@
 
 import PropTypes from "prop-types";
 import GenericComponent from "./GenericComponent";
+import {
+	isDefined,
+} from "./utils";
+
+const ALWAYS_TRUE_TYPES = [
+	"drag",
+	"dragend"
+];
 
 class GenericChartComponent extends GenericComponent {
 	constructor(props, context) {
@@ -9,6 +17,8 @@ class GenericChartComponent extends GenericComponent {
 
 		this.preCanvasDraw = this.preCanvasDraw.bind(this);
 		this.postCanvasDraw = this.postCanvasDraw.bind(this);
+		this.shouldTypeProceed = this.shouldTypeProceed.bind(this);
+		this.preEvaluate = this.preEvaluate.bind(this);
 	}
 	preCanvasDraw(ctx, moreProps) {
 		super.preCanvasDraw(ctx, moreProps);
@@ -52,6 +62,34 @@ class GenericChartComponent extends GenericComponent {
 				.filter(each => each.id === chartId)[0];
 			this.moreProps.chartConfig = chartConfig;
 		}
+	}
+	preEvaluate(type, moreProps) {
+
+		if (
+			type === "mousemove"
+			&& this.props.onMouseMove
+			&& isDefined(moreProps)
+			&& isDefined(moreProps.currentCharts)
+		) {
+			if (moreProps.currentCharts.indexOf(this.context.chartId) === -1) {
+				moreProps.show = false;
+			}
+		}
+	}
+	shouldTypeProceed(type, moreProps) {
+		if (
+			(type === "mousemove" || type === "click")
+			&& this.props.disablePan) {
+			return true;
+		}
+		if (
+			ALWAYS_TRUE_TYPES.indexOf(type) === -1
+			&& isDefined(moreProps)
+			&& isDefined(moreProps.currentCharts)
+		) {
+			return (moreProps.currentCharts.indexOf(this.context.chartId) > -1);
+		}
+		return true;
 	}
 }
 

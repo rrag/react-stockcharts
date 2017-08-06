@@ -67,7 +67,7 @@ class MouseLocationIndicator extends Component {
 		const { enabled, r, stroke, strokeWidth } = this.props;
 		const { x, y } = this.mutableState;
 		const { show } = moreProps;
-
+		// console.log(show)
 		if (enabled && show && isDefined(x)) {
 			ctx.lineWidth = strokeWidth;
 			ctx.strokeStyle = stroke;
@@ -101,7 +101,6 @@ class MouseLocationIndicator extends Component {
 	render() {
 		const { enabled, disablePan } = this.props;
 		return <GenericChartComponent
-
 			onMouseDown={this.handleMouseDown}
 			onClick={this.handleClick}
 			onContextMenu={this.handleContextMenu}
