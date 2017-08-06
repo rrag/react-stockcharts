@@ -161,15 +161,15 @@ class Brush extends Component {
 		return (
 			<GenericChartComponent
 				ref={this.saveNode}
-				isHover={yes}
-				selected
+				disablePan={enabled}
+
 				svgDraw={this.renderSVG}
 				canvasToDraw={getMouseCanvas}
 				canvasDraw={this.drawOnCanvas}
 
-				onDragStart={this.handleZoomStart}
-				onDrag={this.handleDrawSquare}
-				onDragComplete={this.handleZoomComplete}
+				onMouseDown={this.handleZoomStart}
+				onMouseMove={this.handleDrawSquare}
+				onClick={this.handleZoomComplete}
 
 				drawOn={["mousemove", "pan", "drag"]}
 			/>

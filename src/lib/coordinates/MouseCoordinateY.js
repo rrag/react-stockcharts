@@ -74,7 +74,7 @@ function helper(props, moreProps) {
 		: 0;
 
 	const type = "horizontal";
-	const y = mouseXY[1] - origin[1];
+	const y = mouseXY[1] + origin[1];
 	const coordinate = displayFormat(yScale.invert(y));
 	const hideLine = true;
 
