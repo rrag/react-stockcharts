@@ -4,10 +4,16 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import { isDefined, isNotDefined, noop } from "../utils";
-
+import {
+	terminate,
+	saveNodeList,
+	handleClickInteractiveType,
+} from "./utils";
 import EachGannFan from "./hoc/EachGannFan";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
 import HoverTextNearMouse from "./components/HoverTextNearMouse";
+import GenericChartComponent from "../GenericChartComponent";
+import { getMouseCanvas } from "../GenericComponent";
 
 class GannFan extends Component {
 	constructor(props) {
@@ -18,14 +24,30 @@ class GannFan extends Component {
 		this.handleDrawFan = this.handleDrawFan.bind(this);
 		this.handleDragFan = this.handleDragFan.bind(this);
 		this.handleDragFanComplete = this.handleDragFanComplete.bind(this);
-		this.terminate = this.terminate.bind(this);
 
+		this.terminate = terminate.bind(this);
+		this.handleClick = handleClickInteractiveType("fans").bind(this);
+		this.saveNodeList = saveNodeList.bind(this);
+
+		this.nodes = [];
 		this.state = {};
 	}
-	terminate() {
+	componentWillMount() {
+		this.updateInteractiveToState(this.props.fans);
+	}
+	componentWillReceiveProps(nextProps) {
+		if (this.props.fans !== nextProps.fans) {
+			this.updateInteractiveToState(nextProps.fans);
+		}
+	}
+	updateInteractiveToState(fans) {
 		this.setState({
-			current: null,
-			override: null,
+			fans: fans.map(t => {
+				return {
+					...t,
+					selected: !!t.selected
+				};
+			}),
 		});
 	}
 	handleDragFan(index, newXYValue) {
@@ -38,18 +60,18 @@ class GannFan extends Component {
 	}
 	handleDragFanComplete() {
 		const { override } = this.state;
-		const { fans } = this.props;
+		const { fans } = this.state;
 		if (isDefined(override)) {
 			const { index, ...rest } = override;
 			const newfans = fans
 				.map((each, idx) => idx === index
-					? rest
+					? { ...rest, selected: true }
 					: each);
 			this.setState({
-				override: null
+				override: null,
+				fans: newfans,
 			}, () => {
 				this.props.onComplete(newfans);
-
 			});
 		}
 	}
@@ -84,18 +106,20 @@ class GannFan extends Component {
 		}
 	}
 	handleEnd() {
-		const { current } = this.state;
-		const { fans } = this.props;
+		const { fans, current } = this.state;
 
 		if (this.mouseMoved
 			&& isDefined(current)
 			&& isDefined(current.startXY)
 		) {
+			const newfans = [
+				...fans,
+				{ ...current, selected: true }
+			];
 			this.setState({
 				current: null,
+				fans: newfans
 			}, () => {
-				const newfans = fans
-					.concat(current);
 				this.props.onComplete(newfans);
 			});
 		}
@@ -103,11 +127,11 @@ class GannFan extends Component {
 	render() {
 		const { stroke, opacity, strokeWidth, fill, fillOpacity } = this.props;
 		const { fontFamily, fontSize, fontStroke } = this.props;
-		const { enabled, fans } = this.props;
+		const { enabled } = this.props;
 		const { currentPositionRadius, currentPositionStroke } = this.props;
 		const { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
 		const { hoverText } = this.props;
-		const { current, override } = this.state;
+		const { current, override, fans } = this.state;
 		const overrideIndex = isDefined(override) ? override.index : null;
 
 		const tempChannel = isDefined(current) && isDefined(current.endXY)
@@ -130,8 +154,8 @@ class GannFan extends Component {
 
 		return <g>
 			{fans.map((each, idx) => {
-				return <EachGannFan
-					key={idx}
+				return <EachGannFan key={idx}
+					ref={this.saveNodeList}
 					index={idx}
 					{...(idx === overrideIndex ? override : each)}
 					stroke={stroke}
@@ -161,6 +185,16 @@ class GannFan extends Component {
 				onClick={this.handleEnd}
 				onMouseMove={this.handleDrawFan}
 			/>
+			<GenericChartComponent
+
+				svgDraw={noop}
+				canvasToDraw={getMouseCanvas}
+				canvasDraw={noop}
+
+				onClick={this.handleClick}
+
+				drawOn={["mousemove", "pan", "drag"]}
+			/>
 		</g>;
 	}
 }
@@ -168,8 +202,11 @@ class GannFan extends Component {
 
 GannFan.propTypes = {
 	enabled: PropTypes.bool.isRequired,
+
 	onStart: PropTypes.func.isRequired,
 	onComplete: PropTypes.func.isRequired,
+	onSelect: PropTypes.func,
+
 	strokeWidth: PropTypes.number.isRequired,
 	fill: PropTypes.arrayOf(PropTypes.string).isRequired,
 
@@ -196,8 +233,10 @@ GannFan.defaultProps = {
 	opacity: 0.4,
 	fillOpacity: 0.2,
 	strokeWidth: 1,
+
 	onStart: noop,
 	onComplete: noop,
+	onSelect: noop,
 
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 10,

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 import { isDefined, noop } from "../../utils";
 import { getCurrentItem } from "../../utils/ChartDataUtil";
+import { saveNodeType, isHover } from "../utils";
 
 import ClickableCircle from "../components/ClickableCircle";
 import GannFan from "../components/GannFan";
@@ -17,18 +18,17 @@ class EachGannFan extends Component {
 
 		this.handleDragStart = this.handleDragStart.bind(this);
 		this.handleChannelDrag = this.handleChannelDrag.bind(this);
-		this.handleDragComplete = this.handleDragComplete.bind(this);
 
 		this.handleChannelHeightChange = this.handleChannelHeightChange.bind(this);
 
 		this.handleHover = this.handleHover.bind(this);
-		this.handleSelect = this.handleSelect.bind(this);
-		this.handleUnSelect = this.handleUnSelect.bind(this);
-
 		this.getEdgeCircle = this.getEdgeCircle.bind(this);
 
+		this.isHover = isHover.bind(this);
+		this.saveNodeType = saveNodeType.bind(this);
+		this.nodes = {};
+
 		this.state = {
-			selected: false,
 			hover: false,
 		};
 	}
@@ -36,20 +36,6 @@ class EachGannFan extends Component {
 		if (this.state.hover !== moreProps.hovering) {
 			this.setState({
 				hover: moreProps.hovering
-			});
-		}
-	}
-	handleSelect() {
-		if (!this.state.selected) {
-			this.setState({
-				selected: true
-			});
-		}
-	}
-	handleUnSelect() {
-		if (this.state.selected) {
-			this.setState({
-				selected: false
 			});
 		}
 	}
@@ -171,21 +157,13 @@ class EachGannFan extends Component {
 			dy: newDy,
 		});
 	}
-	handleDragComplete() {
+	getEdgeCircle({ xy, dragHandler, cursor, fill, edge }) {
+		const { hover } = this.state;
+		const { selected, edgeStroke, edgeStrokeWidth, r } = this.props;
 		const { onDragComplete } = this.props;
 
-		if (!this.state.selected) {
-			this.setState({
-				selected: true,
-			});
-		}
-		onDragComplete();
-	}
-	getEdgeCircle({ xy, dragHandler, cursor, fill }) {
-		const { selected, hover } = this.state;
-		const { edgeStroke, edgeStrokeWidth, r } = this.props;
-
 		return <ClickableCircle
+			ref={this.saveNodeType(edge)}
 			show={selected || hover}
 			cx={xy[0]}
 			cy={xy[1]}
@@ -198,15 +176,16 @@ class EachGannFan extends Component {
 
 			onDragStart={this.handleDragStart}
 			onDrag={dragHandler}
-			onDragComplete={this.handleDragComplete} />;
+			onDragComplete={onDragComplete} />;
 	}
 	render() {
 		const { startXY, endXY } = this.props;
 		const { interactive, edgeFill } = this.props;
 		const { stroke, strokeWidth, fill, opacity, fillOpacity } = this.props;
 		const { fontFamily, fontSize, fontStroke } = this.props;
-		const { hoverText } = this.props;
-		const { selected, hover } = this.state;
+		const { hoverText, selected } = this.props;
+		const { onDragComplete } = this.props;
+		const { hover } = this.state;
 		const { enable: hoverTextEnabled, ...restHoverTextProps } = hoverText;
 
 		const hoverHandler = interactive
@@ -219,24 +198,25 @@ class EachGannFan extends Component {
 					xy: startXY,
 					dragHandler: this.handleLine1Edge1Drag,
 					cursor: "react-stockcharts-move-cursor",
-					fill: edgeFill
+					fill: edgeFill,
+					edge: "edge1"
 				})}
 				{this.getEdgeCircle({
 					xy: endXY,
 					dragHandler: this.handleLine1Edge2Drag,
 					cursor: "react-stockcharts-move-cursor",
-					fill: edgeFill
+					fill: edgeFill,
+					edge: "edge2"
 				})}
 			</g>
 			: null;
 
 		return <g>
 			<GannFan
+				ref={this.saveNodeType("fan")}
 				selected={hover || selected}
 
 				{...hoverHandler}
-				onClickWhenHovering={this.handleSelect}
-				onClickOutside={this.handleUnSelect}
 
 				startXY={startXY}
 				endXY={endXY}
@@ -252,7 +232,7 @@ class EachGannFan extends Component {
 
 				onDragStart={this.handleDragStart}
 				onDrag={this.handleChannelDrag}
-				onDragComplete={this.handleDragComplete}
+				onDragComplete={onDragComplete}
 			/>
 			{line1Edge}
 			<HoverTextNearMouse
@@ -278,6 +258,7 @@ EachGannFan.propTypes = {
 	fontStroke: PropTypes.string.isRequired,
 
 	interactive: PropTypes.bool.isRequired,
+	selected: PropTypes.bool.isRequired,
 
 	r: PropTypes.number.isRequired,
 	edgeFill: PropTypes.string.isRequired,
@@ -293,6 +274,7 @@ EachGannFan.propTypes = {
 EachGannFan.defaultProps = {
 	yDisplayFormat: d => d.toFixed(2),
 	interactive: true,
+	selected: false,
 	edgeStroke: "#000000",
 	edgeFill: "#FFFFFF",
 	edgeStrokeWidth: 1,
