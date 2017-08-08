@@ -4,11 +4,17 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import { isDefined, isNotDefined, noop } from "../utils";
-
+import {
+	terminate,
+	saveNodeList,
+	handleClickInteractiveType,
+} from "./utils";
 import EachEquidistantChannel from "./hoc/EachEquidistantChannel";
 import { getSlope, getYIntercept } from "./components/StraightLine";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
 import HoverTextNearMouse from "./components/HoverTextNearMouse";
+import GenericChartComponent from "../GenericChartComponent";
+import { getMouseCanvas } from "../GenericComponent";
 
 class EquidistantChannel extends Component {
 	constructor(props) {
@@ -20,12 +26,31 @@ class EquidistantChannel extends Component {
 		this.handleDragChannel = this.handleDragChannel.bind(this);
 		this.handleDragChannelComplete = this.handleDragChannelComplete.bind(this);
 
-		this.state = {};
+		this.terminate = terminate.bind(this);
+		this.handleClick = handleClickInteractiveType("channels").bind(this);
+		this.saveNodeList = saveNodeList.bind(this);
+
+		this.nodes = [];
+		this.state = {
+			channels: []
+		};
 	}
-	terminate() {
+	componentWillMount() {
+		this.updateInteractiveToState(this.props.channels);
+	}
+	componentWillReceiveProps(nextProps) {
+		if (this.props.channels !== nextProps.channels) {
+			this.updateInteractiveToState(nextProps.channels);
+		}
+	}
+	updateInteractiveToState(channels) {
 		this.setState({
-			current: null,
-			override: null,
+			channels: channels.map(t => {
+				return {
+					...t,
+					selected: !!t.selected
+				};
+			}),
 		});
 	}
 	handleDragChannel(index, newXYValue) {
@@ -43,13 +68,13 @@ class EquidistantChannel extends Component {
 			const { index, ...rest } = override;
 			const newChannels = channels
 				.map((each, idx) => idx === index
-					? rest
+					? { ...rest, selected: true }
 					: each);
 			this.setState({
-				override: null
+				override: null,
+				channels: newChannels,
 			}, () => {
 				this.props.onComplete(newChannels);
-
 			});
 		}
 	}
@@ -113,11 +138,13 @@ class EquidistantChannel extends Component {
 					}
 				});
 			} else {
+				const newChannels = channels
+					.concat({ ...current, selected: true });
 				this.setState({
 					current: null,
+					channels: newChannels,
 				}, () => {
-					const newChannels = channels
-						.concat(current);
+
 					this.props.onComplete(newChannels);
 				});
 			}
@@ -125,11 +152,12 @@ class EquidistantChannel extends Component {
 	}
 	render() {
 		const { stroke, opacity, strokeWidth, fill } = this.props;
-		const { enabled, channels } = this.props;
+		const { enabled } = this.props;
 		const { currentPositionRadius, currentPositionStroke } = this.props;
 		const { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
 		const { hoverText } = this.props;
 		const { current, override } = this.state;
+		const { channels } = this.state;
 		const overrideIndex = isDefined(override) ? override.index : null;
 
 		const tempChannel = isDefined(current) && isDefined(current.endXY)
@@ -143,11 +171,13 @@ class EquidistantChannel extends Component {
 				opacity={opacity} />
 			: null;
 
+		console.log(channels)
 		return <g>
 			{channels.map((each, idx) => {
-				return <EachEquidistantChannel
-					key={idx}
+				return <EachEquidistantChannel key={idx}
+					ref={this.saveNodeList}
 					index={idx}
+					selected={each.selected}
 					{...(idx === overrideIndex ? override : each)}
 					stroke={stroke}
 					strokeWidth={strokeWidth}
@@ -169,6 +199,16 @@ class EquidistantChannel extends Component {
 				onMouseDown={this.handleStart}
 				onClick={this.handleEnd}
 				onMouseMove={this.handleDrawChannel} />
+			<GenericChartComponent
+
+				svgDraw={noop}
+				canvasToDraw={getMouseCanvas}
+				canvasDraw={noop}
+
+				onClick={this.handleClick}
+
+				drawOn={["mousemove", "pan", "drag"]}
+			/>
 		</g>;
 	}
 }
@@ -178,6 +218,7 @@ EquidistantChannel.propTypes = {
 	enabled: PropTypes.bool.isRequired,
 	onStart: PropTypes.func.isRequired,
 	onComplete: PropTypes.func.isRequired,
+	onSelect: PropTypes.func.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
 	fill: PropTypes.string,
 	currentPositionStroke: PropTypes.string,
@@ -198,6 +239,7 @@ EquidistantChannel.defaultProps = {
 	strokeWidth: 1,
 	onStart: noop,
 	onComplete: noop,
+	onSelect: noop,
 	currentPositionStroke: "#000000",
 	currentPositionOpacity: 1,
 	currentPositionStrokeWidth: 3,

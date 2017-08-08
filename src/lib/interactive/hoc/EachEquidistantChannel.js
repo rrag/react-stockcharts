@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 import { isDefined, noop } from "../../utils";
 import { getCurrentItem } from "../../utils/ChartDataUtil";
+import { saveNodeType, isHover } from "../utils";
 
 import ClickableCircle from "../components/ClickableCircle";
 import ChannelWithArea from "../components/ChannelWithArea";
@@ -17,18 +18,17 @@ class EachEquidistantChannel extends Component {
 
 		this.handleDragStart = this.handleDragStart.bind(this);
 		this.handleChannelDrag = this.handleChannelDrag.bind(this);
-		this.handleDragComplete = this.handleDragComplete.bind(this);
 
 		this.handleChannelHeightChange = this.handleChannelHeightChange.bind(this);
 
-		this.handleHover = this.handleHover.bind(this);
-		this.handleSelect = this.handleSelect.bind(this);
-		this.handleUnSelect = this.handleUnSelect.bind(this);
-
 		this.getEdgeCircle = this.getEdgeCircle.bind(this);
+		this.handleHover = this.handleHover.bind(this);
+
+		this.isHover = isHover.bind(this);
+		this.saveNodeType = saveNodeType.bind(this);
+		this.nodes = {};
 
 		this.state = {
-			selected: false,
 			hover: false,
 		};
 	}
@@ -36,20 +36,6 @@ class EachEquidistantChannel extends Component {
 		if (this.state.hover !== moreProps.hovering) {
 			this.setState({
 				hover: moreProps.hovering
-			});
-		}
-	}
-	handleSelect() {
-		if (!this.state.selected) {
-			this.setState({
-				selected: true
-			});
-		}
-	}
-	handleUnSelect() {
-		if (this.state.selected) {
-			this.setState({
-				selected: false
 			});
 		}
 	}
@@ -171,21 +157,15 @@ class EachEquidistantChannel extends Component {
 			dy: newDy,
 		});
 	}
-	handleDragComplete() {
+	getEdgeCircle({ xy, dragHandler, cursor, fill, edge }) {
+		const { hover } = this.state;
+		const { edgeStroke, edgeStrokeWidth, r } = this.props;
+		const { selected } = this.props;
 		const { onDragComplete } = this.props;
 
-		if (!this.state.selected) {
-			this.setState({
-				selected: true,
-			});
-		}
-		onDragComplete();
-	}
-	getEdgeCircle({ xy, dragHandler, cursor, fill }) {
-		const { selected, hover } = this.state;
-		const { edgeStroke, edgeStrokeWidth, r } = this.props;
-
 		return <ClickableCircle
+			ref={this.saveNodeType(edge)}
+
 			show={selected || hover}
 			cx={xy[0]}
 			cy={xy[1]}
@@ -198,13 +178,15 @@ class EachEquidistantChannel extends Component {
 
 			onDragStart={this.handleDragStart}
 			onDrag={dragHandler}
-			onDragComplete={this.handleDragComplete} />;
+			onDragComplete={onDragComplete} />;
 	}
 	render() {
 		const { startXY, endXY, dy } = this.props;
 		const { interactive, edgeFill, hoverText } = this.props;
 		const { stroke, strokeWidth, fill, opacity } = this.props;
-		const { selected, hover } = this.state;
+		const { selected } = this.props;
+		const { onDragComplete } = this.props;
+		const { hover } = this.state;
 		const { enable: hoverTextEnabled, ...restHoverTextProps } = hoverText;
 
 		const hoverHandler = interactive
@@ -217,13 +199,15 @@ class EachEquidistantChannel extends Component {
 					xy: startXY,
 					dragHandler: this.handleLine1Edge1Drag,
 					cursor: "react-stockcharts-move-cursor",
-					fill: edgeFill
+					fill: edgeFill,
+					edge: "line1edge1",
 				})}
 				{this.getEdgeCircle({
 					xy: endXY,
 					dragHandler: this.handleLine1Edge2Drag,
 					cursor: "react-stockcharts-move-cursor",
-					fill: edgeFill
+					fill: edgeFill,
+					edge: "line1edge2",
 				})}
 			</g>
 			: null;
@@ -233,24 +217,25 @@ class EachEquidistantChannel extends Component {
 					xy: [startXY[0], startXY[1] + dy],
 					dragHandler: this.handleChannelHeightChange,
 					cursor: "react-stockcharts-ns-resize-cursor",
-					fill: "#250B98"
+					fill: "#250B98",
+					edge: "line2edge1",
 				})}
 				{this.getEdgeCircle({
 					xy: [endXY[0], endXY[1] + dy],
 					dragHandler: this.handleChannelHeightChange,
 					cursor: "react-stockcharts-ns-resize-cursor",
-					fill: "#250B98"
+					fill: "#250B98",
+					edge: "line2edge2",
 				})}
 			</g>
 			: null;
 
 		return <g>
 			<ChannelWithArea
+				ref={this.saveNodeType("channel")}
 				selected={selected || hover}
 
 				{...hoverHandler}
-				onClickWhenHovering={this.handleSelect}
-				onClickOutside={this.handleUnSelect}
 
 				startXY={startXY}
 				endXY={endXY}
@@ -263,7 +248,7 @@ class EachEquidistantChannel extends Component {
 
 				onDragStart={this.handleDragStart}
 				onDrag={this.handleChannelDrag}
-				onDragComplete={this.handleDragComplete}
+				onDragComplete={onDragComplete}
 			/>
 			{line1Edge}
 			{line2Edge}
@@ -285,6 +270,7 @@ EachEquidistantChannel.propTypes = {
 	opacity: PropTypes.number.isRequired,
 
 	interactive: PropTypes.bool.isRequired,
+	selected: PropTypes.bool.isRequired,
 
 	r: PropTypes.number.isRequired,
 	edgeFill: PropTypes.string.isRequired,
@@ -300,6 +286,7 @@ EachEquidistantChannel.propTypes = {
 EachEquidistantChannel.defaultProps = {
 	yDisplayFormat: d => d.toFixed(2),
 	interactive: true,
+	selected: false,
 	edgeStroke: "#000000",
 	edgeFill: "#FFFFFF",
 	edgeStrokeWidth: 1,
