@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import { noop, mapObject } from "../../utils";
+import { noop } from "../../utils";
+import { saveNodeType, isHover } from "../utils";
 import { getCurrentItem } from "../../utils/ChartDataUtil";
 
 import StraightLine from "../components/StraightLine";
@@ -19,25 +20,14 @@ class EachTrendLine extends Component {
 		this.handleDragComplete = this.handleDragComplete.bind(this);
 
 		this.handleHover = this.handleHover.bind(this);
-		this.isHover = this.isHover.bind(this);
 
-		this.saveNodeType = this.saveNodeType.bind(this);
+		this.isHover = isHover.bind(this);
+		this.saveNodeType = saveNodeType.bind(this);
 		this.nodes = {};
+
 		this.state = {
 			hover: false,
 		};
-	}
-	saveNodeType(type) {
-		return node => {
-			this.nodes[type] = node;
-		};
-	}
-	isHover(moreProps) {
-		const hovering = mapObject(this.nodes, node => node.isHover(moreProps))
-			.reduce((a, b) => {
-				return a || b;
-			});
-		return hovering;
 	}
 	handleLineDragStart() {
 		const {

@@ -121,7 +121,8 @@ class CandlestickChart extends React.Component {
 		console.log(keyCode);
 		switch (keyCode) {
 		case 27: { // ESC
-			this.node.terminate();
+			this.node_1.terminate();
+			this.node_3.terminate();
 			this.setState({
 				brushEnabled: false,
 			});

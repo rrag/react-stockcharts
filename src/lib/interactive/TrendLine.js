@@ -3,9 +3,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import { isDefined, isNotDefined, noop, mapObject } from "../utils";
+import { isDefined, isNotDefined, noop } from "../utils";
 
-import { getValueFromOverride } from "./utils";
+import {
+	getValueFromOverride,
+	terminate,
+	saveNodeList,
+	handleClickInteractiveType,
+} from "./utils";
 import GenericChartComponent from "../GenericChartComponent";
 import { getMouseCanvas } from "../GenericComponent";
 
@@ -14,19 +19,20 @@ import StraightLine from "./components/StraightLine";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
 import HoverTextNearMouse from "./components/HoverTextNearMouse";
 
-
 class TrendLine extends Component {
 	constructor(props) {
 		super(props);
 
-		this.handleClick = this.handleClick.bind(this);
 		this.handleStart = this.handleStart.bind(this);
 		this.handleEnd = this.handleEnd.bind(this);
 		this.handleDrawLine = this.handleDrawLine.bind(this);
 		this.handleDragLine = this.handleDragLine.bind(this);
 		this.handleDragLineComplete = this.handleDragLineComplete.bind(this);
-		this.terminate = this.terminate.bind(this);
-		this.saveNodeList = this.saveNodeList.bind(this);
+
+		this.terminate = terminate.bind(this);
+		this.handleClick = handleClickInteractiveType("trends").bind(this);
+		this.saveNodeList = saveNodeList.bind(this);
+
 		this.updateInteractiveToState = this.updateInteractiveToState.bind(this);
 
 		this.state = {
@@ -51,39 +57,6 @@ class TrendLine extends Component {
 				};
 			}),
 		});
-	}
-	terminate() {
-		this.setState({
-			current: null,
-			override: null,
-		});
-	}
-	saveNodeList(node) {
-		if (isDefined(node)) {
-			this.nodes[node.props.index] = node;
-		}
-	}
-	handleClick(moreProps, e) {
-		e.preventDefault();
-
-		const { onSelect } = this.props;
-		if (isDefined(this.nodes)) {
-			const selecedNodes = this.nodes
-				.map(node => node.isHover(moreProps));
-			const newTrends = this.state.trends.map((t, idx) => {
-				return {
-					...t,
-					selected: selecedNodes[idx]
-				};
-			});
-			this.setState({
-				trends: newTrends
-			});
-
-			if (isDefined(onSelect)) {
-				onSelect(newTrends);
-			}
-		}
 	}
 	handleDragLine(index, newXYValue) {
 		this.setState({
@@ -163,12 +136,6 @@ class TrendLine extends Component {
 				current: null,
 				trends: newTrends
 			}, () => {
-				/* if (isNotDefined(onSelect)) {
-					const { selecedNodes } = this.state;
-					this.setState({
-						selecedNodes: 
-					});
-				} */
 				this.props.onComplete(newTrends);
 			});
 		}
@@ -196,9 +163,8 @@ class TrendLine extends Component {
 		return <g>
 			{trends.map((each, idx) => {
 
-				return <EachTrendLine
+				return <EachTrendLine key={idx}
 					ref={this.saveNodeList}
-					key={idx}
 					index={idx}
 					type={type}
 					selected={each.selected}
@@ -253,7 +219,7 @@ TrendLine.propTypes = {
 
 	onStart: PropTypes.func.isRequired,
 	onComplete: PropTypes.func.isRequired,
-	onSelect: PropTypes.func, // if present do not use 
+	onSelect: PropTypes.func,
 
 	strokeWidth: PropTypes.number.isRequired,
 	currentPositionStroke: PropTypes.string,
@@ -282,7 +248,7 @@ TrendLine.defaultProps = {
 
 	onStart: noop,
 	onComplete: noop,
-	// onSelect: noop,
+	onSelect: noop,
 
 	shouldDisableSnap: e => (e.button === 2 || e.shiftKey),
 	currentPositionStroke: "#000000",
