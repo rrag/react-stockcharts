@@ -230,6 +230,8 @@ EachTrendLine.propTypes = {
 	opacity: PropTypes.number.isRequired,
 	defaultClassName: PropTypes.string,
 
+	selected: PropTypes.bool,
+
 	edgeStrokeWidth: PropTypes.number.isRequired,
 	edgeStroke: PropTypes.string.isRequired,
 	edgeInteractiveCursor: PropTypes.string.isRequired,
@@ -245,6 +247,8 @@ EachTrendLine.defaultProps = {
 	onDragComplete: noop,
 	onSelect: noop,
 	onUnSelect: noop,
+
+	selected: false,
 
 	edgeStroke: "#000000",
 	edgeFill: "#FFFFFF",

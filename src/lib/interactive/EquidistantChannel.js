@@ -171,7 +171,7 @@ class EquidistantChannel extends Component {
 				opacity={opacity} />
 			: null;
 
-		console.log(channels)
+		console.log(channels);
 		return <g>
 			{channels.map((each, idx) => {
 				return <EachEquidistantChannel key={idx}

@@ -8,7 +8,6 @@ import {
 	noop,
 	getStrokeDasharray,
 	hexToRGBA,
-	yes,
 } from "../utils";
 import GenericChartComponent from "../GenericChartComponent";
 import { getMouseCanvas } from "../GenericComponent";
