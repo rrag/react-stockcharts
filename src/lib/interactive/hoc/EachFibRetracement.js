@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import { isDefined, head, last, noop } from "../../utils";
+import { head, last, noop } from "../../utils";
 import { getCurrentItem } from "../../utils/ChartDataUtil";
+import { saveNodeType, isHover } from "../utils";
 
 import { getNewXY } from "./EachTrendLine";
 import StraightLine, { generateLine } from "../components/StraightLine";
@@ -22,15 +23,14 @@ class EachFibRetracement extends Component {
 		this.handleLineMove = this.handleLineMove.bind(this);
 
 		this.handleLineDragStart = this.handleLineDragStart.bind(this);
-		this.handleDragComplete = this.handleDragComplete.bind(this);
 
 		this.handleHover = this.handleHover.bind(this);
-		this.handleSelect = this.handleSelect.bind(this);
-		this.handleUnSelect = this.handleUnSelect.bind(this);
 
-		this.unselectCounter = 0;
+		this.isHover = isHover.bind(this);
+		this.saveNodeType = saveNodeType.bind(this);
+		this.nodes = {};
+
 		this.state = {
-			selected: false,
 			hover: false,
 		};
 	}
@@ -40,26 +40,6 @@ class EachFibRetracement extends Component {
 				hover: moreProps.hovering
 			});
 		}
-	}
-	handleSelect() {
-		this.setState({
-			selected: true
-		});
-	}
-	handleUnSelect() {
-		this.unselectCounter++;
-		if (this.unselectCounter === 6) {
-			this.setState({
-				selected: false
-			});
-		}
-		if (isDefined(this.timeoutId)) {
-			clearTimeout(this.timeoutId);
-		}
-
-		this.timeoutId = setTimeout(() => {
-			this.unselectCounter = 0;
-		}, 100);
 	}
 	handleLineDragStart() {
 		const {
@@ -160,23 +140,15 @@ class EachFibRetracement extends Component {
 			y2,
 		});
 	}
-	handleDragComplete() {
-		const { onDragComplete } = this.props;
-		if (!this.state.selected) {
-			this.setState({
-				selected: true,
-			});
-		}
-		onDragComplete();
-	}
 	render() {
 		const { x1, x2, y1, y2 } = this.props;
 		const { interactive, yDisplayFormat, type } = this.props;
 		const { stroke, strokeWidth, opacity } = this.props;
 		const { fontFamily, fontSize, fontStroke } = this.props;
 		const { edgeStroke, edgeFill, nsEdgeFill, edgeStrokeWidth, r } = this.props;
-		const { hoverText } = this.props;
-		const { selected, hover } = this.state;
+		const { hoverText, selected } = this.props;
+		const { hover } = this.state;
+		const { onDragComplete } = this.props;
 		const lines = helper({ x1, x2, y1, y2 });
 		const { enable: hoverTextEnabled, ...restHoverTextProps } = hoverText;
 
@@ -232,11 +204,10 @@ class EachFibRetracement extends Component {
 					: {};
 				return <g key={j}>
 					<StraightLine
+						ref={this.saveNodeType(`line_${j}`)}
 						selected={selected || hover}
 
 						{...hoverHandler}
-						onClickWhenHovering={this.handleSelect}
-						onClickOutside={this.handleUnSelect}
 
 						type={lineType}
 						x1Value={line.x1}
@@ -250,7 +221,7 @@ class EachFibRetracement extends Component {
 
 						onDragStart={this.handleLineDragStart}
 						onDrag={dragHandler}
-						onDragComplete={this.handleDragComplete}
+						onDragComplete={onDragComplete}
 					/>
 					<Text
 						selected={selected}
@@ -259,6 +230,7 @@ class EachFibRetracement extends Component {
 						fontSize={fontSize}
 						fill={fontStroke}>{text}</Text>
 					<ClickableCircle
+						ref={this.saveNodeType("edge1")}
 						show={selected || hover}
 						cx={line.x1}
 						cy={line.y}
@@ -269,8 +241,9 @@ class EachFibRetracement extends Component {
 						opacity={1}
 						interactiveCursorClass={interactiveEdgeCursorClass}
 						onDrag={edge1DragHandler}
-						onDragComplete={this.handleDragComplete} />
+						onDragComplete={onDragComplete} />
 					<ClickableCircle
+						ref={this.saveNodeType("edge2")}
 						show={selected || hover}
 						cx={line.x2}
 						cy={line.y}
@@ -281,7 +254,7 @@ class EachFibRetracement extends Component {
 						opacity={1}
 						interactiveCursorClass={interactiveEdgeCursorClass}
 						onDrag={edge2DragHandler}
-						onDragComplete={this.handleDragComplete} />
+						onDragComplete={onDragComplete} />
 					<HoverTextNearMouse
 						show={hoverTextEnabled && hover && !selected}
 						{...restHoverTextProps} />
@@ -313,6 +286,7 @@ EachFibRetracement.propTypes = {
 
 	yDisplayFormat: PropTypes.func.isRequired,
 	type: PropTypes.string.isRequired,
+	selected: PropTypes.bool.isRequired,
 
 	stroke: PropTypes.string.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
@@ -344,6 +318,8 @@ EachFibRetracement.defaultProps = {
 	nsEdgeFill: "#000000",
 	edgeStrokeWidth: 1,
 	r: 5,
+	selected: false,
+
 	onDrag: noop,
 	onDragComplete: noop,
 

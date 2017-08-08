@@ -57,19 +57,21 @@ class CandleStickChartWithSAR extends React.Component {
 
 		return (
 			<ChartCanvas height={450}
-					width={width}
-					ratio={ratio}
-					margin={{ left: 50, right: 90, top: 10, bottom: 30 }}
-					type={type}
-					seriesName="MSFT"
-					data={data}
-					xScale={xScale}
-					xAccessor={xAccessor}
-					displayXAccessor={displayXAccessor}
-					xExtents={xExtents}>
+				width={width}
+				ratio={ratio}
+				margin={{ left: 50, right: 90, top: 10, bottom: 30 }}
+				type={type}
+				seriesName="MSFT"
+				data={data}
+				xScale={xScale}
+				xAccessor={xAccessor}
+				displayXAccessor={displayXAccessor}
+				xExtents={xExtents}
+			>
 				<Chart id={1}
-						yExtents={[d => [d.high, d.low, d.sar]]}
-						padding={{ top: 10, bottom: 10 }}>
+					yExtents={[d => [d.high, d.low, d.sar]]}
+					padding={{ top: 10, bottom: 10 }}
+				>
 
 					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="right" orient="right" ticks={5} />

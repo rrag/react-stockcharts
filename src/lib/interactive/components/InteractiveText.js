@@ -85,7 +85,7 @@ class InteractiveText extends Component {
 	}
 	render() {
 		const { selected, interactiveCursorClass } = this.props;
-		const { onHover, onUnHover, onClickWhenHovering, onClickOutside } = this.props;
+		const { onHover, onUnHover } = this.props;
 		const { onDragStart, onDrag, onDragComplete } = this.props;
 
 		return <GenericChartComponent
@@ -98,8 +98,6 @@ class InteractiveText extends Component {
 			interactiveCursorClass={interactiveCursorClass}
 			selected={selected}
 
-			onClickWhenHovering={onClickWhenHovering}
-			onClickOutside={onClickOutside}
 			onDragStart={onDragStart}
 			onDrag={onDrag}
 			onDragComplete={onDragComplete}
@@ -148,8 +146,6 @@ InteractiveText.propTypes = {
 	onDragStart: PropTypes.func.isRequired,
 	onDrag: PropTypes.func.isRequired,
 	onDragComplete: PropTypes.func.isRequired,
-	onClickWhenHovering: PropTypes.func.isRequired,
-	onClickOutside: PropTypes.func.isRequired,
 	onHover: PropTypes.func,
 	onUnHover: PropTypes.func,
 
@@ -164,9 +160,6 @@ InteractiveText.defaultProps = {
 	onDragStart: noop,
 	onDrag: noop,
 	onDragComplete: noop,
-
-	onClickWhenHovering: noop,
-	onClickOutside: noop,
 
 	type: "SD", // standard dev
 	fontWeight: "normal", // standard dev

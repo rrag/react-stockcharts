@@ -5,8 +5,12 @@ import PropTypes from "prop-types";
 
 import { isDefined, noop } from "../utils";
 
-import { getValueFromOverride } from "./utils";
-
+import {
+	getValueFromOverride,
+	terminate,
+	saveNodeList,
+	handleClickInteractiveType,
+} from "./utils";
 import EachText from "./hoc/EachText";
 import HoverTextNearMouse from "./components/HoverTextNearMouse";
 import GenericChartComponent from "../GenericChartComponent";
@@ -19,13 +23,29 @@ class InteractiveText extends Component {
 		this.handleDraw = this.handleDraw.bind(this);
 		this.handleDrag = this.handleDrag.bind(this);
 		this.handleDragComplete = this.handleDragComplete.bind(this);
-		this.terminate = this.terminate.bind(this);
+		this.terminate = terminate.bind(this);
+		this.handleClick = handleClickInteractiveType("textList").bind(this);
+		this.saveNodeList = saveNodeList.bind(this);
 
+		this.nodes = [];
 		this.state = {};
 	}
-	terminate() {
+	componentWillMount() {
+		this.updateInteractiveToState(this.props.textList);
+	}
+	componentWillReceiveProps(nextProps) {
+		if (this.props.textList !== nextProps.textList) {
+			this.updateInteractiveToState(nextProps.textList);
+		}
+	}
+	updateInteractiveToState(textList) {
 		this.setState({
-			override: null,
+			textList: textList.map(t => {
+				return {
+					...t,
+					selected: !!t.selected
+				};
+			}),
 		});
 	}
 	handleDrag(index, position) {
@@ -39,18 +59,20 @@ class InteractiveText extends Component {
 	handleDragComplete() {
 		const { override } = this.state;
 		if (isDefined(override)) {
-			const { textList } = this.props;
-			const newTrends = textList
+			const { textList } = this.state;
+			const newTextList = textList
 				.map((each, idx) => idx === override.index
 					? {
 						...each,
 						position: override.position,
+						selected: true,
 					}
 					: each);
 			this.setState({
-				override: null
+				override: null,
+				textList: newTextList,
 			}, () => {
-				this.props.onDragComplete(newTrends);
+				this.props.onDragComplete(newTextList);
 			});
 		}
 	}
@@ -66,7 +88,7 @@ class InteractiveText extends Component {
 			});
 		}
 	}
-	handleDraw(moreProps) {
+	handleDraw(moreProps, e) {
 		const { enabled } = this.props;
 		if (enabled) {
 			const {
@@ -85,21 +107,24 @@ class InteractiveText extends Component {
 				position: xyValue,
 			};
 			onChoosePosition(newText);
+		} else {
+			this.handleClick(moreProps, e);
 		}
 	}
 	render() {
-		const { textList, defaultText } = this.props;
-		const { override } = this.state;
+		const { defaultText } = this.props;
+		const { textList, override } = this.state;
 		return <g>
 			{textList.map((each, idx) => {
 				const props = {
 					...defaultText,
 					...each,
 				};
-				return <EachText
-					key={idx}
+				return <EachText key={idx}
+					ref={this.saveNodeList}
 					index={idx}
 					{...props}
+					selected={each.selected}
 					position={getValueFromOverride(override, idx, "position", each.position)}
 
 					onDrag={this.handleDrag}
@@ -124,6 +149,7 @@ class InteractiveText extends Component {
 InteractiveText.propTypes = {
 	onChoosePosition: PropTypes.func.isRequired,
 	onDragComplete: PropTypes.func.isRequired,
+	onSelect: PropTypes.func,
 
 	defaultText: PropTypes.shape({
 		bgFill: PropTypes.string.isRequired,
@@ -142,6 +168,7 @@ InteractiveText.propTypes = {
 InteractiveText.defaultProps = {
 	onChoosePosition: noop,
 	onDragComplete: noop,
+	onSelect: noop,
 
 	defaultText: {
 		bgFill: "#9E7523",

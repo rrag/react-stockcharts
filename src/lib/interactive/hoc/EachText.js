@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 import { noop } from "../../utils";
 import { getCurrentItem } from "../../utils/ChartDataUtil";
+import { saveNodeType, isHover } from "../utils";
 
 import HoverTextNearMouse from "../components/HoverTextNearMouse";
 import InteractiveText from "../components/InteractiveText";
@@ -12,29 +13,17 @@ class EachText extends Component {
 		super(props);
 
 		this.handleHover = this.handleHover.bind(this);
-		this.handleSelect = this.handleSelect.bind(this);
-		this.handleUnSelect = this.handleUnSelect.bind(this);
 
 		this.handleDragStart = this.handleDragStart.bind(this);
 		this.handleDrag = this.handleDrag.bind(this);
-		this.handleDragComplete = this.handleDragComplete.bind(this);
+
+		this.isHover = isHover.bind(this);
+		this.saveNodeType = saveNodeType.bind(this);
+		this.nodes = {};
 
 		this.state = {
-			selected: false,
 			hover: false,
 		};
-	}
-	handleSelect() {
-		this.setState({
-			selected: !this.state.selected
-		});
-	}
-	handleUnSelect() {
-		if (this.state.selected) {
-			this.setState({
-				selected: false
-			});
-		}
 	}
 	handleDragStart() {
 		const {
@@ -56,16 +45,6 @@ class EachText extends Component {
 
 		onDrag(index, xyValue);
 	}
-	handleDragComplete() {
-		const { onDragComplete } = this.props;
-
-		if (!this.state.selected) {
-			this.setState({
-				selected: true,
-			});
-		}
-		onDragComplete();
-	}
 	handleHover(moreProps) {
 		if (this.state.hover !== moreProps.hovering) {
 			this.setState({
@@ -83,8 +62,10 @@ class EachText extends Component {
 			fontSize,
 			text,
 			hoverText,
+			selected,
+			onDragComplete,
 		} = this.props;
-		const { selected, hover } = this.state;
+		const { hover } = this.state;
 
 		const hoverHandler = {
 			onHover: this.handleHover,
@@ -95,15 +76,14 @@ class EachText extends Component {
 
 		return <g>
 			<InteractiveText
+				ref={this.saveNodeType("text")}
 				selected={selected || hover}
 				interactiveCursorClass="react-stockcharts-move-cursor"
 				{...hoverHandler}
-				onClickWhenHovering={this.handleSelect}
-				onClickOutside={this.handleUnSelect}
 
 				onDragStart={this.handleDragStart}
 				onDrag={this.handleDrag}
-				onDragComplete={this.handleDragComplete}
+				onDragComplete={onDragComplete}
 
 				position={position}
 				bgFill={bgFill}
@@ -140,6 +120,7 @@ EachText.propTypes = {
 	fontFamily: PropTypes.string.isRequired,
 	fontSize: PropTypes.number.isRequired,
 	text: PropTypes.string.isRequired,
+	selected: PropTypes.bool.isRequired,
 
 	onDrag: PropTypes.func.isRequired,
 	onDragComplete: PropTypes.func.isRequired,
@@ -156,7 +137,7 @@ EachText.defaultProps = {
 	r: 5,
 	strokeWidth: 1,
 	opacity: 1,
-	interactive: true,
+	selected: false,
 	fill: "#8AAFE2",
 	hoverText: {
 		...HoverTextNearMouse.defaultProps,

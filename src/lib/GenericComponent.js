@@ -108,10 +108,10 @@ class GenericComponent extends Component {
 		case "click": {
 			const moreProps = this.getMoreProps();
 			if (this.moreProps.hovering) {
-				console.error("TODO use this only for SAR, Line series")
-				// this.props.onClickWhenHovering(moreProps, e);
+				// console.error("TODO use this only for SAR, Line series")
+				this.props.onClickWhenHover(moreProps, e);
 			} else {
-				// this.props.onClickOutside(moreProps, e);
+				this.props.onClickOutside(moreProps, e);
 			}
 			if (this.props.onClick) {
 				this.props.onClick(moreProps, e);
@@ -408,7 +408,7 @@ GenericComponent.propTypes = {
 	isHover: PropTypes.func,
 
 	onClick: PropTypes.func,
-	onClickWhenHovering: PropTypes.func,
+	onClickWhenHover: PropTypes.func,
 	onClickOutside: PropTypes.func,
 
 	onPan: PropTypes.func,
@@ -438,7 +438,7 @@ GenericComponent.defaultProps = {
 	selected: false,
 	disablePan: false,
 
-	onClickWhenHovering: noop,
+	onClickWhenHover: noop,
 	onClickOutside: noop,
 	onDragStart: noop,
 	onMouseMove: noop,
