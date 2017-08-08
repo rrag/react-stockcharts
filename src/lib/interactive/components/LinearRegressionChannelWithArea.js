@@ -107,7 +107,7 @@ class LinearRegressionChannelWithArea extends Component {
 		);
 	}
 	render() {
-		const { selected, onClickWhenHovering, onClickOutside, interactiveCursorClass } = this.props;
+		const { selected, interactiveCursorClass } = this.props;
 		const { onHover, onUnHover } = this.props;
 
 
@@ -121,8 +121,6 @@ class LinearRegressionChannelWithArea extends Component {
 			interactiveCursorClass={interactiveCursorClass}
 			selected={selected}
 
-			onClickWhenHovering={onClickWhenHovering}
-			onClickOutside={onClickOutside}
 			onHover={onHover}
 			onUnHover={onUnHover}
 
@@ -218,8 +216,7 @@ LinearRegressionChannelWithArea.propTypes = {
 	onDragStart: PropTypes.func.isRequired,
 	onDrag: PropTypes.func.isRequired,
 	onDragComplete: PropTypes.func.isRequired,
-	onClickWhenHovering: PropTypes.func.isRequired,
-	onClickOutside: PropTypes.func.isRequired,
+
 	onHover: PropTypes.func,
 	onUnHover: PropTypes.func,
 
@@ -233,9 +230,6 @@ LinearRegressionChannelWithArea.defaultProps = {
 	onDragStart: noop,
 	onDrag: noop,
 	onDragComplete: noop,
-
-	onClickWhenHovering: noop,
-	onClickOutside: noop,
 
 	type: "SD", // standard dev
 

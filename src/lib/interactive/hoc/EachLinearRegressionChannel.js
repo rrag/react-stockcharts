@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 import { noop } from "../../utils";
 import { getCurrentItem } from "../../utils/ChartDataUtil";
+import { saveNodeType, isHover } from "../utils";
 
 import HoverTextNearMouse from "../components/HoverTextNearMouse";
 import {
@@ -16,32 +17,19 @@ import ClickableCircle from "../components/ClickableCircle";
 class EachLinearRegressionChannel extends Component {
 	constructor(props) {
 		super(props);
-		this.handleSelect = this.handleSelect.bind(this);
-		this.handleUnSelect = this.handleUnSelect.bind(this);
 
 		this.handleEdge1Drag = this.handleEdge1Drag.bind(this);
 		this.handleEdge2Drag = this.handleEdge2Drag.bind(this);
 
-		this.handleDragComplete = this.handleDragComplete.bind(this);
-
 		this.handleHover = this.handleHover.bind(this);
 
+		this.isHover = isHover.bind(this);
+		this.saveNodeType = saveNodeType.bind(this);
+		this.nodes = {};
+
 		this.state = {
-			selected: false,
 			hover: false,
 		};
-	}
-	handleSelect() {
-		this.setState({
-			selected: !this.state.selected
-		});
-	}
-	handleUnSelect() {
-		if (this.state.selected) {
-			this.setState({
-				selected: false
-			});
-		}
 	}
 	handleEdge1Drag(moreProps) {
 		const { index, onDrag, snapTo } = this.props;
@@ -69,16 +57,6 @@ class EachLinearRegressionChannel extends Component {
 			x2Value,
 		});
 	}
-	handleDragComplete() {
-		const { onDragComplete } = this.props;
-
-		if (!this.state.selected) {
-			this.setState({
-				selected: true,
-			});
-		}
-		onDragComplete();
-	}
 	handleHover(moreProps) {
 		if (this.state.hover !== moreProps.hovering) {
 			this.setState({
@@ -101,8 +79,10 @@ class EachLinearRegressionChannel extends Component {
 			edgeInteractiveCursor,
 			hoverText,
 			interactive,
+			selected,
+			onDragComplete,
 		} = this.props;
-		const { selected, hover } = this.state;
+		const { hover } = this.state;
 
 		const hoverHandler = interactive
 			? { onHover: this.handleHover, onUnHover: this.handleHover }
@@ -112,10 +92,10 @@ class EachLinearRegressionChannel extends Component {
 		// console.log("SELECTED ->", selected);
 		return <g>
 			<LinearRegressionChannelWithArea
+				ref={this.saveNodeType("area")}
 				selected={selected || hover}
 				{...hoverHandler}
-				onClickWhenHovering={this.handleSelect}
-				onClickOutside={this.handleUnSelect}
+
 				x1Value={x1Value}
 				x2Value={x2Value}
 				fill={fill}
@@ -123,6 +103,7 @@ class EachLinearRegressionChannel extends Component {
 				strokeWidth={(hover || selected) ? strokeWidth + 1 : strokeWidth}
 				opacity={opacity} />
 			<ClickableCircle
+				ref={this.saveNodeType("edge1")}
 				show={selected || hover}
 				xyProvider={edge1Provider(this.props)}
 				r={r}
@@ -132,8 +113,9 @@ class EachLinearRegressionChannel extends Component {
 				opacity={1}
 				interactiveCursorClass={edgeInteractiveCursor}
 				onDrag={this.handleEdge1Drag}
-				onDragComplete={this.handleDragComplete} />
+				onDragComplete={onDragComplete} />
 			<ClickableCircle
+				ref={this.saveNodeType("edge2")}
 				show={selected || hover}
 				xyProvider={edge2Provider(this.props)}
 				r={r}
@@ -143,7 +125,7 @@ class EachLinearRegressionChannel extends Component {
 				opacity={1}
 				interactiveCursorClass={edgeInteractiveCursor}
 				onDrag={this.handleEdge2Drag}
-				onDragComplete={this.handleDragComplete} />
+				onDragComplete={onDragComplete} />
 			<HoverTextNearMouse
 				show={hoverTextEnabled && hover && !selected}
 				{...restHoverTextProps} />
@@ -176,6 +158,7 @@ EachLinearRegressionChannel.propTypes = {
 	onDragComplete: PropTypes.func.isRequired,
 	snapTo: PropTypes.func,
 	interactive: PropTypes.bool.isRequired,
+	selected: PropTypes.bool.isRequired,
 
 	r: PropTypes.number.isRequired,
 	defaultClassName: PropTypes.string,
@@ -197,6 +180,7 @@ EachLinearRegressionChannel.defaultProps = {
 	strokeWidth: 1,
 	opacity: 1,
 	interactive: true,
+	selected: false,
 	fill: "#8AAFE2",
 	hoverText: {
 		...HoverTextNearMouse.defaultProps,

@@ -5,11 +5,18 @@ import PropTypes from "prop-types";
 
 import { isDefined, isNotDefined, noop } from "../utils";
 
-import { getValueFromOverride } from "./utils";
+import {
+	getValueFromOverride,
+	terminate,
+	saveNodeList,
+	handleClickInteractiveType,
+} from "./utils";
 
 import EachLinearRegressionChannel from "./hoc/EachLinearRegressionChannel";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
 import HoverTextNearMouse from "./components/HoverTextNearMouse";
+import GenericChartComponent from "../GenericChartComponent";
+import { getMouseCanvas } from "../GenericComponent";
 
 class StandardDeviationChannel extends Component {
 	constructor(props) {
@@ -20,14 +27,30 @@ class StandardDeviationChannel extends Component {
 		this.handleDrawLine = this.handleDrawLine.bind(this);
 		this.handleDragLine = this.handleDragLine.bind(this);
 		this.handleDragLineComplete = this.handleDragLineComplete.bind(this);
-		this.terminate = this.terminate.bind(this);
 
+		this.terminate = terminate.bind(this);
+		this.handleClick = handleClickInteractiveType("channels").bind(this);
+		this.saveNodeList = saveNodeList.bind(this);
+
+		this.nodes = [];
 		this.state = {};
 	}
-	terminate() {
+	componentWillMount() {
+		this.updateInteractiveToState(this.props.channels);
+	}
+	componentWillReceiveProps(nextProps) {
+		if (this.props.channels !== nextProps.channels) {
+			this.updateInteractiveToState(nextProps.channels);
+		}
+	}
+	updateInteractiveToState(channels) {
 		this.setState({
-			current: null,
-			override: null,
+			channels: channels.map(t => {
+				return {
+					...t,
+					selected: !!t.selected
+				};
+			}),
 		});
 	}
 	handleDragLine(index, newXYValue) {
@@ -42,17 +65,19 @@ class StandardDeviationChannel extends Component {
 		const { override } = this.state;
 		if (isDefined(override)) {
 			const { channels } = this.props;
-			const newTrends = channels
+			const newChannels = channels
 				.map((each, idx) => idx === override.index
 					? {
 						start: [override.x1Value, override.y1Value],
 						end: [override.x2Value, override.y2Value],
+						selected: true,
 					}
 					: each);
 			this.setState({
-				override: null
+				override: null,
+				channels: newChannels,
 			}, () => {
-				this.props.onComplete(newTrends);
+				this.props.onComplete(newChannels);
 			});
 		}
 	}
@@ -93,21 +118,26 @@ class StandardDeviationChannel extends Component {
 			&& isDefined(current)
 			&& isDefined(current.start)
 		) {
+			const newChannels = channels.concat(
+				{ start: current.start, end: xyValue, selected: true, }
+			);
+
 			this.setState({
 				current: null,
+				channels: newChannels,
 			}, () => {
-				const newTrends = channels.concat({ start: current.start, end: xyValue });
-				this.props.onComplete(newTrends);
+				this.props.onComplete(newChannels);
 			});
 		}
 	}
 	render() {
-		const { stroke, opacity, strokeWidth, channels } = this.props;
+		const { stroke, opacity, strokeWidth } = this.props;
 		const { enabled, snapTo } = this.props;
 		const { currentPositionRadius, currentPositionStroke } = this.props;
 		const { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
 		const { hoverText } = this.props;
 		const { current, override } = this.state;
+		const { channels } = this.state;
 
 		const tempLine = isDefined(current) && isDefined(current.end)
 			? <EachLinearRegressionChannel
@@ -122,9 +152,10 @@ class StandardDeviationChannel extends Component {
 
 		return <g>
 			{channels.map((each, idx) => {
-				return <EachLinearRegressionChannel
-					key={idx}
+				return <EachLinearRegressionChannel key={idx}
+					ref={this.saveNodeList}
 					index={idx}
+					selected={each.selected}
 					x1Value={getValueFromOverride(override, idx, "x1Value", each.start[0])}
 					x2Value={getValueFromOverride(override, idx, "x2Value", each.end[0])}
 					stroke={stroke}
@@ -149,6 +180,16 @@ class StandardDeviationChannel extends Component {
 				onClick={this.handleEnd}
 				onMouseMove={this.handleDrawLine}
 			/>
+			<GenericChartComponent
+
+				svgDraw={noop}
+				canvasToDraw={getMouseCanvas}
+				canvasDraw={noop}
+
+				onClick={this.handleClick}
+
+				drawOn={["mousemove", "pan", "drag"]}
+			/>
 		</g>;
 	}
 }
@@ -156,8 +197,11 @@ class StandardDeviationChannel extends Component {
 StandardDeviationChannel.propTypes = {
 	enabled: PropTypes.bool.isRequired,
 	snapTo: PropTypes.func.isRequired,
+
 	onStart: PropTypes.func.isRequired,
 	onComplete: PropTypes.func.isRequired,
+	onSelect: PropTypes.func,
+
 	strokeWidth: PropTypes.number.isRequired,
 	currentPositionStroke: PropTypes.string,
 	currentPositionStrokeWidth: PropTypes.number,
@@ -176,8 +220,11 @@ StandardDeviationChannel.defaultProps = {
 	snapTo: d => d.close,
 	opacity: 0.7,
 	strokeWidth: 1,
+
 	onStart: noop,
 	onComplete: noop,
+	onSelect: noop,
+
 	currentPositionStroke: "#000000",
 	currentPositionOpacity: 1,
 	currentPositionStrokeWidth: 3,
