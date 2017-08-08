@@ -546,6 +546,8 @@ class ChartCanvas extends Component {
 		}
 	}
 	handleZoom(zoomDirection, mouseXY, e) {
+		if (this.panInProgress)
+			return;
 		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
 		const { xAccessor, xScale: initialXScale, plotData: initialPlotData } = this.state;
 		const { zoomMultiplier } = this.props;
