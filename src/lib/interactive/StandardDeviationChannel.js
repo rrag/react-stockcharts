@@ -61,7 +61,7 @@ class StandardDeviationChannel extends Component {
 			}
 		});
 	}
-	handleDragLineComplete() {
+	handleDragLineComplete(moreProps) {
 		const { override } = this.state;
 		if (isDefined(override)) {
 			const { channels } = this.props;
@@ -77,7 +77,7 @@ class StandardDeviationChannel extends Component {
 				override: null,
 				channels: newChannels,
 			}, () => {
-				this.props.onComplete(newChannels);
+				this.props.onComplete(newChannels, moreProps);
 			});
 		}
 	}

@@ -60,7 +60,7 @@ class HoverTooltip extends Component {
 }
 
 HoverTooltip.propTypes = {
-	chartId: PropTypes.number,
+	chartId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 	yAccessor: PropTypes.func,
 	tooltipSVG: PropTypes.func,
 	backgroundShapeSVG: PropTypes.func,

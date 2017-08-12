@@ -56,7 +56,7 @@ class InteractiveText extends Component {
 			}
 		});
 	}
-	handleDragComplete() {
+	handleDragComplete(moreProps) {
 		const { override } = this.state;
 		if (isDefined(override)) {
 			const { textList } = this.state;
@@ -72,7 +72,7 @@ class InteractiveText extends Component {
 				override: null,
 				textList: newTextList,
 			}, () => {
-				this.props.onDragComplete(newTextList);
+				this.props.onDragComplete(newTextList, moreProps);
 			});
 		}
 	}
@@ -106,7 +106,7 @@ class InteractiveText extends Component {
 				...defaultText,
 				position: xyValue,
 			};
-			onChoosePosition(newText);
+			onChoosePosition(newText, moreProps);
 		} else {
 			this.handleClick(moreProps, e);
 		}
@@ -193,7 +193,7 @@ InteractiveText.contextTypes = {
 	subscribe: PropTypes.func.isRequired,
 	unsubscribe: PropTypes.func.isRequired,
 	generateSubscriptionId: PropTypes.func.isRequired,
-	chartId: PropTypes.number,
+	chartId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };
 
 export default InteractiveText;

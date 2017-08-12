@@ -64,7 +64,7 @@ Chart.propTypes = {
 		PropTypes.array,
 		PropTypes.func
 	]).isRequired,
-	id: PropTypes.number.isRequired,
+	id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 	yExtents: PropTypes.oneOfType([
 		PropTypes.array,
 		PropTypes.func
@@ -106,7 +106,7 @@ Chart.contextTypes = {
 
 Chart.childContextTypes = {
 	chartConfig: PropTypes.object.isRequired,
-	chartId: PropTypes.number.isRequired,
+	chartId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 };
 
 export default Chart;

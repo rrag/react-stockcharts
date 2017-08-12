@@ -450,7 +450,7 @@ GenericComponent.contextTypes = {
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
 	margin: PropTypes.object.isRequired,
-	chartId: PropTypes.number,
+	chartId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
 	getCanvasContexts: PropTypes.func,
 
 	chartCanvasType: PropTypes.string,

@@ -58,7 +58,7 @@ class GannFan extends Component {
 			}
 		});
 	}
-	handleDragFanComplete() {
+	handleDragFanComplete(moreProps) {
 		const { override } = this.state;
 		const { fans } = this.state;
 		if (isDefined(override)) {
@@ -71,7 +71,7 @@ class GannFan extends Component {
 				override: null,
 				fans: newfans,
 			}, () => {
-				this.props.onComplete(newfans);
+				this.props.onComplete(newfans, moreProps);
 			});
 		}
 	}

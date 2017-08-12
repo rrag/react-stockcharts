@@ -4,11 +4,11 @@
 		"stage-3"
 	],
 	"plugins": [
-		"transform-flow-strip-types",
+		"transform-flow-strip-types"
 	],
 	"env": {
 		"cjs": {
-			"presets": [["env"]],
+			"presets": [["env"]]
 		},
 		"es": {
 			"presets": [
@@ -19,7 +19,7 @@
 			"presets": [
 				["env", {
 					"targets": {
-						"chrome": 58
+						"chrome": 59
 					},
 					"modules": false
 				}]
@@ -31,7 +31,7 @@
 					"targets": {
 						"node": 7.5
 					},
-					"loose": true,
+					"loose": true
 				}]
 			]
 		}

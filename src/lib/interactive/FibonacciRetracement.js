@@ -148,7 +148,7 @@ class FibonacciRetracement extends Component {
 			}
 		});
 	}
-	handleDragComplete() {
+	handleDragComplete(moreProps) {
 		const { retracements, override } = this.state;
 		if (isDefined(override)) {
 			const { index, ...rest } = override;
@@ -161,7 +161,7 @@ class FibonacciRetracement extends Component {
 				override: null,
 				retracements: newRetracements,
 			}, () => {
-				this.props.onComplete(newRetracements);
+				this.props.onComplete(newRetracements, moreProps);
 			});
 		}
 	}

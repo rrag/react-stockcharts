@@ -66,7 +66,7 @@ class TrendLine extends Component {
 			}
 		});
 	}
-	handleDragLineComplete() {
+	handleDragLineComplete(moreProps) {
 		const { override } = this.state;
 		if (isDefined(override)) {
 			const { trends } = this.state;
@@ -86,7 +86,7 @@ class TrendLine extends Component {
 				override: null,
 				trends: newTrends
 			}, () => {
-				this.props.onComplete(newTrends);
+				this.props.onComplete(newTrends, moreProps);
 			});
 		}
 	}

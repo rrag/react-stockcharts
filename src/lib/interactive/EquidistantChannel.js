@@ -61,7 +61,7 @@ class EquidistantChannel extends Component {
 			}
 		});
 	}
-	handleDragChannelComplete() {
+	handleDragChannelComplete(moreProps) {
 		const { override } = this.state;
 		const { channels } = this.props;
 		if (isDefined(override)) {
@@ -74,7 +74,7 @@ class EquidistantChannel extends Component {
 				override: null,
 				channels: newChannels,
 			}, () => {
-				this.props.onComplete(newChannels);
+				this.props.onComplete(newChannels, moreProps);
 			});
 		}
 	}

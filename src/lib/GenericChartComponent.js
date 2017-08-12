@@ -101,7 +101,7 @@ GenericChartComponent.contextTypes = {
 	...GenericComponent.contextTypes,
 	canvasOriginX: PropTypes.number,
 	canvasOriginY: PropTypes.number,
-	chartId: PropTypes.number.isRequired,
+	chartId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 	chartConfig: PropTypes.object.isRequired,
 	ratio: PropTypes.number.isRequired,
 };

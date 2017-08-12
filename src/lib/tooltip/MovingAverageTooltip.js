@@ -48,7 +48,7 @@ SingleMAToolTip.propTypes = {
 	textFill: PropTypes.string,
 	labelFill: PropTypes.string,
 	fontSize: PropTypes.number,
-	forChart: PropTypes.number.isRequired,
+	forChart: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 	options: PropTypes.object.isRequired,
 };
 

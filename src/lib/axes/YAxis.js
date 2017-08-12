@@ -69,7 +69,7 @@ YAxis.defaultProps = {
 
 YAxis.contextTypes = {
 	yAxisZoom: PropTypes.func.isRequired,
-	chartId: PropTypes.number.isRequired,
+	chartId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 	chartConfig: PropTypes.object.isRequired,
 };
 
