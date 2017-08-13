@@ -18,11 +18,8 @@ import {
 	TOUCHEND,
 	touchPosition,
 	getTouchProps,
+	sign,
 } from "../utils";
-
-function sign(x) {
-	return (x > 0) - (x < 0);
-}
 
 class AxisZoomCapture extends Component {
 	constructor(props) {

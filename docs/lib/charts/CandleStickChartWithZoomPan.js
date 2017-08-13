@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
-import { ChartCanvas, Chart } from "react-stockcharts";
+import { ChartCanvas, Chart, ZoomButtons } from "react-stockcharts";
 import {
 	BarSeries,
 	CandlestickSeries,
@@ -105,6 +105,7 @@ class CandleStickChartWithZoomPan extends React.Component {
 						displayFormat={format(".2f")} />
 
 					<CandlestickSeries />
+					<ZoomButtons />
 					<OHLCTooltip origin={[-40, 0]}/>
 				</Chart>
 				<Chart id={2}

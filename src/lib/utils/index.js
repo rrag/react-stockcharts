@@ -27,6 +27,10 @@ export function getLogger(prefix) {
 	return logger;
 }
 
+export function sign(x) {
+	return (x > 0) - (x < 0);
+}
+
 export const yes = () => true;
 
 export function path(loc = []) {
