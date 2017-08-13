@@ -60,6 +60,8 @@ class EachText extends Component {
 			textFill,
 			fontFamily,
 			fontSize,
+			fontWeight,
+			fontStyle,
 			text,
 			hoverText,
 			selected,
@@ -90,6 +92,8 @@ class EachText extends Component {
 				bgOpacity={(hover || selected) ? bgOpacity : 0.1}
 				textFill={textFill}
 				fontFamily={fontFamily}
+				fontStyle={fontStyle}
+				fontWeight={fontWeight}
 				fontSize={fontSize}
 				text={text}
 			/>
@@ -117,8 +121,12 @@ EachText.propTypes = {
 	bgFill: PropTypes.string.isRequired,
 	bgOpacity: PropTypes.number.isRequired,
 	textFill: PropTypes.string.isRequired,
+
+	fontWeight: PropTypes.string.isRequired,
 	fontFamily: PropTypes.string.isRequired,
+	fontStyle: PropTypes.string.isRequired,
 	fontSize: PropTypes.number.isRequired,
+
 	text: PropTypes.string.isRequired,
 	selected: PropTypes.bool.isRequired,
 

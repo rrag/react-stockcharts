@@ -156,6 +156,8 @@ InteractiveText.propTypes = {
 		bgOpacity: PropTypes.number.isRequired,
 		textFill: PropTypes.string.isRequired,
 		fontFamily: PropTypes.string.isRequired,
+		fontWeight: PropTypes.string.isRequired,
+		fontStyle: PropTypes.string.isRequired,
 		fontSize: PropTypes.number.isRequired,
 		text: PropTypes.string.isRequired,
 	}).isRequired,
@@ -176,7 +178,8 @@ InteractiveText.defaultProps = {
 		textFill: "#9E7523",
 		fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 		fontSize: 12,
-		fontWeight: "500",
+		fontStyle: "normal",
+		fontWeight: "normal",
 		text: "Lorem ipsum..."
 	},
 	hoverText: {

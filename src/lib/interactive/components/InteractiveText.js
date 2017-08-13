@@ -39,7 +39,13 @@ class InteractiveText extends Component {
 		return false;
 	}
 	componentWillReceiveProps(nextProps) {
-		this.calculateTextWidth = (nextProps.text !== this.props.text);
+		this.calculateTextWidth = (
+			nextProps.text !== this.props.text
+			|| nextProps.fontStyle !== this.props.fontStyle
+			|| nextProps.fontWeight !== this.props.fontWeight
+			|| nextProps.fontSize !== this.props.fontSize
+			|| nextProps.fontFamily !== this.props.fontFamily
+		);
 	}
 	drawOnCanvas(ctx, moreProps) {
 		const {
@@ -48,12 +54,13 @@ class InteractiveText extends Component {
 			textFill,
 			fontFamily,
 			fontSize,
+			fontStyle,
 			fontWeight,
 			text,
 		} = this.props;
 
 		if (this.calculateTextWidth) {
-			ctx.font = `${fontWeight} ${ fontSize }px ${fontFamily}`;
+			ctx.font = `${fontStyle} ${fontWeight} ${fontSize}px ${fontFamily}`;
 			const { width } = ctx.measureText(text);
 			this.textWidth = width;
 			this.calculateTextWidth = false;
@@ -66,7 +73,7 @@ class InteractiveText extends Component {
 		ctx.fillStyle = textFill;
 		ctx.textBaseline = "middle";
 		ctx.textAlign = "center";
-		ctx.font = `${fontWeight} ${ fontSize }px ${fontFamily}`;
+		ctx.font = `${fontStyle} ${fontWeight} ${fontSize}px ${fontFamily}`;
 
 		ctx.beginPath();
 		ctx.fillText(text, x, y);
@@ -141,6 +148,8 @@ InteractiveText.propTypes = {
 		PropTypes.number,
 		PropTypes.string,
 	]).isRequired,
+	fontStyle: PropTypes.string.isRequired,
+
 	text: PropTypes.string.isRequired,
 
 	onDragStart: PropTypes.func.isRequired,
