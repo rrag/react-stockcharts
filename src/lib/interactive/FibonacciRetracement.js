@@ -72,7 +72,7 @@ class FibonacciRetracement extends Component {
 			});
 		}
 	}
-	handleEnd(xyValue) {
+	handleEnd(xyValue, moreProps, e) {
 		const { retracements, current } = this.state;
 
 		if (this.mouseMoved
@@ -91,7 +91,7 @@ class FibonacciRetracement extends Component {
 				current: null,
 				retracements: newRetracements,
 			}, () => {
-				this.props.onComplete(newRetracements);
+				this.props.onComplete(newRetracements, moreProps, e);
 			});
 		}
 	}

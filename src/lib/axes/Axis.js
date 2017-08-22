@@ -119,8 +119,8 @@ Axis.defaultProps = {
 function tickHelper(props, scale) {
 	const {
 		orient, innerTickSize, tickFormat, tickPadding,
-		tickStrokeWidth, tickStrokeDasharray, fontSize,
-		fontFamily, showTicks, flexTicks
+		tickLabelFill, tickStrokeWidth, tickStrokeDasharray,
+		fontSize, fontFamily, showTicks, flexTicks,
 	} = props;
 	const {
 		ticks: tickArguments, tickValues: tickValuesProp,
@@ -221,7 +221,19 @@ function tickHelper(props, scale) {
 		textAnchor = sign < 0 ? "end" : "start";
 	}
 
-	return { ticks, scale, tickStroke, tickStrokeOpacity, tickStrokeWidth, tickStrokeDasharray, dy, canvas_dy, textAnchor, fontSize, fontFamily, format };
+	return {
+		ticks, scale, tickStroke,
+		tickLabelFill: (tickLabelFill || tickStroke),
+		tickStrokeOpacity,
+		tickStrokeWidth,
+		tickStrokeDasharray,
+		dy,
+		canvas_dy,
+		textAnchor,
+		fontSize,
+		fontFamily,
+		format
+	};
 }
 
 /* eslint-disable react/prop-types */
@@ -356,22 +368,29 @@ function axisTicksSVG(props, scale) {
 
 function drawTicks(ctx, result) {
 
-	const { tickStroke, tickStrokeOpacity, textAnchor, fontSize, fontFamily, ticks } = result;
+	const { tickStroke, tickStrokeOpacity, tickLabelFill } = result;
+	const { textAnchor, fontSize, fontFamily, ticks } = result;
 
 	ctx.strokeStyle = hexToRGBA(tickStroke, tickStrokeOpacity);
 
-	ctx.font = `${ fontSize }px ${fontFamily}`;
 	ctx.fillStyle = tickStroke;
-	ctx.textAlign = textAnchor === "middle" ? "center" : textAnchor;
 	// ctx.textBaseline = 'middle';
 
 	ticks.forEach((tick) => {
 		drawEachTick(ctx, tick, result);
 	});
+
+	ctx.font = `${ fontSize }px ${fontFamily}`;
+	ctx.fillStyle = tickLabelFill;
+	ctx.textAlign = textAnchor === "middle" ? "center" : textAnchor;
+
+	ticks.forEach((tick) => {
+		drawEachTickLabel(ctx, tick, result);
+	});
 }
 
 function drawEachTick(ctx, tick, result) {
-	const { canvas_dy, format, tickStrokeWidth, tickStrokeDasharray } = result;
+	const { tickStrokeWidth, tickStrokeDasharray } = result;
 
 	ctx.beginPath();
 
@@ -380,6 +399,12 @@ function drawEachTick(ctx, tick, result) {
 	ctx.lineWidth = tickStrokeWidth;
 	ctx.setLineDash(getStrokeDasharray(tickStrokeDasharray).split(","));
 	ctx.stroke();
+}
+
+function drawEachTickLabel(ctx, tick, result) {
+	const { canvas_dy, format } = result;
+
+	ctx.beginPath();
 	ctx.fillText(format(tick.value), tick.labelX, tick.labelY + canvas_dy);
 }
 

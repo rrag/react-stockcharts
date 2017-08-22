@@ -105,7 +105,7 @@ class GannFan extends Component {
 			});
 		}
 	}
-	handleEnd() {
+	handleEnd(xyValyue, moreProps, e) {
 		const { fans, current } = this.state;
 
 		if (this.mouseMoved
@@ -120,7 +120,7 @@ class GannFan extends Component {
 				current: null,
 				fans: newfans
 			}, () => {
-				this.props.onComplete(newfans);
+				this.props.onComplete(newfans, moreProps, e);
 			});
 		}
 	}

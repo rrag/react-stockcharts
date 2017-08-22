@@ -52,13 +52,13 @@ XAxis.defaultProps = {
 	ticks: 10,
 	outerTickSize: 0,
 	fill: "none",
-	stroke: "#000000",
+	stroke: "#000000", // x axis stroke coloe
 	strokeWidth: 1,
-	opacity: 1,
+	opacity: 1, // x axis opacity
 	domainClassName: "react-stockcharts-axis-domain",
 	innerTickSize: 5,
 	tickPadding: 6,
-	tickStroke: "#000000",
+	tickStroke: "#000000", // tick/grid stroke
 	tickStrokeOpacity: 1,
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 12,

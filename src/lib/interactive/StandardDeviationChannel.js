@@ -110,7 +110,7 @@ class StandardDeviationChannel extends Component {
 			});
 		}
 	}
-	handleEnd(xyValue) {
+	handleEnd(xyValue, moreProps, e) {
 		const { current } = this.state;
 		const { channels } = this.props;
 
@@ -126,7 +126,7 @@ class StandardDeviationChannel extends Component {
 				current: null,
 				channels: newChannels,
 			}, () => {
-				this.props.onComplete(newChannels);
+				this.props.onComplete(newChannels, moreProps, e);
 			});
 		}
 	}

@@ -102,7 +102,7 @@ class TrendLine extends Component {
 			});
 		}
 	}
-	handleStart(xyValue) {
+	handleStart(xyValue, moreProps, e) {
 		const { current, trends } = this.state;
 
 		if (isNotDefined(current) || isNotDefined(current.start)) {
@@ -117,11 +117,11 @@ class TrendLine extends Component {
 				},
 				trends: newTrends
 			}, () => {
-				this.props.onStart();
+				this.props.onStart(moreProps, e);
 			});
 		}
 	}
-	handleEnd(xyValue) {
+	handleEnd(xyValue, moreProps, e) {
 		const { trends, current } = this.state;
 
 		if (this.mouseMoved
@@ -136,7 +136,7 @@ class TrendLine extends Component {
 				current: null,
 				trends: newTrends
 			}, () => {
-				this.props.onComplete(newTrends);
+				this.props.onComplete(newTrends, moreProps, e);
 			});
 		}
 	}

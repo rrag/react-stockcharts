@@ -241,7 +241,7 @@ class CandlestickChart extends React.Component {
 				</Chart>
 				<Chart id={3} height={150}
 					yExtents={macdCalculator.accessor()}
-					origin={(w, h) => [0, h - 150]} padding={{ top: 10, bottom: 10 }} 
+					origin={(w, h) => [0, h - 150]} padding={{ top: 10, bottom: 10 }}
 				>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={2} />

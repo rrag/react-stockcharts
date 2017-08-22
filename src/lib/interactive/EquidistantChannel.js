@@ -121,7 +121,7 @@ class EquidistantChannel extends Component {
 			});
 		}
 	}
-	handleEnd() {
+	handleEnd(xyValue, moreProps, e) {
 		const { current } = this.state;
 		const { channels } = this.props;
 
@@ -145,7 +145,7 @@ class EquidistantChannel extends Component {
 					channels: newChannels,
 				}, () => {
 
-					this.props.onComplete(newChannels);
+					this.props.onComplete(newChannels, moreProps, e);
 				});
 			}
 		}
@@ -171,7 +171,6 @@ class EquidistantChannel extends Component {
 				opacity={opacity} />
 			: null;
 
-		console.log(channels);
 		return <g>
 			{channels.map((each, idx) => {
 				return <EachEquidistantChannel key={idx}
