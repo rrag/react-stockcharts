@@ -159,7 +159,8 @@ class EachEquidistantChannel extends Component {
 	}
 	getEdgeCircle({ xy, dragHandler, cursor, fill, edge }) {
 		const { hover } = this.state;
-		const { edgeStroke, edgeStrokeWidth, r } = this.props;
+		const { appearance } = this.props;
+		const { edgeStroke, edgeStrokeWidth, r } = appearance;
 		const { selected } = this.props;
 		const { onDragComplete } = this.props;
 
@@ -182,8 +183,8 @@ class EachEquidistantChannel extends Component {
 	}
 	render() {
 		const { startXY, endXY, dy } = this.props;
-		const { interactive, edgeFill, hoverText } = this.props;
-		const { stroke, strokeWidth, fill, opacity } = this.props;
+		const { interactive, hoverText, appearance } = this.props;
+		const { edgeFill, edgeFill2, stroke, strokeWidth, fill, opacity } = appearance;
 		const { selected } = this.props;
 		const { onDragComplete } = this.props;
 		const { hover } = this.state;
@@ -217,14 +218,14 @@ class EachEquidistantChannel extends Component {
 					xy: [startXY[0], startXY[1] + dy],
 					dragHandler: this.handleChannelHeightChange,
 					cursor: "react-stockcharts-ns-resize-cursor",
-					fill: "#250B98",
+					fill: edgeFill2,
 					edge: "line2edge1",
 				})}
 				{this.getEdgeCircle({
 					xy: [endXY[0], endXY[1] + dy],
 					dragHandler: this.handleChannelHeightChange,
 					cursor: "react-stockcharts-ns-resize-cursor",
-					fill: "#250B98",
+					fill: edgeFill2,
 					edge: "line2edge2",
 				})}
 			</g>
@@ -264,19 +265,21 @@ EachEquidistantChannel.propTypes = {
 	endXY: PropTypes.arrayOf(PropTypes.number).isRequired,
 	dy: PropTypes.number,
 
-	stroke: PropTypes.string.isRequired,
-	strokeWidth: PropTypes.number.isRequired,
-	fill: PropTypes.string.isRequired,
-	opacity: PropTypes.number.isRequired,
-
 	interactive: PropTypes.bool.isRequired,
 	selected: PropTypes.bool.isRequired,
-
-	r: PropTypes.number.isRequired,
-	edgeFill: PropTypes.string.isRequired,
-	edgeStroke: PropTypes.string.isRequired,
-	edgeStrokeWidth: PropTypes.number.isRequired,
 	hoverText: PropTypes.object.isRequired,
+
+	appearance: PropTypes.shape({
+		stroke: PropTypes.string.isRequired,
+		opacity: PropTypes.number.isRequired,
+		strokeWidth: PropTypes.number.isRequired,
+		fill: PropTypes.string.isRequired,
+		edgeStroke: PropTypes.string.isRequired,
+		edgeFill: PropTypes.string.isRequired,
+		edgeFill2: PropTypes.string.isRequired,
+		edgeStrokeWidth: PropTypes.number.isRequired,
+		r: PropTypes.number.isRequired,
+	}).isRequired,
 
 	index: PropTypes.number,
 	onDrag: PropTypes.func.isRequired,
@@ -287,10 +290,7 @@ EachEquidistantChannel.defaultProps = {
 	yDisplayFormat: d => d.toFixed(2),
 	interactive: true,
 	selected: false,
-	edgeStroke: "#000000",
-	edgeFill: "#FFFFFF",
-	edgeStrokeWidth: 1,
-	r: 5,
+
 	onDrag: noop,
 	onDragComplete: noop,
 	hoverText: {

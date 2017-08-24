@@ -5,7 +5,7 @@ import { path as d3Path } from "d3-path";
 
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
-import { isHovering } from "./StraightLine";
+import { isHovering2 } from "./StraightLine";
 
 import { isDefined, getClosestItemIndexes, noop, zipper, hexToRGBA } from "../../utils";
 
@@ -25,7 +25,9 @@ class LinearRegressionChannelWithArea extends Component {
 
 			const { x1, y1, x2, y2 } = helper(this.props, moreProps);
 
-			const hovering = isHovering([x1, y1], [x2, y2], mouseXY, tolerance);
+			const hovering = isHovering2(
+				[x1, y1], [x2, y2], mouseXY, tolerance
+			);
 			return hovering;
 		}
 		return false;

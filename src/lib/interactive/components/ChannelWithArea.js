@@ -22,34 +22,33 @@ class ChannelWithArea extends Component {
 
 		if (isDefined(onHover)) {
 
-			const { line1, line2 } = helper(this.props, moreProps);
+			const { lines, line1, line2 } = helper(this.props, moreProps);
 
-			const { mouseXY } = moreProps;
+			if (isDefined(line1) && isDefined(line2)) {
+				const { mouseXY, xScale, chartConfig: { yScale } } = moreProps;
 
-			const [mouseX, mouseY] = mouseXY;
-
-			const left = Math.min(line1.x1, line1.x2);
-			const right = Math.max(line1.x1, line1.x2);
-			const top = Math.min(line1.y1, line1.y2, line2.y1, line2.y2);
-			const bottom = Math.max(line1.y1, line1.y2, line2.y1, line2.y2);
-
-			const isWithinLineBounds = mouseX >= left && mouseX <= right
-				&& mouseY >= top && mouseY <= bottom;
-
-			if (isWithinLineBounds) {
-				const line1Hovering = isHovering(
-					[line1.x1, line1.y1],
-					[line1.x2, line1.y2],
+				const line1Hovering = isHovering({
+					x1Value: lines.line1.x1,
+					y1Value: lines.line1.y1,
+					x2Value: lines.line1.x2,
+					y2Value: lines.line1.y2,
+					type: "LINE",
 					mouseXY,
-					tolerance);
-
-				const line2Hovering = isHovering(
-					[line2.x1, line2.y1],
-					[line2.x2, line2.y2],
+					tolerance,
+					xScale,
+					yScale,
+				});
+				const line2Hovering = isHovering({
+					x1Value: lines.line2.x1,
+					y1Value: lines.line2.y1,
+					x2Value: lines.line2.x2,
+					y2Value: lines.line2.y2,
+					type: "LINE",
 					mouseXY,
-					tolerance);
-
-				// console.log("hovering ->", hovering);
+					tolerance,
+					xScale,
+					yScale,
+				});
 
 				return line1Hovering || line2Hovering;
 			}
@@ -171,39 +170,59 @@ function getPath(line1, line2) {
 	return ctx.toString();
 }
 
-function helper(props, moreProps) {
+function getLines(props, moreProps) {
 	const { startXY, endXY, dy, type } = props;
-
-	const { xScale, chartConfig: { yScale } } = moreProps;
+	const { xScale } = moreProps;
 
 	if (isNotDefined(startXY) || isNotDefined(endXY)) {
 		return {};
 	}
-	const modLine = generateLine({
+	const line1 = generateLine({
 		type,
 		start: startXY,
 		end: endXY,
 		xScale,
 	});
-
-	const x1 = xScale(modLine.x1);
-	const y1 = yScale(modLine.y1);
-	const x2 = xScale(modLine.x2);
-	const y2 = yScale(modLine.y2);
-
-	const line1 = {
-		x1, y1, x2, y2
-	};
 	const line2 = isDefined(dy)
 		? {
-			x1,
-			y1: yScale(modLine.y1 + dy),
-			x2,
-			y2: yScale(modLine.y2 + dy),
+			...line1,
+			y1: line1.y1 + dy,
+			y2: line1.y2 + dy,
 		}
 		: undefined;
 
-	return { line1, line2 };
+
+	return {
+		line1,
+		line2,
+	};
+}
+
+function helper(props, moreProps) {
+	const lines = getLines(props, moreProps);
+	const { xScale, chartConfig: { yScale } } = moreProps;
+
+	const x1 = xScale(lines.line1.x1);
+	const y1 = yScale(lines.line1.y1);
+	const x2 = xScale(lines.line1.x2);
+	const y2 = yScale(lines.line1.y2);
+
+	const line2 = isDefined(lines.line2)
+		? {
+			x1,
+			y1: yScale(lines.line2.y1),
+			x2,
+			y2: yScale(lines.line2.y2),
+		}
+		: undefined;
+
+	return {
+		lines,
+		line1: {
+			x1, y1, x2, y2
+		},
+		line2
+	};
 }
 
 ChannelWithArea.propTypes = {

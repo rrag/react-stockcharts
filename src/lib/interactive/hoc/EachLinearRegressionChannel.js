@@ -68,6 +68,14 @@ class EachLinearRegressionChannel extends Component {
 		const {
 			x1Value,
 			x2Value,
+			appearance,
+			edgeInteractiveCursor,
+			hoverText,
+			interactive,
+			selected,
+			onDragComplete,
+		} = this.props;
+		const {
 			stroke,
 			strokeWidth,
 			fill,
@@ -76,12 +84,7 @@ class EachLinearRegressionChannel extends Component {
 			edgeStrokeWidth,
 			edgeFill,
 			edgeStroke,
-			edgeInteractiveCursor,
-			hoverText,
-			interactive,
-			selected,
-			onDragComplete,
-		} = this.props;
+		} = appearance;
 		const { hover } = this.state;
 
 		const hoverHandler = interactive
@@ -144,44 +147,50 @@ export function getNewXY(moreProps, snapTo) {
 }
 
 EachLinearRegressionChannel.propTypes = {
+	defaultClassName: PropTypes.string,
+
 	x1Value: PropTypes.any.isRequired,
 	x2Value: PropTypes.any.isRequired,
 
 	index: PropTypes.number,
 
-	stroke: PropTypes.string.isRequired,
-	strokeWidth: PropTypes.number.isRequired,
-	fill: PropTypes.string.isRequired,
-	opacity: PropTypes.number.isRequired,
+	appearance: PropTypes.shape({
+		stroke: PropTypes.string.isRequired,
+		opacity: PropTypes.number.isRequired,
+		strokeWidth: PropTypes.number.isRequired,
+		fill: PropTypes.string.isRequired,
+		edgeStrokeWidth: PropTypes.number.isRequired,
+		edgeStroke: PropTypes.string.isRequired,
+		edgeFill: PropTypes.string.isRequired,
+		r: PropTypes.number.isRequired,
+	}).isRequired,
 
+	edgeInteractiveCursor: PropTypes.string,
 	onDrag: PropTypes.func.isRequired,
 	onDragComplete: PropTypes.func.isRequired,
 	snapTo: PropTypes.func,
 	interactive: PropTypes.bool.isRequired,
 	selected: PropTypes.bool.isRequired,
 
-	r: PropTypes.number.isRequired,
-	defaultClassName: PropTypes.string,
-
-	edgeStrokeWidth: PropTypes.number.isRequired,
-	edgeStroke: PropTypes.string.isRequired,
-	edgeInteractiveCursor: PropTypes.string,
-	edgeFill: PropTypes.string.isRequired,
 	hoverText: PropTypes.object.isRequired,
 };
 
 EachLinearRegressionChannel.defaultProps = {
 	onDrag: noop,
 	onDragComplete: noop,
-	edgeStroke: "#000000",
-	edgeFill: "#FFFFFF",
-	edgeStrokeWidth: 2,
-	r: 5,
-	strokeWidth: 1,
-	opacity: 1,
+
+	appearance: {
+		stroke: "#000000",
+		opacity: 0.7,
+		strokeWidth: 1,
+		fill: "#8AAFE2",
+		edgeStrokeWidth: 2,
+		edgeStroke: "#000000",
+		edgeFill: "#FFFFFF",
+		r: 5,
+	},
 	interactive: true,
 	selected: false,
-	fill: "#8AAFE2",
 	hoverText: {
 		...HoverTextNearMouse.defaultProps,
 		enable: true,

@@ -6,7 +6,7 @@ import { path as d3Path } from "d3-path";
 
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
-import { generateLine, isHovering, getSlope, getYIntercept } from "./StraightLine";
+import { generateLine, isHovering2, getSlope, getYIntercept } from "./StraightLine";
 
 import {
 	isDefined, isNotDefined,
@@ -45,7 +45,7 @@ class GannFan extends Component {
 					&& mouseY >= top && mouseY <= bottom;
 
 				hovering = isWithinLineBounds
-					&& isHovering(
+					&& isHovering2(
 						[line1.x1, line1.y1],
 						[line1.x2, line1.y2],
 						mouseXY,
@@ -204,6 +204,7 @@ function helper(props, moreProps) {
 		start: startXY,
 		end: endXY,
 		xScale,
+		yScale,
 	});
 
 	const x1 = xScale(modLine.x1);

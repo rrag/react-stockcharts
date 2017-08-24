@@ -203,6 +203,7 @@ class CandleStickChartWithEquidistantChannel extends React.Component {
 						enabled={this.state.enableInteractiveObject}
 						onStart={() => console.log("START")}
 						onComplete={this.onDrawComplete}
+						appearance={{ ...EquidistantChannel.defaultProps.appearance, stroke: "green" }}
 						channels={channels}
 					/>
 				</Chart>

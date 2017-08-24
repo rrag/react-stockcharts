@@ -4,11 +4,7 @@ import PropTypes from "prop-types";
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
 
-import { isDefined, isNotDefined, noop, hexToRGBA } from "../../utils";
-
-function getXY(xValue, yValue, xScale, yScale) {
-	return [xScale(xValue), yScale(yValue)];
-}
+import { isDefined, noop, hexToRGBA } from "../../utils";
 
 class StraightLine extends Component {
 	constructor(props) {
@@ -26,28 +22,19 @@ class StraightLine extends Component {
 			const { mouseXY, xScale } = moreProps;
 			const { chartConfig: { yScale } } = moreProps;
 
-			const [mouseX] = mouseXY;
+			const hovering = isHovering({
+				x1Value, y1Value,
+				x2Value, y2Value,
+				mouseXY,
+				type,
+				tolerance,
+				xScale,
+				yScale,
+			});
 
-			const start = (x1Value < x2Value
-				? getXY(x1Value, y1Value, xScale, yScale)
-				: getXY(x2Value, y2Value, xScale, yScale));
+			// console.log("hovering ->", hovering);
 
-			const end = x1Value > x2Value
-				? getXY(x1Value, y1Value, xScale, yScale)
-				: getXY(x2Value, y2Value, xScale, yScale);
-
-			const isWithinLineBounds = type === "LINE"
-				&& (mouseX >= start[0] && mouseX <= end[0]);
-
-			if (isWithinLineBounds
-					|| (type === "RAY" && mouseX >= start[0])
-					|| type === "XLINE") {
-				const hovering = isHovering(start, end, mouseXY, tolerance);
-
-				// console.log("hovering ->", hovering);
-
-				return hovering;
-			}
+			return hovering;
 		}
 		return false;
 	}
@@ -100,17 +87,131 @@ class StraightLine extends Component {
 	}
 }
 
-export function isHovering(start, end, [mouseX, mouseY], tolerance) {
+export function isHovering2(start, end, [mouseX, mouseY], tolerance) {
 	const m = getSlope(start, end);
 
 	if (isDefined(m)) {
 		const b = getYIntercept(m, end);
 		const y = m * mouseX + b;
-		return (mouseY < y + tolerance) && mouseY > (y - tolerance);
+		return (mouseY < y + tolerance)
+			&& mouseY > (y - tolerance)
+			&& mouseX > Math.min(start[0], end[0]) - tolerance
+			&& mouseX < Math.max(start[0], end[0]) + tolerance;
 	} else {
 		return mouseY >= Math.min(start[1], end[1])
-			&& mouseY <= Math.max(start[1], end[1]);
+			&& mouseY <= Math.max(start[1], end[1])
+			&& mouseX < start[0] + tolerance
+			&& mouseX > start[0] - tolerance;
 	}
+}
+
+export function isHovering({
+	x1Value, y1Value,
+	x2Value, y2Value,
+	mouseXY,
+	type,
+	tolerance,
+	xScale,
+	yScale,
+}) {
+
+	const line = generateLine({
+		type,
+		start: [x1Value, y1Value],
+		end: [x2Value, y2Value],
+		xScale,
+		yScale,
+	});
+
+	const start = [xScale(line.x1), yScale(line.y1)];
+	const end = [xScale(line.x2), yScale(line.y2)];
+
+	const m = getSlope(start, end);
+	const [mouseX, mouseY] = mouseXY;
+
+	if (isDefined(m)) {
+		const b = getYIntercept(m, end);
+		const y = m * mouseX + b;
+
+		return mouseY < (y + tolerance)
+			&& mouseY > (y - tolerance)
+			&& mouseX > Math.min(start[0], end[0]) - tolerance
+			&& mouseX < Math.max(start[0], end[0]) + tolerance;
+	} else {
+		return mouseY >= Math.min(start[1], end[1])
+			&& mouseY <= Math.max(start[1], end[1])
+			&& mouseX < start[0] + tolerance
+			&& mouseX > start[0] - tolerance;
+	}
+}
+
+function getXLineCoordinates({
+	start, end, xScale, yScale, m, b
+}) {
+	const [xBegin, xFinish] = xScale.domain();
+	const [yBegin, yFinish] = yScale.domain();
+
+	if (end[0] === start[0]) {
+		return {
+			x1: end[0], y1: yBegin,
+			x2: end[0], y2: yFinish,
+		};
+	}
+	const [x1, x2] = end[0] > start[0]
+		? [xBegin, xFinish]
+		: [xFinish, xBegin];
+
+	return {
+		x1, y1: m * x1 + b,
+		x2, y2: m * x2 + b
+	};
+}
+
+function getRayCoordinates({
+	start, end, xScale, yScale, m, b
+}) {
+	const [xBegin, xFinish] = xScale.domain();
+	const [yBegin, yFinish] = yScale.domain();
+
+	const x1 = start[0];
+	if (end[0] === start[0]) {
+		return {
+			x1,
+			y1: start[1],
+			x2: x1,
+			y2: end[1] > start[1] ? yFinish : yBegin,
+		};
+	}
+
+	const x2 = end[0] > start[0]
+		? xFinish
+		: xBegin;
+
+	return {
+		x1, y1: m * x1 + b,
+		x2, y2: m * x2 + b
+	};
+}
+
+function getLineCoordinates({
+	start, end
+}) {
+
+	const [x1, y1] = start;
+	const [x2, y2] = end;
+	if (end[0] === start[0]) {
+		return {
+			x1,
+			y1: start[1],
+			x2: x1,
+			y2: end[1],
+		};
+	}
+
+	return {
+		x1, y1,
+		x2, y2,
+	};
 }
 
 function helper(props, moreProps) {
@@ -123,6 +224,7 @@ function helper(props, moreProps) {
 		start: [x1Value, y1Value],
 		end: [x2Value, y2Value],
 		xScale,
+		yScale,
 	});
 
 	const x1 = xScale(modLine.x1);
@@ -147,30 +249,26 @@ export function getYIntercept(m, end) {
 }
 
 export function generateLine({
-	type, start, end, xScale
+	type, start, end, xScale, yScale
 }) {
 	const m /* slope */ = getSlope(start, end);
 	// console.log(end[0] - start[0], m)
 	const b /* y intercept */ = getYIntercept(m, start);
-	// y = m * x + b
-	const [begin, finish] = xScale.domain();
-	const x1 = type === "XLINE"
-		? end[0] > start[0] ? begin : finish
-		: start[0]; // RAY or LINE start is the same
 
-	const y1 = isNotDefined(m)
-		? getYIntercept(0, start)
-		: m * x1 + b;
-
-	const x2 = (type === "XLINE" || type === "RAY")
-		? end[0] > start[0] ? finish : begin
-		: end[0];
-
-	const y2 = isNotDefined(m)
-		? getYIntercept(0, end)
-		: m * x2 + b;
-
-	return { x1, y1, x2, y2 };
+	switch (type) {
+	case "XLINE":
+		return getXLineCoordinates({
+			type, start, end, xScale, yScale, m, b
+		});
+	case "RAY":
+		return getRayCoordinates({
+			type, start, end, xScale, yScale, m, b
+		});
+	case "LINE":
+		return getLineCoordinates({
+			type, start, end, xScale, yScale, m, b
+		});
+	}
 }
 
 StraightLine.propTypes = {

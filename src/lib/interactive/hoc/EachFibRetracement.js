@@ -142,17 +142,17 @@ class EachFibRetracement extends Component {
 	}
 	render() {
 		const { x1, x2, y1, y2 } = this.props;
-		const { interactive, yDisplayFormat, type } = this.props;
-		const { stroke, strokeWidth, opacity } = this.props;
-		const { fontFamily, fontSize, fontStroke } = this.props;
-		const { edgeStroke, edgeFill, nsEdgeFill, edgeStrokeWidth, r } = this.props;
+		const { interactive, yDisplayFormat, type, appearance } = this.props;
+		const { stroke, strokeWidth, opacity } = appearance;
+		const { fontFamily, fontSize, fontStroke } = appearance;
+		const { edgeStroke, edgeFill, nsEdgeFill, edgeStrokeWidth, r } = appearance;
 		const { hoverText, selected } = this.props;
 		const { hover } = this.state;
 		const { onDragComplete } = this.props;
 		const lines = helper({ x1, x2, y1, y2 });
 		const { enable: hoverTextEnabled, ...restHoverTextProps } = hoverText;
 
-		const lineType = type === "EXTEND" ? "XLINE" : "LINE";
+		const lineType = type === "EXTEND" ? "XLINE" : type === "BOUND" ? "LINE" : type;
 		const dir = head(lines).y1 > last(lines).y1 ? 3 : -1.3;
 
 		return <g>
@@ -160,15 +160,17 @@ class EachFibRetracement extends Component {
 				const text = `${yDisplayFormat(line.y)} (${line.percent.toFixed(2)}%)`;
 
 				const xyProvider = ({ xScale, chartConfig }) => {
+					const { yScale } = chartConfig;
 					const { x1, y1, x2 } = generateLine({
 						type: lineType,
 						start: [line.x1, line.y],
 						end: [line.x2, line.y],
 						xScale,
+						yScale,
 					});
 
 					const x = xScale(Math.min(x1, x2)) + 10;
-					const y = chartConfig.yScale(y1) + dir * 4;
+					const y = yScale(y1) + dir * 4;
 					return [x, y];
 				};
 
@@ -288,21 +290,21 @@ EachFibRetracement.propTypes = {
 	type: PropTypes.string.isRequired,
 	selected: PropTypes.bool.isRequired,
 
-	stroke: PropTypes.string.isRequired,
-	strokeWidth: PropTypes.number.isRequired,
-	opacity: PropTypes.number.isRequired,
-
-	fontFamily: PropTypes.string.isRequired,
-	fontSize: PropTypes.number.isRequired,
-	fontStroke: PropTypes.string.isRequired,
+	appearance: PropTypes.shape({
+		stroke: PropTypes.string.isRequired,
+		strokeWidth: PropTypes.number.isRequired,
+		opacity: PropTypes.number.isRequired,
+		fontFamily: PropTypes.string.isRequired,
+		fontSize: PropTypes.number.isRequired,
+		fontStroke: PropTypes.string.isRequired,
+		edgeStroke: PropTypes.string.isRequired,
+		edgeFill: PropTypes.string.isRequired,
+		nsEdgeFill: PropTypes.string.isRequired,
+		edgeStrokeWidth: PropTypes.number.isRequired,
+		r: PropTypes.number.isRequired,
+	}).isRequired,
 
 	interactive: PropTypes.bool.isRequired,
-
-	r: PropTypes.number.isRequired,
-	nsEdgeFill: PropTypes.string.isRequired,
-	edgeFill: PropTypes.string.isRequired,
-	edgeStroke: PropTypes.string.isRequired,
-	edgeStrokeWidth: PropTypes.number.isRequired,
 	hoverText: PropTypes.object.isRequired,
 
 	index: PropTypes.number,
@@ -313,11 +315,20 @@ EachFibRetracement.propTypes = {
 EachFibRetracement.defaultProps = {
 	yDisplayFormat: d => d.toFixed(2),
 	interactive: true,
-	edgeStroke: "#000000",
-	edgeFill: "#FFFFFF",
-	nsEdgeFill: "#000000",
-	edgeStrokeWidth: 1,
-	r: 5,
+
+	appearance: {
+		stroke: "#000000",
+		strokeWidth: 1,
+		opacity: 0.9,
+		fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
+		fontSize: 10,
+		fontStroke: "#000000",
+		edgeStroke: "#000000",
+		edgeFill: "#FFFFFF",
+		nsEdgeFill: "#000000",
+		edgeStrokeWidth: 1,
+		r: 5,
+	},
 	selected: false,
 
 	onDrag: noop,

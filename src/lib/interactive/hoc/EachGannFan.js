@@ -159,7 +159,8 @@ class EachGannFan extends Component {
 	}
 	getEdgeCircle({ xy, dragHandler, cursor, fill, edge }) {
 		const { hover } = this.state;
-		const { selected, edgeStroke, edgeStrokeWidth, r } = this.props;
+		const { selected, appearance } = this.props;
+		const { edgeStroke, edgeStrokeWidth, r } = appearance;
 		const { onDragComplete } = this.props;
 
 		return <ClickableCircle
@@ -180,9 +181,9 @@ class EachGannFan extends Component {
 	}
 	render() {
 		const { startXY, endXY } = this.props;
-		const { interactive, edgeFill } = this.props;
-		const { stroke, strokeWidth, fill, opacity, fillOpacity } = this.props;
-		const { fontFamily, fontSize, fontStroke } = this.props;
+		const { interactive, appearance  } = this.props;
+		const { edgeFill, stroke, strokeWidth, fill, opacity, fillOpacity } = appearance;
+		const { fontFamily, fontSize, fontStroke } = appearance;
 		const { hoverText, selected } = this.props;
 		const { onDragComplete } = this.props;
 		const { hover } = this.state;
@@ -247,23 +248,23 @@ EachGannFan.propTypes = {
 	endXY: PropTypes.arrayOf(PropTypes.number).isRequired,
 	dy: PropTypes.number,
 
-	stroke: PropTypes.string.isRequired,
-	strokeWidth: PropTypes.number.isRequired,
-	fill: PropTypes.arrayOf(PropTypes.string).isRequired,
-	opacity: PropTypes.number.isRequired,
-	fillOpacity: PropTypes.number.isRequired,
-
-	fontFamily: PropTypes.string.isRequired,
-	fontSize: PropTypes.number.isRequired,
-	fontStroke: PropTypes.string.isRequired,
-
 	interactive: PropTypes.bool.isRequired,
 	selected: PropTypes.bool.isRequired,
 
-	r: PropTypes.number.isRequired,
-	edgeFill: PropTypes.string.isRequired,
-	edgeStroke: PropTypes.string.isRequired,
-	edgeStrokeWidth: PropTypes.number.isRequired,
+	appearance: PropTypes.shape({
+		stroke: PropTypes.string.isRequired,
+		opacity: PropTypes.number.isRequired,
+		fillOpacity: PropTypes.number.isRequired,
+		strokeWidth: PropTypes.number.isRequired,
+		edgeStroke: PropTypes.string.isRequired,
+		edgeFill: PropTypes.string.isRequired,
+		edgeStrokeWidth: PropTypes.number.isRequired,
+		r: PropTypes.number.isRequired,
+		fill: PropTypes.arrayOf(PropTypes.string).isRequired,
+		fontFamily: PropTypes.string.isRequired,
+		fontSize: PropTypes.number.isRequired,
+		fontStroke: PropTypes.string.isRequired,
+	}).isRequired,
 	hoverText: PropTypes.object.isRequired,
 
 	index: PropTypes.number,
@@ -275,10 +276,31 @@ EachGannFan.defaultProps = {
 	yDisplayFormat: d => d.toFixed(2),
 	interactive: true,
 	selected: false,
-	edgeStroke: "#000000",
-	edgeFill: "#FFFFFF",
-	edgeStrokeWidth: 1,
-	r: 5,
+
+	appearance: {
+		stroke: "#000000",
+		opacity: 0.4,
+		fillOpacity: 0.2,
+		strokeWidth: 1,
+		edgeStroke: "#000000",
+		edgeFill: "#FFFFFF",
+		edgeStrokeWidth: 1,
+		r: 5,
+		fill: [
+			"#1f77b4",
+			"#ff7f0e",
+			"#2ca02c",
+			"#d62728",
+			"#9467bd",
+			"#8c564b",
+			"#e377c2",
+			"#7f7f7f",
+		],
+		fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
+		fontSize: 10,
+		fontStroke: "#000000",
+	},
+
 	onDrag: noop,
 	onDragComplete: noop,
 

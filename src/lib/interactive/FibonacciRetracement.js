@@ -4,11 +4,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import { isDefined, isNotDefined, noop } from "../utils";
-import {
-	terminate,
-	saveNodeList,
-	handleClickInteractiveType,
-} from "./utils";
+import { terminate, saveNodeList, handleClickInteractiveType } from "./utils";
 import EachFibRetracement from "./hoc/EachFibRetracement";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
 import HoverTextNearMouse from "./components/HoverTextNearMouse";
@@ -30,7 +26,9 @@ class FibonacciRetracement extends Component {
 		this.handleDragComplete = this.handleDragComplete.bind(this);
 
 		this.terminate = terminate.bind(this);
-		this.handleClick = handleClickInteractiveType("retracements").bind(this);
+		this.handleClick = handleClickInteractiveType("retracements").bind(
+			this
+		);
 		this.saveNodeList = saveNodeList.bind(this);
 
 		this.nodes = [];
@@ -53,47 +51,8 @@ class FibonacciRetracement extends Component {
 					...t,
 					selected: !!t.selected
 				};
-			}),
+			})
 		});
-	}
-	handleStart(xyValue) {
-		const { current } = this.state;
-		if (isNotDefined(current) || isNotDefined(current.x1)) {
-			this.mouseMoved = false;
-			this.setState({
-				current: {
-					x1: xyValue[0],
-					y1: xyValue[1],
-					x2: null,
-					y2: null,
-				}
-			}, () => {
-				this.props.onStart();
-			});
-		}
-	}
-	handleEnd(xyValue, moreProps, e) {
-		const { retracements, current } = this.state;
-
-		if (this.mouseMoved
-			&& isDefined(current)
-			&& isDefined(current.x1)
-		) {
-			const newRetracements = retracements
-				.concat({
-					...current,
-					x2: xyValue[0],
-					y2: xyValue[1],
-					selected: true,
-				});
-
-			this.setState({
-				current: null,
-				retracements: newRetracements,
-			}, () => {
-				this.props.onComplete(newRetracements, moreProps, e);
-			});
-		}
 	}
 	handleDrawRetracement(xyValue) {
 		const { current } = this.state;
@@ -103,7 +62,7 @@ class FibonacciRetracement extends Component {
 				current: {
 					...current,
 					x2: xyValue[0],
-					y2: xyValue[1],
+					y2: xyValue[1]
 				}
 			});
 		}
@@ -128,7 +87,7 @@ class FibonacciRetracement extends Component {
 				x1: retracements[index].x1 - dx,
 				y1: retracements[index].y1,
 				x2: retracements[index].x2,
-				y2: retracements[index].y2,
+				y2: retracements[index].y2
 			}
 		});
 	}
@@ -144,7 +103,7 @@ class FibonacciRetracement extends Component {
 				x1: retracements[index].x1,
 				y1: retracements[index].y1,
 				x2: retracements[index].x2 - dx,
-				y2: retracements[index].y2,
+				y2: retracements[index].y2
 			}
 		});
 	}
@@ -153,27 +112,79 @@ class FibonacciRetracement extends Component {
 		if (isDefined(override)) {
 			const { index, ...rest } = override;
 
-			const newRetracements = retracements
-				.map((each, idx) => idx === index
-					? { ...rest, selected: true }
-					: each);
-			this.setState({
-				override: null,
-				retracements: newRetracements,
-			}, () => {
-				this.props.onComplete(newRetracements, moreProps);
+			const newRetracements = retracements.map(
+				(each, idx) =>
+					(idx === index
+						? { ...each, ...rest, selected: true }
+						: each)
+			);
+			this.setState(
+				{
+					override: null,
+					retracements: newRetracements
+				},
+				() => {
+					this.props.onComplete(newRetracements, moreProps);
+				}
+			);
+		}
+	}
+	handleStart(xyValue) {
+		const { current } = this.state;
+		if (isNotDefined(current) || isNotDefined(current.x1)) {
+			this.mouseMoved = false;
+			this.setState(
+				{
+					current: {
+						x1: xyValue[0],
+						y1: xyValue[1],
+						x2: null,
+						y2: null
+					}
+				},
+				() => {
+					this.props.onStart();
+				}
+			);
+		}
+	}
+	handleEnd(xyValue, moreProps, e) {
+		const { retracements, current } = this.state;
+		const { appearance, type } = this.props;
+
+		if (this.mouseMoved && isDefined(current) && isDefined(current.x1)) {
+			const newRetracements = retracements.concat({
+				...current,
+				x2: xyValue[0],
+				y2: xyValue[1],
+				selected: true,
+				appearance,
+				type,
 			});
+
+			this.setState(
+				{
+					current: null,
+					retracements: newRetracements
+				},
+				() => {
+					this.props.onComplete(newRetracements, moreProps, e);
+				}
+			);
 		}
 	}
 	render() {
 		const { current, override, retracements } = this.state;
 
-		const { stroke, strokeWidth, opacity, fontFamily, fontSize, fontStroke, type } = this.props;
+		const {
+			appearance,
+			type
+		} = this.props;
 		const {
 			currentPositionStroke,
 			currentPositionOpacity,
 			currentPositionStrokeWidth,
-			currentPositionRadius,
+			currentPositionRadius
 		} = this.props;
 
 		const { enabled, hoverText } = this.props;
@@ -183,71 +194,60 @@ class FibonacciRetracement extends Component {
 			? <EachFibRetracement
 				interactive={false}
 				type={type}
-				stroke={stroke}
-				strokeWidth={strokeWidth}
-				opacity={opacity}
-				fontFamily={fontFamily}
-				fontSize={fontSize}
-				fontStroke={fontStroke}
+				appearance={appearance}
 				hoverText={hoverText}
 				{...current}
 			/>
 			: null;
-		return <g>
-			{retracements.map((each, idx) => {
-				return <EachFibRetracement key={idx}
-					ref={this.saveNodeList}
-					index={idx}
-					type={type}
-					selected={each.selected}
-					stroke={stroke}
-					strokeWidth={strokeWidth}
-					opacity={opacity}
-					fontFamily={fontFamily}
-					fontSize={fontSize}
-					fontStroke={fontStroke}
-					hoverText={hoverText}
-					{...(idx === overrideIndex ? override : each)}
-					onDrag={this.handleDrag}
-					onDragComplete={this.handleDragComplete}
-				/>;
-			})}
-			{currentRetracement}
-			<MouseLocationIndicator
-				enabled={enabled}
-				snap={false}
-				r={currentPositionRadius}
-				stroke={currentPositionStroke}
-				opacity={currentPositionOpacity}
-				strokeWidth={currentPositionStrokeWidth}
-				onMouseDown={this.handleStart}
-				onClick={this.handleEnd}
-				onMouseMove={this.handleDrawRetracement}
-			/>
-			<GenericChartComponent
+		return (
+			<g>
+				{retracements.map((each, idx) => {
+					const eachAppearance = isDefined(each.appearance)
+						? { ...appearance, ...each.appearance }
+						: appearance;
 
-				svgDraw={noop}
-				canvasToDraw={getMouseCanvas}
-				canvasDraw={noop}
-
-				onClick={this.handleClick}
-
-				drawOn={["mousemove", "pan", "drag"]}
-			/>
-		</g>;
+					return (
+						<EachFibRetracement
+							key={idx}
+							ref={this.saveNodeList}
+							index={idx}
+							type={each.type}
+							selected={each.selected}
+							hoverText={hoverText}
+							{...(idx === overrideIndex ? override : each)}
+							appearance={eachAppearance}
+							onDrag={this.handleDrag}
+							onDragComplete={this.handleDragComplete}
+						/>
+					);
+				})}
+				{currentRetracement}
+				<MouseLocationIndicator
+					enabled={enabled}
+					snap={false}
+					r={currentPositionRadius}
+					stroke={currentPositionStroke}
+					opacity={currentPositionOpacity}
+					strokeWidth={currentPositionStrokeWidth}
+					onMouseDown={this.handleStart}
+					onClick={this.handleEnd}
+					onMouseMove={this.handleDrawRetracement}
+				/>
+				<GenericChartComponent
+					svgDraw={noop}
+					canvasToDraw={getMouseCanvas}
+					canvasDraw={noop}
+					onClick={this.handleClick}
+					drawOn={["mousemove", "pan", "drag"]}
+				/>
+			</g>
+		);
 	}
 }
 
 FibonacciRetracement.propTypes = {
 	enabled: PropTypes.bool.isRequired,
-	fontFamily: PropTypes.string.isRequired,
-	fontSize: PropTypes.number.isRequired,
-	fontStroke: PropTypes.string,
-	chartCanvasType: PropTypes.string,
 	width: PropTypes.number,
-	strokeWidth: PropTypes.number,
-	stroke: PropTypes.string,
-	opacity: PropTypes.number,
 
 	onStart: PropTypes.func,
 	onComplete: PropTypes.func,
@@ -255,7 +255,8 @@ FibonacciRetracement.propTypes = {
 
 	type: PropTypes.oneOf([
 		"EXTEND", // extends from -Infinity to +Infinity
-		"BOUND", // extends between the set bounds
+		"RAY", // extends to +/-Infinity in one direction
+		"BOUND" // extends between the set bounds
 	]).isRequired,
 	hoverText: PropTypes.object.isRequired,
 
@@ -264,19 +265,26 @@ FibonacciRetracement.propTypes = {
 	currentPositionOpacity: PropTypes.number,
 	currentPositionRadius: PropTypes.number,
 
-	childProps: PropTypes.any,
 	retracements: PropTypes.array.isRequired,
+
+	appearance: PropTypes.shape({
+		stroke: PropTypes.string.isRequired,
+		strokeWidth: PropTypes.number.isRequired,
+		opacity: PropTypes.number.isRequired,
+		fontFamily: PropTypes.string.isRequired,
+		fontSize: PropTypes.number.isRequired,
+		fontStroke: PropTypes.string.isRequired,
+		edgeStroke: PropTypes.string.isRequired,
+		edgeFill: PropTypes.string.isRequired,
+		nsEdgeFill: PropTypes.string.isRequired,
+		edgeStrokeWidth: PropTypes.number.isRequired,
+		r: PropTypes.number.isRequired,
+	}).isRequired
 };
 
 FibonacciRetracement.defaultProps = {
 	enabled: true,
-	stroke: "#000000",
-	strokeWidth: 1,
-	opacity: .9,
-	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
-	fontSize: 10,
-	fontStroke: "#000000",
-	type: "EXTEND",
+	type: "RAY",
 	retracements: [],
 
 	onStart: noop,
@@ -288,13 +296,26 @@ FibonacciRetracement.defaultProps = {
 		enable: true,
 		bgHeight: 18,
 		bgWidth: 120,
-		text: "Click to select object",
+		text: "Click to select object"
 	},
 	currentPositionStroke: "#000000",
 	currentPositionOpacity: 1,
 	currentPositionStrokeWidth: 3,
 	currentPositionRadius: 4,
 
+	appearance: {
+		stroke: "#000000",
+		strokeWidth: 1,
+		opacity: 0.9,
+		fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
+		fontSize: 10,
+		fontStroke: "#000000",
+		edgeStroke: "#000000",
+		edgeFill: "#FFFFFF",
+		nsEdgeFill: "#000000",
+		edgeStrokeWidth: 1,
+		r: 5,
+	}
 };
 
 export default FibonacciRetracement;

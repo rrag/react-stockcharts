@@ -226,15 +226,15 @@ class EventCapture extends Component {
 				panEnabled,
 				draggable: somethingSelected
 			} = getAllPanConditions()
-					.reduce((returnObj, a) => {
-						return {
-							draggable: returnObj.draggable || a.draggable,
-							panEnabled: returnObj.panEnabled && a.panEnabled,
-						};
-					}, {
-						draggable: false,
-						panEnabled: initialPanEnabled,
-					});
+				.reduce((returnObj, a) => {
+					return {
+						draggable: returnObj.draggable || a.draggable,
+						panEnabled: returnObj.panEnabled && a.panEnabled,
+					};
+				}, {
+					draggable: false,
+					panEnabled: initialPanEnabled,
+				});
 
 			const pan = panEnabled && !somethingSelected;
 

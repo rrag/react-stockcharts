@@ -62,13 +62,13 @@ class EquidistantChannel extends Component {
 		});
 	}
 	handleDragChannelComplete(moreProps) {
-		const { override } = this.state;
-		const { channels } = this.props;
+		const { channels, override } = this.state;
+
 		if (isDefined(override)) {
 			const { index, ...rest } = override;
 			const newChannels = channels
 				.map((each, idx) => idx === index
-					? { ...rest, selected: true }
+					? { ...each, ...rest, selected: true }
 					: each);
 			this.setState({
 				override: null,
@@ -122,8 +122,8 @@ class EquidistantChannel extends Component {
 		}
 	}
 	handleEnd(xyValue, moreProps, e) {
-		const { current } = this.state;
-		const { channels } = this.props;
+		const { channels, current } = this.state;
+		const { appearance } = this.props;
 
 		if (this.mouseMoved
 			&& isDefined(current)
@@ -138,8 +138,14 @@ class EquidistantChannel extends Component {
 					}
 				});
 			} else {
-				const newChannels = channels
-					.concat({ ...current, selected: true });
+				const newChannels = [
+					...channels,
+					{
+						...current, selected: true,
+						appearance,
+					}
+				];
+
 				this.setState({
 					current: null,
 					channels: newChannels,
@@ -151,7 +157,7 @@ class EquidistantChannel extends Component {
 		}
 	}
 	render() {
-		const { stroke, opacity, strokeWidth, fill } = this.props;
+		const { appearance } = this.props;
 		const { enabled } = this.props;
 		const { currentPositionRadius, currentPositionStroke } = this.props;
 		const { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
@@ -164,25 +170,23 @@ class EquidistantChannel extends Component {
 			? <EachEquidistantChannel
 				interactive={false}
 				{...current}
-				stroke={stroke}
-				strokeWidth={strokeWidth}
-				fill={fill}
-				hoverText={hoverText}
-				opacity={opacity} />
+				appearance={appearance}
+				hoverText={hoverText} />
 			: null;
 
 		return <g>
 			{channels.map((each, idx) => {
+				const eachAppearance = isDefined(each.appearance)
+					? { ...appearance, ...each.appearance }
+					: appearance;
+
 				return <EachEquidistantChannel key={idx}
 					ref={this.saveNodeList}
 					index={idx}
 					selected={each.selected}
-					{...(idx === overrideIndex ? override : each)}
-					stroke={stroke}
-					strokeWidth={strokeWidth}
-					fill={fill}
 					hoverText={hoverText}
-					opacity={opacity}
+					{...(idx === overrideIndex ? override : each)}
+					appearance={eachAppearance}
 					onDrag={this.handleDragChannel}
 					onDragComplete={this.handleDragChannelComplete}
 				/>;
@@ -215,37 +219,42 @@ class EquidistantChannel extends Component {
 
 EquidistantChannel.propTypes = {
 	enabled: PropTypes.bool.isRequired,
+
 	onStart: PropTypes.func.isRequired,
 	onComplete: PropTypes.func.isRequired,
 	onSelect: PropTypes.func.isRequired,
-	strokeWidth: PropTypes.number.isRequired,
-	fill: PropTypes.string,
+
 	currentPositionStroke: PropTypes.string,
 	currentPositionStrokeWidth: PropTypes.number,
 	currentPositionOpacity: PropTypes.number,
 	currentPositionRadius: PropTypes.number,
-	stroke: PropTypes.string,
-	opacity: PropTypes.number,
-	endPointCircleFill: PropTypes.string,
-	endPointCircleRadius: PropTypes.number,
+
 	hoverText: PropTypes.object.isRequired,
 	channels: PropTypes.array.isRequired,
+
+	appearance: PropTypes.shape({
+		stroke: PropTypes.string.isRequired,
+		opacity: PropTypes.number.isRequired,
+		strokeWidth: PropTypes.number.isRequired,
+		fill: PropTypes.string.isRequired,
+		edgeStroke: PropTypes.string.isRequired,
+		edgeFill: PropTypes.string.isRequired,
+		edgeFill2: PropTypes.string.isRequired,
+		edgeStrokeWidth: PropTypes.number.isRequired,
+		r: PropTypes.number.isRequired,
+	}).isRequired
 };
 
 EquidistantChannel.defaultProps = {
-	stroke: "#000000",
-	opacity: 0.7,
-	strokeWidth: 1,
 	onStart: noop,
 	onComplete: noop,
 	onSelect: noop,
+
 	currentPositionStroke: "#000000",
 	currentPositionOpacity: 1,
 	currentPositionStrokeWidth: 3,
 	currentPositionRadius: 4,
-	endPointCircleFill: "#000000",
-	endPointCircleRadius: 5,
-	fill: "#8AAFE2",
+
 	hoverText: {
 		...HoverTextNearMouse.defaultProps,
 		enable: true,
@@ -254,6 +263,17 @@ EquidistantChannel.defaultProps = {
 		text: "Click to select object",
 	},
 	channels: [],
+	appearance: {
+		stroke: "#000000",
+		opacity: 0.7,
+		strokeWidth: 1,
+		fill: "#8AAFE2",
+		edgeStroke: "#000000",
+		edgeFill: "#FFFFFF",
+		edgeFill2: "#250B98",
+		edgeStrokeWidth: 1,
+		r: 5,
+	}
 };
 
 export default EquidistantChannel;

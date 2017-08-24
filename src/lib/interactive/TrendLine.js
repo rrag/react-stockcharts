@@ -73,6 +73,7 @@ class TrendLine extends Component {
 			const newTrends = trends
 				.map((each, idx) => idx === override.index
 					? {
+						...each,
 						start: [override.x1Value, override.y1Value],
 						end: [override.x2Value, override.y2Value],
 						selected: true,
@@ -123,6 +124,7 @@ class TrendLine extends Component {
 	}
 	handleEnd(xyValue, moreProps, e) {
 		const { trends, current } = this.state;
+		const { appearance, type } = this.props;
 
 		if (this.mouseMoved
 			&& isDefined(current)
@@ -130,7 +132,13 @@ class TrendLine extends Component {
 		) {
 			const newTrends = [
 				...trends,
-				{ start: current.start, end: xyValue, selected: true }
+				{
+					start: current.start,
+					end: xyValue,
+					selected: true,
+					appearance,
+					type,
+				}
 			];
 			this.setState({
 				current: null,
@@ -141,7 +149,7 @@ class TrendLine extends Component {
 		}
 	}
 	render() {
-		const { stroke, opacity, strokeWidth } = this.props;
+		const { appearance } = this.props;
 		const { enabled, snap, shouldDisableSnap, snapTo, type } = this.props;
 		const { currentPositionRadius, currentPositionStroke } = this.props;
 		const { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
@@ -155,26 +163,33 @@ class TrendLine extends Component {
 				y1Value={current.start[1]}
 				x2Value={current.end[0]}
 				y2Value={current.end[1]}
-				stroke={stroke}
-				strokeWidth={strokeWidth}
-				opacity={opacity} />
+				stroke={appearance.stroke}
+				strokeWidth={appearance.strokeWidth}
+				opacity={appearance.opacity} />
 			: null;
 
 		return <g>
 			{trends.map((each, idx) => {
+				const eachAppearance = isDefined(each.appearance)
+					? { ...appearance, ...each.appearance }
+					: appearance;
 
 				return <EachTrendLine key={idx}
 					ref={this.saveNodeList}
 					index={idx}
-					type={type}
+					type={each.type}
 					selected={each.selected}
 					x1Value={getValueFromOverride(override, idx, "x1Value", each.start[0])}
 					y1Value={getValueFromOverride(override, idx, "y1Value", each.start[1])}
 					x2Value={getValueFromOverride(override, idx, "x2Value", each.end[0])}
 					y2Value={getValueFromOverride(override, idx, "y2Value", each.end[1])}
-					stroke={stroke}
-					strokeWidth={strokeWidth}
-					opacity={opacity}
+					stroke={eachAppearance.stroke}
+					strokeWidth={eachAppearance.strokeWidth}
+					opacity={eachAppearance.opacity}
+					edgeStroke={eachAppearance.edgeStroke}
+					edgeFill={eachAppearance.edgeFill}
+					edgeStrokeWidth={eachAppearance.edgeStrokeWidth}
+					r={eachAppearance.r}
 					hoverText={hoverText}
 					onDrag={this.handleDragLine}
 					onDragComplete={this.handleDragLineComplete}
@@ -221,13 +236,10 @@ TrendLine.propTypes = {
 	onComplete: PropTypes.func.isRequired,
 	onSelect: PropTypes.func,
 
-	strokeWidth: PropTypes.number.isRequired,
 	currentPositionStroke: PropTypes.string,
 	currentPositionStrokeWidth: PropTypes.number,
 	currentPositionOpacity: PropTypes.number,
 	currentPositionRadius: PropTypes.number,
-	stroke: PropTypes.string,
-	opacity: PropTypes.number,
 	type: PropTypes.oneOf([
 		"XLINE", // extends from -Infinity to +Infinity
 		"RAY", // extends to +/-Infinity in one direction
@@ -235,29 +247,31 @@ TrendLine.propTypes = {
 	]),
 	hoverText: PropTypes.object.isRequired,
 
-	endPointCircleFill: PropTypes.string,
-	endPointCircleRadius: PropTypes.number,
 	trends: PropTypes.array.isRequired,
+
+	appearance: PropTypes.shape({
+		stroke: PropTypes.string.isRequired,
+		opacity: PropTypes.number.isRequired,
+		strokeWidth: PropTypes.number.isRequired,
+		edgeStrokeWidth: PropTypes.number.isRequired,
+		edgeFill: PropTypes.string.isRequired,
+		edgeStroke: PropTypes.string.isRequired,
+	}).isRequired
 };
 
 TrendLine.defaultProps = {
-	stroke: "#000000",
 	type: "XLINE",
-	opacity: 0.7,
-	strokeWidth: 1,
 
 	onStart: noop,
 	onComplete: noop,
 	onSelect: noop,
 
-	shouldDisableSnap: e => (e.button === 2 || e.shiftKey),
 	currentPositionStroke: "#000000",
 	currentPositionOpacity: 1,
 	currentPositionStrokeWidth: 3,
 	currentPositionRadius: 0,
-	endPointCircleFill: "#000000",
-	endPointCircleRadius: 5,
-	trends: [],
+
+	shouldDisableSnap: e => (e.button === 2 || e.shiftKey),
 	hoverText: {
 		...HoverTextNearMouse.defaultProps,
 		enable: true,
@@ -265,6 +279,17 @@ TrendLine.defaultProps = {
 		bgWidth: 120,
 		text: "Click to select object",
 	},
+	trends: [],
+
+	appearance: {
+		stroke: "#000000",
+		opacity: 0.7,
+		strokeWidth: 1,
+		edgeStrokeWidth: 1,
+		edgeFill: "#FFFFFF",
+		edgeStroke: "#000000",
+		r: 6,
+	}
 };
 
 export default TrendLine;

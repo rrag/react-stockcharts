@@ -60,7 +60,7 @@ class CandlestickChart extends React.Component {
 		this.state = {
 			enableTrendLine: false,
 			trends_1: [
-				{ start: [1606, 56], end: [1711, 53] }
+				{ start: [1606, 56], end: [1711, 53], appearance: { stroke: "green" }, type: "XLINE" }
 			],
 			trends_3: []
 		};

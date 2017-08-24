@@ -218,7 +218,6 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 					<FibonacciRetracement
 						ref={this.saveInteractiveNode(1)}
 						enabled={this.state.enableFib}
-						type="BOUND"
 						retracements={this.state.retracements_1}
 						onComplete={this.onFibComplete1}/>
 				</Chart>

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
+import { ascending as d3Ascending } from "d3-array";
 import { noop } from "../../utils";
 import { saveNodeType, isHover } from "../utils";
 import { getCurrentItem } from "../../utils/ChartDataUtil";
@@ -17,7 +18,6 @@ class EachTrendLine extends Component {
 		this.handleEdge2Drag = this.handleEdge2Drag.bind(this);
 		this.handleLineDragStart = this.handleLineDragStart.bind(this);
 		this.handleLineDrag = this.handleLineDrag.bind(this);
-		this.handleDragComplete = this.handleDragComplete.bind(this);
 
 		this.handleHover = this.handleHover.bind(this);
 
@@ -101,12 +101,6 @@ class EachTrendLine extends Component {
 			y2Value,
 		});
 	}
-	handleDragComplete() {
-		const { index } = this.props;
-		const { onDragComplete } = this.props;
-
-		onDragComplete(index);
-	}
 	handleHover(moreProps) {
 		if (this.state.hover !== moreProps.hovering) {
 			this.setState({
@@ -157,7 +151,7 @@ class EachTrendLine extends Component {
 				interactiveCursorClass={lineInteractiveCursor}
 				onDragStart={this.handleLineDragStart}
 				onDrag={this.handleLineDrag}
-				onDragComplete={this.handleDragComplete} />
+				onDragComplete={onDragComplete} />
 			<ClickableCircle
 				ref={this.saveNodeType("edge1")}
 				show={selected || hover}
@@ -183,7 +177,7 @@ class EachTrendLine extends Component {
 				opacity={1}
 				interactiveCursorClass={edgeInteractiveCursor}
 				onDrag={this.handleEdge2Drag}
-				onDragComplete={this.handleDragComplete} />
+				onDragComplete={onDragComplete} />
 			<HoverTextNearMouse
 				show={hoverTextEnabled && hover && !selected}
 				{...restHoverTextProps} />
@@ -193,13 +187,14 @@ class EachTrendLine extends Component {
 
 export function getNewXY(moreProps) {
 	const { xScale, chartConfig: { yScale }, xAccessor, plotData, mouseXY } = moreProps;
-	const [, mouseY] = mouseXY;
+	const mouseY = mouseXY[1];
 
 	const currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
 	const x = xAccessor(currentItem);
-	const [small, big] = yScale.domain().sort();
+	const [small, big] = yScale.domain().slice().sort(d3Ascending);
 	const y = yScale.invert(mouseY);
 	const newY = Math.min(Math.max(y, small), big);
+
 	return [x, newY];
 }
 
@@ -211,8 +206,6 @@ EachTrendLine.propTypes = {
 
 	index: PropTypes.number,
 
-	stroke: PropTypes.string.isRequired,
-	strokeWidth: PropTypes.number.isRequired,
 	type: PropTypes.oneOf([
 		"XLINE", // extends from -Infinity to +Infinity
 		"RAY", // extends to +/-Infinity in one direction
@@ -232,6 +225,8 @@ EachTrendLine.propTypes = {
 
 	selected: PropTypes.bool,
 
+	stroke: PropTypes.string.isRequired,
+	strokeWidth: PropTypes.number.isRequired,
 	edgeStrokeWidth: PropTypes.number.isRequired,
 	edgeStroke: PropTypes.string.isRequired,
 	edgeInteractiveCursor: PropTypes.string.isRequired,

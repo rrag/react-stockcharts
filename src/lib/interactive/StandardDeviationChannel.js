@@ -62,12 +62,13 @@ class StandardDeviationChannel extends Component {
 		});
 	}
 	handleDragLineComplete(moreProps) {
-		const { override } = this.state;
+		const { override, channels } = this.state;
 		if (isDefined(override)) {
-			const { channels } = this.props;
+
 			const newChannels = channels
 				.map((each, idx) => idx === override.index
 					? {
+						...each,
 						start: [override.x1Value, override.y1Value],
 						end: [override.x2Value, override.y2Value],
 						selected: true,
@@ -111,15 +112,20 @@ class StandardDeviationChannel extends Component {
 		}
 	}
 	handleEnd(xyValue, moreProps, e) {
-		const { current } = this.state;
-		const { channels } = this.props;
+		const { current, channels } = this.state;
+		const { appearance } = this.props;
 
 		if (this.mouseMoved
 			&& isDefined(current)
 			&& isDefined(current.start)
 		) {
 			const newChannels = channels.concat(
-				{ start: current.start, end: xyValue, selected: true, }
+				{
+					start: current.start,
+					end: xyValue,
+					selected: true,
+					appearance,
+				}
 			);
 
 			this.setState({
@@ -131,7 +137,7 @@ class StandardDeviationChannel extends Component {
 		}
 	}
 	render() {
-		const { stroke, opacity, strokeWidth } = this.props;
+		const { appearance } = this.props;
 		const { enabled, snapTo } = this.props;
 		const { currentPositionRadius, currentPositionStroke } = this.props;
 		const { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
@@ -144,25 +150,29 @@ class StandardDeviationChannel extends Component {
 				interactive={false}
 				x1Value={current.start[0]}
 				x2Value={current.end[0]}
-				stroke={stroke}
-				strokeWidth={strokeWidth}
+				appearance={appearance}
 				hoverText={hoverText}
-				opacity={opacity} />
+			/>
 			: null;
 
 		return <g>
 			{channels.map((each, idx) => {
+				const eachAppearance = isDefined(each.appearance)
+					? { ...appearance, ...each.appearance }
+					: appearance;
+
 				return <EachLinearRegressionChannel key={idx}
 					ref={this.saveNodeList}
 					index={idx}
 					selected={each.selected}
+
 					x1Value={getValueFromOverride(override, idx, "x1Value", each.start[0])}
 					x2Value={getValueFromOverride(override, idx, "x2Value", each.end[0])}
-					stroke={stroke}
-					strokeWidth={strokeWidth}
-					hoverText={hoverText}
-					opacity={opacity}
+
+					appearance={eachAppearance}
 					snapTo={snapTo}
+					hoverText={hoverText}
+
 					onDrag={this.handleDragLine}
 					onDragComplete={this.handleDragLineComplete}
 					edgeInteractiveCursor="react-stockcharts-move-cursor"
@@ -202,24 +212,38 @@ StandardDeviationChannel.propTypes = {
 	onComplete: PropTypes.func.isRequired,
 	onSelect: PropTypes.func,
 
-	strokeWidth: PropTypes.number.isRequired,
 	currentPositionStroke: PropTypes.string,
 	currentPositionStrokeWidth: PropTypes.number,
 	currentPositionOpacity: PropTypes.number,
 	currentPositionRadius: PropTypes.number,
-	stroke: PropTypes.string,
-	opacity: PropTypes.number,
-	endPointCircleFill: PropTypes.string,
-	endPointCircleRadius: PropTypes.number,
+
+	appearance: PropTypes.shape({
+		stroke: PropTypes.string.isRequired,
+		opacity: PropTypes.number.isRequired,
+		strokeWidth: PropTypes.number.isRequired,
+		fill: PropTypes.string.isRequired,
+		edgeStrokeWidth: PropTypes.number.isRequired,
+		edgeStroke: PropTypes.string.isRequired,
+		edgeFill: PropTypes.string.isRequired,
+		r: PropTypes.number.isRequired,
+	}).isRequired,
+
 	hoverText: PropTypes.object.isRequired,
 	channels: PropTypes.array.isRequired,
 };
 
 StandardDeviationChannel.defaultProps = {
-	stroke: "#000000",
 	snapTo: d => d.close,
-	opacity: 0.7,
-	strokeWidth: 1,
+	appearance: {
+		stroke: "#000000",
+		opacity: 0.7,
+		strokeWidth: 1,
+		fill: "#8AAFE2",
+		edgeStrokeWidth: 2,
+		edgeStroke: "#000000",
+		edgeFill: "#FFFFFF",
+		r: 5,
+	},
 
 	onStart: noop,
 	onComplete: noop,
@@ -229,8 +253,7 @@ StandardDeviationChannel.defaultProps = {
 	currentPositionOpacity: 1,
 	currentPositionStrokeWidth: 3,
 	currentPositionRadius: 4,
-	endPointCircleFill: "#000000",
-	endPointCircleRadius: 5,
+
 	hoverText: {
 		...HoverTextNearMouse.defaultProps,
 		enable: true,
