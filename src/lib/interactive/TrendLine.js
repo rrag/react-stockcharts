@@ -152,7 +152,7 @@ class TrendLine extends Component {
 		const { appearance } = this.props;
 		const { enabled, snap, shouldDisableSnap, snapTo, type } = this.props;
 		const { currentPositionRadius, currentPositionStroke } = this.props;
-		const { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
+		const { currentPositionstrokeOpacity, currentPositionStrokeWidth } = this.props;
 		const { hoverText } = this.props;
 		const { current, override, trends } = this.state;
 
@@ -165,7 +165,7 @@ class TrendLine extends Component {
 				y2Value={current.end[1]}
 				stroke={appearance.stroke}
 				strokeWidth={appearance.strokeWidth}
-				opacity={appearance.opacity} />
+				strokeOpacity={appearance.strokeOpacity} />
 			: null;
 
 		return <g>
@@ -185,7 +185,7 @@ class TrendLine extends Component {
 					y2Value={getValueFromOverride(override, idx, "y2Value", each.end[1])}
 					stroke={eachAppearance.stroke}
 					strokeWidth={eachAppearance.strokeWidth}
-					opacity={eachAppearance.opacity}
+					strokeOpacity={eachAppearance.strokeOpacity}
 					edgeStroke={eachAppearance.edgeStroke}
 					edgeFill={eachAppearance.edgeFill}
 					edgeStrokeWidth={eachAppearance.edgeStrokeWidth}
@@ -205,7 +205,7 @@ class TrendLine extends Component {
 				snapTo={snapTo}
 				r={currentPositionRadius}
 				stroke={currentPositionStroke}
-				opacity={currentPositionOpacity}
+				strokeOpacity={currentPositionstrokeOpacity}
 				strokeWidth={currentPositionStrokeWidth}
 				onMouseDown={this.handleStart}
 				onClick={this.handleEnd}
@@ -238,7 +238,7 @@ TrendLine.propTypes = {
 
 	currentPositionStroke: PropTypes.string,
 	currentPositionStrokeWidth: PropTypes.number,
-	currentPositionOpacity: PropTypes.number,
+	currentPositionstrokeOpacity: PropTypes.number,
 	currentPositionRadius: PropTypes.number,
 	type: PropTypes.oneOf([
 		"XLINE", // extends from -Infinity to +Infinity
@@ -251,7 +251,7 @@ TrendLine.propTypes = {
 
 	appearance: PropTypes.shape({
 		stroke: PropTypes.string.isRequired,
-		opacity: PropTypes.number.isRequired,
+		strokeOpacity: PropTypes.number.isRequired,
 		strokeWidth: PropTypes.number.isRequired,
 		edgeStrokeWidth: PropTypes.number.isRequired,
 		edgeFill: PropTypes.string.isRequired,
@@ -267,7 +267,7 @@ TrendLine.defaultProps = {
 	onSelect: noop,
 
 	currentPositionStroke: "#000000",
-	currentPositionOpacity: 1,
+	currentPositionstrokeOpacity: 1,
 	currentPositionStrokeWidth: 3,
 	currentPositionRadius: 0,
 
@@ -283,7 +283,7 @@ TrendLine.defaultProps = {
 
 	appearance: {
 		stroke: "#000000",
-		opacity: 0.7,
+		strokeOpacity: 0.7,
 		strokeWidth: 1,
 		edgeStrokeWidth: 1,
 		edgeFill: "#FFFFFF",

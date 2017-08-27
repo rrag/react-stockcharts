@@ -292,3 +292,10 @@ export function replaceAtIndex(array, index, value) {
 	}
 	return array;
 }
+
+// copied from https://github.com/lodash/lodash/blob/master/forOwn.js
+export function forOwn(obj, iteratee) {
+	const object = Object(obj);
+	Object.keys(object)
+		.forEach(key => iteratee(object[key], key, object));
+}

@@ -56,14 +56,14 @@ class ChannelWithArea extends Component {
 		return false;
 	}
 	drawOnCanvas(ctx, moreProps) {
-		const { stroke, strokeWidth, opacity, fill } = this.props;
+		const { stroke, strokeWidth, fillOpacity, strokeOpacity, fill } = this.props;
 		const { line1, line2 } = helper(this.props, moreProps);
 
 		if (isDefined(line1)) {
 			const { x1, y1, x2, y2 } = line1;
 
 			ctx.lineWidth = strokeWidth;
-			ctx.strokeStyle = hexToRGBA(stroke, opacity);
+			ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
 
 			ctx.beginPath();
 			ctx.moveTo(x1, y1);
@@ -80,7 +80,7 @@ class ChannelWithArea extends Component {
 				ctx.lineTo(x2, line2Y2);
 				ctx.stroke();
 
-				ctx.fillStyle = hexToRGBA(fill, opacity);
+				ctx.fillStyle = hexToRGBA(fill, fillOpacity);
 				ctx.beginPath();
 				ctx.moveTo(x1, y1);
 
@@ -94,7 +94,7 @@ class ChannelWithArea extends Component {
 		}
 	}
 	renderSVG(moreProps) {
-		const { stroke, strokeWidth, opacity, fill } = this.props;
+		const { stroke, strokeWidth, fillOpacity, fill, strokeOpacity } = this.props;
 		const { line1, line2 } = helper(this.props, moreProps);
 
 		if (isDefined(line1)) {
@@ -103,7 +103,7 @@ class ChannelWithArea extends Component {
 				? <line
 					strokeWidth={strokeWidth}
 					stroke={stroke}
-					strokeOpacity={opacity}
+					strokeOpacity={strokeOpacity}
 					x1={x1}
 					y1={line2.y1}
 					x2={x2}
@@ -113,7 +113,7 @@ class ChannelWithArea extends Component {
 			const area = isDefined(line2)
 				? <path
 					fill={fill}
-					fillOpacity={opacity}
+					fillOpacity={fillOpacity}
 					d={getPath(line1, line2)}
 				/>
 				: null;
@@ -123,7 +123,7 @@ class ChannelWithArea extends Component {
 					<line
 						strokeWidth={strokeWidth}
 						stroke={stroke}
-						strokeOpacity={opacity}
+						strokeOpacity={strokeOpacity}
 						x1={x1}
 						y1={y1}
 						x2={x2}
@@ -230,7 +230,8 @@ ChannelWithArea.propTypes = {
 	stroke: PropTypes.string.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
 	fill: PropTypes.string.isRequired,
-	opacity: PropTypes.number.isRequired,
+	fillOpacity: PropTypes.number.isRequired,
+	strokeOpacity: PropTypes.number.isRequired,
 
 	type: PropTypes.oneOf([
 		"XLINE", // extends from -Infinity to +Infinity

@@ -78,8 +78,9 @@ class EachLinearRegressionChannel extends Component {
 		const {
 			stroke,
 			strokeWidth,
+			strokeOpacity,
 			fill,
-			opacity,
+			fillOpacity,
 			r,
 			edgeStrokeWidth,
 			edgeFill,
@@ -104,7 +105,8 @@ class EachLinearRegressionChannel extends Component {
 				fill={fill}
 				stroke={stroke}
 				strokeWidth={(hover || selected) ? strokeWidth + 1 : strokeWidth}
-				opacity={opacity} />
+				strokeOpacity={strokeOpacity}
+				fillOpacity={fillOpacity} />
 			<ClickableCircle
 				ref={this.saveNodeType("edge1")}
 				show={selected || hover}
@@ -113,7 +115,6 @@ class EachLinearRegressionChannel extends Component {
 				fill={edgeFill}
 				stroke={edgeStroke}
 				strokeWidth={edgeStrokeWidth}
-				opacity={1}
 				interactiveCursorClass={edgeInteractiveCursor}
 				onDrag={this.handleEdge1Drag}
 				onDragComplete={onDragComplete} />
@@ -125,7 +126,6 @@ class EachLinearRegressionChannel extends Component {
 				fill={edgeFill}
 				stroke={edgeStroke}
 				strokeWidth={edgeStrokeWidth}
-				opacity={1}
 				interactiveCursorClass={edgeInteractiveCursor}
 				onDrag={this.handleEdge2Drag}
 				onDragComplete={onDragComplete} />
@@ -156,7 +156,8 @@ EachLinearRegressionChannel.propTypes = {
 
 	appearance: PropTypes.shape({
 		stroke: PropTypes.string.isRequired,
-		opacity: PropTypes.number.isRequired,
+		fillOpacity: PropTypes.number.isRequired,
+		strokeOpacity: PropTypes.number.isRequired,
 		strokeWidth: PropTypes.number.isRequired,
 		fill: PropTypes.string.isRequired,
 		edgeStrokeWidth: PropTypes.number.isRequired,
@@ -181,7 +182,8 @@ EachLinearRegressionChannel.defaultProps = {
 
 	appearance: {
 		stroke: "#000000",
-		opacity: 0.7,
+		fillOpacity: 0.7,
+		strokeOpacity: 1,
 		strokeWidth: 1,
 		fill: "#8AAFE2",
 		edgeStrokeWidth: 2,

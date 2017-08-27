@@ -143,8 +143,8 @@ class EachFibRetracement extends Component {
 	render() {
 		const { x1, x2, y1, y2 } = this.props;
 		const { interactive, yDisplayFormat, type, appearance } = this.props;
-		const { stroke, strokeWidth, opacity } = appearance;
-		const { fontFamily, fontSize, fontStroke } = appearance;
+		const { stroke, strokeWidth, strokeOpacity } = appearance;
+		const { fontFamily, fontSize, fontFill } = appearance;
 		const { edgeStroke, edgeFill, nsEdgeFill, edgeStrokeWidth, r } = appearance;
 		const { hoverText, selected } = this.props;
 		const { hover } = this.state;
@@ -218,7 +218,7 @@ class EachFibRetracement extends Component {
 						y2Value={line.y}
 						stroke={stroke}
 						strokeWidth={(hover || selected) ? strokeWidth + 1 : strokeWidth}
-						opacity={opacity}
+						strokeOpacity={strokeOpacity}
 						interactiveCursorClass={interactiveCursorClass}
 
 						onDragStart={this.handleLineDragStart}
@@ -230,7 +230,7 @@ class EachFibRetracement extends Component {
 						xyProvider={xyProvider}
 						fontFamily={fontFamily}
 						fontSize={fontSize}
-						fill={fontStroke}>{text}</Text>
+						fill={fontFill}>{text}</Text>
 					<ClickableCircle
 						ref={this.saveNodeType("edge1")}
 						show={selected || hover}
@@ -240,7 +240,6 @@ class EachFibRetracement extends Component {
 						fill={firstOrLast ? nsEdgeFill : edgeFill}
 						stroke={edgeStroke}
 						strokeWidth={edgeStrokeWidth}
-						opacity={1}
 						interactiveCursorClass={interactiveEdgeCursorClass}
 						onDrag={edge1DragHandler}
 						onDragComplete={onDragComplete} />
@@ -253,7 +252,6 @@ class EachFibRetracement extends Component {
 						fill={firstOrLast ? nsEdgeFill : edgeFill}
 						stroke={edgeStroke}
 						strokeWidth={edgeStrokeWidth}
-						opacity={1}
 						interactiveCursorClass={interactiveEdgeCursorClass}
 						onDrag={edge2DragHandler}
 						onDragComplete={onDragComplete} />
@@ -293,10 +291,10 @@ EachFibRetracement.propTypes = {
 	appearance: PropTypes.shape({
 		stroke: PropTypes.string.isRequired,
 		strokeWidth: PropTypes.number.isRequired,
-		opacity: PropTypes.number.isRequired,
+		strokeOpacity: PropTypes.number.isRequired,
 		fontFamily: PropTypes.string.isRequired,
 		fontSize: PropTypes.number.isRequired,
-		fontStroke: PropTypes.string.isRequired,
+		fontFill: PropTypes.string.isRequired,
 		edgeStroke: PropTypes.string.isRequired,
 		edgeFill: PropTypes.string.isRequired,
 		nsEdgeFill: PropTypes.string.isRequired,
@@ -319,10 +317,10 @@ EachFibRetracement.defaultProps = {
 	appearance: {
 		stroke: "#000000",
 		strokeWidth: 1,
-		opacity: 0.9,
+		strokeOpacity: 1,
 		fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 		fontSize: 10,
-		fontStroke: "#000000",
+		fontFill: "#000000",
 		edgeStroke: "#000000",
 		edgeFill: "#FFFFFF",
 		nsEdgeFill: "#000000",

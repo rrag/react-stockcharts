@@ -43,14 +43,15 @@ class Brush extends Component {
 		const { rect } = this.state;
 		if (isDefined(rect)) {
 			const { x, y, height, width } = rect;
-			const { stroke, fill, opacity, strokeDashArray } = this.props;
+			const { stroke, fill, strokeDashArray } = this.props;
+			const { strokeOpacity, fillOpacity } = this.props;
 
 			const dashArray = getStrokeDasharray(strokeDashArray)
 				.split(",")
 				.map(d => +d);
 
-			ctx.strokeStyle = hexToRGBA(stroke, opacity);
-			ctx.fillStyle = hexToRGBA(fill, opacity);
+			ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
+			ctx.fillStyle = hexToRGBA(fill, fillOpacity);
 			ctx.setLineDash(dashArray);
 			ctx.beginPath();
 			ctx.fillRect(x, y, width, height);
@@ -61,7 +62,8 @@ class Brush extends Component {
 		const { rect } = this.state;
 		if (isDefined(rect)) {
 			const { x, y, height, width } = rect;
-			const { stroke, opacity, strokeDashArray } = this.props;
+			const { stroke, strokeDashArray } = this.props;
+			const { strokeOpacity, fillOpacity } = this.props;
 
 			const dashArray = getStrokeDasharray(strokeDashArray)
 				.split(",")
@@ -71,7 +73,8 @@ class Brush extends Component {
 				<rect strokeDasharray={dashArray}
 					stroke={stroke}
 					fill="none"
-					strokeOpacity={opacity}
+					strokeOpacity={strokeOpacity}
+					fillOpacity={fillOpacity}
 					x={x}
 					y={y}
 					width={width}
@@ -184,7 +187,8 @@ Brush.propTypes = {
 	type: PropTypes.oneOf(["1D", "2D"]),
 	stroke: PropTypes.string,
 	fill: PropTypes.string,
-	opacity: PropTypes.number,
+	strokeOpacity: PropTypes.number,
+	fillOpacity: PropTypes.number,
 	interactiveState: PropTypes.object,
 	strokeDashArray: PropTypes.string,
 };
@@ -192,7 +196,8 @@ Brush.propTypes = {
 Brush.defaultProps = {
 	type: "2D",
 	stroke: "#000000",
-	opacity: 0.3,
+	fillOpacity: 0.3,
+	strokeOpacity: 1,
 	fill: "#3h3h3h",
 	onBrush: noop,
 	onStart: noop,

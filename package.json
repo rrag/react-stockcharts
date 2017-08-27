@@ -17,6 +17,7 @@
     "build:docs": "echo 'DOCS - BUILD' && cross-env BABEL_ENV=es webpack --config config/webpack.config.js --env docs",
     "prebuild": "npm run clean && npm run lint",
     "build": "npm run modernizr && npm run docs",
+    "babel:watch": "cross-env BABEL_ENV=cjs babel src -watch --out-dir build",
     "babel:cjs": "cross-env BABEL_ENV=cjs babel src --out-dir build",
     "babel:es": "cross-env BABEL_ENV=es babel src --out-dir build/es",
     "release": "npm run clean && npm run babel:cjs && npm run babel:es && cp README.md build/ && node scripts/release.js",

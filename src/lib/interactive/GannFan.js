@@ -199,7 +199,7 @@ GannFan.propTypes = {
 
 	appearance: PropTypes.shape({
 		stroke: PropTypes.string.isRequired,
-		opacity: PropTypes.number.isRequired,
+		strokeOpacity: PropTypes.number.isRequired,
 		fillOpacity: PropTypes.number.isRequired,
 		strokeWidth: PropTypes.number.isRequired,
 		edgeStroke: PropTypes.string.isRequired,
@@ -209,7 +209,7 @@ GannFan.propTypes = {
 		fill: PropTypes.arrayOf(PropTypes.string).isRequired,
 		fontFamily: PropTypes.string.isRequired,
 		fontSize: PropTypes.number.isRequired,
-		fontStroke: PropTypes.string.isRequired,
+		fontFill: PropTypes.string.isRequired,
 	}).isRequired,
 	hoverText: PropTypes.object.isRequired,
 
@@ -219,8 +219,8 @@ GannFan.propTypes = {
 GannFan.defaultProps = {
 	appearance: {
 		stroke: "#000000",
-		opacity: 0.4,
 		fillOpacity: 0.2,
+		strokeOpacity: 1,
 		strokeWidth: 1,
 		edgeStroke: "#000000",
 		edgeFill: "#FFFFFF",
@@ -238,7 +238,7 @@ GannFan.defaultProps = {
 		],
 		fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 		fontSize: 10,
-		fontStroke: "#000000",
+		fontFill: "#000000",
 	},
 
 	onStart: noop,

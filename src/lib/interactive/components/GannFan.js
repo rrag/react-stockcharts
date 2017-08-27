@@ -57,12 +57,12 @@ class GannFan extends Component {
 		return hovering;
 	}
 	drawOnCanvas(ctx, moreProps) {
-		const { stroke, strokeWidth, opacity, fill, fillOpacity } = this.props;
+		const { stroke, strokeWidth, fillOpacity, strokeOpacity, fill } = this.props;
 
 		const lines = helper(this.props, moreProps);
 
 		ctx.lineWidth = strokeWidth;
-		ctx.strokeStyle = hexToRGBA(stroke, opacity);
+		ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
 
 
 		lines.forEach(line => {
@@ -87,7 +87,7 @@ class GannFan extends Component {
 		});
 	}
 	renderSVG(moreProps) {
-		const { stroke, strokeWidth, opacity, fill, fillOpacity } = this.props;
+		const { stroke, strokeWidth, fillOpacity, fill, strokeOpacity } = this.props;
 
 		const lines = helper(this.props, moreProps);
 		const pairsOfLines = pairs(lines);
@@ -100,7 +100,7 @@ class GannFan extends Component {
 						<line key={idx}
 							strokeWidth={strokeWidth}
 							stroke={stroke}
-							strokeOpacity={opacity}
+							strokeOpacity={strokeOpacity}
 							x1={x1}
 							y1={y1}
 							x2={x2}
@@ -272,12 +272,12 @@ GannFan.propTypes = {
 	stroke: PropTypes.string.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
 	fill: PropTypes.arrayOf(PropTypes.string).isRequired,
-	opacity: PropTypes.number.isRequired,
+	strokeOpacity: PropTypes.number.isRequired,
 	fillOpacity: PropTypes.number.isRequired,
 
 	fontFamily: PropTypes.string.isRequired,
 	fontSize: PropTypes.number.isRequired,
-	fontStroke: PropTypes.string.isRequired,
+	fontFill: PropTypes.string.isRequired,
 
 	onDragStart: PropTypes.func.isRequired,
 	onDrag: PropTypes.func.isRequired,

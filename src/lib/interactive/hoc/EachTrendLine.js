@@ -117,7 +117,7 @@ class EachTrendLine extends Component {
 			type,
 			stroke,
 			strokeWidth,
-			opacity,
+			strokeOpacity,
 			r,
 			edgeStrokeWidth,
 			edgeFill,
@@ -147,7 +147,7 @@ class EachTrendLine extends Component {
 				type={type}
 				stroke={stroke}
 				strokeWidth={(hover || selected) ? strokeWidth + 1 : strokeWidth}
-				opacity={opacity}
+				strokeOpacity={strokeOpacity}
 				interactiveCursorClass={lineInteractiveCursor}
 				onDragStart={this.handleLineDragStart}
 				onDrag={this.handleLineDrag}
@@ -161,7 +161,7 @@ class EachTrendLine extends Component {
 				fill={edgeFill}
 				stroke={edgeStroke}
 				strokeWidth={edgeStrokeWidth}
-				opacity={1}
+				strokeOpacity={1}
 				interactiveCursorClass={edgeInteractiveCursor}
 				onDrag={this.handleEdge1Drag}
 				onDragComplete={onDragComplete} />
@@ -174,7 +174,7 @@ class EachTrendLine extends Component {
 				fill={edgeFill}
 				stroke={edgeStroke}
 				strokeWidth={edgeStrokeWidth}
-				opacity={1}
+				strokeOpacity={1}
 				interactiveCursorClass={edgeInteractiveCursor}
 				onDrag={this.handleEdge2Drag}
 				onDragComplete={onDragComplete} />
@@ -220,7 +220,7 @@ EachTrendLine.propTypes = {
 	onUnSelect: PropTypes.func.isRequired,
 
 	r: PropTypes.number.isRequired,
-	opacity: PropTypes.number.isRequired,
+	strokeOpacity: PropTypes.number.isRequired,
 	defaultClassName: PropTypes.string,
 
 	selected: PropTypes.bool,
@@ -250,7 +250,7 @@ EachTrendLine.defaultProps = {
 	edgeStrokeWidth: 2,
 	r: 5,
 	strokeWidth: 1,
-	opacity: 1,
+	strokeOpacity: 1,
 	hoverText: {
 		enable: false,
 	}

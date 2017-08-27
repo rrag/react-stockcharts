@@ -219,9 +219,10 @@ StandardDeviationChannel.propTypes = {
 
 	appearance: PropTypes.shape({
 		stroke: PropTypes.string.isRequired,
-		opacity: PropTypes.number.isRequired,
+		strokeOpacity: PropTypes.number.isRequired,
 		strokeWidth: PropTypes.number.isRequired,
 		fill: PropTypes.string.isRequired,
+		fillOpacity: PropTypes.number.isRequired,
 		edgeStrokeWidth: PropTypes.number.isRequired,
 		edgeStroke: PropTypes.string.isRequired,
 		edgeFill: PropTypes.string.isRequired,
@@ -236,7 +237,8 @@ StandardDeviationChannel.defaultProps = {
 	snapTo: d => d.close,
 	appearance: {
 		stroke: "#000000",
-		opacity: 0.7,
+		fillOpacity: 0.2,
+		strokeOpacity: 1,
 		strokeWidth: 1,
 		fill: "#8AAFE2",
 		edgeStrokeWidth: 2,

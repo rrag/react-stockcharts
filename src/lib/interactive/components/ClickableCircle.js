@@ -30,23 +30,24 @@ class ClickableCircle extends Component {
 		return hover;
 	}
 	drawOnCanvas(ctx, moreProps) {
-		const { stroke, strokeWidth, fill, opacity } = this.props;
+		const { stroke, strokeWidth, fill } = this.props;
+		const { fillOpacity, strokeOpacity } = this.props;
 		const { r } = this.props;
 
 		const [x, y] = helper(this.props, moreProps);
 
 		ctx.lineWidth = strokeWidth;
-		ctx.fillStyle = hexToRGBA(fill, opacity);
-		ctx.strokeStyle = stroke;
+		ctx.fillStyle = hexToRGBA(fill, fillOpacity);
+		ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
 
 		ctx.beginPath();
 		ctx.arc(x, y, r, 0, 2 * Math.PI, false);
 		ctx.fill();
 		ctx.stroke();
-
 	}
 	renderSVG(moreProps) {
-		const { stroke, strokeWidth, fill, opacity } = this.props;
+		const { stroke, strokeWidth, fill } = this.props;
+		const { fillOpacity, strokeOpacity } = this.props;
 		const { r } = this.props;
 
 		const [x, y] = helper(this.props, moreProps);
@@ -54,8 +55,9 @@ class ClickableCircle extends Component {
 		return <circle cx={x} cy={y} r={r}
 			strokeWidth={strokeWidth}
 			stroke={stroke}
+			strokeOpacity={strokeOpacity}
 			fill={fill}
-			opacity={opacity}
+			fillOpacity={fillOpacity}
 		/>;
 	}
 	render() {
@@ -114,7 +116,8 @@ ClickableCircle.propTypes = {
 
 	className: PropTypes.string.isRequired,
 	show: PropTypes.bool.isRequired,
-	opacity: PropTypes.number.isRequired,
+	strokeOpacity: PropTypes.number.isRequired,
+	fillOpacity: PropTypes.number.isRequired,
 	interactiveCursorClass: PropTypes.string,
 };
 
@@ -126,7 +129,8 @@ ClickableCircle.defaultProps = {
 	onDragComplete: noop,
 	onMove: noop,
 	show: false,
-	opacity: 1,
+	fillOpacity: 1,
+	strokeOpacity: 1,
 };
 
 export default ClickableCircle;

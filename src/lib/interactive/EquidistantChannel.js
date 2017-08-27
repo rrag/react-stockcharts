@@ -234,9 +234,10 @@ EquidistantChannel.propTypes = {
 
 	appearance: PropTypes.shape({
 		stroke: PropTypes.string.isRequired,
-		opacity: PropTypes.number.isRequired,
+		strokeOpacity: PropTypes.number.isRequired,
 		strokeWidth: PropTypes.number.isRequired,
 		fill: PropTypes.string.isRequired,
+		fillOpacity: PropTypes.number.isRequired,
 		edgeStroke: PropTypes.string.isRequired,
 		edgeFill: PropTypes.string.isRequired,
 		edgeFill2: PropTypes.string.isRequired,
@@ -265,9 +266,10 @@ EquidistantChannel.defaultProps = {
 	channels: [],
 	appearance: {
 		stroke: "#000000",
-		opacity: 0.7,
+		strokeOpacity: 1,
 		strokeWidth: 1,
 		fill: "#8AAFE2",
+		fillOpacity: 0.7,
 		edgeStroke: "#000000",
 		edgeFill: "#FFFFFF",
 		edgeFill2: "#250B98",

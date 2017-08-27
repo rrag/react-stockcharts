@@ -33,12 +33,12 @@ class LinearRegressionChannelWithArea extends Component {
 		return false;
 	}
 	drawOnCanvas(ctx, moreProps) {
-		const { stroke, strokeWidth, opacity, fill } = this.props;
+		const { stroke, strokeWidth, fillOpacity, strokeOpacity, fill } = this.props;
 		const { x1, y1, x2, y2, dy } = helper(this.props, moreProps);
 
 		ctx.lineWidth = strokeWidth;
-		ctx.strokeStyle = hexToRGBA(stroke, opacity);
-		ctx.fillStyle = hexToRGBA(fill, opacity);
+		ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
+		ctx.fillStyle = hexToRGBA(fill, fillOpacity);
 
 		ctx.beginPath();
 		ctx.moveTo(x1, y1 - dy);
@@ -64,12 +64,12 @@ class LinearRegressionChannelWithArea extends Component {
 		ctx.stroke();
 	}
 	renderSVG(moreProps) {
-		const { stroke, strokeWidth, opacity, fill } = this.props;
+		const { stroke, strokeWidth, fillOpacity, strokeOpacity, fill } = this.props;
 		const { x1, y1, x2, y2, dy } = helper(this.props, moreProps);
 		const line = {
 			strokeWidth,
 			stroke,
-			strokeOpacity: opacity,
+			strokeOpacity,
 		};
 		const ctx = d3Path();
 		ctx.moveTo(x1, y1 - dy);
@@ -96,7 +96,7 @@ class LinearRegressionChannelWithArea extends Component {
 				<path
 					d={ctx.toString()}
 					fill={fill}
-					opacity={opacity}
+					fillOpacity={fillOpacity}
 				/>
 				<line
 					{...line}
@@ -111,7 +111,6 @@ class LinearRegressionChannelWithArea extends Component {
 	render() {
 		const { selected, interactiveCursorClass } = this.props;
 		const { onHover, onUnHover } = this.props;
-
 
 		return <GenericChartComponent
 			isHover={this.isHover}
@@ -213,7 +212,7 @@ LinearRegressionChannelWithArea.propTypes = {
 	stroke: PropTypes.string.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
 	fill: PropTypes.string.isRequired,
-	opacity: PropTypes.number.isRequired,
+	fillOpacity: PropTypes.number.isRequired,
 
 	onDragStart: PropTypes.func.isRequired,
 	onDrag: PropTypes.func.isRequired,

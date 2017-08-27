@@ -174,7 +174,6 @@ class EachEquidistantChannel extends Component {
 			fill={fill}
 			stroke={edgeStroke}
 			strokeWidth={edgeStrokeWidth}
-			opacity={1}
 			interactiveCursorClass={cursor}
 
 			onDragStart={this.handleDragStart}
@@ -184,7 +183,11 @@ class EachEquidistantChannel extends Component {
 	render() {
 		const { startXY, endXY, dy } = this.props;
 		const { interactive, hoverText, appearance } = this.props;
-		const { edgeFill, edgeFill2, stroke, strokeWidth, fill, opacity } = appearance;
+		const {
+			edgeFill, edgeFill2,
+			stroke, strokeWidth, strokeOpacity,
+			fill, fillOpacity,
+		} = appearance;
 		const { selected } = this.props;
 		const { onDragComplete } = this.props;
 		const { hover } = this.state;
@@ -243,8 +246,9 @@ class EachEquidistantChannel extends Component {
 				dy={dy}
 				stroke={stroke}
 				strokeWidth={(hover || selected) ? strokeWidth + 1 : strokeWidth}
+				strokeOpacity={strokeOpacity}
 				fill={fill}
-				opacity={opacity}
+				fillOpacity={fillOpacity}
 				interactiveCursorClass="react-stockcharts-move-cursor"
 
 				onDragStart={this.handleDragStart}
@@ -271,7 +275,8 @@ EachEquidistantChannel.propTypes = {
 
 	appearance: PropTypes.shape({
 		stroke: PropTypes.string.isRequired,
-		opacity: PropTypes.number.isRequired,
+		fillOpacity: PropTypes.number.isRequired,
+		strokeOpacity: PropTypes.number.isRequired,
 		strokeWidth: PropTypes.number.isRequired,
 		fill: PropTypes.string.isRequired,
 		edgeStroke: PropTypes.string.isRequired,

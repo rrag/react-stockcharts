@@ -39,18 +39,18 @@ class StraightLine extends Component {
 		return false;
 	}
 	drawOnCanvas(ctx, moreProps) {
-		const { stroke, strokeWidth, opacity } = this.props;
+		const { stroke, strokeWidth, strokeOpacity } = this.props;
 		const { x1, y1, x2, y2 } = helper(this.props, moreProps);
 
 		ctx.lineWidth = strokeWidth;
-		ctx.strokeStyle = hexToRGBA(stroke, opacity);
+		ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
 		ctx.beginPath();
 		ctx.moveTo(x1, y1);
 		ctx.lineTo(x2, y2);
 		ctx.stroke();
 	}
 	renderSVG(moreProps) {
-		const { stroke, strokeWidth, opacity } = this.props;
+		const { stroke, strokeWidth, strokeOpacity } = this.props;
 
 		const lineWidth = strokeWidth;
 
@@ -59,7 +59,7 @@ class StraightLine extends Component {
 			<line
 				x1={x1} y1={y1} x2={x2} y2={y2}
 				stroke={stroke} strokeWidth={lineWidth}
-				opacity={opacity} />
+				strokeOpacity={strokeOpacity} />
 		);
 	}
 	render() {
@@ -294,7 +294,7 @@ StraightLine.propTypes = {
 	onHover: PropTypes.func,
 	onUnHover: PropTypes.func,
 
-	opacity: PropTypes.number.isRequired,
+	strokeOpacity: PropTypes.number.isRequired,
 	defaultClassName: PropTypes.string,
 
 	r: PropTypes.number.isRequired,

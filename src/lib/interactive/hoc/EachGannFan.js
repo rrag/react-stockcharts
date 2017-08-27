@@ -172,7 +172,6 @@ class EachGannFan extends Component {
 			fill={fill}
 			stroke={edgeStroke}
 			strokeWidth={edgeStrokeWidth}
-			opacity={1}
 			interactiveCursorClass={cursor}
 
 			onDragStart={this.handleDragStart}
@@ -182,8 +181,12 @@ class EachGannFan extends Component {
 	render() {
 		const { startXY, endXY } = this.props;
 		const { interactive, appearance  } = this.props;
-		const { edgeFill, stroke, strokeWidth, fill, opacity, fillOpacity } = appearance;
-		const { fontFamily, fontSize, fontStroke } = appearance;
+		const {
+			edgeFill,
+			stroke, strokeWidth, strokeOpacity,
+			fill, fillOpacity
+		} = appearance;
+		const { fontFamily, fontSize, fontFill } = appearance;
 		const { hoverText, selected } = this.props;
 		const { onDragComplete } = this.props;
 		const { hover } = this.state;
@@ -224,11 +227,11 @@ class EachGannFan extends Component {
 				stroke={stroke}
 				strokeWidth={(hover || selected) ? strokeWidth + 1 : strokeWidth}
 				fill={fill}
-				opacity={opacity}
+				strokeOpacity={strokeOpacity}
 				fillOpacity={fillOpacity}
 				fontFamily={fontFamily}
 				fontSize={fontSize}
-				fontStroke={fontStroke}
+				fontFill={fontFill}
 				interactiveCursorClass="react-stockcharts-move-cursor"
 
 				onDragStart={this.handleDragStart}
@@ -253,7 +256,7 @@ EachGannFan.propTypes = {
 
 	appearance: PropTypes.shape({
 		stroke: PropTypes.string.isRequired,
-		opacity: PropTypes.number.isRequired,
+		strokeOpacity: PropTypes.number.isRequired,
 		fillOpacity: PropTypes.number.isRequired,
 		strokeWidth: PropTypes.number.isRequired,
 		edgeStroke: PropTypes.string.isRequired,
@@ -263,7 +266,7 @@ EachGannFan.propTypes = {
 		fill: PropTypes.arrayOf(PropTypes.string).isRequired,
 		fontFamily: PropTypes.string.isRequired,
 		fontSize: PropTypes.number.isRequired,
-		fontStroke: PropTypes.string.isRequired,
+		fontFill: PropTypes.string.isRequired,
 	}).isRequired,
 	hoverText: PropTypes.object.isRequired,
 
@@ -279,8 +282,8 @@ EachGannFan.defaultProps = {
 
 	appearance: {
 		stroke: "#000000",
-		opacity: 0.4,
 		fillOpacity: 0.2,
+		strokeOpacity: 1,
 		strokeWidth: 1,
 		edgeStroke: "#000000",
 		edgeFill: "#FFFFFF",
@@ -298,7 +301,7 @@ EachGannFan.defaultProps = {
 		],
 		fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 		fontSize: 10,
-		fontStroke: "#000000",
+		fontFill: "#000000",
 	},
 
 	onDrag: noop,
