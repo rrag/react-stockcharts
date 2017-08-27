@@ -4,12 +4,15 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import { isDefined, isNotDefined, noop } from "../utils";
-import { terminate, saveNodeList, handleClickInteractiveType } from "./utils";
+import {
+	terminate,
+	saveNodeType,
+	isHoverForInteractiveType,
+	getElementsFactory,
+} from "./utils";
 import EachFibRetracement from "./hoc/EachFibRetracement";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
 import HoverTextNearMouse from "./components/HoverTextNearMouse";
-import GenericChartComponent from "../GenericChartComponent";
-import { getMouseCanvas } from "../GenericComponent";
 
 class FibonacciRetracement extends Component {
 	constructor(props) {
@@ -26,33 +29,16 @@ class FibonacciRetracement extends Component {
 		this.handleDragComplete = this.handleDragComplete.bind(this);
 
 		this.terminate = terminate.bind(this);
-		this.handleClick = handleClickInteractiveType("retracements").bind(
-			this
-		);
-		this.saveNodeList = saveNodeList.bind(this);
+		this.getSelectionState = isHoverForInteractiveType("retracements")
+			.bind(this);
+		this.getElements = getElementsFactory("retracements")
+			.bind(this);
 
+		this.saveNodeType = saveNodeType.bind(this);
 		this.nodes = [];
+
 		this.state = {
-			retracements: []
 		};
-	}
-	componentWillMount() {
-		this.updateInteractiveToState(this.props.retracements);
-	}
-	componentWillReceiveProps(nextProps) {
-		if (this.props.retracements !== nextProps.retracements) {
-			this.updateInteractiveToState(nextProps.retracements);
-		}
-	}
-	updateInteractiveToState(retracements) {
-		this.setState({
-			retracements: retracements.map(t => {
-				return {
-					...t,
-					selected: !!t.selected
-				};
-			})
-		});
 	}
 	handleDrawRetracement(xyValue) {
 		const { current } = this.state;
@@ -76,7 +62,7 @@ class FibonacciRetracement extends Component {
 		});
 	}
 	handleEdge1Drag(echo, newXYValue, origXYValue) {
-		const { retracements } = this.state;
+		const { retracements } = this.props;
 		const { index } = echo;
 
 		const dx = origXYValue.x1Value - newXYValue.x1Value;
@@ -92,7 +78,7 @@ class FibonacciRetracement extends Component {
 		});
 	}
 	handleEdge2Drag(echo, newXYValue, origXYValue) {
-		const { retracements } = this.state;
+		const { retracements } = this.props;
 		const { index } = echo;
 
 		const dx = origXYValue.x2Value - newXYValue.x2Value;
@@ -108,7 +94,8 @@ class FibonacciRetracement extends Component {
 		});
 	}
 	handleDragComplete(moreProps) {
-		const { retracements, override } = this.state;
+		const { retracements } = this.props;
+		const { override } = this.state;
 		if (isDefined(override)) {
 			const { index, ...rest } = override;
 
@@ -121,7 +108,6 @@ class FibonacciRetracement extends Component {
 			this.setState(
 				{
 					override: null,
-					retracements: newRetracements
 				},
 				() => {
 					this.props.onComplete(newRetracements, moreProps);
@@ -129,7 +115,7 @@ class FibonacciRetracement extends Component {
 			);
 		}
 	}
-	handleStart(xyValue) {
+	handleStart(xyValue, moreProps) {
 		const { current } = this.state;
 		if (isNotDefined(current) || isNotDefined(current.x1)) {
 			this.mouseMoved = false;
@@ -143,14 +129,14 @@ class FibonacciRetracement extends Component {
 					}
 				},
 				() => {
-					this.props.onStart();
+					this.props.onStart(moreProps);
 				}
 			);
 		}
 	}
 	handleEnd(xyValue, moreProps, e) {
-		const { retracements, current } = this.state;
-		const { appearance, type } = this.props;
+		const { retracements, appearance, type } = this.props;
+		const { current } = this.state;
 
 		if (this.mouseMoved && isDefined(current) && isDefined(current.x1)) {
 			const newRetracements = retracements.concat({
@@ -165,7 +151,6 @@ class FibonacciRetracement extends Component {
 			this.setState(
 				{
 					current: null,
-					retracements: newRetracements
 				},
 				() => {
 					this.props.onComplete(newRetracements, moreProps, e);
@@ -174,7 +159,8 @@ class FibonacciRetracement extends Component {
 		}
 	}
 	render() {
-		const { current, override, retracements } = this.state;
+		const { current, override } = this.state;
+		const { retracements } = this.props;
 
 		const {
 			appearance,
@@ -209,7 +195,7 @@ class FibonacciRetracement extends Component {
 					return (
 						<EachFibRetracement
 							key={idx}
-							ref={this.saveNodeList}
+							ref={this.saveNodeType(idx)}
 							index={idx}
 							type={each.type}
 							selected={each.selected}
@@ -233,17 +219,12 @@ class FibonacciRetracement extends Component {
 					onClick={this.handleEnd}
 					onMouseMove={this.handleDrawRetracement}
 				/>
-				<GenericChartComponent
-					svgDraw={noop}
-					canvasToDraw={getMouseCanvas}
-					canvasDraw={noop}
-					onClick={this.handleClick}
-					drawOn={["mousemove", "pan", "drag"]}
-				/>
 			</g>
 		);
 	}
 }
+
+// onClick={this.handleClick}
 
 FibonacciRetracement.propTypes = {
 	enabled: PropTypes.bool.isRequired,
@@ -306,7 +287,7 @@ FibonacciRetracement.defaultProps = {
 	appearance: {
 		stroke: "#000000",
 		strokeWidth: 1,
-		strokeOpacity: 0.9,
+		strokeOpacity: 1,
 		fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 		fontSize: 10,
 		fontFill: "#000000",

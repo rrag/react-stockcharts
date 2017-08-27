@@ -281,8 +281,10 @@ function getCandleData(props, xAccessor, xScale, yScale, plotData) {
 	const candleWidth = Math.round(width);
 	const offset = Math.round(candleWidth === 1 ? 0 : 0.5 * width);
 	*/
-
-	const offset = Math.floor(0.5 * width);
+	const trueOffset = 0.5 * width;
+	const offset = trueOffset > 0.7
+		? Math.round(trueOffset)
+		: Math.floor(trueOffset);
 
 	// eslint-disable-next-line prefer-const
 	let candles = [];

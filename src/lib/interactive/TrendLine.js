@@ -283,7 +283,7 @@ TrendLine.defaultProps = {
 
 	appearance: {
 		stroke: "#000000",
-		strokeOpacity: 0.7,
+		strokeOpacity: 1,
 		strokeWidth: 1,
 		edgeStrokeWidth: 1,
 		edgeFill: "#FFFFFF",

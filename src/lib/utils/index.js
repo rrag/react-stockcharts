@@ -259,6 +259,16 @@ export function findItem(array, predicate) {
 	}
 }
 
+export function toObject(array, iteratee) {
+	return array.reduce((returnObj, a) => {
+		const [key, value] = iteratee(a);
+		return {
+			...returnObj,
+			[key]: value
+		};
+	}, {});
+}
+
 // copied from https://github.com/lodash/lodash/blob/master/mapValue.js
 export function mapValue(object, iteratee) {
 	object = Object(object);
