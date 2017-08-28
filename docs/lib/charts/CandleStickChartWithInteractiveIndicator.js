@@ -29,11 +29,12 @@ import {
 } from "react-stockcharts/lib/tooltip";
 import { ema, macd } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
-import { TrendLine } from "react-stockcharts/lib/interactive";
-import { last } from "react-stockcharts/lib/utils";
+import { TrendLine, DrawingObjectSelector } from "react-stockcharts/lib/interactive";
+import { last, toObject } from "react-stockcharts/lib/utils";
 
 import {
-	saveInteractiveNode,
+	saveInteractiveNodes,
+	getInteractiveNodes,
 } from "./interactiveutils";
 
 const macdAppearance = {
@@ -52,8 +53,10 @@ class CandlestickChart extends React.Component {
 		this.onKeyPress = this.onKeyPress.bind(this);
 		this.onDrawCompleteChart1 = this.onDrawCompleteChart1.bind(this);
 		this.onDrawCompleteChart3 = this.onDrawCompleteChart3.bind(this);
+		this.handleSelection = this.handleSelection.bind(this);
 
-		this.saveInteractiveNode = saveInteractiveNode.bind(this);
+		this.saveInteractiveNodes = saveInteractiveNodes.bind(this);
+		this.getInteractiveNodes = getInteractiveNodes.bind(this);
 
 		this.saveCanvasNode = this.saveCanvasNode.bind(this);
 
@@ -73,6 +76,15 @@ class CandlestickChart extends React.Component {
 	}
 	componentWillUnmount() {
 		document.removeEventListener("keyup", this.onKeyPress);
+	}
+	handleSelection(interactives) {
+		const state = toObject(interactives, each => {
+			return [
+				`trends_${each.chartId}`,
+				each.objects,
+			];
+		});
+		this.setState(state);
 	}
 	onDrawCompleteChart1(trends_1) {
 		// this gets called on
@@ -99,8 +111,16 @@ class CandlestickChart extends React.Component {
 		console.log(keyCode);
 		switch (keyCode) {
 		case 46: { // DEL
+
+			const trends_1 = this.state.trends_1
+				.filter(each => !each.selected);
+			const trends_3 = this.state.trends_3
+				.filter(each => !each.selected);
+
+			this.canvasNode.cancelDrag();
 			this.setState({
-				trends: this.state.trends.slice(0, this.state.trends.length - 2)
+				trends_1,
+				trends_3,
 			});
 			break;
 		}
@@ -216,7 +236,7 @@ class CandlestickChart extends React.Component {
 						]}
 					/>
 					<TrendLine
-						ref={this.saveInteractiveNode(1)}
+						ref={this.saveInteractiveNodes("Trendline", 1)}
 						enabled={this.state.enableTrendLine}
 						type="RAY"
 						snap={false}
@@ -255,7 +275,7 @@ class CandlestickChart extends React.Component {
 						orient="right"
 						displayFormat={format(".2f")} />
 					<TrendLine
-						ref={this.saveInteractiveNode(3)}
+						ref={this.saveInteractiveNodes("Trendline", 3)}
 						enabled={this.state.enableTrendLine}
 						type="RAY"
 						snap={false}
@@ -274,6 +294,14 @@ class CandlestickChart extends React.Component {
 					/>
 				</Chart>
 				<CrossHairCursor />
+				<DrawingObjectSelector
+					enabled={!this.state.enableTrendLine}
+					getInteractiveNodes={this.getInteractiveNodes}
+					drawingObjectMap={{
+						Trendline: "trends"
+					}}
+					onSelect={this.handleSelection}
+				/>
 			</ChartCanvas>
 		);
 	}

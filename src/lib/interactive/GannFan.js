@@ -6,14 +6,13 @@ import PropTypes from "prop-types";
 import { isDefined, isNotDefined, noop } from "../utils";
 import {
 	terminate,
-	saveNodeList,
-	handleClickInteractiveType,
+	saveNodeType,
+	isHoverForInteractiveType,
+	getElementsFactory,
 } from "./utils";
 import EachGannFan from "./hoc/EachGannFan";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
 import HoverTextNearMouse from "./components/HoverTextNearMouse";
-import GenericChartComponent from "../GenericChartComponent";
-import { getMouseCanvas } from "../GenericComponent";
 
 class GannFan extends Component {
 	constructor(props) {
@@ -26,29 +25,15 @@ class GannFan extends Component {
 		this.handleDragFanComplete = this.handleDragFanComplete.bind(this);
 
 		this.terminate = terminate.bind(this);
-		this.handleClick = handleClickInteractiveType("fans").bind(this);
-		this.saveNodeList = saveNodeList.bind(this);
+		this.saveNodeType = saveNodeType.bind(this);
+
+		this.getSelectionState = isHoverForInteractiveType("fans")
+			.bind(this);
+		this.getElements = getElementsFactory("fans")
+			.bind(this);
 
 		this.nodes = [];
 		this.state = {};
-	}
-	componentWillMount() {
-		this.updateInteractiveToState(this.props.fans);
-	}
-	componentWillReceiveProps(nextProps) {
-		if (this.props.fans !== nextProps.fans) {
-			this.updateInteractiveToState(nextProps.fans);
-		}
-	}
-	updateInteractiveToState(fans) {
-		this.setState({
-			fans: fans.map(t => {
-				return {
-					...t,
-					selected: !!t.selected
-				};
-			}),
-		});
 	}
 	handleDragFan(index, newXYValue) {
 		this.setState({
@@ -59,7 +44,8 @@ class GannFan extends Component {
 		});
 	}
 	handleDragFanComplete(moreProps) {
-		const { override, fans } = this.state;
+		const { override } = this.state;
+		const { fans } = this.props;
 
 		if (isDefined(override)) {
 			const { index, ...rest } = override;
@@ -69,7 +55,6 @@ class GannFan extends Component {
 					: each);
 			this.setState({
 				override: null,
-				fans: newfans,
 			}, () => {
 				this.props.onComplete(newfans, moreProps);
 			});
@@ -106,20 +91,19 @@ class GannFan extends Component {
 		}
 	}
 	handleEnd(xyValyue, moreProps, e) {
-		const { fans, current } = this.state;
-		const { appearance } = this.props;
+		const { current } = this.state;
+		const { fans, appearance } = this.props;
 
 		if (this.mouseMoved
 			&& isDefined(current)
 			&& isDefined(current.startXY)
 		) {
 			const newfans = [
-				...fans,
+				...fans.map(d => ({ ...d, selected: false })),
 				{ ...current, selected: true, appearance }
 			];
 			this.setState({
 				current: null,
-				fans: newfans
 			}, () => {
 				this.props.onComplete(newfans, moreProps, e);
 			});
@@ -129,8 +113,8 @@ class GannFan extends Component {
 		const { enabled, appearance } = this.props;
 		const { currentPositionRadius, currentPositionStroke } = this.props;
 		const { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
-		const { hoverText } = this.props;
-		const { current, override, fans } = this.state;
+		const { hoverText, fans } = this.props;
+		const { current, override } = this.state;
 		const overrideIndex = isDefined(override) ? override.index : null;
 
 		const tempChannel = isDefined(current) && isDefined(current.endXY)
@@ -149,7 +133,7 @@ class GannFan extends Component {
 					: appearance;
 
 				return <EachGannFan key={idx}
-					ref={this.saveNodeList}
+					ref={this.saveNodeType(idx)}
 					index={idx}
 					{...(idx === overrideIndex ? override : each)}
 					appearance={eachAppearance}
@@ -169,16 +153,6 @@ class GannFan extends Component {
 				onMouseDown={this.handleStart}
 				onClick={this.handleEnd}
 				onMouseMove={this.handleDrawFan}
-			/>
-			<GenericChartComponent
-
-				svgDraw={noop}
-				canvasToDraw={getMouseCanvas}
-				canvasDraw={noop}
-
-				onClick={this.handleClick}
-
-				drawOn={["mousemove", "pan", "drag"]}
 			/>
 		</g>;
 	}

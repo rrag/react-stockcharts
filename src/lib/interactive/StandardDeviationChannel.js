@@ -8,15 +8,14 @@ import { isDefined, isNotDefined, noop } from "../utils";
 import {
 	getValueFromOverride,
 	terminate,
-	saveNodeList,
-	handleClickInteractiveType,
+	saveNodeType,
+	isHoverForInteractiveType,
+	getElementsFactory,
 } from "./utils";
 
 import EachLinearRegressionChannel from "./hoc/EachLinearRegressionChannel";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
 import HoverTextNearMouse from "./components/HoverTextNearMouse";
-import GenericChartComponent from "../GenericChartComponent";
-import { getMouseCanvas } from "../GenericComponent";
 
 class StandardDeviationChannel extends Component {
 	constructor(props) {
@@ -29,29 +28,15 @@ class StandardDeviationChannel extends Component {
 		this.handleDragLineComplete = this.handleDragLineComplete.bind(this);
 
 		this.terminate = terminate.bind(this);
-		this.handleClick = handleClickInteractiveType("channels").bind(this);
-		this.saveNodeList = saveNodeList.bind(this);
+		this.saveNodeType = saveNodeType.bind(this);
+
+		this.getSelectionState = isHoverForInteractiveType("channels")
+			.bind(this);
+		this.getElements = getElementsFactory("channels")
+			.bind(this);
 
 		this.nodes = [];
 		this.state = {};
-	}
-	componentWillMount() {
-		this.updateInteractiveToState(this.props.channels);
-	}
-	componentWillReceiveProps(nextProps) {
-		if (this.props.channels !== nextProps.channels) {
-			this.updateInteractiveToState(nextProps.channels);
-		}
-	}
-	updateInteractiveToState(channels) {
-		this.setState({
-			channels: channels.map(t => {
-				return {
-					...t,
-					selected: !!t.selected
-				};
-			}),
-		});
 	}
 	handleDragLine(index, newXYValue) {
 		this.setState({
@@ -62,7 +47,8 @@ class StandardDeviationChannel extends Component {
 		});
 	}
 	handleDragLineComplete(moreProps) {
-		const { override, channels } = this.state;
+		const { override } = this.state;
+		const { channels } = this.props;
 		if (isDefined(override)) {
 
 			const newChannels = channels
@@ -76,7 +62,6 @@ class StandardDeviationChannel extends Component {
 					: each);
 			this.setState({
 				override: null,
-				channels: newChannels,
 			}, () => {
 				this.props.onComplete(newChannels, moreProps);
 			});
@@ -112,25 +97,25 @@ class StandardDeviationChannel extends Component {
 		}
 	}
 	handleEnd(xyValue, moreProps, e) {
-		const { current, channels } = this.state;
-		const { appearance } = this.props;
+		const { current } = this.state;
+		const { appearance, channels } = this.props;
 
 		if (this.mouseMoved
 			&& isDefined(current)
 			&& isDefined(current.start)
 		) {
-			const newChannels = channels.concat(
+			const newChannels = [
+				...channels.map(d => ({ ...d, selected: false })),
 				{
 					start: current.start,
 					end: xyValue,
 					selected: true,
 					appearance,
 				}
-			);
+			];
 
 			this.setState({
 				current: null,
-				channels: newChannels,
 			}, () => {
 				this.props.onComplete(newChannels, moreProps, e);
 			});
@@ -141,9 +126,8 @@ class StandardDeviationChannel extends Component {
 		const { enabled, snapTo } = this.props;
 		const { currentPositionRadius, currentPositionStroke } = this.props;
 		const { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
-		const { hoverText } = this.props;
+		const { hoverText, channels } = this.props;
 		const { current, override } = this.state;
-		const { channels } = this.state;
 
 		const tempLine = isDefined(current) && isDefined(current.end)
 			? <EachLinearRegressionChannel
@@ -162,7 +146,7 @@ class StandardDeviationChannel extends Component {
 					: appearance;
 
 				return <EachLinearRegressionChannel key={idx}
-					ref={this.saveNodeList}
+					ref={this.saveNodeType(idx)}
 					index={idx}
 					selected={each.selected}
 
@@ -189,16 +173,6 @@ class StandardDeviationChannel extends Component {
 				onMouseDown={this.handleStart}
 				onClick={this.handleEnd}
 				onMouseMove={this.handleDrawLine}
-			/>
-			<GenericChartComponent
-
-				svgDraw={noop}
-				canvasToDraw={getMouseCanvas}
-				canvasDraw={noop}
-
-				onClick={this.handleClick}
-
-				drawOn={["mousemove", "pan", "drag"]}
 			/>
 		</g>;
 	}

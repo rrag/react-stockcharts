@@ -29,8 +29,12 @@ import {
 } from "react-stockcharts/lib/tooltip";
 import { ema, macd } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
-import { EquidistantChannel } from "react-stockcharts/lib/interactive";
-import { last } from "react-stockcharts/lib/utils";
+import { EquidistantChannel, DrawingObjectSelector } from "react-stockcharts/lib/interactive";
+import { last, toObject } from "react-stockcharts/lib/utils";
+import {
+	saveInteractiveNodes,
+	getInteractiveNodes,
+} from "./interactiveutils";
 
 const macdAppearance = {
 	stroke: {
@@ -49,10 +53,15 @@ class CandleStickChartWithEquidistantChannel extends React.Component {
 		this.onDrawComplete = this.onDrawComplete.bind(this);
 		this.saveInteractiveNode = this.saveInteractiveNode.bind(this);
 		this.saveCanvasNode = this.saveCanvasNode.bind(this);
+		this.handleSelection = this.handleSelection.bind(this);
+
+		this.saveInteractiveNodes = saveInteractiveNodes.bind(this);
+		this.getInteractiveNodes = getInteractiveNodes.bind(this);
 
 		this.state = {
 			enableInteractiveObject: true,
-			channels: [],
+			channels_1: [],
+			channels_3: [],
 		};
 	}
 	saveInteractiveNode(node) {
@@ -67,13 +76,22 @@ class CandleStickChartWithEquidistantChannel extends React.Component {
 	componentWillUnmount() {
 		document.removeEventListener("keyup", this.onKeyPress);
 	}
-	onDrawComplete(channels) {
+	handleSelection(interactives) {
+		const state = toObject(interactives, each => {
+			return [
+				`channels_${each.chartId}`,
+				each.objects,
+			];
+		});
+		this.setState(state);
+	}
+	onDrawComplete(channels_1) {
 		// this gets called on
 		// 1. draw complete of drawing object
 		// 2. drag complete of drawing object
 		this.setState({
 			enableInteractiveObject: false,
-			channels
+			channels_1
 		});
 	}
 	onKeyPress(e) {
@@ -81,8 +99,16 @@ class CandleStickChartWithEquidistantChannel extends React.Component {
 		console.log(keyCode);
 		switch (keyCode) {
 		case 46: { // DEL
+
+			const channels_1 = this.state.channels_1
+				.filter(each => !each.selected);
+			const channels_3 = this.state.channels_3
+				.filter(each => !each.selected);
+
+			this.canvasNode.cancelDrag();
 			this.setState({
-				channels: this.state.channels.slice(0, this.state.channels.length - 2)
+				channels_1,
+				channels_3,
 			});
 			break;
 		}
@@ -127,7 +153,7 @@ class CandleStickChartWithEquidistantChannel extends React.Component {
 			.accessor(d => d.macd);
 
 		const { type, data: initialData, width, ratio } = this.props;
-		const { channels } = this.state;
+		const { channels_1, channels_3 } = this.state;
 
 		const calculatedData = macdCalculator(ema12(ema26(initialData)));
 		const xScaleProvider = discontinuousTimeScaleProvider
@@ -199,12 +225,11 @@ class CandleStickChartWithEquidistantChannel extends React.Component {
 						]}
 					/>
 					<EquidistantChannel
-						ref={this.saveInteractiveNode}
+						ref={this.saveInteractiveNodes("EquidistantChannel", 1)}
 						enabled={this.state.enableInteractiveObject}
 						onStart={() => console.log("START")}
 						onComplete={this.onDrawComplete}
-						appearance={{ ...EquidistantChannel.defaultProps.appearance, stroke: "green" }}
-						channels={channels}
+						channels={channels_1}
 					/>
 				</Chart>
 				<Chart id={2} height={150}
@@ -246,6 +271,14 @@ class CandleStickChartWithEquidistantChannel extends React.Component {
 					/>
 				</Chart>
 				<CrossHairCursor />
+				<DrawingObjectSelector
+					enabled={!this.state.enableInteractiveObject}
+					getInteractiveNodes={this.getInteractiveNodes}
+					drawingObjectMap={{
+						EquidistantChannel: "channels"
+					}}
+					onSelect={this.handleSelection}
+				/>
 			</ChartCanvas>
 		);
 	}

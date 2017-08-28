@@ -54,6 +54,7 @@ class CandleStickChartWithFibonacciInteractiveIndicator extends React.Component 
 		this.onFibComplete1 = this.onFibComplete1.bind(this);
 		this.onFibComplete3 = this.onFibComplete3.bind(this);
 		this.handleSelection = this.handleSelection.bind(this);
+
 		this.saveInteractiveNodes = saveInteractiveNodes.bind(this);
 		this.getInteractiveNodes = getInteractiveNodes.bind(this);
 

@@ -8,11 +8,10 @@ import { isDefined, isNotDefined, noop } from "../utils";
 import {
 	getValueFromOverride,
 	terminate,
-	saveNodeList,
-	handleClickInteractiveType,
+	saveNodeType,
+	isHoverForInteractiveType,
+	getElementsFactory,
 } from "./utils";
-import GenericChartComponent from "../GenericChartComponent";
-import { getMouseCanvas } from "../GenericComponent";
 
 import EachTrendLine from "./hoc/EachTrendLine";
 import StraightLine from "./components/StraightLine";
@@ -30,33 +29,16 @@ class TrendLine extends Component {
 		this.handleDragLineComplete = this.handleDragLineComplete.bind(this);
 
 		this.terminate = terminate.bind(this);
-		this.handleClick = handleClickInteractiveType("trends").bind(this);
-		this.saveNodeList = saveNodeList.bind(this);
+		this.saveNodeType = saveNodeType.bind(this);
 
-		this.updateInteractiveToState = this.updateInteractiveToState.bind(this);
+		this.getSelectionState = isHoverForInteractiveType("trends")
+			.bind(this);
+		this.getElements = getElementsFactory("trends")
+			.bind(this);
 
 		this.state = {
-			trends: [],
 		};
 		this.nodes = [];
-	}
-	componentWillMount() {
-		this.updateInteractiveToState(this.props.trends);
-	}
-	componentWillReceiveProps(nextProps) {
-		if (this.props.trends !== nextProps.trends) {
-			this.updateInteractiveToState(nextProps.trends);
-		}
-	}
-	updateInteractiveToState(trends) {
-		this.setState({
-			trends: trends.map(t => {
-				return {
-					...t,
-					selected: !!t.selected
-				};
-			}),
-		});
 	}
 	handleDragLine(index, newXYValue) {
 		this.setState({
@@ -69,7 +51,7 @@ class TrendLine extends Component {
 	handleDragLineComplete(moreProps) {
 		const { override } = this.state;
 		if (isDefined(override)) {
-			const { trends } = this.state;
+			const { trends } = this.props;
 			const newTrends = trends
 				.map((each, idx) => idx === override.index
 					? {
@@ -85,7 +67,6 @@ class TrendLine extends Component {
 
 			this.setState({
 				override: null,
-				trends: newTrends
 			}, () => {
 				this.props.onComplete(newTrends, moreProps);
 			});
@@ -104,34 +85,31 @@ class TrendLine extends Component {
 		}
 	}
 	handleStart(xyValue, moreProps, e) {
-		const { current, trends } = this.state;
+		const { current } = this.state;
 
 		if (isNotDefined(current) || isNotDefined(current.start)) {
 			this.mouseMoved = false;
-			const newTrends = trends.map(t => {
-				return { ...t, selected: false };
-			});
+
 			this.setState({
 				current: {
 					start: xyValue,
 					end: null,
 				},
-				trends: newTrends
 			}, () => {
 				this.props.onStart(moreProps, e);
 			});
 		}
 	}
 	handleEnd(xyValue, moreProps, e) {
-		const { trends, current } = this.state;
-		const { appearance, type } = this.props;
+		const { current } = this.state;
+		const { trends, appearance, type } = this.props;
 
 		if (this.mouseMoved
 			&& isDefined(current)
 			&& isDefined(current.start)
 		) {
 			const newTrends = [
-				...trends,
+				...trends.map(d => ({ ...d, selected: false })),
 				{
 					start: current.start,
 					end: xyValue,
@@ -153,8 +131,8 @@ class TrendLine extends Component {
 		const { enabled, snap, shouldDisableSnap, snapTo, type } = this.props;
 		const { currentPositionRadius, currentPositionStroke } = this.props;
 		const { currentPositionstrokeOpacity, currentPositionStrokeWidth } = this.props;
-		const { hoverText } = this.props;
-		const { current, override, trends } = this.state;
+		const { hoverText, trends } = this.props;
+		const { current, override } = this.state;
 
 		const tempLine = isDefined(current) && isDefined(current.end)
 			? <StraightLine type={type}
@@ -175,7 +153,7 @@ class TrendLine extends Component {
 					: appearance;
 
 				return <EachTrendLine key={idx}
-					ref={this.saveNodeList}
+					ref={this.saveNodeType(idx)}
 					index={idx}
 					type={each.type}
 					selected={each.selected}
@@ -210,16 +188,6 @@ class TrendLine extends Component {
 				onMouseDown={this.handleStart}
 				onClick={this.handleEnd}
 				onMouseMove={this.handleDrawLine}
-			/>
-			<GenericChartComponent
-
-				svgDraw={noop}
-				canvasToDraw={getMouseCanvas}
-				canvasDraw={noop}
-
-				onClick={this.handleClick}
-
-				drawOn={["mousemove", "pan", "drag"]}
 			/>
 		</g>;
 	}

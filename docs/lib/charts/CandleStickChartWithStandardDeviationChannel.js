@@ -17,8 +17,12 @@ import {
 import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
 import { OHLCTooltip } from "react-stockcharts/lib/tooltip";
 import { fitWidth } from "react-stockcharts/lib/helper";
-import { StandardDeviationChannel } from "react-stockcharts/lib/interactive";
-import { last } from "react-stockcharts/lib/utils";
+import { StandardDeviationChannel, DrawingObjectSelector } from "react-stockcharts/lib/interactive";
+import { last, toObject } from "react-stockcharts/lib/utils";
+import {
+	saveInteractiveNodes,
+	getInteractiveNodes,
+} from "./interactiveutils";
 
 class CandleStickChartWithStandardDeviationChannel extends React.Component {
 	constructor(props) {
@@ -28,9 +32,14 @@ class CandleStickChartWithStandardDeviationChannel extends React.Component {
 		this.saveInteractiveNode = this.saveInteractiveNode.bind(this);
 		this.saveCanvasNode = this.saveCanvasNode.bind(this);
 
+		this.handleSelection = this.handleSelection.bind(this);
+
+		this.saveInteractiveNodes = saveInteractiveNodes.bind(this);
+		this.getInteractiveNodes = getInteractiveNodes.bind(this);
+
 		this.state = {
 			enableInteractiveObject: true,
-			channels: []
+			channels_1: []
 		};
 	}
 	saveInteractiveNode(node) {
@@ -45,13 +54,22 @@ class CandleStickChartWithStandardDeviationChannel extends React.Component {
 	componentWillUnmount() {
 		document.removeEventListener("keyup", this.onKeyPress);
 	}
-	onDrawComplete(channels) {
+	handleSelection(interactives) {
+		const state = toObject(interactives, each => {
+			return [
+				`channels_${each.chartId}`,
+				each.objects,
+			];
+		});
+		this.setState(state);
+	}
+	onDrawComplete(channels_1) {
 		// this gets called on
 		// 1. draw complete of drawing object
 		// 2. drag complete of drawing object
 		this.setState({
 			enableInteractiveObject: false,
-			channels
+			channels_1
 		});
 	}
 	onKeyPress(e) {
@@ -60,11 +78,12 @@ class CandleStickChartWithStandardDeviationChannel extends React.Component {
 		switch (keyCode) {
 		case 46: {
 			// DEL
+			const channels_1 = this.state.channels_1
+				.filter(each => !each.selected);
+
+			this.canvasNode.cancelDrag();
 			this.setState({
-				channels: this.state.channels.slice(
-					0,
-					this.state.channels.length - 2
-				)
+				channels_1,
 			});
 			break;
 		}
@@ -79,7 +98,7 @@ class CandleStickChartWithStandardDeviationChannel extends React.Component {
 		}
 		case 68: // D - Draw drawing object
 		case 69: {
-				// E - Enable drawing object
+			// E - Enable drawing object
 			this.setState({
 				enableInteractiveObject: true
 			});
@@ -89,7 +108,7 @@ class CandleStickChartWithStandardDeviationChannel extends React.Component {
 	}
 	render() {
 		const { type, data: initialData, width, ratio } = this.props;
-		const { channels } = this.state;
+		const { channels_1 } = this.state;
 
 		const xScaleProvider = discontinuousTimeScaleProvider.inputDateAccessor(
 			d => d.date
@@ -148,14 +167,22 @@ class CandleStickChartWithStandardDeviationChannel extends React.Component {
 					<OHLCTooltip origin={[-40, 0]} />
 
 					<StandardDeviationChannel
-						ref={this.saveInteractiveNode}
+						ref={this.saveInteractiveNodes("StandardDeviationChannel", 1)}
 						enabled={this.state.enableInteractiveObject}
 						onStart={() => console.log("START")}
 						onComplete={this.onDrawComplete}
-						channels={channels}
+						channels={channels_1}
 					/>
 				</Chart>
 				<CrossHairCursor />
+				<DrawingObjectSelector
+					enabled={!this.state.enableInteractiveObject}
+					getInteractiveNodes={this.getInteractiveNodes}
+					drawingObjectMap={{
+						StandardDeviationChannel: "channels"
+					}}
+					onSelect={this.handleSelection}
+				/>
 			</ChartCanvas>
 		);
 	}

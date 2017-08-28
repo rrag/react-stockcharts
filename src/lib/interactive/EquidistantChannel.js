@@ -6,15 +6,14 @@ import PropTypes from "prop-types";
 import { isDefined, isNotDefined, noop } from "../utils";
 import {
 	terminate,
-	saveNodeList,
-	handleClickInteractiveType,
+	saveNodeType,
+	isHoverForInteractiveType,
+	getElementsFactory,
 } from "./utils";
 import EachEquidistantChannel from "./hoc/EachEquidistantChannel";
 import { getSlope, getYIntercept } from "./components/StraightLine";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
 import HoverTextNearMouse from "./components/HoverTextNearMouse";
-import GenericChartComponent from "../GenericChartComponent";
-import { getMouseCanvas } from "../GenericComponent";
 
 class EquidistantChannel extends Component {
 	constructor(props) {
@@ -27,31 +26,16 @@ class EquidistantChannel extends Component {
 		this.handleDragChannelComplete = this.handleDragChannelComplete.bind(this);
 
 		this.terminate = terminate.bind(this);
-		this.handleClick = handleClickInteractiveType("channels").bind(this);
-		this.saveNodeList = saveNodeList.bind(this);
+		this.saveNodeType = saveNodeType.bind(this);
+
+		this.getSelectionState = isHoverForInteractiveType("channels")
+			.bind(this);
+		this.getElements = getElementsFactory("channels")
+			.bind(this);
 
 		this.nodes = [];
 		this.state = {
-			channels: []
 		};
-	}
-	componentWillMount() {
-		this.updateInteractiveToState(this.props.channels);
-	}
-	componentWillReceiveProps(nextProps) {
-		if (this.props.channels !== nextProps.channels) {
-			this.updateInteractiveToState(nextProps.channels);
-		}
-	}
-	updateInteractiveToState(channels) {
-		this.setState({
-			channels: channels.map(t => {
-				return {
-					...t,
-					selected: !!t.selected
-				};
-			}),
-		});
 	}
 	handleDragChannel(index, newXYValue) {
 		this.setState({
@@ -62,7 +46,8 @@ class EquidistantChannel extends Component {
 		});
 	}
 	handleDragChannelComplete(moreProps) {
-		const { channels, override } = this.state;
+		const { override } = this.state;
+		const { channels } = this.props;
 
 		if (isDefined(override)) {
 			const { index, ...rest } = override;
@@ -72,7 +57,6 @@ class EquidistantChannel extends Component {
 					: each);
 			this.setState({
 				override: null,
-				channels: newChannels,
 			}, () => {
 				this.props.onComplete(newChannels, moreProps);
 			});
@@ -122,8 +106,8 @@ class EquidistantChannel extends Component {
 		}
 	}
 	handleEnd(xyValue, moreProps, e) {
-		const { channels, current } = this.state;
-		const { appearance } = this.props;
+		const { current } = this.state;
+		const { channels, appearance } = this.props;
 
 		if (this.mouseMoved
 			&& isDefined(current)
@@ -139,7 +123,7 @@ class EquidistantChannel extends Component {
 				});
 			} else {
 				const newChannels = [
-					...channels,
+					...channels.map(d => ({ ...d, selected: false })),
 					{
 						...current, selected: true,
 						appearance,
@@ -148,7 +132,6 @@ class EquidistantChannel extends Component {
 
 				this.setState({
 					current: null,
-					channels: newChannels,
 				}, () => {
 
 					this.props.onComplete(newChannels, moreProps, e);
@@ -161,9 +144,8 @@ class EquidistantChannel extends Component {
 		const { enabled } = this.props;
 		const { currentPositionRadius, currentPositionStroke } = this.props;
 		const { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
-		const { hoverText } = this.props;
+		const { channels, hoverText } = this.props;
 		const { current, override } = this.state;
-		const { channels } = this.state;
 		const overrideIndex = isDefined(override) ? override.index : null;
 
 		const tempChannel = isDefined(current) && isDefined(current.endXY)
@@ -181,7 +163,7 @@ class EquidistantChannel extends Component {
 					: appearance;
 
 				return <EachEquidistantChannel key={idx}
-					ref={this.saveNodeList}
+					ref={this.saveNodeType(idx)}
 					index={idx}
 					selected={each.selected}
 					hoverText={hoverText}
@@ -202,16 +184,6 @@ class EquidistantChannel extends Component {
 				onMouseDown={this.handleStart}
 				onClick={this.handleEnd}
 				onMouseMove={this.handleDrawChannel} />
-			<GenericChartComponent
-
-				svgDraw={noop}
-				canvasToDraw={getMouseCanvas}
-				canvasDraw={noop}
-
-				onClick={this.handleClick}
-
-				drawOn={["mousemove", "pan", "drag"]}
-			/>
 		</g>;
 	}
 }

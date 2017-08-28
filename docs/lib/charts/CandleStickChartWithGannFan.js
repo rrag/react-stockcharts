@@ -22,8 +22,12 @@ import {
 	OHLCTooltip,
 } from "react-stockcharts/lib/tooltip";
 import { fitWidth } from "react-stockcharts/lib/helper";
-import { GannFan } from "react-stockcharts/lib/interactive";
-import { last } from "react-stockcharts/lib/utils";
+import { GannFan, DrawingObjectSelector } from "react-stockcharts/lib/interactive";
+import { last, toObject } from "react-stockcharts/lib/utils";
+import {
+	saveInteractiveNodes,
+	getInteractiveNodes,
+} from "./interactiveutils";
 
 class CandleStickChartWithGannFan extends React.Component {
 	constructor(props) {
@@ -32,6 +36,11 @@ class CandleStickChartWithGannFan extends React.Component {
 		this.onDrawComplete = this.onDrawComplete.bind(this);
 		this.saveInteractiveNode = this.saveInteractiveNode.bind(this);
 		this.saveCanvasNode = this.saveCanvasNode.bind(this);
+
+		this.handleSelection = this.handleSelection.bind(this);
+
+		this.saveInteractiveNodes = saveInteractiveNodes.bind(this);
+		this.getInteractiveNodes = getInteractiveNodes.bind(this);
 
 		this.state = {
 			enableInteractiveObject: true,
@@ -50,6 +59,15 @@ class CandleStickChartWithGannFan extends React.Component {
 	componentWillUnmount() {
 		document.removeEventListener("keyup", this.onKeyPress);
 	}
+	handleSelection(interactives) {
+		const state = toObject(interactives, each => {
+			return [
+				"fans",
+				each.objects,
+			];
+		});
+		this.setState(state);
+	}
 	onDrawComplete(fans) {
 		// this gets called on
 		// 1. draw complete of drawing object
@@ -64,9 +82,14 @@ class CandleStickChartWithGannFan extends React.Component {
 		console.log(keyCode);
 		switch (keyCode) {
 		case 46: { // DEL
+			const fans = this.state.fans
+				.filter(each => !each.selected);
+
+			this.canvasNode.cancelDrag();
 			this.setState({
-				fans: this.state.fans.slice(0, this.state.fans.length - 2)
+				fans,
 			});
+
 			break;
 		}
 		case 27: { // ESC
@@ -141,7 +164,7 @@ class CandleStickChartWithGannFan extends React.Component {
 					<OHLCTooltip origin={[-40, 0]}/>
 
 					<GannFan
-						ref={this.saveInteractiveNode}
+						ref={this.saveInteractiveNodes("GannFan", 1)}
 						enabled={this.state.enableInteractiveObject}
 						onStart={() => console.log("START")}
 						onComplete={this.onDrawComplete}
@@ -149,6 +172,14 @@ class CandleStickChartWithGannFan extends React.Component {
 					/>
 				</Chart>
 				<CrossHairCursor />
+				<DrawingObjectSelector
+					enabled={!this.state.enableInteractiveObject}
+					getInteractiveNodes={this.getInteractiveNodes}
+					drawingObjectMap={{
+						GannFan: "fans"
+					}}
+					onSelect={this.handleSelection}
+				/>
 			</ChartCanvas>
 		);
 	}
