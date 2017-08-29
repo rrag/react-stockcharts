@@ -89,6 +89,7 @@ class DrawingObjectSelector extends Component {
 
 DrawingObjectSelector.propTypes = {
 	getInteractiveNodes: PropTypes.func.isRequired,
+	onSelect: PropTypes.func.isRequired,
 	drawingObjectMap: PropTypes.object.isRequired,
 	enabled: PropTypes.bool.isRequired,
 };
