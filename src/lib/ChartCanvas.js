@@ -17,6 +17,17 @@ import {
 	getLogger,
 } from "./utils";
 
+/* eslint-disable no-unused-vars */
+
+import {
+	mouseBasedZoomAnchor,
+	lastVisibleItemBasedZoomAnchor,
+	rightDomainBasedZoomAnchor,
+} from "./utils/zoomBehavior";
+
+/* eslint-enable no-unused-vars */
+
+
 import { getNewChartConfig, getChartConfigWithUpdatedYScales, getCurrentCharts, getCurrentItem } from "./utils/ChartDataUtil";
 
 import EventCapture from "./EventCapture";
@@ -550,12 +561,19 @@ class ChartCanvas extends Component {
 			return;
 		// console.log("zoomDirection ", zoomDirection, " mouseXY ", mouseXY);
 		const { xAccessor, xScale: initialXScale, plotData: initialPlotData } = this.state;
-		const { zoomMultiplier } = this.props;
+		const { zoomMultiplier, zoomAnchor } = this.props;
+		const { fullData } = this;
+		const item = zoomAnchor({
+			xScale: initialXScale,
+			xAccessor,
+			mouseXY,
+			plotData: initialPlotData,
+			fullData,
+		});
 
-		const item = getCurrentItem(initialXScale, xAccessor, mouseXY, initialPlotData),
-			cx = initialXScale(xAccessor(item)),
-			c = zoomDirection > 0 ? 1 * zoomMultiplier : 1 / zoomMultiplier,
-			newDomain = initialXScale.range().map(x => cx + (x - cx) * c).map(initialXScale.invert);
+		const cx = initialXScale(item);
+		const c = zoomDirection > 0 ? 1 * zoomMultiplier : 1 / zoomMultiplier;
+		const newDomain = initialXScale.range().map(x => cx + (x - cx) * c).map(initialXScale.invert);
 
 		const { xScale, plotData, chartConfig } = this.calculateStateForDomain(newDomain);
 
@@ -564,7 +582,7 @@ class ChartCanvas extends Component {
 
 		this.clearThreeCanvas();
 
-		const { fullData } = this;
+
 		const firstItem = first(fullData);
 
 		const start = first(xScale.domain());
@@ -1071,7 +1089,8 @@ ChartCanvas.propTypes = {
 		PropTypes.array,
 		PropTypes.func
 	]).isRequired,
-	// xScale: PropTypes.func.isRequired,
+	zoomAnchor: PropTypes.func.isRequired,
+
 	className: PropTypes.string,
 	seriesName: PropTypes.string.isRequired,
 	zIndex: PropTypes.number,
@@ -1127,6 +1146,7 @@ ChartCanvas.defaultProps = {
 	zoomEvent: true,
 	zoomMultiplier: 1.1,
 	clamp: false,
+	zoomAnchor: mouseBasedZoomAnchor,
 	// ratio: 2,
 };
 

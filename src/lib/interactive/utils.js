@@ -48,7 +48,7 @@ export function isHoverForInteractiveType(interactiveType) {
 }
 
 export function handleClickInteractiveType(interactiveType) {
-	console.error("DO NOT USE THIS")
+	console.error("DO NOT USE THIS");
 	return function(moreProps, e) { // this has to be function as it is bound to this
 		e.preventDefault();
 

@@ -38,7 +38,7 @@ class CandleStickChartWithZoomPan extends React.Component {
 	}
 	render() {
 		const { type, data: initialData, width, ratio } = this.props;
-		const { mouseMoveEvent, panEvent, zoomEvent } = this.props;
+		const { mouseMoveEvent, panEvent, zoomEvent, zoomAnchor } = this.props;
 		const { clamp } = this.props;
 
 		const xScaleProvider = discontinuousTimeScaleProvider
@@ -75,7 +75,7 @@ class CandleStickChartWithZoomPan extends React.Component {
 				panEvent={panEvent}
 				zoomEvent={zoomEvent}
 				clamp={clamp}
-
+				zoomAnchor={zoomAnchor}
 				type={type}
 				seriesName="MSFT"
 				data={data}
@@ -105,8 +105,8 @@ class CandleStickChartWithZoomPan extends React.Component {
 						displayFormat={format(".2f")} />
 
 					<CandlestickSeries />
-					<ZoomButtons />
 					<OHLCTooltip origin={[-40, 0]}/>
+					<ZoomButtons />
 				</Chart>
 				<Chart id={2}
 					yExtents={d => d.volume}

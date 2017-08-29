@@ -213,6 +213,7 @@ LinearRegressionChannelWithArea.propTypes = {
 	strokeWidth: PropTypes.number.isRequired,
 	fill: PropTypes.string.isRequired,
 	fillOpacity: PropTypes.number.isRequired,
+	strokeOpacity: PropTypes.number.isRequired,
 
 	onDragStart: PropTypes.func.isRequired,
 	onDrag: PropTypes.func.isRequired,

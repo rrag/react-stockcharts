@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { mean } from "d3-array";
+// import { mean } from "d3-array";
 
 import { interpolateNumber } from "d3-interpolate";
+
+import { last } from "./utils";
 
 class ZoomButtons extends Component {
 	constructor(props) {
@@ -12,8 +14,9 @@ class ZoomButtons extends Component {
 		this.zoom = this.zoom.bind(this);
 	}
 	zoom(direction) {
-		const { xAxisZoom, xScale } = this.context;
-		const cx = mean(xScale.range());
+		const { xAxisZoom, xScale, plotData, xAccessor } = this.context;
+		const cx = xScale(xAccessor(last(plotData)));
+		// mean(xScale.range());
 		const { zoomMultiplier } = this.props;
 
 		const c = direction > 0 ? 1 * zoomMultiplier : 1 / zoomMultiplier;
@@ -154,6 +157,8 @@ ZoomButtons.defaultProps = {
 ZoomButtons.contextTypes = {
 	xScale: PropTypes.func.isRequired,
 	chartConfig: PropTypes.object.isRequired,
+	plotData: PropTypes.array.isRequired,
+	xAccessor: PropTypes.func.isRequired,
 	xAxisZoom: PropTypes.func.isRequired,
 };
 
