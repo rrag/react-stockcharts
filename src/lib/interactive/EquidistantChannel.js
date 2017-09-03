@@ -30,8 +30,6 @@ class EquidistantChannel extends Component {
 
 		this.getSelectionState = isHoverForInteractiveType("channels")
 			.bind(this);
-		this.getElements = getElementsFactory("channels")
-			.bind(this);
 
 		this.nodes = [];
 		this.state = {

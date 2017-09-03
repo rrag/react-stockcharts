@@ -6,6 +6,7 @@ import { bisector } from "d3-array";
 import noop from "./noop";
 import identity from "./identity";
 
+export { default as rebind } from "./rebind";
 export { default as zipper } from "./zipper";
 export { default as merge } from "./merge";
 export { default as slidingWindow } from "./slidingWindow";

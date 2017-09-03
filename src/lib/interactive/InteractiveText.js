@@ -8,8 +8,8 @@ import { isDefined, noop } from "../utils";
 import {
 	getValueFromOverride,
 	terminate,
-	saveNodeList,
-	handleClickInteractiveType,
+	saveNodeType,
+	isHoverForInteractiveType,
 } from "./utils";
 import EachText from "./hoc/EachText";
 import HoverTextNearMouse from "./components/HoverTextNearMouse";
@@ -24,29 +24,13 @@ class InteractiveText extends Component {
 		this.handleDrag = this.handleDrag.bind(this);
 		this.handleDragComplete = this.handleDragComplete.bind(this);
 		this.terminate = terminate.bind(this);
-		this.handleClick = handleClickInteractiveType("textList").bind(this);
-		this.saveNodeList = saveNodeList.bind(this);
+
+		this.saveNodeType = saveNodeType.bind(this);
+		this.getSelectionState = isHoverForInteractiveType("textList")
+			.bind(this);
 
 		this.nodes = [];
 		this.state = {};
-	}
-	componentWillMount() {
-		this.updateInteractiveToState(this.props.textList);
-	}
-	componentWillReceiveProps(nextProps) {
-		if (this.props.textList !== nextProps.textList) {
-			this.updateInteractiveToState(nextProps.textList);
-		}
-	}
-	updateInteractiveToState(textList) {
-		this.setState({
-			textList: textList.map(t => {
-				return {
-					...t,
-					selected: !!t.selected
-				};
-			}),
-		});
 	}
 	handleDrag(index, position) {
 		this.setState({
@@ -59,18 +43,23 @@ class InteractiveText extends Component {
 	handleDragComplete(moreProps) {
 		const { override } = this.state;
 		if (isDefined(override)) {
-			const { textList } = this.state;
+			const { textList } = this.props;
 			const newTextList = textList
-				.map((each, idx) => idx === override.index
-					? {
-						...each,
-						position: override.position,
-						selected: true,
-					}
-					: each);
+				.map((each, idx) => {
+					const selected = (idx === override.index);
+					return selected
+						? {
+							...each,
+							position: override.position,
+							selected,
+						}
+						: {
+							...each,
+							selected
+						};
+				});
 			this.setState({
 				override: null,
-				textList: newTextList,
 			}, () => {
 				this.props.onDragComplete(newTextList, moreProps);
 			});
@@ -107,13 +96,13 @@ class InteractiveText extends Component {
 				position: xyValue,
 			};
 			onChoosePosition(newText, moreProps);
-		} else {
+		}/*  else {
 			this.handleClick(moreProps, e);
-		}
+		} */
 	}
 	render() {
-		const { defaultText } = this.props;
-		const { textList, override } = this.state;
+		const { textList, defaultText } = this.props;
+		const { override } = this.state;
 		return <g>
 			{textList.map((each, idx) => {
 				const props = {
@@ -121,7 +110,7 @@ class InteractiveText extends Component {
 					...each,
 				};
 				return <EachText key={idx}
-					ref={this.saveNodeList}
+					ref={this.saveNodeType(idx)}
 					index={idx}
 					{...props}
 					selected={each.selected}

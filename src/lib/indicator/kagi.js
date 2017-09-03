@@ -1,6 +1,6 @@
 "use strict";
 
-import { rebind } from "d3fc-rebind";
+import { rebind } from "../utils";
 
 import { kagi } from "../calculator";
 import baseIndicator from "./baseIndicator";

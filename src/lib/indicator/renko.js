@@ -1,6 +1,6 @@
 "use strict";
 
-import { rebind } from "d3fc-rebind";
+import { rebind } from "../utils";
 
 import { renko } from "../calculator";
 import baseIndicator from "./baseIndicator";

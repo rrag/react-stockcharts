@@ -25,12 +25,21 @@ class EachText extends Component {
 			hover: false,
 		};
 	}
-	handleDragStart() {
+	handleDragStart(moreProps) {
 		const {
 			position,
 		} = this.props;
+		const { mouseXY } = moreProps;
+		const { chartConfig: { yScale }, xScale } = moreProps;
+		const [mouseX, mouseY] = mouseXY;
 
-		this.dragStartPosition = position;
+		const [textCX, textCY] = position;
+		const dx = mouseX - xScale(textCX);
+		const dy = mouseY - yScale(textCY);
+
+		this.dragStartPosition = {
+			position, dx, dy
+		};
 	}
 	handleDrag(moreProps) {
 		const { index, onDrag } = this.props;
@@ -39,9 +48,15 @@ class EachText extends Component {
 			chartConfig: { yScale },
 			xAccessor,
 			currentItem,
+			xScale,
 		} = moreProps;
 
-		const xyValue = [xAccessor(currentItem), yScale.invert(mouseY)];
+		const { dx, dy } = this.dragStartPosition;
+		const xValue = xScale.invert(xScale(xAccessor(currentItem)) - dx);
+		const xyValue = [
+			xValue,
+			yScale.invert(mouseY - dy)
+		];
 
 		onDrag(index, xyValue);
 	}

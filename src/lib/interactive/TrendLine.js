@@ -33,8 +33,6 @@ class TrendLine extends Component {
 
 		this.getSelectionState = isHoverForInteractiveType("trends")
 			.bind(this);
-		this.getElements = getElementsFactory("trends")
-			.bind(this);
 
 		this.state = {
 		};

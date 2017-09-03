@@ -31,8 +31,6 @@ class FibonacciRetracement extends Component {
 		this.terminate = terminate.bind(this);
 		this.getSelectionState = isHoverForInteractiveType("retracements")
 			.bind(this);
-		this.getElements = getElementsFactory("retracements")
-			.bind(this);
 
 		this.saveNodeType = saveNodeType.bind(this);
 		this.nodes = [];

@@ -13,13 +13,6 @@ export function terminate() {
 	});
 }
 
-export function saveNodeList(node) {
-	console.error("TODO, use saveNodeType instead");
-	if (isDefined(node)) {
-		this.nodes[node.props.index] = node;
-	}
-}
-
 export function saveNodeType(type) {
 	return node => {
 		if (isNotDefined(node) && isDefined(this.nodes[type])) {
@@ -47,39 +40,36 @@ export function isHoverForInteractiveType(interactiveType) {
 	};
 }
 
-export function handleClickInteractiveType(interactiveType) {
-	console.error("DO NOT USE THIS");
-	return function(moreProps, e) { // this has to be function as it is bound to this
-		e.preventDefault();
-
-		const { onSelect } = this.props;
-		if (isDefined(this.nodes)) {
-			const selecedNodes = this.nodes
-				.map(node => node.isHover(moreProps));
-			const interactive = this.state[interactiveType].map((t, idx) => {
-				return {
-					...t,
-					selected: selecedNodes[idx]
-				};
-			});
-			this.setState({
-				[interactiveType]: interactive
-			});
-
-			onSelect(interactive, moreProps);
-		}
-	};
-}
-
-export function getElementsFactory(interactiveType) {
-	return function() {
-		return this.state[interactiveType];
-	};
-}
 export function isHover(moreProps) {
 	const hovering = mapObject(this.nodes, node => node.isHover(moreProps))
 		.reduce((a, b) => {
 			return a || b;
 		});
 	return hovering;
+}
+
+function getMouseXY(moreProps, [ox, oy]) {
+	if (Array.isArray(moreProps.mouseXY)) {
+		const { mouseXY: [x, y] } = moreProps;
+		const mouseXY = [
+			x - ox,
+			y - oy
+		];
+		return mouseXY;
+	}
+	return moreProps.mouseXY;
+}
+
+export function getMorePropsForChart(moreProps, chartId) {
+	const { chartConfig: chartConfigList } = moreProps;
+	const chartConfig = chartConfigList
+		.filter(each => each.id === chartId)[0];
+
+	const { origin } = chartConfig;
+	const mouseXY = getMouseXY(moreProps, origin);
+	return {
+		...moreProps,
+		chartConfig,
+		mouseXY,
+	};
 }

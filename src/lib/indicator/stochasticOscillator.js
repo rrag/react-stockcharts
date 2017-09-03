@@ -1,8 +1,7 @@
 "use strict";
 
-import { rebind } from "d3fc-rebind";
+import { rebind, merge } from "../utils";
 
-import { merge } from "../utils";
 import { sto } from "../calculator";
 
 import baseIndicator from "./baseIndicator";

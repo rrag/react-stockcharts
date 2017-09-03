@@ -29,8 +29,6 @@ class GannFan extends Component {
 
 		this.getSelectionState = isHoverForInteractiveType("fans")
 			.bind(this);
-		this.getElements = getElementsFactory("fans")
-			.bind(this);
 
 		this.nodes = [];
 		this.state = {};

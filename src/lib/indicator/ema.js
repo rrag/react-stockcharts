@@ -1,7 +1,6 @@
 "use strict";
 
-import { rebind } from "d3fc-rebind";
-import { merge } from "../utils";
+import { rebind, merge } from "../utils";
 
 import { ema } from "../calculator";
 import baseIndicator from "./baseIndicator";

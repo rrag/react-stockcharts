@@ -1,11 +1,9 @@
 "use strict";
 
-import { rebind } from "d3fc-rebind";
-
 import { heikinAshi } from "../calculator";
 import baseIndicator from "./baseIndicator";
 
-import { merge } from "../utils";
+import { rebind, merge } from "../utils";
 
 const ALGORITHM_TYPE = "HeikinAshi";
 

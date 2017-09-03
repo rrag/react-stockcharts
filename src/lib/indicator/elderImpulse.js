@@ -1,8 +1,6 @@
 "use strict";
 
-import { rebind } from "d3fc-rebind";
-
-import { isDefined, isNotDefined, merge, slidingWindow } from "../utils";
+import { rebind, isDefined, isNotDefined, merge, slidingWindow } from "../utils";
 
 import { ElderImpulse as appearanceOptions } from "./defaultOptionsForAppearance";
 import baseIndicator from "./baseIndicator";
