@@ -10,7 +10,6 @@ import {
 	terminate,
 	saveNodeType,
 	isHoverForInteractiveType,
-	getElementsFactory,
 } from "./utils";
 
 import EachTrendLine from "./hoc/EachTrendLine";

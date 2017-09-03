@@ -8,7 +8,6 @@ import {
 	terminate,
 	saveNodeType,
 	isHoverForInteractiveType,
-	getElementsFactory,
 } from "./utils";
 import EachEquidistantChannel from "./hoc/EachEquidistantChannel";
 import { getSlope, getYIntercept } from "./components/StraightLine";

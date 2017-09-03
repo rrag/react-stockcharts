@@ -8,7 +8,6 @@ import {
 	terminate,
 	saveNodeType,
 	isHoverForInteractiveType,
-	getElementsFactory,
 } from "./utils";
 import EachGannFan from "./hoc/EachGannFan";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";

@@ -8,7 +8,6 @@ import {
 	terminate,
 	saveNodeType,
 	isHoverForInteractiveType,
-	getElementsFactory,
 } from "./utils";
 import EachFibRetracement from "./hoc/EachFibRetracement";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";

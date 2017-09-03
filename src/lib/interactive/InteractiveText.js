@@ -95,7 +95,7 @@ class InteractiveText extends Component {
 				...defaultText,
 				position: xyValue,
 			};
-			onChoosePosition(newText, moreProps);
+			onChoosePosition(newText, moreProps, e);
 		}/*  else {
 			this.handleClick(moreProps, e);
 		} */
