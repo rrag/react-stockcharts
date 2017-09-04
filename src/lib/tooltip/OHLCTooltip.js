@@ -18,29 +18,14 @@ class OHLCTooltip extends Component {
 	}
 	renderSVG(moreProps) {
 		const { className, textFill, labelFill } = this.props;
-		const { chartConfig: { width, height }, displayXAccessor } = moreProps;
-		const { currentItem } = moreProps;
+		const { displayValues } = this.props;
+		const { chartConfig: { width, height } } = moreProps;
 
-		const { onClick, xDisplayFormat, fontFamily, fontSize, accessor, volumeFormat, ohlcFormat } = this.props;
+		const { onClick, fontFamily, fontSize } = this.props;
 
-		let displayDate, open, high, low, close, volume;
-
-		displayDate = open = high = low = close = volume = "n/a";
-
-		if (isDefined(currentItem)
-				&& isDefined(accessor(currentItem))
-				&& isDefined(accessor(currentItem).close)) {
-			const item = accessor(currentItem);
-			volume = isDefined(item.volume)
-				? volumeFormat(item.volume)
-				: "n/a";
-
-			displayDate = xDisplayFormat(displayXAccessor(item));
-			open = ohlcFormat(item.open);
-			high = ohlcFormat(item.high);
-			low = ohlcFormat(item.low);
-			close = ohlcFormat(item.close);
-		}
+		const {
+			displayDate, open, high, low, close, volume
+		} = displayValues(this.props, moreProps);
 
 		const { origin: originProp } = this.props;
 		const origin = functor(originProp);
@@ -83,6 +68,7 @@ OHLCTooltip.propTypes = {
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
 	onClick: PropTypes.func,
+	displayValues: PropTypes.func,
 	volumeFormat: PropTypes.func,
 	textFill: PropTypes.string,
 	labelFill: PropTypes.string,
@@ -93,7 +79,35 @@ OHLCTooltip.defaultProps = {
 	xDisplayFormat: timeFormat("%Y-%m-%d"),
 	volumeFormat: format(".4s"),
 	ohlcFormat: format(".2f"),
+	displayValues: displayValues,
 	origin: [0, 0],
 };
+
+function displayValues(props, moreProps) {
+	const { xDisplayFormat, accessor, volumeFormat, ohlcFormat } = props;
+	const { displayXAccessor, currentItem } = moreProps;
+
+	let displayDate, open, high, low, close, volume;
+
+	displayDate = open = high = low = close = volume = "n/a";
+
+	if (isDefined(currentItem)
+			&& isDefined(accessor(currentItem))
+			&& isDefined(accessor(currentItem).close)) {
+		const item = accessor(currentItem);
+		volume = isDefined(item.volume)
+			? volumeFormat(item.volume)
+			: "n/a";
+
+		displayDate = xDisplayFormat(displayXAccessor(item));
+		open = ohlcFormat(item.open);
+		high = ohlcFormat(item.high);
+		low = ohlcFormat(item.low);
+		close = ohlcFormat(item.close);
+	}
+	return {
+		displayDate, open, high, low, close, volume
+	};
+}
 
 export default OHLCTooltip;

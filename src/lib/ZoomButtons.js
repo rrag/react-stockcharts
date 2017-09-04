@@ -106,7 +106,6 @@ class ZoomButtons extends Component {
 					height={size}
 					width={size}
 					fill="none"
-					fillOpacity={fillOpacity}
 				/>
 				<rect className="react-stockcharts-enable-interaction"
 					onClick={this.handleZoomIn}
@@ -117,7 +116,6 @@ class ZoomButtons extends Component {
 					height={size}
 					width={size}
 					fill="none"
-					fillOpacity={fillOpacity}
 				/>
 			</g>
 		);

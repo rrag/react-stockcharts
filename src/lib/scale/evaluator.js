@@ -10,7 +10,7 @@ import {
 
 const log = getLogger("evaluator");
 
-function extentsWrapper(xAccessor, useWholeData, clamp, pointsPerPxThreshold) {
+function extentsWrapper(xAccessor, useWholeData, clamp, pointsPerPxThreshold, minPointsPerPxThreshold) {
 	function domain(data, inputDomain, xAccessor, initialXScale, currentPlotData, currentDomain) {
 		if (useWholeData) {
 			return { plotData: data, domain: inputDomain };
@@ -42,7 +42,7 @@ function extentsWrapper(xAccessor, useWholeData, clamp, pointsPerPxThreshold) {
 			+ ` I can show up to ${showMax(width, pointsPerPxThreshold)} in that width. `
 			+ `Also FYI the entire chart width is ${chartWidth}px and pointsPerPxThreshold is ${pointsPerPxThreshold}`);
 
-		if (canShowTheseManyPeriods(width, filteredData.length, pointsPerPxThreshold)) {
+		if (canShowTheseManyPeriods(width, filteredData.length, pointsPerPxThreshold, minPointsPerPxThreshold)) {
 			plotData = filteredData;
 			domain = realInputDomain;
 			log("AND IT WORKED");
@@ -62,9 +62,15 @@ function extentsWrapper(xAccessor, useWholeData, clamp, pointsPerPxThreshold) {
 	return domain;
 }
 
-function canShowTheseManyPeriods(width, arrayLength, threshold) {
-	return arrayLength > 1 && arrayLength < showMaxThreshold(width, threshold);
+function canShowTheseManyPeriods(width, arrayLength, maxThreshold, minThreshold) {
+	return arrayLength > showMinThreshold(width, minThreshold) && arrayLength < showMaxThreshold(width, maxThreshold);
 }
+
+function showMinThreshold(width, threshold) {
+	return Math.ceil(width * threshold);
+}
+
+
 function showMaxThreshold(width, threshold) {
 	return Math.floor(width * threshold);
 }
@@ -84,11 +90,14 @@ function getFilteredResponse(data, left, right, xAccessor) {
 }
 
 export default function({
-	xAccessor, xScale, useWholeData, clamp, pointsPerPxThreshold
+	xAccessor, xScale, useWholeData, clamp,
+	pointsPerPxThreshold, minPointsPerPxThreshold,
 }) {
 	return extentsWrapper(
 		xAccessor,
 		useWholeData || isNotDefined(xScale.invert),
 		clamp,
-		pointsPerPxThreshold);
+		pointsPerPxThreshold,
+		minPointsPerPxThreshold
+	);
 }
