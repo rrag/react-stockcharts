@@ -283,7 +283,7 @@ export function mapValue(object, iteratee) {
 }
 
 // copied from https://github.com/lodash/lodash/blob/master/mapObject.js
-export function mapObject(object, iteratee = identity) {
+export function mapObject(object = {}, iteratee = identity) {
 	const props = Object.keys(object);
 
 	// eslint-disable-next-line prefer-const

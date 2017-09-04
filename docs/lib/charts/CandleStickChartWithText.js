@@ -27,8 +27,12 @@ import { OHLCTooltip, MACDTooltip } from "react-stockcharts/lib/tooltip";
 import { macd } from "react-stockcharts/lib/indicator";
 
 import { fitWidth } from "react-stockcharts/lib/helper";
-import { InteractiveText } from "react-stockcharts/lib/interactive";
-import { last } from "react-stockcharts/lib/utils";
+import { InteractiveText, DrawingObjectSelector } from "react-stockcharts/lib/interactive";
+import { last, toObject } from "react-stockcharts/lib/utils";
+import {
+	saveInteractiveNodes,
+	getInteractiveNodes,
+} from "./interactiveutils";
 
 class Dialog extends React.Component {
 	constructor(props) {
@@ -97,7 +101,12 @@ class CandleStickChartWithText extends React.Component {
 		this.onKeyPress = this.onKeyPress.bind(this);
 		this.onDrawComplete = this.onDrawComplete.bind(this);
 		this.handleChoosePosition = this.handleChoosePosition.bind(this);
-		this.saveInteractiveNode = this.saveInteractiveNode.bind(this);
+
+		this.saveInteractiveNodes = saveInteractiveNodes.bind(this);
+		this.getInteractiveNodes = getInteractiveNodes.bind(this);
+
+		this.handleSelection = this.handleSelection.bind(this);
+
 		this.saveCanvasNode = this.saveCanvasNode.bind(this);
 
 		this.handleDialogClose = this.handleDialogClose.bind(this);
@@ -105,15 +114,26 @@ class CandleStickChartWithText extends React.Component {
 
 		this.state = {
 			enableInteractiveObject: true,
-			textList: [],
+			textList_1: [],
+			textList_3: [],
 			showModal: false,
 		};
 	}
-	saveInteractiveNode(node) {
-		this.node = node;
-	}
 	saveCanvasNode(node) {
 		this.canvasNode = node;
+	}
+	handleSelection(interactives, moreProps, e) {
+		if (this.state.enableInteractiveObject) {
+			console.log(interactives, moreProps, e)
+		} else {
+			const state = toObject(interactives, each => {
+				return [
+					`textList_${each.chartId}`,
+					each.objects,
+				];
+			});
+			this.setState(state);
+		}
 	}
 	handleTextChange(text) {
 		const { textList } = this.state;
@@ -189,8 +209,7 @@ class CandleStickChartWithText extends React.Component {
 			break;
 		}
 		case 68: // D - Draw drawing object
-		case 69: {
-				// E - Enable drawing object
+		case 69: { // E - Enable drawing object
 			this.setState({
 				enableInteractiveObject: true
 			});
@@ -260,12 +279,11 @@ class CandleStickChartWithText extends React.Component {
 						<OHLCTooltip origin={[-40, 0]}/>
 
 						<InteractiveText
-							ref={this.saveInteractiveNode}
+							ref={this.saveInteractiveNodes("InteractiveText", 1)}
 							enabled={this.state.enableInteractiveObject}
 							text="Lorem ipsum..."
-							onChoosePosition={this.handleChoosePosition}
 							onDragComplete={this.onDrawComplete}
-							textList={textList}
+							textList={this.state.textList_1}
 						/>
 
 					</Chart>
@@ -303,12 +321,11 @@ class CandleStickChartWithText extends React.Component {
 							{...macdAppearance} />
 
 						<InteractiveText
-							ref={this.saveInteractiveNode}
+							ref={this.saveInteractiveNodes("InteractiveText", 3)}
 							enabled={this.state.enableInteractiveObject}
 							text="Lorem ipsum..."
-							onChoosePosition={this.handleChoosePosition}
 							onDragComplete={this.onDrawComplete}
-							textList={textList}
+							textList={this.state.textList_3}
 						/>
 
 						<MACDTooltip
@@ -319,6 +336,14 @@ class CandleStickChartWithText extends React.Component {
 						/>
 					</Chart>
 					<CrossHairCursor />
+					<DrawingObjectSelector
+						enabled
+						getInteractiveNodes={this.getInteractiveNodes}
+						drawingObjectMap={{
+							InteractiveText: "textList"
+						}}
+						onSelect={this.handleSelection}
+					/>
 				</ChartCanvas>
 				<Dialog
 					showModal={showModal}
