@@ -20,9 +20,13 @@ class DrawingObjectSelector extends Component {
 		const { onSelect } = this.props;
 		if (!enabled) return;
 
-		const interactives = mapObject(getInteractiveNodes(), each => {
+		const interactiveNodes = getInteractiveNodes();
+		const interactives = mapObject(interactiveNodes, each => {
 			const key = drawingObjectMap[each.type];
-			const valueArray = each.node.props[key];
+
+			const valueArray = isDefined(key)
+				? each.node.props[key]
+				: undefined;
 
 			const valuePresent = isDefined(valueArray)
 				&& Array.isArray(valueArray)

@@ -58,7 +58,6 @@ class AxisZoomCapture extends Component {
 	}
 	handleDragStartMouse(e) {
 		this.mouseInteraction = true;
-		console.log("handleDragStartMouse");
 
 		const { getScale, getMoreProps } = this.props;
 		const startScale = getScale(getMoreProps());

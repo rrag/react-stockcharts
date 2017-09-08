@@ -28,7 +28,8 @@ import { macd } from "react-stockcharts/lib/indicator";
 
 import { fitWidth } from "react-stockcharts/lib/helper";
 import { InteractiveText, DrawingObjectSelector } from "react-stockcharts/lib/interactive";
-import { last, toObject } from "react-stockcharts/lib/utils";
+import { getMorePropsForChart } from "react-stockcharts/lib/interactive/utils";
+import { head, last, toObject } from "react-stockcharts/lib/utils";
 import {
 	saveInteractiveNodes,
 	getInteractiveNodes,
@@ -54,7 +55,7 @@ class Dialog extends React.Component {
 		});
 	}
 	handleSave() {
-		this.props.onSave(this.state.text);
+		this.props.onSave(this.state.text, this.props.chartId);
 	}
 	render() {
 		const {
@@ -124,7 +125,25 @@ class CandleStickChartWithText extends React.Component {
 	}
 	handleSelection(interactives, moreProps, e) {
 		if (this.state.enableInteractiveObject) {
-			console.log(interactives, moreProps, e)
+			const independentCharts = moreProps.currentCharts.filter(d => d !== 2)
+			if (independentCharts.length > 0) {
+				const first = head(independentCharts);
+
+				const morePropsForChart = getMorePropsForChart(moreProps, first)
+				const {
+					mouseXY: [, mouseY],
+					chartConfig: { yScale },
+					xAccessor,
+					currentItem,
+				} = morePropsForChart;
+
+				const position = [xAccessor(currentItem), yScale.invert(mouseY)];
+				const newText = {
+					...InteractiveText.defaultProps.defaultText,
+					position,
+				};
+				this.handleChoosePosition(newText, morePropsForChart, e);
+			}
 		} else {
 			const state = toObject(interactives, each => {
 				return [
@@ -135,16 +154,32 @@ class CandleStickChartWithText extends React.Component {
 			this.setState(state);
 		}
 	}
-	handleTextChange(text) {
-		const { textList } = this.state;
-		const allButLast = textList.slice(0, textList.length - 1);
+	handleChoosePosition(text, moreProps) {
+		this.componentWillUnmount();
+		const { id: chartId } = moreProps.chartConfig;
+
+		this.setState({
+			[`textList_${chartId}`]: [
+				...this.state[`textList_${chartId}`],
+				text
+			],
+			showModal: true,
+			text: text.text,
+			chartId
+		});
+	}
+	handleTextChange(text, chartId) {
+		const textList = this.state[`textList_${chartId}`];
+		const allButLast = textList
+			.slice(0, textList.length - 1);
+
 		const lastText = {
 			...last(textList),
 			text,
 		};
 
 		this.setState({
-			textList: [
+			[`textList_${chartId}`]: [
 				...allButLast,
 				lastText
 			],
@@ -159,30 +194,22 @@ class CandleStickChartWithText extends React.Component {
 		});
 		this.componentDidMount();
 	}
-	handleChoosePosition(text) {
-		this.componentWillUnmount();
-		this.setState({
-			textList: [
-				...this.state.textList,
-				text
-			],
-			showModal: true,
-			text: text.text
-		});
-	}
+
 	componentDidMount() {
 		document.addEventListener("keyup", this.onKeyPress);
 	}
 	componentWillUnmount() {
 		document.removeEventListener("keyup", this.onKeyPress);
 	}
-	onDrawComplete(textList) {
+	onDrawComplete(textList, moreProps) {
 		// this gets called on
 		// 1. draw complete of drawing object
 		// 2. drag complete of drawing object
+		const { id: chartId } = moreProps.chartConfig;
+
 		this.setState({
 			enableInteractiveObject: false,
-			textList
+			[`textList_${chartId}`]: textList,
 		});
 	}
 	onKeyPress(e) {
@@ -228,7 +255,7 @@ class CandleStickChartWithText extends React.Component {
 			.accessor(d => d.macd);
 
 		const { type, data: initialData, width, ratio } = this.props;
-		const { textList, showModal, text } = this.state;
+		const { showModal, text } = this.state;
 
 		const calculatedData = macdCalculator(initialData);
 		const xScaleProvider = discontinuousTimeScaleProvider
@@ -348,6 +375,7 @@ class CandleStickChartWithText extends React.Component {
 				<Dialog
 					showModal={showModal}
 					text={text}
+					chartId={this.state.chartId}
 					onClose={this.handleDialogClose}
 					onSave={this.handleTextChange}
 				/>
