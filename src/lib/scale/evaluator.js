@@ -67,9 +67,8 @@ function canShowTheseManyPeriods(width, arrayLength, maxThreshold, minThreshold)
 }
 
 function showMinThreshold(width, threshold) {
-	return Math.ceil(width * threshold);
+	return Math.max(1, Math.ceil(width * threshold));
 }
-
 
 function showMaxThreshold(width, threshold) {
 	return Math.floor(width * threshold);
