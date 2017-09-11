@@ -3,7 +3,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { format } from "d3-format";
-
+import displayValuesFor from "./displayValuesFor";
 import GenericChartComponent from "../GenericChartComponent";
 
 import ToolTipText from "./ToolTipText";
@@ -17,11 +17,12 @@ class SingleValueTooltip extends Component {
 	}
 	renderSVG(moreProps) {
 
-		const { onClick, fontFamily, fontSize, labelStroke, valueStroke, className } = this.props;
+		const { onClick, fontFamily, fontSize, labelFill, valueFill, className } = this.props;
 		const { xDisplayFormat, yDisplayFormat, xLabel, yLabel, xAccessor, yAccessor } = this.props;
+		const { displayValuesFor } = this.props;
 
 		const { chartConfig: { width, height } } = moreProps;
-		const { currentItem } = moreProps;
+		const currentItem = displayValuesFor(this.props, moreProps);
 
 		const xDisplayValue = isDefined(currentItem) && isDefined(xAccessor(currentItem)) ? xDisplayFormat(xAccessor(currentItem)) : "n/a";
 		const yDisplayValue = isDefined(currentItem) && isDefined(yAccessor(currentItem)) ? yDisplayFormat(yAccessor(currentItem)) : "n/a";
@@ -34,10 +35,10 @@ class SingleValueTooltip extends Component {
 			<g className={className} transform={`translate(${ x }, ${ y })`} onClick={onClick}>
 				<ToolTipText x={0} y={0}
 					fontFamily={fontFamily} fontSize={fontSize}>
-					{ xLabel ? <ToolTipTSpanLabel x={0} dy="5" fill={labelStroke}>{`${xLabel}: `}</ToolTipTSpanLabel> : null}
-					{ xLabel ? <tspan fill={valueStroke}>{`${xDisplayValue} `}</tspan> : null}
-					<ToolTipTSpanLabel fill={labelStroke}>{`${yLabel}: `}</ToolTipTSpanLabel>
-					<tspan fill={valueStroke} >{yDisplayValue}</tspan>
+					{ xLabel ? <ToolTipTSpanLabel x={0} dy="5" fill={labelFill}>{`${xLabel}: `}</ToolTipTSpanLabel> : null}
+					{ xLabel ? <tspan fill={valueFill}>{`${xDisplayValue} `}</tspan> : null}
+					<ToolTipTSpanLabel fill={labelFill}>{`${yLabel}: `}</ToolTipTSpanLabel>
+					<tspan fill={valueFill} >{yDisplayValue}</tspan>
 				</ToolTipText>
 			</g>
 		);
@@ -59,8 +60,8 @@ SingleValueTooltip.propTypes = {
 		PropTypes.string,
 		PropTypes.func
 	]).isRequired,
-	labelStroke: PropTypes.string.isRequired,
-	valueStroke: PropTypes.string,
+	labelFill: PropTypes.string.isRequired,
+	valueFill: PropTypes.string,
 	origin: PropTypes.oneOfType([
 		PropTypes.array,
 		PropTypes.func
@@ -69,15 +70,17 @@ SingleValueTooltip.propTypes = {
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
 	onClick: PropTypes.func,
+	displayValuesFor: PropTypes.func,
 	xAccessor: PropTypes.func,
 	yAccessor: PropTypes.func,
 };
 
 SingleValueTooltip.defaultProps = {
 	origin: [0, 0],
-	labelStroke: "#4682B4",
-	valueStroke: "#000000",
+	labelFill: "#4682B4",
+	valueFill: "#000000",
 	yDisplayFormat: format(".2f"),
+	displayValuesFor: displayValuesFor,
 	xAccessor: noop,
 	yAccessor: identity,
 	className: "react-stockcharts-tooltip",

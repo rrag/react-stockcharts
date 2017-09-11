@@ -3,6 +3,7 @@
 import { format } from "d3-format";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import displayValuesFor from "./displayValuesFor";
 import GenericChartComponent from "../GenericChartComponent";
 
 import { functor } from "../utils";
@@ -18,9 +19,10 @@ class StochasticTooltip extends Component {
 	renderSVG(moreProps) {
 		const { onClick, fontFamily, fontSize, yAccessor, displayFormat, label } = this.props;
 		const { className, options, appearance, labelFill } = this.props;
+		const { displayValuesFor } = this.props;
 		const { chartConfig: { width, height } } = moreProps;
-		const { currentItem } = moreProps;
 
+		const currentItem = displayValuesFor(this.props, moreProps);
 		const { stroke } = appearance;
 		const stochastic = currentItem && yAccessor(currentItem);
 
@@ -79,11 +81,13 @@ StochasticTooltip.propTypes = {
 		}.isRequired,
 	}).isRequired,
 	displayFormat: PropTypes.func.isRequired,
+	displayValuesFor: PropTypes.func,
 	label: PropTypes.string.isRequired,
 };
 
 StochasticTooltip.defaultProps = {
 	displayFormat: format(".2f"),
+	displayValuesFor: displayValuesFor,
 	origin: [0, 0],
 	className: "react-stockcharts-tooltip",
 	label: "STO",

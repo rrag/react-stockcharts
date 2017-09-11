@@ -4,7 +4,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
-
+import displayValuesFor from "./displayValuesFor";
 import GenericChartComponent from "../GenericChartComponent";
 
 import { isDefined, functor } from "../utils";
@@ -18,15 +18,32 @@ class OHLCTooltip extends Component {
 	}
 	renderSVG(moreProps) {
 		const { className, textFill, labelFill } = this.props;
-		const { displayValues } = this.props;
-		const { chartConfig: { width, height } } = moreProps;
-
 		const { onClick, fontFamily, fontSize } = this.props;
+		const { displayValuesFor } = this.props;
+		const { xDisplayFormat, accessor, volumeFormat, ohlcFormat } = this.props;
 
-		const {
-			displayDate, open, high, low, close, volume
-		} = displayValues(this.props, moreProps);
+		const { chartConfig: { width, height } } = moreProps;
+		const { displayXAccessor } = moreProps;
 
+		const currentItem = displayValuesFor(this.props, moreProps);
+
+		let displayDate, open, high, low, close, volume;
+		displayDate = open = high = low = close = volume = "n/a";
+
+		if (isDefined(currentItem)
+				&& isDefined(accessor(currentItem))) {
+
+			const item = accessor(currentItem);
+			volume = isDefined(item.volume)
+				? volumeFormat(item.volume)
+				: "n/a";
+
+			displayDate = xDisplayFormat(displayXAccessor(item));
+			open = ohlcFormat(item.open);
+			high = ohlcFormat(item.high);
+			low = ohlcFormat(item.low);
+			close = ohlcFormat(item.close);
+		}
 		const { origin: originProp } = this.props;
 		const origin = functor(originProp);
 		const [x, y] = origin(width, height);
@@ -68,7 +85,7 @@ OHLCTooltip.propTypes = {
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
 	onClick: PropTypes.func,
-	displayValues: PropTypes.func,
+	displayValuesFor: PropTypes.func,
 	volumeFormat: PropTypes.func,
 	textFill: PropTypes.string,
 	labelFill: PropTypes.string,
@@ -79,35 +96,8 @@ OHLCTooltip.defaultProps = {
 	xDisplayFormat: timeFormat("%Y-%m-%d"),
 	volumeFormat: format(".4s"),
 	ohlcFormat: format(".2f"),
-	displayValues: displayValues,
+	displayValuesFor: displayValuesFor,
 	origin: [0, 0],
 };
-
-function displayValues(props, moreProps) {
-	const { xDisplayFormat, accessor, volumeFormat, ohlcFormat } = props;
-	const { displayXAccessor, currentItem } = moreProps;
-
-	let displayDate, open, high, low, close, volume;
-
-	displayDate = open = high = low = close = volume = "n/a";
-
-	if (isDefined(currentItem)
-			&& isDefined(accessor(currentItem))
-			&& isDefined(accessor(currentItem).close)) {
-		const item = accessor(currentItem);
-		volume = isDefined(item.volume)
-			? volumeFormat(item.volume)
-			: "n/a";
-
-		displayDate = xDisplayFormat(displayXAccessor(item));
-		open = ohlcFormat(item.open);
-		high = ohlcFormat(item.high);
-		low = ohlcFormat(item.low);
-		close = ohlcFormat(item.close);
-	}
-	return {
-		displayDate, open, high, low, close, volume
-	};
-}
 
 export default OHLCTooltip;

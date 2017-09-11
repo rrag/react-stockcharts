@@ -63,9 +63,8 @@ class GenericChartComponent extends GenericComponent {
 			this.moreProps.chartConfig = chartConfig;
 		}
 	}
-	preEvaluate(type, moreProps) {
-
-		if (
+	preEvaluate(/* type, moreProps */) {
+		/* if (
 			type === "mousemove"
 			&& this.props.onMouseMove
 			&& isDefined(moreProps)
@@ -74,7 +73,7 @@ class GenericChartComponent extends GenericComponent {
 			if (moreProps.currentCharts.indexOf(this.context.chartId) === -1) {
 				moreProps.show = false;
 			}
-		}
+		} */
 	}
 	shouldTypeProceed(type, moreProps) {
 		if (

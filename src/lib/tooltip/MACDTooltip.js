@@ -3,6 +3,8 @@
 import { format } from "d3-format";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+
+import displayValuesFor from "./displayValuesFor";
 import GenericChartComponent from "../GenericChartComponent";
 
 import ToolTipText from "./ToolTipText";
@@ -17,9 +19,11 @@ class MACDTooltip extends Component {
 	renderSVG(moreProps) {
 		const { onClick, fontFamily, fontSize, displayFormat, className } = this.props;
 		const { yAccessor, options, appearance, labelFill } = this.props;
-		const { chartConfig: { width, height } } = moreProps;
-		const { currentItem } = moreProps;
+		const { displayValuesFor } = this.props;
 
+		const { chartConfig: { width, height } } = moreProps;
+
+		const currentItem = displayValuesFor(this.props, moreProps);
 		const macdValue = currentItem && yAccessor(currentItem);
 
 		const macd = (macdValue && macdValue.macd && displayFormat(macdValue.macd)) || "n/a";
@@ -85,12 +89,14 @@ MACDTooltip.propTypes = {
 		}).isRequired,
 	}).isRequired,
 	displayFormat: PropTypes.func.isRequired,
+	displayValuesFor: PropTypes.func,
 	onClick: PropTypes.func,
 };
 
 MACDTooltip.defaultProps = {
 	origin: [0, 0],
 	displayFormat: format(".2f"),
+	displayValuesFor: displayValuesFor,
 	className: "react-stockcharts-tooltip",
 };
 

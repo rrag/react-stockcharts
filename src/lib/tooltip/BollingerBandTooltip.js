@@ -3,7 +3,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { format } from "d3-format";
-
+import displayValuesFor from "./displayValuesFor";
 import GenericChartComponent from "../GenericChartComponent";
 
 import { isDefined, functor } from "../utils";
@@ -17,8 +17,11 @@ class BollingerBandTooltip extends Component {
 	}
 	renderSVG(moreProps) {
 		const { onClick, displayFormat, yAccessor, options, textFill, labelFill } = this.props;
+		const { displayValuesFor } = this.props;
+
 		const { chartConfig: { width, height } } = moreProps;
-		const { currentItem } = moreProps;
+
+		const currentItem = displayValuesFor(this.props, moreProps);
 
 		let top, middle, bottom;
 		top = middle = bottom = "n/a";
@@ -61,6 +64,7 @@ class BollingerBandTooltip extends Component {
 BollingerBandTooltip.propTypes = {
 	className: PropTypes.string,
 	yAccessor: PropTypes.func.isRequired,
+	displayValuesFor: PropTypes.func,
 	displayFormat: PropTypes.func.isRequired,
 	origin: PropTypes.array.isRequired,
 	onClick: PropTypes.func,
@@ -79,6 +83,7 @@ BollingerBandTooltip.propTypes = {
 BollingerBandTooltip.defaultProps = {
 	className: "react-stockcharts-tooltip react-stockcharts-bollingerband-tooltip",
 	displayFormat: format(".2f"),
+	displayValuesFor: displayValuesFor,
 	origin: [0, 10],
 };
 

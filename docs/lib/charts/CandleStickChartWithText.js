@@ -219,10 +219,8 @@ class CandleStickChartWithText extends React.Component {
 		case 46: {
 			// DEL
 			this.setState({
-				textList: this.state.textList.slice(
-					0,
-					this.state.textList.length - 1
-				)
+				textList_1: this.state.textList_1.filter(d => !d.selected),
+				textList_3: this.state.textList_3.filter(d => !d.selected)
 			});
 			break;
 		}

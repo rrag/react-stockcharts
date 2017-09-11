@@ -3,7 +3,7 @@
 import { format } from "d3-format";
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-
+import displayValuesFor from "./displayValuesFor";
 import GenericChartComponent from "../GenericChartComponent";
 
 import { isDefined, functor } from "../utils";
@@ -18,9 +18,10 @@ class RSITooltip extends Component {
 	renderSVG(moreProps) {
 		const { onClick, fontFamily, fontSize, yAccessor, displayFormat, className } = this.props;
 		const { options, labelFill, textFill } = this.props;
+		const { displayValuesFor } = this.props;
 		const { chartConfig: { width, height } } = moreProps;
-		const { currentItem } = moreProps;
 
+		const currentItem = displayValuesFor(this.props, moreProps);
 		const rsi = isDefined(currentItem) && yAccessor(currentItem);
 		const value = (rsi && displayFormat(rsi)) || "n/a";
 
@@ -62,12 +63,14 @@ RSITooltip.propTypes = {
 	onClick: PropTypes.func,
 	yAccessor: PropTypes.func.isRequired,
 	displayFormat: PropTypes.func.isRequired,
+	displayValuesFor: PropTypes.func,
 	textFill: PropTypes.string,
 	labelFill: PropTypes.string,
 };
 
 RSITooltip.defaultProps = {
 	displayFormat: format(".2f"),
+	displayValuesFor: displayValuesFor,
 	origin: [0, 0],
 	className: "react-stockcharts-tooltip",
 };
