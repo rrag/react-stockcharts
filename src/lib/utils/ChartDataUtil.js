@@ -14,6 +14,7 @@ import {
 	isDefined,
 	isNotDefined,
 	functor,
+	mapObject
 } from "./index";
 
 export function getChartOrigin(origin, contextWidth, contextHeight) {
@@ -39,7 +40,10 @@ export function getDimensions({ width, height }, chartProps) {
 function values(func) {
 	return (d) => {
 		const obj = func(d);
-		return isObject(obj) ? Object.keys(obj).map(key => obj[key]) : obj;
+		if (isObject(obj)) {
+			return mapObject(obj);
+		}
+		return obj;
 	};
 }
 
@@ -119,7 +123,7 @@ function yDomainFromYExtents(yExtents, yScale, plotData) {
 		plotData.map(values(eachExtent)));
 
 	const allYValues = flattenDeep(yValues);
-
+	// console.log(allYValues)
 	const realYDomain =  (yScale.invert)
 		? extent(allYValues)
 		: set(allYValues).values();

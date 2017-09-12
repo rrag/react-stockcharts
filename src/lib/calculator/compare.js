@@ -1,6 +1,6 @@
 "use strict";
 
-import { first, path } from "../utils";
+import { head, path, isDefined, isNotDefined } from "../utils";
 import { Change as defaultOptions } from "./defaultOptionsForComputation";
 
 export default function() {
@@ -10,8 +10,12 @@ export default function() {
 		const { basePath, mainKeys, compareKeys } = options;
 		const base = path(basePath);
 
-		const f = first(data);
-		const b = base(f);
+		const first = head(data);
+		const b = base(first);
+
+		// eslint-disable-next-line prefer-const
+		let firsts = {};
+
 		const compareData = data.map(d => {
 			// eslint-disable-next-line prefer-const
 			let result = {};
@@ -28,7 +32,12 @@ export default function() {
 			});
 
 			compareKeys.forEach(key => {
-				result[key] = (d[key] - f[key]) / f[key];
+				if (isDefined(d[key]) && isNotDefined(firsts[key])) {
+					firsts[key] = d[key];
+				}
+				if (isDefined(d[key]) && isDefined(firsts[key])) {
+					result[key] = (d[key] - firsts[key]) / firsts[key];
+				}
 			});
 			return result;
 		});
