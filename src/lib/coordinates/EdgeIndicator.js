@@ -47,23 +47,23 @@ class EdgeIndicator extends Component {
 EdgeIndicator.propTypes = {
 	yAccessor: PropTypes.func,
 
-	type: PropTypes.oneOf(["horizontal"]).isRequired,
+	type: PropTypes.oneOf(["horizontal"]),
 	className: PropTypes.string,
 	fill: PropTypes.oneOfType([
 		PropTypes.string,
 		PropTypes.func,
-	]).isRequired,
+	]),
 	textFill: PropTypes.oneOfType([
 		PropTypes.string,
 		PropTypes.func,
-	]).isRequired,
+	]),
 	itemType: PropTypes.oneOf(["first", "last"]).isRequired,
 	orient: PropTypes.oneOf(["left", "right"]),
 	edgeAt: PropTypes.oneOf(["left", "right"]),
-	displayFormat: PropTypes.func.isRequired,
-	rectHeight: PropTypes.number.isRequired,
-	rectWidth: PropTypes.number.isRequired,
-	arrowWidth: PropTypes.number.isRequired,
+	displayFormat: PropTypes.func,
+	rectHeight: PropTypes.number,
+	rectWidth: PropTypes.number,
+	arrowWidth: PropTypes.number,
 };
 
 EdgeIndicator.defaultProps = {

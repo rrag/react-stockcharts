@@ -1081,7 +1081,7 @@ ChartCanvas.propTypes = {
 	margin: PropTypes.object,
 	ratio: PropTypes.number.isRequired,
 	// interval: PropTypes.oneOf(["D", "W", "M"]), // ,"m1", "m5", "m15", "W", "M"
-	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
+	type: PropTypes.oneOf(["svg", "hybrid"]),
 	pointsPerPxThreshold: PropTypes.number,
 	minPointsPerPxThreshold: PropTypes.number,
 	data: PropTypes.array.isRequired,
@@ -1090,26 +1090,26 @@ ChartCanvas.propTypes = {
 	xExtents: PropTypes.oneOfType([
 		PropTypes.array,
 		PropTypes.func
-	]).isRequired,
-	zoomAnchor: PropTypes.func.isRequired,
+	]),
+	zoomAnchor: PropTypes.func,
 
 	className: PropTypes.string,
 	seriesName: PropTypes.string.isRequired,
 	zIndex: PropTypes.number,
 	children: PropTypes.node.isRequired,
 	xScale: PropTypes.func.isRequired,
-	postCalculator: PropTypes.func.isRequired,
-	flipXScale: PropTypes.bool.isRequired,
-	useCrossHairStyleCursor: PropTypes.bool.isRequired,
+	postCalculator: PropTypes.func,
+	flipXScale: PropTypes.bool,
+	useCrossHairStyleCursor: PropTypes.bool,
 	padding: PropTypes.oneOfType([
 		PropTypes.number,
 		PropTypes.shape({
 			left: PropTypes.number,
 			right: PropTypes.number,
 		})
-	]).isRequired,
+	]),
 	defaultFocus: PropTypes.bool,
-	zoomMultiplier: PropTypes.number.isRequired,
+	zoomMultiplier: PropTypes.number,
 	onLoadMore: PropTypes.func,
 	displayXAccessor: function(props, propName/* , componentName */) {
 		if (isNotDefined(props[propName])) {
@@ -1121,10 +1121,10 @@ ChartCanvas.propTypes = {
 			return new Error("displayXAccessor has to be a function");
 		}
 	},
-	mouseMoveEvent: PropTypes.bool.isRequired,
-	panEvent: PropTypes.bool.isRequired,
-	clamp: PropTypes.bool.isRequired,
-	zoomEvent: PropTypes.bool.isRequired,
+	mouseMoveEvent: PropTypes.bool,
+	panEvent: PropTypes.bool,
+	clamp: PropTypes.bool,
+	zoomEvent: PropTypes.bool,
 	onSelect: PropTypes.func,
 };
 

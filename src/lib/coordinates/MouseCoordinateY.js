@@ -40,6 +40,17 @@ class MouseCoordinateY extends Component {
 
 MouseCoordinateY.propTypes = {
 	displayFormat: PropTypes.func.isRequired,
+	yAxisPad: PropTypes.number,
+	rectWidth: PropTypes.number,
+	rectHeight: PropTypes.number,
+	orient: PropTypes.oneOf(["bottom", "top", "left", "right"]),
+	at: PropTypes.oneOf(["bottom", "top", "left", "right"]),
+	dx: PropTypes.number,
+	fill: PropTypes.string,
+	opacity: PropTypes.number,
+	fontFamily: PropTypes.string,
+	fontSize: PropTypes.number,
+	textFill: PropTypes.string,
 };
 
 MouseCoordinateY.defaultProps = {

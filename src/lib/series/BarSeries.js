@@ -62,22 +62,22 @@ BarSeries.propTypes = {
 	baseAt: PropTypes.oneOfType([
 		PropTypes.number,
 		PropTypes.func,
-	]).isRequired,
-	stroke: PropTypes.bool.isRequired,
+	]),
+	stroke: PropTypes.bool,
 	width: PropTypes.oneOfType([
 		PropTypes.number,
 		PropTypes.func
-	]).isRequired,
+	]),
 	yAccessor: PropTypes.func.isRequired,
-	opacity: PropTypes.number.isRequired,
+	opacity: PropTypes.number,
 	fill: PropTypes.oneOfType([
 		PropTypes.func, PropTypes.string
-	]).isRequired,
+	]),
 	className: PropTypes.oneOfType([
 		PropTypes.func, PropTypes.string
-	]).isRequired,
-	clip: PropTypes.bool.isRequired,
-	swapScales: PropTypes.bool.isRequired,
+	]),
+	clip: PropTypes.bool,
+	swapScales: PropTypes.bool,
 };
 
 

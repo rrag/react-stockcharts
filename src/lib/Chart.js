@@ -63,7 +63,7 @@ Chart.propTypes = {
 	origin: PropTypes.oneOfType([
 		PropTypes.array,
 		PropTypes.func
-	]).isRequired,
+	]),
 	id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 	yExtents: PropTypes.oneOfType([
 		PropTypes.array,
@@ -74,17 +74,17 @@ Chart.propTypes = {
 			return new Error("yExtents or yExtentsCalculator must"
 				+ ` be present on ${componentName}. Validation failed.`);
 	},
-	onContextMenu: PropTypes.func.isRequired,
-	yScale: PropTypes.func.isRequired,
+	onContextMenu: PropTypes.func,
+	yScale: PropTypes.func,
 
-	flipYScale: PropTypes.bool.isRequired,
+	flipYScale: PropTypes.bool,
 	padding: PropTypes.oneOfType([
 		PropTypes.number,
 		PropTypes.shape({
 			top: PropTypes.number,
 			bottom: PropTypes.number,
 		})
-	]).isRequired,
+	]),
 	children: PropTypes.node,
 };
 

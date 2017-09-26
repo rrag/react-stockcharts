@@ -38,7 +38,7 @@ class Annotate extends Component {
 }
 
 Annotate.propTypes = {
-	className: PropTypes.string.isRequired,
+	className: PropTypes.string,
 	with: PropTypes.func,
 	when: PropTypes.func,
 	usingProps: PropTypes.object,
