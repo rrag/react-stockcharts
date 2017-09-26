@@ -41,11 +41,29 @@ function getYScale(chartConfig) {
 
 Label.propTypes = {
 	className: PropTypes.string,
-	selectCanvas: PropTypes.func.isRequired,
+	selectCanvas: PropTypes.func,
 	text: PropTypes.oneOfType([
 		PropTypes.string,
 		PropTypes.func
 	]).isRequired,
+	textAnchor: PropTypes.string,
+	fontFamily: PropTypes.string,
+	fontSize: PropTypes.number,
+	opacity: PropTypes.number,
+	rotate: PropTypes.number,
+	onClick: PropTypes.func,
+	xAccessor: PropTypes.func,
+	xScale: PropTypes.func,
+	yScale: PropTypes.func,
+	datum: PropTypes.object,
+	x: PropTypes.oneOfType([
+		PropTypes.number,
+		PropTypes.func
+	]),
+	y: PropTypes.oneOfType([
+		PropTypes.number,
+		PropTypes.func
+	])
 };
 
 Label.contextTypes = {

@@ -57,25 +57,25 @@ CandlestickSeries.propTypes = {
 	width: PropTypes.oneOfType([
 		PropTypes.number,
 		PropTypes.func
-	]).isRequired,
+	]),
 	classNames: PropTypes.oneOfType([
 		PropTypes.func,
 		PropTypes.string
-	]).isRequired,
+	]),
 	fill: PropTypes.oneOfType([
 		PropTypes.func,
 		PropTypes.string
-	]).isRequired,
+	]),
 	stroke: PropTypes.oneOfType([
 		PropTypes.func,
 		PropTypes.string
-	]).isRequired,
+	]),
 	wickStroke: PropTypes.oneOfType([
 		PropTypes.func,
 		PropTypes.string
-	]).isRequired,
-	yAccessor: PropTypes.func.isRequired,
-	clip: PropTypes.bool.isRequired,
+	]),
+	yAccessor: PropTypes.func,
+	clip: PropTypes.bool,
 };
 
 CandlestickSeries.defaultProps = {

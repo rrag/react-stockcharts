@@ -39,7 +39,7 @@ YAxis.propTypes = {
 	tickValues: PropTypes.array,
 	showTicks: PropTypes.bool,
 	className: PropTypes.string,
-	zoomEnabled: PropTypes.bool.isRequired,
+	zoomEnabled: PropTypes.bool,
 	onContextMenu: PropTypes.func,
 	onDoubleClick: PropTypes.func,
 };
