@@ -17,7 +17,7 @@ class DrawingObjectSelector extends Component {
 		this.getInteraction = this.getInteraction.bind(this);
 	}
 	handleDoubleClick(moreProps, e) {
-		console.log("Double Click")
+		console.log("Double Click");
 
 		e.preventDefault();
 		const { onDoubleClick } = this.props;
@@ -48,7 +48,7 @@ class DrawingObjectSelector extends Component {
 		}
 	}
 	handleClick(moreProps, e) {
-		console.log("Click")
+		console.log("Click");
 		e.preventDefault();
 		const { onSelect } = this.props;
 		const { enabled } = this.props;
