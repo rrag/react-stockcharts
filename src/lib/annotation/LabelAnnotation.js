@@ -66,8 +66,14 @@ LabelAnnotation.propTypes = {
 	xScale: PropTypes.func,
 	yScale: PropTypes.func,
 	datum: PropTypes.object,
-	x: PropTypes.func,
-	y: PropTypes.func,
+	x: PropTypes.oneOfType([
+		PropTypes.number,
+		PropTypes.func
+	]),
+	y: PropTypes.oneOfType([
+		PropTypes.number,
+		PropTypes.func
+	])
 };
 
 export const defaultProps = {

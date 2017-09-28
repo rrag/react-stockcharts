@@ -75,13 +75,13 @@ class OHLCTooltip extends Component {
 
 OHLCTooltip.propTypes = {
 	className: PropTypes.string,
-	accessor: PropTypes.func.isRequired,
-	xDisplayFormat: PropTypes.func.isRequired,
-	ohlcFormat: PropTypes.func.isRequired,
+	accessor: PropTypes.func,
+	xDisplayFormat: PropTypes.func,
+	ohlcFormat: PropTypes.func,
 	origin: PropTypes.oneOfType([
 		PropTypes.array,
 		PropTypes.func
-	]).isRequired,
+	]),
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
 	onClick: PropTypes.func,

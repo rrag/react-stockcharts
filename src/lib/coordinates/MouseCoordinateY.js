@@ -40,6 +40,17 @@ class MouseCoordinateY extends Component {
 
 MouseCoordinateY.propTypes = {
 	displayFormat: PropTypes.func.isRequired,
+	yAxisPad: PropTypes.number,
+	rectWidth: PropTypes.number,
+	rectHeight: PropTypes.number,
+	orient: PropTypes.oneOf(["bottom", "top", "left", "right"]),
+	at: PropTypes.oneOf(["bottom", "top", "left", "right"]),
+	dx: PropTypes.number,
+	fill: PropTypes.string,
+	opacity: PropTypes.number,
+	fontFamily: PropTypes.string,
+	fontSize: PropTypes.number,
+	textFill: PropTypes.string,
 };
 
 MouseCoordinateY.defaultProps = {
@@ -59,7 +70,7 @@ MouseCoordinateY.defaultProps = {
 
 function helper(props, moreProps) {
 	const { chartId, width } = moreProps;
-	const { show, currentCharts, chartConfig: { yScale, origin }, mouseXY } = moreProps;
+	const { show, currentCharts, chartConfig: { yScale }, mouseXY } = moreProps;
 
 	if (isNotDefined(mouseXY)) return null;
 
@@ -74,7 +85,7 @@ function helper(props, moreProps) {
 		: 0;
 
 	const type = "horizontal";
-	const y = mouseXY[1] + origin[1];
+	const y = mouseXY[1];
 	const coordinate = displayFormat(yScale.invert(y));
 	const hideLine = true;
 
