@@ -37,13 +37,16 @@ class ZoomButtons extends Component {
 			xAxisZoom(foo.shift());
 			if (foo.length === 0) {
 				clearInterval(this.interval);
+				delete this.interval;
 			}
 		}, 10);
 	}
 	handleZoomOut() {
+		if (this.interval) return;
 		this.zoom(1);
 	}
 	handleZoomIn() {
+		if (this.interval) return;
 		this.zoom(-1);
 	}
 	render() {
@@ -58,7 +61,7 @@ class ZoomButtons extends Component {
 		return (
 			<g className="react-stockcharts-zoom-button">
 				<rect
-					x={centerX - size - 1}
+					x={centerX - size - strokeWidth}
 					y={y}
 					rx={rx}
 					ry={ry}
@@ -70,7 +73,7 @@ class ZoomButtons extends Component {
 					strokeWidth={strokeWidth}
 				/>
 				<text
-					x={centerX - size / 2 - 1}
+					x={centerX - size / 2 - strokeWidth}
 					y={y + size / 2}
 					dy={textDy}
 					textAnchor="middle"
@@ -78,7 +81,7 @@ class ZoomButtons extends Component {
 					fill={textFill}
 				>-</text>
 				<rect
-					x={centerX + 1}
+					x={centerX + strokeWidth}
 					y={y}
 					rx={rx}
 					ry={ry}
@@ -90,16 +93,16 @@ class ZoomButtons extends Component {
 					strokeWidth={strokeWidth}
 				/>
 				<text
-					x={centerX + size / 2 + 1}
+					x={centerX + size / 2 + strokeWidth}
 					y={y + size / 2}
 					dy={textDy}
 					textAnchor="middle"
 					fontSize={fontSize}
 					fill={textFill}
 				>+</text>
-				<rect className="react-stockcharts-enable-interaction"
+				<rect className="react-stockcharts-enable-interaction out"
 					onClick={this.handleZoomOut}
-					x={centerX - size - 1}
+					x={centerX - size - strokeWidth}
 					y={y}
 					rx={rx}
 					ry={ry}
@@ -107,9 +110,9 @@ class ZoomButtons extends Component {
 					width={size}
 					fill="none"
 				/>
-				<rect className="react-stockcharts-enable-interaction"
+				<rect className="react-stockcharts-enable-interaction in"
 					onClick={this.handleZoomIn}
-					x={centerX + 1}
+					x={centerX + strokeWidth}
 					y={y}
 					rx={rx}
 					ry={ry}
