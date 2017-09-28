@@ -1,55 +1,56 @@
 "use strict";
 
-import { timeFormat } from "d3-time-format";
+import { timeFormat, timeFormatDefaultLocale } from "d3-time-format";
 // import { map as d3Map } from "d3-collection";
 
 import financeDiscontinuousScale from "./financeDiscontinuousScale";
 import { slidingWindow, zipper, identity, isNotDefined } from "../utils";
 
-const yearFormat = "%Y";
-const quarterFormat = "%b %Y";
-const monthFormat = "%b";
-const weekFormat = "%d %b";
-const dayFormat = "%a %d";
-const hourFormat = "%_I %p";
-const minuteFormat = "%I:%M %p";
-const secondFormat = "%I:%M:%S %p";
-// const milliSecondFormat = "%L";
+const defaultFormatters = {
+	yearFormat: "%Y",
+	quarterFormat: "%b %Y",
+	monthFormat: "%b",
+	weekFormat: "%d %b",
+	dayFormat: "%a %d",
+	hourFormat: "%_I %p",
+	minuteFormat: "%I:%M %p",
+	secondFormat: "%I:%M:%S %p",
+	milliSecondFormat: "%L",
+};
 
 const levelDefinition = [
-
 	/* eslint-disable no-unused-vars */
-	/* 17 */(d, date, i) => d.startOfYear && date.getFullYear() % 2 === 0 && yearFormat,
-	/* 16 */(d, date, i) => d.startOfYear && yearFormat,
-	/* 15 */(d, date, i) => d.startOfQuarter && quarterFormat,
-	/* 14 */(d, date, i) => d.startOfMonth && monthFormat,
-	/* 13 */(d, date, i) => d.startOfWeek && weekFormat,
-	/* 12 */(d, date, i) => d.startOfDay && i % 2 === 0 && dayFormat,
-	/* 11 */(d, date, i) => d.startOfDay && dayFormat,
-	/* 10 */(d, date, i) => d.startOfHalfDay && hourFormat, // 12h
-	/*  9 */(d, date, i) => d.startOfQuarterDay && hourFormat, // 6h
-	/*  8 */(d, date, i) => d.startOfEighthOfADay && hourFormat, // 3h
-	/*  7 */(d, date, i) => d.startOfHour && date.getHours() % 2 === 0 && hourFormat, // 2h -- REMOVE THIS
-	/*  6 */(d, date, i) => d.startOfHour && hourFormat, // 1h
-	/*  5 */(d, date, i) => d.startOf30Minutes && minuteFormat,
-	/*  4 */(d, date, i) => d.startOf15Minutes && minuteFormat,
-	/*  3 */(d, date, i) => d.startOf5Minutes && minuteFormat,
-	/*  2 */(d, date, i) => d.startOfMinute && minuteFormat,
-	/*  1 */(d, date, i) => d.startOf30Seconds && secondFormat,
-	/*  0 */(d, date, i) => secondFormat,
+	/* 17 */(d, date, i) => d.startOfYear && date.getFullYear() % 2 === 0 && "yearFormat",
+	/* 16 */(d, date, i) => d.startOfYear && "yearFormat",
+	/* 15 */(d, date, i) => d.startOfQuarter && "quarterFormat",
+	/* 14 */(d, date, i) => d.startOfMonth && "monthFormat",
+	/* 13 */(d, date, i) => d.startOfWeek && "weekFormat",
+	/* 12 */(d, date, i) => d.startOfDay && i % 2 === 0 && "dayFormat",
+	/* 11 */(d, date, i) => d.startOfDay && "dayFormat",
+	/* 10 */(d, date, i) => d.startOfHalfDay && "hourFormat", // 12h
+	/*  9 */(d, date, i) => d.startOfQuarterDay && "hourFormat", // 6h
+	/*  8 */(d, date, i) => d.startOfEighthOfADay && "hourFormat", // 3h
+	/*  7 */(d, date, i) => d.startOfHour && date.getHours() % 2 === 0 && "hourFormat", // 2h -- REMOVE THIS
+	/*  6 */(d, date, i) => d.startOfHour && "hourFormat", // 1h
+	/*  5 */(d, date, i) => d.startOf30Minutes && "minuteFormat",
+	/*  4 */(d, date, i) => d.startOf15Minutes && "minuteFormat",
+	/*  3 */(d, date, i) => d.startOf5Minutes && "minuteFormat",
+	/*  2 */(d, date, i) => d.startOfMinute && "minuteFormat",
+	/*  1 */(d, date, i) => d.startOf30Seconds && "secondFormat",
+	/*  0 */(d, date, i) => "secondFormat",
 	/* eslint-enable no-unused-vars */
 ];
 
-function evaluateLevel(d, date, i) {
+function evaluateLevel(d, date, i, formatters) {
 	return levelDefinition
-		.map((l, idx) => ({ level: levelDefinition.length - idx - 1, format: l(d, date, i) }))
+		.map((l, idx) => ({ level: levelDefinition.length - idx - 1, format: formatters[l(d, date, i)] }))
 		.find(l => !!l.format);
 }
 
 const discontinuousIndexCalculator = slidingWindow()
 	.windowSize(2)
-	.undefinedValue((d, idx, di) => {
-		const i = di;
+	.undefinedValue((d, idx, { initialIndex, formatters }) => {
+		const i = initialIndex;
 		const row = {
 			date: d.getTime(),
 			startOf30Seconds: false,
@@ -67,12 +68,12 @@ const discontinuousIndexCalculator = slidingWindow()
 			startOfQuarter: false,
 			startOfYear: false,
 		};
-		const level = evaluateLevel(row, d, i);
+		const level = evaluateLevel(row, d, i, formatters);
 		return { ...row, index: i, ...level };
 	});
 
 const discontinuousIndexCalculatorLocalTime = discontinuousIndexCalculator
-	.accumulator(([prevDate, nowDate], i, idx, di) => {
+	.accumulator(([prevDate, nowDate], i, idx, { initialIndex, formatters }) => {
 		const startOf30Seconds = nowDate.getSeconds() % 30 === 0;
 
 		const startOfMinute = nowDate.getMinutes() !== prevDate.getMinutes();
@@ -115,14 +116,14 @@ const discontinuousIndexCalculatorLocalTime = discontinuousIndexCalculator
 			startOfQuarter,
 			startOfYear,
 		};
-		const level = evaluateLevel(row, nowDate, i);
-		return { ...row, index: i + di, ...level };
+		const level = evaluateLevel(row, nowDate, i, formatters);
+		return { ...row, index: i + initialIndex, ...level };
 	});
 
-function doStuff(realDateAccessor, inputDateAccessor, initialIndex) {
+function doStuff(realDateAccessor, inputDateAccessor, initialIndex, formatters) {
 	return function(data) {
 		const dateAccessor = realDateAccessor(inputDateAccessor);
-		const calculate = discontinuousIndexCalculatorLocalTime.source(dateAccessor).misc(initialIndex);
+		const calculate = discontinuousIndexCalculatorLocalTime.source(dateAccessor).misc({ initialIndex, formatters });
 		const index = calculate(data);
 		/*
 		var map = d3Map();
@@ -160,6 +161,8 @@ export function discontinuousTimeScaleProviderBuilder() {
 		indexMutator = (d, idx) => ({ ...d, idx }),
 		withIndex, withInterval;
 
+	let currentFormatters = defaultFormatters;
+
 	// eslint-disable-next-line prefer-const
 	let discontinuousTimeScaleProvider = function(data) {
 		/*
@@ -174,7 +177,7 @@ export function discontinuousTimeScaleProviderBuilder() {
 		let index = withIndex;
 		let interval = withInterval;
 		if (isNotDefined(index)) {
-			const response = doStuff(realDateAccessor, inputDateAccessor, initialIndex)(data);
+			const response = doStuff(realDateAccessor, inputDateAccessor, initialIndex, currentFormatters)(data);
 			index = response.index;
 			interval = response.interval;
 		}
@@ -256,7 +259,17 @@ export function discontinuousTimeScaleProviderBuilder() {
 		return discontinuousTimeScaleProvider;
 	};
 	discontinuousTimeScaleProvider.indexCalculator = function() {
-		return doStuff(realDateAccessor, inputDateAccessor, initialIndex);
+		return doStuff(realDateAccessor, inputDateAccessor, initialIndex, currentFormatters);
+	};
+
+	discontinuousTimeScaleProvider.setLocale = function(locale, formatters = null) {
+		if (locale) {
+			timeFormatDefaultLocale(locale);
+		}
+		if (formatters) {
+			currentFormatters = formatters;
+		}
+		return discontinuousTimeScaleProvider;
 	};
 
 	return discontinuousTimeScaleProvider;
