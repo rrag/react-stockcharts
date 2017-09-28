@@ -328,24 +328,6 @@ class GenericComponent extends Component {
 
 		const { chartId, fullData } = this.context;
 
-		if (!Array.isArray(this.moreProps.chartConfig)) {
-			const { origin: [ox, oy] } = this.moreProps.chartConfig;
-
-			if (Array.isArray(this.moreProps.mouseXY)) {
-				const { mouseXY: [x, y] } = this.moreProps;
-				this.moreProps.mouseXY = [
-					x - ox,
-					y - oy
-				];
-			}
-			if (Array.isArray(this.moreProps.startPos)) {
-				const { startPos: [x, y] } = this.moreProps;
-				this.moreProps.startPos = [
-					x - ox,
-					y - oy
-				];
-			}
-		}
 		const moreProps = {
 			xScale, plotData, chartConfig,
 			xAccessor, displayXAccessor,

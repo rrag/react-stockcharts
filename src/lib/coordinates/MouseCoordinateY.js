@@ -70,7 +70,7 @@ MouseCoordinateY.defaultProps = {
 
 function helper(props, moreProps) {
 	const { chartId, width } = moreProps;
-	const { show, currentCharts, chartConfig: { yScale, origin }, mouseXY } = moreProps;
+	const { show, currentCharts, chartConfig: { yScale }, mouseXY } = moreProps;
 
 	if (isNotDefined(mouseXY)) return null;
 
@@ -85,7 +85,7 @@ function helper(props, moreProps) {
 		: 0;
 
 	const type = "horizontal";
-	const y = mouseXY[1] + origin[1];
+	const y = mouseXY[1];
 	const coordinate = displayFormat(yScale.invert(y));
 	const hideLine = true;
 

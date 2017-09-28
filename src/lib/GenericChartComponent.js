@@ -62,6 +62,23 @@ class GenericChartComponent extends GenericComponent {
 				.filter(each => each.id === chartId)[0];
 			this.moreProps.chartConfig = chartConfig;
 		}
+		if (isDefined(this.moreProps.chartConfig)) {
+			const { origin: [ox, oy] } = this.moreProps.chartConfig;
+			if (isDefined(moreProps.mouseXY)) {
+				const { mouseXY: [x, y] } = moreProps;
+				this.moreProps.mouseXY = [
+					x - ox,
+					y - oy
+				];
+			}
+			if (isDefined(moreProps.startPos)) {
+				const { startPos: [x, y] } = moreProps;
+				this.moreProps.startPos = [
+					x - ox,
+					y - oy
+				];
+			}
+		}
 	}
 	preEvaluate(/* type, moreProps */) {
 		/* if (
