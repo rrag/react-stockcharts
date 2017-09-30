@@ -37,12 +37,12 @@ class Chart extends PureComponent {
 		}
 	}
 	yScale() {
-		const chartConfig = this.context.chartConfig.filter((each) => each.id === this.props.id)[0];
+		const chartConfig = this.context.chartConfig.find(each => each.id === this.props.id);
 		return chartConfig.yScale.copy();
 	}
 	getChildContext() {
 		const { id: chartId } = this.props;
-		const chartConfig = this.context.chartConfig.filter((each) => each.id === chartId)[0];
+		const chartConfig = this.context.chartConfig.find(each => each.id === this.props.id);
 
 		return {
 			chartId,
@@ -50,7 +50,7 @@ class Chart extends PureComponent {
 		};
 	}
 	render() {
-		const { origin } = this.context.chartConfig.filter((each) => each.id === this.props.id)[0];
+		const { origin } = this.context.chartConfig.find(each => each.id === this.props.id);
 		const [x, y] = origin;
 
 		return <g transform={`translate(${ x }, ${ y })`}>{this.props.children}</g>;
