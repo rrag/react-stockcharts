@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import GenericComponent from "./GenericComponent";
 import {
 	isDefined,
+	find,
 } from "./utils";
 
 const ALWAYS_TRUE_TYPES = [
@@ -58,8 +59,7 @@ class GenericChartComponent extends GenericComponent {
 
 		if (chartConfigList) {
 			const { chartId } = this.context;
-			const chartConfig = chartConfigList
-				.filter(each => each.id === chartId)[0];
+			const chartConfig = find(chartConfigList, each => each.id === chartConfigList);
 			this.moreProps.chartConfig = chartConfig;
 		}
 		if (isDefined(this.moreProps.chartConfig)) {
