@@ -81,6 +81,15 @@ export function getClosestValue(inputValue, currentValue) {
 	return currentValue + diff;
 }
 
+export function find(list, predicate, context=this) {
+	for (let i = 0; i < list.length; ++i) {
+		if (predicate.call(context, list[i], i, list)) {
+			return list[i];
+		}
+	}
+	return undefined;
+}
+
 export function d3Window(node) {
 	const d3win = node
 		&& (node.ownerDocument && node.ownerDocument.defaultView
@@ -249,15 +258,6 @@ export function hexToRGBA(inputHex, opacity) {
 		return result;
 	}
 	return inputHex;
-}
-
-export function findItem(array, predicate) {
-	for (let i = 0; i < array.length; i++) {
-		const each = array[i];
-		if (predicate(each)) {
-			return each;
-		}
-	}
 }
 
 export function toObject(array, iteratee) {
