@@ -77,3 +77,18 @@ export function getMorePropsForChart(moreProps, chartId) {
 		mouseXY,
 	};
 }
+
+export function getSelected(interactives) {
+	const selected = interactives
+		.map(each => {
+			const objects = each.objects.filter(obj => {
+				return obj.selected;
+			});
+			return {
+				...each,
+				objects,
+			};
+		})
+		.filter(each => each.objects.length > 0);
+	return selected;
+}

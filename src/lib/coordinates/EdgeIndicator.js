@@ -136,7 +136,7 @@ function getEdge(props, moreProps, item) {
 		rectHeight, rectWidth, arrowWidth,
 		x1,
 		y1,
-		x2: edgeX,
+		x2: right,
 		y2: y1,
 	};
 }

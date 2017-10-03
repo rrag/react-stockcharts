@@ -4,10 +4,9 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import { isDefined, noop, mapObject, head } from "../utils";
-import { getMorePropsForChart } from "./utils";
+import { getMorePropsForChart, getSelected } from "./utils";
 
 import GenericComponent, { getMouseCanvas } from "../GenericComponent";
-
 
 class DrawingObjectSelector extends Component {
 	constructor(props) {
@@ -25,18 +24,7 @@ class DrawingObjectSelector extends Component {
 		if (!enabled) return;
 
 		const interactives = this.getInteraction(moreProps);
-
-		const selected = interactives
-			.map(each => {
-				const objects = each.objects.filter(obj => {
-					return obj.selected;
-				});
-				return {
-					...each,
-					objects,
-				};
-			})
-			.filter(each => each.objects.length > 0);
+		const selected = getSelected(interactives);
 
 		// console.log(selected, interactives)
 		if (selected.length > 0) {
@@ -48,7 +36,6 @@ class DrawingObjectSelector extends Component {
 		}
 	}
 	handleClick(moreProps, e) {
-		console.log("Click");
 		e.preventDefault();
 		const { onSelect } = this.props;
 		const { enabled } = this.props;
@@ -91,8 +78,10 @@ class DrawingObjectSelector extends Component {
 				objects: [],
 			};
 		});
+
 		return interactives;
 	}
+
 	render() {
 		return (
 			<GenericComponent

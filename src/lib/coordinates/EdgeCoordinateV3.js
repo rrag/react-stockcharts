@@ -128,7 +128,7 @@ export function drawOnCanvas(ctx, props) {
 			ctx.lineTo(x + arrowWidth, y + rectHeight);
 			ctx.closePath();
 		} else if (edge.orient === "left") {
-			x += arrowWidth;
+			// x += arrowWidth;
 			ctx.moveTo(x, y);
 			ctx.lineTo(x + rectWidth, y);
 			ctx.lineTo(x + rectWidth + arrowWidth, y + halfHeight);
