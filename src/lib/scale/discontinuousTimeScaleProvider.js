@@ -97,7 +97,7 @@ const discontinuousIndexCalculatorLocalTime = discontinuousIndexCalculator
 		// if start of month and month % 3 === 0 then it is start of quarter
 		const startOfQuarter = startOfMonth && (nowDate.getMonth() % 3 <= prevDate.getMonth() % 3);
 		// year of today != year of yesterday then today is start of year
-		const startOfYear = nowDate.getYear() !== prevDate.getYear();
+		const startOfYear = nowDate.getFullYear() !== prevDate.getFullYear();
 
 		const row = {
 			date: nowDate.getTime(),
