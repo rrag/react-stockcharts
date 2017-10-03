@@ -4,7 +4,11 @@ import PropTypes from "prop-types";
 import { scaleLinear } from "d3-scale";
 
 import PureComponent from "./utils/PureComponent";
-import { isNotDefined, noop } from "./utils";
+import {
+	isNotDefined,
+	noop,
+	find,
+} from "./utils";
 
 class Chart extends PureComponent {
 	constructor(props, context) {
@@ -37,12 +41,12 @@ class Chart extends PureComponent {
 		}
 	}
 	yScale() {
-		const chartConfig = this.context.chartConfig.filter((each) => each.id === this.props.id)[0];
+		const chartConfig = find(this.context.chartConfig, each => each.id === this.props.id);
 		return chartConfig.yScale.copy();
 	}
 	getChildContext() {
 		const { id: chartId } = this.props;
-		const chartConfig = this.context.chartConfig.filter((each) => each.id === chartId)[0];
+		const chartConfig = find(this.context.chartConfig, each => each.id === chartId);
 
 		return {
 			chartId,
@@ -50,7 +54,7 @@ class Chart extends PureComponent {
 		};
 	}
 	render() {
-		const { origin } = this.context.chartConfig.filter((each) => each.id === this.props.id)[0];
+		const { origin } = find(this.context.chartConfig, each => each.id === this.props.id);
 		const [x, y] = origin;
 
 		return <g transform={`translate(${ x }, ${ y })`}>{this.props.children}</g>;

@@ -7,7 +7,7 @@ import StraightLine from "./StraightLine";
 
 class RSISeries extends Component {
 	render() {
-		const { className, stroke } = this.props;
+		const { className, stroke, opacity } = this.props;
 		const { yAccessor } = this.props;
 		const { overSold, middle, overBought } = this.props;
 
@@ -18,13 +18,13 @@ class RSISeries extends Component {
 					yAccessor={yAccessor}
 					stroke={stroke.line} fill="none" />
 				<StraightLine
-					stroke={stroke.top} opacity={0.3}
+					stroke={stroke.top} opacity={opacity.top}
 					yValue={overSold} />
 				<StraightLine
-					stroke={stroke.middle} opacity={0.3}
+					stroke={stroke.middle} opacity={opacity.middle}
 					yValue={middle} />
 				<StraightLine
-					stroke={stroke.bottom} opacity={0.3}
+					stroke={stroke.bottom} opacity={opacity.bottom}
 					yValue={overBought} />
 			</g>
 		);
@@ -36,6 +36,11 @@ RSISeries.propTypes = {
 	yAccessor: PropTypes.func.isRequired,
 	stroke: PropTypes.shape({
 		line: PropTypes.string.isRequired,
+		top: PropTypes.string.isRequired,
+		middle: PropTypes.string.isRequired,
+		bottom: PropTypes.string.isRequired,
+	}).isRequired,
+	opacity: PropTypes.shape({
 		top: PropTypes.string.isRequired,
 		middle: PropTypes.string.isRequired,
 		bottom: PropTypes.string.isRequired,
@@ -53,6 +58,11 @@ RSISeries.defaultProps = {
 		middle: "#000000",
 		bottom: "#964B00"
 	},
+  opacity: {
+    top: 0.3,
+    middle: 0.3,
+    bottom: 0.3
+  },
 	overSold: 70,
 	middle: 50,
 	overBought: 30,
