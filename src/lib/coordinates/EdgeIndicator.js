@@ -8,7 +8,7 @@ import { drawOnCanvas, renderSVG } from "./EdgeCoordinateV3";
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
 
-import { first, last, isDefined, functor } from "../utils";
+import { first, last, isDefined, functor, strokeDashTypes } from "../utils";
 
 class EdgeIndicator extends Component {
 	constructor(props) {
@@ -64,6 +64,7 @@ EdgeIndicator.propTypes = {
 	rectHeight: PropTypes.number,
 	rectWidth: PropTypes.number,
 	arrowWidth: PropTypes.number,
+	lineStrokeDasharray: PropTypes.oneOf(strokeDashTypes),
 };
 
 EdgeIndicator.defaultProps = {
@@ -86,6 +87,7 @@ EdgeIndicator.defaultProps = {
 	opacity: 1,
 	lineStroke: "#000000",
 	lineOpacity: 0.3,
+	lineStrokeDasharray: "ShortDash",
 };
 
 function helper(props, moreProps) {
