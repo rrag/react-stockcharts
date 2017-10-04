@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import { hexToRGBA, isDefined } from "../utils";
+import { hexToRGBA, isDefined, getStrokeDasharray } from "../utils";
 
 /* eslint-disable react/prop-types */
 export function renderSVG(props) {
@@ -56,7 +56,7 @@ export function renderSVG(props) {
 /* eslint-enable react/prop-types */
 
 function helper(props) {
-	const { coordinate: displayCoordinate, show, type, orient, edgeAt, hideLine } = props;
+	const { coordinate: displayCoordinate, show, type, orient, edgeAt, hideLine, lineStrokeDasharray } = props;
 	const { fill, opacity, fontFamily, fontSize, textFill, lineStroke, lineOpacity } = props;
 	const { arrowWidth, rectWidth, rectHeight } = props;
 	const { x1, y1, x2, y2, dx } = props;
@@ -90,7 +90,10 @@ function helper(props) {
 	}
 
 	const line = hideLine ? undefined : {
-		opacity: lineOpacity, stroke: lineStroke, x1, y1, x2, y2
+		opacity: lineOpacity,
+		stroke: lineStroke,
+		strokeDasharray: lineStrokeDasharray,
+		x1, y1, x2, y2
 	};
 
 	return {
@@ -146,6 +149,8 @@ export function drawOnCanvas(ctx, props) {
 	}
 
 	if (isDefined(edge.line)) {
+		const dashArray = getStrokeDasharray(edge.line.strokeDasharray).split(",").map(d => +d);
+		ctx.setLineDash(dashArray);
 		ctx.strokeStyle = hexToRGBA(edge.line.stroke, edge.line.opacity);
 
 		ctx.beginPath();
