@@ -4,7 +4,13 @@ import PropTypes from "prop-types";
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
 
-import { isDefined, noop, hexToRGBA } from "../../utils";
+import {
+	isDefined,
+	noop,
+	hexToRGBA,
+	getStrokeDasharray,
+	strokeDashTypes,
+} from "../../utils";
 
 class StraightLine extends Component {
 	constructor(props) {
@@ -39,11 +45,13 @@ class StraightLine extends Component {
 		return false;
 	}
 	drawOnCanvas(ctx, moreProps) {
-		const { stroke, strokeWidth, strokeOpacity } = this.props;
+		const { stroke, strokeWidth, strokeOpacity, strokeDasharray } = this.props;
 		const { x1, y1, x2, y2 } = helper(this.props, moreProps);
 
 		ctx.lineWidth = strokeWidth;
 		ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
+		ctx.setLineDash(getStrokeDasharray(strokeDasharray).split(","));
+
 		ctx.beginPath();
 		ctx.moveTo(x1, y1);
 		ctx.lineTo(x2, y2);
@@ -280,6 +288,9 @@ StraightLine.propTypes = {
 	interactiveCursorClass: PropTypes.string,
 	stroke: PropTypes.string.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
+	strokeOpacity: PropTypes.number.isRequired,
+	strokeDasharray: PropTypes.oneOf(strokeDashTypes),
+
 	type: PropTypes.oneOf([
 		"XLINE", // extends from -Infinity to +Infinity
 		"RAY", // extends to +/-Infinity in one direction
@@ -294,7 +305,6 @@ StraightLine.propTypes = {
 	onHover: PropTypes.func,
 	onUnHover: PropTypes.func,
 
-	strokeOpacity: PropTypes.number.isRequired,
 	defaultClassName: PropTypes.string,
 
 	r: PropTypes.number.isRequired,
@@ -320,6 +330,7 @@ StraightLine.defaultProps = {
 	r: 10,
 	withEdge: false,
 	strokeWidth: 1,
+	strokeDasharray: "Solid",
 	children: noop,
 	tolerance: 4,
 	selected: false,

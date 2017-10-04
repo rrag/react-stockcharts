@@ -188,7 +188,7 @@ class FibonacciRetracement extends Component {
 					const eachAppearance = isDefined(each.appearance)
 						? { ...appearance, ...each.appearance }
 						: appearance;
-
+					console.log("appearance ->", eachAppearance, each.appearance)
 					return (
 						<EachFibRetracement
 							key={idx}
@@ -286,7 +286,7 @@ FibonacciRetracement.defaultProps = {
 		strokeWidth: 1,
 		strokeOpacity: 1,
 		fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
-		fontSize: 10,
+		fontSize: 11,
 		fontFill: "#000000",
 		edgeStroke: "#000000",
 		edgeFill: "#FFFFFF",
