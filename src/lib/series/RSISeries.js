@@ -41,9 +41,9 @@ RSISeries.propTypes = {
 		bottom: PropTypes.string.isRequired,
 	}).isRequired,
 	opacity: PropTypes.shape({
-		top: PropTypes.string.isRequired,
-		middle: PropTypes.string.isRequired,
-		bottom: PropTypes.string.isRequired,
+		top: PropTypes.number.isRequired,
+		middle: PropTypes.number.isRequired,
+		bottom: PropTypes.number.isRequired,
 	}).isRequired,
 	overSold: PropTypes.number.isRequired,
 	middle: PropTypes.number.isRequired,
