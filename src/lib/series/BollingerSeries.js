@@ -32,14 +32,14 @@ class BollingerSeries extends Component {
 	}
 	render() {
 		const { areaClassName, className, opacity } = this.props;
-		const { stroke, fill } = this.props;
+		const { stroke, fill, middleStrokeDash } = this.props;
 
 		return (
 			<g className={className}>
 				<LineSeries yAccessor={this.yAccessorForTop}
 					stroke={stroke.top} fill="none" />
 				<LineSeries yAccessor={this.yAccessorForMiddle}
-					stroke={stroke.middle} fill="none" />
+					stroke={stroke.middle} strokeDasharray={middleStrokeDash} fill="none" />
 				<LineSeries yAccessor={this.yAccessorForBottom}
 					stroke={stroke.bottom} fill="none" />
 				<AreaOnlySeries className={areaClassName}
@@ -63,12 +63,14 @@ BollingerSeries.propTypes = {
 		middle: PropTypes.string.isRequired,
 		bottom: PropTypes.string.isRequired,
 	}).isRequired,
+  middleStrokeDash: PropTypes.string.isRequired,
 	fill: PropTypes.string.isRequired,
 };
 
 BollingerSeries.defaultProps = {
 	className: "react-stockcharts-bollinger-band-series",
 	areaClassName: "react-stockcharts-bollinger-band-series-area",
+  middleStrokeDash: "Solid",
 	opacity: 0.2
 };
 
