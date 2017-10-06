@@ -153,6 +153,63 @@ export function isHovering({
 	}
 }
 
+function helper(props, moreProps) {
+	const { x1Value, x2Value, y1Value, y2Value, type } = props;
+
+	const { xScale, chartConfig: { yScale } } = moreProps;
+
+	const modLine = generateLine({
+		type,
+		start: [x1Value, y1Value],
+		end: [x2Value, y2Value],
+		xScale,
+		yScale,
+	});
+
+	const x1 = xScale(modLine.x1);
+	const y1 = yScale(modLine.y1);
+	const x2 = xScale(modLine.x2);
+	const y2 = yScale(modLine.y2);
+
+	return {
+		x1, y1, x2, y2
+	};
+}
+
+export function getSlope(start, end) {
+	const m /* slope */ = end[0] === start[0]
+		? undefined
+		: (end[1] - start[1]) / (end[0] - start[0]);
+	return m;
+}
+export function getYIntercept(m, end) {
+	const b /* y intercept */ = -1 * m * end[0] + end[1];
+	return b;
+}
+
+export function generateLine({
+	type, start, end, xScale, yScale
+}) {
+	const m /* slope */ = getSlope(start, end);
+	// console.log(end[0] - start[0], m)
+	const b /* y intercept */ = getYIntercept(m, start);
+
+	switch (type) {
+	case "XLINE":
+		return getXLineCoordinates({
+			type, start, end, xScale, yScale, m, b
+		});
+	case "RAY":
+		return getRayCoordinates({
+			type, start, end, xScale, yScale, m, b
+		});
+	case "LINE":
+		return getLineCoordinates({
+			type, start, end, xScale, yScale, m, b
+		});
+	}
+}
+
 function getXLineCoordinates({
 	start, end, xScale, yScale, m, b
 }) {
@@ -220,63 +277,6 @@ function getLineCoordinates({
 		x1, y1,
 		x2, y2,
 	};
-}
-
-function helper(props, moreProps) {
-	const { x1Value, x2Value, y1Value, y2Value, type } = props;
-
-	const { xScale, chartConfig: { yScale } } = moreProps;
-
-	const modLine = generateLine({
-		type,
-		start: [x1Value, y1Value],
-		end: [x2Value, y2Value],
-		xScale,
-		yScale,
-	});
-
-	const x1 = xScale(modLine.x1);
-	const y1 = yScale(modLine.y1);
-	const x2 = xScale(modLine.x2);
-	const y2 = yScale(modLine.y2);
-
-	return {
-		x1, y1, x2, y2
-	};
-}
-
-export function getSlope(start, end) {
-	const m /* slope */ = end[0] === start[0]
-		? undefined
-		: (end[1] - start[1]) / (end[0] - start[0]);
-	return m;
-}
-export function getYIntercept(m, end) {
-	const b /* y intercept */ = -1 * m * end[0] + end[1];
-	return b;
-}
-
-export function generateLine({
-	type, start, end, xScale, yScale
-}) {
-	const m /* slope */ = getSlope(start, end);
-	// console.log(end[0] - start[0], m)
-	const b /* y intercept */ = getYIntercept(m, start);
-
-	switch (type) {
-	case "XLINE":
-		return getXLineCoordinates({
-			type, start, end, xScale, yScale, m, b
-		});
-	case "RAY":
-		return getRayCoordinates({
-			type, start, end, xScale, yScale, m, b
-		});
-	case "LINE":
-		return getLineCoordinates({
-			type, start, end, xScale, yScale, m, b
-		});
-	}
 }
 
 StraightLine.propTypes = {

@@ -57,21 +57,32 @@ class GannFan extends Component {
 		return hovering;
 	}
 	drawOnCanvas(ctx, moreProps) {
-		const { stroke, strokeWidth, fillOpacity, strokeOpacity, fill } = this.props;
+		const {
+			stroke, strokeWidth, strokeOpacity,
+			fill, fillOpacity,
+			fontFamily, fontSize, fontFill
+		} = this.props;
+
 
 		const lines = helper(this.props, moreProps);
 
 		ctx.lineWidth = strokeWidth;
 		ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
 
+		ctx.font = `${ fontSize }px ${fontFamily}`;
+		ctx.fillStyle = fontFill;
 
 		lines.forEach(line => {
-			const { x1, y1, x2, y2 } = line;
+			const {
+				x1, y1, x2, y2, label
+			} = line;
 
 			ctx.beginPath();
 			ctx.moveTo(x1, y1);
 			ctx.lineTo(x2, y2);
 			ctx.stroke();
+			ctx.beginPath();
+			ctx.fillText(label.text, label.x, label.y);
 		});
 		const pairsOfLines = pairs(lines);
 
@@ -151,121 +162,124 @@ class GannFan extends Component {
 	}
 }
 
-const xyProvider1 = (moreProps, endXY, m, b, dx, dy) =>  {
-	const { chartConfig: { yScale } } = moreProps;
-	// y = mx + b
-	// x = (y - b) / m
-	const y = yScale(endXY[1]);
-	const x = (y - b) / m;
-	return [x, y + dy];
-};
-
-const xyProvider2 = (moreProps, endXY, m, b, dx/* , dy*/) =>  {
-	const { xScale } = moreProps;
-	// y = mx + b
-	// x = (y - b) / m
-	const x = xScale(endXY[0]);
-	const y = m * x + b;
-	return [x + dx, y];
-};
-
-const FAN_LINES_1 = [
-	{ label: "1x8", angle: 82.5, xyProvider: xyProvider1 },
-	{ label: "1x4", angle: 75, xyProvider: xyProvider1 },
-	{ label: "1x3", angle: 71.25, xyProvider: xyProvider1 },
-	{ label: "1x2", angle: 63.75, xyProvider: xyProvider1 },
-];
-const MAIN_LINE = { label: "1x1", angle: 45 };
-
-const FAN_LINES_2 = [
-	{ label: "2x1", angle: 26.25, xyProvider: xyProvider2 },
-	{ label: "3x1", angle: 18.75, xyProvider: xyProvider2 },
-	{ label: "4x1", angle: 15, xyProvider: xyProvider2 },
-	{ label: "8x1", angle: 7.5, xyProvider: xyProvider2 },
-];
+function getLineCoordinates(start, endX, endY, text) {
+	const end = [
+		endX,
+		endY
+	];
+	return {
+		start, end, text
+	};
+}
 
 function helper(props, moreProps) {
 	const { startXY, endXY } = props;
 
-	const { xScale, chartConfig, plotData } = moreProps;
-	const { yScale } = chartConfig;
-	const { xAccessor } = moreProps;
-
+	const { xAccessor, plotData } = moreProps;
+	const {
+		xScale,
+		chartConfig: { yScale }
+	} = moreProps;
 	if (isNotDefined(startXY) || isNotDefined(endXY)) {
 		return [];
 	}
-	if (xAccessor(head(plotData)) >=  Math.max(startXY[0], endXY[0])
-			|| xAccessor(last(plotData)) <=  Math.min(startXY[0], endXY[0])) {
+	const [x1, y1] = startXY;
+	const [x2, y2] = endXY;
+
+	if (xAccessor(head(plotData)) >=  Math.max(x1, x2)
+			|| xAccessor(last(plotData)) <=  Math.min(x1, x2)) {
 		return [];
 	}
 
-	const modLine = generateLine({
-		type: "RAY",
-		start: startXY,
-		end: endXY,
-		xScale,
-		yScale,
-	});
+	const dx = x2 - x1;
+	const dy = y2 - y1;
 
-	const x1 = xScale(modLine.x1);
-	const y1 = yScale(modLine.y1);
-	const x2 = xScale(modLine.x2);
-	const y2 = yScale(modLine.y2);
-
-	const m = getSlope([x1, y1], [x2, y2]);
-	const realSlope = getSlope(startXY, endXY);
-
-	const dx = x2 > x1 ? 10 : -10;
-	const dy = y2 < y1 ? -10 : 10;
-
-	const line1 = {
-		x1, y1, x2, y2,
-		text: {
-			label: MAIN_LINE.label,
-			xy: [xScale(endXY[0]) + dx, yScale(endXY[1]) + dy]
-		},
-	};
-
-	if (isNotDefined(realSlope)) return [];
-
-	const angle = degrees(Math.atan(m));
-
-	const mapper = each => {
-		const reference = correctAngle(angle, angle);
-		const theta = correctAngle(angle, (each.angle / 45) * reference);
-
-		// console.log(angle, reference, each.angle, theta);
-
-		const slope = Math.tan(radians(theta));
-		const b = getYIntercept(slope, [x1, y1]);
-		const x2dash = x2 > x1
-			? Math.max(...xScale.range())
-			: Math.min(...xScale.range());
-		const y2dash = slope * x2dash + b;
-
-		const text = {
-			label: each.label,
-			xy: each.xyProvider(moreProps, endXY, slope, b, dx, dy)
-		};
-
-		return { x1, y1, x2: x2dash, y2: y2dash, text };
-	};
-
-	const lines = FAN_LINES_1
-		.map(mapper)
-		.concat(line1)
-		.concat(FAN_LINES_2.map(mapper));
-
-	return lines;
+	if (dx !== 0 && dy !== 0) {
+		// console.log("modLine ->", startXY, modLine, dx1, dy1)
+		const halfY = getLineCoordinates(
+			startXY,
+			x2,
+			y1 + dy / 2,
+			"2/1"
+		);
+		const oneThirdY = getLineCoordinates(
+			startXY,
+			x2,
+			y1 + dy / 3,
+			"3/1"
+		);
+		const oneFourthY = getLineCoordinates(
+			startXY,
+			x2,
+			y1 + dy / 4,
+			"4/1"
+		);
+		const oneEighthY = getLineCoordinates(
+			startXY,
+			x2,
+			y1 + dy / 8,
+			"8/1"
+		);
+		const halfX = getLineCoordinates(
+			startXY,
+			x1 + dx / 2,
+			y2,
+			"1/2"
+		);
+		const oneThirdX = getLineCoordinates(
+			startXY,
+			x1 + dx / 3,
+			y2,
+			"1/3"
+		);
+		const oneFourthX = getLineCoordinates(
+			startXY,
+			x1 + dx / 4,
+			y2,
+			"1/4"
+		);
+		const oneEighthX = getLineCoordinates(
+			startXY,
+			x1 + dx / 8,
+			y2,
+			"1/8"
+		);
+		const lines = [
+			oneEighthX,
+			oneFourthX,
+			oneThirdX,
+			halfX,
+			{ start: startXY, end: endXY, text: "1/1" },
+			halfY,
+			oneThirdY,
+			oneFourthY,
+			oneEighthY,
+		];
+		const lineCoods = lines.map(line => {
+			const { x1, y1, x2, y2 } = generateLine({
+				type: "RAY",
+				start: line.start,
+				end: line.end,
+				xScale,
+				yScale,
+			});
+			return {
+				x1: xScale(x1),
+				y1: yScale(y1),
+				x2: xScale(x2),
+				y2: yScale(y2),
+				label: {
+					x: xScale(line.end[0]),
+					y: yScale(line.end[1]),
+					text: line.text
+				}
+			};
+		});
+		return lineCoods;
+	}
+	return [];
 }
 
-function correctAngle(reference, actual) {
-	const angle = Math.abs(reference) > 45
-		? (reference / Math.abs(reference) * 90) - actual
-		: actual;
-
-	return angle;
-}
 
 GannFan.propTypes = {
 	interactiveCursorClass: PropTypes.string,
