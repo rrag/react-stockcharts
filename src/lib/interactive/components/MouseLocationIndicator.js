@@ -5,7 +5,7 @@ import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
 
 import { isDefined, getClosestValue, noop, shallowEqual, functor } from "../../utils";
-// import { getCurrentCharts } from "../utils/ChartDataUtil";
+import { getXValue } from "../../utils/ChartDataUtil";
 
 class MouseLocationIndicator extends Component {
 	constructor(props) {
@@ -37,12 +37,14 @@ class MouseLocationIndicator extends Component {
 		}
 	}
 	xy(moreProps, e) {
-		const { xAccessor } = moreProps;
+		const { xAccessor, plotData } = moreProps;
 		const { mouseXY, currentItem, xScale, chartConfig: { yScale } } = moreProps;
 		const { enabled, snap, shouldDisableSnap, snapTo } = this.props;
 
 		if (enabled && isDefined(currentItem) && isDefined(e)) {
-			const xValue = xAccessor(currentItem);
+			const xValue =  snap && !shouldDisableSnap(e)
+				? xAccessor(currentItem)
+				: getXValue(xScale, xAccessor, mouseXY, plotData);
 			const yValue = snap && !shouldDisableSnap(e)
 				? getClosestValue(snapTo(currentItem), yScale.invert(mouseXY[1]))
 				: yScale.invert(mouseXY[1]);

@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import { noop } from "../../utils";
-import { getCurrentItem } from "../../utils/ChartDataUtil";
 import { saveNodeType, isHover } from "../utils";
 
 import HoverTextNearMouse from "../components/HoverTextNearMouse";
@@ -118,7 +117,7 @@ class EachText extends Component {
 		</g>;
 	}
 }
-
+/* 
 export function getNewXY(moreProps, snapTo) {
 	const { xScale, xAccessor, plotData, mouseXY } = moreProps;
 
@@ -128,7 +127,7 @@ export function getNewXY(moreProps, snapTo) {
 
 	return [x, y];
 }
-
+ */
 EachText.propTypes = {
 	index: PropTypes.number,
 

@@ -123,7 +123,10 @@ const discontinuousIndexCalculatorLocalTime = discontinuousIndexCalculator
 function doStuff(realDateAccessor, inputDateAccessor, initialIndex, formatters) {
 	return function(data) {
 		const dateAccessor = realDateAccessor(inputDateAccessor);
-		const calculate = discontinuousIndexCalculatorLocalTime.source(dateAccessor).misc({ initialIndex, formatters });
+		const calculate = discontinuousIndexCalculatorLocalTime
+			.source(dateAccessor)
+			.misc({ initialIndex, formatters });
+
 		const index = calculate(data);
 		/*
 		var map = d3Map();
@@ -159,7 +162,7 @@ export function discontinuousTimeScaleProviderBuilder() {
 	let inputDateAccessor = d => d.date,
 		indexAccessor = d => d.idx,
 		indexMutator = (d, idx) => ({ ...d, idx }),
-		withIndex, withInterval;
+		withIndex;
 
 	let currentFormatters = defaultFormatters;
 
@@ -175,24 +178,33 @@ export function discontinuousTimeScaleProviderBuilder() {
 		*/
 
 		let index = withIndex;
-		let interval = withInterval;
+
 		if (isNotDefined(index)) {
-			const response = doStuff(realDateAccessor, inputDateAccessor, initialIndex, currentFormatters)(data);
+			const response = doStuff(
+				realDateAccessor,
+				inputDateAccessor,
+				initialIndex,
+				currentFormatters
+			)(data);
+
 			index = response.index;
-			interval = response.interval;
 		}
 		// console.log(interval, entries[0].key);
 
 		const inputIndex = index.map(each => {
 			const { format } = each;
 			return {
-				...each,
+				// ...each,
+				index: each.index,
+				level: each.level,
 				date: new Date(each.date),
 				format: timeFormat(format),
 			};
 		});
-
-		const xScale = financeDiscontinuousScale(inputIndex, interval);
+		const futureProvider = identity;
+		const xScale = financeDiscontinuousScale(
+			inputIndex,
+		);
 
 		const mergedData = zipper()
 			.combine(indexMutator);
@@ -240,13 +252,6 @@ export function discontinuousTimeScaleProviderBuilder() {
 			return withIndex;
 		}
 		withIndex = x;
-		return discontinuousTimeScaleProvider;
-	};
-	discontinuousTimeScaleProvider.withInterval = function(x) {
-		if (!arguments.length) {
-			return withInterval;
-		}
-		withInterval = x;
 		return discontinuousTimeScaleProvider;
 	};
 	discontinuousTimeScaleProvider.utc = function() {

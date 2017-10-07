@@ -277,7 +277,11 @@ export function mapValue(object, iteratee) {
 	let result = {};
 
 	Object.keys(object).forEach(key => {
-		result[key] = iteratee(object[key], key, object);
+		const mappedValue = iteratee(object[key], key, object);
+
+		if (isDefined(mappedValue)) {
+			result[key] = mappedValue;
+		}
 	});
 	return result;
 }

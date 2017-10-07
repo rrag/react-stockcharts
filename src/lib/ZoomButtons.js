@@ -55,7 +55,7 @@ class ZoomButtons extends Component {
 		const { size, heightFromBase, rx, ry } = this.props;
 		const { stroke, fill, strokeWidth, fillOpacity } = this.props;
 		const { fontSize, textDy, textFill } = this.props;
-		const centerX = width / 2;
+		const centerX = Math.round(width / 2);
 		const y = height - heightFromBase;
 
 		return (

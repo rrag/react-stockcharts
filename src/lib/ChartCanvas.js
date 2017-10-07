@@ -1158,7 +1158,7 @@ ChartCanvas.childContextTypes = {
 	fullData: PropTypes.array,
 	chartConfig: PropTypes.arrayOf(
 		PropTypes.shape({
-			id: PropTypes.number.isRequired,
+			id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 			origin: PropTypes.arrayOf(PropTypes.number).isRequired,
 			padding: PropTypes.oneOfType([
 				PropTypes.number,

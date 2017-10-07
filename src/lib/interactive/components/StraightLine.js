@@ -332,7 +332,7 @@ StraightLine.defaultProps = {
 	strokeWidth: 1,
 	strokeDasharray: "Solid",
 	children: noop,
-	tolerance: 4,
+	tolerance: 7,
 	selected: false,
 };
 

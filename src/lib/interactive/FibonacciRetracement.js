@@ -188,7 +188,7 @@ class FibonacciRetracement extends Component {
 					const eachAppearance = isDefined(each.appearance)
 						? { ...appearance, ...each.appearance }
 						: appearance;
-					console.log("appearance ->", eachAppearance, each.appearance)
+
 					return (
 						<EachFibRetracement
 							key={idx}

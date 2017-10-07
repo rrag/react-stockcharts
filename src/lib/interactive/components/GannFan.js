@@ -175,7 +175,6 @@ function getLineCoordinates(start, endX, endY, text) {
 function helper(props, moreProps) {
 	const { startXY, endXY } = props;
 
-	const { xAccessor, plotData } = moreProps;
 	const {
 		xScale,
 		chartConfig: { yScale }
@@ -185,11 +184,6 @@ function helper(props, moreProps) {
 	}
 	const [x1, y1] = startXY;
 	const [x2, y2] = endXY;
-
-	if (xAccessor(head(plotData)) >=  Math.max(x1, x2)
-			|| xAccessor(last(plotData)) <=  Math.min(x1, x2)) {
-		return [];
-	}
 
 	const dx = x2 - x1;
 	const dy = y2 - y1;

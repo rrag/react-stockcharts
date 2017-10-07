@@ -8,6 +8,7 @@ import flattenDeep from "lodash.flattendeep";
 import Chart from "../Chart";
 
 import {
+	last,
 	isObject,
 	getClosestItem,
 	zipper,
@@ -189,4 +190,22 @@ export function getCurrentItem(xScale, xAccessor, mouseXY, plotData) {
 		// console.log(d, item);
 	}
 	return item;
+}
+
+export function getXValue(xScale, xAccessor, mouseXY, plotData) {
+
+	let xValue, item;
+	if (xScale.invert) {
+		xValue = xScale.invert(mouseXY[0]);
+		if (xValue > xAccessor(last(plotData)) && xScale.value) {
+			return Math.round(xValue);
+		} else {
+			item = getClosestItem(plotData, xValue, xAccessor);
+		}
+	} else {
+		const d = xScale.range().map((d, idx) => ({ x: Math.abs(d - mouseXY[0]), idx })).reduce((a, b) => a.x < b.x ? a : b);
+		item = isDefined(d) ? plotData[d.idx] : plotData[0];
+		// console.log(d, item);
+	}
+	return xAccessor(item);
 }

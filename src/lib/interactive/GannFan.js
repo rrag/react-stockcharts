@@ -132,6 +132,7 @@ class GannFan extends Component {
 				return <EachGannFan key={idx}
 					ref={this.saveNodeType(idx)}
 					index={idx}
+					selected={each.selected}
 					{...(idx === overrideIndex ? override : each)}
 					appearance={eachAppearance}
 					hoverText={hoverText}

@@ -69,6 +69,7 @@ class StandardDeviationChannel extends Component {
 
 		if (isDefined(current) && isDefined(current.start)) {
 			this.mouseMoved = true;
+			console.log(xyValue)
 			this.setState({
 				current: {
 					start: current.start,
@@ -162,7 +163,8 @@ class StandardDeviationChannel extends Component {
 			{tempLine}
 			<MouseLocationIndicator
 				enabled={enabled}
-				snap={false}
+				snap
+				snapTo={snapTo}
 				r={currentPositionRadius}
 				stroke={currentPositionStroke}
 				opacity={currentPositionOpacity}

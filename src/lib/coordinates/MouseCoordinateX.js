@@ -7,7 +7,7 @@ import { drawOnCanvas, renderSVG } from "./EdgeCoordinateV3";
 import GenericChartComponent from "../GenericChartComponent";
 import { getMouseCanvas } from "../GenericComponent";
 
-import { isNotDefined } from "../utils";
+import { identity, isNotDefined } from "../utils";
 
 class MouseCoordinateX extends Component {
 	constructor(props) {
@@ -53,6 +53,20 @@ MouseCoordinateX.propTypes = {
 	snapX: PropTypes.bool
 };
 
+function customX(props, moreProps) {
+	const { xScale, xAccessor, currentItem, mouseXY } = moreProps;
+	const { snapX } = props;
+	const x = snapX
+		? xScale(xAccessor(currentItem))
+		: mouseXY[0];
+
+	const { displayXAccessor } = moreProps;
+	const { displayFormat } = props;
+	const coordinate = snapX
+		? displayFormat(displayXAccessor(currentItem))
+		: displayFormat(xScale.invert(x));
+	return { x, coordinate };
+}
 
 MouseCoordinateX.defaultProps = {
 	yAxisPad: 0,
@@ -67,26 +81,30 @@ MouseCoordinateX.defaultProps = {
 	fontSize: 13,
 	textFill: "#FFFFFF",
 	snapX: true,
+	customX: customX,
 };
 
 function helper(props, moreProps) {
-	const { xAccessor, displayXAccessor } = moreProps;
-	const { show, currentItem, xScale, mouseXY } = moreProps;
+	const { show, currentItem } = moreProps;
 	const { chartConfig: { height } } = moreProps;
 
 	if (isNotDefined(currentItem)) return null;
 
-	const { snapX } = props;
+	const { customX } = props;
 
-	const { orient, at, rectWidth, rectHeight, displayFormat } = props;
+	const { orient, at, rectWidth, rectHeight } = props;
 	const { fill, opacity, fontFamily, fontSize, textFill } = props;
 
-	const x = snapX ? xScale(xAccessor(currentItem)) : mouseXY[0];
+	// console.log(x)
 	const edgeAt = (at === "bottom")
 		? height
 		: 0;
 
-	const coordinate = snapX ? displayFormat(displayXAccessor(currentItem)) : displayFormat(xScale.invert(x));
+	const {
+		x,
+		coordinate
+	 } = customX(props, moreProps);
+
 	const type = "vertical";
 	const y1 = 0, y2 = height;
 	const hideLine = true;
