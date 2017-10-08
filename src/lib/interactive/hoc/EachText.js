@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 import { noop } from "../../utils";
 import { saveNodeType, isHover } from "../utils";
+import { getXValue } from "../../utils/ChartDataUtil";
 
 import HoverTextNearMouse from "../components/HoverTextNearMouse";
 import InteractiveText from "../components/InteractiveText";
@@ -46,12 +47,16 @@ class EachText extends Component {
 			mouseXY: [, mouseY],
 			chartConfig: { yScale },
 			xAccessor,
-			currentItem,
+			mouseXY,
+			plotData,
 			xScale,
 		} = moreProps;
 
 		const { dx, dy } = this.dragStartPosition;
-		const xValue = xScale.invert(xScale(xAccessor(currentItem)) - dx);
+		const xValue = xScale.invert(
+			xScale(getXValue(xScale, xAccessor, mouseXY, plotData)) - dx
+		);
+		// xScale.invert(xScale(xAccessor(currentItem)) - dx);
 		const xyValue = [
 			xValue,
 			yScale.invert(mouseY - dy)
@@ -103,7 +108,7 @@ class EachText extends Component {
 
 				position={position}
 				bgFill={bgFill}
-				bgOpacity={(hover || selected) ? bgOpacity : 0.1}
+				bgOpacity={bgOpacity}
 				textFill={textFill}
 				fontFamily={fontFamily}
 				fontStyle={fontStyle}
