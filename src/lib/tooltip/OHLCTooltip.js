@@ -30,20 +30,25 @@ class OHLCTooltip extends Component {
 		let displayDate, open, high, low, close, volume;
 		displayDate = open = high = low = close = volume = "n/a";
 
-		if (isDefined(currentItem)
-				&& isDefined(accessor(currentItem))) {
+		const {
+			openAccessor = (d) => (accessor(d) || {}).open,
+			highAccessor = (d) => (accessor(d) || {}).high,
+			lowAccessor = (d) => (accessor(d) || {}).low,
+			closeAccessor = (d) => (accessor(d) || {}).close,
+			volumeAccessor = (d) => (accessor(d) || {}).volume,
+		} = this.props;
 
-			const item = accessor(currentItem);
-			volume = isDefined(item.volume)
-				? volumeFormat(item.volume)
+		if (isDefined(currentItem)) {
+			displayDate = xDisplayFormat(displayXAccessor(currentItem));
+			open = ohlcFormat(openAccessor(currentItem));
+			high = ohlcFormat(highAccessor(currentItem));
+			low = ohlcFormat(lowAccessor(currentItem));
+			close = ohlcFormat(closeAccessor(currentItem));
+			volume = isDefined(volumeAccessor(currentItem))
+				? volumeFormat(volumeAccessor(currentItem))
 				: "n/a";
-
-			displayDate = xDisplayFormat(displayXAccessor(item));
-			open = ohlcFormat(item.open);
-			high = ohlcFormat(item.high);
-			low = ohlcFormat(item.low);
-			close = ohlcFormat(item.close);
 		}
+
 		const { origin: originProp } = this.props;
 		const origin = functor(originProp);
 		const [x, y] = origin(width, height);
@@ -76,6 +81,11 @@ class OHLCTooltip extends Component {
 OHLCTooltip.propTypes = {
 	className: PropTypes.string,
 	accessor: PropTypes.func,
+	openAccessor: PropTypes.func,
+	highAccessor: PropTypes.func,
+	lowAccessor: PropTypes.func,
+	closeAccessor: PropTypes.func,
+	volumeAccessor: PropTypes.func,
 	xDisplayFormat: PropTypes.func,
 	ohlcFormat: PropTypes.func,
 	origin: PropTypes.oneOfType([
