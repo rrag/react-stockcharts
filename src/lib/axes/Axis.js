@@ -295,7 +295,7 @@ function drawAxisLine(ctx, props, range) {
 }
 
 function Tick(props) {
-	const { tickStroke, tickStrokeOpacity, tickStrokeDasharray, tickStrokeWidth, textAnchor, fontSize, fontFamily } = props;
+	const { tickLabelFill, tickStroke, tickStrokeOpacity, tickStrokeDasharray, tickStrokeWidth, textAnchor, fontSize, fontFamily } = props;
 	const { x1, y1, x2, y2, labelX, labelY, dy } = props;
 	return (
 		<g className="tick">
@@ -309,7 +309,7 @@ function Tick(props) {
 				x2={x2} y2={y2} />
 			<text
 				dy={dy} x={labelX} y={labelY}
-				fill={tickStroke}
+				fill={tickLabelFill}
 				fontSize={fontSize}
 				fontFamily={fontFamily}
 				textAnchor={textAnchor}>
@@ -340,7 +340,7 @@ Tick.propTypes = {
 function axisTicksSVG(props, scale) {
 	const result = tickHelper(props, scale);
 
-	const { tickStroke, tickStrokeOpacity, tickStrokeWidth, tickStrokeDasharray, textAnchor } = result;
+	const { tickLabelFill, tickStroke, tickStrokeOpacity, tickStrokeWidth, tickStrokeDasharray, textAnchor } = result;
 	const { fontSize, fontFamily, ticks, format } = result;
 
 	const { dy } = result;
@@ -351,6 +351,7 @@ function axisTicksSVG(props, scale) {
 				return (
 					<Tick key={idx}
 						tickStroke={tickStroke}
+						tickLabelFill={tickLabelFill}
 						tickStrokeWidth={tickStrokeWidth}
 						tickStrokeOpacity={tickStrokeOpacity}
 						tickStrokeDasharray={tickStrokeDasharray}
