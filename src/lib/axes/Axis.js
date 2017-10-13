@@ -134,7 +134,7 @@ function tickHelper(props, scale) {
 		tickValues = tickValuesProp;
 	} else if (isDefined(tickInterval)) {
 		const [min, max] = scale.domain();
-		tickValues = d3Range(min, max, tickInterval);
+		tickValues = d3Range(min, max, (max-min) / tickInterval);
 	} else if (isDefined(scale.ticks)) {
 		tickValues = scale.ticks(tickArguments, flexTicks);
 	} else {
