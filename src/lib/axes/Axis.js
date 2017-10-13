@@ -296,7 +296,6 @@ function drawAxisLine(ctx, props, range) {
 
 function Tick(props) {
 	const { tickLabelFill, tickStroke, tickStrokeOpacity, tickStrokeDasharray, tickStrokeWidth, textAnchor, fontSize, fontFamily } = props;
-  console.log(tickLabelFill);
 	const { x1, y1, x2, y2, labelX, labelY, dy } = props;
 	return (
 		<g className="tick">
