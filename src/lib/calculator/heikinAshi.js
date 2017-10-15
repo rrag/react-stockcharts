@@ -15,11 +15,12 @@ export default function() {
 			})
 			.accumulator(([prev, now]) => {
 				// console.log(prev, now);
+				const { date, volume } = now;
 				const close = (now.open + now.high + now.low + now.close) / 4;
 				const open = (prev.open + prev.close) / 2;
 				const high = Math.max(open, now.high, close);
 				const low = Math.min(open, now.low, close);
-				return { open, high, low, close };
+				return { date, open, high, low, close, volume };
 			});
 
 		return algorithm(data);
