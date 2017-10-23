@@ -134,7 +134,7 @@ function tickHelper(props, scale) {
 		tickValues = tickValuesProp;
 	} else if (isDefined(tickInterval)) {
 		const [min, max] = scale.domain();
-		tickValues = d3Range(min, max, (max-min) / tickInterval);
+		tickValues = d3Range(min, max, (max - min) / tickInterval);
 	} else if (isDefined(scale.ticks)) {
 		tickValues = scale.ticks(tickArguments, flexTicks);
 	} else {
@@ -160,7 +160,7 @@ function tickHelper(props, scale) {
 		textAnchor = "middle";
 
 		ticks = tickValues.map(d => {
-			const x = scale(d);
+			const x = Math.round(scale(d));
 			return {
 				value: d,
 				x1: x,
@@ -204,7 +204,7 @@ function tickHelper(props, scale) {
 
 	} else {
 		ticks = tickValues.map(d => {
-			const y = scale(d);
+			const y = Math.round(scale(d));
 			return {
 				value: d,
 				x1: 0,
@@ -329,6 +329,7 @@ Tick.propTypes = {
 	labelY: PropTypes.number.isRequired,
 	dy: PropTypes.string.isRequired,
 	tickStroke: PropTypes.string,
+	tickLabelFill: PropTypes.string,
 	tickStrokeWidth: PropTypes.number,
 	tickStrokeOpacity: PropTypes.number,
 	tickStrokeDasharray: PropTypes.oneOf(strokeDashTypes),

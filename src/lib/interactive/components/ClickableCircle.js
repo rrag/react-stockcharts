@@ -19,7 +19,8 @@ class ClickableCircle extends Component {
 	}
 	isHover(moreProps) {
 		const { mouseXY } = moreProps;
-		const { r } = this.props;
+		// const { r } = this.props;
+		const r = this.props.r + 7;
 		const [x, y] = helper(this.props, moreProps);
 
 		const [mx, my] = mouseXY;

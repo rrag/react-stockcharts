@@ -4,7 +4,13 @@ import PropTypes from "prop-types";
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
 
-import { isDefined, noop, hexToRGBA } from "../../utils";
+import {
+	isDefined,
+	noop,
+	hexToRGBA,
+	getStrokeDasharray,
+	strokeDashTypes,
+} from "../../utils";
 
 class StraightLine extends Component {
 	constructor(props) {
@@ -39,11 +45,13 @@ class StraightLine extends Component {
 		return false;
 	}
 	drawOnCanvas(ctx, moreProps) {
-		const { stroke, strokeWidth, strokeOpacity } = this.props;
+		const { stroke, strokeWidth, strokeOpacity, strokeDasharray } = this.props;
 		const { x1, y1, x2, y2 } = helper(this.props, moreProps);
 
 		ctx.lineWidth = strokeWidth;
 		ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
+		ctx.setLineDash(getStrokeDasharray(strokeDasharray).split(","));
+
 		ctx.beginPath();
 		ctx.moveTo(x1, y1);
 		ctx.lineTo(x2, y2);
@@ -145,6 +153,63 @@ export function isHovering({
 	}
 }
 
+function helper(props, moreProps) {
+	const { x1Value, x2Value, y1Value, y2Value, type } = props;
+
+	const { xScale, chartConfig: { yScale } } = moreProps;
+
+	const modLine = generateLine({
+		type,
+		start: [x1Value, y1Value],
+		end: [x2Value, y2Value],
+		xScale,
+		yScale,
+	});
+
+	const x1 = xScale(modLine.x1);
+	const y1 = yScale(modLine.y1);
+	const x2 = xScale(modLine.x2);
+	const y2 = yScale(modLine.y2);
+
+	return {
+		x1, y1, x2, y2
+	};
+}
+
+export function getSlope(start, end) {
+	const m /* slope */ = end[0] === start[0]
+		? undefined
+		: (end[1] - start[1]) / (end[0] - start[0]);
+	return m;
+}
+export function getYIntercept(m, end) {
+	const b /* y intercept */ = -1 * m * end[0] + end[1];
+	return b;
+}
+
+export function generateLine({
+	type, start, end, xScale, yScale
+}) {
+	const m /* slope */ = getSlope(start, end);
+	// console.log(end[0] - start[0], m)
+	const b /* y intercept */ = getYIntercept(m, start);
+
+	switch (type) {
+	case "XLINE":
+		return getXLineCoordinates({
+			type, start, end, xScale, yScale, m, b
+		});
+	case "RAY":
+		return getRayCoordinates({
+			type, start, end, xScale, yScale, m, b
+		});
+	case "LINE":
+		return getLineCoordinates({
+			type, start, end, xScale, yScale, m, b
+		});
+	}
+}
+
 function getXLineCoordinates({
 	start, end, xScale, yScale, m, b
 }) {
@@ -214,63 +279,6 @@ function getLineCoordinates({
 	};
 }
 
-function helper(props, moreProps) {
-	const { x1Value, x2Value, y1Value, y2Value, type } = props;
-
-	const { xScale, chartConfig: { yScale } } = moreProps;
-
-	const modLine = generateLine({
-		type,
-		start: [x1Value, y1Value],
-		end: [x2Value, y2Value],
-		xScale,
-		yScale,
-	});
-
-	const x1 = xScale(modLine.x1);
-	const y1 = yScale(modLine.y1);
-	const x2 = xScale(modLine.x2);
-	const y2 = yScale(modLine.y2);
-
-	return {
-		x1, y1, x2, y2
-	};
-}
-
-export function getSlope(start, end) {
-	const m /* slope */ = end[0] === start[0]
-		? undefined
-		: (end[1] - start[1]) / (end[0] - start[0]);
-	return m;
-}
-export function getYIntercept(m, end) {
-	const b /* y intercept */ = -1 * m * end[0] + end[1];
-	return b;
-}
-
-export function generateLine({
-	type, start, end, xScale, yScale
-}) {
-	const m /* slope */ = getSlope(start, end);
-	// console.log(end[0] - start[0], m)
-	const b /* y intercept */ = getYIntercept(m, start);
-
-	switch (type) {
-	case "XLINE":
-		return getXLineCoordinates({
-			type, start, end, xScale, yScale, m, b
-		});
-	case "RAY":
-		return getRayCoordinates({
-			type, start, end, xScale, yScale, m, b
-		});
-	case "LINE":
-		return getLineCoordinates({
-			type, start, end, xScale, yScale, m, b
-		});
-	}
-}
-
 StraightLine.propTypes = {
 	x1Value: PropTypes.any.isRequired,
 	x2Value: PropTypes.any.isRequired,
@@ -280,6 +288,9 @@ StraightLine.propTypes = {
 	interactiveCursorClass: PropTypes.string,
 	stroke: PropTypes.string.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
+	strokeOpacity: PropTypes.number.isRequired,
+	strokeDasharray: PropTypes.oneOf(strokeDashTypes),
+
 	type: PropTypes.oneOf([
 		"XLINE", // extends from -Infinity to +Infinity
 		"RAY", // extends to +/-Infinity in one direction
@@ -294,7 +305,6 @@ StraightLine.propTypes = {
 	onHover: PropTypes.func,
 	onUnHover: PropTypes.func,
 
-	strokeOpacity: PropTypes.number.isRequired,
 	defaultClassName: PropTypes.string,
 
 	r: PropTypes.number.isRequired,
@@ -320,8 +330,9 @@ StraightLine.defaultProps = {
 	r: 10,
 	withEdge: false,
 	strokeWidth: 1,
+	strokeDasharray: "Solid",
 	children: noop,
-	tolerance: 4,
+	tolerance: 7,
 	selected: false,
 };
 

@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import { ascending as d3Ascending } from "d3-array";
-import { noop } from "../../utils";
+import { noop, strokeDashTypes } from "../../utils";
 import { saveNodeType, isHover } from "../utils";
-import { getCurrentItem } from "../../utils/ChartDataUtil";
+import { getXValue } from "../../utils/ChartDataUtil";
 
 import StraightLine from "../components/StraightLine";
 import ClickableCircle from "../components/ClickableCircle";
@@ -18,6 +18,11 @@ class EachTrendLine extends Component {
 		this.handleEdge2Drag = this.handleEdge2Drag.bind(this);
 		this.handleLineDragStart = this.handleLineDragStart.bind(this);
 		this.handleLineDrag = this.handleLineDrag.bind(this);
+
+		this.handleEdge1DragStart = this.handleEdge1DragStart.bind(this);
+		this.handleEdge2DragStart = this.handleEdge2DragStart.bind(this);
+
+		this.handleDragComplete = this.handleDragComplete.bind(this);
 
 		this.handleHover = this.handleHover.bind(this);
 
@@ -59,9 +64,9 @@ class EachTrendLine extends Component {
 		const dx = startPos[0] - mouseXY[0];
 		const dy = startPos[1] - mouseXY[1];
 
-		const newX1Value = xAccessor(getCurrentItem(xScale, xAccessor, [x1 - dx, y1 - dy], fullData));
+		const newX1Value = getXValue(xScale, xAccessor, [x1 - dx, y1 - dy], fullData);
 		const newY1Value = yScale.invert(y1 - dy);
-		const newX2Value = xAccessor(getCurrentItem(xScale, xAccessor, [x2 - dx, y2 - dy], fullData));
+		const newX2Value = getXValue(xScale, xAccessor, [x2 - dx, y2 - dy], fullData);
 		const newY2Value = yScale.invert(y2 - dy);
 
 		onDrag(index, {
@@ -70,6 +75,22 @@ class EachTrendLine extends Component {
 			x2Value: newX2Value,
 			y2Value: newY2Value,
 		});
+	}
+	handleEdge1DragStart() {
+		this.setState({
+			anchor: "edge2"
+		});
+	}
+	handleEdge2DragStart() {
+		this.setState({
+			anchor: "edge1"
+		});
+	}
+	handleDragComplete(...rest) {
+		this.setState({
+			anchor: undefined
+		});
+		this.props.onDragComplete(...rest);
 	}
 	handleEdge1Drag(moreProps) {
 		const { index, onDrag } = this.props;
@@ -118,6 +139,7 @@ class EachTrendLine extends Component {
 			stroke,
 			strokeWidth,
 			strokeOpacity,
+			strokeDasharray,
 			r,
 			edgeStrokeWidth,
 			edgeFill,
@@ -129,7 +151,7 @@ class EachTrendLine extends Component {
 
 			onDragComplete,
 		} = this.props;
-		const { hover } = this.state;
+		const { hover, anchor } = this.state;
 
 		// console.log("SELECTED ->", selected);
 		const { enable: hoverTextEnabled, ...restHoverTextProps } = hoverText;
@@ -148,6 +170,7 @@ class EachTrendLine extends Component {
 				stroke={stroke}
 				strokeWidth={(hover || selected) ? strokeWidth + 1 : strokeWidth}
 				strokeOpacity={strokeOpacity}
+				strokeDasharray={strokeDasharray}
 				interactiveCursorClass={lineInteractiveCursor}
 				onDragStart={this.handleLineDragStart}
 				onDrag={this.handleLineDrag}
@@ -159,12 +182,13 @@ class EachTrendLine extends Component {
 				cy={y1Value}
 				r={r}
 				fill={edgeFill}
-				stroke={edgeStroke}
+				stroke={anchor === "edge1" ? stroke : edgeStroke}
 				strokeWidth={edgeStrokeWidth}
 				strokeOpacity={1}
 				interactiveCursorClass={edgeInteractiveCursor}
+				onDragStart={this.handleEdge1DragStart}
 				onDrag={this.handleEdge1Drag}
-				onDragComplete={onDragComplete} />
+				onDragComplete={this.handleDragComplete} />
 			<ClickableCircle
 				ref={this.saveNodeType("edge2")}
 				show={selected || hover}
@@ -172,12 +196,13 @@ class EachTrendLine extends Component {
 				cy={y2Value}
 				r={r}
 				fill={edgeFill}
-				stroke={edgeStroke}
+				stroke={anchor === "edge2" ? stroke : edgeStroke}
 				strokeWidth={edgeStrokeWidth}
 				strokeOpacity={1}
 				interactiveCursorClass={edgeInteractiveCursor}
+				onDragStart={this.handleEdge2DragStart}
 				onDrag={this.handleEdge2Drag}
-				onDragComplete={onDragComplete} />
+				onDragComplete={this.handleDragComplete} />
 			<HoverTextNearMouse
 				show={hoverTextEnabled && hover && !selected}
 				{...restHoverTextProps} />
@@ -189,8 +214,8 @@ export function getNewXY(moreProps) {
 	const { xScale, chartConfig: { yScale }, xAccessor, plotData, mouseXY } = moreProps;
 	const mouseY = mouseXY[1];
 
-	const currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
-	const x = xAccessor(currentItem);
+	const x = getXValue(xScale, xAccessor, mouseXY, plotData);
+
 	const [small, big] = yScale.domain().slice().sort(d3Ascending);
 	const y = yScale.invert(mouseY);
 	const newY = Math.min(Math.max(y, small), big);
@@ -227,6 +252,8 @@ EachTrendLine.propTypes = {
 
 	stroke: PropTypes.string.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
+	strokeDasharray: PropTypes.oneOf(strokeDashTypes),
+
 	edgeStrokeWidth: PropTypes.number.isRequired,
 	edgeStroke: PropTypes.string.isRequired,
 	edgeInteractiveCursor: PropTypes.string.isRequired,
@@ -251,6 +278,7 @@ EachTrendLine.defaultProps = {
 	r: 5,
 	strokeWidth: 1,
 	strokeOpacity: 1,
+	strokeDasharray: "Solid",
 	hoverText: {
 		enable: false,
 	}

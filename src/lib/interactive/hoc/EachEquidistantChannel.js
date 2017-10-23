@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import { isDefined, noop } from "../../utils";
-import { getCurrentItem } from "../../utils/ChartDataUtil";
+import { getXValue } from "../../utils/ChartDataUtil";
 import { saveNodeType, isHover } from "../utils";
 
 import ClickableCircle from "../components/ClickableCircle";
@@ -66,9 +66,9 @@ class EachEquidistantChannel extends Component {
 		const dx = startPos[0] - mouseXY[0];
 		const dy = startPos[1] - mouseXY[1];
 
-		const newX1Value = xAccessor(getCurrentItem(xScale, xAccessor, [x1 - dx, y1 - dy], fullData));
+		const newX1Value = getXValue(xScale, xAccessor, [x1 - dx, y1 - dy], fullData);
 		const newY1Value = yScale.invert(y1 - dy);
-		const newX2Value = xAccessor(getCurrentItem(xScale, xAccessor, [x2 - dx, y2 - dy], fullData));
+		const newX2Value = getXValue(xScale, xAccessor, [x2 - dx, y2 - dy], fullData);
 		const newY2Value = yScale.invert(y2 - dy);
 
 		// const newDy = newY2Value - endXY[1] + this.dragStart.dy;
@@ -97,7 +97,7 @@ class EachEquidistantChannel extends Component {
 		const x1 = xScale(startXY[0]);
 		const y1 = yScale(startXY[1]);
 
-		const newX1Value = xAccessor(getCurrentItem(xScale, xAccessor, [x1 - dx, y1 - dy], fullData));
+		const newX1Value = getXValue(xScale, xAccessor, [x1 - dx, y1 - dy], fullData);
 		const newY1Value = yScale.invert(y1 - dy);
 
 		onDrag(index, {
@@ -124,7 +124,7 @@ class EachEquidistantChannel extends Component {
 		const x1 = xScale(endXY[0]);
 		const y1 = yScale(endXY[1]);
 
-		const newX1Value = xAccessor(getCurrentItem(xScale, xAccessor, [x1 - dx, y1 - dy], fullData));
+		const newX1Value = getXValue(xScale, xAccessor, [x1 - dx, y1 - dy], fullData);
 		const newY1Value = yScale.invert(y1 - dy);
 
 		onDrag(index, {

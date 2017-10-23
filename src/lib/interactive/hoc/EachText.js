@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import { noop } from "../../utils";
-import { getCurrentItem } from "../../utils/ChartDataUtil";
 import { saveNodeType, isHover } from "../utils";
+import { getXValue } from "../../utils/ChartDataUtil";
 
 import HoverTextNearMouse from "../components/HoverTextNearMouse";
 import InteractiveText from "../components/InteractiveText";
@@ -47,12 +47,16 @@ class EachText extends Component {
 			mouseXY: [, mouseY],
 			chartConfig: { yScale },
 			xAccessor,
-			currentItem,
+			mouseXY,
+			plotData,
 			xScale,
 		} = moreProps;
 
 		const { dx, dy } = this.dragStartPosition;
-		const xValue = xScale.invert(xScale(xAccessor(currentItem)) - dx);
+		const xValue = xScale.invert(
+			xScale(getXValue(xScale, xAccessor, mouseXY, plotData)) - dx
+		);
+		// xScale.invert(xScale(xAccessor(currentItem)) - dx);
 		const xyValue = [
 			xValue,
 			yScale.invert(mouseY - dy)
@@ -104,7 +108,7 @@ class EachText extends Component {
 
 				position={position}
 				bgFill={bgFill}
-				bgOpacity={(hover || selected) ? bgOpacity : 0.1}
+				bgOpacity={bgOpacity}
 				textFill={textFill}
 				fontFamily={fontFamily}
 				fontStyle={fontStyle}
@@ -118,7 +122,7 @@ class EachText extends Component {
 		</g>;
 	}
 }
-
+/* 
 export function getNewXY(moreProps, snapTo) {
 	const { xScale, xAccessor, plotData, mouseXY } = moreProps;
 
@@ -128,7 +132,7 @@ export function getNewXY(moreProps, snapTo) {
 
 	return [x, y];
 }
-
+ */
 EachText.propTypes = {
 	index: PropTypes.number,
 

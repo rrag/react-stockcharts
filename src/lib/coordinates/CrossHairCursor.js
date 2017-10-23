@@ -80,15 +80,30 @@ CrossHairCursor.contextTypes = {
 	// xScale: PropTypes.func.isRequired,
 };
 
+function customX(props, moreProps) {
+	const { xScale, xAccessor, currentItem, mouseXY } = moreProps;
+	const { snapX } = props;
+	const x = snapX
+		? Math.round(xScale(xAccessor(currentItem)))
+		: mouseXY[0];
+	return x;
+}
+
+
 CrossHairCursor.defaultProps = {
 	stroke: "#000000",
 	opacity: 0.3,
 	strokeDasharray: "ShortDash",
 	snapX: true,
+	customX,
 };
 
-function helper(props, { mouseXY, xScale, currentItem, show, height, width, xAccessor }) {
-	const { snapX, stroke, opacity, strokeDasharray } = props;
+function helper(props, moreProps) {
+	const {
+		mouseXY, currentItem, show, height, width
+	} = moreProps;
+
+	const { customX, stroke, opacity, strokeDasharray } = props;
 
 	if (!show || isNotDefined(currentItem)) return null;
 
@@ -99,7 +114,7 @@ function helper(props, { mouseXY, xScale, currentItem, show, height, width, xAcc
 		y2: mouseXY[1],
 		stroke, strokeDasharray, opacity,
 	};
-	const x = snapX ? Math.round(xScale(xAccessor(currentItem))) : mouseXY[0];
+	const x = customX(props, moreProps);
 
 	const line2 = {
 		x1: x,

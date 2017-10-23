@@ -70,6 +70,16 @@ class InteractiveText extends Component {
 
 		const { x, y, rect } = helper(this.props, moreProps, this.textWidth);
 
+		ctx.fillStyle = hexToRGBA(bgFill, bgOpacity);
+
+		ctx.beginPath();
+		ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+
+		if (selected) {
+			ctx.strokeStyle = textFill;
+			ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
+		}
+
 		ctx.fillStyle = textFill;
 		ctx.textBaseline = "middle";
 		ctx.textAlign = "center";
@@ -77,15 +87,6 @@ class InteractiveText extends Component {
 
 		ctx.beginPath();
 		ctx.fillText(text, x, y);
-
-		ctx.fillStyle = hexToRGBA(bgFill, bgOpacity);
-		ctx.beginPath();
-		ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
-
-		if (selected) {
-			ctx.strokeStyle = bgFill;
-			ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
-		}
 	}
 	renderSVG() {
 		throw new Error("svg not implemented");

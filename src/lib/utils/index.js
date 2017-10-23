@@ -81,7 +81,7 @@ export function getClosestValue(inputValue, currentValue) {
 	return currentValue + diff;
 }
 
-export function find(list, predicate, context=this) {
+export function find(list, predicate, context = this) {
 	for (let i = 0; i < list.length; ++i) {
 		if (predicate.call(context, list[i], i, list)) {
 			return list[i];
@@ -277,7 +277,11 @@ export function mapValue(object, iteratee) {
 	let result = {};
 
 	Object.keys(object).forEach(key => {
-		result[key] = iteratee(object[key], key, object);
+		const mappedValue = iteratee(object[key], key, object);
+
+		if (isDefined(mappedValue)) {
+			result[key] = mappedValue;
+		}
 	});
 	return result;
 }

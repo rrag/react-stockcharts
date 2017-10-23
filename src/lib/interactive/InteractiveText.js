@@ -162,9 +162,9 @@ InteractiveText.defaultProps = {
 	onSelect: noop,
 
 	defaultText: {
-		bgFill: "#9E7523",
-		bgOpacity: 0.01,
-		textFill: "#9E7523",
+		bgFill: "#D3D3D3",
+		bgOpacity: 1,
+		textFill: "#F10040",
 		fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 		fontSize: 12,
 		fontStyle: "normal",

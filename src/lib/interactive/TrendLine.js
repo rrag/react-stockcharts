@@ -3,7 +3,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import { isDefined, isNotDefined, noop } from "../utils";
+import { isDefined, isNotDefined, noop, strokeDashTypes } from "../utils";
 
 import {
 	getValueFromOverride,
@@ -161,6 +161,7 @@ class TrendLine extends Component {
 					stroke={eachAppearance.stroke}
 					strokeWidth={eachAppearance.strokeWidth}
 					strokeOpacity={eachAppearance.strokeOpacity}
+					strokeDasharray={eachAppearance.strokeDasharray}
 					edgeStroke={eachAppearance.edgeStroke}
 					edgeFill={eachAppearance.edgeFill}
 					edgeStrokeWidth={eachAppearance.edgeStrokeWidth}
@@ -218,6 +219,7 @@ TrendLine.propTypes = {
 		stroke: PropTypes.string.isRequired,
 		strokeOpacity: PropTypes.number.isRequired,
 		strokeWidth: PropTypes.number.isRequired,
+		strokeDasharray: PropTypes.oneOf(strokeDashTypes),
 		edgeStrokeWidth: PropTypes.number.isRequired,
 		edgeFill: PropTypes.string.isRequired,
 		edgeStroke: PropTypes.string.isRequired,
@@ -250,6 +252,7 @@ TrendLine.defaultProps = {
 		stroke: "#000000",
 		strokeOpacity: 1,
 		strokeWidth: 1,
+		strokeDasharray: "Solid",
 		edgeStrokeWidth: 1,
 		edgeFill: "#FFFFFF",
 		edgeStroke: "#000000",
