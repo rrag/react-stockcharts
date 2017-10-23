@@ -58,11 +58,11 @@ RSISeries.defaultProps = {
 		middle: "#000000",
 		bottom: "#964B00"
 	},
-  opacity: {
-    top: 0.3,
-    middle: 0.3,
-    bottom: 0.3
-  },
+	opacity: {
+		top: 0.3,
+		middle: 0.3,
+		bottom: 0.3
+	},
 	overSold: 70,
 	middle: 50,
 	overBought: 30,

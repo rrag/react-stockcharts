@@ -81,7 +81,7 @@ export function getClosestValue(inputValue, currentValue) {
 	return currentValue + diff;
 }
 
-export function find(list, predicate, context=this) {
+export function find(list, predicate, context = this) {
 	for (let i = 0; i < list.length; ++i) {
 		if (predicate.call(context, list[i], i, list)) {
 			return list[i];
