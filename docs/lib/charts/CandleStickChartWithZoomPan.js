@@ -29,6 +29,12 @@ class CandleStickChartWithZoomPan extends React.Component {
 		super(props);
 		this.saveNode = this.saveNode.bind(this);
 		this.resetYDomain = this.resetYDomain.bind(this);
+		this.handleReset = this.handleReset.bind(this);
+	}
+	componentWillMount() {
+		this.setState({
+			suffix: 1
+		});
 	}
 	saveNode(node) {
 		this.node = node;
@@ -36,10 +42,17 @@ class CandleStickChartWithZoomPan extends React.Component {
 	resetYDomain() {
 		this.node.resetYDomain();
 	}
+	handleReset() {
+		this.setState({
+			suffix: this.state.suffix + 1
+		});
+	}
 	render() {
-		const { type, data: initialData, width, ratio } = this.props;
+		const { type, width, ratio } = this.props;
 		const { mouseMoveEvent, panEvent, zoomEvent, zoomAnchor } = this.props;
 		const { clamp } = this.props;
+
+		const { data: initialData } = this.props;
 
 		const xScaleProvider = discontinuousTimeScaleProvider
 			.inputDateAccessor(d => d.date);
@@ -77,7 +90,7 @@ class CandleStickChartWithZoomPan extends React.Component {
 				clamp={clamp}
 				zoomAnchor={zoomAnchor}
 				type={type}
-				seriesName="MSFT"
+				seriesName={`MSFT_${this.state.suffix}`}
 				data={data}
 				xScale={xScale}
 				xExtents={xExtents}
@@ -90,12 +103,12 @@ class CandleStickChartWithZoomPan extends React.Component {
 				>
 					<XAxis axisAt="bottom"
 						orient="bottom"
-						zoomEnabled={!zoomEvent}
+						zoomEnabled={zoomEvent}
 						{...xGrid} />
 					<YAxis axisAt="right"
 						orient="right"
 						ticks={5}
-						zoomEnabled={!zoomEvent}
+						zoomEnabled={zoomEvent}
 						{...yGrid}
 					/>
 
@@ -106,13 +119,21 @@ class CandleStickChartWithZoomPan extends React.Component {
 
 					<CandlestickSeries />
 					<OHLCTooltip origin={[-40, 0]}/>
-					<ZoomButtons />
+					<ZoomButtons
+						onReset={this.handleReset}
+					/>
 				</Chart>
 				<Chart id={2}
 					yExtents={d => d.volume}
 					height={150} origin={(w, h) => [0, h - 150]}
 				>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")} zoomEnabled={!zoomEvent} />
+					<YAxis
+						axisAt="left"
+						orient="left"
+						ticks={5}
+						tickFormat={format(".0s")}
+						zoomEnabled={zoomEvent}
+					/>
 
 					<MouseCoordinateX
 						at="bottom"
