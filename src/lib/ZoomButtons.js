@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 // import { mean } from "d3-array";
 
 import { path as d3Path } from "d3-path";
-import { arc as d3Arc } from "d3-shape";
 import { interpolateNumber } from "d3-interpolate";
 
 import { last, noop } from "./utils";
