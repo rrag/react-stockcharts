@@ -6,13 +6,11 @@ import { path as d3Path } from "d3-path";
 
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
-import { generateLine, isHovering2, getSlope, getYIntercept } from "./StraightLine";
+import { generateLine, isHovering2 } from "./StraightLine";
 
 import {
 	isDefined, isNotDefined,
 	noop, hexToRGBA,
-	degrees, radians,
-	head, last
 } from "../../utils";
 
 class GannFan extends Component {

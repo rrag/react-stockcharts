@@ -7,7 +7,7 @@ import { drawOnCanvas, renderSVG } from "./EdgeCoordinateV3";
 import GenericChartComponent from "../GenericChartComponent";
 import { getMouseCanvas } from "../GenericComponent";
 
-import { identity, isNotDefined } from "../utils";
+import { isNotDefined } from "../utils";
 
 class MouseCoordinateX extends Component {
 	constructor(props) {

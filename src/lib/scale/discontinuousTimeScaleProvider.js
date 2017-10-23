@@ -89,7 +89,7 @@ const discontinuousIndexCalculatorLocalTime = discontinuousIndexCalculator
 		};
 		const level = evaluateLevel(row, nowDate, i, formatters);
 		if (level == null) {
-			console.log(row)
+			console.log(row);
 		}
 		return { ...row, index: i + initialIndex, ...level };
 	});
