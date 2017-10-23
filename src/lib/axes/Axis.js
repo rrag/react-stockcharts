@@ -160,7 +160,7 @@ function tickHelper(props, scale) {
 		textAnchor = "middle";
 
 		ticks = tickValues.map(d => {
-			const x = scale(d);
+			const x = Math.round(scale(d));
 			return {
 				value: d,
 				x1: x,
@@ -204,7 +204,7 @@ function tickHelper(props, scale) {
 
 	} else {
 		ticks = tickValues.map(d => {
-			const y = scale(d);
+			const y = Math.round(scale(d));
 			return {
 				value: d,
 				x1: 0,

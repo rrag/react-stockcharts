@@ -5,8 +5,9 @@ import { ascending } from "d3-array";
 import { scaleLinear } from "d3-scale";
 
 import { isDefined, isNotDefined, head, last } from "../utils";
+import { levelDefinition } from "./levels";
 
-const MAX_LEVEL = 17;
+const MAX_LEVEL = levelDefinition.length - 1;
 
 export default function financeDiscontinuousScale(
 	index,

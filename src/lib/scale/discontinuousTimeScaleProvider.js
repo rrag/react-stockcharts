@@ -5,45 +5,16 @@ import { timeFormat, timeFormatDefaultLocale } from "d3-time-format";
 
 import financeDiscontinuousScale from "./financeDiscontinuousScale";
 import { slidingWindow, zipper, identity, isNotDefined } from "../utils";
-
-const defaultFormatters = {
-	yearFormat: "%Y",
-	quarterFormat: "%b %Y",
-	monthFormat: "%b",
-	weekFormat: "%d %b",
-	dayFormat: "%a %d",
-	hourFormat: "%_I %p",
-	minuteFormat: "%I:%M %p",
-	secondFormat: "%I:%M:%S %p",
-	milliSecondFormat: "%L",
-};
-
-const levelDefinition = [
-	/* eslint-disable no-unused-vars */
-	/* 17 */(d, date, i) => d.startOfYear && date.getFullYear() % 2 === 0 && "yearFormat",
-	/* 16 */(d, date, i) => d.startOfYear && "yearFormat",
-	/* 15 */(d, date, i) => d.startOfQuarter && "quarterFormat",
-	/* 14 */(d, date, i) => d.startOfMonth && "monthFormat",
-	/* 13 */(d, date, i) => d.startOfWeek && "weekFormat",
-	/* 12 */(d, date, i) => d.startOfDay && i % 2 === 0 && "dayFormat",
-	/* 11 */(d, date, i) => d.startOfDay && "dayFormat",
-	/* 10 */(d, date, i) => d.startOfHalfDay && "hourFormat", // 12h
-	/*  9 */(d, date, i) => d.startOfQuarterDay && "hourFormat", // 6h
-	/*  8 */(d, date, i) => d.startOfEighthOfADay && "hourFormat", // 3h
-	/*  7 */(d, date, i) => d.startOfHour && date.getHours() % 2 === 0 && "hourFormat", // 2h -- REMOVE THIS
-	/*  6 */(d, date, i) => d.startOfHour && "hourFormat", // 1h
-	/*  5 */(d, date, i) => d.startOf30Minutes && "minuteFormat",
-	/*  4 */(d, date, i) => d.startOf15Minutes && "minuteFormat",
-	/*  3 */(d, date, i) => d.startOf5Minutes && "minuteFormat",
-	/*  2 */(d, date, i) => d.startOfMinute && "minuteFormat",
-	/*  1 */(d, date, i) => d.startOf30Seconds && "secondFormat",
-	/*  0 */(d, date, i) => "secondFormat",
-	/* eslint-enable no-unused-vars */
-];
+import { defaultFormatters, levelDefinition } from "./levels";
 
 function evaluateLevel(d, date, i, formatters) {
 	return levelDefinition
-		.map((l, idx) => ({ level: levelDefinition.length - idx - 1, format: formatters[l(d, date, i)] }))
+		.map((eachLevel, idx) => {
+			return {
+				level: levelDefinition.length - idx - 1,
+				format: formatters[eachLevel(d, date, i)]
+			};
+		})
 		.find(l => !!l.format);
 }
 
@@ -117,6 +88,9 @@ const discontinuousIndexCalculatorLocalTime = discontinuousIndexCalculator
 			startOfYear,
 		};
 		const level = evaluateLevel(row, nowDate, i, formatters);
+		if (level == null) {
+			console.log(row)
+		}
 		return { ...row, index: i + initialIndex, ...level };
 	});
 
@@ -201,7 +175,6 @@ export function discontinuousTimeScaleProviderBuilder() {
 				format: timeFormat(format),
 			};
 		});
-		const futureProvider = identity;
 		const xScale = financeDiscontinuousScale(
 			inputIndex,
 		);
