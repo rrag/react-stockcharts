@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import { drawOnCanvas, renderSVG } from "./EdgeCoordinateV3";
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
+import { functor } from "../utils";
 
 class PriceCoordinate extends Component {
 	constructor(props) {
@@ -42,13 +43,19 @@ PriceCoordinate.propTypes = {
 	price: PropTypes.number,
 	dx: PropTypes.number,
 	arrowWidth: PropTypes.number,
-	fill: PropTypes.string,
 	opacity: PropTypes.number,
 	lineOpacity: PropTypes.number,
 	lineStroke: PropTypes.string,
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
-	textFill: PropTypes.string,
+	fill: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.func,
+	]),
+	textFill: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.func,
+	]),
 };
 
 PriceCoordinate.defaultProps = {
@@ -112,7 +119,9 @@ function helper(props, moreProps) {
 		hideLine,
 		lineOpacity,
 		lineStroke,
-		fill, opacity, fontFamily, fontSize, textFill,
+		fill: functor(fill)(price),
+		textFill: functor(textFill)(price),
+		opacity, fontFamily, fontSize,
 		rectWidth,
 		rectHeight,
 		arrowWidth,
