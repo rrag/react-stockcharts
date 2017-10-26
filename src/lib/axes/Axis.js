@@ -147,7 +147,7 @@ function tickHelper(props, scale) {
 
 	const format = isNotDefined(tickFormat)
 		? baseFormat
-		: d => baseFormat(d) ? tickFormat(d) : "";
+		: d => tickFormat(d) || "";
 
 	const sign = orient === "top" || orient === "left" ? -1 : 1;
 	const tickSpacing = Math.max(innerTickSize, 0) + tickPadding;
