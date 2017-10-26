@@ -236,10 +236,6 @@ export function discontinuousTimeScaleProviderBuilder() {
 		};
 		return discontinuousTimeScaleProvider;
 	};
-	discontinuousTimeScaleProvider.indexCalculator = function() {
-		return doStuff(realDateAccessor, inputDateAccessor, initialIndex, currentFormatters);
-	};
-
 	discontinuousTimeScaleProvider.setLocale = function(locale, formatters = null) {
 		if (locale) {
 			timeFormatDefaultLocale(locale);
@@ -248,6 +244,10 @@ export function discontinuousTimeScaleProviderBuilder() {
 			currentFormatters = formatters;
 		}
 		return discontinuousTimeScaleProvider;
+	};
+
+	discontinuousTimeScaleProvider.indexCalculator = function() {
+		return doStuff(realDateAccessor, inputDateAccessor, initialIndex, currentFormatters);
 	};
 
 	return discontinuousTimeScaleProvider;
