@@ -3,6 +3,9 @@
 import saveAsPng from "save-svg-as-png";
 import { isDefined } from "../utils";
 
+const dx = 0;
+const dy = 0;
+
 const SaveChartAsImage = {
 	save(doc, container, background, cb) {
 		saveAsPng.svgAsDataUri(container.getElementsByTagName("svg")[0], {}, function(uri) {
@@ -28,11 +31,11 @@ const SaveChartAsImage = {
 					if (isDefined(each)) {
 						const parent = each.parentNode.parentNode.getBoundingClientRect();
 						const rect = each.getBoundingClientRect();
-						context.drawImage(each, rect.left - parent.left, rect.top - parent.top);
+						context.drawImage(each, rect.left - parent.left + dx, rect.top - parent.top + dy);
 					}
 				}
 
-				context.drawImage(image, 0, 0);
+				context.drawImage(image, dx, dy);
 				cb(canvas.toDataURL("image/png"));
 			};
 			image.src = uri;

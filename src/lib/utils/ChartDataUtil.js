@@ -15,7 +15,9 @@ import {
 	isDefined,
 	isNotDefined,
 	functor,
-	mapObject
+	mapObject,
+	find,
+	shallowEqual
 } from "./index";
 
 export function getChartOrigin(origin, contextWidth, contextHeight) {
@@ -48,7 +50,7 @@ function values(func) {
 	};
 }
 
-export function getNewChartConfig(innerDimension, children) {
+export function getNewChartConfig(innerDimension, children, existingChartConfig = []) {
 
 	return React.Children.map(children, (each) => {
 		if (each && each.type.toString() === Chart.toString()) {
@@ -69,9 +71,23 @@ export function getNewChartConfig(innerDimension, children) {
 				Array.isArray(yExtentsProp)
 				&& yExtentsProp.length === 2
 			) {
-				const [a, b] = yExtentsProp;
-				if (typeof a == "number" && typeof b == "number") {
-					yScale.domain([a, b]);
+				const prevChartConfig = find(existingChartConfig, d => d.id === id);
+				if (
+					isDefined(prevChartConfig)
+					&& prevChartConfig.yPan
+					&& prevChartConfig.yPanEnabled
+					&& yPan && yPanEnabled
+					&& shallowEqual(prevChartConfig.originalYExtentsProp, yExtentsProp)
+				) {
+					// console.log(prevChartConfig.originalYExtentsProp, yExtentsProp)
+					// console.log(prevChartConfig.yScale.domain())
+					yScale.domain(prevChartConfig.yScale.domain());
+				} else {
+					// console.log("HHHHHHHHHHHHHHHHHHHHHHHHH")
+					const [a, b] = yExtentsProp;
+					if (typeof a == "number" && typeof b == "number") {
+						yScale.domain([a, b]);
+					}
 				}
 			}
 			// console.log(yExtentsProp, yExtents);
@@ -79,6 +95,7 @@ export function getNewChartConfig(innerDimension, children) {
 				id,
 				origin: functor(origin)(availableWidth, availableHeight),
 				padding,
+				originalYExtentsProp: yExtentsProp,
 				yExtents,
 				yExtentsCalculator,
 				flipYScale,
@@ -166,7 +183,8 @@ export function getChartConfigWithUpdatedYScales(chartConfig,
 			const domain = yPan && yPanEnabled
 				? another ? yDomainDY : prevYDomain
 				: realYDomain;
-			// console.log(yPan, yPanEnabled, another, domain, realYDomain, prevYDomain);
+
+			// console.error(id, yPan, yPanEnabled, another, domain, realYDomain, prevYDomain);
 			return {
 				...config,
 				yScale: setRange(yScale.copy().domain(domain), height, padding, flipYScale),
@@ -176,6 +194,8 @@ export function getChartConfigWithUpdatedYScales(chartConfig,
 		});
 
 	const updatedChartConfig = combine(chartConfig, yDomains);
+	// console.error(yDomains, dy, chartsToPan, updatedChartConfig.map(d => d.yScale.domain()));
+
 	return updatedChartConfig;
 }
 

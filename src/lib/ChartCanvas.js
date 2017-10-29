@@ -159,7 +159,7 @@ function resetChart(props, firstCalculation = false) {
 	};
 }
 
-function updateChart(newState, initialXScale, props, lastItemWasVisible) {
+function updateChart(newState, initialXScale, props, lastItemWasVisible, initialChartConfig) {
 
 	const { fullData, xScale, xAccessor, displayXAccessor, filterData } = newState;
 
@@ -196,7 +196,7 @@ function updateChart(newState, initialXScale, props, lastItemWasVisible) {
 	// plotData = getDataOfLength(fullData, showingInterval, plotData.length)
 	const plotData = postCalculator(initialPlotData);
 	const chartConfig = getChartConfigWithUpdatedYScales(
-		getNewChartConfig(dimensions, children),
+		getNewChartConfig(dimensions, children, initialChartConfig),
 		{ plotData, xAccessor, displayXAccessor, fullData },
 		updatedXScale.domain()
 	);
@@ -916,6 +916,7 @@ class ChartCanvas extends Component {
 		const reset = shouldResetChart(this.props, nextProps);
 
 		const interaction = isInteractionEnabled(this.state.xScale, this.state.xAccessor, this.state.plotData);
+		const { chartConfig: initialChartConfig } = this.state;
 
 		let newState;
 		if (!interaction || reset || !shallowEqual(this.props.xExtents, nextProps.xExtents)) {
@@ -944,33 +945,46 @@ class ChartCanvas extends Component {
 				else
 					log("Trivial change, may be width/height or type changed, but that does not matter");
 			}
-			newState = updateChart(calculatedState, this.state.xScale, nextProps, lastItemWasVisible);
+			newState = updateChart(
+				calculatedState,
+				this.state.xScale,
+				nextProps,
+				lastItemWasVisible,
+				initialChartConfig,
+			);
 		}
 
 		const { fullData, ...state } = newState;
-		const { chartConfig: initialChartConfig } = this.state;
 
 		if (this.panInProgress) {
 			if (process.env.NODE_ENV !== "production") {
 				log("Pan is in progress");
 			}
 		} else {
+			/*
 			if (!reset) {
 				state.chartConfig
 					.forEach((each) => {
-						const sourceChartConfig = initialChartConfig.filter(d => d.id === each.id);
-						if (sourceChartConfig.length > 0 && sourceChartConfig[0].yPanEnabled) {
-							each.yScale.domain(sourceChartConfig[0].yScale.domain());
-							each.yPanEnabled = sourceChartConfig[0].yPanEnabled;
+						// const sourceChartConfig = initialChartConfig.filter(d => d.id === each.id);
+						const prevChartConfig = find(initialChartConfig, d => d.id === each.id);
+						if (isDefined(prevChartConfig) && prevChartConfig.yPanEnabled) {
+							each.yScale.domain(prevChartConfig.yScale.domain());
+							each.yPanEnabled = prevChartConfig.yPanEnabled;
 						}
 					});
 			}
+			*/
 			this.clearThreeCanvas();
 
 			this.setState(state);
 		}
 		this.fullData = fullData;
 	}
+	/*
+	componentDidUpdate(prevProps, prevState) {
+		console.error(this.state.chartConfig, this.state.chartConfig.map(d => d.yScale.domain()));
+	}
+	*/
 	resetYDomain(chartId) {
 		const { chartConfig } = this.state;
 		let changed = false;
@@ -996,6 +1010,7 @@ class ChartCanvas extends Component {
 		}
 	}
 	shouldComponentUpdate() {
+		// console.log("Happneing.....", !this.panInProgress)
 		return !this.panInProgress;
 	}
 	render() {
