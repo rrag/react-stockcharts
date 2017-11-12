@@ -6,10 +6,10 @@ Click and drag the axis, to zoom on y & x. Once y axis is zoomed you can pan the
 
 `mousemove`, `pan` and `zoom` are enabled by default. To disable them you can use `mouseMoveEvent`, `panEvent` and `zoomEvent` props.
 
-`clamp` is disabled by default
+`clamp` prevents scrolling past the last data point, and is disabled by default. Supported values for clamp are `left`, `right`, or `both` for clamping one or both sides of the graph.
 
 ```jsx
-<ChartCanvas 
+<ChartCanvas
     ...
     mouseMoveEvent={true}
     panEvent={true}
