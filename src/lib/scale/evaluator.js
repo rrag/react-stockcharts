@@ -21,11 +21,11 @@ function extentsWrapper(xAccessor, useWholeData, clamp, pointsPerPxThreshold, mi
 
 		const filteredData = getFilteredResponse(data, left, right, xAccessor);
 		let clampedDomain = inputDomain;
-		if (clamp === 'left' || clamp === 'both' || clamp === true) {
-			clampedDomain[0] = Math.max(left, xAccessor(first(data)));
+		if (clamp === "left" || clamp === "both" || clamp === true) {
+			clampedDomain = [Math.max(left, xAccessor(first(data))), clampedDomain[1]];
 		}
-		if (clamp === 'right' || clamp === 'both' || clamp === true) {
-			clampedDomain[1] = Math.min(right, xAccessor(last(data)));
+		if (clamp === "right" || clamp === "both" || clamp === true) {
+			clampedDomain = [clampedDomain[0], Math.min(right, xAccessor(last(data)))];
 		}
 
 		const realInputDomain = xAccessor === xAccessor
