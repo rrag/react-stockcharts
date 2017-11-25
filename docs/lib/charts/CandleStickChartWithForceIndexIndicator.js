@@ -59,19 +59,21 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 
 		return (
 			<ChartCanvas height={550}
-					width={width}
-					ratio={ratio}
-					margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
-					type={type}
-					seriesName="MSFT"
-					data={data}
-					xScale={xScale}
-					xAccessor={xAccessor}
-					displayXAccessor={displayXAccessor}
-					xExtents={xExtents}>
+				width={width}
+				ratio={ratio}
+				margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
+				type={type}
+				seriesName="MSFT"
+				data={data}
+				xScale={xScale}
+				xAccessor={xAccessor}
+				displayXAccessor={displayXAccessor}
+				xExtents={xExtents}
+			>
 				<Chart id={1}  height={300}
-						yExtents={d => [d.high, d.low]}
-						padding={{ top: 10, right: 0, bottom: 20, left: 0 }}>
+					yExtents={d => [d.high, d.low]}
+					padding={{ top: 10, right: 0, bottom: 20, left: 0 }}
+				>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<MouseCoordinateY
@@ -88,9 +90,10 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 
 				</Chart>
 				<Chart id={2} height={150}
-						yExtents={d => d.volume}
-						origin={(w, h) => [0, h - 350]} >
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
+					yExtents={d => d.volume}
+					origin={(w, h) => [0, h - 350]}
+				>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")}/>
 					<MouseCoordinateY
 						at="left"
 						orient="left"
@@ -102,11 +105,12 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 						opacity={0.5} />
 				</Chart>
 				<Chart id={3} height={100}
-						yExtents={fi.accessor()}
-						origin={(w, h) => [0, h - 200]}
-						padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
+					yExtents={fi.accessor()}
+					origin={(w, h) => [0, h - 200]}
+					padding={{ top: 10, right: 0, bottom: 10, left: 0 }}
+				>
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
-					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={format(".0s")}/>
+					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={format(".2s")}/>
 					<MouseCoordinateY
 						at="right"
 						orient="right"
@@ -122,11 +126,12 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 						origin={[-40, 15]}/>
 				</Chart>
 				<Chart id={4} height={100}
-						yExtents={fiEMA13.accessor()}
-						origin={(w, h) => [0, h - 100]}
-						padding={{ top: 10, right: 0, bottom: 10, left: 0 }} >
+					yExtents={fiEMA13.accessor()}
+					origin={(w, h) => [0, h - 100]}
+					padding={{ top: 10, right: 0, bottom: 10, left: 0 }}
+				>
 					<XAxis axisAt="bottom" orient="bottom" />
-					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={format(".0s")}/>
+					<YAxis axisAt="right" orient="right" ticks={4} tickFormat={format(".2s")}/>
 
 					<MouseCoordinateX
 						at="bottom"

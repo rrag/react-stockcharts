@@ -53,19 +53,21 @@ class CandleStickChartWithCompare extends React.Component {
 
 		return (
 			<ChartCanvas height={400}
-					width={width}
-					ratio={ratio}
-					margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
-					type={type}
-					seriesName="MSFT"
-					data={data}
-					postCalculator={compareCalculator}
-					xScale={xScale}
-					xAccessor={xAccessor}
-					displayXAccessor={displayXAccessor}
-					xExtents={xExtents}>
+				width={width}
+				ratio={ratio}
+				margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
+				type={type}
+				seriesName="MSFT"
+				data={data}
+				postCalculator={compareCalculator}
+				xScale={xScale}
+				xAccessor={xAccessor}
+				displayXAccessor={displayXAccessor}
+				xExtents={xExtents}
+			>
 				<Chart id={1}
-						yExtents={d => d.compare}>
+					yExtents={d => d.compare}
+				>
 					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="right" orient="right" ticks={5} tickFormat={format(".0%")} />
 
@@ -111,9 +113,11 @@ class CandleStickChartWithCompare extends React.Component {
 						origin={[-40, 35]}/>
 				</Chart>
 				<Chart id={2}
-						yExtents={d => d.volume}
-						height={150} origin={(w, h) => [0, h - 150]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
+					yExtents={d => d.volume}
+					height={150}
+					origin={(w, h) => [0, h - 150]}
+				>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")}/>
 					<MouseCoordinateY
 						at="left"
 						orient="left"

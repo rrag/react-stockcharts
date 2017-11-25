@@ -67,20 +67,22 @@ class CandleStickChartWithEdge extends React.Component {
 
 		return (
 			<ChartCanvas height={400}
-					ratio={ratio}
-					width={width}
-					margin={{ left: 90, right: 90, top: 70, bottom: 30 }}
-					type={type}
-					seriesName="MSFT"
-					data={data}
-					xScale={xScale}
-					xAccessor={xAccessor}
-					displayXAccessor={displayXAccessor}
-					xExtents={xExtents}>
+				ratio={ratio}
+				width={width}
+				margin={{ left: 90, right: 90, top: 70, bottom: 30 }}
+				type={type}
+				seriesName="MSFT"
+				data={data}
+				xScale={xScale}
+				xAccessor={xAccessor}
+				displayXAccessor={displayXAccessor}
+				xExtents={xExtents}
+			>
 				<Chart id={2}
-						yExtents={[d => d.volume, smaVolume70.accessor()]}
-						height={150} origin={(w, h) => [0, h - 150]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
+					yExtents={[d => d.volume, smaVolume70.accessor()]}
+					height={150} origin={(w, h) => [0, h - 150]}
+				>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")}/>
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 					<AreaSeries yAccessor={smaVolume70.accessor()} stroke={smaVolume70.stroke()} fill={smaVolume70.fill()}/>
@@ -98,8 +100,9 @@ class CandleStickChartWithEdge extends React.Component {
 						yAccessor={smaVolume70.accessor()} displayFormat={format(".4s")} fill={smaVolume70.fill()}/>
 				</Chart>
 				<Chart id={1}
-						yPan yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
-						padding={{ top: 10, bottom: 20 }}>
+					yPan yExtents={[d => [d.high, d.low], ema20.accessor(), ema50.accessor()]}
+					padding={{ top: 10, bottom: 20 }}
+				>
 
 					<XAxis axisAt="bottom" orient="bottom" />
 					<XAxis axisAt="top" orient="top" flexTicks />
@@ -161,7 +164,7 @@ class CandleStickChartWithEdge extends React.Component {
 								windowSize: ema50.options().windowSize,
 							},
 						]}
-						/>
+					/>
 				</Chart>
 				<CrossHairCursor />
 			</ChartCanvas>

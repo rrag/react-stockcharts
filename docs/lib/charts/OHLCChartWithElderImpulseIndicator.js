@@ -82,19 +82,21 @@ class OHLCChartWithElderImpulseIndicator extends React.Component {
 
 		return (
 			<ChartCanvas height={500}
-					width={width}
-					ratio={ratio}
-					margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
-					type={type}
-					seriesName="MSFT"
-					data={data}
-					xScale={xScale}
-					xAccessor={xAccessor}
-					displayXAccessor={displayXAccessor}
-					xExtents={xExtents}>
+				width={width}
+				ratio={ratio}
+				margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
+				type={type}
+				seriesName="MSFT"
+				data={data}
+				xScale={xScale}
+				xAccessor={xAccessor}
+				displayXAccessor={displayXAccessor}
+				xExtents={xExtents}
+			>
 				<Chart id={1} height={300}
-						yExtents={d => [d.high, d.low]}
-						padding={{ top: 10, bottom: 10 }} >
+					yExtents={d => [d.high, d.low]}
+					padding={{ top: 10, bottom: 10 }}
+				>
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right" orient="right" ticks={2}/>
 
@@ -122,12 +124,13 @@ class OHLCChartWithElderImpulseIndicator extends React.Component {
 								windowSize: ema12.options().windowSize,
 							},
 						]}
-						/>
+					/>
 				</Chart>
 				<Chart id={2} height={150}
-						yExtents={d => d.volume}
-						origin={(w, h) => [0, h - 300]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
+					yExtents={d => d.volume}
+					origin={(w, h) => [0, h - 300]}
+				>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")}/>
 
 					<MouseCoordinateY
 						at="left"
@@ -139,8 +142,9 @@ class OHLCChartWithElderImpulseIndicator extends React.Component {
 						opacity={0.4}/>
 				</Chart>
 				<Chart id={3} height={150}
-						yExtents={macdCalculator.accessor()}
-						origin={(w, h) => [0, h - 150]} padding={{ top: 10, bottom: 10 }} >
+					yExtents={macdCalculator.accessor()}
+					origin={(w, h) => [0, h - 150]} padding={{ top: 10, bottom: 10 }}
+				>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={2} />
 
@@ -160,7 +164,7 @@ class OHLCChartWithElderImpulseIndicator extends React.Component {
 						yAccessor={d => d.macd}
 						options={macdCalculator.options()}
 						appearance={macdAppearance}
-						/>
+					/>
 				</Chart>
 				<CrossHairCursor />
 			</ChartCanvas>

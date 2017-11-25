@@ -34,16 +34,17 @@ class CandleStickStockScaleChartWithVolumeBarV1 extends React.Component {
 
 		return (
 			<ChartCanvas height={400}
-					ratio={ratio}
-					width={width}
-					margin={{ left: 50, right: 50, top: 10, bottom: 30 }}
-					type={type}
-					seriesName="MSFT"
-					data={data}
-					xScale={xScale}
-					xAccessor={xAccessor}
-					displayXAccessor={displayXAccessor}
-					xExtents={xExtents}>
+				ratio={ratio}
+				width={width}
+				margin={{ left: 50, right: 50, top: 10, bottom: 30 }}
+				type={type}
+				seriesName="MSFT"
+				data={data}
+				xScale={xScale}
+				xAccessor={xAccessor}
+				displayXAccessor={displayXAccessor}
+				xExtents={xExtents}
+			>
 
 				<Chart id={1} yExtents={d => [d.high, d.low]}>
 					<XAxis axisAt="bottom" orient="bottom"/>
@@ -51,7 +52,7 @@ class CandleStickStockScaleChartWithVolumeBarV1 extends React.Component {
 					<CandlestickSeries />
 				</Chart>
 				<Chart id={2} yExtents={d => d.volume}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")}/>
 					<BarSeries yAccessor={d => d.volume} />
 				</Chart>
 			</ChartCanvas>

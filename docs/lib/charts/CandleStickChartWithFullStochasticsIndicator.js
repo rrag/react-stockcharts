@@ -90,19 +90,21 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 		const xExtents = [start, end];
 		return (
 			<ChartCanvas height={750}
-					width={width}
-					ratio={ratio}
-					margin={margin}
-					type={type}
-					seriesName="MSFT"
-					data={data}
-					xScale={xScale}
-					xAccessor={xAccessor}
-					displayXAccessor={displayXAccessor}
-					xExtents={xExtents}>
+				width={width}
+				ratio={ratio}
+				margin={margin}
+				type={type}
+				seriesName="MSFT"
+				data={data}
+				xScale={xScale}
+				xAccessor={xAccessor}
+				displayXAccessor={displayXAccessor}
+				xExtents={xExtents}
+			>
 				<Chart id={1} height={325}
-						yExtents={d => [d.high, d.low]}
-						padding={{ top: 10, bottom: 20 }}>
+					yExtents={d => [d.high, d.low]}
+					padding={{ top: 10, bottom: 20 }}
+				>
 					<YAxis axisAt="right" orient="right" ticks={5} {...yGrid}/>
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 
@@ -144,12 +146,13 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 								windowSize: ema50.options().windowSize,
 							},
 						]}
-						/>
+					/>
 				</Chart>
 				<Chart id={2}
-						yExtents={d => d.volume}
-						height={100} origin={(w, h) => [0, h - 475]} >
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
+					yExtents={d => d.volume}
+					height={100} origin={(w, h) => [0, h - 475]}
+				>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")}/>
 
 					<MouseCoordinateY
 						at="left"
@@ -159,8 +162,9 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 				</Chart>
 				<Chart id={3}
-						yExtents={[0, 100]}
-						height={125} origin={(w, h) => [0, h - 375]} padding={{ top: 10, bottom: 10 }} >
+					yExtents={[0, 100]}
+					height={125} origin={(w, h) => [0, h - 375]} padding={{ top: 10, bottom: 10 }}
+				>
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right" orient="right"
 						tickValues={[20, 50, 80]} />
@@ -181,8 +185,9 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 
 				</Chart>
 				<Chart id={4}
-						yExtents={[0, 100]}
-						height={125} origin={(w, h) => [0, h - 250]} padding={{ top: 10, bottom: 10 }} >
+					yExtents={[0, 100]}
+					height={125} origin={(w, h) => [0, h - 250]} padding={{ top: 10, bottom: 10 }}
+				>
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right" orient="right"
 						tickValues={[20, 50, 80]} />
@@ -204,8 +209,9 @@ class CandleStickChartWithFullStochasticsIndicator extends React.Component {
 						label="Fast STO" />
 				</Chart>
 				<Chart id={5}
-						yExtents={[0, 100]}
-						height={125} origin={(w, h) => [0, h - 125]} padding={{ top: 10, bottom: 10 }} >
+					yExtents={[0, 100]}
+					height={125} origin={(w, h) => [0, h - 125]} padding={{ top: 10, bottom: 10 }}
+				>
 					<XAxis axisAt="bottom" orient="bottom" {...xGrid} />
 					<YAxis axisAt="right" orient="right"
 						tickValues={[20, 50, 80]} />
@@ -244,6 +250,7 @@ CandleStickChartWithFullStochasticsIndicator.propTypes = {
 CandleStickChartWithFullStochasticsIndicator.defaultProps = {
 	type: "svg",
 };
+
 CandleStickChartWithFullStochasticsIndicator = fitWidth(CandleStickChartWithFullStochasticsIndicator);
 
 export default CandleStickChartWithFullStochasticsIndicator;

@@ -40,18 +40,20 @@ class AreaChartWithEdge extends React.Component {
 		const xExtents = [start, end];
 		return (
 			<ChartCanvas height={400}
-					ratio={ratio}
-					width={width}
-					margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
-					type={type}
-					seriesName="MSFT"
-					data={data}
-					xScale={xScale}
-					xAccessor={xAccessor}
-					displayXAccessor={displayXAccessor}
-					xExtents={xExtents}>
+				ratio={ratio}
+				width={width}
+				margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
+				type={type}
+				seriesName="MSFT"
+				data={data}
+				xScale={xScale}
+				xAccessor={xAccessor}
+				displayXAccessor={displayXAccessor}
+				xExtents={xExtents}
+			>
 				<Chart id={1}
-						yExtents={d => [d.high, d.low]}>
+					yExtents={d => [d.high, d.low]}
+				>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 
@@ -78,9 +80,10 @@ class AreaChartWithEdge extends React.Component {
 						origin={[-40, 20]}/>
 				</Chart>
 				<Chart id={2}
-						yExtents={d => d.volume}
-						height={150} origin={(w, h) => [0, h - 150]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
+					yExtents={d => d.volume}
+					height={150} origin={(w, h) => [0, h - 150]}
+				>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")}/>
 
 					<MouseCoordinateY
 						at="left"

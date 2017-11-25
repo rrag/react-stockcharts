@@ -46,19 +46,21 @@ class Kagi extends React.Component {
 
 		return (
 			<ChartCanvas height={400}
-					width={width}
-					ratio={ratio}
-					margin={{ left: 80, right: 80, top: 10, bottom: 30 }}
-					type={type}
-					seriesName="MSFT"
-					data={data}
-					xScale={xScale}
-					xAccessor={xAccessor}
-					displayXAccessor={displayXAccessor}
-					xExtents={xExtents}>
+				width={width}
+				ratio={ratio}
+				margin={{ left: 80, right: 80, top: 10, bottom: 30 }}
+				type={type}
+				seriesName="MSFT"
+				data={data}
+				xScale={xScale}
+				xAccessor={xAccessor}
+				displayXAccessor={displayXAccessor}
+				xExtents={xExtents}
+			>
 				<Chart id={1}
-						yExtents={d => [d.high, d.low]}
-						padding={{ top: 10, bottom: 20 }}>
+					yExtents={d => [d.high, d.low]}
+					padding={{ top: 10, bottom: 20 }}
+				>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 
@@ -71,9 +73,10 @@ class Kagi extends React.Component {
 					<OHLCTooltip origin={[-40, 0]}/>
 				</Chart>
 				<Chart id={2}
-						yExtents={d => d.volume}
-						height={150} origin={(w, h) => [0, h - 150]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
+					yExtents={d => d.volume}
+					height={150} origin={(w, h) => [0, h - 150]}
+				>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")}/>
 
 					<MouseCoordinateX
 						at="bottom"

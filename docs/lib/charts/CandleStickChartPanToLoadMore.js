@@ -215,7 +215,7 @@ class CandleStickChartPanToLoadMore extends React.Component {
 				<Chart id={2} height={150}
 						yExtents={[d => d.volume, smaVolume50.accessor()]}
 						origin={(w, h) => [0, h - 300]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")}/>
 
 					<MouseCoordinateY
 						at="left"

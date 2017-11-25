@@ -108,25 +108,27 @@ class CandleStickChartWithDarkTheme extends React.Component {
 
 		return (
 			<ChartCanvas height={750}
-					width={width}
-					ratio={ratio}
-					margin={margin}
-					type={type}
-					seriesName="MSFT"
-					data={data}
-					xScale={xScale}
-					xAccessor={xAccessor}
-					displayXAccessor={displayXAccessor}
-					xExtents={xExtents}>
+				width={width}
+				ratio={ratio}
+				margin={margin}
+				type={type}
+				seriesName="MSFT"
+				data={data}
+				xScale={xScale}
+				xAccessor={xAccessor}
+				displayXAccessor={displayXAccessor}
+				xExtents={xExtents}
+			>
 
 
 				<Chart id={1} height={325}
-						yExtents={[d => [d.high, d.low], bb.accessor(), ema20.accessor(), ema50.accessor()]}
-						padding={{ top: 10, bottom: 20 }}>
+					yExtents={[d => [d.high, d.low], bb.accessor(), ema20.accessor(), ema50.accessor()]}
+					padding={{ top: 10, bottom: 20 }}
+				>
 					<YAxis axisAt="right" orient="right" ticks={5} {...yGrid} inverted={true}
-							tickStroke="#FFFFFF" />
+						tickStroke="#FFFFFF" />
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0}
-							stroke="#FFFFFF" opacity={0.5}/>
+						stroke="#FFFFFF" opacity={0.5} />
 
 					<MouseCoordinateY
 						at="right"
@@ -167,25 +169,27 @@ class CandleStickChartWithDarkTheme extends React.Component {
 								windowSize: ema50.options().windowSize,
 							},
 						]}
-						/>
+					/>
 					<BollingerBandTooltip
 						origin={[-38, 60]}
 						yAccessor={d => d.bb}
 						options={bb.options()}
-						/>
-					</Chart>
+					/>
+				</Chart>
 				<Chart id={2}
-						yExtents={d => d.volume}
-						height={100} origin={(w, h) => [0, h - 475]} >
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}
-							tickStroke="#FFFFFF"/>
+					yExtents={d => d.volume}
+					height={100} origin={(w, h) => [0, h - 475]}
+				>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")}
+						tickStroke="#FFFFFF" />
 					<BarSeries
-							yAccessor={d => d.volume}
-							fill={d => d.close > d.open ? "#6BA583" : "#DB0000"} />
+						yAccessor={d => d.volume}
+						fill={d => d.close > d.open ? "#6BA583" : "#DB0000"} />
 				</Chart>
 				<Chart id={3}
-						yExtents={[0, 100]}
-						height={125} origin={(w, h) => [0, h - 375]} padding={{ top: 10, bottom: 10 }} >
+					yExtents={[0, 100]}
+					height={125} origin={(w, h) => [0, h - 375]} padding={{ top: 10, bottom: 10 }}
+				>
 					<XAxis axisAt="bottom" orient="bottom"
 						showTicks={false}
 						outerTickSize={0}
@@ -209,8 +213,9 @@ class CandleStickChartWithDarkTheme extends React.Component {
 						label="Slow STO" />
 				</Chart>
 				<Chart id={4}
-						yExtents={[0, 100]}
-						height={125} origin={(w, h) => [0, h - 250]} padding={{ top: 10, bottom: 10 }} >
+					yExtents={[0, 100]}
+					height={125} origin={(w, h) => [0, h - 250]} padding={{ top: 10, bottom: 10 }}
+				>
 					<XAxis axisAt="bottom" orient="bottom"
 						showTicks={false}
 						outerTickSize={0}
@@ -236,10 +241,11 @@ class CandleStickChartWithDarkTheme extends React.Component {
 						label="Fast STO" />
 				</Chart>
 				<Chart id={5}
-						yExtents={[0, 100]}
-						height={125}
-						origin={(w, h) => [0, h - 125]}
-						padding={{ top: 10, bottom: 10 }} >
+					yExtents={[0, 100]}
+					height={125}
+					origin={(w, h) => [0, h - 125]}
+					padding={{ top: 10, bottom: 10 }}
+				>
 					<XAxis axisAt="bottom" orient="bottom"
 						{...xGrid}
 						tickStroke="#FFFFFF"

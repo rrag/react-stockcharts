@@ -316,7 +316,7 @@ class CandleStickChartWithText extends React.Component {
 						yExtents={[d => d.volume]}
 						origin={(w, h) => [0, h - 300]}
 					>
-						<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
+						<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")}/>
 
 						<MouseCoordinateY
 							at="left"

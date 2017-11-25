@@ -47,7 +47,7 @@ class CandleStickChartForContinuousIntraDay extends React.Component {
 				<Chart id={2}
 						yExtents={[d => d.volume]}
 						height={150} origin={(w, h) => [0, h - 150]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")}/>
 
 					<MouseCoordinateY
 						at="left"

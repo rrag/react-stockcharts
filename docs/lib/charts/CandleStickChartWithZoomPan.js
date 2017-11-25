@@ -131,7 +131,7 @@ class CandleStickChartWithZoomPan extends React.Component {
 						axisAt="left"
 						orient="left"
 						ticks={5}
-						tickFormat={format(".0s")}
+						tickFormat={format(".2s")}
 						zoomEnabled={zoomEvent}
 					/>
 

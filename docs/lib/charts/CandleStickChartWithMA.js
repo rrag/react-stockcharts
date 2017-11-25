@@ -86,19 +86,21 @@ class CandleStickChartWithMA extends React.Component {
 
 		return (
 			<ChartCanvas height={400}
-					width={width}
-					ratio={ratio}
-					margin={{ left: 70, right: 70, top: 10, bottom: 30 }}
-					type={type}
-					seriesName="MSFT"
-					data={data}
-					xScale={xScale}
-					xAccessor={xAccessor}
-					displayXAccessor={displayXAccessor}
-					xExtents={xExtents}>
+				width={width}
+				ratio={ratio}
+				margin={{ left: 70, right: 70, top: 10, bottom: 30 }}
+				type={type}
+				seriesName="MSFT"
+				data={data}
+				xScale={xScale}
+				xAccessor={xAccessor}
+				displayXAccessor={displayXAccessor}
+				xExtents={xExtents}
+			>
 				<Chart id={1}
-						yExtents={[d => [d.high, d.low], sma20.accessor(), wma20.accessor(), tma20.accessor(), ema20.accessor(), ema50.accessor()]}
-						padding={{ top: 10, bottom: 20 }}>
+					yExtents={[d => [d.high, d.low], sma20.accessor(), wma20.accessor(), tma20.accessor(), ema20.accessor(), ema50.accessor()]}
+					padding={{ top: 10, bottom: 20 }}
+				>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 
@@ -160,13 +162,13 @@ class CandleStickChartWithMA extends React.Component {
 								echo: "some echo here",
 							},
 						]}
-						/>
-
+					/>
 				</Chart>
 				<Chart id={2}
-						yExtents={[d => d.volume, smaVolume50.accessor()]}
-						height={150} origin={(w, h) => [0, h - 150]}>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".0s")}/>
+					yExtents={[d => d.volume, smaVolume50.accessor()]}
+					height={150} origin={(w, h) => [0, h - 150]}
+				>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")}/>
 
 					<MouseCoordinateX
 						at="bottom"
