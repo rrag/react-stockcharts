@@ -95,9 +95,22 @@ function helper(props, context) {
 	return {
 		transform: [axisLocation, 0],
 		range: [0, height],
-		getScale: moreProps => moreProps.chartConfig.yScale,
+		getScale: getYScale,
 		bg: { x, y, h, w },
 		zoomEnabled: context.chartConfig.yPan,
 	};
 }
+
+function getYScale(moreProps) {
+	const { yScale: scale, flipYScale, height } = moreProps.chartConfig;
+	if (scale.invert) {
+		const trueRange = flipYScale ? [0, height] : [height, 0];
+		const trueDomain = trueRange.map(scale.invert);
+		return scale.copy()
+			.domain(trueDomain)
+			.range(trueRange);
+	}
+	return scale;
+}
+
 export default YAxis;

@@ -29,13 +29,11 @@ export function getChartOrigin(origin, contextWidth, contextHeight) {
 
 export function getDimensions({ width, height }, chartProps) {
 
-	const chartWidth = (chartProps.width || width);
 	const chartHeight = (chartProps.height || height);
 
 	return {
-		availableWidth: width,
 		availableHeight: height,
-		width: chartWidth,
+		width,
 		height: chartHeight
 	};
 }
@@ -50,50 +48,73 @@ function values(func) {
 	};
 }
 
-export function getNewChartConfig(innerDimension, children, existingChartConfig = []) {
+function isArraySize2AndNumber(yExtentsProp) {
+	if (Array.isArray(yExtentsProp) && yExtentsProp.length === 2) {
+		const [a, b] = yExtentsProp;
+		return (typeof a == "number" && typeof b == "number");
+	}
+	return false;
+}
 
+export function getNewChartConfig(innerDimension, children, existingChartConfig = []) {
 	return React.Children.map(children, (each) => {
 		if (each && each.type.toString() === Chart.toString()) {
 			const chartProps = {
 				...Chart.defaultProps,
 				...each.props
 			};
-			const { id, origin, padding, yExtents: yExtentsProp, yScale, flipYScale, yExtentsCalculator } = chartProps;
-			const { width, height, availableWidth, availableHeight } = getDimensions(innerDimension, chartProps);
-			const { yPan, yPanEnabled = false } = chartProps;
+			const {
+				id,
+				origin,
+				padding,
+				yExtents: yExtentsProp,
+				yScale,
+				flipYScale,
+				yExtentsCalculator
+			} = chartProps;
+
+			const {
+				width, height, availableHeight
+			} = getDimensions(innerDimension, chartProps);
+
+			const { yPan } = chartProps;
+			let { yPanEnabled } = chartProps;
 			// var { yMousePointerRectWidth: rectWidth, yMousePointerRectHeight: rectHeight, yMousePointerArrowWidth: arrowWidth } = each.props;
 			// var mouseCoordinates = { at, yDisplayFormat, rectHeight, rectWidth, arrowWidth };
 			const yExtents = isDefined(yExtentsProp)
 				? (Array.isArray(yExtentsProp) ? yExtentsProp : [yExtentsProp]).map(functor)
 				: undefined;
 
-			if (
-				Array.isArray(yExtentsProp)
-				&& yExtentsProp.length === 2
-			) {
-				const prevChartConfig = find(existingChartConfig, d => d.id === id);
+			const prevChartConfig = find(existingChartConfig, d => d.id === id);
+
+			if (isArraySize2AndNumber(yExtentsProp)) {
 				if (
 					isDefined(prevChartConfig)
 					&& prevChartConfig.yPan
 					&& prevChartConfig.yPanEnabled
-					&& yPan && yPanEnabled
+					&& yPan
+					&& yPanEnabled
 					&& shallowEqual(prevChartConfig.originalYExtentsProp, yExtentsProp)
 				) {
 					// console.log(prevChartConfig.originalYExtentsProp, yExtentsProp)
 					// console.log(prevChartConfig.yScale.domain())
 					yScale.domain(prevChartConfig.yScale.domain());
 				} else {
-					// console.log("HHHHHHHHHHHHHHHHHHHHHHHHH")
 					const [a, b] = yExtentsProp;
-					if (typeof a == "number" && typeof b == "number") {
-						yScale.domain([a, b]);
-					}
+					yScale.domain([a, b]);
+				}
+			} else if (isDefined(prevChartConfig) && prevChartConfig.yPanEnabled) {
+				if (isArraySize2AndNumber(prevChartConfig.originalYExtentsProp)) {
+					// do nothing
+				} else {
+					yScale.domain(prevChartConfig.yScale.domain());
+					yPanEnabled = true;
 				}
 			}
-			// console.log(yExtentsProp, yExtents);
+
 			return {
 				id,
-				origin: functor(origin)(availableWidth, availableHeight),
+				origin: functor(origin)(width, availableHeight),
 				padding,
 				originalYExtentsProp: yExtentsProp,
 				yExtents,
@@ -132,14 +153,6 @@ function setRange(scale, height, padding, flipYScale) {
 			: { top: padding, bottom: padding };
 
 		scale.range(flipYScale ? [top, height - bottom] : [height - bottom, top]);
-		if (scale.invert) {
-			const trueRange = flipYScale ? [0, height] : [height, 0];
-			const trueDomain = trueRange.map(scale.invert);
-			scale
-				.domain(trueDomain)
-				.range(trueRange);
-		}
-
 	}
 	return scale;
 }
@@ -150,7 +163,7 @@ function yDomainFromYExtents(yExtents, yScale, plotData) {
 
 	const allYValues = flattenDeep(yValues);
 	// console.log(allYValues)
-	const realYDomain =  (yScale.invert)
+	const realYDomain = (yScale.invert)
 		? extent(allYValues)
 		: set(allYValues).values();
 
@@ -158,18 +171,21 @@ function yDomainFromYExtents(yExtents, yScale, plotData) {
 }
 
 
-export function getChartConfigWithUpdatedYScales(chartConfig,
+export function getChartConfigWithUpdatedYScales(
+	chartConfig,
 	{ plotData, xAccessor, displayXAccessor, fullData },
 	xDomain,
 	dy,
-	chartsToPan) {
-
+	chartsToPan
+) {
 	const yDomains = chartConfig
 		.map(({ yExtentsCalculator, yExtents, yScale }) => {
 
 			const realYDomain = isDefined(yExtentsCalculator)
 				? yExtentsCalculator({ plotData, xDomain, xAccessor, displayXAccessor, fullData })
 				: yDomainFromYExtents(yExtents, yScale, plotData);
+
+			// console.log("yScale.domain() ->", yScale.domain())
 
 			const yDomainDY = isDefined(dy)
 				? yScale.range().map(each => each - dy).map(yScale.invert)
@@ -192,11 +208,15 @@ export function getChartConfigWithUpdatedYScales(chartConfig,
 				? another ? yDomainDY : prevYDomain
 				: realYDomain;
 
-			// console.error(id, yPan, yPanEnabled, another, domain, realYDomain, prevYDomain);
+			// console.log(id, yPan, yPanEnabled, another);
+			// console.log(domain, realYDomain, prevYDomain);
+			const newYScale = setRange(
+				yScale.copy().domain(domain), height, padding, flipYScale
+			);
 			return {
 				...config,
-				yScale: setRange(yScale.copy().domain(domain), height, padding, flipYScale),
-				realYDomain,
+				yScale: newYScale,
+				realYDomain: realYDomain,
 			};
 			// return { ...config, yScale: yScale.copy().domain(domain).range([height - padding, padding]) };
 		});

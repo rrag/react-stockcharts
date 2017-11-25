@@ -89,8 +89,24 @@ function helper(props, context) {
 	return {
 		transform: [0, axisLocation],
 		range: [0, width],
-		getScale: moreProps => moreProps.xScale,
+		getScale: getXScale,
 		bg: { x, y, h, w },
 	};
 }
+
+function getXScale(moreProps) {
+	const { xScale: scale, width } = moreProps;
+
+	if (scale.invert) {
+		const trueRange = [0, width];
+		const trueDomain = trueRange.map(scale.invert);
+		return scale.copy()
+			.domain(trueDomain)
+			.range(trueRange);
+	}
+
+	return scale;
+}
+
+
 export default XAxis;
