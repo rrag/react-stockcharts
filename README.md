@@ -64,7 +64,18 @@ npm install  --save react-stockcharts@next
 
 ### Demo
 
-A [demo](http://rrag.github.io/stockcharts-demo/) (closed source) built with react-stockcharts
+[Demo v1](http://rrag.github.io/stockcharts-demo/) (closed source) built with react-stockcharts
+
+[Demo v2](https://demo.reactstockcharts.org/) - Includes
+- Serverside calculation of indicators
+- Pan to load more
+- option of websocket/xhr to download data
+- Multiple chart types, including advanced types
+- Drawing objects
+- Indicators
+- Compare with another
+
+I am exploring options to license this, contact me if you are interested
 
 ### Contributing
 
