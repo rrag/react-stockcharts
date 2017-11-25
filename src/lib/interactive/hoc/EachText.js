@@ -122,7 +122,7 @@ class EachText extends Component {
 		</g>;
 	}
 }
-/* 
+/*
 export function getNewXY(moreProps, snapTo) {
 	const { xScale, xAccessor, plotData, mouseXY } = moreProps;
 
