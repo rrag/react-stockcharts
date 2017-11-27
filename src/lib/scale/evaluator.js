@@ -1,48 +1,80 @@
 "use strict";
 
 import {
-	first,
+	head,
 	last,
 	getClosestItemIndexes,
+	isDefined,
 	isNotDefined,
 	getLogger,
 } from "../utils";
 
 const log = getLogger("evaluator");
 
-function extentsWrapper(xAccessor, useWholeData, clamp, pointsPerPxThreshold, minPointsPerPxThreshold) {
-	function domain(data, inputDomain, xAccessor, initialXScale, currentPlotData, currentDomain) {
+function getNewEnd(fallbackEnd, xAccessor, initialXScale, start) {
+	const {
+		lastItem, lastItemX
+	} = fallbackEnd;
+	const lastItemXValue = xAccessor(lastItem);
+	const [rangeStart, rangeEnd] = initialXScale.range();
+
+	const newEnd = (rangeEnd - rangeStart) / (lastItemX - rangeStart) * (lastItemXValue - start) + start;
+	return newEnd;
+}
+
+function extentsWrapper(useWholeData, clamp, pointsPerPxThreshold, minPointsPerPxThreshold) {
+	function filterData(
+		data, inputDomain, xAccessor, initialXScale,
+		{ currentPlotData, currentDomain, fallbackStart, fallbackEnd } = {}
+	) {
 		if (useWholeData) {
 			return { plotData: data, domain: inputDomain };
 		}
 
-		const left = first(inputDomain);
-		const right = last(inputDomain);
-
-		const filteredData = getFilteredResponse(data, left, right, xAccessor);
+		let left = head(inputDomain);
+		let right = last(inputDomain);
 		let clampedDomain = inputDomain;
+
+		let filteredData = getFilteredResponse(data, left, right, xAccessor);
+
+		if (filteredData.length === 1 && isDefined(fallbackStart)) {
+			left = fallbackStart;
+			right = getNewEnd(fallbackEnd, xAccessor, initialXScale, left);
+
+			clampedDomain = [
+				left,
+				right,
+			];
+			filteredData = getFilteredResponse(data, left, right, xAccessor);
+		}
+
 		if (clamp === "left" || clamp === "both" || clamp === true) {
-			clampedDomain = [Math.max(left, xAccessor(first(data))), clampedDomain[1]];
+			clampedDomain = [
+				Math.max(left, xAccessor(head(data))),
+				clampedDomain[1]
+			];
 		}
 		if (clamp === "right" || clamp === "both" || clamp === true) {
-			clampedDomain = [clampedDomain[0], Math.min(right, xAccessor(last(data)))];
+			clampedDomain = [
+				clampedDomain[0],
+				Math.min(right, xAccessor(last(data)))
+			];
 		}
 
-		const realInputDomain = xAccessor === xAccessor
-			? clampedDomain
-			: [xAccessor(first(filteredData)), xAccessor(last(filteredData))];
+		const realInputDomain = clampedDomain;
+		// [xAccessor(head(filteredData)), xAccessor(last(filteredData))];
 
 		const xScale = initialXScale.copy().domain(realInputDomain);
 
 		const width = Math.floor(xScale(xAccessor(last(filteredData)))
-			- xScale(xAccessor(first(filteredData))));
+			- xScale(xAccessor(head(filteredData))));
 
 		let plotData, domain;
 
-		const chartWidth = last(xScale.range()) - first(xScale.range());
+		const chartWidth = last(xScale.range()) - head(xScale.range());
 
-		log(`Trying to show ${filteredData.length} in ${width}px,`
-			+ ` I can show up to ${showMax(width, pointsPerPxThreshold)} in that width. `
+		log(`Trying to show ${filteredData.length} points in ${width}px,`
+			+ ` I can show up to ${showMaxThreshold(width, pointsPerPxThreshold) - 1} points in that width. `
 			+ `Also FYI the entire chart width is ${chartWidth}px and pointsPerPxThreshold is ${pointsPerPxThreshold}`);
 
 		if (canShowTheseManyPeriods(width, filteredData.length, pointsPerPxThreshold, minPointsPerPxThreshold)) {
@@ -50,19 +82,35 @@ function extentsWrapper(xAccessor, useWholeData, clamp, pointsPerPxThreshold, mi
 			domain = realInputDomain;
 			log("AND IT WORKED");
 		} else {
-			plotData = currentPlotData || filteredData.slice(filteredData.length - showMax(width, pointsPerPxThreshold));
-			domain = currentDomain || [xAccessor(first(plotData)), xAccessor(last(plotData))];
+			if (chartWidth > showMaxThreshold(width, pointsPerPxThreshold) && isDefined(fallbackEnd)) {
+				plotData = filteredData;
+				const newEnd = getNewEnd(fallbackEnd, xAccessor, initialXScale, head(realInputDomain));
+				domain = [
+					head(realInputDomain),
+					newEnd
+				];
+				// plotData = currentPlotData || filteredData.slice(filteredData.length - showMax(width, pointsPerPxThreshold));
+				// domain = currentDomain || [xAccessor(head(plotData)), xAccessor(last(plotData))];
 
-			const newXScale = xScale.copy().domain(domain);
-			const newWidth = Math.floor(newXScale(xAccessor(last(plotData)))
-				- newXScale(xAccessor(first(plotData))));
+				const newXScale = xScale.copy().domain(domain);
+				const newWidth = Math.floor(newXScale(xAccessor(last(plotData)))
+					- newXScale(xAccessor(head(plotData))));
 
-			log(`and ouch, that is too much, so instead showing ${plotData.length} in ${newWidth}px`);
+				log(`and ouch, that is too much, so instead showing ${plotData.length} in ${newWidth}px`);
+			} else {
+				plotData = currentPlotData || filteredData.slice(filteredData.length - showMax(width, pointsPerPxThreshold));
+				domain = currentDomain || [xAccessor(head(plotData)), xAccessor(last(plotData))];
+
+				const newXScale = xScale.copy().domain(domain);
+				const newWidth = Math.floor(newXScale(xAccessor(last(plotData)))
+					- newXScale(xAccessor(head(plotData))));
+
+				log(`and ouch, that is too much, so instead showing ${plotData.length} in ${newWidth}px`);
+			}
 		}
-
 		return { plotData, domain };
 	}
-	return domain;
+	return { filterData };
 }
 
 function canShowTheseManyPeriods(width, arrayLength, maxThreshold, minThreshold) {
@@ -92,11 +140,10 @@ function getFilteredResponse(data, left, right, xAccessor) {
 }
 
 export default function({
-	xAccessor, xScale, useWholeData, clamp,
+	xScale, useWholeData, clamp,
 	pointsPerPxThreshold, minPointsPerPxThreshold,
 }) {
 	return extentsWrapper(
-		xAccessor,
 		useWholeData || isNotDefined(xScale.invert),
 		clamp,
 		pointsPerPxThreshold,

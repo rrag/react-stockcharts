@@ -2,17 +2,17 @@ function getExternalAssets(mode) {
 	switch (mode) {
 	case "dev":
 	case "watch": {
-		return `<script src="react/dist/react.js"></script>
-		<script src="react-dom/dist/react-dom.js"></script>
+		return `<script src="react/umd/react.development.js"></script>
+		<script src="react-dom/umd/react-dom.development.js"></script>
 
 		<link href="bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 		<link href="prismjs/themes/prism.css" rel="stylesheet">`;
 	}
 	default:
-		return `<script src="//cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react.min.js"></script>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/react/15.3.1/react-dom.min.js"></script>
+		return `<script src="//cdnjs.cloudflare.com/ajax/libs/react/16.1.1/umd/react.production.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/react-dom/16.1.1/cjs/react-dom.production.min.js"></script>
 
-		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.css" rel="stylesheet">
 		<script>
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
