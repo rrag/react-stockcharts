@@ -10,7 +10,7 @@ function getExternalAssets(mode) {
 	}
 	default:
 		return `<script src="//cdnjs.cloudflare.com/ajax/libs/react/16.1.1/umd/react.production.min.js"></script>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/react-dom/16.1.1/cjs/react-dom.production.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/react-dom/16.1.1/umd/react-dom.production.min.js"></script>
 
 		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.css" rel="stylesheet">
