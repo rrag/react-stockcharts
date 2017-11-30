@@ -8,7 +8,7 @@ import { drawOnCanvas, renderSVG } from "./EdgeCoordinateV3";
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
 
-import { first, last, isDefined, functor, strokeDashTypes } from "../utils";
+import { first, last, isDefined, functor, noop, strokeDashTypes } from "../utils";
 
 class EdgeIndicator extends Component {
 	constructor(props) {
@@ -85,6 +85,10 @@ EdgeIndicator.defaultProps = {
 	hideLine: false,
 	fill: "#8a8a8a",
 	opacity: 1,
+
+	stroke: noop,
+	strokeOpacity: 1,
+	strokeWidth: 3,
 	lineStroke: "#000000",
 	lineOpacity: 0.3,
 	lineStrokeDasharray: "ShortDash",
@@ -111,8 +115,9 @@ function getEdge(props, moreProps, item) {
 
 	const { yAccessor, fill, textFill, rectHeight, rectWidth, arrowWidth } = props;
 	const { fontFamily, fontSize } = props;
+	const { stroke } = props;
 
-	const { xScale, chartConfig: { yScale }, xAccessor } = moreProps;
+	const { xScale, chartConfig: { yScale }, xAccessor, width } = moreProps;
 
 	const yValue = yAccessor(item),
 		xValue = xAccessor(item);
@@ -120,7 +125,7 @@ function getEdge(props, moreProps, item) {
 	const x1 = Math.round(xScale(xValue)),
 		y1 = Math.round(yScale(yValue));
 
-	const [left, right] = xScale.range();
+	const [left, right] = [0, width];
 	const edgeX = edgeAt === "left"
 		? left - yAxisPad
 		: right + yAxisPad;
@@ -133,6 +138,7 @@ function getEdge(props, moreProps, item) {
 		orient,
 		edgeAt: edgeX,
 		fill: functor(fill)(item),
+		stroke: functor(stroke)(item),
 		fontFamily, fontSize,
 		textFill: functor(textFill)(item),
 		rectHeight, rectWidth, arrowWidth,

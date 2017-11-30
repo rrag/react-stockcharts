@@ -41,6 +41,17 @@ const macdAppearance = {
 	},
 };
 
+const mouseEdgeAppearance = {
+	textFill: "#542605",
+	stroke: "#05233B",
+	strokeOpacity: 1,
+	strokeWidth: 3,
+	arrowWidth: 5,
+	fill: "#BCDEFA",
+};
+
+
+
 class CandleStickChartWithMACDIndicator extends React.Component {
 	render() {
 		const { type, data: initialData, width, ratio } = this.props;
@@ -106,7 +117,9 @@ class CandleStickChartWithMACDIndicator extends React.Component {
 					<MouseCoordinateY
 						at="right"
 						orient="right"
-						displayFormat={format(".2f")} />
+						displayFormat={format(".2f")}
+						{...mouseEdgeAppearance}
+					/>
 
 					<CandlestickSeries />
 					<LineSeries yAccessor={ema26.accessor()} stroke={ema26.stroke()}/>
@@ -116,7 +129,14 @@ class CandleStickChartWithMACDIndicator extends React.Component {
 					<CurrentCoordinate yAccessor={ema12.accessor()} fill={ema12.stroke()} />
 
 					<EdgeIndicator itemType="last" orient="right" edgeAt="right"
-						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"}/>
+						yAccessor={d => d.close}
+						fill={d => d.close > d.open ? "#A2F5BF" : "#F9ACAA"}
+						stroke={d => d.close > d.open ? "#0B4228" : "#6A1B19"}
+						textFill={d => d.close > d.open ? "#0B4228" : "#420806"}
+						strokeOpacity={1}
+						strokeWidth={3}
+						arrowWidth={2}
+					/>
 
 					<OHLCTooltip origin={[-40, 0]}/>
 					<MovingAverageTooltip
@@ -147,7 +167,9 @@ class CandleStickChartWithMACDIndicator extends React.Component {
 					<MouseCoordinateY
 						at="left"
 						orient="left"
-						displayFormat={format(".4s")} />
+						displayFormat={format(".4s")}
+						{...mouseEdgeAppearance}
+					/>
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
 					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
@@ -162,11 +184,16 @@ class CandleStickChartWithMACDIndicator extends React.Component {
 					<MouseCoordinateX
 						at="bottom"
 						orient="bottom"
-						displayFormat={timeFormat("%Y-%m-%d")} />
+						displayFormat={timeFormat("%Y-%m-%d")}
+						rectRadius={5}
+						{...mouseEdgeAppearance}
+					/>
 					<MouseCoordinateY
 						at="right"
 						orient="right"
-						displayFormat={format(".2f")} />
+						displayFormat={format(".2f")}
+						{...mouseEdgeAppearance}
+					/>
 
 					<MACDSeries yAccessor={d => d.macd}
 						{...macdAppearance} />

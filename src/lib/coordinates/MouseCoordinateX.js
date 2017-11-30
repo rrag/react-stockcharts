@@ -72,6 +72,12 @@ MouseCoordinateX.defaultProps = {
 	yAxisPad: 0,
 	rectWidth: 80,
 	rectHeight: 20,
+
+	// rectRadius: 5,
+	// stroke: "#684F1D",
+	strokeOpacity: 1,
+	strokeWidth: 1,
+
 	orient: "bottom",
 	at: "bottom",
 
@@ -92,10 +98,11 @@ function helper(props, moreProps) {
 
 	const { customX } = props;
 
-	const { orient, at, rectWidth, rectHeight } = props;
+	const { orient, at } = props;
+	const { stroke, strokeOpacity, strokeWidth } = props;
+	const { rectRadius, rectWidth, rectHeight } = props;
 	const { fill, opacity, fontFamily, fontSize, textFill } = props;
 
-	// console.log(x)
 	const edgeAt = (at === "bottom")
 		? height
 		: 0;
@@ -117,8 +124,10 @@ function helper(props, moreProps) {
 		edgeAt,
 		hideLine,
 		fill, opacity, fontFamily, fontSize, textFill,
+		stroke, strokeOpacity, strokeWidth,
 		rectWidth,
 		rectHeight,
+		rectRadius,
 		arrowWidth: 0,
 		x1: x,
 		x2: x,

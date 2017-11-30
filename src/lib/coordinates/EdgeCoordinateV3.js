@@ -58,7 +58,8 @@ export function renderSVG(props) {
 function helper(props) {
 	const { coordinate: displayCoordinate, show, type, orient, edgeAt, hideLine, lineStrokeDasharray } = props;
 	const { fill, opacity, fontFamily, fontSize, textFill, lineStroke, lineOpacity } = props;
-	const { arrowWidth, rectWidth, rectHeight } = props;
+	const { stroke, strokeOpacity, strokeWidth } = props;
+	const { arrowWidth, rectWidth, rectHeight, rectRadius } = props;
 	const { x1, y1, x2, y2, dx } = props;
 
 	if (!show) return null;
@@ -82,7 +83,7 @@ function helper(props) {
 		}
 
 		coordinateBase = {
-			edgeXRect, edgeYRect, rectHeight, rectWidth, fill, opacity, arrowWidth
+			edgeXRect, edgeYRect, rectHeight, rectWidth, rectRadius, fill, opacity, arrowWidth, stroke, strokeOpacity, strokeWidth
 		};
 		coordinate = {
 			edgeXText, edgeYText, textAnchor, fontFamily, fontSize, textFill, displayCoordinate
@@ -113,9 +114,13 @@ export function drawOnCanvas(ctx, props) {
 	if (edge === null) return;
 
 	if (isDefined(edge.coordinateBase)) {
-		const { rectWidth, rectHeight, arrowWidth } = edge.coordinateBase;
+		const { rectWidth, rectHeight, rectRadius, arrowWidth } = edge.coordinateBase;
 
 		ctx.fillStyle = hexToRGBA(edge.coordinateBase.fill, edge.coordinateBase.opacity);
+		if (isDefined(edge.coordinateBase.stroke)) {
+			ctx.strokeStyle = hexToRGBA(edge.coordinateBase.stroke, edge.coordinateBase.strokeOpacity);
+			ctx.lineWidth = edge.coordinateBase.strokeWidth;
+		}
 
 		let x = edge.coordinateBase.edgeXRect;
 		const y = edge.coordinateBase.edgeYRect;
@@ -139,9 +144,17 @@ export function drawOnCanvas(ctx, props) {
 			ctx.lineTo(x, y + rectHeight);
 			ctx.closePath();
 		} else {
-			ctx.rect(x, y, rectWidth, rectHeight);
+			if (rectRadius) {
+				roundRect(ctx, x, y, rectWidth, rectHeight, 5)
+			} else {
+				ctx.rect(x, y, rectWidth, rectHeight);
+			}
 		}
 		ctx.fill();
+
+		if (isDefined(edge.coordinateBase.stroke)) {
+			ctx.stroke();
+		}
 
 		ctx.fillStyle = edge.coordinate.textFill;
 		ctx.textAlign = edge.coordinate.textAnchor === "middle" ? "center" : edge.coordinate.textAnchor;
@@ -152,12 +165,26 @@ export function drawOnCanvas(ctx, props) {
 		const dashArray = getStrokeDasharray(edge.line.strokeDasharray).split(",").map(d => +d);
 		ctx.setLineDash(dashArray);
 		ctx.strokeStyle = hexToRGBA(edge.line.stroke, edge.line.opacity);
-
+		ctx.lineWidth = 1;
 		ctx.beginPath();
 		ctx.moveTo(edge.line.x1, edge.line.y1);
 		ctx.lineTo(edge.line.x2, edge.line.y2);
 		ctx.stroke();
 	}
+}
+
+function roundRect(ctx, x, y, width, height, radius) {
+	ctx.beginPath();
+	ctx.moveTo(x + radius, y);
+	ctx.lineTo(x + width - radius, y);
+	ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+	ctx.lineTo(x + width, y + height - radius);
+	ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+	ctx.lineTo(x + radius, y + height);
+	ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+	ctx.lineTo(x, y + radius);
+	ctx.quadraticCurveTo(x, y, x + radius, y);
+	ctx.closePath();
 }
 
 // export default EdgeCoordinate;

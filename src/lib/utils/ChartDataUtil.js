@@ -68,11 +68,12 @@ export function getNewChartConfig(innerDimension, children, existingChartConfig 
 				origin,
 				padding,
 				yExtents: yExtentsProp,
-				yScale,
+				yScale: yScaleProp,
 				flipYScale,
 				yExtentsCalculator
 			} = chartProps;
 
+			const yScale = yScaleProp.copy();
 			const {
 				width, height, availableHeight
 			} = getDimensions(innerDimension, chartProps);
@@ -223,6 +224,7 @@ export function getChartConfigWithUpdatedYScales(
 
 	const updatedChartConfig = combine(chartConfig, yDomains);
 	// console.error(yDomains, dy, chartsToPan, updatedChartConfig.map(d => d.yScale.domain()));
+	// console.log(updatedChartConfig.map(d => ({ id: d.id, domain: d.yScale.domain() })))
 
 	return updatedChartConfig;
 }

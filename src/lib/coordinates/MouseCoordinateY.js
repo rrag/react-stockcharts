@@ -66,6 +66,10 @@ MouseCoordinateY.defaultProps = {
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 13,
 	textFill: "#FFFFFF",
+
+	// stroke: "#684F1D",
+	strokeOpacity: 1,
+	strokeWidth: 1,
 };
 
 function helper(props, moreProps) {
@@ -78,6 +82,7 @@ function helper(props, moreProps) {
 
 	const { orient, at, rectWidth, rectHeight, displayFormat, dx } = props;
 	const { fill, opacity, fontFamily, fontSize, textFill, arrowWidth } = props;
+	const { stroke, strokeOpacity, strokeWidth } = props;
 
 	const x1 = 0, x2 = width;
 	const edgeAt = (at === "right")
@@ -97,6 +102,7 @@ function helper(props, moreProps) {
 		edgeAt,
 		hideLine,
 		fill, opacity, fontFamily, fontSize, textFill,
+		stroke, strokeOpacity, strokeWidth,
 		rectWidth,
 		rectHeight,
 		arrowWidth,
