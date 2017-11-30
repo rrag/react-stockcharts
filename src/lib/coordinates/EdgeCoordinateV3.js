@@ -145,7 +145,7 @@ export function drawOnCanvas(ctx, props) {
 			ctx.closePath();
 		} else {
 			if (rectRadius) {
-				roundRect(ctx, x, y, rectWidth, rectHeight, 5)
+				roundRect(ctx, x, y, rectWidth, rectHeight, 5);
 			} else {
 				ctx.rect(x, y, rectWidth, rectHeight);
 			}

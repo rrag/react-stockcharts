@@ -227,7 +227,9 @@ class EachFibRetracement extends Component {
 					/>
 					<Text
 						selected={selected}
-						xyProvider={xyProvider}
+						/* eslint-disable */
+						xyProvider={xyProvider} 
+						/* eslint-enable */
 						fontFamily={fontFamily}
 						fontSize={fontSize}
 						fill={fontFill}>{text}</Text>
