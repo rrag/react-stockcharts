@@ -243,7 +243,7 @@ function calculateState(props) {
 			const prev = data[i - 1];
 			const curr = data[i];
 			if (inputXAccesor(prev) > inputXAccesor(curr)) {
-				throw new Error("'data' is not sorted on 'xAccessor', send 'data' sorted in assending order of 'xAccessor'");
+				throw new Error("'data' is not sorted on 'xAccessor', send 'data' sorted in ascending order of 'xAccessor'");
 			}
 		}
 	}
