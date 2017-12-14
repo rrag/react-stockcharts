@@ -121,6 +121,7 @@ function tickHelper(props, scale) {
 		orient, innerTickSize, tickFormat, tickPadding,
 		tickLabelFill, tickStrokeWidth, tickStrokeDasharray,
 		fontSize, fontFamily, showTicks, flexTicks,
+		showTickLabel,
 	} = props;
 	const {
 		ticks: tickArguments, tickValues: tickValuesProp,
@@ -232,7 +233,8 @@ function tickHelper(props, scale) {
 		textAnchor,
 		fontSize,
 		fontFamily,
-		format
+		format,
+		showTickLabel,
 	};
 }
 
@@ -371,7 +373,7 @@ function axisTicksSVG(props, scale) {
 function drawTicks(ctx, result) {
 
 	const { tickStroke, tickStrokeOpacity, tickLabelFill } = result;
-	const { textAnchor, fontSize, fontFamily, ticks } = result;
+	const { textAnchor, fontSize, fontFamily, ticks, showTickLabel } = result;
 
 	ctx.strokeStyle = hexToRGBA(tickStroke, tickStrokeOpacity);
 
@@ -386,9 +388,11 @@ function drawTicks(ctx, result) {
 	ctx.fillStyle = tickLabelFill;
 	ctx.textAlign = textAnchor === "middle" ? "center" : textAnchor;
 
-	ticks.forEach((tick) => {
-		drawEachTickLabel(ctx, tick, result);
-	});
+	if (showTickLabel) {
+		ticks.forEach((tick) => {
+			drawEachTickLabel(ctx, tick, result);
+		});
+	}
 }
 
 function drawEachTick(ctx, tick, result) {

@@ -45,8 +45,8 @@ YAxis.propTypes = {
 };
 
 YAxis.defaultProps = {
-	showGrid: false,
 	showTicks: true,
+	showTickLabel: true,
 	showDomain: true,
 	className: "react-stockcharts-y-axis",
 	ticks: 10,
