@@ -31,7 +31,7 @@ class AreaOnlySeries extends Component {
 		for (let i = 0; i < plotData.length; i++) {
 			const d = plotData[i];
 			if (defined(yAccessor(d), i)) {
-				const [x, y1, y0] = [xScale(xAccessor(d)), yScale(yAccessor(d)), newBase(yScale, d)];
+				const [x, y1, y0] = [xScale(xAccessor(d)), yScale(yAccessor(d)), newBase(yScale, d, moreProps)];
 
 				points0.push([x, y0]);
 				points1.push([x, y1]);
@@ -49,11 +49,12 @@ class AreaOnlySeries extends Component {
 
 		const { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
 
+		console.log("DDD", base)
 		const newBase = functor(base);
 		const areaSeries = d3Area()
 			.defined(d => defined(yAccessor(d)))
 			.x((d) => xScale(xAccessor(d)))
-			.y0(newBase.bind(null, yScale))
+			.y0((d) => newBase(yScale, d, moreProps))
 			.y1((d) => yScale(yAccessor(d)));
 
 		const d = areaSeries(plotData);
@@ -89,7 +90,7 @@ AreaOnlySeries.defaultProps = {
 	fill: "none",
 	opacity: 1,
 	defined: d => !isNaN(d),
-	base: (yScale/* , d*/) => first(yScale.range()),
+	base: (yScale /* , d, moreProps */) => first(yScale.range()),
 };
 
 
