@@ -76,10 +76,11 @@ function helper(props) {
 			edgeXText = dx + ((orient === "right") ? edgeAt + (rectWidth / 2) : edgeAt - (rectWidth / 2));
 			edgeYText = y1;
 		} else {
+			const dy = (orient === "bottom") ? strokeWidth - 1 : - strokeWidth + 1;
 			edgeXRect = x1 - (rectWidth / 2);
-			edgeYRect = (orient === "bottom") ? edgeAt : edgeAt - rectHeight;
+			edgeYRect = ((orient === "bottom") ? edgeAt : edgeAt - rectHeight) + dy;
 			edgeXText = x1;
-			edgeYText = (orient === "bottom") ? edgeAt + (rectHeight / 2) : edgeAt - (rectHeight / 2);
+			edgeYText = ((orient === "bottom") ? edgeAt + (rectHeight / 2) : edgeAt - (rectHeight / 2)) + dy;
 		}
 
 		coordinateBase = {
@@ -107,7 +108,7 @@ export function drawOnCanvas(ctx, props) {
 
 	ctx.font = `${fontSize}px ${fontFamily}`;
 	ctx.textBaseline = "middle";
-	const width = ctx.measureText(props.coordinate).width + 10;
+	const width = Math.round(ctx.measureText(props.coordinate).width + 10);
 
 	const edge = helper({ ...props, rectWidth: width });
 
@@ -144,8 +145,9 @@ export function drawOnCanvas(ctx, props) {
 			ctx.lineTo(x, y + rectHeight);
 			ctx.closePath();
 		} else {
+			// console.error(x, y, rectWidth, rectHeight)
 			if (rectRadius) {
-				roundRect(ctx, x, y, rectWidth, rectHeight, 5);
+				roundRect(ctx, x, y, rectWidth, rectHeight, 3);
 			} else {
 				ctx.rect(x, y, rectWidth, rectHeight);
 			}
