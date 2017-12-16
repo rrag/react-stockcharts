@@ -13,7 +13,7 @@ import {
 	noop
 } from "./utils";
 import { getCurrentCharts } from "./utils/ChartDataUtil";
-
+// import { clearTimeout, setTimeout } from "timers";
 
 class EventCapture extends Component {
 	constructor(props) {
@@ -34,6 +34,9 @@ class EventCapture extends Component {
 		this.handleRightClick = this.handleRightClick.bind(this);
 		this.handleDrag = this.handleDrag.bind(this);
 		this.handleDragEnd = this.handleDragEnd.bind(this);
+
+		this.shouldPan = this.shouldPan.bind(this);
+		this.canPan = this.canPan.bind(this);
 
 		this.setCursorClass = this.setCursorClass.bind(this);
 		this.saveNode = this.saveNode.bind(this);
@@ -94,15 +97,61 @@ class EventCapture extends Component {
 	}
 	handleWheel(e) {
 		const { zoom, onZoom } = this.props;
+		const { panInProgress } = this.state;
 
-		if (zoom && this.focus && e.deltaY !== 0) {
-			e.preventDefault();
+		const yZoom = Math.abs(e.deltaY) > Math.abs(e.deltaX) && Math.abs(e.deltaY) > 0;
+		// const xPan = Math.abs(e.deltaY) < Math.abs(e.deltaX) && Math.abs(e.deltaX) > 0;
+		const mouseXY = mousePosition(e);
+		e.preventDefault();
 
-			const newPos = mousePosition(e);
+		if (zoom && this.focus && yZoom && !panInProgress) {
 			const zoomDir = e.deltaY > 0 ? 1 : -1;
 
-			onZoom(zoomDir, newPos, e);
+			onZoom(zoomDir, mouseXY, e);
+		} else if (this.focus) {
+			if (this.shouldPan()) {
+				// console.log("Do pan now...")
+				// pan already in progress
+				const {
+					panStartXScale,
+					chartsToPan
+				} = this.state.panStart;
+				this.lastNewPos = mouseXY;
+				this.panHappened = true;
+
+				this.dx += e.deltaX;
+				this.dy += e.deltaY;
+				const dxdy = { dx: this.dx, dy: this.dy };
+
+				this.props.onPan(mouseXY, panStartXScale, dxdy, chartsToPan, e);
+			} else {
+				// console.log("Pan start...")
+				// pan start
+
+				const { xScale, chartConfig } = this.props;
+				const currentCharts = getCurrentCharts(chartConfig, mouseXY);
+
+				this.dx = 0;
+				this.dy = 0;
+				this.setState({
+					panInProgress: true,
+					panStart: {
+						panStartXScale: xScale,
+						panOrigin: mouseXY,
+						chartsToPan: currentCharts
+					},
+				});
+			}
+			this.queuePanEnd();
 		}
+	}
+	queuePanEnd() {
+		if (isDefined(this.panEndTimeout)) {
+			clearTimeout(this.panEndTimeout);
+		}
+		this.panEndTimeout = setTimeout(() => {
+			this.handlePanEnd();
+		}, 100);
 	}
 	handleMouseMove() {
 		const e = d3Event;
@@ -205,12 +254,34 @@ class EventCapture extends Component {
 		});
 		this.mouseInteraction = true;
 	}
+	canPan() {
+		const { getAllPanConditions } = this.props;
+		const { pan: initialPanEnabled } = this.props;
+
+		const {
+			panEnabled,
+			draggable: somethingSelected
+		} = getAllPanConditions()
+			.reduce((returnObj, a) => {
+				return {
+					draggable: returnObj.draggable || a.draggable,
+					panEnabled: returnObj.panEnabled && a.panEnabled,
+				};
+			}, {
+				draggable: false,
+				panEnabled: initialPanEnabled,
+			});
+
+		return {
+			panEnabled,
+			somethingSelected
+		};
+	}
 	handleMouseDown(e) {
 		if (e.button !== 0) {
 			return;
 		}
-		const { pan: initialPanEnabled, xScale, chartConfig, onMouseDown } = this.props;
-		const { getAllPanConditions } = this.props;
+		const { xScale, chartConfig, onMouseDown } = this.props;
 
 		this.panHappened = false;
 		this.dragHappened = false;
@@ -223,19 +294,8 @@ class EventCapture extends Component {
 			const mouseXY = mousePosition(e);
 			const currentCharts = getCurrentCharts(chartConfig, mouseXY);
 			const {
-				panEnabled,
-				draggable: somethingSelected
-			} = getAllPanConditions()
-				.reduce((returnObj, a) => {
-					return {
-						draggable: returnObj.draggable || a.draggable,
-						panEnabled: returnObj.panEnabled && a.panEnabled,
-					};
-				}, {
-					draggable: false,
-					panEnabled: initialPanEnabled,
-				});
-
+				panEnabled, somethingSelected
+			} = this.canPan();
 			const pan = panEnabled && !somethingSelected;
 
 			if (pan) {
@@ -273,25 +333,34 @@ class EventCapture extends Component {
 		}
 		e.preventDefault();
 	}
+	shouldPan() {
+		const { pan: panEnabled, onPan } = this.props;
+		return panEnabled
+			&& onPan
+			&& isDefined(this.state.panStart);
+	}
 	handlePan() {
 		const e = d3Event;
 
-		const { pan: panEnabled, onPan } = this.props;
-
-		if (panEnabled
-				&& onPan
-				&& isDefined(this.state.panStart)) {
-
+		if (this.shouldPan()) {
 			this.panHappened = true;
 
 			const { panStartXScale, panOrigin, chartsToPan } = this.state.panStart;
 
-			const newPos = this.mouseInteraction
+			const mouseXY = this.mouseInteraction
 				? mouse(this.node)
 				: touches(this.node)[0];
 
-			this.lastNewPos = newPos;
-			onPan(newPos, panStartXScale, panOrigin, chartsToPan, e);
+			this.lastNewPos = mouseXY;
+			const dx = mouseXY[0] - panOrigin[0];
+			const dy = mouseXY[1] - panOrigin[1];
+
+			this.dx = dx;
+			this.dy = dy;
+
+			this.props.onPan(
+				mouseXY, panStartXScale, { dx, dy }, chartsToPan, e
+			);
 		}
 	}
 	handlePanEnd() {
@@ -299,7 +368,7 @@ class EventCapture extends Component {
 		const { pan: panEnabled, onPanEnd } = this.props;
 
 		if (isDefined(this.state.panStart)) {
-			const { panStartXScale, panOrigin, chartsToPan } = this.state.panStart;
+			const { panStartXScale, chartsToPan } = this.state.panStart;
 
 			const win = d3Window(this.node);
 			select(win)
@@ -312,8 +381,12 @@ class EventCapture extends Component {
 					// && !this.contextMenuClicked
 					&& panEnabled
 					&& onPanEnd) {
+				const { dx, dy } = this;
 
-				onPanEnd(this.lastNewPos, panStartXScale, panOrigin, chartsToPan, e);
+				// console.log(dx, dy)
+				delete this.dx;
+				delete this.dy;
+				onPanEnd(this.lastNewPos, panStartXScale, { dx, dy }, chartsToPan, e);
 			}
 
 			this.setState({
