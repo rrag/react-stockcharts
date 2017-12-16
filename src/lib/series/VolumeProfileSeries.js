@@ -76,7 +76,7 @@ VolumeProfileSeries.defaultProps = {
 	absoluteChange: d => d.absoluteChange,
 	bySession: false,
 	/* eslint-disable no-unused-vars */
-	sessionStart: ({ d, i, plotData }) => d.idx.startOfMonth,
+	sessionStart: ({ d, i, plotData }) => i > 0 && plotData[i - 1].date.getMonth() !== d.date.getMonth(),
 	/* eslint-enable no-unused-vars */
 	orient: "left",
 	fill: ({ type }) => type === "up" ? "#6BA583" : "#FF0000",
@@ -87,7 +87,7 @@ VolumeProfileSeries.defaultProps = {
 	showSessionBackground: false,
 	sessionBackGround: "#4682B4",
 	sessionBackGroundOpacity: 0.3,
-	partialStartOK: false,
+	partialStartOK: true,
 	partialEndOK: true,
 };
 
@@ -101,7 +101,7 @@ function helper(props, moreProps, xAccessor, width) {
 		.discardTillStart(!partialStartOK)
 		.discardTillEnd(!partialEndOK)
 		.accumulateTill((d, i) => {
-			return sessionStart({ d, i, plotData });
+			return sessionStart({ d, i, ...moreProps });
 		})
 		.accumulator(identity);
 
