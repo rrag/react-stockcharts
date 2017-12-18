@@ -49,7 +49,6 @@ class AreaOnlySeries extends Component {
 
 		const { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
 
-		console.log("DDD", base)
 		const newBase = functor(base);
 		const areaSeries = d3Area()
 			.defined(d => defined(yAccessor(d)))

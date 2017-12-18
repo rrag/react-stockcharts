@@ -123,7 +123,7 @@ function calculateFullData(props) {
 	return {
 		xAccessor,
 		displayXAccessor: displayXAccessor || xAccessor,
-		xScale,
+		xScale: xScale.copy(),
 		fullData,
 		filterData
 	};
