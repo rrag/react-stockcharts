@@ -69,6 +69,9 @@ class EventCapture extends Component {
 			select(this.node)
 				.on(MOUSEENTER, null)
 				.on(MOUSELEAVE, null);
+			const win = d3Window(this.node);
+			select(win)
+				.on(MOUSEMOVE, null);
 		}
 	}
 	handleEnter() {
