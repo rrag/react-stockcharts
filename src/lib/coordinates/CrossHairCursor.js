@@ -1,11 +1,3 @@
-"use strict";
-
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import GenericComponent, { getMouseCanvas } from "../GenericComponent";
-
-import { hexToRGBA, isDefined, isNotDefined, strokeDashTypes, getStrokeDasharray } from "../utils";
-
 class CrossHairCursor extends Component {
 	constructor(props) {
 		super(props);
@@ -42,7 +34,13 @@ class CrossHairCursor extends Component {
 		}
 	}
 	renderSVG(moreProps) {
-		const { className } = this.props;
+	    // TODO: if "expandStrokeWidthLineX" is true, 
+	    // then "stroke-width" of the x-axis-crosshair should expand to its XAxis-tickSize (?).
+	    // For example, on 15 minute chart, the stroke-width of the x-axis-crosshair should be something like "15".
+	    // So the width of the x-axis-crosshair should be the same as the width of the candle. How can I do that?
+
+	    
+		const { className, expandStrokeWidthLineX } = this.props;
 		const lines = helper(this.props, moreProps);
 
 		if (isNotDefined(lines)) return null;
@@ -52,6 +50,7 @@ class CrossHairCursor extends Component {
 				{lines.map(({ strokeDasharray, ...rest }, idx) =>
 					<line
 						key={idx}
+//				        stroke-width={strokeWidthLineX}
 						strokeDasharray={getStrokeDasharray(strokeDasharray)}
 						{...rest} />)}
 			</g>
@@ -71,6 +70,8 @@ class CrossHairCursor extends Component {
 CrossHairCursor.propTypes = {
 	className: PropTypes.string,
 	strokeDasharray: PropTypes.oneOf(strokeDashTypes),
+	disableLineY: PropTypes.bool,
+	opacity: PropTypes.number,
 };
 
 CrossHairCursor.contextTypes = {
@@ -92,9 +93,11 @@ function customX(props, moreProps) {
 
 CrossHairCursor.defaultProps = {
 	stroke: "#000000",
+	expandStrokeWidthLineX: false,
 	opacity: 0.3,
 	strokeDasharray: "ShortDash",
 	snapX: true,
+	disableLineY: false,
 	customX,
 };
 
@@ -103,7 +106,7 @@ function helper(props, moreProps) {
 		mouseXY, currentItem, show, height, width
 	} = moreProps;
 
-	const { customX, stroke, opacity, strokeDasharray } = props;
+	const { customX, stroke, opacity, strokeDasharray, disableLineY } = props;
 
 	if (!show || isNotDefined(currentItem)) return null;
 
@@ -123,7 +126,7 @@ function helper(props, moreProps) {
 		y2: height,
 		stroke, strokeDasharray, opacity,
 	};
-	return [line1, line2];
+	return disableLineY ? [line2] : [line1, line2];
 }
 
 export default CrossHairCursor;
