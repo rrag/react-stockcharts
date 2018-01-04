@@ -9,72 +9,72 @@ import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 import { functor } from "../utils";
 
 class SingleTooltip extends Component {
-    
-    constructor(props) {
-        super(props);
-        this.handleClick = this.handleClick.bind(this);
+
+    constructor( props ) {
+        super( props );
+        this.handleClick = this.handleClick.bind( this );
     }
-    
-    handleClick(e) {
+
+    handleClick( e ) {
         const { onClick, forChart, options } = this.props;
-        onClick({ chartId: forChart, ...options }, e);
+        onClick( { chartId: forChart, ...options }, e );
     }
-    
+
     /**
      * Renders the value next to the label.
      */
-    renderValueNextToLabel(){
+    renderValueNextToLabel() {
         const { origin, yLabel, yValue, labelFill, valueFill, withShape, fontSize, fontFamily } = this.props;
 
         return (
-                <g transform={`translate(${ origin[0] }, ${origin[1] })`} onClick={this.handleClick}>
+            <g transform={`translate(${origin[0]}, ${origin[1]})`} onClick={this.handleClick}>
                 {withShape ? <rect x="0" y="-6" width="6" height="6" fill={valueFill} /> : null}
                 <ToolTipText x={withShape ? 8 : 0} y={0} fontFamily={fontFamily} fontSize={fontSize}>
                     <ToolTipTSpanLabel fill={labelFill}>{yLabel}: </ToolTipTSpanLabel>
                     <tspan fill={valueFill}>{yValue}</tspan>
                 </ToolTipText>
-                </g>
-               )
+            </g>
+        )
     }
-    
+
     /**
      * Renders the value beneath the label.
      */
-    renderValueBeneathToLabel(){
+    renderValueBeneathToLabel() {
         const { origin, yLabel, yValue, labelFill, valueFill, withShape, fontSize, fontFamily } = this.props;
 
         return (
-                <g transform={`translate(${ origin[0] }, ${origin[1] })`} onClick={this.handleClick}>
-                {withShape ? <line x1={0} y1={2} x2={0} y2={28} stroke={valueFill} strokeWidth="4px"/> : null}
+            <g transform={`translate(${origin[0]}, ${origin[1]})`} onClick={this.handleClick}>
+                {withShape ? <line x1={0} y1={2} x2={0} y2={28} stroke={valueFill} strokeWidth="4px" /> : null}
                 <ToolTipText x={5} y={11} fontFamily={fontFamily} fontSize={fontSize}>
                     <ToolTipTSpanLabel fill={labelFill}>{yLabel}</ToolTipTSpanLabel>
                     <tspan x="5" dy="15" fill={valueFill}>{yValue}</tspan>
                 </ToolTipText>
-                </g>
-               )
+            </g>
+        )
     }
-    
+
     /**
      * Renders the value next to the label. 
      * The parent component must have a "text"-element.
      */
-    renderInline(){
+    renderInline() {
         const { yLabel, yValue, labelFill, valueFill, fontSize, fontFamily } = this.props;
-        
+
         return (
-                <tspan onClick={this.handleClick} fontFamily={fontFamily} fontSize={fontSize}>
-                    <ToolTipTSpanLabel fill={labelFill}>{yLabel}:&nbsp;</ToolTipTSpanLabel>
-                    <tspan fill={valueFill}>{yValue} &nbsp;&nbsp;</tspan>
-                </tspan>
-               )
+            <tspan onClick={this.handleClick} fontFamily={fontFamily} fontSize={fontSize}>
+                <ToolTipTSpanLabel fill={labelFill}>{yLabel}:&nbsp;</ToolTipTSpanLabel>
+                <tspan fill={valueFill}>{yValue}&nbsp;&nbsp;</tspan>
+            </tspan>
+        )
     }
 
     render() {
-        
+
         const { layout } = this.props;
         let comp = null;
-        
-        switch (layout) {
+
+        switch ( layout ) {
             case "horizontal":
                 comp = this.renderValueNextToLabel();
                 break;
@@ -99,78 +99,78 @@ class SingleTooltip extends Component {
 }
 
 SingleTooltip.propTypes = {
-        origin: PropTypes.array.isRequired,
-        yLabel: PropTypes.string.isRequired,
-        yValue: PropTypes.string.isRequired,
-        onClick: PropTypes.func,
-        fontFamily: PropTypes.string,
-        labelFill: PropTypes.string.isRequired,
-        valueFill: PropTypes.string.isRequired,
-        fontSize: PropTypes.number,
-        withShape: PropTypes.bool,
-        forChart: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
-        options: PropTypes.object.isRequired,
+    origin: PropTypes.array.isRequired,
+    yLabel: PropTypes.string.isRequired,
+    yValue: PropTypes.string.isRequired,
+    onClick: PropTypes.func,
+    fontFamily: PropTypes.string,
+    labelFill: PropTypes.string.isRequired,
+    valueFill: PropTypes.string.isRequired,
+    fontSize: PropTypes.number,
+    withShape: PropTypes.bool,
+    forChart: PropTypes.oneOfType( [PropTypes.number, PropTypes.string] ).isRequired,
+    options: PropTypes.object.isRequired,
 };
 
 SingleTooltip.defaultProps = {
-        labelFill: "#4682B4",
-        valueFill: "#000000",
-        withShape: false,
+    labelFill: "#4682B4",
+    valueFill: "#000000",
+    withShape: false,
 };
 
 class GroupTooltip extends Component {
-    constructor(props) {
-        super(props);
-        this.renderSVG = this.renderSVG.bind(this);
+    constructor( props ) {
+        super( props );
+        this.renderSVG = this.renderSVG.bind( this );
     }
-    renderSVG(moreProps) {
-        
+    renderSVG( moreProps ) {
+
         const { displayValuesFor } = this.props;
         const { chartId } = moreProps;
 
         const { className, onClick, width, verticalSize, fontFamily, fontSize, layout } = this.props;
         const { origin, displayFormat, options } = this.props;
-        const currentItem = displayValuesFor(this.props, moreProps);
-        
-        const singleTooltip = options.map((each, idx) => {
-                        
-                    const yValue = currentItem && each.yAccessor(currentItem);
-                    const yDisplayValue = yValue ? displayFormat(yValue) : "n/a";
+        const currentItem = displayValuesFor( this.props, moreProps );
 
-                    const orig = () => {
-                        if(layout == "horizontal" || layout == "horizontalRows"){
-                            return [width * idx, 0];
-                        }
-                        if(layout == "vertical"){
-                            return [0, verticalSize * idx];
-                        }
-                        if(layout == "verticalRows"){
-                            return [0, verticalSize * 2.3 * idx];
-                        }
-                        return [0, 0];
-                    }
+        const singleTooltip = options.map( ( each, idx ) => {
 
-                    return <SingleTooltip
-                            key={idx}
-                            layout={layout}
-                            origin={orig()} 
-                            yLabel={each.yLabel}
-                            yValue={yDisplayValue}
-                            options={each}
-                            forChart={chartId}
-                            onClick={onClick}
-                            fontFamily={fontFamily}
-                            fontSize={fontSize}
-                            labelFill={each.labelFill}
-                            valueFill={each.valueFill}
-                            withShape={each.withShape}
-                            />;
-                });
-        
+            const yValue = currentItem && each.yAccessor( currentItem );
+            const yDisplayValue = yValue ? displayFormat( yValue ) : "n/a";
+
+            const orig = () => {
+                if ( layout == "horizontal" || layout == "horizontalRows" ) {
+                    return [width * idx, 0];
+                }
+                if ( layout == "vertical" ) {
+                    return [0, verticalSize * idx];
+                }
+                if ( layout == "verticalRows" ) {
+                    return [0, verticalSize * 2.3 * idx];
+                }
+                return [0, 0];
+            }
+
+            return <SingleTooltip
+                key={idx}
+                layout={layout}
+                origin={orig()}
+                yLabel={each.yLabel}
+                yValue={yDisplayValue}
+                options={each}
+                forChart={chartId}
+                onClick={onClick}
+                fontFamily={fontFamily}
+                fontSize={fontSize}
+                labelFill={each.labelFill}
+                valueFill={each.valueFill}
+                withShape={each.withShape}
+            />;
+        } );
+
         return (
-            <g transform={`translate(${ origin[0] }, ${origin[1] })`} className={className}>
+            <g transform={`translate(${origin[0]}, ${origin[1]})`} className={className}>
                 {layout == "horizontalInline"
-                    ? <ToolTipText x={0} y={0} fontFamily={fontFamily} fontSize={fontSize}>{singleTooltip}</ToolTipText> 
+                    ? <ToolTipText x={0} y={0} fontFamily={fontFamily} fontSize={fontSize}>{singleTooltip}</ToolTipText>
                     : singleTooltip
                 }
             </g>
@@ -187,12 +187,20 @@ class GroupTooltip extends Component {
 
 GroupTooltip.propTypes = {
     className: PropTypes.string,
-    layout: PropTypes.oneOf([
-        "horizontal", 
-        "horizontalRows", 
-        "horizontalInline", 
-        "vertical", 
-        "verticalRows"]).isRequired,
+    layout: PropTypes.oneOf( [
+        "horizontal",
+        "horizontalRows",
+        "horizontalInline",
+        "vertical",
+        "verticalRows"] ).isRequired,
+    // TODO: please implement this
+    position: PropTypes.oneOf( [
+        "topLeft",
+        "topRight",
+        "topCenter",
+        "bottomLeft",
+        "bottomRight",
+        "bottomCenter"] ).isRequired,
     displayFormat: PropTypes.func.isRequired,
     origin: PropTypes.array.isRequired,
     displayValuesFor: PropTypes.func,
@@ -201,24 +209,25 @@ GroupTooltip.propTypes = {
     fontSize: PropTypes.number,
     width: PropTypes.number, // "width" only be used, if layout is "horizontal" or "horizontalRows".
     verticalSize: PropTypes.number,  // "verticalSize" only be used, if layout is "vertical", "verticalRows".
-    options: PropTypes.arrayOf(PropTypes.shape({
-        yLabel: PropTypes.oneOfType([
-                PropTypes.string,
-                PropTypes.func]).isRequired,
+    options: PropTypes.arrayOf( PropTypes.shape( {
+        yLabel: PropTypes.oneOfType( [
+            PropTypes.string,
+            PropTypes.func] ).isRequired,
         yAccessor: PropTypes.func.isRequired,
         labelFill: PropTypes.string,
         valueFill: PropTypes.string,
         withShape: PropTypes.bool, // "withShape" is ignored, if layout is "horizontalInline" or "vertical".
-    })),
+    } ) ),
 };
 
 GroupTooltip.defaultProps = {
     className: "react-stockcharts-tooltip react-stockcharts-group-tooltip",
     layout: "horizontal",
-    displayFormat: format(".2f"),
+    position: "topLeft",
+    displayFormat: format( ".2f" ),
     displayValuesFor: displayValuesFor,
     origin: [0, 0],
-    width: 60, 
+    width: 60,
     verticalSize: 13,
 };
 
