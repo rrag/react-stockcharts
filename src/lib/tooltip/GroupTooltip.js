@@ -127,11 +127,11 @@ class GroupTooltip extends Component {
     // TODO: please implement this
     // the retuned x-y-array must have the right x and y
     // for the translate-property of the groupTooltip-component.
-    getPosition(props) {
+    getPosition() {
         const { position } = this.props;
         let xyPos = [];
 
-        switch ( layout ) {
+        switch ( position ) {
             case "topLeft":
                 xyPos = [0, 0];
                 break;
@@ -167,7 +167,7 @@ class GroupTooltip extends Component {
         const { origin, displayFormat, options } = this.props;
         const currentItem = displayValuesFor( this.props, moreProps );
         // TODO: implement this.getPosition(props)
-        const xyPos = this.getPosition(props);
+        const xyPos = this.getPosition();
 
         const singleTooltip = options.map( ( each, idx ) => {
 
@@ -231,6 +231,7 @@ GroupTooltip.propTypes = {
         "horizontalInline",
         "vertical",
         "verticalRows"] ).isRequired,
+    // TODO: please implement this
     position: PropTypes.oneOf( [
         "topLeft",
         "topRight",
