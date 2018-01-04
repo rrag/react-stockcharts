@@ -123,6 +123,41 @@ class GroupTooltip extends Component {
         super( props );
         this.renderSVG = this.renderSVG.bind( this );
     }
+    
+    // TODO: please implement this
+    // the retuned x-y-array must have the right x and y
+    // for the translate-property of the groupTooltip-component.
+    getPosition(props) {
+        const { position } = this.props;
+        let xyPos = [];
+
+        switch ( layout ) {
+            case "topLeft":
+                xyPos = [0, 0];
+                break;
+            case "topRight":
+                xyPos = [0, 0];
+                break;
+            case "topCenter":
+                xyPos = [0, 0];
+                break;
+            case "bottomLeft":
+                xyPos = [0, 0];
+                break;
+            case "bottomRight":
+                xyPos = [0, 0];
+                break;
+            case "bottomCenter":
+                xyPos = [0, 0];
+                break;
+            default:
+                xyPos = [0, 0];
+        }
+
+        return xyPos;
+    }
+    
+    
     renderSVG( moreProps ) {
 
         const { displayValuesFor } = this.props;
@@ -131,6 +166,8 @@ class GroupTooltip extends Component {
         const { className, onClick, width, verticalSize, fontFamily, fontSize, layout } = this.props;
         const { origin, displayFormat, options } = this.props;
         const currentItem = displayValuesFor( this.props, moreProps );
+        // TODO: implement this.getPosition(props)
+        const xyPos = this.getPosition(props);
 
         const singleTooltip = options.map( ( each, idx ) => {
 
@@ -168,6 +205,7 @@ class GroupTooltip extends Component {
         } );
 
         return (
+            // TODO: use xyPos-array for transform-property
             <g transform={`translate(${origin[0]}, ${origin[1]})`} className={className}>
                 {layout == "horizontalInline"
                     ? <ToolTipText x={0} y={0} fontFamily={fontFamily} fontSize={fontSize}>{singleTooltip}</ToolTipText>
@@ -193,7 +231,6 @@ GroupTooltip.propTypes = {
         "horizontalInline",
         "vertical",
         "verticalRows"] ).isRequired,
-    // TODO: please implement this
     position: PropTypes.oneOf( [
         "topLeft",
         "topRight",
