@@ -15,7 +15,7 @@ class Cursor extends Component {
 	getXYCursor(props, moreProps) {
 
 	    const { mouseXY, currentItem, show, height, width } = moreProps;
-	    const { customX, stroke, opacity, strokeDasharray, disableYCursor } = props;
+	    const { customSnapX, stroke, opacity, strokeDasharray, disableYCursor } = props;
 	    if (!show || isNotDefined(currentItem)) return null;
 	    
 	    const yCursor = {
@@ -26,7 +26,7 @@ class Cursor extends Component {
 	        stroke, strokeDasharray, opacity,
 	        id: "yCursor"
 	    };
-	    const x = customX(props, moreProps);
+	    const x = customSnapX(props, moreProps);
 
 	    const xCursor = {
 	        x1: x,
@@ -190,7 +190,7 @@ Cursor.contextTypes = {
 	// xScale: PropTypes.func.isRequired,
 };
 
-function customX(props, moreProps) {
+function customSnapX(props, moreProps) {
 	const { xScale, xAccessor, currentItem, mouseXY } = moreProps;
 	const { snapX } = props;
 	const x = snapX
@@ -203,8 +203,8 @@ Cursor.defaultProps = {
 	stroke: "#000000",
 	opacity: 0.3,
 	strokeDasharray: "ShortDash",
-	snapX: true,
-	customX,
+	snapX: true, // snaps the crosshair to the nearest xValue
+	customSnapX,
 	disableYCursor: false,
 	useXCursorShape: false,
 	xCursorShapeStroke: "#000000",
