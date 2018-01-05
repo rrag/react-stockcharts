@@ -1087,7 +1087,7 @@ class ChartCanvas extends Component {
 	}
 	render() {
 
-        const { type, width, margin, className, zIndex, defaultFocus, ratio, mouseMoveEvent, panEvent, zoomEvent } = this.props;
+		const { type, width, margin, className, zIndex, defaultFocus, ratio, mouseMoveEvent, panEvent, zoomEvent } = this.props;
 		const { useCrossHairStyleCursor, onSelect } = this.props;
 
 		const { plotData, xScale, xAccessor, chartConfig } = this.state;
