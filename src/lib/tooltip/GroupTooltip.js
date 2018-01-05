@@ -123,38 +123,38 @@ class GroupTooltip extends Component {
         super( props );
         this.renderSVG = this.renderSVG.bind( this );
     }
-    
-    // TODO: please implement this
-    // the retuned x-y-array must have the right x and y
-    // for the translate-property of the groupTooltip-component.
-    getPosition() {
-        const { position } = this.props;
-        let xyPos = [];
 
-        switch ( position ) {
-            case "topLeft":
-                xyPos = [0, 0];
-                break;
+    getPosition(moreProps) {
+        const { position } = this.props;
+        const { height, width } = moreProps.chartConfig;
+
+        const dx = 20;
+        const dy = 40;
+        let textAnchor = null;
+        let xyPos = null;
+        
+        if (position != undefined) {
+            switch ( position ) {
             case "topRight":
-                xyPos = [0, 0];
-                break;
-            case "topCenter":
-                xyPos = [0, 0];
+                xyPos = [width - dx, null];
+                textAnchor = "end";
                 break;
             case "bottomLeft":
-                xyPos = [0, 0];
+                xyPos = [null, height - dy];
                 break;
             case "bottomRight":
-                xyPos = [0, 0];
-                break;
-            case "bottomCenter":
-                xyPos = [0, 0];
+                xyPos = [width - dx, height - dy];
+                textAnchor = "end";
                 break;
             default:
-                xyPos = [0, 0];
+                xyPos = [null, null];
+            }
+        }
+        else{
+            xyPos = [null, null];
         }
 
-        return xyPos;
+        return { xyPos, textAnchor };
     }
     
     
@@ -166,8 +166,10 @@ class GroupTooltip extends Component {
         const { className, onClick, width, verticalSize, fontFamily, fontSize, layout } = this.props;
         const { origin, displayFormat, options } = this.props;
         const currentItem = displayValuesFor( this.props, moreProps );
-        // TODO: implement this.getPosition(props)
-        const xyPos = this.getPosition();
+        const {xyPos, textAnchor} = this.getPosition(moreProps);
+
+        const xPos = xyPos != null && xyPos[0] != null ? xyPos[0] : origin[0];
+        const yPos = xyPos != null && xyPos[1] != null ? xyPos[1] : origin[1];
 
         const singleTooltip = options.map( ( each, idx ) => {
 
@@ -205,8 +207,7 @@ class GroupTooltip extends Component {
         } );
 
         return (
-            // TODO: use xyPos-array for transform-property
-            <g transform={`translate(${origin[0]}, ${origin[1]})`} className={className}>
+            <g transform={`translate(${xPos}, ${yPos})`} className={className} textAnchor={textAnchor}>
                 {layout == "horizontalInline"
                     ? <ToolTipText x={0} y={0} fontFamily={fontFamily} fontSize={fontSize}>{singleTooltip}</ToolTipText>
                     : singleTooltip
@@ -231,12 +232,10 @@ GroupTooltip.propTypes = {
         "horizontalInline",
         "vertical",
         "verticalRows"] ).isRequired,
-    // TODO: please implement this
     position: PropTypes.oneOf( [
-        "topLeft",
         "topRight",
         "bottomLeft",
-        "bottomRight"] ).isRequired,
+        "bottomRight"] ),
     displayFormat: PropTypes.func.isRequired,
     origin: PropTypes.array.isRequired,
     displayValuesFor: PropTypes.func,
@@ -259,7 +258,6 @@ GroupTooltip.propTypes = {
 GroupTooltip.defaultProps = {
     className: "react-stockcharts-tooltip react-stockcharts-group-tooltip",
     layout: "horizontal",
-    position: "topLeft",
     displayFormat: format( ".2f" ),
     displayValuesFor: displayValuesFor,
     origin: [0, 0],
