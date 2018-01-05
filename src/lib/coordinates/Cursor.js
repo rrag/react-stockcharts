@@ -12,8 +12,35 @@ class Cursor extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	
-    getXCursorShape(props, moreProps, ctx) {
+	getXYCursor(props, moreProps) {
 
+	    const { mouseXY, currentItem, show, height, width } = moreProps;
+	    const { customX, stroke, opacity, strokeDasharray, disableYCursor } = props;
+	    if (!show || isNotDefined(currentItem)) return null;
+	    
+	    const yCursor = {
+	        x1: 0,
+	        x2: width,
+	        y1: mouseXY[1],
+	        y2: mouseXY[1],
+	        stroke, strokeDasharray, opacity,
+	        id: "yCursor"
+	    };
+	    const x = customX(props, moreProps);
+
+	    const xCursor = {
+	        x1: x,
+	        x2: x,
+	        y1: 0,
+	        y2: height,
+	        stroke, strokeDasharray, opacity,
+	        id: "xCursor"
+	    };
+	    
+	    return disableYCursor ? [xCursor] : [yCursor, xCursor];
+	}
+	
+    getXCursorShape(moreProps, ctx) {
         const { height, xScale, currentItem, plotData } = moreProps;
         const { xAccessor } = moreProps;
         const xValue = xAccessor(currentItem);
@@ -22,11 +49,23 @@ class Cursor extends Component {
         const xPos = centerX - shapeWidth / 2;
         
         return { height, xPos, shapeWidth };
-    }	
+    }
+    
+    getXCursorShapeFill(moreProps) {
+        const { xCursorShapeFill } = this.props;
+        const { currentItem } = moreProps;
+        return xCursorShapeFill instanceof Function ? xCursorShapeFill( currentItem ) : xCursorShapeFill;
+    }
+
+    getXCursorShapeStroke(moreProps) {
+        const { xCursorShapeStroke } = this.props;
+        const { currentItem } = moreProps;
+        return xCursorShapeStroke instanceof Function ? xCursorShapeStroke( currentItem ) : xCursorShapeStroke;
+    }
 	
 	drawOnCanvas(ctx, moreProps) {
 	    
-		const cursors = getXYCursor(this.props, moreProps);
+		const cursors = this.getXYCursor(this.props, moreProps);
 
 		if (isDefined(cursors)) {
 
@@ -44,18 +83,23 @@ class Cursor extends Component {
 
 			cursors.forEach(line => {
 				const dashArray = getStrokeDasharray(line.strokeDasharray).split(",").map(d => +d);
+				const xShapeFill = this.getXCursorShapeFill(moreProps);
 				
 				if( useXCursorShape && line.id == "xCursor" ) {
-                    const { xCursorShapeFill, xCursorShapeOpacity, xCursorShapeStroke, xCursorShapeStrokeDasharray } = this.props;
-                    const xShape = this.getXCursorShape(this.props, moreProps);
+                    const { xCursorShapeOpacity, xCursorShapeStrokeDasharray } = this.props;
+                    const xShape = this.getXCursorShape(moreProps);
 
                     if(xCursorShapeStrokeDasharray != undefined) {
-                        ctx.strokeStyle = hexToRGBA(xCursorShapeStroke, xCursorShapeOpacity);
+                        const xShapeStroke = this.getXCursorShapeStroke(moreProps);
+                        ctx.strokeStyle = hexToRGBA(xShapeStroke, xCursorShapeOpacity);
                         ctx.setLineDash(getStrokeDasharray(xCursorShapeStrokeDasharray).split(",").map(d => +d));
                     }
 
                     ctx.beginPath();
-                    ctx.fillStyle = hexToRGBA(xCursorShapeFill, xCursorShapeOpacity);
+                    ctx.fillStyle = xShapeFill != undefined ? 
+                            hexToRGBA(xShapeFill, xCursorShapeOpacity) :
+                            "rgba(0, 0, 0, 0)"; // ="transparent"
+
                     ctx.beginPath();
                     xCursorShapeStrokeDasharray == undefined ? 
                             ctx.fillRect(xShape.xPos, 0, xShape.shapeWidth, xShape.height) : 
@@ -79,7 +123,7 @@ class Cursor extends Component {
 	
 	renderSVG(moreProps) {
 
-		const cursors = getXYCursor(this.props, moreProps);
+		const cursors = this.getXYCursor(this.props, moreProps);
 		if (isNotDefined(cursors)) return null;
 		
 		const { className, useXCursorShape } = this.props;
@@ -89,16 +133,18 @@ class Cursor extends Component {
 				{cursors.map(({ strokeDasharray, id, ...rest }, idx) => {
 				    
 				    if( useXCursorShape && id == "xCursor" ) {
-				        const { xCursorShapeFill, xCursorShapeOpacity, xCursorShapeStroke, xCursorShapeStrokeDasharray } = this.props;
-				        const xShape = this.getXCursorShape(this.props, moreProps);
+				        const { xCursorShapeOpacity, xCursorShapeStrokeDasharray } = this.props;
+				        const xShape = this.getXCursorShape(moreProps);
+				        const xShapeFill = this.getXCursorShapeFill(moreProps);
+				        const xShapeStroke = this.getXCursorShapeStroke(moreProps);
 				        return  <rect  
         				         key={idx} 
 				             x={xShape.xPos} 
 				             y={0} 
 				             width={xShape.shapeWidth} 
 				             height={xShape.height} 
-				             fill={xCursorShapeFill} 
-				             stroke={xCursorShapeStrokeDasharray == undefined ? null : xCursorShapeStroke} 
+				             fill={xShapeFill != undefined ? xShapeFill  : "none"} 
+				             stroke={xCursorShapeStrokeDasharray == undefined ? null : xShapeStroke} 
 				             strokeDasharray={xCursorShapeStrokeDasharray == undefined ? null : getStrokeDasharray(xCursorShapeStrokeDasharray)} 
 				             opacity={xCursorShapeOpacity} /> 
 				    }
@@ -131,8 +177,8 @@ Cursor.propTypes = {
 	opacity: PropTypes.number,
 	disableYCursor: PropTypes.bool,
 	useXCursorShape: PropTypes.bool,
-	xCursorShapeFill: PropTypes.string,
-	xCursorShapeStroke: PropTypes.string,
+	xCursorShapeFill: PropTypes.oneOfType([PropTypes.string,PropTypes.func]),
+	xCursorShapeStroke: PropTypes.oneOfType([PropTypes.string,PropTypes.func]).isRequired,
 	xCursorShapeStrokeDasharray: PropTypes.oneOf(strokeDashTypes),
 	xCursorShapeOpacity: PropTypes.number,
 };
@@ -162,39 +208,7 @@ Cursor.defaultProps = {
 	disableYCursor: false,
 	useXCursorShape: false,
 	xCursorShapeStroke: "#000000",
-	xCursorShapeFill: "#D4E2FD",
 	xCursorShapeOpacity: 0.5,
 };
-
-function getXYCursor(props, moreProps) {
-
-	const {
-		mouseXY, currentItem, show, height, width
-	} = moreProps;
-
-	const { customX, stroke, opacity, strokeDasharray, disableYCursor } = props;
-
-	if (!show || isNotDefined(currentItem)) return null;
-	
-	const yCursor = {
-		x1: 0,
-		x2: width,
-		y1: mouseXY[1],
-		y2: mouseXY[1],
-		stroke, strokeDasharray, opacity,
-		id: "yCursor"
-	};
-	const x = customX(props, moreProps);
-
-	const xCursor = {
-		x1: x,
-		x2: x,
-		y1: 0,
-		y2: height,
-		stroke, strokeDasharray, opacity,
-		id: "xCursor"
-	};
-	return disableYCursor ? [xCursor] : [yCursor, xCursor];
-}
 
 export default Cursor;
