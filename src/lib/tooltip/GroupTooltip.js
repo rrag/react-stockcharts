@@ -235,10 +235,8 @@ GroupTooltip.propTypes = {
     position: PropTypes.oneOf( [
         "topLeft",
         "topRight",
-        "topCenter",
         "bottomLeft",
-        "bottomRight",
-        "bottomCenter"] ).isRequired,
+        "bottomRight"] ).isRequired,
     displayFormat: PropTypes.func.isRequired,
     origin: PropTypes.array.isRequired,
     displayValuesFor: PropTypes.func,
