@@ -95,11 +95,51 @@ function getCursorStyle(useCrossHairStyleCursor) {
 
 function getDimensions(props) {
 	return {
-		height: props.height - props.margin.top - props.margin.bottom,
+		height: getHeightOfChartCanvas(props) - props.margin.top - props.margin.bottom,
 		width: props.width - props.margin.left - props.margin.right,
 	};
 }
 
+/**
+ * If ChartCanvas "prop.height" is undefined, 
+ * then calculate height with the help of its child components.
+ */
+function getHeightOfChartCanvas( props ) {
+
+    if ( props.height != undefined ) {
+        return props.height;
+    }
+  
+    const getHeightOfComponent = comp => {
+
+        if ( comp.props != undefined && comp.props.height != undefined ) {
+
+            let { height } = comp.props;
+            const { padding } = comp.props;
+            
+            if ( padding.top != undefined ) {
+                height += padding.top;
+            }
+            if ( padding.bottom != undefined ) {
+                height += padding.bottom;
+            }
+
+            return height;
+        }
+        return 0;
+    }       
+ 
+    return Object.values( props.children ).reduce( ( acc, val ) => {
+        if ( Array.isArray( val ) ) {
+            return acc + val.reduce( ( accInner, valInner ) => {
+                return accInner + getHeightOfComponent( valInner );
+            }, 0 );
+        }
+        else {
+            return acc + getHeightOfComponent( val );
+        }
+    }, 0 );
+}
 function getXScaleDirection(flipXScale) {
 	return flipXScale ? -1 : 1;
 }
@@ -1047,15 +1087,17 @@ class ChartCanvas extends Component {
 	}
 	render() {
 
-		const { type, height, width, margin, className, zIndex, defaultFocus, ratio, mouseMoveEvent, panEvent, zoomEvent } = this.props;
+        const { type, width, margin, className, zIndex, defaultFocus, ratio, mouseMoveEvent, panEvent, zoomEvent } = this.props;
 		const { useCrossHairStyleCursor, onSelect } = this.props;
 
 		const { plotData, xScale, xAccessor, chartConfig } = this.state;
+		
 		const dimensions = getDimensions(this.props);
-
+		const height = this.props.height == undefined ? dimensions.height /*+ margin.top + margin.bottom*/ : this.props.height;
+		
 		const interaction = isInteractionEnabled(xScale, xAccessor, plotData);
-
 		const cursor = getCursorStyle(useCrossHairStyleCursor && interaction);
+        
 		return (
 			<div style={{ position: "relative", width, height }} className={className} onClick={onSelect}>
 				<CanvasContainer ref={this.saveCanvasContainerNode}
@@ -1124,7 +1166,7 @@ function isInteractionEnabled(xScale, xAccessor, data) {
 
 ChartCanvas.propTypes = {
 	width: PropTypes.number.isRequired,
-	height: PropTypes.number.isRequired,
+	height: PropTypes.number,
 	margin: PropTypes.object,
 	ratio: PropTypes.number.isRequired,
 	// interval: PropTypes.oneOf(["D", "W", "M"]), // ,"m1", "m5", "m15", "W", "M"
