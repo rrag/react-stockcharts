@@ -57,14 +57,16 @@ export default function fitWidth(WrappedComponent, withRef = true, minWidth = 10
 			window.removeEventListener("resize", this.handleWindowResize);
 		}
 		handleWindowResize() {
-			const el = ReactDOM.findDOMNode(this.node); // eslint-disable-line react/no-find-dom-node
-			const w = el.parentNode.clientWidth;
+			this.setState({
+				width: 0
+			}, () => {
+				const el = ReactDOM.findDOMNode(this.node); // eslint-disable-line react/no-find-dom-node
+				const w = el.parentNode.clientWidth;
 
-			if (w > minWidth) {
 				this.setState({
-					width: w
+					width: Math.max(w, minWidth)
 				});
-			}
+			});
 		}
 		getWrappedInstance() {
 			return this.node;
