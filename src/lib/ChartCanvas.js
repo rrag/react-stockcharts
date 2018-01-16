@@ -105,7 +105,7 @@ function getXScaleDirection(flipXScale) {
 }
 
 function calculateFullData(props) {
-	const { data: fullData, plotFull, xScale, clamp, pointsPerPxThreshold } = props;
+	const { data: fullData, plotFull, xScale, clamp, pointsPerPxThreshold, flipXScale } = props;
 	const { xAccessor, displayXAccessor, minPointsPerPxThreshold } = props;
 
 	const useWholeData = isDefined(plotFull)
@@ -118,6 +118,7 @@ function calculateFullData(props) {
 		clamp,
 		pointsPerPxThreshold,
 		minPointsPerPxThreshold,
+		flipXScale,
 	});
 
 	return {
