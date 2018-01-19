@@ -1086,6 +1086,7 @@ class ChartCanvas extends Component {
 							xScale={xScale}
 							xAccessor={xAccessor}
 							focus={defaultFocus}
+							disableInteraction={this.props.disableInteraction}
 
 							getAllPanConditions={this.getAllPanConditions}
 							onContextMenu={this.handleContextMenu}
@@ -1200,6 +1201,7 @@ ChartCanvas.defaultProps = {
 	zoomAnchor: mouseBasedZoomAnchor,
 	maintainPointsPerPixelOnResize: true,
 	// ratio: 2,
+	disableInteraction: false,
 };
 
 ChartCanvas.childContextTypes = {
@@ -1245,6 +1247,7 @@ ChartCanvas.childContextTypes = {
 	setCursorClass: PropTypes.func,
 	generateSubscriptionId: PropTypes.func,
 	getMutableState: PropTypes.func,
+	disableInteraction: PropTypes.bool,
 };
 
 ChartCanvas.ohlcv = d => ({ date: d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume });

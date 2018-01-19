@@ -513,12 +513,20 @@ class EventCapture extends Component {
 		}
 	}
 	render() {
-		const { height, width } = this.props;
+		const { height, width, disableInteraction } = this.props;
 		const className = this.state.cursorOverrideClass != null
 			? this.state.cursorOverrideClass
 			: this.state.panInProgress
 				? "react-stockcharts-grabbing-cursor"
 				: "react-stockcharts-crosshair-cursor";
+
+		const interactionProps = disableInteraction || {
+			onWheel: this.handleWheel,
+			onMouseDown: this.handleMouseDown,
+			onClick: this.handleClick,
+			onContextMenu: this.handleContextMenu,
+			onTouchStart: this.handleTouchStart,
+		};
 
 		return (
 			<rect ref={this.saveNode}
@@ -526,11 +534,7 @@ class EventCapture extends Component {
 				width={width}
 				height={height}
 				style={{ opacity: 0 }}
-				onWheel={this.handleWheel}
-				onMouseDown={this.handleMouseDown}
-				onClick={this.handleClick}
-				onContextMenu={this.handleRightClick}
-				onTouchStart={this.handleTouchStart}
+				{...interactionProps}
 			/>
 		);
 	}
@@ -552,6 +556,7 @@ EventCapture.propTypes = {
 	chartConfig: PropTypes.array,
 	xScale: PropTypes.func.isRequired,
 	xAccessor: PropTypes.func.isRequired,
+	disableInteraction: PropTypes.bool.isRequired,
 
 	getAllPanConditions: PropTypes.func.isRequired,
 
@@ -581,6 +586,7 @@ EventCapture.defaultProps = {
 	panSpeedMultiplier: 1,
 	focus: false,
 	onDragComplete: noop,
+	disableInteraction: false,
 };
 
 export default EventCapture;
