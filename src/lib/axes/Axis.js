@@ -120,7 +120,7 @@ function tickHelper(props, scale) {
 	const {
 		orient, innerTickSize, tickFormat, tickPadding,
 		tickLabelFill, tickStrokeWidth, tickStrokeDasharray,
-		fontSize, fontFamily, showTicks, flexTicks,
+		fontSize, fontFamily, fontWeight, showTicks, flexTicks,
 		showTickLabel,
 	} = props;
 	const {
@@ -233,6 +233,7 @@ function tickHelper(props, scale) {
 		textAnchor,
 		fontSize,
 		fontFamily,
+		fontWeight,
 		format,
 		showTickLabel,
 	};
@@ -297,7 +298,7 @@ function drawAxisLine(ctx, props, range) {
 }
 
 function Tick(props) {
-	const { tickLabelFill, tickStroke, tickStrokeOpacity, tickStrokeDasharray, tickStrokeWidth, textAnchor, fontSize, fontFamily } = props;
+	const { tickLabelFill, tickStroke, tickStrokeOpacity, tickStrokeDasharray, tickStrokeWidth, textAnchor, fontSize, fontFamily, fontWeight } = props;
 	const { x1, y1, x2, y2, labelX, labelY, dy } = props;
 	return (
 		<g className="tick">
@@ -313,6 +314,7 @@ function Tick(props) {
 				dy={dy} x={labelX} y={labelY}
 				fill={tickLabelFill}
 				fontSize={fontSize}
+				fontWeight={fontWeight}
 				fontFamily={fontFamily}
 				textAnchor={textAnchor}>
 				{props.children}
@@ -338,13 +340,17 @@ Tick.propTypes = {
 	textAnchor: PropTypes.string,
 	fontSize: PropTypes.number,
 	fontFamily: PropTypes.string,
+	fontWeight: PropTypes.oneOfType([
+	  PropTypes.string,
+	  PropTypes.number
+	]),
 };
 
 function axisTicksSVG(props, scale) {
 	const result = tickHelper(props, scale);
 
 	const { tickLabelFill, tickStroke, tickStrokeOpacity, tickStrokeWidth, tickStrokeDasharray, textAnchor } = result;
-	const { fontSize, fontFamily, ticks, format } = result;
+	const { fontSize, fontFamily, fontWeight, ticks, format } = result;
 
 	const { dy } = result;
 
@@ -363,7 +369,9 @@ function axisTicksSVG(props, scale) {
 						x2={tick.x2} y2={tick.y2}
 						labelX={tick.labelX} labelY={tick.labelY}
 						textAnchor={textAnchor}
-						fontSize={fontSize} fontFamily={fontFamily}>{format(tick.value)}</Tick>
+						fontSize={fontSize}
+						fontWeight={fontWeight}
+						fontFamily={fontFamily}>{format(tick.value)}</Tick>
 				);
 			})}
 		</g>
@@ -373,7 +381,7 @@ function axisTicksSVG(props, scale) {
 function drawTicks(ctx, result) {
 
 	const { tickStroke, tickStrokeOpacity, tickLabelFill } = result;
-	const { textAnchor, fontSize, fontFamily, ticks, showTickLabel } = result;
+	const { textAnchor, fontSize, fontFamily, fontWeight, ticks, showTickLabel } = result;
 
 	ctx.strokeStyle = hexToRGBA(tickStroke, tickStrokeOpacity);
 
@@ -384,7 +392,7 @@ function drawTicks(ctx, result) {
 		drawEachTick(ctx, tick, result);
 	});
 
-	ctx.font = `${ fontSize }px ${fontFamily}`;
+	ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
 	ctx.fillStyle = tickLabelFill;
 	ctx.textAlign = textAnchor === "middle" ? "center" : textAnchor;
 
