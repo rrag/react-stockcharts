@@ -62,6 +62,7 @@ YAxis.defaultProps = {
 	tickStrokeOpacity: 1,
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 12,
+	fontWeight: 400,
 	yZoomWidth: 40,
 	zoomEnabled: true,
 	getMouseDelta: (startXY, mouseXY) => startXY[1] - mouseXY[1],

@@ -62,6 +62,7 @@ XAxis.defaultProps = {
 	tickStrokeOpacity: 1,
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 12,
+	fontWeight: 400,
 	xZoomHeight: 25,
 	zoomEnabled: true,
 	getMouseDelta: (startXY, mouseXY) => startXY[0] - mouseXY[0],
