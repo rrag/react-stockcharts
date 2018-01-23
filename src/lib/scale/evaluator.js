@@ -22,7 +22,7 @@ function getNewEnd(fallbackEnd, xAccessor, initialXScale, start) {
 	return newEnd;
 }
 
-function extentsWrapper(useWholeData, clamp, pointsPerPxThreshold, minPointsPerPxThreshold) {
+function extentsWrapper(useWholeData, clamp, pointsPerPxThreshold, minPointsPerPxThreshold, flipXScale) {
 	function filterData(
 		data, inputDomain, xAccessor, initialXScale,
 		{ currentPlotData, currentDomain, fallbackStart, fallbackEnd } = {}
@@ -66,8 +66,13 @@ function extentsWrapper(useWholeData, clamp, pointsPerPxThreshold, minPointsPerP
 
 		const xScale = initialXScale.copy().domain(realInputDomain);
 
-		const width = Math.floor(xScale(xAccessor(last(filteredData)))
+		let width = Math.floor(xScale(xAccessor(last(filteredData)))
 			- xScale(xAccessor(head(filteredData))));
+
+		// prevent negative width when flipXScale
+		if (flipXScale && width < 0) {
+			width = width * -1;
+		}
 
 		let plotData, domain;
 
@@ -142,11 +147,13 @@ function getFilteredResponse(data, left, right, xAccessor) {
 export default function({
 	xScale, useWholeData, clamp,
 	pointsPerPxThreshold, minPointsPerPxThreshold,
+	flipXScale
 }) {
 	return extentsWrapper(
 		useWholeData || isNotDefined(xScale.invert),
 		clamp,
 		pointsPerPxThreshold,
-		minPointsPerPxThreshold
+		minPointsPerPxThreshold,
+		flipXScale
 	);
 }
