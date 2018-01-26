@@ -26,6 +26,7 @@ class EventCapture extends Component {
 		this.handlePanEnd = this.handlePanEnd.bind(this);
 		this.handlePan = this.handlePan.bind(this);
 		this.handleTouchStart = this.handleTouchStart.bind(this);
+		this.handleTouchMove = this.handleTouchMove.bind(this);
 		this.handlePinchZoom = this.handlePinchZoom.bind(this);
 		this.handlePinchZoomEnd = this.handlePinchZoomEnd.bind(this);
 
@@ -398,6 +399,11 @@ class EventCapture extends Component {
 			});
 		}
 	}
+	handleTouchMove(e) {
+		const { onMouseMove } = this.props;
+		const touchXY = touchPosition(getTouchProps(e.touches[0]), e);
+		onMouseMove(touchXY, "touch", e);
+	}
 	handleTouchStart(e) {
 		this.mouseInteraction = false;
 
@@ -408,7 +414,8 @@ class EventCapture extends Component {
 
 			this.panHappened = false;
 			const touchXY = touchPosition(getTouchProps(e.touches[0]), e);
-			// onMouseMove(touchXY, "touch", e);
+			onMouseMove(touchXY, "touch", e);
+
 			if (panEnabled) {
 				const currentCharts = getCurrentCharts(chartConfig, touchXY);
 
@@ -420,8 +427,6 @@ class EventCapture extends Component {
 						chartsToPan: currentCharts,
 					}
 				});
-
-				onMouseMove(touchXY, "touch", e);
 
 				const win = d3Window(this.node);
 				select(win)
@@ -526,6 +531,7 @@ class EventCapture extends Component {
 			onClick: this.handleClick,
 			onContextMenu: this.handleContextMenu,
 			onTouchStart: this.handleTouchStart,
+			onTouchMove: this.handleTouchMove,
 		};
 
 		return (
