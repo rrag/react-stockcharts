@@ -260,7 +260,7 @@ export function hexToRGBA(inputHex, opacity) {
 	return inputHex;
 }
 
-export function toObject(array, iteratee) {
+export function toObject(array, iteratee = identity) {
 	return array.reduce((returnObj, a) => {
 		const [key, value] = iteratee(a);
 		return {

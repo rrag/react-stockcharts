@@ -67,10 +67,16 @@ VolumeProfileSeries.propTypes = {
 
 
 VolumeProfileSeries.defaultProps = {
-	opacity: 0.5,
 	className: "line ",
 	bins: 20,
+	opacity: 0.5,
 	maxProfileWidthPercent: 50,
+	fill: ({ type }) => type === "up" ? "#6BA583" : "#FF0000",
+	stroke: "#FFFFFF",
+	showSessionBackground: false,
+	sessionBackGround: "#4682B4",
+	sessionBackGroundOpacity: 0.3,
+
 	source: d => d.close,
 	volume: d => d.volume,
 	absoluteChange: d => d.absoluteChange,
@@ -79,14 +85,9 @@ VolumeProfileSeries.defaultProps = {
 	sessionStart: ({ d, i, plotData }) => i > 0 && plotData[i - 1].date.getMonth() !== d.date.getMonth(),
 	/* eslint-enable no-unused-vars */
 	orient: "left",
-	fill: ({ type }) => type === "up" ? "#6BA583" : "#FF0000",
 	// // fill: ({ type }) => { var c = type === "up" ? "#6BA583" : "#FF0000"; console.log(type, c); return c },
 	// stroke: ({ type }) =>  type === "up" ? "#6BA583" : "#FF0000",
 	// stroke: "none",
-	stroke: "#FFFFFF",
-	showSessionBackground: false,
-	sessionBackGround: "#4682B4",
-	sessionBackGroundOpacity: 0.3,
 	partialStartOK: true,
 	partialEndOK: true,
 };

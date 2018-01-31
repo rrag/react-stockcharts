@@ -1176,6 +1176,7 @@ ChartCanvas.propTypes = {
 	zoomEvent: PropTypes.bool,
 	onSelect: PropTypes.func,
 	maintainPointsPerPixelOnResize: PropTypes.bool,
+	disableInteraction: PropTypes.bool,
 };
 
 ChartCanvas.defaultProps = {
@@ -1248,7 +1249,6 @@ ChartCanvas.childContextTypes = {
 	setCursorClass: PropTypes.func,
 	generateSubscriptionId: PropTypes.func,
 	getMutableState: PropTypes.func,
-	disableInteraction: PropTypes.bool,
 };
 
 ChartCanvas.ohlcv = d => ({ date: d.date, open: d.open, high: d.high, low: d.low, close: d.close, volume: d.volume });
