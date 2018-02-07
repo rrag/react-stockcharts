@@ -7,7 +7,14 @@ import AreaOnlySeries from "./AreaOnlySeries";
 
 function AreaSeries(props) {
 	const { yAccessor, baseAt } = props;
-	const { className, opacity, stroke, strokeWidth, fill } = props;
+	const {
+		className,
+		opacity,
+		stroke,
+		strokeWidth,
+		fill,
+		interpolation,
+	} = props;
 
 	return (
 		<g className={className}>
@@ -15,9 +22,11 @@ function AreaSeries(props) {
 				yAccessor={yAccessor}
 				stroke={stroke} fill="none"
 				strokeWidth={strokeWidth}
+				interpolation={interpolation}
 				hoverHighlight={false} />
 			<AreaOnlySeries
 				yAccessor={yAccessor}
+				interpolation={interpolation}
 				base={baseAt}
 				stroke="none" fill={fill}
 				opacity={opacity} />
@@ -33,6 +42,7 @@ AreaSeries.propTypes = {
 	className: PropTypes.string,
 	yAccessor: PropTypes.func.isRequired,
 	baseAt: PropTypes.func,
+	interpolation: PropTypes.func,
 };
 
 AreaSeries.defaultProps = {
@@ -40,7 +50,7 @@ AreaSeries.defaultProps = {
 	strokeWidth: 1,
 	opacity: 0.5,
 	fill: "#4682B4",
-	className: "react-stockcharts-area"
+	className: "react-stockcharts-area",
 };
 
 export default AreaSeries;

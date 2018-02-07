@@ -45,7 +45,7 @@ class AreaOnlySeries extends Component {
 	}
 	renderSVG(moreProps) {
 		const { yAccessor, defined, base } = this.props;
-		const { stroke, fill, className, opacity } = this.props;
+		const { stroke, fill, className, opacity, interpolation } = this.props;
 
 		const { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
 
@@ -55,6 +55,10 @@ class AreaOnlySeries extends Component {
 			.x((d) => xScale(xAccessor(d)))
 			.y0((d) => newBase(yScale, d, moreProps))
 			.y1((d) => yScale(yAccessor(d)));
+
+		if (isDefined(interpolation)) {
+			areaSeries.curve(interpolation);
+		}
 
 		const d = areaSeries(plotData);
 		const newClassName = className.concat(isDefined(stroke) ? "" : " line-stroke");
@@ -82,6 +86,7 @@ AreaOnlySeries.propTypes = {
 	base: PropTypes.oneOfType([
 		PropTypes.func, PropTypes.number
 	]),
+	interpolation: PropTypes.func,
 };
 
 AreaOnlySeries.defaultProps = {
