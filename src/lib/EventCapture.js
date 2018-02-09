@@ -529,7 +529,7 @@ class EventCapture extends Component {
 			onWheel: this.handleWheel,
 			onMouseDown: this.handleMouseDown,
 			onClick: this.handleClick,
-			onContextMenu: this.handleContextMenu,
+			onContextMenu: this.handleRightClick,
 			onTouchStart: this.handleTouchStart,
 			onTouchMove: this.handleTouchMove,
 		};
