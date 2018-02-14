@@ -96,18 +96,12 @@ function helper(props, moreProps) {
 	const type = "horizontal";
 	const priceShowTolerance = 0.001; // Maybe needs to define through props
 
-	let y = 0;
-	let show;
+	let show = false;
+  const marginTop = 30; // better set as margin values for chart
+  const marginBottom= 30;
 
-  if (
-    price < (upperPrice + (priceShowTolerance * price)) && 
-    price > (lowerPrice - (priceShowTolerance * price))
-  ) {
-		y = (price / rangeSlope) + (lowerYValue - (lowerPrice / rangeSlope));
-		show = true;
-	}	else {
-		show = false;
-	}
+  const y = (price / rangeSlope) + (lowerYValue - (lowerPrice / rangeSlope));
+  if (y - marginTop < lowerYValue && y + marginBottom > upperYValue) show = true;
 
 	const coordinate = displayFormat(yScale.invert(y));
 	const hideLine = false;
