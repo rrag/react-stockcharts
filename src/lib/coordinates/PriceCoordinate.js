@@ -94,13 +94,15 @@ function helper(props, moreProps) {
 		: 0;
 
 	const type = "horizontal";
-	const priceShowTolerance = 5;
+	const priceShowTolerance = 0.001; // Maybe needs to define through props
 
 	let y = 0;
 	let show;
 
-	if (price < (upperPrice + priceShowTolerance)
-			|| price > (lowerPrice - priceShowTolerance)) {
+  if (
+    price < (upperPrice + (priceShowTolerance * price)) && 
+    price > (lowerPrice - (priceShowTolerance * price))
+  ) {
 		y = (price / rangeSlope) + (lowerYValue - (lowerPrice / rangeSlope));
 		show = true;
 	}	else {
