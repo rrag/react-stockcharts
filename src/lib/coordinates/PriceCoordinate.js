@@ -96,11 +96,11 @@ function helper(props, moreProps) {
 	const type = "horizontal";
 
 	let show = false;
-    const marginTop = 30; // better set as margin values for chart
-    const marginBottom= 30;
+    const paddingTop = 30; // better set as padding values for chart
+    const paddingBottom= 30;
 
     const y = (price / rangeSlope) + (lowerYValue - (lowerPrice / rangeSlope));
-    if (y - marginTop < lowerYValue && y + marginBottom > upperYValue) show = true;
+    if (y - paddingTop < lowerYValue && y + paddingBottom > upperYValue) show = true;
 
 	const coordinate = displayFormat(yScale.invert(y));
 	const hideLine = false;
