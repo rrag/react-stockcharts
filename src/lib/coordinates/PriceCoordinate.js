@@ -94,18 +94,13 @@ function helper(props, moreProps) {
 		: 0;
 
 	const type = "horizontal";
-	const priceShowTolerance = 5;
 
-	let y = 0;
-	let show;
+	let show = false;
+    const paddingTop = 30; // better set as padding values for chart
+    const paddingBottom= 30;
 
-	if (price < (upperPrice + priceShowTolerance)
-			|| price > (lowerPrice - priceShowTolerance)) {
-		y = (price / rangeSlope) + (lowerYValue - (lowerPrice / rangeSlope));
-		show = true;
-	}	else {
-		show = false;
-	}
+    const y = (price / rangeSlope) + (lowerYValue - (lowerPrice / rangeSlope));
+    if (y - paddingTop < lowerYValue && y + paddingBottom > upperYValue) show = true;
 
 	const coordinate = displayFormat(yScale.invert(y));
 	const hideLine = false;
