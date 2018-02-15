@@ -9,13 +9,13 @@ import ReactDOM from "react-dom";
 import Chart from "./lib/charts/CandleStickChartWithDarkTheme";
 // import Chart from "./lib/charts/OHLCChartWithElderRayIndicator";
 
-var ReadME = require("md/MAIN.md");
+const ReadME = require("md/MAIN.md");
 
 require("stylesheets/re-stock");
 
 document.getElementById("content").innerHTML = ReadME;
 
-var parseDate = timeParse("%Y-%m-%d");
+const parseDate = timeParse("%Y-%m-%d");
 
 if (!window.Modernizr.fetch || !window.Modernizr.promises) {
 	require.ensure(["whatwg-fetch", "es6-promise"], function(require) {
