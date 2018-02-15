@@ -37,7 +37,7 @@ class CandleStickChartWithPriceMarkers extends React.Component {
 			<ChartCanvas height={400}
 				ratio={ratio}
 				width={width}
-				margin={{ left: 50, right: 50, top: 10, bottom: 30 }}
+				margin={{ left: 60, right: 60, top: 10, bottom: 30 }}
 				type={type}
 				seriesName="MSFT"
 				data={data}
@@ -50,6 +50,7 @@ class CandleStickChartWithPriceMarkers extends React.Component {
 				<Chart id={1} yExtents={d => [d.high, d.low]}>
 					<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 					<YAxis axisAt="left" orient="left" ticks={5} />
+					<YAxis axisAt="right" orient="right" ticks={5} />
 					<CandlestickSeries />
 
 					<PriceCoordinate
@@ -60,7 +61,7 @@ class CandleStickChartWithPriceMarkers extends React.Component {
 
 					<PriceCoordinate
 						at="right"
-						orient="left"
+						orient="right"
 						price={55}
 						displayFormat={format(".2f")} />
 

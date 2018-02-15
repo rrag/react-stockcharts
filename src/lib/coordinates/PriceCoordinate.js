@@ -79,13 +79,10 @@ PriceCoordinate.defaultProps = {
 function helper(props, moreProps) {
 	const { width } = moreProps;
 	const { chartConfig: { yScale } } = moreProps;
-	const lowerPrice = yScale.domain()[0];
-	const upperPrice = yScale.domain()[1];
-	const lowerYValue = yScale.range()[0];
-	const upperYValue = yScale.range()[1];
-	const rangeSlope = (lowerPrice - upperPrice) / (lowerYValue - upperYValue);
+	const [lowerYValue, upperYValue] = yScale.domain();
 
-	const { orient, at, rectWidth, rectHeight, displayFormat, dx, price } = props;
+	const { price } = props;
+	const { orient, at, rectWidth, rectHeight, displayFormat, dx } = props;
 	const { fill, opacity, fontFamily, fontSize, textFill, arrowWidth, lineOpacity, lineStroke } = props;
 
 	const x1 = 0, x2 = width;
@@ -94,18 +91,9 @@ function helper(props, moreProps) {
 		: 0;
 
 	const type = "horizontal";
-	const priceShowTolerance = 5;
 
-	let y = 0;
-	let show;
-
-	if (price < (upperPrice + priceShowTolerance)
-			|| price > (lowerPrice - priceShowTolerance)) {
-		y = (price / rangeSlope) + (lowerYValue - (lowerPrice / rangeSlope));
-		show = true;
-	}	else {
-		show = false;
-	}
+	const y = yScale(price);
+	const show = (price <= upperYValue && price >= lowerYValue);
 
 	const coordinate = displayFormat(yScale.invert(y));
 	const hideLine = false;
