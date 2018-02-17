@@ -43,12 +43,9 @@ export default function fitWidth(WrappedComponent, withRef = true, minWidth = 10
 		}
 		componentDidMount() {
 			window.addEventListener("resize", this.handleWindowResize);
-			const el = this.node;
-			const w = el.parentNode.clientWidth;
-
+			this.handleWindowResize();
 			/* eslint-disable react/no-did-mount-set-state */
 			this.setState({
-				width: Math.max(w, minWidth),
 				ratio: this.getRatio(),
 			});
 			/* eslint-enable react/no-did-mount-set-state */
@@ -60,9 +57,11 @@ export default function fitWidth(WrappedComponent, withRef = true, minWidth = 10
 			this.setState({
 				width: 0
 			}, () => {
-				const el = ReactDOM.findDOMNode(this.node); // eslint-disable-line react/no-find-dom-node
-				const w = el.parentNode.clientWidth;
-
+				const el = this.node;
+				const { width, paddingLeft, paddingRight } = window.getComputedStyle(el.parentNode);
+				
+				const w = parseFloat(width) - (parseFloat(paddingLeft) + parseFloat(paddingRight));
+	
 				this.setState({
 					width: Math.max(w, minWidth)
 				});
