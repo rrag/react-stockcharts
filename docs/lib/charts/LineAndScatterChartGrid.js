@@ -6,11 +6,8 @@ import { format } from "d3-format";
 import { timeFormat } from "d3-time-format";
 
 import { ChartCanvas, Chart } from "react-stockcharts";
-import {
-	ScatterSeries,
-	SquareMarker,
-	LineSeries,
-} from "react-stockcharts/lib/series";
+import { LineSeries, AreaSeries } from "react-stockcharts/lib/series";
+
 import { XAxis, YAxis } from "react-stockcharts/lib/axes";
 import {
 	CrossHairCursor,
@@ -28,7 +25,7 @@ import { last } from "react-stockcharts/lib/utils";
 class LineAndScatterChartGrid extends React.Component {
 	render() {
 		const { type, data: initialData, width, ratio, interpolation } = this.props;
-		const { gridProps } = this.props;
+		const { gridProps, seriesType } = this.props;
 		const margin = { left: 70, right: 70, top: 20, bottom: 30 };
 
 		const height = 400;
@@ -52,6 +49,9 @@ class LineAndScatterChartGrid extends React.Component {
 		const end = xAccessor(data[Math.max(0, data.length - 150)]);
 		const xExtents = [start, end];
 
+		const Series = seriesType === "line"
+			? LineSeries
+			: AreaSeries;
 		return (
 			<ChartCanvas height={height}
 				ratio={ratio}
@@ -90,12 +90,13 @@ class LineAndScatterChartGrid extends React.Component {
 						orient="right"
 						displayFormat={format(".2f")} />
 
-					<LineSeries
+					<Series
 						yAccessor={d => d.close}
 						interpolation={interpolation}
 						stroke="#ff7f0e"
+						fill="#ff7f0e"
 					/>
-					<OHLCTooltip forChart={1} origin={[-40, 0]}/>
+					<OHLCTooltip origin={[-40, 0]}/>
 				</Chart>
 
 				<CrossHairCursor />

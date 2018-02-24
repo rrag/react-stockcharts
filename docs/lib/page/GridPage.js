@@ -39,31 +39,38 @@ class GridPage extends React.Component {
 		this.handleGridOpacityChange = this.handleGridOpacityChange.bind(this);
 		this.handleGridWidthChange = this.handleGridWidthChange.bind(this);
 		this.handleInterpolationChange = this.handleInterpolationChange.bind(this);
+		this.handleSeriesTypeChange = this.handleSeriesTypeChange.bind(this);
 		this.state = {
 			tickStrokeDasharray: "Solid",
 			tickStrokeOpacity: 0.2,
 			tickStrokeWidth: 1,
 			interpolation: "none",
+			seriesType: "line",
 		};
 	}
 	handleGridChange(e) {
 		this.setState({
-		   tickStrokeDasharray: e.target.value
+			tickStrokeDasharray: e.target.value
 		});
 	}
 	handleGridOpacityChange(e) {
 		this.setState({
-		   tickStrokeOpacity: parseFloat(e.target.value)
+			tickStrokeOpacity: parseFloat(e.target.value)
 		});
 	}
 	handleInterpolationChange(e) {
 		this.setState({
-		   interpolation: e.target.value
+			interpolation: e.target.value
 		});
 	}
 	handleGridWidthChange(e) {
 		this.setState({
-		   tickStrokeWidth: parseInt(e.target.value)
+			tickStrokeWidth: parseInt(e.target.value)
+		});
+	}
+	handleSeriesTypeChange(e) {
+		this.setState({
+			seriesType: e.target.value
 		});
 	}
 	render() {
@@ -72,6 +79,7 @@ class GridPage extends React.Component {
 			tickStrokeOpacity,
 			tickStrokeWidth,
 			interpolation,
+			seriesType,
 		} = this.state;
 
 		return (
@@ -87,8 +95,10 @@ class GridPage extends React.Component {
 										tickStrokeWidth
 									}}
 									interpolation={options[interpolation]}
+									seriesType={seriesType}
 									data={this.props.someData}
-									type={type} />
+									type={type}
+								/>
 							)}
 						</TypeChooser>
 					</Section>
@@ -100,7 +110,7 @@ class GridPage extends React.Component {
 							{Object.keys(options)
 								.map((each, idx) => <option key={idx} value={each}>{each}</option>)}
 						</select>
-                        <hr />
+						<hr />
 					</Section>
 				</Row>
 				<Row>
@@ -136,8 +146,14 @@ class GridPage extends React.Component {
 						{" "}
 						Stroke width:
 						<input type="number" value={tickStrokeWidth} onChange={this.handleGridWidthChange} />
-                        <hr />
-                    </Section>
+						{" "}
+						Series:
+						<select onChange={this.handleSeriesTypeChange} value={seriesType}>
+							<option value="line">Line</option>
+							<option value="area">Area</option>
+						</select>
+						<hr />
+					</Section>
 				</Row>
 				<Row>
 					<Section colSpan={2}>
