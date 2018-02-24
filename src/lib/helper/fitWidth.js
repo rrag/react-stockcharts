@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
+// import ReactDOM from "react-dom";
 
 import { isDefined } from "../utils";
 
@@ -30,10 +30,10 @@ export default function fitWidth(WrappedComponent, withRef = true, minWidth = 10
 
 				const devicePixelRatio = window.devicePixelRatio || 1;
 				const backingStoreRatio = context.webkitBackingStorePixelRatio ||
-								context.mozBackingStorePixelRatio ||
-								context.msBackingStorePixelRatio ||
-								context.oBackingStorePixelRatio ||
-								context.backingStorePixelRatio || 1;
+					context.mozBackingStorePixelRatio ||
+					context.msBackingStorePixelRatio ||
+					context.oBackingStorePixelRatio ||
+					context.backingStorePixelRatio || 1;
 
 				const ratio = devicePixelRatio / backingStoreRatio;
 				// console.log("ratio = ", ratio);
@@ -59,9 +59,9 @@ export default function fitWidth(WrappedComponent, withRef = true, minWidth = 10
 			}, () => {
 				const el = this.node;
 				const { width, paddingLeft, paddingRight } = window.getComputedStyle(el.parentNode);
-				
+
 				const w = parseFloat(width) - (parseFloat(paddingLeft) + parseFloat(paddingRight));
-	
+
 				this.setState({
 					width: Math.max(w, minWidth)
 				});
