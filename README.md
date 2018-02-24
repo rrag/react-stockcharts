@@ -53,7 +53,7 @@ and it is simple to create your own indicator too
 
 ### Installation
 ```sh
-npm install  --save react-stockcharts@next
+npm install  --save react-stockcharts
 ```
 
 ### Documentation

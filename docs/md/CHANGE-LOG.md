@@ -1,3 +1,7 @@
+## v0.7.0
+Details available in https://github.com/rrag/react-stockcharts/issues/206
+
+
 ## v0.6.1
 
 #### New features
