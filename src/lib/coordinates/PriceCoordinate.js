@@ -52,6 +52,9 @@ PriceCoordinate.propTypes = {
 		PropTypes.string,
 		PropTypes.func,
 	]),
+	stroke: PropTypes.string,
+	strokeOpacity: PropTypes.number,
+	strokeWidth: PropTypes.number,
 	textFill: PropTypes.oneOfType([
 		PropTypes.string,
 		PropTypes.func,
@@ -74,6 +77,8 @@ PriceCoordinate.defaultProps = {
 	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 	fontSize: 13,
 	textFill: "#FFFFFF",
+	strokeOpacity: 1,
+	strokeWidth: 1
 };
 
 function helper(props, moreProps) {
@@ -81,7 +86,7 @@ function helper(props, moreProps) {
 	const { chartConfig: { yScale } } = moreProps;
 	const [lowerYValue, upperYValue] = yScale.domain();
 
-	const { price } = props;
+	const { price, stroke, strokeOpacity, strokeWidth } = props;
 	const { orient, at, rectWidth, rectHeight, displayFormat, dx } = props;
 	const { fill, opacity, fontFamily, fontSize, textFill, arrowWidth, lineOpacity, lineStroke } = props;
 
@@ -107,6 +112,9 @@ function helper(props, moreProps) {
 		hideLine,
 		lineOpacity,
 		lineStroke,
+		stroke,
+		strokeOpacity,
+		strokeWidth,
 		fill: functor(fill)(price),
 		textFill: functor(textFill)(price),
 		opacity, fontFamily, fontSize,
