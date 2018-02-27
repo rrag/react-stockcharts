@@ -113,6 +113,17 @@ export function drawOnCanvas(ctx, props) {
 	const edge = helper({ ...props, rectWidth: width });
 
 	if (edge === null) return;
+    
+    if (isDefined(edge.line)) {
+		const dashArray = getStrokeDasharray(edge.line.strokeDasharray).split(",").map(d => +d);
+		ctx.setLineDash(dashArray);
+		ctx.strokeStyle = hexToRGBA(edge.line.stroke, edge.line.opacity);
+		ctx.lineWidth = 1;
+		ctx.beginPath();
+		ctx.moveTo(edge.line.x1, edge.line.y1);
+		ctx.lineTo(edge.line.x2, edge.line.y2);
+		ctx.stroke();
+	}
 
 	if (isDefined(edge.coordinateBase)) {
 		const { rectWidth, rectHeight, rectRadius, arrowWidth } = edge.coordinateBase;
@@ -161,17 +172,6 @@ export function drawOnCanvas(ctx, props) {
 		ctx.fillStyle = edge.coordinate.textFill;
 		ctx.textAlign = edge.coordinate.textAnchor === "middle" ? "center" : edge.coordinate.textAnchor;
 		ctx.fillText(edge.coordinate.displayCoordinate, edge.coordinate.edgeXText, edge.coordinate.edgeYText);
-	}
-
-	if (isDefined(edge.line)) {
-		const dashArray = getStrokeDasharray(edge.line.strokeDasharray).split(",").map(d => +d);
-		ctx.setLineDash(dashArray);
-		ctx.strokeStyle = hexToRGBA(edge.line.stroke, edge.line.opacity);
-		ctx.lineWidth = 1;
-		ctx.beginPath();
-		ctx.moveTo(edge.line.x1, edge.line.y1);
-		ctx.lineTo(edge.line.x2, edge.line.y2);
-		ctx.stroke();
 	}
 }
 
