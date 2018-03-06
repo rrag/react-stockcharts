@@ -9,7 +9,7 @@ import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
 
 import { drawOnCanvas2, getBarsSVG2 } from "./StackedBarSeries";
-import { isDefined, isNotDefined, first, last, functor } from "../utils";
+import { isDefined, isNotDefined, first, last, functor, plotDataLengthBarWidth } from "../utils";
 
 class OverlayBarSeries extends Component {
 	constructor(props) {
@@ -19,19 +19,14 @@ class OverlayBarSeries extends Component {
 	}
 	drawOnCanvas(ctx, moreProps) {
 		const { yAccessor } = this.props;
-		const { xAccessor } = moreProps;
-		const { xScale, chartConfig: { yScale }, plotData } = moreProps;
-
-		const bars = getBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
+		const bars = getBars(this.props, moreProps, yAccessor);
 
 		drawOnCanvas2(this.props, ctx, bars);
 	}
 	renderSVG(moreProps) {
 		const { yAccessor } = this.props;
-		const { xAccessor } = moreProps;
-		const { xScale, chartConfig: { yScale }, plotData } = moreProps;
 
-		const bars = getBars(this.props, xAccessor, yAccessor, xScale, yScale, plotData);
+		const bars = getBars(this.props, moreProps, yAccessor);
 		return <g className="react-stockcharts-bar-series">
 			{getBarsSVG2(this.props, bars)}
 		</g>;
@@ -80,22 +75,21 @@ OverlayBarSeries.defaultProps = {
 	fill: "#4682B4",
 	opacity: 1,
 	widthRatio: 0.5,
+	width: plotDataLengthBarWidth,
 	clip: true,
 };
 
-function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData) {
-	const { baseAt, className, fill, stroke, widthRatio } = props;
+function getBars(props, moreProps, yAccessor) {
+	const { xScale, xAccessor, chartConfig: { yScale }, plotData } = moreProps;
+	const { baseAt, className, fill, stroke } = props;
 
 	const getClassName = functor(className);
 	const getFill = functor(fill);
 	const getBase = functor(baseAt);
+	const widthFunctor = functor(props.width);
 
-	const width = Math.abs(xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData))));
-
-
-	const bw = (width / (plotData.length - 1) * widthRatio);
-	const barWidth = Math.round(bw);
-	const offset = (barWidth === 1 ? 0 : 0.5 * bw);
+	const width = widthFunctor(props, moreProps);
+	const offset = Math.floor(0.5 * width);
 
 	// console.log(xScale.domain(), yScale.domain());
 
@@ -111,7 +105,7 @@ function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData) {
 				const y = yScale(yValue);
 				// console.log(yValue, y, xValue, x)
 				return {
-					width: barWidth,
+					width: offset * 2,
 					x: x,
 					y: y,
 					className: getClassName(d, i),

@@ -71,6 +71,7 @@ StackedBarSeries.defaultProps = {
 	fill: "#4682B4",
 	opacity: 0.5,
 	width: plotDataLengthBarWidth,
+	widthRatio: 0.8,
 	clip: true,
 	swapScales: false,
 };

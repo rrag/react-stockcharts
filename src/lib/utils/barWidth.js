@@ -18,6 +18,7 @@ export function plotDataLengthBarWidth(props, moreProps) {
 	const [dl, dr] = xScale.domain();
 
 	const width = totalWidth / Math.abs(dl - dr);
+
 	return width * widthRatio;
 }
 
