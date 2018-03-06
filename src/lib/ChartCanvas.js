@@ -48,8 +48,8 @@ function shouldResetChart(thisProps, nextProps) {
 	});
 }
 
-function getCursorStyle(useCrossHairStyleCursor) {
-	const style = `
+function getCursorStyle() {
+	const tooltipStyle = `
 	.react-stockcharts-grabbing-cursor {
 		pointer-events: all;
 		cursor: -moz-grabbing;
@@ -63,8 +63,7 @@ function getCursorStyle(useCrossHairStyleCursor) {
 	.react-stockcharts-tooltip-hover {
 		pointer-events: all;
 		cursor: pointer;
-	}`;
-	const tooltipStyle = `
+	}
 	.react-stockcharts-avoid-interaction {
 		pointer-events: none;
 	}
@@ -90,7 +89,7 @@ function getCursorStyle(useCrossHairStyleCursor) {
 	.react-stockcharts-ew-resize-cursor {
 		cursor: ew-resize;
 	}`;
-	return (<style type="text/css">{useCrossHairStyleCursor ? style + tooltipStyle : tooltipStyle}</style>);
+	return (<style type="text/css">{tooltipStyle}</style>);
 }
 
 function getDimensions(props) {
@@ -1056,7 +1055,8 @@ class ChartCanvas extends Component {
 
 		const interaction = isInteractionEnabled(xScale, xAccessor, plotData);
 
-		const cursor = getCursorStyle(useCrossHairStyleCursor && interaction);
+		const cursorStyle = useCrossHairStyleCursor && interaction;
+		const cursor = getCursorStyle();
 		return (
 			<div style={{ position: "relative", width, height }} className={className} onClick={onSelect}>
 				<CanvasContainer ref={this.saveCanvasContainerNode}
@@ -1077,6 +1077,7 @@ class ChartCanvas extends Component {
 					<g transform={`translate(${margin.left + 0.5}, ${margin.top + 0.5})`}>
 						<EventCapture
 							ref={this.saveEventCaptureNode}
+							useCrossHairStyleCursor={cursorStyle}
 							mouseMove={mouseMoveEvent && interaction}
 							zoom={zoomEvent && interaction}
 							pan={panEvent && interaction}

@@ -518,10 +518,10 @@ class EventCapture extends Component {
 		}
 	}
 	render() {
-		const { height, width, disableInteraction } = this.props;
+		const { height, width, disableInteraction, useCrossHairStyleCursor } = this.props;
 		const className = this.state.cursorOverrideClass != null
 			? this.state.cursorOverrideClass
-			: this.state.panInProgress
+			: useCrossHairStyleCursor ? "" : this.state.panInProgress
 				? "react-stockcharts-grabbing-cursor"
 				: "react-stockcharts-crosshair-cursor";
 
@@ -556,6 +556,7 @@ EventCapture.propTypes = {
 	pan: PropTypes.bool.isRequired,
 	panSpeedMultiplier: PropTypes.number.isRequired,
 	focus: PropTypes.bool.isRequired,
+	useCrossHairStyleCursor: PropTypes.bool.isRequired,
 
 	width: PropTypes.number.isRequired,
 	height: PropTypes.number.isRequired,
