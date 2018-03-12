@@ -48,17 +48,26 @@ function extentsWrapper(useWholeData, clamp, pointsPerPxThreshold, minPointsPerP
 			filteredData = getFilteredResponse(data, left, right, xAccessor);
 		}
 
-		if (clamp === "left" || clamp === "both" || clamp === true) {
-			clampedDomain = [
-				Math.max(left, xAccessor(head(data))),
-				clampedDomain[1]
-			];
+		if (typeof clamp === 'function') {
+			clampedDomain = clamp(clampedDomain, [xAccessor(head(data)), xAccessor(last(data))]);
+		} else {
+			if (clamp === "left" || clamp === "both" || clamp === true) {
+				clampedDomain = [
+					Math.max(left, xAccessor(head(data))),
+					clampedDomain[1]
+				];
+			}
+
+			if (clamp === "right" || clamp === "both" || clamp === true) {
+				clampedDomain = [
+					clampedDomain[0],
+					Math.min(right, xAccessor(last(data)))
+				];
+			}
 		}
-		if (clamp === "right" || clamp === "both" || clamp === true) {
-			clampedDomain = [
-				clampedDomain[0],
-				Math.min(right, xAccessor(last(data)))
-			];
+
+		if (clampedDomain !== inputDomain) {
+			filteredData = getFilteredResponse(data, clampedDomain[0], clampedDomain[1], xAccessor);
 		}
 
 		const realInputDomain = clampedDomain;

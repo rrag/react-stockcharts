@@ -1173,7 +1173,7 @@ ChartCanvas.propTypes = {
 	},
 	mouseMoveEvent: PropTypes.bool,
 	panEvent: PropTypes.bool,
-	clamp: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+	clamp: PropTypes.oneOfType([PropTypes.string, PropTypes.bool, PropTypes.func]),
 	zoomEvent: PropTypes.bool,
 	onSelect: PropTypes.func,
 	maintainPointsPerPixelOnResize: PropTypes.bool,
