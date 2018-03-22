@@ -1,5 +1,3 @@
-"use strict";
-
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
@@ -24,12 +22,12 @@ class CurrentCoordinate extends Component {
 	}
 	renderSVG(moreProps) {
 		const { className } = this.props;
-
 		const circle = helper(this.props, moreProps);
 		if (!circle) return null;
-
+		const fillColor = circle.fill instanceof Function ? circle.fill(moreProps.currentItem) : circle.fill;
+		
 		return (
-			<circle className={className} cx={circle.x} cy={circle.y} r={circle.r} fill={circle.fill} />
+			<circle className={className} cx={circle.x} cy={circle.y} r={circle.r} fill={fillColor} />
 		);
 	}
 	render() {
