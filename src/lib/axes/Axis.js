@@ -1,4 +1,4 @@
-
+"use strict";
 
 import React, { Component } from "react";
 import PropTypes from "prop-types";
@@ -12,8 +12,7 @@ import AxisZoomCapture from "./AxisZoomCapture";
 import { first, last, hexToRGBA, isNotDefined, isDefined, identity, zipper, strokeDashTypes, getStrokeDasharray } from "../utils";
 
 class Axis extends Component {
-	constructor(props) {
-		super(props);
+	constructor(props) {		super(props);
 		this.renderSVG = this.renderSVG.bind(this);
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 		this.saveNode = this.saveNode.bind(this);
@@ -98,6 +97,7 @@ Axis.propTypes = {
 	tickStrokeDasharray: PropTypes.oneOf(strokeDashTypes),
 	tickValues: PropTypes.array,
 	tickInterval: PropTypes.number,
+  tickIntervalFunction: PropTypes.func,
 	showDomain: PropTypes.bool,
 	showTicks: PropTypes.bool,
 	className: PropTypes.string,
@@ -126,11 +126,11 @@ function tickHelper(props, scale) {
 		orient, innerTickSize, tickFormat, tickPadding,
 		tickLabelFill, tickStrokeWidth, tickStrokeDasharray,
 		fontSize, fontFamily, fontWeight, showTicks, flexTicks,
-		showTickLabel,
+		showTickLabel
 	} = props;
 	const {
 		ticks: tickArguments, tickValues: tickValuesProp,
-		tickStroke, tickStrokeOpacity, tickInterval
+		tickStroke, tickStrokeOpacity, tickInterval, tickIntervalFunction
 	} = props;
 
 	// if (tickArguments) tickArguments = [tickArguments];
@@ -139,8 +139,12 @@ function tickHelper(props, scale) {
 	if (isDefined(tickValuesProp)) {
 		tickValues = tickValuesProp;
 	} else if (isDefined(tickInterval)) {
-		const [min, max] = scale.domain();
-		tickValues = d3Range(min, max, (max - min) / tickInterval);
+    const [min, max] = scale.domain();
+    const baseTickValues = d3Range(min, max, (max - min) / tickInterval);
+
+    tickValues = tickIntervalFunction
+      ? tickIntervalFunction(min, max, tickInterval)
+      : baseTickValues
 	} else if (isDefined(scale.ticks)) {
 		tickValues = scale.ticks(tickArguments, flexTicks);
 	} else {
