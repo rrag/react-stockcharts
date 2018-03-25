@@ -32,8 +32,7 @@ function Triangle(props) {
 			strokeWidth={strokeWidth}
 			fillOpacity={opacity}
 			fill={fillColor}
-	        transform={rotation != 0 ? `rotate(${ rotation }, ${ x }, ${ y })` : null}
-
+			transform={rotation !== 0 ? `rotate(${ rotation }, ${ x }, ${ y })` : null}
 		/>
 	);
 }
@@ -101,7 +100,7 @@ Triangle.drawOnCanvasWithNoStateChange = (props, point, ctx) => {
 
 	// TODO: rotation does not work
 	// example: https://gist.github.com/geoffb/6392450
-	if ( rotationDeg !== null && rotationDeg != 0 ) {
+	if ( rotationDeg !== null && rotationDeg !== 0 ) {
 		ctx.save();
 		ctx.translate(x, y);
 		ctx.rotate(rotationDeg * Math.PI / 180); // 45 degrees
