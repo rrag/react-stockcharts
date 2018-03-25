@@ -23,6 +23,16 @@ function AreaSeries(props) {
 
 	return (
 		<g className={className}>
+			<AreaOnlySeries
+				yAccessor={yAccessor}
+				interpolation={interpolation}
+				base={baseAt}
+				fill={fill}
+				opacity={opacity}
+				style={style}
+				canvasClip={canvasClip}
+				stroke="none"
+			/>
 			<LineSeries
 				yAccessor={yAccessor}
 				stroke={stroke}
@@ -34,16 +44,6 @@ function AreaSeries(props) {
 				canvasClip={canvasClip}
 				fill="none"
 				hoverHighlight={false}
-			/>
-			<AreaOnlySeries
-				yAccessor={yAccessor}
-				interpolation={interpolation}
-				base={baseAt}
-				fill={fill}
-				opacity={opacity}
-				style={style}
-				canvasClip={canvasClip}
-				stroke="none"
 			/>
 		</g>
 	);
