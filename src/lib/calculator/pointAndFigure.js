@@ -1,4 +1,4 @@
-"use strict";
+
 
 import { isNotDefined } from "../utils";
 import { PointAndFigure as defaultOptions } from "./defaultOptionsForComputation";

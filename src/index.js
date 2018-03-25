@@ -1,4 +1,4 @@
-"use strict";
+
 
 // common components
 export { default as ChartCanvas } from "./lib/ChartCanvas";

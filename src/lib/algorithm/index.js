@@ -1,4 +1,4 @@
-"use strict";
+
 
 import { merge, slidingWindow, identity } from "../utils";
 

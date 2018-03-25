@@ -1,4 +1,4 @@
-"use strict";
+
 
 
 import { scaleOrdinal, schemeCategory10 } from  "d3-scale";

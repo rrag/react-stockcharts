@@ -1,4 +1,3 @@
-"use strict";
 import React from "react";
 
 import Row from "lib/row";

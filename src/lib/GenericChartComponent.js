@@ -1,4 +1,4 @@
-"use strict";
+
 
 import PropTypes from "prop-types";
 import GenericComponent from "./GenericComponent";

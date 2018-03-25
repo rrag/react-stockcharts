@@ -1,4 +1,4 @@
-"use strict";
+
 
 
 export { default as Annotate } from "./Annotate";

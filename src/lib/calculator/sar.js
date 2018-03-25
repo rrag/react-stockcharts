@@ -1,4 +1,4 @@
-"use strict";
+
 
 import { mappedSlidingWindow, isNotDefined, isDefined } from "../utils";
 import { SAR as defaultOptions } from "./defaultOptionsForComputation";

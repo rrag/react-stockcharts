@@ -1,4 +1,4 @@
-"use strict";
+
 
 import { head, path, isDefined, isNotDefined } from "../utils";
 import { Change as defaultOptions } from "./defaultOptionsForComputation";

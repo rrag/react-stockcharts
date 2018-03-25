@@ -1,4 +1,4 @@
-"use strict";
+
 
 /* an extension to d3.zip so we call a function instead of an array */
 

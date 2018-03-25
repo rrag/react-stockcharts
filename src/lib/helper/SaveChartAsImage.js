@@ -1,4 +1,4 @@
-"use strict";
+
 
 import saveAsPng from "save-svg-as-png";
 import { isDefined } from "../utils";

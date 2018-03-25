@@ -1,4 +1,4 @@
-"use strict";
+
 
 import { heikinAshi } from "../calculator";
 import baseIndicator from "./baseIndicator";

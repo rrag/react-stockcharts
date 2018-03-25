@@ -1,4 +1,4 @@
-"use strict";
+
 
 import { merge } from "d3-array";
 

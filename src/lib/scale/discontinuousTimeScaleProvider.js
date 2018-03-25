@@ -1,4 +1,4 @@
-"use strict";
+
 
 import { timeFormat, timeFormatDefaultLocale } from "d3-time-format";
 // import { map as d3Map } from "d3-collection";

@@ -1,4 +1,4 @@
-"use strict";
+
 
 import { mappedSlidingWindow, identity } from "../utils";
 

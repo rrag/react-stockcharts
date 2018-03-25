@@ -1,4 +1,4 @@
-"use strict";
+
 
 import { format } from "d3-format";
 import React, { Component } from "react";

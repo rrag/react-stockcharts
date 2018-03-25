@@ -1,4 +1,4 @@
-"use strict";
+
 
 import { rebind, merge } from "../utils";
 import { elderRay } from "../calculator";

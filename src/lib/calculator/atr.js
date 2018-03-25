@@ -1,4 +1,4 @@
-"use strict";
+
 
 import { sum } from "d3-array";
 

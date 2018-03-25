@@ -1,4 +1,4 @@
-"use strict";
+
 
 import forceIndex from "./forceIndex";
 import ema from "./ema";

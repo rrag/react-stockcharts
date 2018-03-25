@@ -1,4 +1,4 @@
-"use strict";
+
 
 import { rebind, isDefined, isNotDefined, merge, slidingWindow } from "../utils";
 

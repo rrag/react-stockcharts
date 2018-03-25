@@ -1,4 +1,4 @@
-"use strict";
+
 
 export const BollingerBand = {
 	windowSize: 20,

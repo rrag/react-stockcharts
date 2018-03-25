@@ -1,4 +1,4 @@
-"use strict";
+
 
 import { nest } from "d3-collection";
 import React, { Component } from "react";

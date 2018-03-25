@@ -1,4 +1,4 @@
-"use strict";
+
 
 import { slidingWindow, path } from "../utils";
 import { ForceIndex as defaultOptions } from "./defaultOptionsForComputation";

@@ -1,4 +1,4 @@
-"use strict";
+
 
 import { set, map } from "d3-collection";
 import { ascending } from "d3-array";

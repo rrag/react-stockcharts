@@ -1,4 +1,4 @@
-"use strict";
+
 
 import { merge, isNotDefined, path, functor } from "../utils";
 import atr from "./atr";

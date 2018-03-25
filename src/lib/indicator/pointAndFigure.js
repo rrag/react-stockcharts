@@ -1,4 +1,4 @@
-"use strict";
+
 
 import { rebind } from "../utils";
 

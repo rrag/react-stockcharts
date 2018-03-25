@@ -1,4 +1,4 @@
-"use strict";
+
 
 import noop from "./noop";
 import identity from "./identity";

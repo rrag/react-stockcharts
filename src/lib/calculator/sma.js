@@ -1,4 +1,4 @@
-"use strict";
+
 
 import { mean } from "d3-array";
 
