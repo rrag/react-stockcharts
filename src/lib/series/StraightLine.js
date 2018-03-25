@@ -50,18 +50,13 @@ class StraightLine extends Component {
 
 		const lineCoordinates = getLineCoordinates(type, xScale, yScale, xValue, yValue, width, height);
 
-		/*
-		type === "horizontal"
-			? { x1: xScale(first), y1: yScale(yValue), x2: xScale(last), y2: yScale(yValue) }
-			: { x1: xScale(xValue), y1: yScale(0), x2: xScale(xValue), y2: yScale(height) };*/
-
 		return (
 			<line
 				className={className}
 				strokeDasharray={getStrokeDasharray(strokeDasharray)}
 				stroke={stroke}
 				strokeWidth={strokeWidth}
-				opacity={opacity}
+				strokeOpacity={opacity}
 				{...lineCoordinates}
 			/>
 		);
@@ -70,8 +65,8 @@ class StraightLine extends Component {
 
 function getLineCoordinates(type, xScale, yScale, xValue, yValue, width, height) {
 	return type === "horizontal"
-		? { x1: 0, y1: yScale(yValue), x2: width, y2: yScale(yValue) }
-		: { x1: xScale(xValue), y1: 0, x2: xScale(xValue), y2: height };
+		? { x1: 0, y1: Math.round(yScale(yValue)), x2: width, y2: Math.round(yScale(yValue)) }
+		: { x1: Math.round(xScale(xValue)), y1: 0, x2: Math.round(xScale(xValue)), y2: height };
 }
 
 StraightLine.propTypes = {

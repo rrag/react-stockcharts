@@ -14,22 +14,32 @@ function AreaSeries(props) {
 		strokeWidth,
 		fill,
 		interpolation,
+		style,
+		canvasClip,
 	} = props;
 
 	return (
 		<g className={className}>
 			<LineSeries
 				yAccessor={yAccessor}
-				stroke={stroke} fill="none"
+				stroke={stroke}
 				strokeWidth={strokeWidth}
 				interpolation={interpolation}
-				hoverHighlight={false} />
+				style={style}
+				canvasClip={canvasClip}
+				fill="none"
+				hoverHighlight={false}
+			/>
 			<AreaOnlySeries
 				yAccessor={yAccessor}
 				interpolation={interpolation}
 				base={baseAt}
-				stroke="none" fill={fill}
-				opacity={opacity} />
+				fill={fill}
+				opacity={opacity}
+				style={style}
+				canvasClip={canvasClip}
+				stroke="none"
+			/>
 		</g>
 	);
 }
@@ -43,6 +53,8 @@ AreaSeries.propTypes = {
 	yAccessor: PropTypes.func.isRequired,
 	baseAt: PropTypes.func,
 	interpolation: PropTypes.func,
+	canvasClip: PropTypes.func,
+	style: PropTypes.object,
 };
 
 AreaSeries.defaultProps = {
