@@ -1,5 +1,3 @@
-"use strict";
-
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { forceSimulation, forceX, forceCollide } from "d3-force";
@@ -12,7 +10,8 @@ import AxisZoomCapture from "./AxisZoomCapture";
 import { first, last, hexToRGBA, isNotDefined, isDefined, identity, zipper, strokeDashTypes, getStrokeDasharray } from "../utils";
 
 class Axis extends Component {
-	constructor(props) {		super(props);
+	constructor(props) {		
+        super(props);
 		this.renderSVG = this.renderSVG.bind(this);
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 		this.saveNode = this.saveNode.bind(this);
