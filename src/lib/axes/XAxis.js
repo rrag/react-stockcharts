@@ -52,7 +52,7 @@ XAxis.defaultProps = {
 	ticks: 10,
 	outerTickSize: 0,
 	fill: "none",
-	stroke: "#000000", // x axis stroke coloe
+	stroke: "#000000", // x axis stroke color
 	strokeWidth: 1,
 	opacity: 1, // x axis opacity
 	domainClassName: "react-stockcharts-axis-domain",

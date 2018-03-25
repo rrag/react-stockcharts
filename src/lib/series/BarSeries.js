@@ -14,7 +14,7 @@ import StackedBarSeries, {
 	identityStack
 } from "./StackedBarSeries";
 
-import { functor } from "../utils";
+import { functor, isDefined } from "../utils";
 
 class BarSeries extends Component {
 	constructor(props) {
@@ -116,6 +116,7 @@ function getBars(props, moreProps) {
 	const offset = Math.floor(0.5 * width);
 
 	const bars = plotData
+		.filter(d => isDefined(yAccessor(d)))
 		.map(d => {
 			const yValue = yAccessor(d);
 			let y = yScale(yValue);

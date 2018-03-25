@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas, getMouseCanvas } from "../GenericComponent";
 
-import { first, last, hexToRGBA } from "../utils";
+import { isDefined, first, last, hexToRGBA } from "../utils";
 
 class SARSeries extends Component {
 	constructor(props) {
@@ -55,10 +55,12 @@ class SARSeries extends Component {
 		// console.log(moreProps);
 
 		return <g className={className}>
-			{plotData.map((each, idx) => {
-				return <circle key={idx} cx={xScale(xAccessor(each))}
-					cy={yScale(yAccessor(each))} r={3} fill="green" />;
-			})}
+			{plotData
+				.filter(each => isDefined(yAccessor(each)))
+				.map((each, idx) => {
+					return <circle key={idx} cx={xScale(xAccessor(each))}
+						cy={yScale(yAccessor(each))} r={3} fill="green" />;
+				})}
 		</g>;
 	}
 
