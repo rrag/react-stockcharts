@@ -12,6 +12,7 @@ import {
 	getClosestItemIndexes,
 	strokeDashTypes,
 	getStrokeDasharray,
+	hexToRGBA,
 } from "../utils";
 
 class LineSeries extends Component {
@@ -66,6 +67,7 @@ class LineSeries extends Component {
 		const {
 			yAccessor,
 			stroke,
+			strokeOpacity,
 			strokeWidth,
 			hoverStrokeWidth,
 			defined,
@@ -86,7 +88,7 @@ class LineSeries extends Component {
 
 		ctx.lineWidth = hovering ? hoverStrokeWidth : strokeWidth;
 
-		ctx.strokeStyle = stroke;
+		ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
 		ctx.setLineDash(getStrokeDasharray(strokeDasharray).split(","));
 
 		const dataSeries = d3Line()
@@ -109,7 +111,7 @@ class LineSeries extends Component {
 		}
 	}
 	renderSVG(moreProps) {
-		const { yAccessor, stroke, strokeWidth, hoverStrokeWidth, defined, strokeDasharray } = this.props;
+		const { yAccessor, stroke, strokeOpacity, strokeWidth, hoverStrokeWidth, defined, strokeDasharray } = this.props;
 		const { connectNulls } = this.props;
 		const { interpolation, style } = this.props;
 		const { xAccessor, chartConfig } = moreProps;
@@ -137,6 +139,7 @@ class LineSeries extends Component {
 				className={`${className} ${stroke ? "" : " line-stroke"}`}
 				d={d}
 				stroke={stroke}
+				strokeOpacity={strokeOpacity}
 				strokeWidth={hovering ? hoverStrokeWidth : strokeWidth}
 				strokeDasharray={getStrokeDasharray(strokeDasharray)}
 				fill={fill}
@@ -187,6 +190,7 @@ function segment(points, ctx) {
 LineSeries.propTypes = {
 	className: PropTypes.string,
 	strokeWidth: PropTypes.number,
+	strokeOpacity: PropTypes.number,
 	stroke: PropTypes.string,
 	hoverStrokeWidth: PropTypes.number,
 	fill: PropTypes.string,
@@ -207,6 +211,7 @@ LineSeries.propTypes = {
 LineSeries.defaultProps = {
 	className: "line ",
 	strokeWidth: 1,
+	strokeOpacity: 1,
 	hoverStrokeWidth: 4,
 	fill: "none",
 	stroke: "#4682B4",

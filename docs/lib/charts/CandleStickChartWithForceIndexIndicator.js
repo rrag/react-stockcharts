@@ -9,6 +9,7 @@ import { ChartCanvas, Chart } from "react-stockcharts";
 import {
 	BarSeries,
 	AreaSeries,
+	AlternatingFillAreaSeries,
 	CandlestickSeries,
 	StraightLine,
 } from "react-stockcharts/lib/series";
@@ -123,7 +124,8 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 						yAccessor={fi.accessor()}
 						yLabel="ForceIndex (1)"
 						yDisplayFormat={format(".4s")}
-						origin={[-40, 15]}/>
+						origin={[-40, 15]}
+					/>
 				</Chart>
 				<Chart id={4} height={100}
 					yExtents={fiEMA13.accessor()}
@@ -142,14 +144,19 @@ class CandleStickChartWithForceIndexIndicator extends React.Component {
 						orient="right"
 						displayFormat={format(".4s")} />
 
-					<AreaSeries baseAt={scale => scale(0)} yAccessor={fiEMA13.accessor()} />
+					{/* <AreaSeries baseAt={scale => scale(0)} yAccessor={fiEMA13.accessor()} /> */}
+					<AlternatingFillAreaSeries
+						baseAt={0}
+						yAccessor={fiEMA13.accessor()}
+					/>
 					<StraightLine yValue={0} />
 
 					<SingleValueTooltip
 						yAccessor={fiEMA13.accessor()}
 						yLabel={`ForceIndex (${fiEMA13.options().windowSize})`}
 						yDisplayFormat={format(".4s")}
-						origin={[-40, 15]}/>
+						origin={[-40, 15]}
+					/>
 				</Chart>
 				<CrossHairCursor />
 			</ChartCanvas>

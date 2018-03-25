@@ -1,4 +1,5 @@
 export { default as AreaSeries } from "./AreaSeries";
+export { default as AlternatingFillAreaSeries } from "./AlternatingFillAreaSeries";
 export { default as AreaOnlySeries } from "./AreaOnlySeries";
 export { default as ScatterSeries } from "./ScatterSeries";
 export { default as CircleMarker } from "./CircleMarker";
