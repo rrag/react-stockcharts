@@ -28,6 +28,7 @@ import {
 	MovingAverageTooltip,
 	BollingerBandTooltip,
 	StochasticTooltip,
+	GroupTooltip,
 } from "react-stockcharts/lib/tooltip";
 import { ema, stochasticOscillator, bollingerBand } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
@@ -152,7 +153,7 @@ class CandleStickChartWithDarkTheme extends React.Component {
 						yAccessor={d => d.close} fill={d => d.close > d.open ? "#6BA583" : "#DB0000"}/>
 
 					<OHLCTooltip origin={[-40, -10]}/>
-					<MovingAverageTooltip
+					{/* <MovingAverageTooltip
 						onClick={e => console.log(e)}
 						origin={[-38, 15]}
 						options={[
@@ -167,6 +168,26 @@ class CandleStickChartWithDarkTheme extends React.Component {
 								type: ema50.type(),
 								stroke: ema50.stroke(),
 								windowSize: ema50.options().windowSize,
+							},
+						]}
+					/> */}
+					<GroupTooltip
+						layout="vertical"
+						origin={[-38, 15]}
+						verticalSize={20}
+						onClick={e => console.log(e)}
+						options={[
+							{
+								yAccessor: ema20.accessor(),
+								yLabel: `${ema20.type()}(${ema20.options().windowSize})`,
+								valueFill: ema20.stroke(),
+								withShape: true,
+							},
+							{
+								yAccessor: ema50.accessor(),
+								yLabel: `${ema50.type()}(${ema50.options().windowSize})`,
+								valueFill: ema50.stroke(),
+								withShape: true,
 							},
 						]}
 					/>
