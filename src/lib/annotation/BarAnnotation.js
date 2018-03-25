@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { functor } from "../utils";
 
-class TickAnnotation extends Component {
+class BarAnnotation extends Component {
 	constructor(props) {
 		super(props);
 		this.handleClick = this.handleClick.bind(this);
@@ -87,7 +87,7 @@ function getArrowForTextIcon(type) {
     return arrows[type];
 }
 
-TickAnnotation.propTypes = {
+BarAnnotation.propTypes = {
 	className: PropTypes.string,
 	path: PropTypes.func,
 	onClick: PropTypes.func,
@@ -117,8 +117,8 @@ TickAnnotation.propTypes = {
     textIconAnchor: PropTypes.string,
 };
 
-TickAnnotation.defaultProps = {
-	className: "react-stockcharts-TickAnnotation",
+BarAnnotation.defaultProps = {
+	className: "react-stockcharts-BarAnnotation",
 	opacity: 1,
 	fill: "#000",
 	textAnchor: "middle",
@@ -131,4 +131,4 @@ TickAnnotation.defaultProps = {
 	x: ({ xScale, xAccessor, datum }) => xScale(xAccessor(datum)),
 };
 
-export default TickAnnotation;
+export default BarAnnotation;
