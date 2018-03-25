@@ -90,7 +90,8 @@ class RSISeries extends Component {
 		);
 	}
 	render() {
-		const { className, stroke, opacity, strokeDasharray } = this.props;
+        const { className, stroke, opacity, strokeDasharray, strokeWidth } = this.props;
+
 		const { yAccessor } = this.props;
 		const { overSold, middle, overBought } = this.props;
 
@@ -127,6 +128,7 @@ class RSISeries extends Component {
 					className={className}
 					yAccessor={yAccessor}
 					stroke={stroke.insideThreshold || stroke.line}
+                     strokeWidth={strokeWidth}
 					strokeDasharray={strokeDasharray.line}
 				/>
 				<LineSeries
@@ -164,6 +166,7 @@ RSISeries.propTypes = {
 		top: PropTypes.oneOf(strokeDashTypes),
 		middle: PropTypes.oneOf(strokeDashTypes),
 		bottom: PropTypes.oneOf(strokeDashTypes),
+     strokeWidth: PropTypes.number,
 	}).isRequired,
 
 	overSold: PropTypes.number.isRequired,
@@ -192,6 +195,7 @@ RSISeries.defaultProps = {
 		middle: "ShortDash",
 		bottom: "ShortDash",
 	},
+   	strokeWidth: 1,
 	overSold: 70,
 	middle: 50,
 	overBought: 30,
