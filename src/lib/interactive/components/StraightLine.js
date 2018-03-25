@@ -195,18 +195,18 @@ export function generateLine({
 	const b /* y intercept */ = getYIntercept(m, start);
 
 	switch (type) {
-	case "XLINE":
-		return getXLineCoordinates({
-			type, start, end, xScale, yScale, m, b
-		});
-	case "RAY":
-		return getRayCoordinates({
-			type, start, end, xScale, yScale, m, b
-		});
-	case "LINE":
-		return getLineCoordinates({
-			type, start, end, xScale, yScale, m, b
-		});
+		case "XLINE":
+			return getXLineCoordinates({
+				type, start, end, xScale, yScale, m, b
+			});
+		case "RAY":
+			return getRayCoordinates({
+				type, start, end, xScale, yScale, m, b
+			});
+		case "LINE":
+			return getLineCoordinates({
+				type, start, end, xScale, yScale, m, b
+			});
 	}
 }
 

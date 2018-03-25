@@ -80,145 +80,145 @@ class GenericComponent extends Component {
 		if (!this.shouldTypeProceed(type, this.moreProps)) return;
 
 		switch (type) {
-		case "zoom":
-		case "mouseenter":
+			case "zoom":
+			case "mouseenter":
 			// DO NOT DRAW FOR THESE EVENTS
-			break;
-		case "mouseleave":
+				break;
+			case "mouseleave":
 
-			break;
-		case "contextmenu": {
-			if (this.props.onContextMenu) {
-				this.props.onContextMenu(this.getMoreProps(), e);
-			}
-			if (
-				this.moreProps.hovering
+				break;
+			case "contextmenu": {
+				if (this.props.onContextMenu) {
+					this.props.onContextMenu(this.getMoreProps(), e);
+				}
+				if (
+					this.moreProps.hovering
 				&& this.props.onContextMenuWhenHover
-			) {
-				this.props.onContextMenuWhenHover(this.getMoreProps(), e);
+				) {
+					this.props.onContextMenuWhenHover(this.getMoreProps(), e);
+				}
+				break;
 			}
-			break;
-		}
-		case "mousedown": {
-			if (this.props.onMouseDown) {
-				this.props.onMouseDown(this.getMoreProps(), e);
+			case "mousedown": {
+				if (this.props.onMouseDown) {
+					this.props.onMouseDown(this.getMoreProps(), e);
+				}
+				break;
 			}
-			break;
-		}
-		case "click": {
-			const moreProps = this.getMoreProps();
-			if (this.moreProps.hovering) {
+			case "click": {
+				const moreProps = this.getMoreProps();
+				if (this.moreProps.hovering) {
 				// console.error("TODO use this only for SAR, Line series")
-				this.props.onClickWhenHover(moreProps, e);
-			} else {
-				this.props.onClickOutside(moreProps, e);
+					this.props.onClickWhenHover(moreProps, e);
+				} else {
+					this.props.onClickOutside(moreProps, e);
+				}
+				if (this.props.onClick) {
+					this.props.onClick(moreProps, e);
+				}
+				break;
 			}
-			if (this.props.onClick) {
-				this.props.onClick(moreProps, e);
-			}
-			break;
-		}
-		case "mousemove": {
+			case "mousemove": {
 
-			const prevHover = this.moreProps.hovering;
-			this.moreProps.hovering = this.isHover(e);
+				const prevHover = this.moreProps.hovering;
+				this.moreProps.hovering = this.isHover(e);
 
-			const { amIOnTop, setCursorClass } = this.context;
+				const { amIOnTop, setCursorClass } = this.context;
 
-			if (this.moreProps.hovering
+				if (this.moreProps.hovering
 					&& !this.props.selected
 					&& !prevHover
 					&& isDefined(this.props.onHover)) {
-				setCursorClass("react-stockcharts-pointer-cursor");
-				this.iSetTheCursorClass = true;
-			} else if (this.moreProps.hovering
+					setCursorClass("react-stockcharts-pointer-cursor");
+					this.iSetTheCursorClass = true;
+				} else if (this.moreProps.hovering
 					&& this.props.selected
 					&& amIOnTop(this.suscriberId)) {
-				setCursorClass(this.props.interactiveCursorClass);
-				this.iSetTheCursorClass = true;
-			} else if (prevHover
+					setCursorClass(this.props.interactiveCursorClass);
+					this.iSetTheCursorClass = true;
+				} else if (prevHover
 					&& !this.moreProps.hovering
 					&& this.iSetTheCursorClass) {
-				this.iSetTheCursorClass = false;
-				setCursorClass(null);
-			}
-			const moreProps = this.getMoreProps();
-
-			if (this.moreProps.hovering && !prevHover) {
-				if (this.props.onHover) {
-					this.props.onHover(moreProps, e);
+					this.iSetTheCursorClass = false;
+					setCursorClass(null);
 				}
-			}
-			if (prevHover && !this.moreProps.hovering) {
-				if (this.props.onUnHover) {
-					this.props.onUnHover(moreProps, e);
+				const moreProps = this.getMoreProps();
+
+				if (this.moreProps.hovering && !prevHover) {
+					if (this.props.onHover) {
+						this.props.onHover(moreProps, e);
+					}
 				}
-			}
+				if (prevHover && !this.moreProps.hovering) {
+					if (this.props.onUnHover) {
+						this.props.onUnHover(moreProps, e);
+					}
+				}
 
-			if (this.props.onMouseMove) {
-				this.props.onMouseMove(moreProps, e);
+				if (this.props.onMouseMove) {
+					this.props.onMouseMove(moreProps, e);
+				}
+				break;
 			}
-			break;
-		}
-		case "dblclick": {
-			const moreProps = this.getMoreProps();
+			case "dblclick": {
+				const moreProps = this.getMoreProps();
 
-			if (this.props.onDoubleClick) {
-				this.props.onDoubleClick(moreProps, e);
-			}
-			if (
-				this.moreProps.hovering
+				if (this.props.onDoubleClick) {
+					this.props.onDoubleClick(moreProps, e);
+				}
+				if (
+					this.moreProps.hovering
 				&& this.props.onDoubleClickWhenHover
-			) {
-				this.props.onDoubleClickWhenHover(moreProps, e);
-			}
-			break;
-		}
-		case "pan": {
-			this.moreProps.hovering = false;
-			if (this.props.onPan) {
-				this.props.onPan(this.getMoreProps(), e);
-			}
-			break;
-		}
-		case "panend": {
-			if (this.props.onPanEnd) {
-				this.props.onPanEnd(this.getMoreProps(), e);
-			}
-			break;
-		}
-		case "dragstart": {
-			if (this.moreProps.hovering && this.props.selected) {
-				const { amIOnTop } = this.context;
-				if (amIOnTop(this.suscriberId)) {
-					this.dragInProgress = true;
-					this.props.onDragStart(this.getMoreProps(), e);
+				) {
+					this.props.onDoubleClickWhenHover(moreProps, e);
 				}
+				break;
 			}
-			this.someDragInProgress = true;
-			break;
-		}
-		case "drag": {
-			if (this.dragInProgress && this.props.onDrag) {
-				this.props.onDrag(this.getMoreProps(), e);
+			case "pan": {
+				this.moreProps.hovering = false;
+				if (this.props.onPan) {
+					this.props.onPan(this.getMoreProps(), e);
+				}
+				break;
 			}
-			break;
-		}
-		case "dragend": {
-			if (this.dragInProgress && this.props.onDragComplete) {
-				this.props.onDragComplete(this.getMoreProps(), e);
+			case "panend": {
+				if (this.props.onPanEnd) {
+					this.props.onPanEnd(this.getMoreProps(), e);
+				}
+				break;
 			}
-			this.dragInProgress = false;
-			this.someDragInProgress = false;
-			break;
-		}
-		case "dragcancel": {
-			if (this.dragInProgress || this.iSetTheCursorClass) {
-				const { setCursorClass } = this.context;
-				setCursorClass(null);
+			case "dragstart": {
+				if (this.moreProps.hovering && this.props.selected) {
+					const { amIOnTop } = this.context;
+					if (amIOnTop(this.suscriberId)) {
+						this.dragInProgress = true;
+						this.props.onDragStart(this.getMoreProps(), e);
+					}
+				}
+				this.someDragInProgress = true;
+				break;
 			}
-			break;
-		}
+			case "drag": {
+				if (this.dragInProgress && this.props.onDrag) {
+					this.props.onDrag(this.getMoreProps(), e);
+				}
+				break;
+			}
+			case "dragend": {
+				if (this.dragInProgress && this.props.onDragComplete) {
+					this.props.onDragComplete(this.getMoreProps(), e);
+				}
+				this.dragInProgress = false;
+				this.someDragInProgress = false;
+				break;
+			}
+			case "dragcancel": {
+				if (this.dragInProgress || this.iSetTheCursorClass) {
+					const { setCursorClass } = this.context;
+					setCursorClass(null);
+				}
+				break;
+			}
 		}
 	}
 	isHover(e) {
