@@ -9,7 +9,7 @@ import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
 
 import { drawOnCanvas2, getBarsSVG2 } from "./StackedBarSeries";
-import { isDefined, isNotDefined, first, last, functor, plotDataLengthBarWidth } from "../utils";
+import { isDefined, isNotDefined, first, functor, plotDataLengthBarWidth } from "../utils";
 
 class OverlayBarSeries extends Component {
 	constructor(props) {
