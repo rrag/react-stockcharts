@@ -10,8 +10,8 @@ import AxisZoomCapture from "./AxisZoomCapture";
 import { first, last, hexToRGBA, isNotDefined, isDefined, identity, zipper, strokeDashTypes, getStrokeDasharray } from "../utils";
 
 class Axis extends Component {
-	constructor(props) {		
-        super(props);
+	constructor(props) {
+		super(props);
 		this.renderSVG = this.renderSVG.bind(this);
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 		this.saveNode = this.saveNode.bind(this);
@@ -96,7 +96,7 @@ Axis.propTypes = {
 	tickStrokeDasharray: PropTypes.oneOf(strokeDashTypes),
 	tickValues: PropTypes.array,
 	tickInterval: PropTypes.number,
-  tickIntervalFunction: PropTypes.func,
+	tickIntervalFunction: PropTypes.func,
 	showDomain: PropTypes.bool,
 	showTicks: PropTypes.bool,
 	className: PropTypes.string,
@@ -138,12 +138,12 @@ function tickHelper(props, scale) {
 	if (isDefined(tickValuesProp)) {
 		tickValues = tickValuesProp;
 	} else if (isDefined(tickInterval)) {
-    const [min, max] = scale.domain();
-    const baseTickValues = d3Range(min, max, (max - min) / tickInterval);
+		const [min, max] = scale.domain();
+		const baseTickValues = d3Range(min, max, (max - min) / tickInterval);
 
-    tickValues = tickIntervalFunction
-      ? tickIntervalFunction(min, max, tickInterval)
-      : baseTickValues
+		tickValues = tickIntervalFunction
+			? tickIntervalFunction(min, max, tickInterval)
+			: baseTickValues;
 	} else if (isDefined(scale.ticks)) {
 		tickValues = scale.ticks(tickArguments, flexTicks);
 	} else {
