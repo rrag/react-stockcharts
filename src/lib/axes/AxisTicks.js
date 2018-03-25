@@ -109,12 +109,12 @@ AxisTicks.helper = (props, scale) => {
 
 	const ticks = isNotDefined(tickValues)
 		? (scale.ticks
-			? scale.ticks.apply(scale, tickArguments)
+			? scale.ticks(...tickArguments)
 			: scale.domain())
 		: tickValues;
 
 	const baseFormat = scale.tickFormat
-		? scale.tickFormat.apply(scale, tickArguments)
+		? scale.tickFormat(...tickArguments)
 		: identity;
 
 	const format = isNotDefined(tickFormat)
