@@ -57,13 +57,21 @@ class CandleStickChartWithPriceMarkers extends React.Component {
 						at="left"
 						orient="left"
 						price={60}
-						displayFormat={format(".2f")} />
+						displayFormat={format(".2f")}
+					/>
 
 					<PriceCoordinate
 						at="right"
 						orient="right"
 						price={55}
-						displayFormat={format(".2f")} />
+						stroke="#3490DC"
+						strokeWidth={1}
+						fill="#FFFFFF"
+						textFill="#22292F"
+						arrowWidth={7}
+						strokeDasharray="ShortDash"
+						displayFormat={format(".2f")}
+					/>
 
 				</Chart>
 			</ChartCanvas>

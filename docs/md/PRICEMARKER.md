@@ -14,13 +14,21 @@ To utilize this feature add one, or more, <PriceCoordinate> tags to a chart. See
     at="left"
     orient="left"
     price={60}
-    displayFormat={format(".2f")} />
+    displayFormat={format(".2f")}
+  />
 
   <PriceCoordinate
-      at="left"
-      orient="left"
-      price={55}
-      displayFormat={format(".2f")} />
+    at="right"
+    orient="right"
+    price={55}
+    stroke="#3490DC"
+    strokeWidth={1}
+    fill="#FFFFFF"
+    textFill="#22292F"
+    arrowWidth={7}
+    strokeDasharray="ShortDash"
+    displayFormat={format(".2f")}
+  />
   <CandlestickSeries />
 </Chart>
 

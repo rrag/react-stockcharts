@@ -4,6 +4,7 @@ import React from "react";
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 import CandleStickChartWithPriceMarkers from "lib/charts/CandleStickChartWithPriceMarkers";
 
@@ -13,7 +14,9 @@ class PriceMarkerPage extends React.Component {
 			<ContentSection title={PriceMarkerPage.title}>
 				<Row title="">
 					<Section colSpan={2}>
-						<CandleStickChartWithPriceMarkers data={this.props.someData} type="svg" />
+						<TypeChooser>
+							{(type) => <CandleStickChartWithPriceMarkers data={this.props.someData} type={type} />}
+						</TypeChooser>
 					</Section>
 				</Row>
 				<Row>

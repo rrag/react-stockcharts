@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import { drawOnCanvas, renderSVG } from "./EdgeCoordinateV3";
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
-import { functor } from "../utils";
+import { functor, strokeDashTypes } from "../utils";
 
 class PriceCoordinate extends Component {
 	constructor(props) {
@@ -52,6 +52,7 @@ PriceCoordinate.propTypes = {
 		PropTypes.string,
 		PropTypes.func,
 	]),
+	strokeDasharray: PropTypes.oneOf(strokeDashTypes),
 	stroke: PropTypes.string,
 	strokeOpacity: PropTypes.number,
 	strokeWidth: PropTypes.number,
@@ -78,7 +79,8 @@ PriceCoordinate.defaultProps = {
 	fontSize: 13,
 	textFill: "#FFFFFF",
 	strokeOpacity: 1,
-	strokeWidth: 1
+	strokeWidth: 1,
+	strokeDasharray: "Solid",
 };
 
 function helper(props, moreProps) {
@@ -86,7 +88,7 @@ function helper(props, moreProps) {
 	const { chartConfig: { yScale } } = moreProps;
 	const [lowerYValue, upperYValue] = yScale.domain();
 
-	const { price, stroke, strokeOpacity, strokeWidth } = props;
+	const { price, stroke, strokeDasharray, strokeOpacity, strokeWidth } = props;
 	const { orient, at, rectWidth, rectHeight, displayFormat, dx } = props;
 	const { fill, opacity, fontFamily, fontSize, textFill, arrowWidth, lineOpacity, lineStroke } = props;
 
@@ -112,6 +114,7 @@ function helper(props, moreProps) {
 		hideLine,
 		lineOpacity,
 		lineStroke,
+		lineStrokeDasharray: strokeDasharray,
 		stroke,
 		strokeOpacity,
 		strokeWidth,
