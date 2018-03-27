@@ -125,7 +125,7 @@ class RSISeries extends Component {
 					className={className}
 					yAccessor={yAccessor}
 					stroke={stroke.insideThreshold || stroke.line}
-          strokeWidth={insideStrokeWidth}
+                    strokeWidth={insideStrokeWidth}
 					strokeDasharray={strokeDasharray.line}
 				/>
 				<LineSeries
@@ -135,7 +135,7 @@ class RSISeries extends Component {
 					className={className}
 					yAccessor={yAccessor}
 					stroke={stroke.outsideThreshold || stroke.line}
-          strokeWidth={outsideStrokeWidth}
+                    strokeWidth={outsideStrokeWidth}
 					strokeDasharray={strokeDasharray.line}
 					/* fill={stroke.outsideThreshold || stroke.line} */
 				/>
@@ -165,8 +165,8 @@ RSISeries.propTypes = {
 		middle: PropTypes.oneOf(strokeDashTypes),
 		bottom: PropTypes.oneOf(strokeDashTypes),
 	}).isRequired,
-	outsideStrokeWidth: PropTypes.number,
-	insideStrokeWidth: PropTypes.number,
+	outsideStrokeWidth: PropTypes.number.isRequired,
+	insideStrokeWidth: PropTypes.number.isRequired,
 	overSold: PropTypes.number.isRequired,
 	middle: PropTypes.number.isRequired,
 	overBought: PropTypes.number.isRequired,
