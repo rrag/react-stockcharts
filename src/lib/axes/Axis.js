@@ -136,7 +136,11 @@ function tickHelper(props, scale) {
 
 	let tickValues;
 	if (isDefined(tickValuesProp)) {
-		tickValues = tickValuesProp;
+		if (typeof tickValuesProp === 'function') {
+			tickValues = tickValuesProp(scale.domain());
+		} else {
+			tickValues = tickValuesProp;
+		}
 	} else if (isDefined(tickInterval)) {
 		const [min, max] = scale.domain();
 		const baseTickValues = d3Range(min, max, (max - min) / tickInterval);
