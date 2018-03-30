@@ -94,7 +94,7 @@ Axis.propTypes = {
 	tickStrokeOpacity: PropTypes.number,
 	tickStrokeWidth: PropTypes.number,
 	tickStrokeDasharray: PropTypes.oneOf(strokeDashTypes),
-	tickValues: PropTypes.array,
+	tickValues: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
 	tickInterval: PropTypes.number,
 	tickIntervalFunction: PropTypes.func,
 	showDomain: PropTypes.bool,
