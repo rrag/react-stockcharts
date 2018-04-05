@@ -63,7 +63,7 @@ export default function fitWidth(WrappedComponent, withRef = true, minWidth = 10
 				const w = parseFloat(width) - (parseFloat(paddingLeft) + parseFloat(paddingRight));
 
 				this.setState({
-					width: Math.max(w, minWidth)
+					width: Math.round(Math.max(w, minWidth))
 				});
 			});
 		}

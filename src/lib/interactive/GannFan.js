@@ -9,7 +9,7 @@ import {
 	saveNodeType,
 	isHoverForInteractiveType,
 } from "./utils";
-import EachGannFan from "./hoc/EachGannFan";
+import EachGannFan from "./wrapper/EachGannFan";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
 import HoverTextNearMouse from "./components/HoverTextNearMouse";
 

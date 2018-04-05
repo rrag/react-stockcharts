@@ -9,7 +9,7 @@ import {
 	saveNodeType,
 	isHoverForInteractiveType,
 } from "./utils";
-import EachEquidistantChannel from "./hoc/EachEquidistantChannel";
+import EachEquidistantChannel from "./wrapper/EachEquidistantChannel";
 import { getSlope, getYIntercept } from "./components/StraightLine";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
 import HoverTextNearMouse from "./components/HoverTextNearMouse";

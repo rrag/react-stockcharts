@@ -12,7 +12,7 @@ import {
 	isHoverForInteractiveType,
 } from "./utils";
 
-import EachLinearRegressionChannel from "./hoc/EachLinearRegressionChannel";
+import EachLinearRegressionChannel from "./wrapper/EachLinearRegressionChannel";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
 import HoverTextNearMouse from "./components/HoverTextNearMouse";
 

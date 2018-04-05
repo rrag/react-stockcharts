@@ -12,7 +12,7 @@ import {
 	isHoverForInteractiveType,
 } from "./utils";
 
-import EachTrendLine from "./hoc/EachTrendLine";
+import EachTrendLine from "./wrapper/EachTrendLine";
 import StraightLine from "./components/StraightLine";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
 import HoverTextNearMouse from "./components/HoverTextNearMouse";
