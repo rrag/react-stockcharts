@@ -118,7 +118,11 @@ function helper(props, moreProps) {
 		bgHeight,
 	} = props;
 
-	const { mouseXY, height, width, show: mouseInsideCanvas } = moreProps;
+	const {
+		mouseXY,
+		chartConfig: { height, width },
+		show: mouseInsideCanvas
+	} = moreProps;
 
 	if (show && mouseInsideCanvas) {
 		const [x, y] = mouseXY;
