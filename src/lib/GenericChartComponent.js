@@ -57,7 +57,7 @@ class GenericChartComponent extends GenericComponent {
 		super.updateMoreProps(moreProps);
 		const { chartConfig: chartConfigList } = moreProps;
 
-		if (chartConfigList) {
+		if (chartConfigList && Array.isArray(chartConfigList)) {
 			const { chartId } = this.context;
 			const chartConfig = find(chartConfigList, each => each.id === chartId);
 			this.moreProps.chartConfig = chartConfig;

@@ -295,6 +295,8 @@ class GenericComponent extends Component {
 				during dragging / hover / click etc.
 				*/
 				&& chartCanvasType !== "svg") {
+
+			this.updateMoreProps(this.moreProps);
 			this.drawOnCanvas();
 		}
 	}
