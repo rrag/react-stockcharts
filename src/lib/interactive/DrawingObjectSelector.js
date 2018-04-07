@@ -16,8 +16,6 @@ class DrawingObjectSelector extends Component {
 		this.getInteraction = this.getInteraction.bind(this);
 	}
 	handleDoubleClick(moreProps, e) {
-		console.log("Double Click");
-
 		e.preventDefault();
 		const { onDoubleClick } = this.props;
 		const { enabled } = this.props;
