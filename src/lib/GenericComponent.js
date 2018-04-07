@@ -188,7 +188,7 @@ class GenericComponent extends Component {
 				break;
 			}
 			case "dragstart": {
-				if (this.moreProps.hovering && this.props.selected) {
+				if (this.getPanConditions().draggable) {
 					const { amIOnTop } = this.context;
 					if (amIOnTop(this.suscriberId)) {
 						this.dragInProgress = true;
@@ -227,8 +227,10 @@ class GenericComponent extends Component {
 			: false;
 	}
 	getPanConditions() {
-		const draggable = !!(this.props.selected
-			&& this.moreProps.hovering);
+		const draggable = (
+			!!(this.props.selected && this.moreProps.hovering)
+			|| (this.props.enableDragOnHover && this.moreProps.hovering)
+		);
 
 		return {
 			draggable,
@@ -385,6 +387,7 @@ GenericComponent.propTypes = {
 	interactiveCursorClass: PropTypes.string,
 
 	selected: PropTypes.bool.isRequired,
+	enableDragOnHover: PropTypes.bool.isRequired,
 	disablePan: PropTypes.bool.isRequired,
 
 	canvasToDraw: PropTypes.func.isRequired,
@@ -421,6 +424,7 @@ GenericComponent.defaultProps = {
 	edgeClip: false,
 	selected: false,
 	disablePan: false,
+	enableDragOnHover: false,
 
 	onClickWhenHover: noop,
 	onClickOutside: noop,
