@@ -16,7 +16,7 @@ class LineAndScatterChartPage extends React.Component {
 			<ContentSection title={LineAndScatterChartPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<TypeChooser ref="container">
+						<TypeChooser>
 							{(type) => (<LineAndScatterChart data={this.props.compareData} type={type} />)}
 						</TypeChooser>
 					</Section>
