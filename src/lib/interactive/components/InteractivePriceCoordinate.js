@@ -9,8 +9,6 @@ class InteractivePriceCoordinate extends Component {
 	constructor(props) {
 		super(props);
 
-		this.calculateTextWidth = true;
-
 		this.renderSVG = this.renderSVG.bind(this);
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 		this.isHover = this.isHover.bind(this);
@@ -18,14 +16,11 @@ class InteractivePriceCoordinate extends Component {
 	isHover(moreProps) {
 		const { onHover, selected } = this.props;
 
-		if (
-			isDefined(onHover)
-			&& isDefined(this.textWidth)
-			&& !this.calculateTextWidth
-		) {
+		if (isDefined(onHover)) {
 			const { x1, x2, y, rect } = helper(this.props, moreProps);
 			const { mouseXY: [mouseX, mouseY] } = moreProps;
 
+			console.log
 			if (
 				selected
 				&& mouseX >= rect.x
@@ -58,7 +53,7 @@ class InteractivePriceCoordinate extends Component {
 
 		const { selected, hovering } = this.props;
 
-		const { x1, x2, y, rect } = helper(this.props, moreProps, this.textWidth);
+		const { x1, x2, y, rect } = helper(this.props, moreProps);
 
 		ctx.fillStyle = hexToRGBA(bgFill, bgOpacity);
 		ctx.strokeStyle = textFill;
