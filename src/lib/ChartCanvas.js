@@ -547,8 +547,8 @@ class ChartCanvas extends Component {
 		this.triggerEvent("dragcancel");
 	}
 	handlePinchZoom(initialPinch, finalPinch, e) {
-		if (!this.waitingForAnimationFrame) {
-			this.waitingForAnimationFrame = true;
+		if (!this.waitingForPinchZoomAnimationFrame) {
+			this.waitingForPinchZoomAnimationFrame = true;
 			const state = this.pinchZoomHelper(initialPinch, finalPinch);
 
 			this.triggerEvent("pinchzoom", state, e);
@@ -558,7 +558,7 @@ class ChartCanvas extends Component {
 			requestAnimationFrame(() => {
 				this.clearBothCanvas();
 				this.draw({ trigger: "pinchzoom" });
-				this.waitingForAnimationFrame = false;
+				this.waitingForPinchZoomAnimationFrame = false;
 			});
 		}
 	}
@@ -833,8 +833,8 @@ class ChartCanvas extends Component {
 		}, e);
 	}
 	handleMouseMove(mouseXY, inputType, e) {
-		if (!this.waitingForAnimationFrame) {
-			this.waitingForAnimationFrame = true;
+		if (!this.waitingForMouseMoveAnimationFrame) {
+			this.waitingForMouseMoveAnimationFrame = true;
 
 			const { chartConfig, plotData, xScale, xAccessor } = this.state;
 			const currentCharts = getCurrentCharts(chartConfig, mouseXY);
@@ -858,7 +858,7 @@ class ChartCanvas extends Component {
 			requestAnimationFrame(() => {
 				this.clearMouseCanvas();
 				this.draw({ trigger: "mousemove" });
-				this.waitingForAnimationFrame = false;
+				this.waitingForMouseMoveAnimationFrame = false;
 			});
 		}
 	}
