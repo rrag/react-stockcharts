@@ -1,5 +1,3 @@
-
-
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import LineSeries from "./LineSeries";
@@ -90,7 +88,7 @@ class RSISeries extends Component {
 		);
 	}
 	render() {
-		const { className, stroke, opacity, strokeDasharray } = this.props;
+		const { className, stroke, opacity, strokeDasharray, outsideStrokeWidth, insideStrokeWidth } = this.props;
 		const { yAccessor } = this.props;
 		const { overSold, middle, overBought } = this.props;
 
@@ -127,6 +125,7 @@ class RSISeries extends Component {
 					className={className}
 					yAccessor={yAccessor}
 					stroke={stroke.insideThreshold || stroke.line}
+                    strokeWidth={insideStrokeWidth}
 					strokeDasharray={strokeDasharray.line}
 				/>
 				<LineSeries
@@ -136,6 +135,7 @@ class RSISeries extends Component {
 					className={className}
 					yAccessor={yAccessor}
 					stroke={stroke.outsideThreshold || stroke.line}
+                    strokeWidth={outsideStrokeWidth}
 					strokeDasharray={strokeDasharray.line}
 					/* fill={stroke.outsideThreshold || stroke.line} */
 				/>
@@ -165,7 +165,8 @@ RSISeries.propTypes = {
 		middle: PropTypes.oneOf(strokeDashTypes),
 		bottom: PropTypes.oneOf(strokeDashTypes),
 	}).isRequired,
-
+	outsideStrokeWidth: PropTypes.number.isRequired,
+	insideStrokeWidth: PropTypes.number.isRequired,
 	overSold: PropTypes.number.isRequired,
 	middle: PropTypes.number.isRequired,
 	overBought: PropTypes.number.isRequired,
@@ -192,6 +193,8 @@ RSISeries.defaultProps = {
 		middle: "ShortDash",
 		bottom: "ShortDash",
 	},
+	outsideStrokeWidth: 1,
+	insideStrokeWidth: 1,
 	overSold: 70,
 	middle: 50,
 	overBought: 30,
