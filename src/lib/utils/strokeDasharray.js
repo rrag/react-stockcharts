@@ -12,6 +12,14 @@ export const strokeDashTypes = [
 	"LongDashDotDot",
 ];
 
+export function getStrokeDasharrayCanvas(type) {
+	const a = getStrokeDasharray(type).split(",");
+
+	if (a.length === 1) return [];
+
+	return a.map(d => Number(d));
+
+}
 export const getStrokeDasharray = (type) => {
 	switch (type) {
 		default:
