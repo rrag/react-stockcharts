@@ -105,6 +105,7 @@ const INTERACTIVE = {
 		require("./lib/page/StandardDeviationChannelPage").default,
 		require("./lib/page/GannFanPage").default,
 		require("./lib/page/TextPage").default,
+		require("./lib/page/InteractiveAlertPage").default,
 		require("./lib/page/ClickHandlerCallbackPage").default,
 		require("./lib/page/BrushSupportPage").default,
 	]
