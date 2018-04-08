@@ -136,7 +136,7 @@ function tickHelper(props, scale) {
 
 	let tickValues;
 	if (isDefined(tickValuesProp)) {
-		if (typeof tickValuesProp === 'function') {
+		if (typeof tickValuesProp === "function") {
 			tickValues = tickValuesProp(scale.domain());
 		} else {
 			tickValues = tickValuesProp;
