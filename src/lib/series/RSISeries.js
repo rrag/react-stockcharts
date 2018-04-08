@@ -88,7 +88,7 @@ class RSISeries extends Component {
 		);
 	}
 	render() {
-		const { className, stroke, opacity, strokeDasharray, outsideStrokeWidth, insideStrokeWidth } = this.props;
+		const { className, stroke, opacity, strokeDasharray, strokeWidth } = this.props;
 		const { yAccessor } = this.props;
 		const { overSold, middle, overBought } = this.props;
 
@@ -105,18 +105,21 @@ class RSISeries extends Component {
 					opacity={opacity.top}
 					yValue={overSold}
 					strokeDasharray={strokeDasharray.top}
+					strokeWidth={strokeWidth.top}
 				/>
 				<StraightLine
 					stroke={stroke.middle}
 					opacity={opacity.middle}
 					yValue={middle}
 					strokeDasharray={strokeDasharray.middle}
+					strokeWidth={strokeWidth.middle}
 				/>
 				<StraightLine
 					stroke={stroke.bottom}
 					opacity={opacity.bottom}
 					yValue={overBought}
 					strokeDasharray={strokeDasharray.bottom}
+					strokeWidth={strokeWidth.bottom}
 				/>
 				<LineSeries
 					style={style1}
@@ -125,7 +128,7 @@ class RSISeries extends Component {
 					className={className}
 					yAccessor={yAccessor}
 					stroke={stroke.insideThreshold || stroke.line}
-                    strokeWidth={insideStrokeWidth}
+					strokeWidth={strokeWidth.insideThreshold}
 					strokeDasharray={strokeDasharray.line}
 				/>
 				<LineSeries
@@ -135,7 +138,7 @@ class RSISeries extends Component {
 					className={className}
 					yAccessor={yAccessor}
 					stroke={stroke.outsideThreshold || stroke.line}
-                    strokeWidth={outsideStrokeWidth}
+					strokeWidth={strokeWidth.outsideThreshold}
 					strokeDasharray={strokeDasharray.line}
 					/* fill={stroke.outsideThreshold || stroke.line} */
 				/>
@@ -165,8 +168,13 @@ RSISeries.propTypes = {
 		middle: PropTypes.oneOf(strokeDashTypes),
 		bottom: PropTypes.oneOf(strokeDashTypes),
 	}).isRequired,
-	outsideStrokeWidth: PropTypes.number.isRequired,
-	insideStrokeWidth: PropTypes.number.isRequired,
+	strokeWidth: PropTypes.shape({
+		outsideThreshold: PropTypes.number.isRequired,
+		insideThreshold: PropTypes.number.isRequired,
+		top: PropTypes.number.isRequired,
+		middle: PropTypes.number.isRequired,
+		bottom: PropTypes.number.isRequired,
+	}).isRequired,
 	overSold: PropTypes.number.isRequired,
 	middle: PropTypes.number.isRequired,
 	overBought: PropTypes.number.isRequired,
@@ -193,8 +201,13 @@ RSISeries.defaultProps = {
 		middle: "ShortDash",
 		bottom: "ShortDash",
 	},
-	outsideStrokeWidth: 1,
-	insideStrokeWidth: 1,
+	strokeWidth: {
+		outsideThreshold: 1,
+		insideThreshold: 1,
+		top: 1,
+		middle: 1,
+		bottom: 1,
+	},
 	overSold: 70,
 	middle: 50,
 	overBought: 30,
