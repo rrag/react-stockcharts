@@ -20,7 +20,6 @@ class InteractivePriceCoordinate extends Component {
 			const { x1, x2, y, rect } = helper(this.props, moreProps);
 			const { mouseXY: [mouseX, mouseY] } = moreProps;
 
-			console.log
 			if (
 				selected
 				&& mouseX >= rect.x

@@ -275,6 +275,10 @@ class GenericComponent extends Component {
 	componentWillUnmount() {
 		const { unsubscribe } = this.context;
 		unsubscribe(this.suscriberId);
+		if (this.iSetTheCursorClass) {
+			const { setCursorClass } = this.context;
+			setCursorClass(null);
+		}
 	}
 	componentDidMount() {
 		this.componentDidUpdate(this.props);
@@ -285,9 +289,13 @@ class GenericComponent extends Component {
 
 		if (prevProps.selected !== selected) {
 			const { setCursorClass } = this.context;
-			setCursorClass((selected && this.moreProps.hovering)
-				? interactiveCursorClass
-				: null);
+			if (selected && this.moreProps.hovering) {
+				this.iSetTheCursorClass = true;
+				setCursorClass(interactiveCursorClass);
+			} else {
+				this.iSetTheCursorClass = false;
+				setCursorClass(null);
+			}
 		}
 		if (isDefined(canvasDraw)
 				&& !this.evaluationInProgress
