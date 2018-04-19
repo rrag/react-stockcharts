@@ -6,5 +6,5 @@ export { default as GannFan } from "./GannFan";
 export { default as ClickCallback } from "./ClickCallback";
 export { default as Brush } from "./Brush";
 export { default as InteractiveText } from "./InteractiveText";
-export { default as InteractivePriceCoordinate } from "./InteractivePriceCoordinate";
+export { default as InteractiveYCoordinate } from "./InteractiveYCoordinate";
 export { default as DrawingObjectSelector } from "./DrawingObjectSelector";

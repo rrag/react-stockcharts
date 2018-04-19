@@ -73,14 +73,28 @@ MouseCoordinateY.defaultProps = {
 };
 
 function helper(props, moreProps) {
-	const { chartId, width } = moreProps;
-	const { show, currentCharts, chartConfig: { yScale }, mouseXY } = moreProps;
+	const { chartId } = moreProps;
+	const { currentCharts, mouseXY } = moreProps;
 
 	if (isNotDefined(mouseXY)) return null;
-
 	if (currentCharts.indexOf(chartId) < 0) return null;
 
-	const { orient, at, rectWidth, rectHeight, displayFormat, dx } = props;
+	const { show } = moreProps;
+	if (!show) return null;
+
+	const y = mouseXY[1];
+	const { chartConfig: { yScale } } = moreProps;
+	const { displayFormat } = props;
+
+	const coordinate = displayFormat(yScale.invert(y));
+
+	return getYCoordinate(y, coordinate, props, moreProps);
+}
+
+export function getYCoordinate(y, displayValue, props, moreProps) {
+	const { width } = moreProps;
+
+	const { orient, at, rectWidth, rectHeight, dx } = props;
 	const { fill, opacity, fontFamily, fontSize, textFill, arrowWidth } = props;
 	const { stroke, strokeOpacity, strokeWidth } = props;
 
@@ -90,21 +104,29 @@ function helper(props, moreProps) {
 		: 0;
 
 	const type = "horizontal";
-	const y = mouseXY[1];
-	const coordinate = displayFormat(yScale.invert(y));
 	const hideLine = true;
 
 	const coordinateProps = {
-		coordinate,
-		show,
+		coordinate: displayValue,
+		show: true,
 		type,
 		orient,
 		edgeAt,
 		hideLine,
-		fill, opacity, fontFamily, fontSize, textFill,
-		stroke, strokeOpacity, strokeWidth,
+		fill,
+		opacity,
+
+		fontFamily,
+		fontSize,
+		textFill,
+
+		stroke,
+		strokeOpacity,
+		strokeWidth,
+
 		rectWidth,
 		rectHeight,
+
 		arrowWidth,
 		dx,
 		x1,

@@ -27,7 +27,7 @@ import { OHLCTooltip, MACDTooltip } from "react-stockcharts/lib/tooltip";
 import { macd } from "react-stockcharts/lib/indicator";
 
 import { fitWidth } from "react-stockcharts/lib/helper";
-import { InteractivePriceCoordinate, DrawingObjectSelector } from "react-stockcharts/lib/interactive";
+import { InteractiveYCoordinate, DrawingObjectSelector } from "react-stockcharts/lib/interactive";
 import { getMorePropsForChart } from "react-stockcharts/lib/interactive/utils";
 import { head, last, toObject } from "react-stockcharts/lib/utils";
 import {
@@ -108,11 +108,34 @@ const macdAppearance = {
 	},
 };
 
+const alert = InteractiveYCoordinate.defaultProps.defaultPriceCoordinate;
+const sell = {
+	...InteractiveYCoordinate.defaultProps.defaultPriceCoordinate,
+	stroke: "#E3342F",
+	textFill: "#E3342F",
+	text: "Sell 320",
+	edge: {
+		...InteractiveYCoordinate.defaultProps.defaultPriceCoordinate.edge,
+		stroke: "#E3342F"
+	}
+};
+const buy = {
+	...InteractiveYCoordinate.defaultProps.defaultPriceCoordinate,
+	stroke: "#1F9D55",
+	textFill: "#1F9D55",
+	text: "Buy 120",
+	edge: {
+		...InteractiveYCoordinate.defaultProps.defaultPriceCoordinate.edge,
+		stroke: "#1F9D55"
+	}
+};
+
 class CandleStickChartWithInteractiveAlert extends React.Component {
 	constructor(props) {
 		super(props);
 		this.onKeyPress = this.onKeyPress.bind(this);
 		this.onDragComplete = this.onDragComplete.bind(this);
+		this.onDelete = this.onDelete.bind(this);
 		this.handleChoosePosition = this.handleChoosePosition.bind(this);
 
 		this.saveInteractiveNodes = saveInteractiveNodes.bind(this);
@@ -129,9 +152,25 @@ class CandleStickChartWithInteractiveAlert extends React.Component {
 		this.handleDoubleClickAlert = this.handleDoubleClickAlert.bind(this);
 
 		this.state = {
-			enableInteractiveObject: true,
-			alertList_1: [],
-			alertList_3: [],
+			enableInteractiveObject: false,
+			yCoordinateList_1: [
+				{
+					...InteractiveYCoordinate.defaultProps.defaultPriceCoordinate,
+					yValue: 55.90,
+					id: shortid.generate()
+				},
+				{
+					...buy,
+					yValue: 50.90,
+					id: shortid.generate()
+				},
+				{
+					...sell,
+					yValue: 58.90,
+					id: shortid.generate()
+				},
+			],
+			yCoordinateList_3: [],
 			showModal: false,
 			alertToEdit: {}
 		};
@@ -153,7 +192,7 @@ class CandleStickChartWithInteractiveAlert extends React.Component {
 
 				const yValue = round(yScale.invert(mouseY), 2);
 				const newAlert = {
-					...InteractivePriceCoordinate.defaultProps.defaultPriceCoordinate,
+					...InteractiveYCoordinate.defaultProps.defaultPriceCoordinate,
 					yValue,
 					id: shortid.generate()
 				};
@@ -162,7 +201,7 @@ class CandleStickChartWithInteractiveAlert extends React.Component {
 		} else {
 			const state = toObject(interactives, each => {
 				return [
-					`alertList_${each.chartId}`,
+					`yCoordinateList_${each.chartId}`,
 					each.objects,
 				];
 			});
@@ -172,8 +211,8 @@ class CandleStickChartWithInteractiveAlert extends React.Component {
 	handleChoosePosition(alert, moreProps) {
 		const { id: chartId } = moreProps.chartConfig;
 		this.setState({
-			[`alertList_${chartId}`]: [
-				...this.state[`alertList_${chartId}`],
+			[`yCoordinateList_${chartId}`]: [
+				...this.state[`yCoordinateList_${chartId}`],
 				alert
 			],
 			enableInteractiveObject: false,
@@ -189,33 +228,33 @@ class CandleStickChartWithInteractiveAlert extends React.Component {
 		});
 	}
 	handleChangeAlert(alert, chartId) {
-		const alertList = this.state[`alertList_${chartId}`];
-		const newAlertList = alertList.map(d => {
+		const yCoordinateList = this.state[`yCoordinateList_${chartId}`];
+		const newAlertList = yCoordinateList.map(d => {
 			return d.id === alert.id ? alert : d;
 		});
 
 		this.setState({
-			[`alertList_${chartId}`]: newAlertList,
+			[`yCoordinateList_${chartId}`]: newAlertList,
 			showModal: false,
 			enableInteractiveObject: false,
 		});
 	}
 	handleDeleteAlert() {
 		const { alertToEdit } = this.state;
-		const key = `alertList_${alertToEdit.chartId}`;
-		const alertList = this.state[key].filter(d => {
+		const key = `yCoordinateList_${alertToEdit.chartId}`;
+		const yCoordinateList = this.state[key].filter(d => {
 			return d.id !== alertToEdit.alert.id;
 		});
 		this.setState({
 			showModal: false,
 			alertToEdit: {},
-			[key]: alertList
+			[key]: yCoordinateList
 		});
 	}
 	handleDialogClose() {
 		// cancel alert edit
 		const { originalAlertList, alertToEdit } = this.state;
-		const key = `alertList_${alertToEdit.chartId}`;
+		const key = `yCoordinateList_${alertToEdit.chartId}`;
 
 		this.setState({
 			showModal: false,
@@ -228,16 +267,19 @@ class CandleStickChartWithInteractiveAlert extends React.Component {
 	componentWillUnmount() {
 		document.removeEventListener("keyup", this.onKeyPress);
 	}
-	onDragComplete(alertList, moreProps, draggedAlert) {
+	onDelete(index, moreProps) {
+		console.log(index, moreProps)
+	}
+	onDragComplete(yCoordinateList, moreProps, draggedAlert) {
 		// this gets called on drag complete of drawing object
 		const { id: chartId } = moreProps.chartConfig;
 
-		const key = `alertList_${chartId}`;
+		const key = `yCoordinateList_${chartId}`;
 		const alertDragged = draggedAlert != null;
 
 		this.setState({
 			enableInteractiveObject: false,
-			[key]: alertList,
+			[key]: yCoordinateList,
 			showModal: alertDragged,
 			alertToEdit: {
 				alert: draggedAlert,
@@ -253,8 +295,8 @@ class CandleStickChartWithInteractiveAlert extends React.Component {
 			case 46: {
 				// DEL
 				this.setState({
-					alertList_1: this.state.alertList_1.filter(d => !d.selected),
-					alertList_3: this.state.alertList_3.filter(d => !d.selected)
+					yCoordinateList_1: this.state.yCoordinateList_1.filter(d => !d.selected),
+					yCoordinateList_3: this.state.yCoordinateList_3.filter(d => !d.selected)
 				});
 				break;
 			}
@@ -338,11 +380,12 @@ class CandleStickChartWithInteractiveAlert extends React.Component {
 
 						<OHLCTooltip origin={[-40, 0]}/>
 
-						<InteractivePriceCoordinate
-							ref={this.saveInteractiveNodes("InteractivePriceCoordinate", 1)}
+						<InteractiveYCoordinate
+							ref={this.saveInteractiveNodes("InteractiveYCoordinate", 1)}
 							enabled={this.state.enableInteractiveObject}
 							onDragComplete={this.onDragComplete}
-							alertList={this.state.alertList_1}
+							onDelete={this.onDelete}
+							yCoordinateList={this.state.yCoordinateList_1}
 						/>
 
 					</Chart>
@@ -391,7 +434,7 @@ class CandleStickChartWithInteractiveAlert extends React.Component {
 						enabled
 						getInteractiveNodes={this.getInteractiveNodes}
 						drawingObjectMap={{
-							InteractivePriceCoordinate: "alertList"
+							InteractiveYCoordinate: "yCoordinateList"
 						}}
 						onSelect={this.handleSelection}
 						onDoubleClick={this.handleDoubleClickAlert}
