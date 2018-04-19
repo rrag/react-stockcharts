@@ -19,7 +19,10 @@ class InteractiveYCoordinate extends Component {
 		const { onHover, selected, hovering } = this.props;
 
 		if (isDefined(onHover)) {
-			const { x1, x2, y, rect } = helper(this.props, moreProps);
+			const values = helper(this.props, moreProps);
+			if (values == null) return false;
+
+			const { x1, x2, y, rect } = values;
 			const { mouseXY: [mouseX, mouseY] } = moreProps;
 
 			if (
