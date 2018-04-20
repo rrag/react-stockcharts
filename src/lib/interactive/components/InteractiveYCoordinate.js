@@ -123,7 +123,7 @@ class InteractiveYCoordinate extends Component {
 		throw new Error("svg not implemented");
 	}
 	render() {
-		const { selected, interactiveCursorClass } = this.props;
+		const { interactiveCursorClass } = this.props;
 		const { onHover, onUnHover } = this.props;
 		const { onDragStart, onDrag, onDragComplete } = this.props;
 
@@ -195,6 +195,7 @@ InteractiveYCoordinate.propTypes = {
 
 	text: PropTypes.string.isRequired,
 	edge: PropTypes.object.isRequired,
+	textBox: PropTypes.object.isRequired,
 	yValue: PropTypes.number.isRequired,
 
 	onDragStart: PropTypes.func.isRequired,

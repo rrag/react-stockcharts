@@ -178,6 +178,7 @@ EachInteractiveYCoordinate.propTypes = {
 	selected: PropTypes.bool.isRequired,
 
 	edge: PropTypes.object.isRequired,
+	textBox: PropTypes.object.isRequired,
 
 	onDrag: PropTypes.func.isRequired,
 	onDragComplete: PropTypes.func.isRequired,

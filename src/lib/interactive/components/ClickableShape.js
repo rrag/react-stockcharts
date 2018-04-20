@@ -7,8 +7,6 @@ import { getMouseCanvas } from "../../GenericComponent";
 import { isHovering2 } from "./StraightLine";
 import { hexToRGBA } from "../../utils";
 
-const xHalfLength = 4;
-
 class ClickableShape extends Component {
 	constructor(props) {
 		super(props);
@@ -107,6 +105,7 @@ ClickableShape.propTypes = {
 	stroke: PropTypes.string.isRequired,
 	strokeOpacity: PropTypes.number.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
+	textBox: PropTypes.object.isRequired,
 	hovering: PropTypes.bool,
 	interactiveCursorClass: PropTypes.string,
 	show: PropTypes.bool,
