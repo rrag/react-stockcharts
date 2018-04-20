@@ -124,6 +124,21 @@ InteractiveYCoordinate.propTypes = {
 		fontSize: PropTypes.number.isRequired,
 		text: PropTypes.string.isRequired,
 
+		textBox: PropTypes.shape({
+			height: PropTypes.number.isRequired,
+			left: PropTypes.number.isRequired,
+			padding: PropTypes.shape({
+				left: PropTypes.number.isRequired,
+				right: PropTypes.number.isRequired,
+			}),
+			closeIcon: PropTypes.shape({
+				padding: PropTypes.shape({
+					left: PropTypes.number.isRequired,
+					right: PropTypes.number.isRequired,
+				}),
+				width: PropTypes.number.isRequired,
+			})
+		}).isRequired,
 		edge: PropTypes.shape({
 			stroke: PropTypes.string.isRequired,
 			strokeOpacity: PropTypes.number.isRequired,
@@ -159,6 +174,15 @@ InteractiveYCoordinate.defaultProps = {
 		fontStyle: "normal",
 		fontWeight: "normal",
 		text: "Alert",
+		textBox: {
+			height: 24,
+			left: 20,
+			padding: { left: 10, right: 5 },
+			closeIcon: {
+				padding: { left: 5, right: 8 },
+				width: 8,
+			}
+		},
 		edge: {
 			stroke: "#6574CD",
 			strokeOpacity: 1,

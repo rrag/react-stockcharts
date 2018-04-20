@@ -22,12 +22,14 @@ class ClickableShape extends Component {
 	isHover(moreProps) {
 		const { mouseXY } = moreProps;
 		if (this.closeIcon) {
+			const { textBox } = this.props;
 			const { x, y } = this.closeIcon;
+			const halfWidth = textBox.closeIcon.width / 2;
 
-			const start1 = [x - xHalfLength, y - xHalfLength];
-			const end1 = [x + xHalfLength, y + xHalfLength];
-			const start2 = [x - xHalfLength, y + xHalfLength];
-			const end2 = [x + xHalfLength, y - xHalfLength];
+			const start1 = [x - halfWidth, y - halfWidth];
+			const end1 = [x + halfWidth, y + halfWidth];
+			const start2 = [x - halfWidth, y + halfWidth];
+			const end2 = [x + halfWidth, y - halfWidth];
 
 			if (isHovering2(start1, end1, mouseXY, 3) || isHovering2(start2, end2, mouseXY, 3)) {
 				return true;
@@ -36,7 +38,7 @@ class ClickableShape extends Component {
 		return false;
 	}
 	drawOnCanvas(ctx, moreProps) {
-		const { stroke, strokeWidth, strokeOpacity, hovering } = this.props;
+		const { stroke, strokeWidth, strokeOpacity, hovering, textBox } = this.props;
 
 		const [x, y] = helper(this.props, moreProps, ctx);
 
@@ -45,11 +47,11 @@ class ClickableShape extends Component {
 
 		ctx.lineWidth = hovering ? strokeWidth + 1 : strokeWidth;
 		ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
-
-		ctx.moveTo(x - xHalfLength, y - xHalfLength);
-		ctx.lineTo(x + xHalfLength, y + xHalfLength);
-		ctx.moveTo(x - xHalfLength, y + xHalfLength);
-		ctx.lineTo(x + xHalfLength, y - xHalfLength);
+		const halfWidth = textBox.closeIcon.width / 2;
+		ctx.moveTo(x - halfWidth, y - halfWidth);
+		ctx.lineTo(x + halfWidth, y + halfWidth);
+		ctx.moveTo(x - halfWidth, y + halfWidth);
+		ctx.lineTo(x + halfWidth, y - halfWidth);
 		ctx.stroke();
 	}
 	renderSVG() {
@@ -82,15 +84,18 @@ class ClickableShape extends Component {
 }
 
 function helper(props, moreProps, ctx) {
-	const { yValue, text } = props;
+	const { yValue, text, textBox } = props;
 	const { fontFamily, fontStyle, fontWeight, fontSize } = props;
 	ctx.font = `${fontStyle} ${fontWeight} ${fontSize}px ${fontFamily}`;
 
 	const { chartConfig: { yScale } } = moreProps;
 
-	const x = 20 + 10 + ctx.measureText(text).width + 10 + 7;
-	//        ^ x of rect                              ^ right padding
-	//              ^ left padding in rect                  ^center of x
+	const x = textBox.left
+		+ textBox.padding.left
+		+ ctx.measureText(text).width
+		+ textBox.padding.right
+		+ textBox.closeIcon.padding.left
+		+ textBox.closeIcon.width / 2;
 
 	const y = yScale(yValue);
 

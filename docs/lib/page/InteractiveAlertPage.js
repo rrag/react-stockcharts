@@ -5,16 +5,16 @@ import ContentSection from "lib/content-section";
 import Row from "lib/row";
 import Section from "lib/section";
 
-import CandleStickChartWithInteractiveAlert from "lib/charts/CandleStickChartWithInteractiveAlert";
+import CandleStickChartWithInteractiveYCoordinate from "lib/charts/CandleStickChartWithInteractiveYCoordinate";
 
-class InteractiveAlertPage extends React.Component {
+class InteractiveYCoordinatePage extends React.Component {
 	render() {
 		return (
-			<ContentSection title={InteractiveAlertPage.title}>
+			<ContentSection title={InteractiveYCoordinatePage.title}>
 				<Row>
 					<Section colSpan={2}>
 						<TypeChooser>
-							{type => <CandleStickChartWithInteractiveAlert data={this.props.someData} type={type} />}
+							{type => <CandleStickChartWithInteractiveYCoordinate data={this.props.someData} type={type} />}
 						</TypeChooser>
 					</Section>
 				</Row>
@@ -28,6 +28,6 @@ class InteractiveAlertPage extends React.Component {
 	}
 }
 
-InteractiveAlertPage.title = "Interactive Alert";
+InteractiveYCoordinatePage.title = "Interactive Y Coordinate";
 
-export default InteractiveAlertPage;
+export default InteractiveYCoordinatePage;

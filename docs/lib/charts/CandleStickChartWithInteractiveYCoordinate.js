@@ -130,7 +130,7 @@ const buy = {
 	}
 };
 
-class CandleStickChartWithInteractiveAlert extends React.Component {
+class CandleStickChartWithInteractiveYCoordinate extends React.Component {
 	constructor(props) {
 		super(props);
 		this.onKeyPress = this.onKeyPress.bind(this);
@@ -454,19 +454,19 @@ class CandleStickChartWithInteractiveAlert extends React.Component {
 }
 
 
-CandleStickChartWithInteractiveAlert.propTypes = {
+CandleStickChartWithInteractiveYCoordinate.propTypes = {
 	data: PropTypes.array.isRequired,
 	width: PropTypes.number.isRequired,
 	ratio: PropTypes.number.isRequired,
 	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired
 };
 
-CandleStickChartWithInteractiveAlert.defaultProps = {
+CandleStickChartWithInteractiveYCoordinate.defaultProps = {
 	type: "svg"
 };
 
 const CandleStickChart = fitWidth(
-	CandleStickChartWithInteractiveAlert
+	CandleStickChartWithInteractiveYCoordinate
 );
 
 export default CandleStickChart;

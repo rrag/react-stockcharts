@@ -84,9 +84,15 @@ class GenericComponent extends Component {
 			case "mouseenter":
 			// DO NOT DRAW FOR THESE EVENTS
 				break;
-			case "mouseleave":
+			case "mouseleave": {
+				this.moreProps.hovering = false;
+				const moreProps = this.getMoreProps();
 
+				if (this.props.onUnHover) {
+					this.props.onUnHover(moreProps, e);
+				}
 				break;
+			}
 			case "contextmenu": {
 				if (this.props.onContextMenu) {
 					this.props.onContextMenu(this.getMoreProps(), e);
@@ -127,7 +133,8 @@ class GenericComponent extends Component {
 
 				if (this.moreProps.hovering
 					&& !this.props.selected
-					&& !prevHover
+					/* && !prevHover */
+					&& amIOnTop(this.suscriberId)
 					&& isDefined(this.props.onHover)) {
 					setCursorClass("react-stockcharts-pointer-cursor");
 					this.iSetTheCursorClass = true;

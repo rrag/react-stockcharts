@@ -92,6 +92,7 @@ class EachInteractiveYCoordinate extends Component {
 			strokeOpacity,
 			strokeWidth,
 			edge,
+			textBox,
 		} = this.props;
 		const { hover, closeIconHover } = this.state;
 
@@ -127,6 +128,7 @@ class EachInteractiveYCoordinate extends Component {
 					strokeOpacity={strokeOpacity}
 					strokeWidth={strokeWidth}
 					text={text}
+					textBox={textBox}
 					edge={edge}
 				/>
 				<ClickableShape
@@ -138,6 +140,7 @@ class EachInteractiveYCoordinate extends Component {
 					fontStyle={fontStyle}
 					fontWeight={fontWeight}
 					fontSize={fontSize}
+					textBox={textBox}
 
 					stroke={stroke}
 					strokeOpacity={strokeOpacity}

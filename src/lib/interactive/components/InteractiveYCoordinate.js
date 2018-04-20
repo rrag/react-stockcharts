@@ -16,7 +16,7 @@ class InteractiveYCoordinate extends Component {
 		this.isHover = this.isHover.bind(this);
 	}
 	isHover(moreProps) {
-		const { onHover, selected, hovering } = this.props;
+		const { onHover } = this.props;
 
 		if (isDefined(onHover)) {
 			const values = helper(this.props, moreProps);
@@ -26,8 +26,7 @@ class InteractiveYCoordinate extends Component {
 			const { mouseXY: [mouseX, mouseY] } = moreProps;
 
 			if (
-				(selected || hovering)
-				&& mouseX >= rect.x
+				mouseX >= rect.x
 				&& mouseX <= rect.x + this.width
 				&& mouseY >= rect.y
 				&& mouseY <= rect.y + rect.height
@@ -59,6 +58,7 @@ class InteractiveYCoordinate extends Component {
 			strokeWidth,
 			strokeOpacity,
 			text,
+			textBox,
 			edge,
 		} = this.props;
 
@@ -81,7 +81,12 @@ class InteractiveYCoordinate extends Component {
 		ctx.textAlign = "start";
 		ctx.font = `${fontStyle} ${fontWeight} ${fontSize}px ${fontFamily}`;
 
-		this.width = 10 + ctx.measureText(text).width + 10 + 20;
+		this.width = textBox.padding.left
+			+ ctx.measureText(text).width
+			+ textBox.padding.right
+			+ textBox.closeIcon.padding.left
+			+ textBox.closeIcon.width
+			+ textBox.closeIcon.padding.right;
 
 		ctx.setLineDash(getStrokeDasharrayCanvas("ShortDash"));
 		ctx.moveTo(x1, y);
@@ -125,6 +130,7 @@ class InteractiveYCoordinate extends Component {
 		return (
 			<GenericChartComponent
 				clip={false}
+				xxxyyy
 				isHover={this.isHover}
 
 				svgDraw={this.renderSVG}
@@ -132,7 +138,7 @@ class InteractiveYCoordinate extends Component {
 				canvasDraw={this.drawOnCanvas}
 
 				interactiveCursorClass={interactiveCursorClass}
-				selected={selected}
+				/* selected={selected} */
 				enableDragOnHover
 
 				onDragStart={onDragStart}
@@ -148,18 +154,17 @@ class InteractiveYCoordinate extends Component {
 }
 
 function helper(props, moreProps) {
-	const { yValue } = props;
+	const { yValue, textBox } = props;
 
 	const { chartConfig: { width, yScale, height } } = moreProps;
 
 	const y = Math.round(yScale(yValue));
 
 	if (y >= 0 && y <= height) {
-		const height = 24;
 		const rect = {
-			x: 20,
-			y: y - height / 2,
-			height,
+			x: textBox.left,
+			y: y - textBox.height / 2,
+			height: textBox.height,
 		};
 		return {
 			x1: 0,
@@ -197,7 +202,6 @@ InteractiveYCoordinate.propTypes = {
 	onDragComplete: PropTypes.func.isRequired,
 	onHover: PropTypes.func,
 	onUnHover: PropTypes.func,
-	onDelete: PropTypes.func.isRequired,
 
 	defaultClassName: PropTypes.string,
 	interactiveCursorClass: PropTypes.string,
@@ -212,7 +216,6 @@ InteractiveYCoordinate.defaultProps = {
 	onDrag: noop,
 	onDragComplete: noop,
 
-	type: "SD", // standard dev
 	fontWeight: "normal", // standard dev
 
 	strokeWidth: 1,
