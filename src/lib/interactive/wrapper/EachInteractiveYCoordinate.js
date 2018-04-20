@@ -90,6 +90,7 @@ class EachInteractiveYCoordinate extends Component {
 			onDragComplete,
 			stroke,
 			strokeOpacity,
+			strokeDasharray,
 			strokeWidth,
 			edge,
 			textBox,
@@ -126,6 +127,7 @@ class EachInteractiveYCoordinate extends Component {
 					fontSize={fontSize}
 					stroke={stroke}
 					strokeOpacity={strokeOpacity}
+					strokeDasharray={strokeDasharray}
 					strokeWidth={strokeWidth}
 					text={text}
 					textBox={textBox}
@@ -167,6 +169,7 @@ EachInteractiveYCoordinate.propTypes = {
 	stroke: PropTypes.string.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
 	strokeOpacity: PropTypes.number.isRequired,
+	strokeDasharray: PropTypes.string.isRequired,
 	textFill: PropTypes.string.isRequired,
 
 	fontWeight: PropTypes.string.isRequired,

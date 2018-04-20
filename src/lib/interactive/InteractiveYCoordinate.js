@@ -4,7 +4,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import { format } from "d3-format";
-import { isDefined, noop } from "../utils";
+import { isDefined, noop, strokeDashTypes } from "../utils";
 
 import {
 	getValueFromOverride,
@@ -114,6 +114,7 @@ InteractiveYCoordinate.propTypes = {
 		bgOpacity: PropTypes.number.isRequired,
 
 		stroke: PropTypes.string.isRequired,
+		strokeDasharray: PropTypes.oneOf(strokeDashTypes).isRequired,
 		strokeOpacity: PropTypes.number.isRequired,
 		strokeWidth: PropTypes.number.isRequired,
 
@@ -166,6 +167,7 @@ InteractiveYCoordinate.defaultProps = {
 
 		stroke: "#6574CD",
 		strokeOpacity: 1,
+		strokeDasharray: "ShortDash2",
 		strokeWidth: 1,
 
 		textFill: "#6574CD",

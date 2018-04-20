@@ -57,6 +57,7 @@ class InteractiveYCoordinate extends Component {
 			stroke,
 			strokeWidth,
 			strokeOpacity,
+			strokeDasharray,
 			text,
 			textBox,
 			edge,
@@ -88,7 +89,7 @@ class InteractiveYCoordinate extends Component {
 			+ textBox.closeIcon.width
 			+ textBox.closeIcon.padding.right;
 
-		ctx.setLineDash(getStrokeDasharrayCanvas("ShortDash"));
+		ctx.setLineDash(getStrokeDasharrayCanvas(strokeDasharray));
 		ctx.moveTo(x1, y);
 		ctx.lineTo(rect.x, y);
 
@@ -183,6 +184,7 @@ InteractiveYCoordinate.propTypes = {
 	stroke: PropTypes.string.isRequired,
 	strokeWidth: PropTypes.number.isRequired,
 	strokeOpacity: PropTypes.number.isRequired,
+	strokeDasharray: PropTypes.string.isRequired,
 
 	textFill: PropTypes.string.isRequired,
 	fontFamily: PropTypes.string.isRequired,

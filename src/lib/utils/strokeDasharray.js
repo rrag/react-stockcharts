@@ -1,6 +1,7 @@
 export const strokeDashTypes = [
 	"Solid",
 	"ShortDash",
+	"ShortDash2",
 	"ShortDot",
 	"ShortDashDot",
 	"ShortDashDotDot",
@@ -27,6 +28,8 @@ export const getStrokeDasharray = (type) => {
 			return "none";
 		case "ShortDash":
 			return "6, 2";
+		case "ShortDash2":
+			return "6, 3";
 		case "ShortDot":
 			return "2, 2";
 		case "ShortDashDot":
