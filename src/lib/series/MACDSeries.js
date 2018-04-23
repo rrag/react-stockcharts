@@ -78,7 +78,7 @@ MACDSeries.propTypes = {
 		signal: PropTypes.string.isRequired,
 	}).isRequired,
 	fill: PropTypes.shape({
-		divergence: PropTypes.string.isRequired,
+		divergence: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
 	}).isRequired,
 };
 
