@@ -15,17 +15,18 @@ class StraightLine extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		const { type, stroke, strokeWidth, opacity, strokeDasharray } = this.props;
+		const { type, stroke, strokeWidth, opacity, strokeDasharray, width } = this.props;
 		const { yValue, xValue } = this.props;
 		const { xScale } = moreProps;
-		const { chartConfig: { yScale, width, height } } = moreProps;
+		const { chartConfig: { yScale, width: chartWidth, height } } = moreProps;
+		const finalWidth = width ? width : chartWidth;
 
 		ctx.beginPath();
 
 		ctx.strokeStyle = hexToRGBA(stroke, opacity);
 		ctx.lineWidth = strokeWidth;
 
-		const { x1, y1, x2, y2 } = getLineCoordinates(type, xScale, yScale, xValue, yValue, width, height);
+		const { x1, y1, x2, y2 } = getLineCoordinates(type, xScale, yScale, xValue, yValue, finalWidth, height);
 
 		ctx.setLineDash(getStrokeDasharray(strokeDasharray).split(","));
 		ctx.moveTo(x1, y1);
@@ -33,8 +34,11 @@ class StraightLine extends Component {
 		ctx.stroke();
 	}
 	render() {
+	    const { clip } = this.props;
+
 		return <GenericChartComponent
 			svgDraw={this.renderSVG}
+			clip={clip}
 			canvasDraw={this.drawOnCanvas}
 			canvasToDraw={getAxisCanvas}
 			drawOn={["pan"]}
@@ -71,11 +75,13 @@ function getLineCoordinates(type, xScale, yScale, xValue, yValue, width, height)
 
 StraightLine.propTypes = {
 	className: PropTypes.string,
+	clip: PropTypes.bool,
 	type: PropTypes.oneOf(["vertical", "horizontal"]),
 	stroke: PropTypes.string,
 	strokeWidth: PropTypes.number,
 	strokeDasharray: PropTypes.oneOf(strokeDashTypes),
 	opacity: PropTypes.number.isRequired,
+	width: PropTypes.number,
 	yValue: function(props, propName/* , componentName */) {
 		if (props.type === "vertical" && isDefined(props[propName])) return new Error("Do not define `yValue` when type is `vertical`, define the `xValue` prop");
 		if (props.type === "horizontal" && isNotDefined(props[propName])) return new Error("when type = `horizontal` `yValue` is required");
@@ -90,11 +96,13 @@ StraightLine.propTypes = {
 
 StraightLine.defaultProps = {
 	className: "line ",
+	clip: true,
 	type: "horizontal",
 	stroke: "#000000",
 	opacity: 0.5,
 	strokeWidth: 1,
 	strokeDasharray: "Solid",
+	width: null,
 };
 
 export default StraightLine;
