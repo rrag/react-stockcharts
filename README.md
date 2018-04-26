@@ -7,6 +7,11 @@ Create highly customizable stock charts
 
 Built with [React JS](http://facebook.github.io/react/) and [d3](http://d3js.org/)
 
+If you like this project checkout [gocharting.com](https://gocharting.com), and [crypto widget](https://crypto.gocharting.com)
+ - integrates multiple charttypes
+ - over 60 technical indicators and overlays
+ - drawing objects
+
 Multiple [quick start examples](https://github.com/rrag/react-stockcharts-examples2)
 
 - svg and canvas for improved performance. 
