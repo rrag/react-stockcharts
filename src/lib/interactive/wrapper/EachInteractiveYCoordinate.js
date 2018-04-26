@@ -102,8 +102,6 @@ class EachInteractiveYCoordinate extends Component {
 			onUnHover: this.handleHover
 		};
 
-		// const { enable: hoverTextEnabled, ...restHoverTextProps } = hoverText;
-
 		return (
 			<g>
 				<InteractiveYCoordinate

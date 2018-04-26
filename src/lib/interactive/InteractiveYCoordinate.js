@@ -21,6 +21,7 @@ class InteractiveYCoordinate extends Component {
 
 		this.handleDrag = this.handleDrag.bind(this);
 		this.handleDragComplete = this.handleDragComplete.bind(this);
+		this.handleDelete = this.handleDelete.bind(this);
 		this.terminate = terminate.bind(this);
 
 		this.saveNodeType = saveNodeType.bind(this);
@@ -76,22 +77,26 @@ class InteractiveYCoordinate extends Component {
 			});
 		}
 	}
+	handleDelete(index, moreProps) {
+		const { onDelete, yCoordinateList } = this.props;
+		onDelete(yCoordinateList[index], moreProps);
+	}
 	render() {
-		const { yCoordinateList, onDelete } = this.props;
+		const { yCoordinateList } = this.props;
 		const { override } = this.state;
 		return (
 			<g>
 				{yCoordinateList.map((each, idx) => {
 					const props = each;
 					return (
-						<EachInteractiveYCoordinate key={idx}
+						<EachInteractiveYCoordinate key={each.id}
 							ref={this.saveNodeType(idx)}
 							index={idx}
 							{...props}
 							selected={each.selected}
 							yValue={getValueFromOverride(override, idx, "yValue", each.yValue)}
 
-							onDelete={onDelete}
+							onDelete={this.handleDelete}
 							onDrag={this.handleDrag}
 							onDragComplete={this.handleDragComplete}
 							edgeInteractiveCursor="react-stockcharts-move-cursor"

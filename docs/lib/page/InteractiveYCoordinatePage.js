@@ -20,7 +20,7 @@ class InteractiveYCoordinatePage extends React.Component {
 				</Row>
 				<Row>
 					<Section colSpan={2}>
-						<aside dangerouslySetInnerHTML={{ __html: require("md/INTERACTIVE-ALERT") }}></aside>
+						<aside dangerouslySetInnerHTML={{ __html: require("md/INTERACTIVE-Y-COORDINATE") }}></aside>
 					</Section>
 				</Row>
 			</ContentSection>

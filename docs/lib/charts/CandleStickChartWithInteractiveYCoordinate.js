@@ -253,12 +253,15 @@ class CandleStickChartWithInteractiveYCoordinate extends React.Component {
 	}
 	handleDialogClose() {
 		// cancel alert edit
-		const { originalAlertList, alertToEdit } = this.state;
-		const key = `yCoordinateList_${alertToEdit.chartId}`;
+		this.setState(state => {
+			const { originalAlertList, alertToEdit } = state;
+			const key = `yCoordinateList_${alertToEdit.chartId}`;
+			const list = originalAlertList || state[key];
 
-		this.setState({
-			showModal: false,
-			[key]: originalAlertList,
+			return {
+				showModal: false,
+				[key]: list,
+			};
 		});
 	}
 	componentDidMount() {
@@ -267,8 +270,16 @@ class CandleStickChartWithInteractiveYCoordinate extends React.Component {
 	componentWillUnmount() {
 		document.removeEventListener("keyup", this.onKeyPress);
 	}
-	onDelete(index, moreProps) {
-		console.log(index, moreProps)
+	onDelete(yCoordinate, moreProps) {
+		this.setState(state => {
+			const chartId = moreProps.chartConfig.id;
+			const key = `yCoordinateList_${chartId}`;
+
+			const list = state[key];
+			return {
+				[key]: list.filter(d => d.id !== yCoordinate.id)
+			};
+		});
 	}
 	onDragComplete(yCoordinateList, moreProps, draggedAlert) {
 		// this gets called on drag complete of drawing object
