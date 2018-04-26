@@ -53,6 +53,10 @@ EdgeIndicator.propTypes = {
 		PropTypes.string,
 		PropTypes.func,
 	]),
+	lineStroke: PropTypes.oneOfType([
+		PropTypes.string,
+		PropTypes.func,
+	]),
 	textFill: PropTypes.oneOfType([
 		PropTypes.string,
 		PropTypes.func,
@@ -111,7 +115,7 @@ function helper(props, moreProps) {
 }
 
 function getEdge(props, moreProps, item) {
-	const { type: edgeType, displayFormat, edgeAt, yAxisPad, orient } = props;
+	const { type: edgeType, displayFormat, edgeAt, yAxisPad, orient, lineStroke } = props;
 
 	const { yAccessor, fill, textFill, rectHeight, rectWidth, arrowWidth } = props;
 	const { fontFamily, fontSize } = props;
@@ -138,6 +142,7 @@ function getEdge(props, moreProps, item) {
 		orient,
 		edgeAt: edgeX,
 		fill: functor(fill)(item),
+		lineStroke: functor(lineStroke)(item),
 		stroke: functor(stroke)(item),
 		fontFamily, fontSize,
 		textFill: functor(textFill)(item),
