@@ -1,6 +1,6 @@
 {
   "name": "react-stockcharts",
-  "version": "0.7.5",
+  "version": "0.7.6",
   "description": "Highly customizable stock charts with ReactJS and d3",
   "main": "src/index.js",
   "module": "src/index.js",
