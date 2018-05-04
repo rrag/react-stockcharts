@@ -16,7 +16,7 @@ class AreaOnlySeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-		const { yAccessor, defined, base } = this.props;
+		const { yAccessor, defined, base, canvasGradient } = this.props;
 		const { fill, stroke, opacity, interpolation, canvasClip } = this.props;
 
 		const { xScale, chartConfig: { yScale }, plotData, xAccessor } = moreProps;
@@ -26,7 +26,11 @@ class AreaOnlySeries extends Component {
 			canvasClip(ctx, moreProps);
 		}
 
-		ctx.fillStyle = hexToRGBA(fill, opacity);
+		if (canvasGradient != null) {
+			ctx.fillStyle = canvasGradient(moreProps, ctx);
+		} else {
+			ctx.fillStyle = hexToRGBA(fill, opacity);
+		}
 		ctx.strokeStyle = stroke;
 
 		ctx.beginPath();
@@ -72,9 +76,9 @@ class AreaOnlySeries extends Component {
 				style={style}
 				d={d}
 				stroke={stroke}
-				fill={fill}
+				fill={hexToRGBA(fill, opacity)}
 				className={newClassName}
-				fillOpacity={opacity}
+
 			/>
 		);
 	}
@@ -103,6 +107,7 @@ AreaOnlySeries.propTypes = {
 	interpolation: PropTypes.func,
 	canvasClip: PropTypes.func,
 	style: PropTypes.object,
+	canvasGradient: PropTypes.func,
 };
 
 AreaOnlySeries.defaultProps = {

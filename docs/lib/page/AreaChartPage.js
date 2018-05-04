@@ -8,6 +8,7 @@ import Section from "lib/section";
 
 import AreaChart from "lib/charts/AreaChart";
 import AreaChartWithYPercent from "lib/charts/AreaChartWithYPercent";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 class OverviewPage extends React.Component {
 	render() {
@@ -15,7 +16,9 @@ class OverviewPage extends React.Component {
 			<ContentSection title={OverviewPage.title}>
 				<Row>
 					<Section colSpan={2}>
-						<AreaChart data={this.props.someData} type="svg" />
+						<TypeChooser>
+							{(type) => (<AreaChart  data={this.props.someData} type={type} />)}
+						</TypeChooser>
 					</Section>
 				</Row>
 				<Row>

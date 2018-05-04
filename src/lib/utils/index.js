@@ -53,6 +53,19 @@ export function functor(v) {
 	return typeof v === "function" ? v : () => v;
 }
 
+export function createVerticalLinearGradient(stops) {
+	return function(moreProps, ctx) {
+		const { chartConfig: { height } } = moreProps;
+
+		const grd = ctx.createLinearGradient(0, height, 0, 0);
+		stops.forEach(each => {
+			grd.addColorStop(each.stop, each.color);
+		});
+
+		return grd;
+	};
+}
+
 export function getClosestItemIndexes2(array, value, accessor) {
 	let left = bisector(accessor).left(array, value);
 	left = Math.max(left - 1, 0);
