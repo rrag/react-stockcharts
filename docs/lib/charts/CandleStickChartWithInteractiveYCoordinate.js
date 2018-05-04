@@ -19,7 +19,7 @@ import {
 	CrossHairCursor,
 	EdgeIndicator,
 	MouseCoordinateY,
-	MouseCoordinateX
+	MouseCoordinateXV2,
 } from "react-stockcharts/lib/coordinates";
 
 import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
@@ -424,7 +424,7 @@ class CandleStickChartWithInteractiveYCoordinate extends React.Component {
 						<XAxis axisAt="bottom" orient="bottom"/>
 						<YAxis axisAt="right" orient="right" ticks={2} />
 
-						<MouseCoordinateX
+						<MouseCoordinateXV2
 							at="bottom"
 							orient="bottom"
 							displayFormat={timeFormat("%Y-%m-%d")} />
