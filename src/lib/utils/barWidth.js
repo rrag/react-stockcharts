@@ -14,12 +14,16 @@ export function plotDataLengthBarWidth(props, moreProps) {
 	const { xScale } = moreProps;
 
 	const [l, r] = xScale.range();
+
 	const totalWidth = Math.abs(r - l);
-	const [dl, dr] = xScale.domain();
-
-	const width = totalWidth / Math.abs(dl - dr);
-
-	return width * widthRatio;
+	if (xScale.invert != null) {
+		const [dl, dr] = xScale.domain();
+		const width = totalWidth / Math.abs(dl - dr);
+		return width * widthRatio;
+	} else {
+		const width = totalWidth / xScale.domain().length;
+		return width * widthRatio;
+	}
 }
 
 /**

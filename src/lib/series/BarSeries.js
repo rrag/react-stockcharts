@@ -23,7 +23,6 @@ class BarSeries extends Component {
 		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
 	drawOnCanvas(ctx, moreProps) {
-
 		if (this.props.swapScales) {
 			const { xAccessor } = moreProps;
 			drawOnCanvasHelper(ctx, this.props, moreProps, xAccessor, identityStack);
@@ -46,15 +45,17 @@ class BarSeries extends Component {
 	render() {
 		const { clip } = this.props;
 
-		return <GenericChartComponent
-			clip={clip}
-			svgDraw={this.renderSVG}
+		return (
+			<GenericChartComponent
+				clip={clip}
+				svgDraw={this.renderSVG}
 
-			canvasToDraw={getAxisCanvas}
-			canvasDraw={this.drawOnCanvas}
+				canvasToDraw={getAxisCanvas}
+				canvasDraw={this.drawOnCanvas}
 
-			drawOn={["pan"]}
-		/>;
+				drawOn={["pan"]}
+			/>
+		);
 	}
 }
 
