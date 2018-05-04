@@ -426,7 +426,9 @@ class ChartCanvas extends Component {
 			.map(each => each.getPanConditions());
 	}
 	setCursorClass(className) {
-		this.eventCaptureNode.setCursorClass(className);
+		if (this.eventCaptureNode != null) {
+			this.eventCaptureNode.setCursorClass(className);
+		}
 	}
 	amIOnTop(id) {
 		const dragableComponents = this.subscriptions
