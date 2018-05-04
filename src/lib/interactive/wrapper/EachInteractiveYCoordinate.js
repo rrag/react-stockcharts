@@ -94,6 +94,7 @@ class EachInteractiveYCoordinate extends Component {
 			strokeWidth,
 			edge,
 			textBox,
+			draggable,
 		} = this.props;
 		const { hover, closeIconHover } = this.state;
 
@@ -102,6 +103,13 @@ class EachInteractiveYCoordinate extends Component {
 			onUnHover: this.handleHover
 		};
 
+		const dragProps = draggable
+			? {
+				onDragStart: this.handleDragStart,
+				onDrag: this.handleDrag,
+				onDragComplete: onDragComplete,
+			}
+			: {};
 		return (
 			<g>
 				<InteractiveYCoordinate
@@ -111,9 +119,7 @@ class EachInteractiveYCoordinate extends Component {
 					interactiveCursorClass="react-stockcharts-move-cursor"
 					{...hoverHandler}
 
-					onDragStart={this.handleDragStart}
-					onDrag={this.handleDrag}
-					onDragComplete={onDragComplete}
+					{...dragProps}
 
 					yValue={yValue}
 					bgFill={bgFill}
@@ -161,7 +167,9 @@ class EachInteractiveYCoordinate extends Component {
 EachInteractiveYCoordinate.propTypes = {
 	index: PropTypes.number,
 
+	draggable: PropTypes.bool.isRequired,
 	yValue: PropTypes.number.isRequired,
+
 	bgFill: PropTypes.string.isRequired,
 	bgOpacity: PropTypes.number.isRequired,
 	stroke: PropTypes.string.isRequired,
@@ -194,6 +202,7 @@ EachInteractiveYCoordinate.defaultProps = {
 	opacity: 1,
 	selected: false,
 	fill: "#FFFFFF",
+	draggable: false,
 };
 
 export default EachInteractiveYCoordinate;
