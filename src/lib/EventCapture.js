@@ -521,7 +521,7 @@ class EventCapture extends Component {
 		const { height, width, disableInteraction, useCrossHairStyleCursor } = this.props;
 		const className = this.state.cursorOverrideClass != null
 			? this.state.cursorOverrideClass
-			: useCrossHairStyleCursor ? "" : this.state.panInProgress
+			: !useCrossHairStyleCursor ? "" : this.state.panInProgress
 				? "react-stockcharts-grabbing-cursor"
 				: "react-stockcharts-crosshair-cursor";
 
