@@ -69,7 +69,6 @@ class StandardDeviationChannel extends Component {
 
 		if (isDefined(current) && isDefined(current.start)) {
 			this.mouseMoved = true;
-			console.log(xyValue);
 			this.setState({
 				current: {
 					start: current.start,
