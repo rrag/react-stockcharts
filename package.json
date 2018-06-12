@@ -48,7 +48,7 @@
     "debug": "^3.1.0",
     "lodash.flattendeep": "^4.4.0",
     "prop-types": "^15.6.0",
-    "save-svg-as-png": "^1.4.3"
+    "save-svg-as-png": "^1.4.5"
   },
   "peerDependencies": {
     "react": "^15.0.0 || ^16.0.0",
@@ -81,7 +81,7 @@
     "json-loader": "^0.5.7",
     "modernizr": "^3.5.0",
     "ncp": "^2.0.0",
-    "node-sass": "^4.7.2",
+    "node-sass": "^4.9.0",
     "prismjs": "^1.8.4",
     "progress-bar-webpack-plugin": "^1.10.0",
     "react": "^16.1.1",
