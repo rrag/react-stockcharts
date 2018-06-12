@@ -29,8 +29,7 @@ class SARSeries extends Component {
 		const width = xScale(xAccessor(last(plotData))) - xScale(xAccessor(first(plotData)));
 
 		const d = (width / plotData.length) * 0.5 / 2;
-		const rx = Math.max(0.5,  d / 2) + (hovering ? 2 : 0);
-		const ry = Math.min(2, Math.max(0.5,  d)) + (hovering ? 0 : 0);
+		const radius = Math.min(2, Math.max(0.5,  d)) + (hovering ? 2 : 0);
 
 		plotData.forEach(each => {
 			const centerX = xScale(xAccessor(each));
@@ -43,7 +42,7 @@ class SARSeries extends Component {
 			ctx.strokeStyle = color;
 
 			ctx.beginPath();
-			ctx.ellipse(centerX, centerY, rx, ry, 0, 0, 2 * Math.PI);
+			ctx.ellipse(centerX, centerY, radius, radius, 0, 0, 2 * Math.PI);
 			ctx.closePath();
 			ctx.fill();
 			ctx.stroke();
