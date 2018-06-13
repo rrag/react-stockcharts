@@ -94,7 +94,7 @@ const discontinuousIndexCalculatorLocalTime = discontinuousIndexCalculator
 		return { ...row, index: i + initialIndex, ...level };
 	});
 
-function doStuff(realDateAccessor, inputDateAccessor, initialIndex, formatters) {
+function doStuff(realDateAccessor, inputDateAccessor, initialIndex, formatters, tickFormat) {
 	return function(data) {
 		const dateAccessor = realDateAccessor(inputDateAccessor);
 		const calculate = discontinuousIndexCalculatorLocalTime
@@ -108,7 +108,7 @@ function doStuff(realDateAccessor, inputDateAccessor, initialIndex, formatters) 
 				index: each.index,
 				level: each.level,
 				date: new Date(each.date),
-				format: timeFormat(format),
+				format: tickFormat(format),
 			};
 		});
 		/*
@@ -145,7 +145,8 @@ export function discontinuousTimeScaleProviderBuilder() {
 	let inputDateAccessor = d => d.date,
 		indexAccessor = d => d.idx,
 		indexMutator = (d, idx) => ({ ...d, idx }),
-		withIndex;
+		withIndex,
+		tickFormat = timeFormat;
 
 	let currentFormatters = defaultFormatters;
 
@@ -167,7 +168,8 @@ export function discontinuousTimeScaleProviderBuilder() {
 				realDateAccessor,
 				inputDateAccessor,
 				initialIndex,
-				currentFormatters
+				currentFormatters,
+				tickFormat
 			)(data);
 
 			index = response.index;
@@ -247,8 +249,16 @@ export function discontinuousTimeScaleProviderBuilder() {
 	};
 
 	discontinuousTimeScaleProvider.indexCalculator = function() {
-		return doStuff(realDateAccessor, inputDateAccessor, initialIndex, currentFormatters);
+		return doStuff(realDateAccessor, inputDateAccessor, initialIndex, currentFormatters, tickFormat);
 	};
+
+	discontinuousTimeScaleProvider.tickFormat = function(x) {
+		if (!arguments.length) {
+			return tickFormat;
+		}
+		tickFormat = x;
+		return discontinuousTimeScaleProvider;
+	}
 
 	return discontinuousTimeScaleProvider;
 }
