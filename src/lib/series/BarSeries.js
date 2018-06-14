@@ -64,7 +64,11 @@ BarSeries.propTypes = {
 		PropTypes.number,
 		PropTypes.func,
 	]),
-	stroke: PropTypes.bool,
+	stroke: PropTypes.oneOfType([
+		PropTypes.bool,
+		PropTypes.string,
+		PropTypes.func,
+	]),
 	width: PropTypes.oneOfType([
 		PropTypes.number,
 		PropTypes.func
@@ -102,6 +106,9 @@ function getBars(props, moreProps) {
 
 	const getFill = functor(fill);
 	const getBase = functor(baseAt);
+	const getStroke = typeof stroke === "boolean"
+		? stroke ? getFill : () => "none"
+		: functor(stroke);
 
 	const widthFunctor = functor(props.width);
 
@@ -137,7 +144,7 @@ function getBars(props, moreProps) {
 				height: Math.round(h),
 				width: offset * 2,
 				fill: getFill(d, 0),
-				stroke: stroke ? getFill(d, 0) : "none",
+				stroke: getStroke(d, 0),
 			};
 		});
 
