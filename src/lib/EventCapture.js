@@ -126,7 +126,7 @@ class EventCapture extends Component {
 				if (wheelPanDirection === 'forward') {
 					this.dx += e.deltaX;
 				} else {
-					this.dx += e.deltaX;
+					this.dx -= e.deltaX;
 				}
 				this.dy += e.deltaY;
 				const dxdy = { dx: this.dx, dy: this.dy };
