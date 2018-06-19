@@ -100,7 +100,7 @@ class EventCapture extends Component {
 		onMouseLeave(e);
 	}
 	handleWheel(e) {
-		const { zoom, onZoom } = this.props;
+		const { zoom, onZoom, wheelPanDirection } = this.props;
 		const { panInProgress } = this.state;
 
 		const yZoom = Math.abs(e.deltaY) > Math.abs(e.deltaX) && Math.abs(e.deltaY) > 0;
@@ -123,7 +123,11 @@ class EventCapture extends Component {
 				this.lastNewPos = mouseXY;
 				this.panHappened = true;
 
-				this.dx += e.deltaX;
+				if (wheelPanDirection === 'forward') {
+					this.dx += e.deltaX;
+				} else {
+					this.dx += e.deltaX;
+				}
 				this.dy += e.deltaY;
 				const dxdy = { dx: this.dx, dy: this.dy };
 
