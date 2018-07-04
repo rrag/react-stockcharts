@@ -83,6 +83,7 @@ function extentsWrapper(useWholeData, clamp, pointsPerPxThreshold, minPointsPerP
 			width = width * -1;
 		}
 
+		width = Math.max(width, 2 / pointsPerPxThreshold);
 		let plotData, domain;
 
 		const chartWidth = last(xScale.range()) - head(xScale.range());

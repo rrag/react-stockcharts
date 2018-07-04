@@ -260,9 +260,9 @@ function calculateState(props) {
 
 	const { plotData, domain } = filterData(fullData, extent, inputXAccesor, updatedXScale);
 
-	if (process.env.NODE_ENV !== "production" && plotData.length <= 1) {
-		throw new Error(`Showing ${plotData.length} datapoints, review the 'xExtents' prop of ChartCanvas`);
-	}
+	// if (process.env.NODE_ENV !== "production" && plotData.length <= 1) {
+	// 	throw new Error(`Showing ${plotData.length} datapoints, review the 'xExtents' prop of ChartCanvas`);
+	// }
 	return {
 		plotData,
 		xScale: updatedXScale.domain(domain),
