@@ -75,7 +75,7 @@ function extentsWrapper(useWholeData, clamp, pointsPerPxThreshold, minPointsPerP
 
 		const xScale = initialXScale.copy().domain(realInputDomain);
 
-		let width = Math.floor(xScale(xAccessor(last(filteredData)))
+		let width = Math.floor(xScale(xAccessor(last(filteredData)) + 1)
 			- xScale(xAccessor(head(filteredData))));
 
 		// prevent negative width when flipXScale
@@ -83,7 +83,6 @@ function extentsWrapper(useWholeData, clamp, pointsPerPxThreshold, minPointsPerP
 			width = width * -1;
 		}
 
-		width = Math.max(width, 2 / pointsPerPxThreshold);
 		let plotData, domain;
 
 		const chartWidth = last(xScale.range()) - head(xScale.range());
@@ -129,7 +128,7 @@ function extentsWrapper(useWholeData, clamp, pointsPerPxThreshold, minPointsPerP
 }
 
 function canShowTheseManyPeriods(width, arrayLength, maxThreshold, minThreshold) {
-	return arrayLength > showMinThreshold(width, minThreshold) && arrayLength < showMaxThreshold(width, maxThreshold);
+	return arrayLength >= showMinThreshold(width, minThreshold) && arrayLength < showMaxThreshold(width, maxThreshold);
 }
 
 function showMinThreshold(width, threshold) {

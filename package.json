@@ -1,6 +1,6 @@
 {
   "name": "react-stockcharts-lx",
-  "version": "0.7.8",
+  "version": "0.7.12",
   "description": "Highly customizable stock charts with ReactJS and d3",
   "main": "src/index.js",
   "module": "src/index.js",
