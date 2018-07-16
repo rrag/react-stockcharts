@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-// import ReactDOM from "react-dom";
+import ReactDOM from "react-dom";
+import elementResizeEvent from "element-resize-event";
 
 import { isDefined } from "../utils";
 
@@ -9,10 +10,12 @@ function getDisplayName(Series) {
 }
 
 export default function fitWidth(WrappedComponent, withRef = true, minWidth = 100) {
+	function getWidth(el) {
+		return Math.max(el.clientWidth, minWidth);
+	}
 	class ResponsiveComponent extends Component {
 		constructor(props) {
 			super(props);
-			this.handleWindowResize = this.handleWindowResize.bind(this);
 			this.getWrappedInstance = this.getWrappedInstance.bind(this);
 			this.saveNode = this.saveNode.bind(this);
 			this.setTestCanvas = this.setTestCanvas.bind(this);
@@ -42,30 +45,21 @@ export default function fitWidth(WrappedComponent, withRef = true, minWidth = 10
 			return 1;
 		}
 		componentDidMount() {
-			window.addEventListener("resize", this.handleWindowResize);
-			this.handleWindowResize();
+			const node = ReactDOM.findDOMNode(this.node).parentNode; // eslint-disable-line react/no-find-dom-node
+			this.elementResizeEventUnbind = elementResizeEvent(node, () => {
+				this.setState({
+					width: getWidth(node)
+				});
+			});
 			/* eslint-disable react/no-did-mount-set-state */
 			this.setState({
+				width: getWidth(node),
 				ratio: this.getRatio(),
 			});
 			/* eslint-enable react/no-did-mount-set-state */
 		}
 		componentWillUnmount() {
-			window.removeEventListener("resize", this.handleWindowResize);
-		}
-		handleWindowResize() {
-			this.setState({
-				width: 0
-			}, () => {
-				const el = this.node;
-				const { width, paddingLeft, paddingRight } = window.getComputedStyle(el.parentNode);
-
-				const w = parseFloat(width) - (parseFloat(paddingLeft) + parseFloat(paddingRight));
-
-				this.setState({
-					width: Math.round(Math.max(w, minWidth))
-				});
-			});
+			this.elementResizeEventUnbind && this.elementResizeEventUnbind();
 		}
 		getWrappedInstance() {
 			return this.node;
