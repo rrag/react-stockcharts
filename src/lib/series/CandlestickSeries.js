@@ -202,6 +202,7 @@ function drawOnCanvas(ctx, props, moreProps) {
 					ctx.stroke();
 					*/
 					ctx.fillRect(d.x - 0.5, d.y, 1, d.height);
+					if (strokeKey !== "none") ctx.strokeRect(d.x - 0.5, d.y, 1, d.height);
 				} else if (d.height === 0) {
 					// <line key={idx} x1={d.x} y1={d.y} x2={d.x + d.width} y2={d.y + d.height} />
 					/*
@@ -211,6 +212,7 @@ function drawOnCanvas(ctx, props, moreProps) {
 					ctx.stroke();
 					*/
 					ctx.fillRect(d.x, d.y - 0.5, d.width, 1);
+					if (strokeKey !== "none") ctx.strokeRect(d.x, d.y - 0.5, d.width, 1);
 				} else {
 					/*
 					ctx.beginPath();

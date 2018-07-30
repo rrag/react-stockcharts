@@ -7,6 +7,7 @@ import {
 	isDefined,
 	isNotDefined,
 	getLogger,
+	first,
 } from "../utils";
 
 const log = getLogger("evaluator");
@@ -66,9 +67,21 @@ function extentsWrapper(useWholeData, clamp, pointsPerPxThreshold, minPointsPerP
 			}
 		}
 
+		if (clampedDomain[0] > xAccessor(last(data)) || clampedDomain[1] < xAccessor(first(data))) {
+			filteredData = currentPlotData || filteredData.slice(filteredData.length - 1);
+			let domain = currentDomain || [xAccessor(head(filteredData)), xAccessor(last(filteredData))];
+			return { plotData: filteredData, domain };
+		}  
+
 		if (clampedDomain !== inputDomain) {
 			filteredData = getFilteredResponse(data, clampedDomain[0], clampedDomain[1], xAccessor);
 		}
+
+		// if (filteredData.length === 0) {
+		// 	let domain = initialXScale.domain();
+		// 	filteredData = getFilteredResponse(data, domain[0], domain[1], initialXScale);
+		// 	return { plotData, domain };
+		// }
 
 		const realInputDomain = clampedDomain;
 		// [xAccessor(head(filteredData)), xAccessor(last(filteredData))];
