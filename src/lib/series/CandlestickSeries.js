@@ -193,7 +193,10 @@ function drawOnCanvas(ctx, props, moreProps) {
 			ctx.fillStyle = fillStyle;
 
 			values.forEach(d => {
-				if (d.width <= 1) {
+				if (d.width <= 1 && d.height === 0) {
+					ctx.fillRect(d.x - 0.5, d.y - 0.5, 1, 1);
+					if (strokeKey !== "none") ctx.strokeRect(d.x - 0.5, d.y - 0.5, 1, 1);
+				} else if (d.width <= 1) {
 					// <line className={d.className} key={idx} x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height}/>
 					/*
 					ctx.beginPath();
