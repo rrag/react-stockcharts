@@ -88,7 +88,7 @@ const candlesAppearance = {
   opacity: 1,
   candleBorderRadius: 2
 }
-``
+```
 
 Then, make sure to render the CandlestickSeries component as such:
 
