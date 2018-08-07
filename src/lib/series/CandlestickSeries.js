@@ -29,7 +29,7 @@ class CandlestickSeries extends Component {
 
 		return <g className={className}>
 			<g className={wickClassName} key="wicks">
-				{getWicksSVG(candleData)}
+				{getWicksSVG(this.props, candleData)}
 			</g>
 			<g className={candleClassName} key="candles">
 				{getCandlesSVG(this.props, candleData)}
@@ -52,7 +52,9 @@ class CandlestickSeries extends Component {
 CandlestickSeries.propTypes = {
 	className: PropTypes.string,
 	wickClassName: PropTypes.string,
+	wickProps: PropTypes.object,
 	candleClassName: PropTypes.string,
+	candleProps: PropTypes.object,
 	widthRatio: PropTypes.number,
 	width: PropTypes.oneOfType([
 		PropTypes.number,
@@ -81,7 +83,9 @@ CandlestickSeries.propTypes = {
 CandlestickSeries.defaultProps = {
 	className: "react-stockcharts-candlestick",
 	wickClassName: "react-stockcharts-candlestick-wick",
+	wickProps: {},
 	candleClassName: "react-stockcharts-candlestick-candle",
+	candleProps: {},
 	yAccessor: d => ({ open: d.open, high: d.high, low: d.low, close: d.close }),
 	classNames: d => d.close > d.open ? "up" : "down",
 	width: plotDataLengthBarWidth,
@@ -97,15 +101,16 @@ CandlestickSeries.defaultProps = {
 	clip: true,
 };
 
-function getWicksSVG(candleData) {
-
+function getWicksSVG(props, candleData) {
+	const { wickProps } = props;
 	const wicks = candleData
 		.map((each, idx) => {
 			const d = each.wick;
 			return <path key={idx}
 				className={each.className}
 				stroke={d.stroke}
-				d={`M${d.x},${d.y1} L${d.x},${d.y2} M${d.x},${d.y3} L${d.x},${d.y4}`} />;
+				d={`M${d.x},${d.y1} L${d.x},${d.y2} M${d.x},${d.y3} L${d.x},${d.y4}`}
+				{...wickProps} />;
 		});
 
 	return wicks;
@@ -114,7 +119,7 @@ function getWicksSVG(candleData) {
 function getCandlesSVG(props, candleData) {
 
 	/* eslint-disable react/prop-types */
-	const { opacity, candleStrokeWidth } = props;
+	const { opacity, candleStrokeWidth, candleProps } = props;
 	/* eslint-enable react/prop-types */
 
 	const candles = candleData.map((d, idx) => {
@@ -122,19 +127,25 @@ function getCandlesSVG(props, candleData) {
 			return (
 				<line className={d.className} key={idx}
 					x1={d.x} y1={d.y} x2={d.x} y2={d.y + d.height}
-					stroke={d.fill} />
+					stroke={d.fill}
+					{...candleProps}
+				/>
 			);
 		else if (d.height === 0)
 			return (
 				<line key={idx}
 					x1={d.x} y1={d.y} x2={d.x + d.width} y2={d.y + d.height}
-					stroke={d.fill} />
+					stroke={d.fill}
+					{...candleProps}
+				/>
 			);
 		return (
 			<rect key={idx} className={d.className}
 				fillOpacity={opacity}
 				x={d.x} y={d.y} width={d.width} height={d.height}
-				fill={d.fill} stroke={d.stroke} strokeWidth={candleStrokeWidth} />
+				fill={d.fill} stroke={d.stroke} strokeWidth={candleStrokeWidth}
+				{...candleProps}
+			/>
 		);
 	});
 	return candles;
