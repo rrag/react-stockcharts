@@ -86,12 +86,12 @@ const candlesAppearance = {
   candleStrokeWidth: 1,
   widthRatio: 0.8,
   opacity: 1,
+  candleBorderRadius: 2
 }
 ``
 
-Then, make sure to rendre the CandlestickSeries component as such:
+Then, make sure to render the CandlestickSeries component as such:
 
 ```
-<CandlestickSeries
-   {...candlesAppearance} />
+<CandlestickSeries {...candlesAppearance} />
 ```
