@@ -2,46 +2,75 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import GenericChartComponent from "../../GenericChartComponent";
-import { getMouseCanvas } from "../../GenericComponent";
-import { isDefined, hexToRGBA } from "../../utils";
+import { isDefined, hexToRGBA, noop } from "../../utils";
 
 const PADDING = 10;
+const MIN_WIDTH = PADDING;
 
 class HoverTextNearMouse extends Component {
 	constructor(props) {
 		super(props);
+
+		this.textRef = React.createRef();
+
+		this.state = {
+			textWidth: undefined,
+			textHeight: undefined,
+		};
+	
 		this.renderSVG = this.renderSVG.bind(this);
-		this.drawOnCanvas = this.drawOnCanvas.bind(this);
 	}
-	drawOnCanvas(ctx, moreProps) {
-		const {
-			fontFamily,
-			fontSize,
-			fill,
-			bgFill,
-			bgOpacity,
-		} = this.props;
 
-		// console.log(moreProps)
-		const textMetaData = helper(this.props, moreProps);
-
-		if (isDefined(textMetaData)) {
-			const { rect, text } = textMetaData;
-
-			ctx.strokeStyle = bgFill;
-			ctx.fillStyle = hexToRGBA(bgFill, bgOpacity);
-			ctx.beginPath();
-			ctx.rect(rect.x, rect.y, rect.width, rect.height);
-			ctx.fill();
-			ctx.stroke();
-
-			ctx.font = `${ fontSize }px ${fontFamily}`;
-			ctx.fillStyle = fill;
-			ctx.beginPath();
-
-			ctx.fillText(text.text, text.x, text.y);
+	updateTextSize() {
+		const { bgWidth, bgHeight } = this.props;
+		if (bgWidth === 'auto' || bgHeight === 'auto') {
+			const textNode = this.textRef.current;
+			if (textNode) {
+				const { width, height } = textNode.getBBox();
+				if (this.state.textWidth !== width || this.state.textHeight !== height) {
+					this.setState({
+						textWidth: width,
+						textHeight: height
+					});
+				}
+			}
 		}
 	}
+
+	componentDidMount() {
+		this.updateTextSize();
+	}
+
+	componentDidUpdate() {
+		this.updateTextSize();
+	}
+
+	getBgWidth() {
+		const { bgWidth } = this.props;
+		const { textWidth } = this.state;
+
+		if (bgWidth !== 'auto') {
+			return bgWidth;
+		} else if (textWidth !== undefined) {
+			return textWidth + PADDING;
+		} else {
+			return MIN_WIDTH;
+		}
+	}
+
+	getBgHeight() {
+		const { bgHeight } = this.props;
+		const { textHeight } = this.state;
+
+		if (bgHeight !== 'auto') {
+			return bgHeight;
+		} else if (textHeight !== undefined) {
+			return textHeight + PADDING;
+		} else {
+			return MIN_WIDTH;
+		}
+	}
+	
 	renderSVG(moreProps) {
 		const {
 			fontFamily,
@@ -52,11 +81,14 @@ class HoverTextNearMouse extends Component {
 		} = this.props;
 
 		// console.log(moreProps)
-		const textMetaData = helper(this.props, moreProps);
+		const textMetaData = helper({
+			...this.props,
+			bgWidth: this.getBgWidth(),
+			bgHeight: this.getBgHeight()
+		}, moreProps);
 
 		if (isDefined(textMetaData)) {
 			const { rect, text } = textMetaData;
-
 			return (
 				<g>
 					<rect
@@ -66,9 +98,11 @@ class HoverTextNearMouse extends Component {
 						{...rect}
 					/>
 					<text
+						ref={this.textRef}
 						fontSize={fontSize}
 						fontFamily={fontFamily}
 						textAnchor="start"
+						alignmentBaseline={"central"}
 						fill={fill}
 						x={text.x}
 						y={text.y}>{text.text}</text>
@@ -77,18 +111,17 @@ class HoverTextNearMouse extends Component {
 		}
 	}
 	render() {
-
-		return <GenericChartComponent foo
-
+		return <GenericChartComponent
 			svgDraw={this.renderSVG}
-
-			canvasToDraw={getMouseCanvas}
-			canvasDraw={this.drawOnCanvas}
-
 			drawOn={["mousemove"]}
 		/>;
 	}
 }
+
+const numberOrString = PropTypes.oneOfType([
+	PropTypes.number,
+	PropTypes.oneOf(['auto']),
+]);
 
 HoverTextNearMouse.propTypes = {
 	fontFamily: PropTypes.string.isRequired,
@@ -97,8 +130,8 @@ HoverTextNearMouse.propTypes = {
 	text: PropTypes.string.isRequired,
 	bgFill: PropTypes.string.isRequired,
 	bgOpacity: PropTypes.number.isRequired,
-	bgWidth: PropTypes.number.isRequired,
-	bgHeight: PropTypes.number.isRequired,
+	bgWidth: numberOrString.isRequired,
+	bgHeight: numberOrString.isRequired,
 	show: PropTypes.bool.isRequired,
 };
 
@@ -113,7 +146,6 @@ HoverTextNearMouse.defaultProps = {
 function helper(props, moreProps) {
 	const {
 		show,
-		fontSize,
 		bgWidth,
 		bgHeight,
 	} = props;
@@ -130,20 +162,22 @@ function helper(props, moreProps) {
 		const cx = x < width / 2
 			? x + PADDING
 			: x - bgWidth - PADDING;
+
 		const cy = y < height / 2
 			? y + PADDING
 			: y - bgHeight - PADDING;
 
 		const rect = {
-			x: cx,
-			y: cy,
-			width: bgWidth,
-			height: bgHeight,
-		};
+				x: cx,
+				y: cy,
+				width: bgWidth,
+				height: bgHeight,
+			};
+			
 		const text = {
 			text: props.text,
 			x: cx + PADDING / 2,
-			y: cy + fontSize
+			y: cy + bgHeight / 2,
 		};
 
 		return {

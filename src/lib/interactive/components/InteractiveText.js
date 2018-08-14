@@ -51,6 +51,8 @@ class InteractiveText extends Component {
 		const {
 			bgFill,
 			bgOpacity,
+			bgStrokeWidth,
+			bgStroke,
 			textFill,
 			fontFamily,
 			fontSize,
@@ -76,7 +78,8 @@ class InteractiveText extends Component {
 		ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
 
 		if (selected) {
-			ctx.strokeStyle = textFill;
+			ctx.strokeStyle = bgStroke;
+			ctx.lineWidth = bgStrokeWidth;
 			ctx.strokeRect(rect.x, rect.y, rect.width, rect.height);
 		}
 
@@ -141,6 +144,8 @@ function helper(props, moreProps, textWidth) {
 InteractiveText.propTypes = {
 	bgFill: PropTypes.string.isRequired,
 	bgOpacity: PropTypes.number.isRequired,
+	bgStrokeWidth: PropTypes.number.isRequired,
+	bgStroke: PropTypes.string.isRequired,
 
 	textFill: PropTypes.string.isRequired,
 	fontFamily: PropTypes.string.isRequired,
@@ -174,7 +179,6 @@ InteractiveText.defaultProps = {
 	type: "SD", // standard dev
 	fontWeight: "normal", // standard dev
 
-	strokeWidth: 1,
 	tolerance: 4,
 	selected: false,
 };
