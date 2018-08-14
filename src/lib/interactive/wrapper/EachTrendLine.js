@@ -151,10 +151,15 @@ class EachTrendLine extends Component {
 
 			onDragComplete,
 		} = this.props;
-		const { hover, anchor } = this.state;
 
-		// console.log("SELECTED ->", selected);
-		const { enable: hoverTextEnabled, ...restHoverTextProps } = hoverText;
+		const { 
+			enable: hoverTextEnabled, 
+			selectedText: hoverTextSelected,
+			text: hoverTextUnselected,
+			...restHoverTextProps 
+		} = hoverText;
+
+		const { hover, anchor } = this.state;
 
 		return <g>
 			<StraightLine
@@ -204,8 +209,10 @@ class EachTrendLine extends Component {
 				onDrag={this.handleEdge2Drag}
 				onDragComplete={this.handleDragComplete} />
 			<HoverTextNearMouse
-				show={hoverTextEnabled && hover && !selected}
-				{...restHoverTextProps} />
+				show={hoverTextEnabled && hover && (!selected || Boolean(hoverTextSelected))}
+				{...restHoverTextProps} 
+				text={selected ? hoverTextSelected : hoverTextUnselected}
+			/>
 		</g>;
 	}
 }
