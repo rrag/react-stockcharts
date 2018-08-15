@@ -172,13 +172,17 @@ class FibonacciRetracement extends Component {
 
 		const { enabled, hoverText } = this.props;
 		const overrideIndex = isDefined(override) ? override.index : null;
+		const hoverTextWidthDefault = {
+			...FibonacciRetracement.defaultProps.hoverText,
+			...hoverText
+		};
 
 		const currentRetracement = isDefined(current) && isDefined(current.x2)
 			? <EachFibRetracement
 				interactive={false}
 				type={type}
 				appearance={appearance}
-				hoverText={hoverText}
+				hoverText={hoverTextWidthDefault}
 				{...current}
 			/>
 			: null;
@@ -189,6 +193,10 @@ class FibonacciRetracement extends Component {
 						? { ...appearance, ...each.appearance }
 						: appearance;
 
+					const eachHoverText = isDefined(each.hoverText)
+						? { ...hoverTextWidthDefault, ...each.hoverText }
+						: hoverTextWidthDefault;
+
 					return (
 						<EachFibRetracement
 							key={idx}
@@ -196,8 +204,8 @@ class FibonacciRetracement extends Component {
 							index={idx}
 							type={each.type}
 							selected={each.selected}
-							hoverText={hoverText}
 							{...(idx === overrideIndex ? override : each)}
+							hoverText={eachHoverText}							
 							appearance={eachAppearance}
 							onDrag={this.handleDrag}
 							onDragComplete={this.handleDragComplete}
@@ -272,8 +280,8 @@ FibonacciRetracement.defaultProps = {
 	hoverText: {
 		...HoverTextNearMouse.defaultProps,
 		enable: true,
-		bgHeight: 18,
-		bgWidth: 120,
+		bgHeight: 'auto',
+		bgWidth: 'auto',
 		text: "Click to select object"
 	},
 	currentPositionStroke: "#000000",
