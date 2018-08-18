@@ -209,7 +209,7 @@ class EachTrendLine extends Component {
 				onDrag={this.handleEdge2Drag}
 				onDragComplete={this.handleDragComplete} />
 			<HoverTextNearMouse
-				show={hoverTextEnabled && hover && (!selected || Boolean(hoverTextSelected))}
+				show={hoverTextEnabled && hover}
 				{...restHoverTextProps} 
 				text={selected ? hoverTextSelected : hoverTextUnselected}
 			/>

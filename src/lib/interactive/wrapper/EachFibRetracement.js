@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 
 import { head, last, noop } from "../../utils";
@@ -150,118 +150,128 @@ class EachFibRetracement extends Component {
 		const { hover } = this.state;
 		const { onDragComplete } = this.props;
 		const lines = helper({ x1, x2, y1, y2 });
-		const { enable: hoverTextEnabled, ...restHoverTextProps } = hoverText;
+
+		const { 
+			enable: hoverTextEnabled, 
+			selectedText: hoverTextSelected,
+			text: hoverTextUnselected,
+			...restHoverTextProps 
+		} = hoverText;			
 
 		const lineType = type === "EXTEND" ? "XLINE" : type === "BOUND" ? "LINE" : type;
 		const dir = head(lines).y1 > last(lines).y1 ? 3 : -1.3;
 
 		return <g>
-			{lines.map((line, j) => {
-				const text = `${yDisplayFormat(line.y)} (${line.percent.toFixed(2)}%)`;
+			<Fragment>
+				{lines.map((line, j) => {
+					const text = `${yDisplayFormat(line.y)} (${line.percent.toFixed(2)}%)`;
 
-				const xyProvider = ({ xScale, chartConfig }) => {
-					const { yScale } = chartConfig;
-					const { x1, y1, x2 } = generateLine({
-						type: lineType,
-						start: [line.x1, line.y],
-						end: [line.x2, line.y],
-						xScale,
-						yScale,
-					});
+					const xyProvider = ({ xScale, chartConfig }) => {
+						const { yScale } = chartConfig;
+						const { x1, y1, x2 } = generateLine({
+							type: lineType,
+							start: [line.x1, line.y],
+							end: [line.x2, line.y],
+							xScale,
+							yScale,
+						});
 
-					const x = xScale(Math.min(x1, x2)) + 10;
-					const y = yScale(y1) + dir * 4;
-					return [x, y];
-				};
+						const x = xScale(Math.min(x1, x2)) + 10;
+						const y = yScale(y1) + dir * 4;
+						return [x, y];
+					};
 
-				const firstOrLast = (j === 0) || (j === lines.length - 1);
+					const firstOrLast = (j === 0) || (j === lines.length - 1);
 
-				const interactiveCursorClass = firstOrLast
-					? "react-stockcharts-ns-resize-cursor"
-					: "react-stockcharts-move-cursor";
+					const interactiveCursorClass = firstOrLast
+						? "react-stockcharts-ns-resize-cursor"
+						: "react-stockcharts-move-cursor";
 
-				const interactiveEdgeCursorClass = firstOrLast
-					? "react-stockcharts-ns-resize-cursor"
-					: "react-stockcharts-ew-resize-cursor";
+					const interactiveEdgeCursorClass = firstOrLast
+						? "react-stockcharts-ns-resize-cursor"
+						: "react-stockcharts-ew-resize-cursor";
 
-				const dragHandler = j === 0
-					? this.handleLineNSResizeTop
-					: j === lines.length - 1
-						? this.handleLineNSResizeBottom
-						: this.handleLineMove;
+					const dragHandler = j === 0
+						? this.handleLineNSResizeTop
+						: j === lines.length - 1
+							? this.handleLineNSResizeBottom
+							: this.handleLineMove;
 
-				const edge1DragHandler = j === 0
-					? this.handleLineNSResizeTop
-					: j === lines.length - 1
-						? this.handleLineNSResizeBottom
-						: this.handleEdge1Drag;
-				const edge2DragHandler = j === 0
-					? this.handleLineNSResizeTop
-					: j === lines.length - 1
-						? this.handleLineNSResizeBottom
-						: this.handleEdge2Drag;
+					const edge1DragHandler = j === 0
+						? this.handleLineNSResizeTop
+						: j === lines.length - 1
+							? this.handleLineNSResizeBottom
+							: this.handleEdge1Drag;
+					const edge2DragHandler = j === 0
+						? this.handleLineNSResizeTop
+						: j === lines.length - 1
+							? this.handleLineNSResizeBottom
+							: this.handleEdge2Drag;
 
-				const hoverHandler = interactive
-					? { onHover: this.handleHover, onUnHover: this.handleHover }
-					: {};
-				return <g key={j}>
-					<StraightLine
-						ref={this.saveNodeType(`line_${j}`)}
-						selected={selected || hover}
+					const hoverHandler = interactive
+						? { onHover: this.handleHover, onUnHover: this.handleHover }
+						: {};
+					return <g key={j}>
+						<StraightLine
+							ref={this.saveNodeType(`line_${j}`)}
+							selected={selected || hover}
 
-						{...hoverHandler}
+							{...hoverHandler}
 
-						type={lineType}
-						x1Value={line.x1}
-						y1Value={line.y}
-						x2Value={line.x2}
-						y2Value={line.y}
-						stroke={stroke}
-						strokeWidth={(hover || selected) ? strokeWidth + 1 : strokeWidth}
-						strokeOpacity={strokeOpacity}
-						interactiveCursorClass={interactiveCursorClass}
+							type={lineType}
+							x1Value={line.x1}
+							y1Value={line.y}
+							x2Value={line.x2}
+							y2Value={line.y}
+							stroke={stroke}
+							strokeWidth={(hover || selected) ? strokeWidth + 1 : strokeWidth}
+							strokeOpacity={strokeOpacity}
+							interactiveCursorClass={interactiveCursorClass}
 
-						onDragStart={this.handleLineDragStart}
-						onDrag={dragHandler}
-						onDragComplete={onDragComplete}
-					/>
-					<Text
-						selected={selected}
-						/* eslint-disable */
-						xyProvider={xyProvider} 
-						/* eslint-enable */
-						fontFamily={fontFamily}
-						fontSize={fontSize}
-						fill={fontFill}>{text}</Text>
-					<ClickableCircle
-						ref={this.saveNodeType("edge1")}
-						show={selected || hover}
-						cx={line.x1}
-						cy={line.y}
-						r={r}
-						fill={firstOrLast ? nsEdgeFill : edgeFill}
-						stroke={edgeStroke}
-						strokeWidth={edgeStrokeWidth}
-						interactiveCursorClass={interactiveEdgeCursorClass}
-						onDrag={edge1DragHandler}
-						onDragComplete={onDragComplete} />
-					<ClickableCircle
-						ref={this.saveNodeType("edge2")}
-						show={selected || hover}
-						cx={line.x2}
-						cy={line.y}
-						r={r}
-						fill={firstOrLast ? nsEdgeFill : edgeFill}
-						stroke={edgeStroke}
-						strokeWidth={edgeStrokeWidth}
-						interactiveCursorClass={interactiveEdgeCursorClass}
-						onDrag={edge2DragHandler}
-						onDragComplete={onDragComplete} />
-					<HoverTextNearMouse
-						show={hoverTextEnabled && hover && !selected}
-						{...restHoverTextProps} />
-				</g>;
-			})}
+							onDragStart={this.handleLineDragStart}
+							onDrag={dragHandler}
+							onDragComplete={onDragComplete}
+						/>
+						<Text
+							selected={selected}
+							/* eslint-disable */
+							xyProvider={xyProvider} 
+							/* eslint-enable */
+							fontFamily={fontFamily}
+							fontSize={fontSize}
+							fill={fontFill}>{text}</Text>
+						<ClickableCircle
+							ref={this.saveNodeType("edge1")}
+							show={selected || hover}
+							cx={line.x1}
+							cy={line.y}
+							r={r}
+							fill={firstOrLast ? nsEdgeFill : edgeFill}
+							stroke={edgeStroke}
+							strokeWidth={edgeStrokeWidth}
+							interactiveCursorClass={interactiveEdgeCursorClass}
+							onDrag={edge1DragHandler}
+							onDragComplete={onDragComplete} />
+						<ClickableCircle
+							ref={this.saveNodeType("edge2")}
+							show={selected || hover}
+							cx={line.x2}
+							cy={line.y}
+							r={r}
+							fill={firstOrLast ? nsEdgeFill : edgeFill}
+							stroke={edgeStroke}
+							strokeWidth={edgeStrokeWidth}
+							interactiveCursorClass={interactiveEdgeCursorClass}
+							onDrag={edge2DragHandler}
+							onDragComplete={onDragComplete} />
+					</g>;
+				})}
+			</Fragment>
+			<HoverTextNearMouse
+				show={hoverTextEnabled && hover}
+				{...restHoverTextProps}
+				text={selected ? hoverTextSelected : hoverTextUnselected}
+			/>			
 		</g>;
 	}
 }

@@ -125,7 +125,7 @@ class EachText extends Component {
 				text={text}
 			/>
 			<HoverTextNearMouse
-				show={hoverTextEnabled && hover && (!selected || Boolean(hoverTextSelected))}
+				show={hoverTextEnabled && hover}
 				{...restHoverTextProps}
 				text={selected ? hoverTextSelected : hoverTextUnselected}
 			/>
