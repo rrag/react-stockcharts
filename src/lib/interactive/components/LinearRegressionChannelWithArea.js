@@ -23,11 +23,12 @@ class LinearRegressionChannelWithArea extends Component {
 		if (isDefined(onHover)) {
 			const { mouseXY } = moreProps;
 
-			const { x1, y1, x2, y2 } = helper(this.props, moreProps);
+			const { x1, y1, x2, y2, dy } = helper(this.props, moreProps);
+			const yDiffs = [-dy, 0, dy];
 
-			const hovering = isHovering2(
-				[x1, y1], [x2, y2], mouseXY, tolerance
-			);
+			const hovering = yDiffs.reduce((result, diff) => result || isHovering2(
+				[x1, y1 + diff], [x2, y2 + diff], mouseXY, tolerance
+			), false);
 			return hovering;
 		}
 		return false;

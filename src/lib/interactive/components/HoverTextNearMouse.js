@@ -111,10 +111,15 @@ class HoverTextNearMouse extends Component {
 		}
 	}
 	render() {
-		return <GenericChartComponent
-			svgDraw={this.renderSVG}
-			drawOn={["mousemove"]}
-		/>;
+		const {text} = this.props;
+		if (text) {
+			return <GenericChartComponent
+				svgDraw={this.renderSVG}
+				drawOn={["mousemove"]}
+			/>;
+		} else {
+			return null;
+		}
 	}
 }
 
