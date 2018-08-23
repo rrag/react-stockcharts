@@ -18,14 +18,14 @@ class SingleValueTooltip extends Component {
 	renderSVG(moreProps) {
 
 		const { onClick, fontFamily, fontSize, labelFill, valueFill, className } = this.props;
-		const { xDisplayFormat, yDisplayFormat, xLabel, yLabel, xAccessor, yAccessor } = this.props;
+		const { xDisplayFormat, yDisplayFormat, xLabel, yLabel, xAccessor, yAccessor,yInitDisplay,xInitDisplay } = this.props;
 		const { displayValuesFor } = this.props;
 
 		const { chartConfig: { width, height } } = moreProps;
 		const currentItem = displayValuesFor(this.props, moreProps);
 
-		const xDisplayValue = isDefined(currentItem) && isDefined(xAccessor(currentItem)) ? xDisplayFormat(xAccessor(currentItem)) : "n/a";
-		const yDisplayValue = isDefined(currentItem) && isDefined(yAccessor(currentItem)) ? yDisplayFormat(yAccessor(currentItem)) : "n/a";
+		const xDisplayValue = isDefined(currentItem) && isDefined(xAccessor(currentItem)) ? xDisplayFormat(xAccessor(currentItem)) : xInitDisplay;
+		const yDisplayValue = isDefined(currentItem) && isDefined(yAccessor(currentItem)) ? yDisplayFormat(yAccessor(currentItem)) : yInitDisplay;
 
 		const { origin: originProp } = this.props;
 		const origin = functor(originProp);
@@ -67,6 +67,8 @@ SingleValueTooltip.propTypes = {
 		PropTypes.func
 	]).isRequired,
 	className: PropTypes.string,
+    xInitDisplay: PropTypes.string,
+    yInitDisplay: PropTypes.string,
 	fontFamily: PropTypes.string,
 	fontSize: PropTypes.number,
 	onClick: PropTypes.func,
@@ -84,6 +86,8 @@ SingleValueTooltip.defaultProps = {
 	xAccessor: noop,
 	yAccessor: identity,
 	className: "react-stockcharts-tooltip",
+    xInitDisplay:"n/a",
+    yInitDisplay:"n/a",
 };
 
 export default SingleValueTooltip;
