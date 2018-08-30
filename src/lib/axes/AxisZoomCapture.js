@@ -1,5 +1,3 @@
-
-
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { select, event as d3Event, mouse, touches } from "d3-selection";
@@ -18,7 +16,7 @@ import {
 	TOUCHEND,
 	touchPosition,
 	getTouchProps,
-	sign,
+	sign
 } from "../utils";
 
 class AxisZoomCapture extends Component {
@@ -49,7 +47,7 @@ class AxisZoomCapture extends Component {
 			.on(MOUSEMOVE, null)
 			.on(MOUSEUP, null);
 		this.setState({
-			startPosition: null,
+			startPosition: null
 		});
 
 		onContextMenu(mouseXY, e);
@@ -73,7 +71,7 @@ class AxisZoomCapture extends Component {
 			this.setState({
 				startPosition: {
 					startXY,
-					startScale,
+					startScale
 				}
 			});
 		}
@@ -96,7 +94,7 @@ class AxisZoomCapture extends Component {
 			this.setState({
 				startPosition: {
 					startXY,
-					startScale,
+					startScale
 				}
 			});
 		}
@@ -118,13 +116,21 @@ class AxisZoomCapture extends Component {
 
 			const center = mean(startScale.range());
 
-			const tempRange = startScale.range()
-				.map(d => inverted ? d - sign(d - center) * diff : d + sign(d - center) * diff);
+			const tempRange = startScale
+				.range()
+				.map(
+					d =>
+						inverted
+							? d - sign(d - center) * diff
+							: d + sign(d - center) * diff
+				);
 
 			const newDomain = tempRange.map(startScale.invert);
 
-			if (sign(last(startScale.range()) - first(startScale.range())) === sign(last(tempRange) - first(tempRange))) {
-
+			if (
+				sign(last(startScale.range()) - first(startScale.range())) ===
+                sign(last(tempRange) - first(tempRange))
+			) {
 				const { axisZoomCallback } = this.props;
 				// console.log(startXScale.domain(), newXDomain)
 				axisZoomCallback(newDomain);
@@ -132,7 +138,6 @@ class AxisZoomCapture extends Component {
 		}
 	}
 	handleDragEnd() {
-
 		if (!this.dragHappened) {
 			if (this.clicked) {
 				const e = d3Event;
@@ -157,24 +162,30 @@ class AxisZoomCapture extends Component {
 			.on(TOUCHEND, null);
 
 		this.setState({
-			startPosition: null,
+			startPosition: null
 		});
 	}
 	render() {
-		const { bg, zoomCursorClassName } = this.props;
+		const { bg, zoomCursorClassName, className } = this.props;
 
 		const cursor = isDefined(this.state.startPosition)
 			? zoomCursorClassName
 			: "react-stockcharts-default-cursor";
 
-		return <rect
-			className={`react-stockcharts-enable-interaction ${cursor}`}
-			ref={this.saveNode}
-			x={bg.x} y={bg.y} opacity={0} height={bg.h} width={bg.w}
-			onContextMenu={this.handleRightClick}
-			onMouseDown={this.handleDragStartMouse}
-			onTouchStart={this.handleDragStartTouch}
-		/>;
+		return (
+			<rect
+				className={`react-stockcharts-enable-interaction ${cursor} ${className}`}
+				ref={this.saveNode}
+				x={bg.x}
+				y={bg.y}
+				opacity={0}
+				height={bg.h}
+				width={bg.w}
+				onContextMenu={this.handleRightClick}
+				onMouseDown={this.handleDragStartMouse}
+				onTouchStart={this.handleDragStartTouch}
+			/>
+		);
 	}
 }
 
@@ -197,7 +208,7 @@ AxisZoomCapture.propTypes = {
 	getScale: PropTypes.func.isRequired,
 	getMouseDelta: PropTypes.func.isRequired,
 	onDoubleClick: PropTypes.func.isRequired,
-	onContextMenu: PropTypes.func.isRequired,
+	onContextMenu: PropTypes.func.isRequired
 };
 
 AxisZoomCapture.defaultProps = {
