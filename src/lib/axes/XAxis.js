@@ -1,5 +1,3 @@
-
-
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Axis from "./Axis";
@@ -17,10 +15,16 @@ class XAxis extends Component {
 		const { showTicks } = this.props;
 		const moreProps = helper(this.props, this.context);
 
-		return <Axis {...this.props} {...moreProps} x
-			zoomEnabled={this.props.zoomEnabled && showTicks}
-			axisZoomCallback={this.axisZoomCallback}
-			zoomCursorClassName="react-stockcharts-ew-resize-cursor" />;
+		return (
+			<Axis
+				{...this.props}
+				{...moreProps}
+				x
+				zoomEnabled={this.props.zoomEnabled && showTicks}
+				axisZoomCallback={this.axisZoomCallback}
+				zoomCursorClassName="react-stockcharts-ew-resize-cursor"
+			/>
+		);
 	}
 }
 
@@ -42,6 +46,7 @@ XAxis.propTypes = {
 	zoomEnabled: PropTypes.bool,
 	onContextMenu: PropTypes.func,
 	onDoubleClick: PropTypes.func,
+	onClick: PropTypes.func
 };
 
 XAxis.defaultProps = {
@@ -65,33 +70,37 @@ XAxis.defaultProps = {
 	fontWeight: 400,
 	xZoomHeight: 25,
 	zoomEnabled: true,
-	getMouseDelta: (startXY, mouseXY) => startXY[0] - mouseXY[0],
+	getMouseDelta: (startXY, mouseXY) => startXY[0] - mouseXY[0]
 };
 
 XAxis.contextTypes = {
 	chartConfig: PropTypes.object.isRequired,
-	xAxisZoom: PropTypes.func.isRequired,
+	xAxisZoom: PropTypes.func.isRequired
 };
 
 function helper(props, context) {
 	const { axisAt, xZoomHeight, orient } = props;
-	const { chartConfig: { width, height } } = context;
+	const {
+		chartConfig: { width, height }
+	} = context;
 
 	let axisLocation;
-	const x = 0, w = width, h = xZoomHeight;
+	const x = 0,
+		w = width,
+		h = xZoomHeight;
 
 	if (axisAt === "top") axisLocation = 0;
 	else if (axisAt === "bottom") axisLocation = height;
-	else if (axisAt === "middle") axisLocation = (height) / 2;
+	else if (axisAt === "middle") axisLocation = height / 2;
 	else axisLocation = axisAt;
 
-	const y = (orient === "top") ? -xZoomHeight : 0;
+	const y = orient === "top" ? -xZoomHeight : 0;
 
 	return {
 		transform: [0, axisLocation],
 		range: [0, width],
 		getScale: getXScale,
-		bg: { x, y, h, w },
+		bg: { x, y, h, w }
 	};
 }
 
@@ -101,13 +110,13 @@ function getXScale(moreProps) {
 	if (scale.invert) {
 		const trueRange = [0, width];
 		const trueDomain = trueRange.map(scale.invert);
-		return scale.copy()
+		return scale
+			.copy()
 			.domain(trueDomain)
 			.range(trueRange);
 	}
 
 	return scale;
 }
-
 
 export default XAxis;
