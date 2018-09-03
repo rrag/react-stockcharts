@@ -1049,7 +1049,7 @@ class ChartCanvas extends Component {
 	}
 	render() {
 
-		const { type, height, width, margin, className, zIndex, defaultFocus, ratio, mouseMoveEvent, panEvent, zoomEvent } = this.props;
+		const { type, height, width, margin, className, zIndex, defaultFocus, ratio, mouseMoveEvent, panEvent, zoomEvent, wheelPanDirection } = this.props;
 		const { useCrossHairStyleCursor, onSelect } = this.props;
 
 		const { plotData, xScale, xAccessor, chartConfig } = this.state;
@@ -1083,6 +1083,7 @@ class ChartCanvas extends Component {
 							mouseMove={mouseMoveEvent && interaction}
 							zoom={zoomEvent && interaction}
 							pan={panEvent && interaction}
+							wheelPanDirection={wheelPanDirection}
 
 							width={dimensions.width}
 							height={dimensions.height}
@@ -1180,6 +1181,7 @@ ChartCanvas.propTypes = {
 	onSelect: PropTypes.func,
 	maintainPointsPerPixelOnResize: PropTypes.bool,
 	disableInteraction: PropTypes.bool,
+	wheelPanDirection: PropTypes.string,
 };
 
 ChartCanvas.defaultProps = {
@@ -1207,6 +1209,7 @@ ChartCanvas.defaultProps = {
 	maintainPointsPerPixelOnResize: true,
 	// ratio: 2,
 	disableInteraction: false,
+	wheelPanDirection: 'forward',
 };
 
 ChartCanvas.childContextTypes = {
