@@ -69,7 +69,7 @@ class AreaChartWithEdge extends React.Component {
 					<AreaSeries yAccessor={d => d.close}/>
 
 					<SingleValueTooltip
-						xLabel="Date" /* xLabel is optional, absense will not show the x value */ yLabel="C"
+						xLabel="Date" /* xLabel is optional, absence will not show the x value */ yLabel="C"
 						yAccessor={d => d.close}
 						xDisplayFormat={timeFormat("%Y-%m-%d")} yDisplayFormat={format(".2f")}
 						/* valueStroke="green" - optional prop */
