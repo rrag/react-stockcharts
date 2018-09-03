@@ -46,6 +46,7 @@
     "d3-time": "^1.0.8",
     "d3-time-format": "^2.1.1",
     "debug": "^3.1.0",
+    "element-resize-event": "^2.0.9",
     "lodash.flattendeep": "^4.4.0",
     "prop-types": "^15.6.0",
     "save-svg-as-png": "^1.4.5"

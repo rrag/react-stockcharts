@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
+import elementResizeEvent from "element-resize-event";
 
 import { isDefined } from "../utils";
 
@@ -19,8 +20,8 @@ export default function fitDimensions(WrappedComponent, props = {}) {
 	} = props;
 
 	function getDimensions(el) {
-		const w = el.parentNode.clientWidth;
-		const h = el.parentNode.clientHeight;
+		const w = el.clientWidth;
+		const h = el.clientHeight;
 
 		return {
 			width: isDefined(width) ? width : Math.max(w, minWidth),
@@ -30,7 +31,6 @@ export default function fitDimensions(WrappedComponent, props = {}) {
 	class ResponsiveComponent extends Component {
 		constructor(props) {
 			super(props);
-			this.handleWindowResize = this.handleWindowResize.bind(this);
 			this.getWrappedInstance = this.getWrappedInstance.bind(this);
 			this.saveNode = this.saveNode.bind(this);
 			this.setTestCanvas = this.setTestCanvas.bind(this);
@@ -60,8 +60,11 @@ export default function fitDimensions(WrappedComponent, props = {}) {
 			return 1;
 		}
 		componentDidMount() {
-			window.addEventListener("resize", this.handleWindowResize);
-			const dimensions = getDimensions(this.node);
+			const node = ReactDOM.findDOMNode(this.node).parentNode; // eslint-disable-line react/no-find-dom-node
+			this.elementResizeEventUnbind = elementResizeEvent(node, () => {
+				this.setState(getDimensions(node));
+			});
+			const dimensions = getDimensions(node);
 
 			/* eslint-disable react/no-did-mount-set-state */
 			this.setState({
@@ -71,11 +74,7 @@ export default function fitDimensions(WrappedComponent, props = {}) {
 			/* eslint-enable react/no-did-mount-set-state */
 		}
 		componentWillUnmount() {
-			window.removeEventListener("resize", this.handleWindowResize);
-		}
-		handleWindowResize() {
-			const node = ReactDOM.findDOMNode(this.node); // eslint-disable-line react/no-find-dom-node
-			this.setState(getDimensions(node));
+			this.elementResizeEventUnbind && this.elementResizeEventUnbind();
 		}
 		getWrappedInstance() {
 			return this.node;
