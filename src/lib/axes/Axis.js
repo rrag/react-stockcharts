@@ -50,7 +50,7 @@ class Axis extends Component {
 		</g>;
 	}
 	render() {
-		const { bg, axisZoomCallback, zoomCursorClassName, zoomEnabled, getScale, inverted } = this.props;
+		const { bg, axisZoomCallback, className, zoomCursorClassName, zoomEnabled, getScale, inverted } = this.props;
 		const { transform, getMouseDelta, edgeClip } = this.props;
 		const { onContextMenu, onDoubleClick } = this.props;
 
@@ -61,6 +61,7 @@ class Axis extends Component {
 				getMoreProps={this.getMoreProps}
 				getMouseDelta={getMouseDelta}
 				axisZoomCallback={axisZoomCallback}
+				className={className}
 				zoomCursorClassName={zoomCursorClassName}
 				inverted={inverted}
 				onContextMenu={onContextMenu}
