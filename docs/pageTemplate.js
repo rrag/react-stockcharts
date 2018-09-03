@@ -9,8 +9,8 @@ function getExternalAssets(mode) {
 		<link href="prismjs/themes/prism.css" rel="stylesheet">`;
 	}
 	default:
-		return `<script src="//cdnjs.cloudflare.com/ajax/libs/react/16.1.1/umd/react.production.min.js"></script>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/react-dom/16.1.1/umd/react-dom.production.min.js"></script>
+		return `<script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.1.1/umd/react.production.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.1.1/umd/react-dom.production.min.js"></script>
 
 		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/0.0.1/prism.css" rel="stylesheet">
