@@ -161,14 +161,14 @@ class AxisZoomCapture extends Component {
 		});
 	}
 	render() {
-		const { bg, zoomCursorClassName } = this.props;
+		const { bg, className, zoomCursorClassName } = this.props;
 
 		const cursor = isDefined(this.state.startPosition)
 			? zoomCursorClassName
 			: "react-stockcharts-default-cursor";
 
 		return <rect
-			className={`react-stockcharts-enable-interaction ${cursor}`}
+			className={`react-stockcharts-enable-interaction ${cursor} ${className}`}
 			ref={this.saveNode}
 			x={bg.x} y={bg.y} opacity={0} height={bg.h} width={bg.w}
 			onContextMenu={this.handleRightClick}
