@@ -74,6 +74,8 @@ CandlestickSeries.propTypes = {
 		PropTypes.func,
 		PropTypes.string
 	]),
+	candleStrokeWidth: PropTypes.number,
+	candleBorderRadius: PropTypes.number,
 	yAccessor: PropTypes.func,
 	clip: PropTypes.bool,
 };
@@ -91,6 +93,7 @@ CandlestickSeries.defaultProps = {
 	// stroke: d => d.close > d.open ? "#6BA583" : "#FF0000",
 	stroke: "#000000",
 	candleStrokeWidth: 0.5,
+	candleBorderRadius: 0,
 	// stroke: "none",
 	widthRatio: 0.8,
 	opacity: 0.5,
@@ -114,7 +117,7 @@ function getWicksSVG(candleData) {
 function getCandlesSVG(props, candleData) {
 
 	/* eslint-disable react/prop-types */
-	const { opacity, candleStrokeWidth } = props;
+	const { opacity, candleStrokeWidth, candleBorderRadius } = props;
 	/* eslint-enable react/prop-types */
 
 	const candles = candleData.map((d, idx) => {
@@ -134,7 +137,8 @@ function getCandlesSVG(props, candleData) {
 			<rect key={idx} className={d.className}
 				fillOpacity={opacity}
 				x={d.x} y={d.y} width={d.width} height={d.height}
-				fill={d.fill} stroke={d.stroke} strokeWidth={candleStrokeWidth} />
+				fill={d.fill} stroke={d.stroke} strokeWidth={candleStrokeWidth}
+				rx={candleBorderRadius} ry={candleBorderRadius} />
 		);
 	});
 	return candles;
