@@ -48,7 +48,11 @@ StackedBarSeries.propTypes = {
 		PropTypes.func,
 	]).isRequired,
 	direction: PropTypes.oneOf(["up", "down"]).isRequired,
-	stroke: PropTypes.bool.isRequired,
+	stroke: PropTypes.oneOfType([
+		PropTypes.bool,
+		PropTypes.string,
+		PropTypes.func,
+	]).isRequired,
 	width: PropTypes.oneOfType([
 		PropTypes.number,
 		PropTypes.func
@@ -180,15 +184,17 @@ export function drawOnCanvas2(props, ctx, bars) {
 
 	nest.forEach(outer => {
 		const { key, values } = outer;
-		if (head(values).width > 1) {
-			ctx.strokeStyle = key;
-		}
+
 		const fillStyle = head(values).width <= 1
 			? key
 			: hexToRGBA(key, props.opacity);
 		ctx.fillStyle = fillStyle;
 
 		values.forEach(d => {
+			if (head(values).width > 1) {
+				ctx.strokeStyle = d.stroke;
+			}
+
 			if (d.width <= 1) {
 				/* <line key={idx} className={d.className}
 							stroke={stroke}
@@ -229,6 +235,9 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 	const getClassName = functor(className);
 	const getFill = functor(fill);
 	const getBase = functor(baseAt);
+	const getStroke = typeof stroke === "boolean"
+		? stroke ? getFill : () => "none"
+		: functor(stroke);
 
 	const widthFunctor = functor(props.width);
 	const width = widthFunctor(props, {
@@ -256,7 +265,7 @@ export function getBars(props, xAccessor, yAccessor, xScale, yScale, plotData, s
 				d[key] = eachYAccessor(each);
 				const appearance = {
 					className: getClassName(each, i),
-					stroke: stroke ? getFill(each, i) : "none",
+					stroke: getStroke(each, i),
 					fill: getFill(each, i),
 				};
 				d.appearance[key] = appearance;
