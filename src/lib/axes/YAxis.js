@@ -42,6 +42,7 @@ YAxis.propTypes = {
 	zoomEnabled: PropTypes.bool,
 	onContextMenu: PropTypes.func,
 	onDoubleClick: PropTypes.func,
+	onClick: PropTypes.func,
 };
 
 YAxis.defaultProps = {
