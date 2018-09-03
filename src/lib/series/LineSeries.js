@@ -166,9 +166,9 @@ class LineSeries extends Component {
 
 			onClickWhenHover={this.props.onClick}
 			onDoubleClickWhenHover={this.props.onDoubleClick}
-            onContextMenuWhenHover={this.props.onContextMenu}
-            onHover={this.props.onHover}
-            onUnHover={this.props.onUnHover}
+			onContextMenuWhenHover={this.props.onContextMenu}
+			onHover={this.props.onHover}
+			onUnHover={this.props.onUnHover}
 			{...hoverProps}
 		/>;
 	}
