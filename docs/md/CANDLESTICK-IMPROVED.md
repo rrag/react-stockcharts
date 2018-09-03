@@ -87,11 +87,22 @@ const candlesAppearance = {
   widthRatio: 0.8,
   opacity: 1,
 }
-``
+```
 
-Then, make sure to rendre the CandlestickSeries component as such:
+You can also pass props to the wick and candle elements using the `wickProps` and `candleProps` props:
+
+```js
+const wickProps = {
+  // any svg props you want here
+}
+const candleProps = {
+  rx: 2,
+  ry: 2
+}
+```
+
+Then, make sure to render the CandlestickSeries component as such:
 
 ```
-<CandlestickSeries
-   {...candlesAppearance} />
+<CandlestickSeries {...candlesAppearance} wickProps={wickProps} candleProps={candleProps}/>
 ```
