@@ -101,13 +101,19 @@ class InteractiveText extends Component {
 		} */
 	}
 	render() {
-		const { textList, defaultText } = this.props;
+		const { textList, defaultText, hoverText } = this.props;
 		const { override } = this.state;
 		return <g>
 			{textList.map((each, idx) => {
+				const defaultHoverText = InteractiveText.defaultProps.hoverText;
 				const props = {
 					...defaultText,
 					...each,
+					hoverText: {
+						...defaultHoverText,
+						...hoverText,
+						...(each.hoverText || {})
+					},
 				};
 				return <EachText key={idx}
 					ref={this.saveNodeType(idx)}
@@ -143,6 +149,8 @@ InteractiveText.propTypes = {
 	defaultText: PropTypes.shape({
 		bgFill: PropTypes.string.isRequired,
 		bgOpacity: PropTypes.number.isRequired,
+		bgStrokeWidth: PropTypes.number,
+		bgStroke: PropTypes.string,
 		textFill: PropTypes.string.isRequired,
 		fontFamily: PropTypes.string.isRequired,
 		fontWeight: PropTypes.string.isRequired,
@@ -164,6 +172,7 @@ InteractiveText.defaultProps = {
 	defaultText: {
 		bgFill: "#D3D3D3",
 		bgOpacity: 1,
+		bgStrokeWidth: 1,
 		textFill: "#F10040",
 		fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 		fontSize: 12,
@@ -174,9 +183,10 @@ InteractiveText.defaultProps = {
 	hoverText: {
 		...HoverTextNearMouse.defaultProps,
 		enable: true,
-		bgHeight: 18,
-		bgWidth: 175,
-		text: "Click and drag the edge circles",
+		bgHeight: "auto",
+		bgWidth: "auto",
+		text: "Click to select object",
+		selectedText: "",
 	},
 	textList: [],
 };

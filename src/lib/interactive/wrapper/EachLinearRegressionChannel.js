@@ -91,9 +91,14 @@ class EachLinearRegressionChannel extends Component {
 		const hoverHandler = interactive
 			? { onHover: this.handleHover, onUnHover: this.handleHover }
 			: {};
-		const { enable: hoverTextEnabled, ...restHoverTextProps } = hoverText;
 
-		// console.log("SELECTED ->", selected);
+		const { 
+			enable: hoverTextEnabled, 
+			selectedText: hoverTextSelected,
+			text: hoverTextUnselected,
+			...restHoverTextProps 
+		} = hoverText;			
+
 		return <g>
 			<LinearRegressionChannelWithArea
 				ref={this.saveNodeType("area")}
@@ -130,8 +135,10 @@ class EachLinearRegressionChannel extends Component {
 				onDrag={this.handleEdge2Drag}
 				onDragComplete={onDragComplete} />
 			<HoverTextNearMouse
-				show={hoverTextEnabled && hover && !selected}
-				{...restHoverTextProps} />
+				show={hoverTextEnabled && hover}
+				{...restHoverTextProps}
+				text={selected ? hoverTextSelected : hoverTextUnselected}
+			/>
 		</g>;
 	}
 }

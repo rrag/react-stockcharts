@@ -76,6 +76,8 @@ class EachText extends Component {
 			position,
 			bgFill,
 			bgOpacity,
+			bgStroke,
+			bgStrokeWidth,
 			textFill,
 			fontFamily,
 			fontSize,
@@ -93,7 +95,12 @@ class EachText extends Component {
 			onUnHover: this.handleHover
 		};
 
-		const { enable: hoverTextEnabled, ...restHoverTextProps } = hoverText;
+		const { 
+			enable: hoverTextEnabled, 
+			selectedText: hoverTextSelected,
+			text: hoverTextUnselected,
+			...restHoverTextProps 
+		} = hoverText;
 
 		return <g>
 			<InteractiveText
@@ -105,10 +112,11 @@ class EachText extends Component {
 				onDragStart={this.handleDragStart}
 				onDrag={this.handleDrag}
 				onDragComplete={onDragComplete}
-
 				position={position}
 				bgFill={bgFill}
 				bgOpacity={bgOpacity}
+				bgStroke={bgStroke || textFill}
+				bgStrokeWidth={bgStrokeWidth}
 				textFill={textFill}
 				fontFamily={fontFamily}
 				fontStyle={fontStyle}
@@ -117,8 +125,10 @@ class EachText extends Component {
 				text={text}
 			/>
 			<HoverTextNearMouse
-				show={hoverTextEnabled && hover && !selected}
-				{...restHoverTextProps} />
+				show={hoverTextEnabled && hover}
+				{...restHoverTextProps}
+				text={selected ? hoverTextSelected : hoverTextUnselected}
+			/>
 		</g>;
 	}
 }
@@ -139,6 +149,8 @@ EachText.propTypes = {
 	position: PropTypes.array.isRequired,
 	bgFill: PropTypes.string.isRequired,
 	bgOpacity: PropTypes.number.isRequired,
+	bgStrokeWidth: PropTypes.number.isRequired,
+	bgStroke: PropTypes.string,	
 	textFill: PropTypes.string.isRequired,
 
 	fontWeight: PropTypes.string.isRequired,
@@ -158,19 +170,15 @@ EachText.propTypes = {
 EachText.defaultProps = {
 	onDrag: noop,
 	onDragComplete: noop,
-	edgeStroke: "#000000",
-	edgeFill: "#FFFFFF",
-	edgeStrokeWidth: 2,
-	r: 5,
-	strokeWidth: 1,
-	opacity: 1,
+	bgOpacity: 1,
+	bgStrokeWidth: 1,
 	selected: false,
 	fill: "#8AAFE2",
 	hoverText: {
 		...HoverTextNearMouse.defaultProps,
 		enable: true,
-		bgHeight: 18,
-		bgWidth: 120,
+		bgHeight: 'auto',
+		bgWidth: 'auto',
 		text: "Click to select object",
 	}
 };
