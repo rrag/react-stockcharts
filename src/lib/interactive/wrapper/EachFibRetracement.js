@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import { head, last, noop } from "../../utils";
@@ -151,18 +151,18 @@ class EachFibRetracement extends Component {
 		const { onDragComplete } = this.props;
 		const lines = helper({ x1, x2, y1, y2 });
 
-		const { 
-			enable: hoverTextEnabled, 
+		const {
+			enable: hoverTextEnabled,
 			selectedText: hoverTextSelected,
 			text: hoverTextUnselected,
-			...restHoverTextProps 
-		} = hoverText;			
+			...restHoverTextProps
+		} = hoverText;
 
 		const lineType = type === "EXTEND" ? "XLINE" : type === "BOUND" ? "LINE" : type;
 		const dir = head(lines).y1 > last(lines).y1 ? 3 : -1.3;
 
-		return <g>
-			<Fragment>
+		return (
+			<g>
 				{lines.map((line, j) => {
 					const text = `${yDisplayFormat(line.y)} (${line.percent.toFixed(2)}%)`;
 
@@ -266,13 +266,13 @@ class EachFibRetracement extends Component {
 							onDragComplete={onDragComplete} />
 					</g>;
 				})}
-			</Fragment>
-			<HoverTextNearMouse
-				show={hoverTextEnabled && hover}
-				{...restHoverTextProps}
-				text={selected ? hoverTextSelected : hoverTextUnselected}
-			/>			
-		</g>;
+				<HoverTextNearMouse
+					show={hoverTextEnabled && hover}
+					{...restHoverTextProps}
+					text={selected ? hoverTextSelected : hoverTextUnselected}
+				/>
+			</g>
+		);
 	}
 }
 

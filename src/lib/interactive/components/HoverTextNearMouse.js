@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import GenericChartComponent from "../../GenericChartComponent";
-import { isDefined, hexToRGBA, noop } from "../../utils";
+import { isDefined } from "../../utils";
 
 const PADDING = 10;
 const MIN_WIDTH = PADDING;
@@ -11,20 +11,23 @@ class HoverTextNearMouse extends Component {
 	constructor(props) {
 		super(props);
 
-		this.textRef = React.createRef();
-
 		this.state = {
 			textWidth: undefined,
 			textHeight: undefined,
 		};
-	
+
+		this.saveNode = this.saveNode.bind(this);
+		this.updateTextSize = this.updateTextSize.bind(this);
 		this.renderSVG = this.renderSVG.bind(this);
+	}
+	saveNode(node) {
+		this.textNode = node;
 	}
 
 	updateTextSize() {
 		const { bgWidth, bgHeight } = this.props;
-		if (bgWidth === 'auto' || bgHeight === 'auto') {
-			const textNode = this.textRef.current;
+		if (bgWidth === "auto" || bgHeight === "auto") {
+			const textNode = this.textNode;
 			if (textNode) {
 				const { width, height } = textNode.getBBox();
 				if (this.state.textWidth !== width || this.state.textHeight !== height) {
@@ -49,7 +52,7 @@ class HoverTextNearMouse extends Component {
 		const { bgWidth } = this.props;
 		const { textWidth } = this.state;
 
-		if (bgWidth !== 'auto') {
+		if (bgWidth !== "auto") {
 			return bgWidth;
 		} else if (textWidth !== undefined) {
 			return textWidth + PADDING;
@@ -62,7 +65,7 @@ class HoverTextNearMouse extends Component {
 		const { bgHeight } = this.props;
 		const { textHeight } = this.state;
 
-		if (bgHeight !== 'auto') {
+		if (bgHeight !== "auto") {
 			return bgHeight;
 		} else if (textHeight !== undefined) {
 			return textHeight + PADDING;
@@ -70,7 +73,7 @@ class HoverTextNearMouse extends Component {
 			return MIN_WIDTH;
 		}
 	}
-	
+
 	renderSVG(moreProps) {
 		const {
 			fontFamily,
@@ -98,7 +101,7 @@ class HoverTextNearMouse extends Component {
 						{...rect}
 					/>
 					<text
-						ref={this.textRef}
+						ref={this.saveNode}
 						fontSize={fontSize}
 						fontFamily={fontFamily}
 						textAnchor="start"
@@ -111,7 +114,7 @@ class HoverTextNearMouse extends Component {
 		}
 	}
 	render() {
-		const {text} = this.props;
+		const { text } = this.props;
 		if (text) {
 			return <GenericChartComponent
 				svgDraw={this.renderSVG}
@@ -125,7 +128,7 @@ class HoverTextNearMouse extends Component {
 
 const numberOrString = PropTypes.oneOfType([
 	PropTypes.number,
-	PropTypes.oneOf(['auto']),
+	PropTypes.oneOf(["auto"]),
 ]);
 
 HoverTextNearMouse.propTypes = {
@@ -173,12 +176,12 @@ function helper(props, moreProps) {
 			: y - bgHeight - PADDING;
 
 		const rect = {
-				x: cx,
-				y: cy,
-				width: bgWidth,
-				height: bgHeight,
-			};
-			
+			x: cx,
+			y: cy,
+			width: bgWidth,
+			height: bgHeight,
+		};
+
 		const text = {
 			text: props.text,
 			x: cx + PADDING / 2,

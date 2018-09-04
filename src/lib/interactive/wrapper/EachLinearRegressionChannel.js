@@ -92,12 +92,12 @@ class EachLinearRegressionChannel extends Component {
 			? { onHover: this.handleHover, onUnHover: this.handleHover }
 			: {};
 
-		const { 
-			enable: hoverTextEnabled, 
+		const {
+			enable: hoverTextEnabled,
 			selectedText: hoverTextSelected,
 			text: hoverTextUnselected,
-			...restHoverTextProps 
-		} = hoverText;			
+			...restHoverTextProps
+		} = hoverText;
 
 		return <g>
 			<LinearRegressionChannelWithArea

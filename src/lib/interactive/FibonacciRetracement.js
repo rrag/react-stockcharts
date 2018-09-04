@@ -205,7 +205,7 @@ class FibonacciRetracement extends Component {
 							type={each.type}
 							selected={each.selected}
 							{...(idx === overrideIndex ? override : each)}
-							hoverText={eachHoverText}							
+							hoverText={eachHoverText}
 							appearance={eachAppearance}
 							onDrag={this.handleDrag}
 							onDragComplete={this.handleDragComplete}
@@ -280,9 +280,10 @@ FibonacciRetracement.defaultProps = {
 	hoverText: {
 		...HoverTextNearMouse.defaultProps,
 		enable: true,
-		bgHeight: 'auto',
-		bgWidth: 'auto',
-		text: "Click to select object"
+		bgHeight: "auto",
+		bgWidth: "auto",
+		text: "Click to select object",
+		selectedText: "",
 	},
 	currentPositionStroke: "#000000",
 	currentPositionOpacity: 1,

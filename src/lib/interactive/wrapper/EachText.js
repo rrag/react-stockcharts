@@ -95,11 +95,11 @@ class EachText extends Component {
 			onUnHover: this.handleHover
 		};
 
-		const { 
-			enable: hoverTextEnabled, 
+		const {
+			enable: hoverTextEnabled,
 			selectedText: hoverTextSelected,
 			text: hoverTextUnselected,
-			...restHoverTextProps 
+			...restHoverTextProps
 		} = hoverText;
 
 		return <g>
@@ -150,7 +150,7 @@ EachText.propTypes = {
 	bgFill: PropTypes.string.isRequired,
 	bgOpacity: PropTypes.number.isRequired,
 	bgStrokeWidth: PropTypes.number.isRequired,
-	bgStroke: PropTypes.string,	
+	bgStroke: PropTypes.string,
 	textFill: PropTypes.string.isRequired,
 
 	fontWeight: PropTypes.string.isRequired,
@@ -177,8 +177,8 @@ EachText.defaultProps = {
 	hoverText: {
 		...HoverTextNearMouse.defaultProps,
 		enable: true,
-		bgHeight: 'auto',
-		bgWidth: 'auto',
+		bgHeight: "auto",
+		bgWidth: "auto",
 		text: "Click to select object",
 	}
 };

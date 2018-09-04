@@ -202,6 +202,8 @@ LineSeries.propTypes = {
 	highlightOnHover: PropTypes.bool,
 	onClick: PropTypes.func,
 	onDoubleClick: PropTypes.func,
+	onHover: PropTypes.func,
+	onUnHover: PropTypes.func,
 	onContextMenu: PropTypes.func,
 	yAccessor: PropTypes.func,
 	connectNulls: PropTypes.bool,

@@ -152,11 +152,11 @@ class EachTrendLine extends Component {
 			onDragComplete,
 		} = this.props;
 
-		const { 
-			enable: hoverTextEnabled, 
+		const {
+			enable: hoverTextEnabled,
 			selectedText: hoverTextSelected,
 			text: hoverTextUnselected,
-			...restHoverTextProps 
+			...restHoverTextProps
 		} = hoverText;
 
 		const { hover, anchor } = this.state;
@@ -210,7 +210,7 @@ class EachTrendLine extends Component {
 				onDragComplete={this.handleDragComplete} />
 			<HoverTextNearMouse
 				show={hoverTextEnabled && hover}
-				{...restHoverTextProps} 
+				{...restHoverTextProps}
 				text={selected ? hoverTextSelected : hoverTextUnselected}
 			/>
 		</g>;

@@ -245,10 +245,10 @@ StandardDeviationChannel.defaultProps = {
 	hoverText: {
 		...HoverTextNearMouse.defaultProps,
 		enable: true,
-		bgHeight: 'auto',
-		bgWidth: 'auto',
+		bgHeight: "auto",
+		bgWidth: "auto",
 		text: "Click and drag the edge circles",
-		selectedText: ''
+		selectedText: ""
 	},
 	channels: [],
 };
