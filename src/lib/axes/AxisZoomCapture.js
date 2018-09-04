@@ -30,6 +30,7 @@ class AxisZoomCapture extends Component {
 		this.handleDragEnd = this.handleDragEnd.bind(this);
 		this.handleRightClick = this.handleRightClick.bind(this);
 		this.handleClick = this.handleClick.bind(this);
+		this.handleDoubleClick = this.handleDoubleClick.bind(this);
 		this.saveNode = this.saveNode.bind(this);
 		this.state = {
 			startPosition: null
@@ -41,6 +42,8 @@ class AxisZoomCapture extends Component {
 	handleClick(e) {
 		e.stopPropagation();
 		e.preventDefault();
+
+		if (this.dragHappened) return;
 
 		const { onClick } = this.props;
 		const mouseXY = mousePosition(e, this.node.getBoundingClientRect());
@@ -54,6 +57,25 @@ class AxisZoomCapture extends Component {
 		});
 
 		onClick(mouseXY, e);
+	}
+	handleDoubleClick(e) {
+		e.stopPropagation();
+		e.preventDefault();
+
+		if (this.dragHappened) return;
+
+		const { onDoubleClick } = this.props;
+		const mouseXY = mousePosition(e, this.node.getBoundingClientRect());
+
+		select(d3Window(this.node))
+			.on(MOUSEMOVE, null)
+			.on(MOUSEUP, null);
+
+		this.setState({
+			startPosition: null,
+		});
+
+		onDoubleClick(mouseXY, e);
 	}
 	handleRightClick(e) {
 		e.stopPropagation();
@@ -149,23 +171,6 @@ class AxisZoomCapture extends Component {
 		}
 	}
 	handleDragEnd() {
-		if (!this.dragHappened) {
-			if (this.clicked) {
-				const e = d3Event;
-				const mouseXY = this.mouseInteraction
-					? mouse(this.node)
-					: touches(this.node)[0];
-				const { onDoubleClick } = this.props;
-
-				onDoubleClick(mouseXY, e);
-			} else {
-				this.clicked = true;
-				setTimeout(() => {
-					this.clicked = false;
-				}, 300);
-			}
-		}
-
 		select(d3Window(this.node))
 			.on(MOUSEMOVE, null)
 			.on(MOUSEUP, null)
@@ -189,6 +194,7 @@ class AxisZoomCapture extends Component {
 			x={bg.x} y={bg.y} opacity={0} height={bg.h} width={bg.w}
 			onContextMenu={this.handleRightClick}
 			onClick={this.handleClick}
+			onDoubleClick={this.handleDoubleClick}
 			onMouseDown={this.handleDragStartMouse}
 			onTouchStart={this.handleDragStartTouch}
 		/>;
