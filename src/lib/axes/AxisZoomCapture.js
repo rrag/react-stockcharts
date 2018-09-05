@@ -29,6 +29,8 @@ class AxisZoomCapture extends Component {
 		this.handleDrag = this.handleDrag.bind(this);
 		this.handleDragEnd = this.handleDragEnd.bind(this);
 		this.handleRightClick = this.handleRightClick.bind(this);
+		this.handleClick = this.handleClick.bind(this);
+		this.handleDoubleClick = this.handleDoubleClick.bind(this);
 		this.saveNode = this.saveNode.bind(this);
 		this.state = {
 			startPosition: null
@@ -36,6 +38,44 @@ class AxisZoomCapture extends Component {
 	}
 	saveNode(node) {
 		this.node = node;
+	}
+	handleClick(e) {
+		e.stopPropagation();
+		e.preventDefault();
+
+		if (this.dragHappened) return;
+
+		const { onClick } = this.props;
+		const mouseXY = mousePosition(e, this.node.getBoundingClientRect());
+
+		select(d3Window(this.node))
+			.on(MOUSEMOVE, null)
+			.on(MOUSEUP, null);
+
+		this.setState({
+			startPosition: null,
+		});
+
+		onClick(mouseXY, e);
+	}
+	handleDoubleClick(e) {
+		e.stopPropagation();
+		e.preventDefault();
+
+		if (this.dragHappened) return;
+
+		const { onDoubleClick } = this.props;
+		const mouseXY = mousePosition(e, this.node.getBoundingClientRect());
+
+		select(d3Window(this.node))
+			.on(MOUSEMOVE, null)
+			.on(MOUSEUP, null);
+
+		this.setState({
+			startPosition: null,
+		});
+
+		onDoubleClick(mouseXY, e);
 	}
 	handleRightClick(e) {
 		e.stopPropagation();
@@ -126,30 +166,11 @@ class AxisZoomCapture extends Component {
 			if (sign(last(startScale.range()) - first(startScale.range())) === sign(last(tempRange) - first(tempRange))) {
 
 				const { axisZoomCallback } = this.props;
-				// console.log(startXScale.domain(), newXDomain)
 				axisZoomCallback(newDomain);
 			}
 		}
 	}
 	handleDragEnd() {
-
-		if (!this.dragHappened) {
-			if (this.clicked) {
-				const e = d3Event;
-				const mouseXY = this.mouseInteraction
-					? mouse(this.node)
-					: touches(this.node)[0];
-				const { onDoubleClick } = this.props;
-
-				onDoubleClick(mouseXY, e);
-			} else {
-				this.clicked = true;
-				setTimeout(() => {
-					this.clicked = false;
-				}, 300);
-			}
-		}
-
 		select(d3Window(this.node))
 			.on(MOUSEMOVE, null)
 			.on(MOUSEUP, null)
@@ -172,6 +193,8 @@ class AxisZoomCapture extends Component {
 			ref={this.saveNode}
 			x={bg.x} y={bg.y} opacity={0} height={bg.h} width={bg.w}
 			onContextMenu={this.handleRightClick}
+			onClick={this.handleClick}
+			onDoubleClick={this.handleDoubleClick}
 			onMouseDown={this.handleDragStartMouse}
 			onTouchStart={this.handleDragStartTouch}
 		/>;
@@ -198,11 +221,13 @@ AxisZoomCapture.propTypes = {
 	getMouseDelta: PropTypes.func.isRequired,
 	onDoubleClick: PropTypes.func.isRequired,
 	onContextMenu: PropTypes.func.isRequired,
+	onClick: PropTypes.func.isRequired,
 };
 
 AxisZoomCapture.defaultProps = {
 	onDoubleClick: noop,
 	onContextMenu: noop,
+	onClick: noop,
 	inverted: true
 };
 

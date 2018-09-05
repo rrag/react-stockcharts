@@ -52,7 +52,7 @@ class Axis extends Component {
 	render() {
 		const { bg, axisZoomCallback, className, zoomCursorClassName, zoomEnabled, getScale, inverted } = this.props;
 		const { transform, getMouseDelta, edgeClip } = this.props;
-		const { onContextMenu, onDoubleClick } = this.props;
+		const { onContextMenu, onDoubleClick, onClick } = this.props;
 
 		const zoomCapture = zoomEnabled
 			? <AxisZoomCapture
@@ -66,6 +66,7 @@ class Axis extends Component {
 				inverted={inverted}
 				onContextMenu={onContextMenu}
 				onDoubleClick={onDoubleClick}
+				onClick={onClick}
 			/>
 			: null;
 
@@ -113,6 +114,7 @@ Axis.propTypes = {
 	edgeClip: PropTypes.bool.isRequired,
 	onContextMenu: PropTypes.func,
 	onDoubleClick: PropTypes.func,
+	onClick: PropTypes.func,
 };
 
 Axis.defaultProps = {

@@ -42,6 +42,7 @@ XAxis.propTypes = {
 	zoomEnabled: PropTypes.bool,
 	onContextMenu: PropTypes.func,
 	onDoubleClick: PropTypes.func,
+	onClick: PropTypes.func,
 };
 
 XAxis.defaultProps = {
