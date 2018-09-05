@@ -51,9 +51,7 @@ class AreaChartWithEdge extends React.Component {
 				displayXAccessor={displayXAccessor}
 				xExtents={xExtents}
 			>
-				<Chart id={1}
-					yExtents={d => [d.high, d.low]}
-				>
+				<Chart id={1} yExtents={d => d.close}>
 					<XAxis axisAt="bottom" orient="bottom"/>
 					<YAxis axisAt="right" orient="right" ticks={5} />
 
