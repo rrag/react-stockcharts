@@ -18,7 +18,7 @@ class SingleValueTooltip extends Component {
 	renderSVG(moreProps) {
 
 		const { onClick, fontFamily, fontSize, labelFill, valueFill, className } = this.props;
-		const { xDisplayFormat, yDisplayFormat, xLabel, yLabel, xAccessor, yAccessor,yInitDisplay,xInitDisplay } = this.props;
+		const { xDisplayFormat, yDisplayFormat, xLabel, yLabel, xAccessor, yAccessor, yInitDisplay, xInitDisplay } = this.props;
 		const { displayValuesFor } = this.props;
 
 		const { chartConfig: { width, height } } = moreProps;
@@ -86,8 +86,8 @@ SingleValueTooltip.defaultProps = {
 	xAccessor: noop,
 	yAccessor: identity,
 	className: "react-stockcharts-tooltip",
-    xInitDisplay:"n/a",
-    yInitDisplay:"n/a",
+    xInitDisplay: "n/a",
+    yInitDisplay: "n/a",
 };
 
 export default SingleValueTooltip;
