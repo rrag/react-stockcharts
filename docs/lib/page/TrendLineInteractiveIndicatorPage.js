@@ -1,8 +1,7 @@
-
-
 import React from "react";
 import ReactDOM from "react-dom";
 import { TypeChooser, SaveChartAsImage } from "react-stockcharts/lib/helper";
+import canvg from "canvg";
 
 import ContentSection from "lib/content-section";
 import Row from "lib/row";
@@ -21,7 +20,10 @@ class TrendLineInteractiveIndicatorPage extends React.Component {
 	}
 	saveChartAsImage() {
 		const container = ReactDOM.findDOMNode(this.chart); // eslint-disable-line react/no-find-dom-node
-		SaveChartAsImage.saveChartAsImage(container);
+		SaveChartAsImage.saveChartAsImageWithOptions(container, { 
+			canvg,
+			background: "white"
+		});
 	}
 	render() {
 		return (

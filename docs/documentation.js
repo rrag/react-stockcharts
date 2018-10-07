@@ -1,5 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import "@babel/polyfill";
+import "blueimp-canvas-to-blob";
 
 import { csvParse, tsvParse } from  "d3-dsv";
 import { merge } from "d3-array";
