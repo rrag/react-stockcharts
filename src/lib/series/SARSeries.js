@@ -49,7 +49,7 @@ class SARSeries extends Component {
 		});
 	}
 	renderSVG(moreProps) {
-		const { className, yAccessor } = this.props;
+		const { className, yAccessor, fill } = this.props;
 		const { xAccessor, plotData, xScale, chartConfig: { yScale } } = moreProps;
 		// console.log(moreProps);
 
@@ -57,8 +57,11 @@ class SARSeries extends Component {
 			{plotData
 				.filter(each => isDefined(yAccessor(each)))
 				.map((each, idx) => {
+                    const color = yAccessor(each) > each.close
+                        ? fill.falling
+                        : fill.rising;
 					return <circle key={idx} cx={xScale(xAccessor(each))}
-						cy={yScale(yAccessor(each))} r={3} fill="green" />;
+						cy={yScale(yAccessor(each))} r={3} fill={color} />;
 				})}
 		</g>;
 	}
