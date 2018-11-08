@@ -36,7 +36,7 @@ YAxis.propTypes = {
 	tickSize: PropTypes.number,
 	ticks: PropTypes.number,
 	yZoomWidth: PropTypes.number,
-	tickValues: PropTypes.array,
+	tickValues: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
 	showTicks: PropTypes.bool,
 	className: PropTypes.string,
 	zoomEnabled: PropTypes.bool,
