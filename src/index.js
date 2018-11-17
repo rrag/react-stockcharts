@@ -17,7 +17,7 @@ export * from "./lib/helper";
 export * from "./lib/utils";
 export * from "./lib/indicator";
 export * from "./lib/interactive";
-export * from "./lib/algorithm";
+export { default as algorithm } from "./lib/algorithm";
 export * from "./lib/annotation";
 
 export const version = "0.7.8";
