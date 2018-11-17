@@ -38,16 +38,16 @@ function extentsWrapper(useWholeData, clamp, pointsPerPxThreshold, minPointsPerP
 
 		let filteredData = getFilteredResponse(data, left, right, xAccessor);
 
-		if (filteredData.length === 1 && isDefined(fallbackStart)) {
-			left = fallbackStart;
-			right = getNewEnd(fallbackEnd, xAccessor, initialXScale, left);
+		// if (filteredData.length === 1 && isDefined(fallbackStart)) {
+		// 	left = fallbackStart;
+		// 	right = getNewEnd(fallbackEnd, xAccessor, initialXScale, left);
 
-			clampedDomain = [
-				left,
-				right,
-			];
-			filteredData = getFilteredResponse(data, left, right, xAccessor);
-		}
+		// 	clampedDomain = [
+		// 		left,
+		// 		right,
+		// 	];
+		// 	filteredData = getFilteredResponse(data, left, right, xAccessor);
+		// }
 
 		if (typeof clamp === "function") {
 			clampedDomain = clamp(clampedDomain, [xAccessor(head(data)), xAccessor(last(data))]);
