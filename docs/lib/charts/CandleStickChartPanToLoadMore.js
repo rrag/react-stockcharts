@@ -117,7 +117,6 @@ class CandleStickChartPanToLoadMore extends React.Component {
 		const { data: prevData, ema26, ema12, macdCalculator, smaVolume50 } = this.state;
 		const { data: inputData } = this.props;
 
-
 		if (inputData.length === prevData.length) return;
 
 		const rowsToDownload = end - Math.ceil(start);
@@ -169,7 +168,7 @@ class CandleStickChartPanToLoadMore extends React.Component {
 					seriesName="MSFT"
 					data={data}
 					xScale={xScale} xAccessor={xAccessor} displayXAccessor={displayXAccessor}
-					onLoadMore={this.handleDownloadMore}>
+					onLoadBefore={this.handleDownloadMore}>
 				<Chart id={1} height={400}
 						yExtents={[d => [d.high, d.low], ema26.accessor(), ema12.accessor()]}
 						padding={{ top: 10, bottom: 20 }}>

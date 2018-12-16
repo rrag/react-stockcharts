@@ -577,15 +577,31 @@ class ChartCanvas extends Component {
 			this.clearThreeCanvas();
 
 			const { fullData } = this;
-			const firstItem = head(fullData);
 
-			const start = head(xScale.domain());
-			const end = xAccessor(firstItem);
-			const { onLoadMore } = this.props;
+			const firstItem = head(fullData);
+			const scale_start = head(xScale.domain());
+			const data_start = xAccessor(firstItem);
+
+			const lastItem = last(fullData);
+			const scale_end = last(xScale.domain());
+			const data_end = xAccessor(lastItem);
+
+			const {
+				onLoadMore,
+				onLoad,
+				onLoadAfter,
+				onLoadBefore,
+			} = this.props;
 
 			this.setState(state, () => {
-				if (start < end) {
-					onLoadMore(start, end);
+				if (scale_start < data_start) {
+					onLoadMore(scale_start, data_start); // deprecated
+					onLoadBefore(scale_start, data_start);
+					onLoad(scale_start, data_start);
+				}
+				if (data_end < scale_end) {
+					onLoadAfter(data_end, scale_end);
+					onLoad(data_end, scale_end);
 				}
 			});
 		}
@@ -617,10 +633,19 @@ class ChartCanvas extends Component {
 		this.clearThreeCanvas();
 
 		const firstItem = head(fullData);
+		const scale_start = head(xScale.domain());
+		const data_start = xAccessor(firstItem);
 
-		const start = head(xScale.domain());
-		const end = xAccessor(firstItem);
-		const { onLoadMore } = this.props;
+		const lastItem = last(fullData);
+		const scale_end = last(xScale.domain());
+		const data_end = xAccessor(lastItem);
+
+		const {
+			onLoadMore,
+			onLoad,
+			onLoadAfter,
+			onLoadBefore,
+		} = this.props;
 
 		this.mutableState = {
 			mouseXY: mouseXY,
@@ -643,8 +668,14 @@ class ChartCanvas extends Component {
 			plotData,
 			chartConfig,
 		}, () => {
-			if (start < end) {
-				onLoadMore(start, end);
+			if (scale_start < data_start) {
+				onLoadMore(scale_start, data_start); // deprecated
+				onLoadBefore(scale_start, data_start);
+				onLoad(scale_start, data_start);
+			}
+			if (data_end < scale_end) {
+				onLoadAfter(data_end, scale_end);
+				onLoad(data_end, scale_end);
 			}
 		});
 	}
@@ -655,16 +686,34 @@ class ChartCanvas extends Component {
 		const { xAccessor } = this.state;
 		const { fullData } = this;
 		const firstItem = head(fullData);
-		const start = head(xScale.domain());
-		const end = xAccessor(firstItem);
-		const { onLoadMore } = this.props;
+		const scale_start = head(xScale.domain());
+		const data_start = xAccessor(firstItem);
+
+		const lastItem = last(fullData);
+		const scale_end = last(xScale.domain());
+		const data_end = xAccessor(lastItem);
+
+		const {
+			onLoadMore,
+			onLoad,
+			onLoadAfter,
+			onLoadBefore,
+		} = this.props;
 
 		this.setState({
 			xScale,
 			plotData,
 			chartConfig,
 		}, () => {
-			if (start < end) onLoadMore(start, end);
+			if (scale_start < data_start) {
+				onLoadMore(scale_start, data_start); // deprecated
+				onLoadBefore(scale_start, data_start);
+				onLoad(scale_start, data_start);
+			}
+			if (data_end < scale_end) {
+				onLoadAfter(data_end, scale_end);
+				onLoad(data_end, scale_end);
+			}
 		});
 	}
 	yAxisZoom(chartId, newDomain) {
@@ -809,11 +858,20 @@ class ChartCanvas extends Component {
 			const { fullData } = this;
 
 			const firstItem = head(fullData);
-			const start = head(xScale.domain());
-			const end = xAccessor(firstItem);
+			const scale_start = head(xScale.domain());
+			const data_start = xAccessor(firstItem);
 			// console.log(start, end, start < end ? "Load more" : "I have it");
 
-			const { onLoadMore } = this.props;
+			const lastItem = last(fullData);
+			const scale_end = last(xScale.domain());
+			const data_end = xAccessor(lastItem);
+
+			const {
+				onLoadMore,
+				onLoad,
+				onLoadAfter,
+				onLoadBefore,
+			} = this.props;
 
 			this.clearThreeCanvas();
 
@@ -822,7 +880,15 @@ class ChartCanvas extends Component {
 				plotData,
 				chartConfig,
 			}, () => {
-				if (start < end) onLoadMore(start, end);
+				if (scale_start < data_start) {
+					onLoadMore(scale_start, data_start); // deprecated
+					onLoadBefore(scale_start, data_start);
+					onLoad(scale_start, data_start);
+				}
+				if (data_end < scale_end) {
+					onLoadAfter(data_end, scale_end);
+					onLoad(data_end, scale_end);
+				}
 			});
 		});
 	}
@@ -1164,6 +1230,9 @@ ChartCanvas.propTypes = {
 	defaultFocus: PropTypes.bool,
 	zoomMultiplier: PropTypes.number,
 	onLoadMore: PropTypes.func,
+	onLoad: PropTypes.func,
+	onLoadAfter: PropTypes.func,
+	onLoadBefore: PropTypes.func,
 	displayXAccessor: function(props, propName/* , componentName */) {
 		if (isNotDefined(props[propName])) {
 			console.warn("`displayXAccessor` is not defined,"
@@ -1198,6 +1267,9 @@ ChartCanvas.defaultProps = {
 	useCrossHairStyleCursor: true,
 	defaultFocus: true,
 	onLoadMore: noop,
+	onLoad: noop,
+	onLoadBefore: noop,
+	onLoadAfter: noop,
 	onSelect: noop,
 	mouseMoveEvent: true,
 	panEvent: true,
