@@ -101,12 +101,13 @@ class InteractiveText extends Component {
 		} */
 	}
 	render() {
-		const { textList, defaultText, hoverText } = this.props;
+		const { textList, defaultText, hoverText, textPadding } = this.props;
 		const { override } = this.state;
 		return <g>
 			{textList.map((each, idx) => {
 				const defaultHoverText = InteractiveText.defaultProps.hoverText;
 				const props = {
+					textPadding,
 					...defaultText,
 					...each,
 					hoverText: {
@@ -162,12 +163,14 @@ InteractiveText.propTypes = {
 	hoverText: PropTypes.object.isRequired,
 	textList: PropTypes.array.isRequired,
 	enabled: PropTypes.bool.isRequired,
+	textPadding: PropTypes.number,
 };
 
 InteractiveText.defaultProps = {
 	onChoosePosition: noop,
 	onDragComplete: noop,
 	onSelect: noop,
+	textPadding: undefined,
 
 	defaultText: {
 		bgFill: "#D3D3D3",
