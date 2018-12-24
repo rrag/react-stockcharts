@@ -87,6 +87,7 @@ class EachText extends Component {
 			hoverText,
 			selected,
 			onDragComplete,
+			textPadding,
 		} = this.props;
 		const { hover } = this.state;
 
@@ -123,6 +124,7 @@ class EachText extends Component {
 				fontWeight={fontWeight}
 				fontSize={fontSize}
 				text={text}
+				textPadding={textPadding}
 			/>
 			<HoverTextNearMouse
 				show={hoverTextEnabled && hover}
@@ -165,11 +167,13 @@ EachText.propTypes = {
 	onDragComplete: PropTypes.func.isRequired,
 
 	hoverText: PropTypes.object.isRequired,
+	textPadding: PropTypes.number,
 };
 
 EachText.defaultProps = {
 	onDrag: noop,
 	onDragComplete: noop,
+	textPadding: undefined,	
 	bgOpacity: 1,
 	bgStrokeWidth: 1,
 	selected: false,

@@ -97,15 +97,22 @@ function xPosition(props, moreProps) {
 	const { currentItem, xAccessor } = moreProps;
 	return xAccessor(currentItem);
 }
+
+function displayXValue(moreProps) {
+	const { currentItem, displayXAccessor } = moreProps;
+	return displayXAccessor(currentItem);
+}
+
 function getXCoordinateInfo(ctx, props, moreProps) {
 	const { xPosition } = props;
 	const xValue = xPosition(props, moreProps);
+	const xValueDisplay = displayXValue(moreProps);
 	const { at, displayFormat } = props;
 	const { text } = props;
 	const { xScale, chartConfig: { height } } = moreProps;
 	ctx.font = `${text.fontStyle} ${text.fontWeight} ${text.fontSize}px ${text.fontFamily}`;
 
-	const t = displayFormat(xValue);
+	const t = displayFormat(xValueDisplay);
 	const textWidth = ctx.measureText(t).width;
 
 	const y = at === "bottom" ? height : 0;

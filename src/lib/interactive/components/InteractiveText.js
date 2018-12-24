@@ -6,6 +6,8 @@ import { getMouseCanvas } from "../../GenericComponent";
 
 import { isDefined, noop, hexToRGBA } from "../../utils";
 
+const lineHeightFactor = 0.25;
+
 class InteractiveText extends Component {
 	constructor(props) {
 		super(props);
@@ -24,7 +26,7 @@ class InteractiveText extends Component {
 			&& isDefined(this.textWidth)
 			&& !this.calculateTextWidth
 		) {
-			const { rect } = helper(this.props, moreProps, this.textWidth);
+			const { rect } = this.getCoords(moreProps);
 			const { mouseXY: [x, y] } = moreProps;
 
 			if (
@@ -47,6 +49,21 @@ class InteractiveText extends Component {
 			|| nextProps.fontFamily !== this.props.fontFamily
 		);
 	}
+
+	getCoords(moreProps) {
+		const textArr = this.props.text.split("\n");
+		return helper.call(this, this.props, moreProps, this.textWidth, textArr.length);
+	}
+
+	getLineHeight() {
+		return this.props.fontSize + this.getLineStep();
+	}
+
+	getLineStep() {
+		return this.props.fontSize * lineHeightFactor;
+	}
+
+
 	drawOnCanvas(ctx, moreProps) {
 		const {
 			bgFill,
@@ -61,16 +78,20 @@ class InteractiveText extends Component {
 			text,
 		} = this.props;
 
+
+		const textArr = text.split("\n");
 		if (this.calculateTextWidth) {
 			ctx.font = `${fontStyle} ${fontWeight} ${fontSize}px ${fontFamily}`;
-			const { width } = ctx.measureText(text);
-			this.textWidth = width;
+			this.textWidth = textArr.reduce((maxWidth, txt) => Math.max(
+				maxWidth,
+				ctx.measureText(txt).width
+			), 0);
 			this.calculateTextWidth = false;
 		}
 
 		const { selected } = this.props;
 
-		const { x, y, rect } = helper(this.props, moreProps, this.textWidth);
+		const { x, y, rect } = this.getCoords(moreProps);
 
 		ctx.fillStyle = hexToRGBA(bgFill, bgOpacity);
 
@@ -84,12 +105,17 @@ class InteractiveText extends Component {
 		}
 
 		ctx.fillStyle = textFill;
-		ctx.textBaseline = "middle";
-		ctx.textAlign = "center";
+		ctx.textBaseline = "top";
+		ctx.textAlign = "start";
 		ctx.font = `${fontStyle} ${fontWeight} ${fontSize}px ${fontFamily}`;
 
 		ctx.beginPath();
-		ctx.fillText(text, x, y);
+		let yOut = y;
+		const lineHeight = this.getLineHeight();
+		textArr.forEach(txt => {
+			ctx.fillText(txt, x, yOut);
+			yOut += lineHeight;
+		});
 	}
 	renderSVG() {
 		throw new Error("svg not implemented");
@@ -120,8 +146,8 @@ class InteractiveText extends Component {
 	}
 }
 
-function helper(props, moreProps, textWidth) {
-	const { position, fontSize } = props;
+function helper(props, moreProps, textWidth, textLineCount) {
+	const { position, fontSize, textPadding } = props;
 
 	const { xScale, chartConfig: { yScale } } = moreProps;
 
@@ -129,15 +155,23 @@ function helper(props, moreProps, textWidth) {
 	const x = xScale(xValue);
 	const y = yScale(yValue);
 
+	const padding = textPadding == undefined
+		? fontSize / 2
+		: textPadding;
+
+	const rectHeight = this.getLineHeight() * textLineCount - this.getLineStep() + padding * 2;
+	const rectWidth = textWidth + padding * 2;
 	const rect = {
-		x: x - textWidth / 2 - fontSize,
-		y: y - fontSize,
-		width: textWidth + fontSize * 2,
-		height: fontSize * 2,
+		x: x - rectWidth / 2,
+		y: y - rectHeight / 2,
+		width: rectWidth,
+		height: rectHeight,
 	};
 
 	return {
-		x, y, rect
+		x: rect.x + padding,
+		y: rect.y + padding, 
+		rect
 	};
 }
 
@@ -168,6 +202,7 @@ InteractiveText.propTypes = {
 	interactiveCursorClass: PropTypes.string,
 
 	tolerance: PropTypes.number.isRequired,
+	textPadding: PropTypes.number.isRequired,
 	selected: PropTypes.bool.isRequired,
 };
 
