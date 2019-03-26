@@ -258,15 +258,16 @@ export function capitalizeFirst(str) {
 }
 
 export function colorToRGBA(inputColor, opacity) {
-	inputColor = inputColor.trim();
-
 	if (inputColor.charAt(0) === "#") {
-		return hexToRGBA(inputColor, opacity);
+		return hexToRGBA(inputColor.trim(), opacity);
 	}
-	if (inputColor.indexOf('(') !== -1) {
-		return rgbToRGBA(inputColor, opacity);
+	if (inputColor.indexOf("rgb(") !== -1 || inputColor.indexOf("rgba(") !== -1) {
+		return rgbToRGBA(inputColor.trim(), opacity);
 	}
-	return presetToRGB(inputColor, opacity);
+	if (/^\w+$/.exec(inputColor)) {
+		return presetToRGB(inputColor.trim(), opacity);
+	}
+	return inputColor;
 }
 
 export function presetToRGB(inputPreset, opacity) {
