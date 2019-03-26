@@ -4,7 +4,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import GenericComponent from "../GenericComponent";
 
-import { isDefined, hexToRGBA, functor } from "../utils";
+import { isDefined, colorToRGBA, functor } from "../utils";
 import LabelAnnotation, { defaultProps, helper } from "./LabelAnnotation";
 
 class Label extends Component {
@@ -110,7 +110,7 @@ function drawOnCanvas(ctx, props, moreProps) {
 	ctx.rotate(radians);
 
 	ctx.font = `${ fontSize }px ${ fontFamily }`;
-	ctx.fillStyle = hexToRGBA(fill, opacity);
+	ctx.fillStyle = colorToRGBA(fill, opacity);
 	ctx.textAlign = textAnchor === "middle" ? "center" : textAnchor;
 
 	ctx.beginPath();

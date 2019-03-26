@@ -5,6 +5,7 @@ import { scaleOrdinal, schemeCategory10 } from  "d3-scale";
 import { bisector } from "d3-array";
 import noop from "./noop";
 import identity from "./identity";
+import colorPresets from "./colorPresets";
 
 export { default as rebind } from "./rebind";
 export { default as zipper } from "./zipper";
@@ -254,6 +255,37 @@ export function clearCanvas(canvasList, ratio) {
 
 export function capitalizeFirst(str) {
 	return str.charAt(0).toUpperCase() + str.substring(1);
+}
+
+export function colorToRGBA(inputColor, opacity) {
+	if (inputColor.charAt(0) === "#") {
+		return hexToRGBA(inputColor.trim(), opacity);
+	}
+	if (inputColor.indexOf("rgb(") !== -1 || inputColor.indexOf("rgba(") !== -1) {
+		return rgbToRGBA(inputColor.trim(), opacity);
+	}
+	if (/^\w+$/.exec(inputColor)) {
+		return presetToRGB(inputColor.trim(), opacity);
+	}
+	return inputColor;
+}
+
+export function presetToRGB(inputPreset, opacity) {
+	if (!colorPresets.hasOwnProperty(inputPreset.toLowerCase())) {
+		throw new Error(`preset color does not exist: ${inputPreset}`);
+	}
+
+	return hexToRGBA(colorPresets[inputPreset], opacity);
+}
+
+export function rgbToRGBA(inputRGB, opacity) {
+	const exp = /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/i;
+	const res = exp.exec(inputRGB);
+	if (!res) {
+		throw new Error(`invalid inputRGB: ${inputRGB}`);
+	}
+	const [, r, g, b] = res;
+	return `rgba(${r}, ${g}, ${b}, ${opacity})`;
 }
 
 export function hexToRGBA(inputHex, opacity) {

@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { hexToRGBA, functor } from "../utils";
+import { colorToRGBA, functor } from "../utils";
 
 function Triangle(props) {
 
@@ -80,7 +80,7 @@ Triangle.drawOnCanvas = (props, point, ctx) => {
 	ctx.strokeStyle = stroke;
 	ctx.lineWidth = strokeWidth;
 	if (fill !== "none") {
-		ctx.fillStyle = hexToRGBA(fill, opacity);
+		ctx.fillStyle = colorToRGBA(fill, opacity);
 	}
 	Triangle.drawOnCanvasWithNoStateChange(props, point, ctx);
 };

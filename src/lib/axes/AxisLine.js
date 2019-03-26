@@ -3,7 +3,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import { first, last, hexToRGBA } from "../utils";
+import { first, last, colorToRGBA } from "../utils";
 
 /*
 function d3_scaleExtent(domain) {
@@ -78,7 +78,7 @@ AxisLine.drawOnCanvasStatic = (props, ctx/* , xScale, yScale*/) => {
 	// var range = d3_scaleRange(xAxis ? xScale : yScale);
 
 	ctx.lineWidth = strokeWidth;
-	ctx.strokeStyle = hexToRGBA(stroke, opacity);
+	ctx.strokeStyle = colorToRGBA(stroke, opacity);
 
 	ctx.beginPath();
 

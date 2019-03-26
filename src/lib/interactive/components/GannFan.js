@@ -10,7 +10,7 @@ import { generateLine, isHovering2 } from "./StraightLine";
 
 import {
 	isDefined, isNotDefined,
-	noop, hexToRGBA,
+	noop, colorToRGBA,
 } from "../../utils";
 
 class GannFan extends Component {
@@ -65,7 +65,7 @@ class GannFan extends Component {
 		const lines = helper(this.props, moreProps);
 
 		ctx.lineWidth = strokeWidth;
-		ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
+		ctx.strokeStyle = colorToRGBA(stroke, strokeOpacity);
 
 		ctx.font = `${ fontSize }px ${fontFamily}`;
 		ctx.fillStyle = fontFill;
@@ -85,7 +85,7 @@ class GannFan extends Component {
 		const pairsOfLines = pairs(lines);
 
 		pairsOfLines.forEach(([line1, line2], idx) => {
-			ctx.fillStyle = hexToRGBA(fill[idx], fillOpacity);
+			ctx.fillStyle = colorToRGBA(fill[idx], fillOpacity);
 
 			ctx.beginPath();
 			ctx.moveTo(line1.x1, line1.y1);

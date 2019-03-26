@@ -2,7 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { hexToRGBA, functor } from "../utils";
+import { colorToRGBA, functor } from "../utils";
 
 function Circle(props) {
 	const { className, stroke, strokeWidth, opacity, fill, point, r } = props;
@@ -48,7 +48,7 @@ Circle.drawOnCanvas = (props, point, ctx) => {
 	ctx.lineWidth = strokeWidth;
 
 	if (fill !== "none") {
-		ctx.fillStyle = hexToRGBA(fill, opacity);
+		ctx.fillStyle = colorToRGBA(fill, opacity);
 	}
 
 	Circle.drawOnCanvasWithNoStateChange(props, point, ctx);

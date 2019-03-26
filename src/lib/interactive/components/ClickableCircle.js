@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
 
-import { isDefined, noop, hexToRGBA } from "../../utils";
+import { isDefined, noop, colorToRGBA } from "../../utils";
 
 class ClickableCircle extends Component {
 	constructor(props) {
@@ -38,8 +38,8 @@ class ClickableCircle extends Component {
 		const [x, y] = helper(this.props, moreProps);
 
 		ctx.lineWidth = strokeWidth;
-		ctx.fillStyle = hexToRGBA(fill, fillOpacity);
-		ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
+		ctx.fillStyle = colorToRGBA(fill, fillOpacity);
+		ctx.strokeStyle = colorToRGBA(stroke, strokeOpacity);
 
 		ctx.beginPath();
 		ctx.arc(x, y, r, 0, 2 * Math.PI, false);

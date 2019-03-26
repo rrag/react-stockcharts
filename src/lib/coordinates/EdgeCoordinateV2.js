@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import { hexToRGBA, isDefined } from "../utils";
+import { colorToRGBA, isDefined } from "../utils";
 
 /* eslint-disable react/prop-types */
 export function renderSVG(props) {
@@ -106,7 +106,7 @@ export function drawOnCanvas(ctx, props) {
 	if (isDefined(edge.coordinateBase)) {
 		const { rectWidth, rectHeight, arrowWidth } = edge.coordinateBase;
 
-		ctx.fillStyle = hexToRGBA(edge.coordinateBase.fill, edge.coordinateBase.opacity);
+		ctx.fillStyle = colorToRGBA(edge.coordinateBase.fill, edge.coordinateBase.opacity);
 
 		const x = edge.coordinateBase.edgeXRect;
 		const y = edge.coordinateBase.edgeYRect;
@@ -140,7 +140,7 @@ export function drawOnCanvas(ctx, props) {
 		ctx.fillText(edge.coordinate.displayCoordinate, edge.coordinate.edgeXText, edge.coordinate.edgeYText);
 	}
 	if (isDefined(edge.line)) {
-		ctx.strokeStyle = hexToRGBA(edge.line.stroke, edge.line.opacity);
+		ctx.strokeStyle = colorToRGBA(edge.line.stroke, edge.line.opacity);
 
 		ctx.beginPath();
 		ctx.moveTo(edge.line.x1, edge.line.y1);

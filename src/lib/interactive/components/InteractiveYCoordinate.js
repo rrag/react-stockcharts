@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
-import { isDefined, noop, hexToRGBA, getStrokeDasharrayCanvas } from "../../utils";
+import { isDefined, noop, colorToRGBA, getStrokeDasharrayCanvas } from "../../utils";
 import { drawOnCanvas } from "../../coordinates/EdgeCoordinateV3";
 import { getYCoordinate } from "../../coordinates/MouseCoordinateY";
 
@@ -70,7 +70,7 @@ class InteractiveYCoordinate extends Component {
 
 		const { x1, x2, y, rect } = values;
 
-		ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
+		ctx.strokeStyle = colorToRGBA(stroke, strokeOpacity);
 
 		ctx.beginPath();
 		if (selected || hovering) {
@@ -100,7 +100,7 @@ class InteractiveYCoordinate extends Component {
 		ctx.setLineDash([]);
 
 
-		ctx.fillStyle = hexToRGBA(bgFill, bgOpacity);
+		ctx.fillStyle = colorToRGBA(bgFill, bgOpacity);
 
 		ctx.fillRect(rect.x, rect.y, this.width, rect.height);
 		ctx.strokeRect(rect.x, rect.y, this.width, rect.height);

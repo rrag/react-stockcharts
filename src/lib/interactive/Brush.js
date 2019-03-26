@@ -7,7 +7,7 @@ import {
 	isDefined,
 	noop,
 	getStrokeDasharray,
-	hexToRGBA,
+	colorToRGBA,
 } from "../utils";
 import GenericChartComponent from "../GenericChartComponent";
 import { getMouseCanvas } from "../GenericComponent";
@@ -50,8 +50,8 @@ class Brush extends Component {
 				.split(",")
 				.map(d => +d);
 
-			ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
-			ctx.fillStyle = hexToRGBA(fill, fillOpacity);
+			ctx.strokeStyle = colorToRGBA(stroke, strokeOpacity);
+			ctx.fillStyle = colorToRGBA(fill, fillOpacity);
 			ctx.setLineDash(dashArray);
 			ctx.beginPath();
 			ctx.fillRect(x, y, width, height);
