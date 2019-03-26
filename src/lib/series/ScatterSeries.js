@@ -7,7 +7,7 @@ import { nest as d3Nest } from "d3-collection";
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
 
-import { hexToRGBA, functor } from "../utils";
+import { colorToRGBA, functor } from "../utils";
 
 class ScatterSeries extends Component {
 	constructor(props) {
@@ -76,7 +76,7 @@ function helper(props, moreProps, xAccessor) {
 		return {
 			x: xScale(xAccessor(d)),
 			y: yScale(yAccessor(d)),
-			fill: hexToRGBA(fill(d), mProps.opacity),
+			fill: colorToRGBA(fill(d), mProps.opacity),
 			stroke: stroke(d),
 			datum: d,
 			marker: Marker,

@@ -7,7 +7,7 @@ import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
 import { isHovering2 } from "./StraightLine";
 
-import { isDefined, getClosestItemIndexes, noop, zipper, hexToRGBA } from "../../utils";
+import { isDefined, getClosestItemIndexes, noop, zipper, colorToRGBA } from "../../utils";
 
 class LinearRegressionChannelWithArea extends Component {
 	constructor(props) {
@@ -38,8 +38,8 @@ class LinearRegressionChannelWithArea extends Component {
 		const { x1, y1, x2, y2, dy } = helper(this.props, moreProps);
 
 		ctx.lineWidth = strokeWidth;
-		ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
-		ctx.fillStyle = hexToRGBA(fill, fillOpacity);
+		ctx.strokeStyle = colorToRGBA(stroke, strokeOpacity);
+		ctx.fillStyle = colorToRGBA(fill, fillOpacity);
 
 		ctx.beginPath();
 		ctx.moveTo(x1, y1 - dy);

@@ -4,7 +4,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import GenericComponent, { getMouseCanvas } from "../GenericComponent";
 
-import { hexToRGBA, isDefined, isNotDefined, strokeDashTypes, getStrokeDasharray } from "../utils";
+import { colorToRGBA, isDefined, isNotDefined, strokeDashTypes, getStrokeDasharray } from "../utils";
 
 class CrossHairCursor extends Component {
 	constructor(props) {
@@ -30,7 +30,7 @@ class CrossHairCursor extends Component {
 			lines.forEach(line => {
 				const dashArray = getStrokeDasharray(line.strokeDasharray).split(",").map(d => +d);
 
-				ctx.strokeStyle = hexToRGBA(line.stroke, line.opacity);
+				ctx.strokeStyle = colorToRGBA(line.stroke, line.opacity);
 				ctx.setLineDash(dashArray);
 				ctx.beginPath();
 				ctx.moveTo(line.x1, line.y1);

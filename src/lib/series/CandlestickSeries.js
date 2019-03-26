@@ -9,7 +9,7 @@ import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
 
 import {
-	hexToRGBA, isDefined, functor, plotDataLengthBarWidth, head
+	colorToRGBA, isDefined, functor, plotDataLengthBarWidth, head
 } from "../utils";
 
 class CandlestickSeries extends Component {
@@ -189,7 +189,7 @@ function drawOnCanvas(ctx, props, moreProps) {
 			const { key, values } = inner;
 			const fillStyle = head(values).width <= 1
 				? key
-				: hexToRGBA(key, opacity);
+				: colorToRGBA(key, opacity);
 			ctx.fillStyle = fillStyle;
 
 			values.forEach(d => {

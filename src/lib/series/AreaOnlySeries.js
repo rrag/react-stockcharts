@@ -7,7 +7,7 @@ import { area as d3Area } from "d3-shape";
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
 
-import { hexToRGBA, isDefined, first, functor } from "../utils";
+import { colorToRGBA, isDefined, first, functor } from "../utils";
 
 class AreaOnlySeries extends Component {
 	constructor(props) {
@@ -29,7 +29,7 @@ class AreaOnlySeries extends Component {
 		if (canvasGradient != null) {
 			ctx.fillStyle = canvasGradient(moreProps, ctx);
 		} else {
-			ctx.fillStyle = hexToRGBA(fill, opacity);
+			ctx.fillStyle = colorToRGBA(fill, opacity);
 		}
 		ctx.strokeStyle = stroke;
 
@@ -76,7 +76,7 @@ class AreaOnlySeries extends Component {
 				style={style}
 				d={d}
 				stroke={stroke}
-				fill={hexToRGBA(fill, opacity)}
+				fill={colorToRGBA(fill, opacity)}
 				className={newClassName}
 
 			/>

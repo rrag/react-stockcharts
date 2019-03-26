@@ -3,7 +3,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import { hexToRGBA, isDefined, isNotDefined, strokeDashTypes, getStrokeDasharray } from "../utils";
+import { colorToRGBA, isDefined, isNotDefined, strokeDashTypes, getStrokeDasharray } from "../utils";
 
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
@@ -22,7 +22,7 @@ class StraightLine extends Component {
 
 		ctx.beginPath();
 
-		ctx.strokeStyle = hexToRGBA(stroke, opacity);
+		ctx.strokeStyle = colorToRGBA(stroke, opacity);
 		ctx.lineWidth = strokeWidth;
 
 		const { x1, y1, x2, y2 } = getLineCoordinates(type, xScale, yScale, xValue, yValue, width, height);

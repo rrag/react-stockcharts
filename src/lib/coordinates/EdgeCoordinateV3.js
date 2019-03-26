@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import { hexToRGBA, isDefined, getStrokeDasharray } from "../utils";
+import { colorToRGBA, isDefined, getStrokeDasharray } from "../utils";
 
 /* eslint-disable react/prop-types */
 export function renderSVG(props) {
@@ -209,7 +209,7 @@ export function drawOnCanvas(ctx, props) {
 			.split(",")
 			.map(d => +d);
 		ctx.setLineDash(dashArray);
-		ctx.strokeStyle = hexToRGBA(edge.line.stroke, edge.line.opacity);
+		ctx.strokeStyle = colorToRGBA(edge.line.stroke, edge.line.opacity);
 		ctx.lineWidth = 1;
 		ctx.beginPath();
 		ctx.moveTo(edge.line.x1, edge.line.y1);
@@ -226,12 +226,12 @@ export function drawOnCanvas(ctx, props) {
 			arrowWidth
 		} = edge.coordinateBase;
 
-		ctx.fillStyle = hexToRGBA(
+		ctx.fillStyle = colorToRGBA(
 			edge.coordinateBase.fill,
 			edge.coordinateBase.opacity
 		);
 		if (isDefined(edge.coordinateBase.stroke)) {
-			ctx.strokeStyle = hexToRGBA(
+			ctx.strokeStyle = colorToRGBA(
 				edge.coordinateBase.stroke,
 				edge.coordinateBase.strokeOpacity
 			);

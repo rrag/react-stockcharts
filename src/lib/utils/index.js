@@ -256,6 +256,19 @@ export function capitalizeFirst(str) {
 	return str.charAt(0).toUpperCase() + str.substring(1);
 }
 
+export function colorToRGBA(inputColor, opacity) {
+	if (inputColor.charAt(0) === '#') {
+		return hexToRGBA(inputColor, opacity);
+	}
+	return rgbToRGBA(inputColor, opacity);
+}
+
+export function rgbToRGBA(inputRGB, opacity) {
+	const exp = /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/i;
+	const [_, r, g, b] = exp.exec(inputRGB);
+	return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+}
+
 export function hexToRGBA(inputHex, opacity) {
 	const hex = inputHex.replace("#", "");
 	if (inputHex.indexOf("#") > -1 && (hex.length === 3 || hex.length === 6)) {

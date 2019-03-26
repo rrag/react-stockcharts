@@ -1,7 +1,7 @@
 
 import React from "react";
 import PropTypes from "prop-types";
-import { hexToRGBA, functor } from "../utils";
+import { colorToRGBA, functor } from "../utils";
 
 function Square(props) {
 	const {
@@ -53,7 +53,7 @@ Square.drawOnCanvas = (props, point, ctx) => {
 	ctx.strokeStyle = stroke;
 	ctx.lineWidth = strokeWidth;
 	if (fill !== "none") {
-		ctx.fillStyle = hexToRGBA(fill, opacity);
+		ctx.fillStyle = colorToRGBA(fill, opacity);
 	}
 	Square.drawOnCanvasWithNoStateChange(props, point, ctx);
 };

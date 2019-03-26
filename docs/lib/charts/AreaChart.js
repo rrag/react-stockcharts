@@ -9,12 +9,12 @@ import { ChartCanvas, Chart } from "react-stockcharts";
 import { AreaSeries } from "react-stockcharts/lib/series";
 import { XAxis, YAxis } from "react-stockcharts/lib/axes";
 import { fitWidth } from "react-stockcharts/lib/helper";
-import { createVerticalLinearGradient, hexToRGBA } from "react-stockcharts/lib/utils";
+import { createVerticalLinearGradient, colorToRGBA } from "react-stockcharts/lib/utils";
 
 const canvasGradient = createVerticalLinearGradient([
-	{ stop: 0, color: hexToRGBA("#b5d0ff", 0.2) },
-	{ stop: 0.7, color: hexToRGBA("#6fa4fc", 0.4) },
-	{ stop: 1, color: hexToRGBA("#4286f4", 0.8) },
+	{ stop: 0, color: colorToRGBA("#b5d0ff", 0.2) },
+	{ stop: 0.7, color: colorToRGBA("#6fa4fc", 0.4) },
+	{ stop: 1, color: colorToRGBA("#4286f4", 0.8) },
 ]);
 
 class AreaChart extends React.Component {

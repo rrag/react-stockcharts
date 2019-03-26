@@ -10,7 +10,7 @@ import { scaleLinear } from "d3-scale";
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
 
-import { head, last, hexToRGBA, accumulatingWindow, identity, functor } from "../utils";
+import { head, last, colorToRGBA, accumulatingWindow, identity, functor } from "../utils";
 
 class VolumeProfileSeries extends Component {
 	constructor(props) {
@@ -222,7 +222,7 @@ function drawOnCanvas(ctx, props, rects, sessionBg) {
 	// var { rects, sessionBg } = helper(props, xScale, yScale, plotData);
 
 	if (showSessionBackground) {
-		ctx.fillStyle = hexToRGBA(sessionBackGround, sessionBackGroundOpacity);
+		ctx.fillStyle = colorToRGBA(sessionBackGround, sessionBackGroundOpacity);
 
 		sessionBg.forEach(each => {
 			const { x, y, height, width } = each;
@@ -239,7 +239,7 @@ function drawOnCanvas(ctx, props, rects, sessionBg) {
 
 
 		if (w1 > 0) {
-			ctx.fillStyle = hexToRGBA(fill1, opacity);
+			ctx.fillStyle = colorToRGBA(fill1, opacity);
 			if (stroke1 !== "none") ctx.strokeStyle = stroke1;
 
 			ctx.beginPath();
@@ -251,7 +251,7 @@ function drawOnCanvas(ctx, props, rects, sessionBg) {
 		}
 
 		if (w2 > 0) {
-			ctx.fillStyle = hexToRGBA(fill2, opacity);
+			ctx.fillStyle = colorToRGBA(fill2, opacity);
 			if (stroke2 !== "none") ctx.strokeStyle = stroke2;
 
 			ctx.beginPath();

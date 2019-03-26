@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas, getMouseCanvas } from "../GenericComponent";
 
-import { isDefined, first, last, hexToRGBA } from "../utils";
+import { isDefined, first, last, colorToRGBA } from "../utils";
 
 class SARSeries extends Component {
 	constructor(props) {
@@ -38,7 +38,7 @@ class SARSeries extends Component {
 				? fill.falling
 				: fill.rising;
 
-			ctx.fillStyle = hexToRGBA(color, opacity);
+			ctx.fillStyle = colorToRGBA(color, opacity);
 			ctx.strokeStyle = color;
 
 			ctx.beginPath();

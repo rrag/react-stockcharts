@@ -5,7 +5,7 @@ import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
 
 import { isHovering2 } from "./StraightLine";
-import { hexToRGBA } from "../../utils";
+import { colorToRGBA } from "../../utils";
 
 class ClickableShape extends Component {
 	constructor(props) {
@@ -44,7 +44,7 @@ class ClickableShape extends Component {
 		ctx.beginPath();
 
 		ctx.lineWidth = hovering ? strokeWidth + 1 : strokeWidth;
-		ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
+		ctx.strokeStyle = colorToRGBA(stroke, strokeOpacity);
 		const halfWidth = textBox.closeIcon.width / 2;
 		ctx.moveTo(x - halfWidth, y - halfWidth);
 		ctx.lineTo(x + halfWidth, y + halfWidth);

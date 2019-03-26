@@ -7,7 +7,7 @@ import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
 import AxisZoomCapture from "./AxisZoomCapture";
 
-import { first, last, hexToRGBA, isNotDefined, isDefined, identity, zipper, strokeDashTypes, getStrokeDasharray } from "../utils";
+import { first, last, colorToRGBA, isNotDefined, isDefined, identity, zipper, strokeDashTypes, getStrokeDasharray } from "../utils";
 
 class Axis extends Component {
 	constructor(props) {
@@ -292,7 +292,7 @@ function drawAxisLine(ctx, props, range) {
 	// var range = d3_scaleRange(xAxis ? xScale : yScale);
 
 	ctx.lineWidth = strokeWidth;
-	ctx.strokeStyle = hexToRGBA(stroke, opacity);
+	ctx.strokeStyle = colorToRGBA(stroke, opacity);
 
 	ctx.beginPath();
 
@@ -396,7 +396,7 @@ function drawTicks(ctx, result) {
 	const { tickStroke, tickStrokeOpacity, tickLabelFill } = result;
 	const { textAnchor, fontSize, fontFamily, fontWeight, ticks, showTickLabel } = result;
 
-	ctx.strokeStyle = hexToRGBA(tickStroke, tickStrokeOpacity);
+	ctx.strokeStyle = colorToRGBA(tickStroke, tickStrokeOpacity);
 
 	ctx.fillStyle = tickStroke;
 	// ctx.textBaseline = 'middle';

@@ -5,7 +5,7 @@ import GenericComponent, { getMouseCanvas } from "../GenericComponent";
 import {
 	first,
 	last,
-	hexToRGBA,
+	colorToRGBA,
 	isDefined,
 	isNotDefined,
 	strokeDashTypes,
@@ -120,7 +120,7 @@ class Cursor extends Component {
 						const xShapeStroke = this.getXCursorShapeStroke(
 							moreProps
 						);
-						ctx.strokeStyle = hexToRGBA(
+						ctx.strokeStyle = colorToRGBA(
 							xShapeStroke,
 							xCursorShapeOpacity
 						);
@@ -134,7 +134,7 @@ class Cursor extends Component {
 					ctx.beginPath();
 					ctx.fillStyle =
 						xShapeFill != null
-							? hexToRGBA(xShapeFill, xCursorShapeOpacity)
+							? colorToRGBA(xShapeFill, xCursorShapeOpacity)
 							: "rgba(0, 0, 0, 0)"; // ="transparent"
 
 					ctx.beginPath();
@@ -153,7 +153,7 @@ class Cursor extends Component {
 						  );
 					ctx.fill();
 				} else {
-					ctx.strokeStyle = hexToRGBA(line.stroke, line.opacity);
+					ctx.strokeStyle = colorToRGBA(line.stroke, line.opacity);
 					ctx.setLineDash(dashArray);
 					ctx.beginPath();
 					ctx.moveTo(line.x1, line.y1);

@@ -10,7 +10,7 @@ import { stack as d3Stack } from "d3-shape";
 import GenericChartComponent from "../GenericChartComponent";
 import { getAxisCanvas } from "../GenericComponent";
 
-import { identity, hexToRGBA, head, functor, plotDataLengthBarWidth } from "../utils";
+import { identity, colorToRGBA, head, functor, plotDataLengthBarWidth } from "../utils";
 
 class StackedBarSeries extends Component {
 	constructor(props) {
@@ -185,7 +185,7 @@ export function drawOnCanvas2(props, ctx, bars) {
 		}
 		const fillStyle = head(values).width <= 1
 			? key
-			: hexToRGBA(key, props.opacity);
+			: colorToRGBA(key, props.opacity);
 		ctx.fillStyle = fillStyle;
 
 		values.forEach(d => {

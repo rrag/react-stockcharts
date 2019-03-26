@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
 
-import { isDefined, noop, hexToRGBA } from "../../utils";
+import { isDefined, noop, colorToRGBA } from "../../utils";
 
 class InteractiveText extends Component {
 	constructor(props) {
@@ -72,7 +72,7 @@ class InteractiveText extends Component {
 
 		const { x, y, rect } = helper(this.props, moreProps, this.textWidth);
 
-		ctx.fillStyle = hexToRGBA(bgFill, bgOpacity);
+		ctx.fillStyle = colorToRGBA(bgFill, bgOpacity);
 
 		ctx.beginPath();
 		ctx.fillRect(rect.x, rect.y, rect.width, rect.height);

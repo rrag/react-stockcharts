@@ -12,7 +12,7 @@ import {
 	getClosestItemIndexes,
 	strokeDashTypes,
 	getStrokeDasharray,
-	hexToRGBA,
+	colorToRGBA,
 } from "../utils";
 
 class LineSeries extends Component {
@@ -88,7 +88,7 @@ class LineSeries extends Component {
 
 		ctx.lineWidth = hovering ? hoverStrokeWidth : strokeWidth;
 
-		ctx.strokeStyle = hexToRGBA(stroke, strokeOpacity);
+		ctx.strokeStyle = colorToRGBA(stroke, strokeOpacity);
 		ctx.setLineDash(getStrokeDasharray(strokeDasharray).split(","));
 
 		const dataSeries = d3Line()

@@ -3,7 +3,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import { hexToRGBA, isNotDefined, identity } from "../utils";
+import { colorToRGBA, isNotDefined, identity } from "../utils";
 
 function tickTransform_svg_axisX(scale, tick) {
 	return [Math.round(scale(tick)), 0];
@@ -158,7 +158,7 @@ AxisTicks.drawOnCanvasStatic = (props, ctx, xScale, yScale) => {
 
 	const { tickStroke, tickStrokeOpacity, textAnchor, fontSize, fontFamily } = result;
 
-	ctx.strokeStyle = hexToRGBA(tickStroke, tickStrokeOpacity);
+	ctx.strokeStyle = colorToRGBA(tickStroke, tickStrokeOpacity);
 
 	ctx.font = `${ fontSize }px ${fontFamily}`;
 	ctx.fillStyle = tickStroke;
