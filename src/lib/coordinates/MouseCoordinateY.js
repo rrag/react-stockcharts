@@ -1,56 +1,97 @@
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-import { drawOnCanvas, renderSVG } from "./EdgeCoordinateV3";
-import GenericChartComponent from "../GenericChartComponent";
-import { getMouseCanvas } from "../GenericComponent";
+exports.getYCoordinate = getYCoordinate;
 
-import { isNotDefined } from "../utils";
+var _react = require("react");
 
-class MouseCoordinateY extends Component {
-	constructor(props) {
-		super(props);
-		this.renderSVG = this.renderSVG.bind(this);
-		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require("prop-types");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _EdgeCoordinateV = require("./EdgeCoordinateV3");
+
+var _GenericChartComponent = require("../GenericChartComponent");
+
+var _GenericChartComponent2 = _interopRequireDefault(_GenericChartComponent);
+
+var _GenericComponent = require("../GenericComponent");
+
+var _utils = require("../utils");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var MouseCoordinateY = function (_Component) {
+	_inherits(MouseCoordinateY, _Component);
+
+	function MouseCoordinateY(props) {
+		_classCallCheck(this, MouseCoordinateY);
+
+		var _this = _possibleConstructorReturn(this, (MouseCoordinateY.__proto__ || Object.getPrototypeOf(MouseCoordinateY)).call(this, props));
+
+		_this.renderSVG = _this.renderSVG.bind(_this);
+		_this.drawOnCanvas = _this.drawOnCanvas.bind(_this);
+		return _this;
 	}
-	drawOnCanvas(ctx, moreProps) {
-		const props = helper(this.props, moreProps);
-		if (isNotDefined(props)) return null;
 
-		drawOnCanvas(ctx, props);
-	}
-	renderSVG(moreProps) {
-		const props = helper(this.props, moreProps);
-		if (isNotDefined(props)) return null;
+	_createClass(MouseCoordinateY, [{
+		key: "drawOnCanvas",
+		value: function drawOnCanvas(ctx, moreProps) {
+			var props = helper(this.props, moreProps);
+			if ((0, _utils.isNotDefined)(props)) return null;
 
-		return renderSVG(props);
-	}
-	render() {
-		return <GenericChartComponent
-			clip={false}
-			svgDraw={this.renderSVG}
-			canvasDraw={this.drawOnCanvas}
-			canvasToDraw={getMouseCanvas}
-			drawOn={["mousemove", "pan", "drag"]}
-		/>;
-	}
-}
+			(0, _EdgeCoordinateV.drawOnCanvas)(ctx, props);
+		}
+	}, {
+		key: "renderSVG",
+		value: function renderSVG(moreProps) {
+			var props = helper(this.props, moreProps);
+			if ((0, _utils.isNotDefined)(props)) return null;
+
+			return (0, _EdgeCoordinateV.renderSVG)(props);
+		}
+	}, {
+		key: "render",
+		value: function render() {
+			return _react2.default.createElement(_GenericChartComponent2.default, {
+				clip: false,
+				svgDraw: this.renderSVG,
+				canvasDraw: this.drawOnCanvas,
+				canvasToDraw: _GenericComponent.getMouseCanvas,
+				drawOn: ["mousemove", "pan", "drag"]
+			});
+		}
+	}]);
+
+	return MouseCoordinateY;
+}(_react.Component);
 
 MouseCoordinateY.propTypes = {
-	displayFormat: PropTypes.func.isRequired,
-	yAxisPad: PropTypes.number,
-	rectWidth: PropTypes.number,
-	rectHeight: PropTypes.number,
-	orient: PropTypes.oneOf(["bottom", "top", "left", "right"]),
-	at: PropTypes.oneOf(["bottom", "top", "left", "right"]),
-	dx: PropTypes.number,
-	fill: PropTypes.string,
-	opacity: PropTypes.number,
-	fontFamily: PropTypes.string,
-	fontSize: PropTypes.number,
-	textFill: PropTypes.string,
+	displayFormat: _propTypes2.default.func.isRequired,
+	yAxisPad: _propTypes2.default.number,
+	rectWidth: _propTypes2.default.number,
+	rectHeight: _propTypes2.default.number,
+	orient: _propTypes2.default.oneOf(["bottom", "top", "left", "right"]),
+	at: _propTypes2.default.oneOf(["bottom", "top", "left", "right"]),
+	dx: _propTypes2.default.number,
+	fill: _propTypes2.default.string,
+	opacity: _propTypes2.default.number,
+	fontFamily: _propTypes2.default.string,
+	fontSize: _propTypes2.default.number,
+	textFill: _propTypes2.default.string
 };
 
 MouseCoordinateY.defaultProps = {
@@ -69,72 +110,87 @@ MouseCoordinateY.defaultProps = {
 
 	// stroke: "#684F1D",
 	strokeOpacity: 1,
-	strokeWidth: 1,
+	strokeWidth: 1
 };
 
 function helper(props, moreProps) {
-	const { chartId } = moreProps;
-	const { currentCharts, mouseXY } = moreProps;
+	var chartId = moreProps.chartId;
+	var currentCharts = moreProps.currentCharts,
+	    mouseXY = moreProps.mouseXY;
 
-	if (isNotDefined(mouseXY)) return null;
+
+	if ((0, _utils.isNotDefined)(mouseXY)) return null;
 	if (currentCharts.indexOf(chartId) < 0) return null;
 
-	const { show } = moreProps;
+	var show = moreProps.show;
+
 	if (!show) return null;
 
-	const y = mouseXY[1];
-	const { chartConfig: { yScale } } = moreProps;
-	const { displayFormat } = props;
+	var y = mouseXY[1];
+	var yScale = moreProps.chartConfig.yScale;
+	var displayFormat = props.displayFormat;
 
-	const coordinate = displayFormat(yScale.invert(y));
+
+	var coordinate = displayFormat(yScale.invert(y));
 
 	return getYCoordinate(y, coordinate, props, moreProps);
 }
 
-export function getYCoordinate(y, displayValue, props, moreProps) {
-	const { width } = moreProps;
+function getYCoordinate(y, displayValue, props, moreProps) {
+	var width = moreProps.width;
+	var orient = props.orient,
+	    at = props.at,
+	    rectWidth = props.rectWidth,
+	    rectHeight = props.rectHeight,
+	    dx = props.dx;
+	var fill = props.fill,
+	    opacity = props.opacity,
+	    fontFamily = props.fontFamily,
+	    fontSize = props.fontSize,
+	    textFill = props.textFill,
+	    arrowWidth = props.arrowWidth;
+	var stroke = props.stroke,
+	    strokeOpacity = props.strokeOpacity,
+	    strokeWidth = props.strokeWidth;
 
-	const { orient, at, rectWidth, rectHeight, dx } = props;
-	const { fill, opacity, fontFamily, fontSize, textFill, arrowWidth } = props;
-	const { stroke, strokeOpacity, strokeWidth } = props;
 
-	const x1 = 0, x2 = width;
-	const edgeAt = (at === "right")
-		? width
-		: 0;
+	var x1 = 0,
+	    x2 = width;
+	var edgeAt = at === "right" ? width : 0;
 
-	const type = "horizontal";
-	const hideLine = true;
+	var type = "horizontal";
+	var hideLine = true;
 
-	const coordinateProps = {
+	var coordinateProps = {
 		coordinate: displayValue,
 		show: true,
-		type,
-		orient,
-		edgeAt,
-		hideLine,
-		fill,
-		opacity,
+		type: type,
+		orient: orient,
+		edgeAt: edgeAt,
+		hideLine: hideLine,
+		fill: fill,
+		opacity: opacity,
 
-		fontFamily,
-		fontSize,
-		textFill,
+		fontFamily: fontFamily,
+		fontSize: fontSize,
+		textFill: textFill,
 
-		stroke,
-		strokeOpacity,
-		strokeWidth,
+		stroke: stroke,
+		strokeOpacity: strokeOpacity,
+		strokeWidth: strokeWidth,
 
-		rectWidth,
-		rectHeight,
+		rectWidth: rectWidth,
+		rectHeight: rectHeight,
 
-		arrowWidth,
-		dx,
-		x1,
-		x2,
+		arrowWidth: arrowWidth,
+		dx: dx,
+		x1: x1,
+		x2: x2,
 		y1: y,
-		y2: y,
+		y2: y
 	};
 	return coordinateProps;
 }
 
-export default MouseCoordinateY;
+exports.default = MouseCoordinateY;
+//# sourceMappingURL=MouseCoordinateY.js.map

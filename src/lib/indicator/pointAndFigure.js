@@ -1,25 +1,34 @@
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
-import { rebind } from "../utils";
+exports.default = function () {
 
-import { pointAndFigure } from "../calculator";
-import baseIndicator from "./baseIndicator";
+	var base = (0, _baseIndicator2.default)().type(ALGORITHM_TYPE);
 
-const ALGORITHM_TYPE = "PointAndFigure";
+	var underlyingAlgorithm = (0, _calculator.pointAndFigure)();
 
-export default function() {
+	var indicator = underlyingAlgorithm;
 
-	const base = baseIndicator()
-		.type(ALGORITHM_TYPE);
-
-	const underlyingAlgorithm = pointAndFigure();
-
-	const indicator = underlyingAlgorithm;
-
-	rebind(indicator, base, "id", "stroke", "fill", "echo", "type");
-	rebind(indicator, underlyingAlgorithm, "dateAccessor", "dateMutator");
-	rebind(indicator, underlyingAlgorithm, "options");
+	(0, _utils.rebind)(indicator, base, "id", "stroke", "fill", "echo", "type");
+	(0, _utils.rebind)(indicator, underlyingAlgorithm, "dateAccessor", "dateMutator");
+	(0, _utils.rebind)(indicator, underlyingAlgorithm, "options");
 	// rebind(indicator, mergedAlgorithm, "merge"/*, "skipUndefined"*/);
 
 	return indicator;
-}
+};
+
+var _utils = require("../utils");
+
+var _calculator = require("../calculator");
+
+var _baseIndicator = require("./baseIndicator");
+
+var _baseIndicator2 = _interopRequireDefault(_baseIndicator);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ALGORITHM_TYPE = "PointAndFigure";
+//# sourceMappingURL=pointAndFigure.js.map

@@ -1,191 +1,260 @@
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-import { isDefined, isNotDefined, noop } from "../utils";
-import {
-	terminate,
-	saveNodeType,
-	isHoverForInteractiveType,
-} from "./utils";
-import EachGannFan from "./wrapper/EachGannFan";
-import MouseLocationIndicator from "./components/MouseLocationIndicator";
-import HoverTextNearMouse from "./components/HoverTextNearMouse";
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-class GannFan extends Component {
-	constructor(props) {
-		super(props);
+var _react = require("react");
 
-		this.handleStart = this.handleStart.bind(this);
-		this.handleEnd = this.handleEnd.bind(this);
-		this.handleDrawFan = this.handleDrawFan.bind(this);
-		this.handleDragFan = this.handleDragFan.bind(this);
-		this.handleDragFanComplete = this.handleDragFanComplete.bind(this);
+var _react2 = _interopRequireDefault(_react);
 
-		this.terminate = terminate.bind(this);
-		this.saveNodeType = saveNodeType.bind(this);
+var _propTypes = require("prop-types");
 
-		this.getSelectionState = isHoverForInteractiveType("fans")
-			.bind(this);
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
-		this.nodes = [];
-		this.state = {};
+var _utils = require("../utils");
+
+var _utils2 = require("./utils");
+
+var _EachGannFan = require("./wrapper/EachGannFan");
+
+var _EachGannFan2 = _interopRequireDefault(_EachGannFan);
+
+var _MouseLocationIndicator = require("./components/MouseLocationIndicator");
+
+var _MouseLocationIndicator2 = _interopRequireDefault(_MouseLocationIndicator);
+
+var _HoverTextNearMouse = require("./components/HoverTextNearMouse");
+
+var _HoverTextNearMouse2 = _interopRequireDefault(_HoverTextNearMouse);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var GannFan = function (_Component) {
+	_inherits(GannFan, _Component);
+
+	function GannFan(props) {
+		_classCallCheck(this, GannFan);
+
+		var _this = _possibleConstructorReturn(this, (GannFan.__proto__ || Object.getPrototypeOf(GannFan)).call(this, props));
+
+		_this.handleStart = _this.handleStart.bind(_this);
+		_this.handleEnd = _this.handleEnd.bind(_this);
+		_this.handleDrawFan = _this.handleDrawFan.bind(_this);
+		_this.handleDragFan = _this.handleDragFan.bind(_this);
+		_this.handleDragFanComplete = _this.handleDragFanComplete.bind(_this);
+
+		_this.terminate = _utils2.terminate.bind(_this);
+		_this.saveNodeType = _utils2.saveNodeType.bind(_this);
+
+		_this.getSelectionState = (0, _utils2.isHoverForInteractiveType)("fans").bind(_this);
+
+		_this.nodes = [];
+		_this.state = {};
+		return _this;
 	}
-	handleDragFan(index, newXYValue) {
-		this.setState({
-			override: {
-				index,
-				...newXYValue
+
+	_createClass(GannFan, [{
+		key: "handleDragFan",
+		value: function handleDragFan(index, newXYValue) {
+			this.setState({
+				override: _extends({
+					index: index
+				}, newXYValue)
+			});
+		}
+	}, {
+		key: "handleDragFanComplete",
+		value: function handleDragFanComplete(moreProps) {
+			var _this2 = this;
+
+			var override = this.state.override;
+			var fans = this.props.fans;
+
+
+			if ((0, _utils.isDefined)(override)) {
+				var index = override.index,
+				    rest = _objectWithoutProperties(override, ["index"]);
+
+				var newfans = fans.map(function (each, idx) {
+					return idx === index ? _extends({}, each, rest, { selected: true }) : each;
+				});
+				this.setState({
+					override: null
+				}, function () {
+					_this2.props.onComplete(newfans, moreProps);
+				});
 			}
-		});
-	}
-	handleDragFanComplete(moreProps) {
-		const { override } = this.state;
-		const { fans } = this.props;
-
-		if (isDefined(override)) {
-			const { index, ...rest } = override;
-			const newfans = fans
-				.map((each, idx) => idx === index
-					? { ...each, ...rest, selected: true }
-					: each);
-			this.setState({
-				override: null,
-			}, () => {
-				this.props.onComplete(newfans, moreProps);
-			});
 		}
-	}
-	handleDrawFan(xyValue) {
-		const { current } = this.state;
+	}, {
+		key: "handleDrawFan",
+		value: function handleDrawFan(xyValue) {
+			var current = this.state.current;
 
-		if (isDefined(current) && isDefined(current.startXY)) {
-			this.mouseMoved = true;
 
-			this.setState({
-				current: {
-					startXY: current.startXY,
-					endXY: xyValue,
-				}
-			});
+			if ((0, _utils.isDefined)(current) && (0, _utils.isDefined)(current.startXY)) {
+				this.mouseMoved = true;
+
+				this.setState({
+					current: {
+						startXY: current.startXY,
+						endXY: xyValue
+					}
+				});
+			}
 		}
-	}
-	handleStart(xyValue) {
-		const { current } = this.state;
+	}, {
+		key: "handleStart",
+		value: function handleStart(xyValue) {
+			var _this3 = this;
 
-		if (isNotDefined(current) || isNotDefined(current.startXY)) {
-			this.mouseMoved = false;
+			var current = this.state.current;
 
-			this.setState({
-				current: {
-					startXY: xyValue,
-					endXY: null,
-				}
-			}, () => {
-				this.props.onStart();
-			});
+
+			if ((0, _utils.isNotDefined)(current) || (0, _utils.isNotDefined)(current.startXY)) {
+				this.mouseMoved = false;
+
+				this.setState({
+					current: {
+						startXY: xyValue,
+						endXY: null
+					}
+				}, function () {
+					_this3.props.onStart();
+				});
+			}
 		}
-	}
-	handleEnd(xyValyue, moreProps, e) {
-		const { current } = this.state;
-		const { fans, appearance } = this.props;
+	}, {
+		key: "handleEnd",
+		value: function handleEnd(xyValyue, moreProps, e) {
+			var _this4 = this;
 
-		if (this.mouseMoved
-			&& isDefined(current)
-			&& isDefined(current.startXY)
-		) {
-			const newfans = [
-				...fans.map(d => ({ ...d, selected: false })),
-				{ ...current, selected: true, appearance }
-			];
-			this.setState({
-				current: null,
-			}, () => {
-				this.props.onComplete(newfans, moreProps, e);
-			});
+			var current = this.state.current;
+			var _props = this.props,
+			    fans = _props.fans,
+			    appearance = _props.appearance;
+
+
+			if (this.mouseMoved && (0, _utils.isDefined)(current) && (0, _utils.isDefined)(current.startXY)) {
+				var newfans = [].concat(_toConsumableArray(fans.map(function (d) {
+					return _extends({}, d, { selected: false });
+				})), [_extends({}, current, { selected: true, appearance: appearance })]);
+				this.setState({
+					current: null
+				}, function () {
+					_this4.props.onComplete(newfans, moreProps, e);
+				});
+			}
 		}
-	}
-	render() {
-		const { enabled, appearance } = this.props;
-		const { currentPositionRadius, currentPositionStroke } = this.props;
-		const { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
-		const { hoverText, fans } = this.props;
-		const { current, override } = this.state;
-		const overrideIndex = isDefined(override) ? override.index : null;
+	}, {
+		key: "render",
+		value: function render() {
+			var _this5 = this;
 
-		const tempChannel = isDefined(current) && isDefined(current.endXY)
-			? <EachGannFan
-				interactive={false}
-				{...current}
-				appearance={appearance}
-				hoverText={hoverText}
-			/>
-			: null;
+			var _props2 = this.props,
+			    enabled = _props2.enabled,
+			    appearance = _props2.appearance;
+			var _props3 = this.props,
+			    currentPositionRadius = _props3.currentPositionRadius,
+			    currentPositionStroke = _props3.currentPositionStroke;
+			var _props4 = this.props,
+			    currentPositionOpacity = _props4.currentPositionOpacity,
+			    currentPositionStrokeWidth = _props4.currentPositionStrokeWidth;
+			var _props5 = this.props,
+			    hoverText = _props5.hoverText,
+			    fans = _props5.fans;
+			var _state = this.state,
+			    current = _state.current,
+			    override = _state.override;
 
-		return <g>
-			{fans.map((each, idx) => {
-				const eachAppearance = isDefined(each.appearance)
-					? { ...appearance, ...each.appearance }
-					: appearance;
+			var overrideIndex = (0, _utils.isDefined)(override) ? override.index : null;
 
-				return <EachGannFan key={idx}
-					ref={this.saveNodeType(idx)}
-					index={idx}
-					selected={each.selected}
-					{...(idx === overrideIndex ? override : each)}
-					appearance={eachAppearance}
-					hoverText={hoverText}
-					onDrag={this.handleDragFan}
-					onDragComplete={this.handleDragFanComplete}
-				/>;
-			})}
-			{tempChannel}
-			<MouseLocationIndicator
-				enabled={enabled}
-				snap={false}
-				r={currentPositionRadius}
-				stroke={currentPositionStroke}
-				opacity={currentPositionOpacity}
-				strokeWidth={currentPositionStrokeWidth}
-				onMouseDown={this.handleStart}
-				onClick={this.handleEnd}
-				onMouseMove={this.handleDrawFan}
-			/>
-		</g>;
-	}
-}
+			var tempChannel = (0, _utils.isDefined)(current) && (0, _utils.isDefined)(current.endXY) ? _react2.default.createElement(_EachGannFan2.default, _extends({
+				interactive: false
+			}, current, {
+				appearance: appearance,
+				hoverText: hoverText
+			})) : null;
 
+			return _react2.default.createElement(
+				"g",
+				null,
+				fans.map(function (each, idx) {
+					var eachAppearance = (0, _utils.isDefined)(each.appearance) ? _extends({}, appearance, each.appearance) : appearance;
+
+					return _react2.default.createElement(_EachGannFan2.default, _extends({ key: idx,
+						ref: _this5.saveNodeType(idx),
+						index: idx,
+						selected: each.selected
+					}, idx === overrideIndex ? override : each, {
+						appearance: eachAppearance,
+						hoverText: hoverText,
+						onDrag: _this5.handleDragFan,
+						onDragComplete: _this5.handleDragFanComplete
+					}));
+				}),
+				tempChannel,
+				_react2.default.createElement(_MouseLocationIndicator2.default, {
+					enabled: enabled,
+					snap: false,
+					r: currentPositionRadius,
+					stroke: currentPositionStroke,
+					opacity: currentPositionOpacity,
+					strokeWidth: currentPositionStrokeWidth,
+					onMouseDown: this.handleStart,
+					onClick: this.handleEnd,
+					onMouseMove: this.handleDrawFan
+				})
+			);
+		}
+	}]);
+
+	return GannFan;
+}(_react.Component);
 
 GannFan.propTypes = {
-	enabled: PropTypes.bool.isRequired,
+	enabled: _propTypes2.default.bool.isRequired,
 
-	onStart: PropTypes.func.isRequired,
-	onComplete: PropTypes.func.isRequired,
-	onSelect: PropTypes.func,
+	onStart: _propTypes2.default.func.isRequired,
+	onComplete: _propTypes2.default.func.isRequired,
+	onSelect: _propTypes2.default.func,
 
-	currentPositionStroke: PropTypes.string,
-	currentPositionStrokeWidth: PropTypes.number,
-	currentPositionOpacity: PropTypes.number,
-	currentPositionRadius: PropTypes.number,
+	currentPositionStroke: _propTypes2.default.string,
+	currentPositionStrokeWidth: _propTypes2.default.number,
+	currentPositionOpacity: _propTypes2.default.number,
+	currentPositionRadius: _propTypes2.default.number,
 
-	appearance: PropTypes.shape({
-		stroke: PropTypes.string.isRequired,
-		strokeOpacity: PropTypes.number.isRequired,
-		fillOpacity: PropTypes.number.isRequired,
-		strokeWidth: PropTypes.number.isRequired,
-		edgeStroke: PropTypes.string.isRequired,
-		edgeFill: PropTypes.string.isRequired,
-		edgeStrokeWidth: PropTypes.number.isRequired,
-		r: PropTypes.number.isRequired,
-		fill: PropTypes.arrayOf(PropTypes.string).isRequired,
-		fontFamily: PropTypes.string.isRequired,
-		fontSize: PropTypes.number.isRequired,
-		fontFill: PropTypes.string.isRequired,
+	appearance: _propTypes2.default.shape({
+		stroke: _propTypes2.default.string.isRequired,
+		strokeOpacity: _propTypes2.default.number.isRequired,
+		fillOpacity: _propTypes2.default.number.isRequired,
+		strokeWidth: _propTypes2.default.number.isRequired,
+		edgeStroke: _propTypes2.default.string.isRequired,
+		edgeFill: _propTypes2.default.string.isRequired,
+		edgeStrokeWidth: _propTypes2.default.number.isRequired,
+		r: _propTypes2.default.number.isRequired,
+		fill: _propTypes2.default.arrayOf(_propTypes2.default.string).isRequired,
+		fontFamily: _propTypes2.default.string.isRequired,
+		fontSize: _propTypes2.default.number.isRequired,
+		fontFill: _propTypes2.default.string.isRequired
 	}).isRequired,
-	hoverText: PropTypes.object.isRequired,
+	hoverText: _propTypes2.default.object.isRequired,
 
-	fans: PropTypes.array.isRequired,
+	fans: _propTypes2.default.array.isRequired
 };
 
 GannFan.defaultProps = {
@@ -198,38 +267,29 @@ GannFan.defaultProps = {
 		edgeFill: "#FFFFFF",
 		edgeStrokeWidth: 1,
 		r: 5,
-		fill: [
-			"#e41a1c",
-			"#377eb8",
-			"#4daf4a",
-			"#984ea3",
-			"#ff7f00",
-			"#ffff33",
-			"#a65628",
-			"#f781bf",
-		],
+		fill: ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00", "#ffff33", "#a65628", "#f781bf"],
 		fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
 		fontSize: 12,
-		fontFill: "#000000",
+		fontFill: "#000000"
 	},
 
-	onStart: noop,
-	onComplete: noop,
-	onSelect: noop,
+	onStart: _utils.noop,
+	onComplete: _utils.noop,
+	onSelect: _utils.noop,
 
 	currentPositionStroke: "#000000",
 	currentPositionOpacity: 1,
 	currentPositionStrokeWidth: 3,
 	currentPositionRadius: 4,
 
-	hoverText: {
-		...HoverTextNearMouse.defaultProps,
+	hoverText: _extends({}, _HoverTextNearMouse2.default.defaultProps, {
 		enable: true,
 		bgHeight: 18,
 		bgWidth: 120,
-		text: "Click to select object",
-	},
-	fans: [],
+		text: "Click to select object"
+	}),
+	fans: []
 };
 
-export default GannFan;
+exports.default = GannFan;
+//# sourceMappingURL=GannFan.js.map

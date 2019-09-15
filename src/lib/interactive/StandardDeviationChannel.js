@@ -1,226 +1,282 @@
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-import { isDefined, isNotDefined, noop } from "../utils";
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-import {
-	getValueFromOverride,
-	terminate,
-	saveNodeType,
-	isHoverForInteractiveType,
-} from "./utils";
+var _react = require("react");
 
-import EachLinearRegressionChannel from "./wrapper/EachLinearRegressionChannel";
-import MouseLocationIndicator from "./components/MouseLocationIndicator";
-import HoverTextNearMouse from "./components/HoverTextNearMouse";
+var _react2 = _interopRequireDefault(_react);
 
-class StandardDeviationChannel extends Component {
-	constructor(props) {
-		super(props);
+var _propTypes = require("prop-types");
 
-		this.handleStart = this.handleStart.bind(this);
-		this.handleEnd = this.handleEnd.bind(this);
-		this.handleDrawLine = this.handleDrawLine.bind(this);
-		this.handleDragLine = this.handleDragLine.bind(this);
-		this.handleDragLineComplete = this.handleDragLineComplete.bind(this);
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
-		this.terminate = terminate.bind(this);
-		this.saveNodeType = saveNodeType.bind(this);
+var _utils = require("../utils");
 
-		this.getSelectionState = isHoverForInteractiveType("channels")
-			.bind(this);
+var _utils2 = require("./utils");
 
-		this.nodes = [];
-		this.state = {};
+var _EachLinearRegressionChannel = require("./wrapper/EachLinearRegressionChannel");
+
+var _EachLinearRegressionChannel2 = _interopRequireDefault(_EachLinearRegressionChannel);
+
+var _MouseLocationIndicator = require("./components/MouseLocationIndicator");
+
+var _MouseLocationIndicator2 = _interopRequireDefault(_MouseLocationIndicator);
+
+var _HoverTextNearMouse = require("./components/HoverTextNearMouse");
+
+var _HoverTextNearMouse2 = _interopRequireDefault(_HoverTextNearMouse);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var StandardDeviationChannel = function (_Component) {
+	_inherits(StandardDeviationChannel, _Component);
+
+	function StandardDeviationChannel(props) {
+		_classCallCheck(this, StandardDeviationChannel);
+
+		var _this = _possibleConstructorReturn(this, (StandardDeviationChannel.__proto__ || Object.getPrototypeOf(StandardDeviationChannel)).call(this, props));
+
+		_this.handleStart = _this.handleStart.bind(_this);
+		_this.handleEnd = _this.handleEnd.bind(_this);
+		_this.handleDrawLine = _this.handleDrawLine.bind(_this);
+		_this.handleDragLine = _this.handleDragLine.bind(_this);
+		_this.handleDragLineComplete = _this.handleDragLineComplete.bind(_this);
+
+		_this.terminate = _utils2.terminate.bind(_this);
+		_this.saveNodeType = _utils2.saveNodeType.bind(_this);
+
+		_this.getSelectionState = (0, _utils2.isHoverForInteractiveType)("channels").bind(_this);
+
+		_this.nodes = [];
+		_this.state = {};
+		return _this;
 	}
-	handleDragLine(index, newXYValue) {
-		this.setState({
-			override: {
-				index,
-				...newXYValue
-			}
-		});
-	}
-	handleDragLineComplete(moreProps) {
-		const { override } = this.state;
-		const { channels } = this.props;
-		if (isDefined(override)) {
 
-			const newChannels = channels
-				.map((each, idx) => idx === override.index
-					? {
-						...each,
+	_createClass(StandardDeviationChannel, [{
+		key: "handleDragLine",
+		value: function handleDragLine(index, newXYValue) {
+			this.setState({
+				override: _extends({
+					index: index
+				}, newXYValue)
+			});
+		}
+	}, {
+		key: "handleDragLineComplete",
+		value: function handleDragLineComplete(moreProps) {
+			var _this2 = this;
+
+			var override = this.state.override;
+			var channels = this.props.channels;
+
+			if ((0, _utils.isDefined)(override)) {
+
+				var newChannels = channels.map(function (each, idx) {
+					return idx === override.index ? _extends({}, each, {
 						start: [override.x1Value, override.y1Value],
 						end: [override.x2Value, override.y2Value],
-						selected: true,
+						selected: true
+					}) : each;
+				});
+				this.setState({
+					override: null
+				}, function () {
+					_this2.props.onComplete(newChannels, moreProps);
+				});
+			}
+		}
+	}, {
+		key: "handleDrawLine",
+		value: function handleDrawLine(xyValue) {
+			var current = this.state.current;
+
+
+			if ((0, _utils.isDefined)(current) && (0, _utils.isDefined)(current.start)) {
+				this.mouseMoved = true;
+				this.setState({
+					current: {
+						start: current.start,
+						end: xyValue
 					}
-					: each);
-			this.setState({
-				override: null,
-			}, () => {
-				this.props.onComplete(newChannels, moreProps);
-			});
+				});
+			}
 		}
-	}
-	handleDrawLine(xyValue) {
-		const { current } = this.state;
+	}, {
+		key: "handleStart",
+		value: function handleStart(xyValue) {
+			var _this3 = this;
 
-		if (isDefined(current) && isDefined(current.start)) {
-			this.mouseMoved = true;
-			this.setState({
-				current: {
-					start: current.start,
-					end: xyValue,
-				}
-			});
+			var current = this.state.current;
+
+
+			if ((0, _utils.isNotDefined)(current) || (0, _utils.isNotDefined)(current.start)) {
+				this.mouseMoved = false;
+
+				this.setState({
+					current: {
+						start: xyValue,
+						end: null
+					}
+				}, function () {
+					_this3.props.onStart();
+				});
+			}
 		}
-	}
-	handleStart(xyValue) {
-		const { current } = this.state;
+	}, {
+		key: "handleEnd",
+		value: function handleEnd(xyValue, moreProps, e) {
+			var _this4 = this;
 
-		if (isNotDefined(current) || isNotDefined(current.start)) {
-			this.mouseMoved = false;
+			var current = this.state.current;
+			var _props = this.props,
+			    appearance = _props.appearance,
+			    channels = _props.channels;
 
-			this.setState({
-				current: {
-					start: xyValue,
-					end: null,
-				}
-			}, () => {
-				this.props.onStart();
-			});
-		}
-	}
-	handleEnd(xyValue, moreProps, e) {
-		const { current } = this.state;
-		const { appearance, channels } = this.props;
 
-		if (this.mouseMoved
-			&& isDefined(current)
-			&& isDefined(current.start)
-		) {
-			const newChannels = [
-				...channels.map(d => ({ ...d, selected: false })),
-				{
+			if (this.mouseMoved && (0, _utils.isDefined)(current) && (0, _utils.isDefined)(current.start)) {
+				var newChannels = [].concat(_toConsumableArray(channels.map(function (d) {
+					return _extends({}, d, { selected: false });
+				})), [{
 					start: current.start,
 					end: xyValue,
 					selected: true,
-					appearance,
-				}
-			];
+					appearance: appearance
+				}]);
 
-			this.setState({
-				current: null,
-			}, () => {
-				this.props.onComplete(newChannels, moreProps, e);
-			});
+				this.setState({
+					current: null
+				}, function () {
+					_this4.props.onComplete(newChannels, moreProps, e);
+				});
+			}
 		}
-	}
-	render() {
-		const { appearance } = this.props;
-		const { enabled, snapTo } = this.props;
-		const { currentPositionRadius, currentPositionStroke } = this.props;
-		const { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
-		const { hoverText, channels } = this.props;
-		const { current, override } = this.state;
+	}, {
+		key: "render",
+		value: function render() {
+			var _this5 = this;
 
-		const eachDefaultAppearance = {
-			...StandardDeviationChannel.defaultProps.appearance,
-			...appearance
-		};
+			var appearance = this.props.appearance;
+			var _props2 = this.props,
+			    enabled = _props2.enabled,
+			    snapTo = _props2.snapTo;
+			var _props3 = this.props,
+			    currentPositionRadius = _props3.currentPositionRadius,
+			    currentPositionStroke = _props3.currentPositionStroke;
+			var _props4 = this.props,
+			    currentPositionOpacity = _props4.currentPositionOpacity,
+			    currentPositionStrokeWidth = _props4.currentPositionStrokeWidth;
+			var _props5 = this.props,
+			    hoverText = _props5.hoverText,
+			    channels = _props5.channels;
+			var _state = this.state,
+			    current = _state.current,
+			    override = _state.override;
 
-		const hoverTextDefault = {
-			...StandardDeviationChannel.defaultProps.hoverText,
-			...hoverText
-		};
 
-		const tempLine = isDefined(current) && isDefined(current.end)
-			? <EachLinearRegressionChannel
-				interactive={false}
-				x1Value={current.start[0]}
-				x2Value={current.end[0]}
-				appearance={eachDefaultAppearance}
-				hoverText={hoverTextDefault}
-			/>
-			: null;
+			var eachDefaultAppearance = _extends({}, StandardDeviationChannel.defaultProps.appearance, appearance);
 
-		return <g>
-			{channels.map((each, idx) => {
-				const eachAppearance = isDefined(each.appearance)
-					? { ...eachDefaultAppearance, ...each.appearance }
-					: eachDefaultAppearance;
+			var hoverTextDefault = _extends({}, StandardDeviationChannel.defaultProps.hoverText, hoverText);
 
-				const eachHoverText = isDefined(each.hoverText)
-					? { ...hoverTextDefault, ...each.hoverText }
-					: hoverTextDefault;
+			var tempLine = (0, _utils.isDefined)(current) && (0, _utils.isDefined)(current.end) ? _react2.default.createElement(_EachLinearRegressionChannel2.default, {
+				interactive: false,
+				x1Value: current.start[0],
+				x2Value: current.end[0],
+				appearance: eachDefaultAppearance,
+				hoverText: hoverTextDefault
+			}) : null;
 
-				return <EachLinearRegressionChannel key={idx}
-					ref={this.saveNodeType(idx)}
-					index={idx}
-					selected={each.selected}
+			return _react2.default.createElement(
+				"g",
+				null,
+				channels.map(function (each, idx) {
+					var eachAppearance = (0, _utils.isDefined)(each.appearance) ? _extends({}, eachDefaultAppearance, each.appearance) : eachDefaultAppearance;
 
-					x1Value={getValueFromOverride(override, idx, "x1Value", each.start[0])}
-					x2Value={getValueFromOverride(override, idx, "x2Value", each.end[0])}
+					var eachHoverText = (0, _utils.isDefined)(each.hoverText) ? _extends({}, hoverTextDefault, each.hoverText) : hoverTextDefault;
 
-					appearance={eachAppearance}
-					snapTo={snapTo}
-					hoverText={eachHoverText}
+					return _react2.default.createElement(_EachLinearRegressionChannel2.default, { key: idx,
+						ref: _this5.saveNodeType(idx),
+						index: idx,
+						selected: each.selected,
 
-					onDrag={this.handleDragLine}
-					onDragComplete={this.handleDragLineComplete}
-					edgeInteractiveCursor="react-stockcharts-move-cursor"
-				/>;
-			})}
-			{tempLine}
-			<MouseLocationIndicator
-				enabled={enabled}
-				snap
-				snapTo={snapTo}
-				r={currentPositionRadius}
-				stroke={currentPositionStroke}
-				opacity={currentPositionOpacity}
-				strokeWidth={currentPositionStrokeWidth}
-				onMouseDown={this.handleStart}
-				onClick={this.handleEnd}
-				onMouseMove={this.handleDrawLine}
-			/>
-		</g>;
-	}
-}
+						x1Value: (0, _utils2.getValueFromOverride)(override, idx, "x1Value", each.start[0]),
+						x2Value: (0, _utils2.getValueFromOverride)(override, idx, "x2Value", each.end[0]),
+
+						appearance: eachAppearance,
+						snapTo: snapTo,
+						hoverText: eachHoverText,
+
+						onDrag: _this5.handleDragLine,
+						onDragComplete: _this5.handleDragLineComplete,
+						edgeInteractiveCursor: "react-stockcharts-move-cursor"
+					});
+				}),
+				tempLine,
+				_react2.default.createElement(_MouseLocationIndicator2.default, {
+					enabled: enabled,
+					snap: true,
+					snapTo: snapTo,
+					r: currentPositionRadius,
+					stroke: currentPositionStroke,
+					opacity: currentPositionOpacity,
+					strokeWidth: currentPositionStrokeWidth,
+					onMouseDown: this.handleStart,
+					onClick: this.handleEnd,
+					onMouseMove: this.handleDrawLine
+				})
+			);
+		}
+	}]);
+
+	return StandardDeviationChannel;
+}(_react.Component);
 
 StandardDeviationChannel.propTypes = {
-	enabled: PropTypes.bool.isRequired,
-	snapTo: PropTypes.func,
+	enabled: _propTypes2.default.bool.isRequired,
+	snapTo: _propTypes2.default.func,
 
-	onStart: PropTypes.func,
-	onComplete: PropTypes.func.isRequired,
-	onSelect: PropTypes.func,
+	onStart: _propTypes2.default.func,
+	onComplete: _propTypes2.default.func.isRequired,
+	onSelect: _propTypes2.default.func,
 
-	currentPositionStroke: PropTypes.string,
-	currentPositionStrokeWidth: PropTypes.number,
-	currentPositionOpacity: PropTypes.number,
-	currentPositionRadius: PropTypes.number,
+	currentPositionStroke: _propTypes2.default.string,
+	currentPositionStrokeWidth: _propTypes2.default.number,
+	currentPositionOpacity: _propTypes2.default.number,
+	currentPositionRadius: _propTypes2.default.number,
 
-	appearance: PropTypes.shape({
-		stroke: PropTypes.string,
-		strokeOpacity: PropTypes.number,
-		strokeWidth: PropTypes.number,
-		fill: PropTypes.string,
-		fillOpacity: PropTypes.number,
-		edgeStrokeWidth: PropTypes.number,
-		edgeStroke: PropTypes.string,
-		edgeFill: PropTypes.string,
-		r: PropTypes.number,
+	appearance: _propTypes2.default.shape({
+		stroke: _propTypes2.default.string,
+		strokeOpacity: _propTypes2.default.number,
+		strokeWidth: _propTypes2.default.number,
+		fill: _propTypes2.default.string,
+		fillOpacity: _propTypes2.default.number,
+		edgeStrokeWidth: _propTypes2.default.number,
+		edgeStroke: _propTypes2.default.string,
+		edgeFill: _propTypes2.default.string,
+		r: _propTypes2.default.number
 	}).isRequired,
 
-	hoverText: PropTypes.object,
-	channels: PropTypes.array.isRequired,
+	hoverText: _propTypes2.default.object,
+	channels: _propTypes2.default.array.isRequired
 };
 
 StandardDeviationChannel.defaultProps = {
-	snapTo: d => d.close,
+	snapTo: function snapTo(d) {
+		return d.close;
+	},
 	appearance: {
 		stroke: "#000000",
 		fillOpacity: 0.2,
@@ -230,27 +286,27 @@ StandardDeviationChannel.defaultProps = {
 		edgeStrokeWidth: 2,
 		edgeStroke: "#000000",
 		edgeFill: "#FFFFFF",
-		r: 5,
+		r: 5
 	},
 
-	onStart: noop,
-	onComplete: noop,
-	onSelect: noop,
+	onStart: _utils.noop,
+	onComplete: _utils.noop,
+	onSelect: _utils.noop,
 
 	currentPositionStroke: "#000000",
 	currentPositionOpacity: 1,
 	currentPositionStrokeWidth: 3,
 	currentPositionRadius: 4,
 
-	hoverText: {
-		...HoverTextNearMouse.defaultProps,
+	hoverText: _extends({}, _HoverTextNearMouse2.default.defaultProps, {
 		enable: true,
 		bgHeight: "auto",
 		bgWidth: "auto",
 		text: "Click and drag the edge circles",
 		selectedText: ""
-	},
-	channels: [],
+	}),
+	channels: []
 };
 
-export default StandardDeviationChannel;
+exports.default = StandardDeviationChannel;
+//# sourceMappingURL=StandardDeviationChannel.js.map

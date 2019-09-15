@@ -1,43 +1,57 @@
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
-import { merge, isNotDefined, path, functor } from "../utils";
-import atr from "./atr";
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-import { Kagi as defaultOptions } from "./defaultOptionsForComputation";
+exports.default = function () {
 
-export default function() {
-
-	let options = defaultOptions;
-	let dateAccessor = d => d.date;
-	let dateMutator = (d, date) => { d.date = date; };
+	var options = _defaultOptionsForComputation.Kagi;
+	var dateAccessor = function dateAccessor(d) {
+		return d.date;
+	};
+	var dateMutator = function dateMutator(d, date) {
+		d.date = date;
+	};
 
 	function calculator(data) {
-		const { reversalType, windowSize, reversal, sourcePath } = options;
+		var _options = options,
+		    reversalType = _options.reversalType,
+		    windowSize = _options.windowSize,
+		    reversal = _options.reversal,
+		    sourcePath = _options.sourcePath;
 
-		const source = path(sourcePath);
-		let reversalThreshold;
+
+		var source = (0, _utils.path)(sourcePath);
+		var reversalThreshold = void 0;
 
 		if (reversalType === "ATR") {
 			// calculateATR(rawData, period);
-			const atrAlgorithm = atr().options({ windowSize });
+			var atrAlgorithm = (0, _atr2.default)().options({ windowSize: windowSize });
 
-			const atrCalculator = merge()
-				.algorithm(atrAlgorithm)
-				.merge((d, c) => { d["atr" + windowSize] = c; } );
+			var atrCalculator = (0, _utils.merge)().algorithm(atrAlgorithm).merge(function (d, c) {
+				d["atr" + windowSize] = c;
+			});
 
 			atrCalculator(data);
-			reversalThreshold = d => d["atr" + windowSize];
+			reversalThreshold = function reversalThreshold(d) {
+				return d["atr" + windowSize];
+			};
 		} else {
-			reversalThreshold = functor(reversal);
+			reversalThreshold = (0, _utils.functor)(reversal);
 		}
 
-		const kagiData = [];
+		var kagiData = [];
 
-		let prevPeak, prevTrough, direction;
-		let line = {};
+		var prevPeak = void 0,
+		    prevTrough = void 0,
+		    direction = void 0;
+		var line = {};
 
-		data.forEach(function(d) {
-			if (isNotDefined(line.from)) {
+		data.forEach(function (d) {
+			if ((0, _utils.isNotDefined)(line.from)) {
 				dateMutator(line, dateAccessor(d));
 				line.from = dateAccessor(d);
 
@@ -86,11 +100,10 @@ export default function() {
 			line.low = Math.min(line.low, d.low);
 			line.to = dateAccessor(d);
 
-			const priceMovement = (source(d) - line.close);
+			var priceMovement = source(d) - line.close;
 
 			// console.log(source(d), priceMovement)
-			if ((line.close >= line.open /* going up */ && priceMovement > 0 /* and moving in same direction */)
-					|| (line.close < line.open /* going down */ && priceMovement < 0 /* and moving in same direction */)) {
+			if (line.close >= line.open /* going up */ && priceMovement > 0 /* and moving in same direction */ || line.close < line.open /* going down */ && priceMovement < 0 /* and moving in same direction */) {
 				line.close = source(d);
 				if (prevTrough && line.close < prevTrough) {
 					// going below the prevTrough, so change from yang to yin
@@ -110,44 +123,44 @@ export default function() {
 						// line.startAs = "yin";
 					}
 				}
-			} else if ((line.close >= line.open /* going up */
-							&& priceMovement < 0 /* and moving in other direction */
-							&& Math.abs(priceMovement) > reversalThreshold(d) /* and the movement is big enough for reversal */)
-					|| (line.close < line.open /* going down */
-							&& priceMovement > 0 /* and moving in other direction */
-							&& Math.abs(priceMovement) > reversalThreshold(d) /* and the movement is big enough for reversal */)) {
+			} else if (line.close >= line.open /* going up */
+			&& priceMovement < 0 /* and moving in other direction */
+			&& Math.abs(priceMovement) > reversalThreshold(d) /* and the movement is big enough for reversal */ || line.close < line.open /* going down */
+			&& priceMovement > 0 /* and moving in other direction */
+			&& Math.abs(priceMovement) > reversalThreshold(d) /* and the movement is big enough for reversal */) {
 				// reverse direction
-				const nextLineOpen = line.close;
+				var nextLineOpen = line.close;
 
 				direction = (line.close - line.open) / Math.abs(line.close - line.open);
 
-				let nextChangePoint, nextChangeTo;
+				var nextChangePoint = void 0,
+				    nextChangeTo = void 0;
 				if (direction < 0 /* if direction so far has been -ve*/) {
-					// compare with line.close becomes prevTrough
-					if (isNotDefined(prevPeak)) prevPeak = line.open;
-					prevTrough = line.close;
-					if (source(d) > prevPeak) {
-						nextChangePoint = prevPeak;
-						nextChangeTo = "yang";
-					}
-				} else {
-					if (isNotDefined(prevTrough)) prevTrough = line.open;
+						// compare with line.close becomes prevTrough
+						if ((0, _utils.isNotDefined)(prevPeak)) prevPeak = line.open;
+						prevTrough = line.close;
+						if (source(d) > prevPeak) {
+							nextChangePoint = prevPeak;
+							nextChangeTo = "yang";
+						}
+					} else {
+					if ((0, _utils.isNotDefined)(prevTrough)) prevTrough = line.open;
 					prevPeak = line.close;
 					if (source(d) < prevTrough) {
 						nextChangePoint = prevTrough;
 						nextChangeTo = "yin";
 					}
 				}
-				if (isNotDefined(line.startAs)) {
+				if ((0, _utils.isNotDefined)(line.startAs)) {
 					line.startAs = direction > 0 ? "yang" : "yin";
 				}
 
-				const startAs = line.changeTo || line.startAs;
+				var startAs = line.changeTo || line.startAs;
 				line.added = true;
 				kagiData.push(line);
 				direction = -1 * direction; // direction is reversed
 
-				line = { ...line };
+				line = _extends({}, line);
 				line.open = nextLineOpen;
 				line.close = source(d);
 				line.startAs = startAs;
@@ -160,7 +173,7 @@ export default function() {
 				// console.log("MOVING IN REV DIR BUT..", line.open, line.close, source(d));
 			}
 			line.current = source(d);
-			let dir = line.close - line.open;
+			var dir = line.close - line.open;
 			dir = dir === 0 ? 1 : dir / Math.abs(dir);
 			line.reverseAt = dir > 0 ? line.close - reversalThreshold(d) : line.open - reversalThreshold(d);
 		});
@@ -168,22 +181,33 @@ export default function() {
 
 		return kagiData;
 	}
-	calculator.options = function(x) {
+	calculator.options = function (x) {
 		if (!arguments.length) {
 			return options;
 		}
-		options = { ...defaultOptions, ...x };
+		options = _extends({}, _defaultOptionsForComputation.Kagi, x);
 		return calculator;
 	};
-	calculator.dateMutator = function(x) {
+	calculator.dateMutator = function (x) {
 		if (!arguments.length) return dateMutator;
 		dateMutator = x;
 		return calculator;
 	};
-	calculator.dateAccessor = function(x) {
+	calculator.dateAccessor = function (x) {
 		if (!arguments.length) return dateAccessor;
 		dateAccessor = x;
 		return calculator;
 	};
 	return calculator;
-}
+};
+
+var _utils = require("../utils");
+
+var _atr = require("./atr");
+
+var _atr2 = _interopRequireDefault(_atr);
+
+var _defaultOptionsForComputation = require("./defaultOptionsForComputation");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+//# sourceMappingURL=kagi.js.map

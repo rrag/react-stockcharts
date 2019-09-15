@@ -1,4 +1,10 @@
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 /*
 https://github.com/ScottLogic/d3fc/blob/master/src/indicator/algorithm/calculator/macd.js
@@ -26,57 +32,70 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import ema from "./ema";
-
-import { isDefined, zipper } from "../utils";
-import { MACD as defaultOptions } from "./defaultOptionsForComputation";
-
-export default function() {
-	let options = defaultOptions;
+exports.default = function () {
+	var options = _defaultOptionsForComputation.MACD;
 
 	function calculator(data) {
-		const { fast, slow, signal, sourcePath } = options;
+		var _options = options,
+		    fast = _options.fast,
+		    slow = _options.slow,
+		    signal = _options.signal,
+		    sourcePath = _options.sourcePath;
 
-		const fastEMA = ema()
-			.options({ windowSize: fast, sourcePath });
 
-		const slowEMA = ema()
-			.options({ windowSize: slow, sourcePath });
+		var fastEMA = (0, _ema2.default)().options({ windowSize: fast, sourcePath: sourcePath });
 
-		const signalEMA = ema()
-			.options({ windowSize: signal, sourcePath: undefined });
+		var slowEMA = (0, _ema2.default)().options({ windowSize: slow, sourcePath: sourcePath });
 
-		const macdCalculator = zipper()
-			.combine((fastEMA, slowEMA) => (isDefined(fastEMA) && isDefined(slowEMA)) ? fastEMA - slowEMA : undefined);
+		var signalEMA = (0, _ema2.default)().options({ windowSize: signal, sourcePath: undefined });
 
-		const macdArray = macdCalculator(fastEMA(data), slowEMA(data));
+		var macdCalculator = (0, _utils.zipper)().combine(function (fastEMA, slowEMA) {
+			return (0, _utils.isDefined)(fastEMA) && (0, _utils.isDefined)(slowEMA) ? fastEMA - slowEMA : undefined;
+		});
 
-		const undefinedArray = new Array(slow);
-		const signalArray = undefinedArray.concat(signalEMA(macdArray.slice(slow)));
+		var macdArray = macdCalculator(fastEMA(data), slowEMA(data));
 
-		const zip = zipper()
-			.combine((macd, signal) => ({
-				macd,
-				signal,
-				divergence: (isDefined(macd) && isDefined(signal)) ? macd - signal : undefined,
-			}));
+		var undefinedArray = new Array(slow);
+		var signalArray = undefinedArray.concat(signalEMA(macdArray.slice(slow)));
 
-		const macd = zip(macdArray, signalArray);
+		var zip = (0, _utils.zipper)().combine(function (macd, signal) {
+			return {
+				macd: macd,
+				signal: signal,
+				divergence: (0, _utils.isDefined)(macd) && (0, _utils.isDefined)(signal) ? macd - signal : undefined
+			};
+		});
+
+		var macd = zip(macdArray, signalArray);
 
 		return macd;
 	}
 
-	calculator.undefinedLength = function() {
-		const { slow, signal } = options;
+	calculator.undefinedLength = function () {
+		var _options2 = options,
+		    slow = _options2.slow,
+		    signal = _options2.signal;
+
 		return slow + signal - 1;
 	};
-	calculator.options = function(x) {
+	calculator.options = function (x) {
 		if (!arguments.length) {
 			return options;
 		}
-		options = { ...defaultOptions, ...x };
+		options = _extends({}, _defaultOptionsForComputation.MACD, x);
 		return calculator;
 	};
 
 	return calculator;
-}
+};
+
+var _ema = require("./ema");
+
+var _ema2 = _interopRequireDefault(_ema);
+
+var _utils = require("../utils");
+
+var _defaultOptionsForComputation = require("./defaultOptionsForComputation");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+//# sourceMappingURL=macd.js.map

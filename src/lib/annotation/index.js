@@ -1,33 +1,64 @@
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
+var _Annotate = require("./Annotate");
 
-export { default as Annotate } from "./Annotate";
-export { default as LabelAnnotation } from "./LabelAnnotation";
-export { default as SvgPathAnnotation } from "./SvgPathAnnotation";
-export { default as Label } from "./Label";
+Object.defineProperty(exports, "Annotate", {
+	enumerable: true,
+	get: function get() {
+		return _interopRequireDefault(_Annotate).default;
+	}
+});
 
-const halfWidth = 10;
-const bottomWidth = 3;
-const height = 20;
+var _LabelAnnotation = require("./LabelAnnotation");
 
-export function buyPath({ x, y }) {
-	return `M${x} ${y} `
-		+ `L${x + halfWidth} ${y + halfWidth} `
-		+ `L${x + bottomWidth} ${y + halfWidth} `
-		+ `L${x + bottomWidth} ${y + height} `
-		+ `L${x - bottomWidth} ${y + height} `
-		+ `L${x - bottomWidth} ${y + halfWidth} `
-		+ `L${x - halfWidth} ${y + halfWidth} `
-		+ "Z";
+Object.defineProperty(exports, "LabelAnnotation", {
+	enumerable: true,
+	get: function get() {
+		return _interopRequireDefault(_LabelAnnotation).default;
+	}
+});
+
+var _SvgPathAnnotation = require("./SvgPathAnnotation");
+
+Object.defineProperty(exports, "SvgPathAnnotation", {
+	enumerable: true,
+	get: function get() {
+		return _interopRequireDefault(_SvgPathAnnotation).default;
+	}
+});
+
+var _Label = require("./Label");
+
+Object.defineProperty(exports, "Label", {
+	enumerable: true,
+	get: function get() {
+		return _interopRequireDefault(_Label).default;
+	}
+});
+exports.buyPath = buyPath;
+exports.sellPath = sellPath;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var halfWidth = 10;
+var bottomWidth = 3;
+var height = 20;
+
+function buyPath(_ref) {
+	var x = _ref.x,
+	    y = _ref.y;
+
+	return "M" + x + " " + y + " " + ("L" + (x + halfWidth) + " " + (y + halfWidth) + " ") + ("L" + (x + bottomWidth) + " " + (y + halfWidth) + " ") + ("L" + (x + bottomWidth) + " " + (y + height) + " ") + ("L" + (x - bottomWidth) + " " + (y + height) + " ") + ("L" + (x - bottomWidth) + " " + (y + halfWidth) + " ") + ("L" + (x - halfWidth) + " " + (y + halfWidth) + " ") + "Z";
 }
 
-export function sellPath({ x, y }) {
-	return `M${x} ${y} `
-		+ `L${x + halfWidth} ${y - halfWidth} `
-		+ `L${x + bottomWidth} ${y - halfWidth} `
-		+ `L${x + bottomWidth} ${y - height} `
-		+ `L${x - bottomWidth} ${y - height} `
-		+ `L${x - bottomWidth} ${y - halfWidth} `
-		+ `L${x - halfWidth} ${y - halfWidth} `
-		+ "Z";
+function sellPath(_ref2) {
+	var x = _ref2.x,
+	    y = _ref2.y;
+
+	return "M" + x + " " + y + " " + ("L" + (x + halfWidth) + " " + (y - halfWidth) + " ") + ("L" + (x + bottomWidth) + " " + (y - halfWidth) + " ") + ("L" + (x + bottomWidth) + " " + (y - height) + " ") + ("L" + (x - bottomWidth) + " " + (y - height) + " ") + ("L" + (x - bottomWidth) + " " + (y - halfWidth) + " ") + ("L" + (x - halfWidth) + " " + (y - halfWidth) + " ") + "Z";
 }
+//# sourceMappingURL=index.js.map

@@ -1,35 +1,35 @@
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
-import noop from "./noop";
-import identity from "./identity";
-import { functor } from "./index";
+exports.default = function () {
 
-export default function() {
-
-	let undefinedValue = undefined,
-		windowSize = 10,
-		accumulator = noop,
-		source = identity,
-		skipInitial = 0;
+	var undefinedValue = undefined,
+	    windowSize = 10,
+	    accumulator = _noop2.default,
+	    source = _identity2.default,
+	    skipInitial = 0;
 
 	// eslint-disable-next-line prefer-const
-	let mappedSlidingWindow = function(data) {
-		const size = functor(windowSize).apply(this, arguments);
-		const windowData = [];
-		let accumulatorIdx = 0;
-		const undef = functor(undefinedValue);
+	var mappedSlidingWindow = function mappedSlidingWindow(data) {
+		var size = (0, _index.functor)(windowSize).apply(this, arguments);
+		var windowData = [];
+		var accumulatorIdx = 0;
+		var undef = (0, _index.functor)(undefinedValue);
 		// console.log(skipInitial, size, data.length, windowData.length);
-		const result = [];
-		data.forEach(function(d, i) {
+		var result = [];
+		data.forEach(function (d, i) {
 			// console.log(d, i, windowData.length);
-			let mapped;
-			if (i < (skipInitial + size - 1)) {
+			var mapped = void 0;
+			if (i < skipInitial + size - 1) {
 				mapped = undef(d, i);
 				result.push(mapped);
 				windowData.push(mapped);
 				return;
 			}
-			if (i >= (skipInitial + size)) {
+			if (i >= skipInitial + size) {
 				// Treat windowData as FIFO rolling buffer
 				windowData.shift();
 			}
@@ -43,35 +43,35 @@ export default function() {
 		return result;
 	};
 
-	mappedSlidingWindow.undefinedValue = function(x) {
+	mappedSlidingWindow.undefinedValue = function (x) {
 		if (!arguments.length) {
 			return undefinedValue;
 		}
 		undefinedValue = x;
 		return mappedSlidingWindow;
 	};
-	mappedSlidingWindow.windowSize = function(x) {
+	mappedSlidingWindow.windowSize = function (x) {
 		if (!arguments.length) {
 			return windowSize;
 		}
 		windowSize = x;
 		return mappedSlidingWindow;
 	};
-	mappedSlidingWindow.accumulator = function(x) {
+	mappedSlidingWindow.accumulator = function (x) {
 		if (!arguments.length) {
 			return accumulator;
 		}
 		accumulator = x;
 		return mappedSlidingWindow;
 	};
-	mappedSlidingWindow.skipInitial = function(x) {
+	mappedSlidingWindow.skipInitial = function (x) {
 		if (!arguments.length) {
 			return skipInitial;
 		}
 		skipInitial = x;
 		return mappedSlidingWindow;
 	};
-	mappedSlidingWindow.source = function(x) {
+	mappedSlidingWindow.source = function (x) {
 		if (!arguments.length) {
 			return source;
 		}
@@ -80,4 +80,17 @@ export default function() {
 	};
 
 	return mappedSlidingWindow;
-}
+};
+
+var _noop = require("./noop");
+
+var _noop2 = _interopRequireDefault(_noop);
+
+var _identity = require("./identity");
+
+var _identity2 = _interopRequireDefault(_identity);
+
+var _index = require("./index");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+//# sourceMappingURL=mappedSlidingWindow.js.map

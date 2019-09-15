@@ -1,27 +1,21 @@
-export const strokeDashTypes = [
-	"Solid",
-	"ShortDash",
-	"ShortDash2",
-	"ShortDot",
-	"ShortDashDot",
-	"ShortDashDotDot",
-	"Dot",
-	"Dash",
-	"LongDash",
-	"DashDot",
-	"LongDashDot",
-	"LongDashDotDot",
-];
+"use strict";
 
-export function getStrokeDasharrayCanvas(type) {
-	const a = getStrokeDasharray(type).split(",");
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.getStrokeDasharrayCanvas = getStrokeDasharrayCanvas;
+var strokeDashTypes = exports.strokeDashTypes = ["Solid", "ShortDash", "ShortDash2", "ShortDot", "ShortDashDot", "ShortDashDotDot", "Dot", "Dash", "LongDash", "DashDot", "LongDashDot", "LongDashDotDot"];
+
+function getStrokeDasharrayCanvas(type) {
+	var a = getStrokeDasharray(type).split(",");
 
 	if (a.length === 1) return [];
 
-	return a.map(d => Number(d));
-
+	return a.map(function (d) {
+		return Number(d);
+	});
 }
-export const getStrokeDasharray = (type) => {
+var getStrokeDasharray = exports.getStrokeDasharray = function getStrokeDasharray(type) {
 	switch (type) {
 		default:
 		case "Solid":
@@ -50,3 +44,4 @@ export const getStrokeDasharray = (type) => {
 			return "16, 6, 2, 6, 2, 6";
 	}
 };
+//# sourceMappingURL=strokeDasharray.js.map

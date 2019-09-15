@@ -1,4 +1,10 @@
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 /*
 https://github.com/ScottLogic/d3fc/blob/master/src/indicator/algorithm/calculator/elderRay.js
@@ -26,53 +32,66 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import { mean } from "d3-array";
+exports.default = function () {
 
-import ema from "./ema";
-
-import { ElderRay as defaultOptions } from "./defaultOptionsForComputation";
-import { isDefined, zipper, slidingWindow } from "../utils";
-
-export default function() {
-
-	let options = defaultOptions;
-	let ohlc = d => ({ open: d.open, high: d.high, low: d.low, close: d.close });
+	var options = _defaultOptionsForComputation.ElderRay;
+	var ohlc = function ohlc(d) {
+		return { open: d.open, high: d.high, low: d.low, close: d.close };
+	};
 
 	function calculator(data) {
-		const { windowSize, sourcePath, movingAverageType } = options;
+		var _options = options,
+		    windowSize = _options.windowSize,
+		    sourcePath = _options.sourcePath,
+		    movingAverageType = _options.movingAverageType;
 
-		const meanAlgorithm = movingAverageType === "ema"
-			? ema().options({ windowSize, sourcePath })
-			: slidingWindow().windowSize(windowSize).accumulator(values => mean(values)).sourcePath(sourcePath);
 
-		const zip = zipper()
-			.combine((datum, mean) => {
-				const bullPower = isDefined(mean) ? ohlc(datum).high - mean : undefined;
-				const bearPower = isDefined(mean) ? ohlc(datum).low - mean : undefined;
-				return { bullPower, bearPower };
-			});
+		var meanAlgorithm = movingAverageType === "ema" ? (0, _ema2.default)().options({ windowSize: windowSize, sourcePath: sourcePath }) : (0, _utils.slidingWindow)().windowSize(windowSize).accumulator(function (values) {
+			return (0, _d3Array.mean)(values);
+		}).sourcePath(sourcePath);
 
-		const newData = zip(data, meanAlgorithm(data));
+		var zip = (0, _utils.zipper)().combine(function (datum, mean) {
+			var bullPower = (0, _utils.isDefined)(mean) ? ohlc(datum).high - mean : undefined;
+			var bearPower = (0, _utils.isDefined)(mean) ? ohlc(datum).low - mean : undefined;
+			return { bullPower: bullPower, bearPower: bearPower };
+		});
+
+		var newData = zip(data, meanAlgorithm(data));
 		return newData;
 	}
-	calculator.undefinedLength = function() {
-		const { windowSize } = options;
+	calculator.undefinedLength = function () {
+		var _options2 = options,
+		    windowSize = _options2.windowSize;
+
 		return windowSize - 1;
 	};
-	calculator.ohlc = function(x) {
+	calculator.ohlc = function (x) {
 		if (!arguments.length) {
 			return ohlc;
 		}
 		ohlc = x;
 		return calculator;
 	};
-	calculator.options = function(x) {
+	calculator.options = function (x) {
 		if (!arguments.length) {
 			return options;
 		}
-		options = { ...defaultOptions, ...x };
+		options = _extends({}, _defaultOptionsForComputation.ElderRay, x);
 		return calculator;
 	};
 
 	return calculator;
-}
+};
+
+var _d3Array = require("d3-array");
+
+var _ema = require("./ema");
+
+var _ema2 = _interopRequireDefault(_ema);
+
+var _defaultOptionsForComputation = require("./defaultOptionsForComputation");
+
+var _utils = require("../utils");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+//# sourceMappingURL=elderRay.js.map

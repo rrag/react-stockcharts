@@ -1,4 +1,10 @@
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 /*
 https://github.com/ScottLogic/d3fc/blob/master/src/indicator/algorithm/calculator/exponentialMovingAverage.js
@@ -26,25 +32,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import { isNotDefined, path } from "../utils";
-import { EMA as defaultOptions } from "./defaultOptionsForComputation";
+exports.default = function () {
 
-export default function() {
-
-	let options = defaultOptions;
+	var options = _defaultOptionsForComputation.EMA;
 
 	function calculator(data) {
-		const { windowSize, sourcePath } = options;
+		var _options = options,
+		    windowSize = _options.windowSize,
+		    sourcePath = _options.sourcePath;
 
-		const source = path(sourcePath);
-		const alpha = 2 / (windowSize + 1);
-		let previous;
-		let initialAccumulator = 0;
-		let skip = 0;
 
-		return data.map(function(d, i) {
-			const v = source(d, i);
-			if (isNotDefined(previous) && isNotDefined(v)) {
+		var source = (0, _utils.path)(sourcePath);
+		var alpha = 2 / (windowSize + 1);
+		var previous = void 0;
+		var initialAccumulator = 0;
+		var skip = 0;
+
+		return data.map(function (d, i) {
+			var v = source(d, i);
+			if ((0, _utils.isNotDefined)(previous) && (0, _utils.isNotDefined)(v)) {
 				skip++;
 				return undefined;
 			} else if (i < windowSize + skip - 1) {
@@ -52,27 +58,34 @@ export default function() {
 				return undefined;
 			} else if (i === windowSize + skip - 1) {
 				initialAccumulator += v;
-				const initialValue = initialAccumulator / windowSize;
+				var initialValue = initialAccumulator / windowSize;
 				previous = initialValue;
 				return initialValue;
 			} else {
-				const nextValue = v * alpha + (1 - alpha) * previous;
+				var nextValue = v * alpha + (1 - alpha) * previous;
 				previous = nextValue;
 				return nextValue;
 			}
 		});
 	}
-	calculator.undefinedLength = function() {
-		const { windowSize } = options;
+	calculator.undefinedLength = function () {
+		var _options2 = options,
+		    windowSize = _options2.windowSize;
+
 		return windowSize - 1;
 	};
-	calculator.options = function(x) {
+	calculator.options = function (x) {
 		if (!arguments.length) {
 			return options;
 		}
-		options = { ...defaultOptions, ...x };
+		options = _extends({}, _defaultOptionsForComputation.EMA, x);
 		return calculator;
 	};
 
 	return calculator;
-}
+};
+
+var _utils = require("../utils");
+
+var _defaultOptionsForComputation = require("./defaultOptionsForComputation");
+//# sourceMappingURL=ema.js.map

@@ -1,3 +1,9 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.default = shallowEqual;
 // https://github.com/jonschlinkert/is-equal-shallow/
 
 /*
@@ -29,19 +35,23 @@ function isDate(date) {
 }
 
 function isEqual(val1, val2) {
-	return (isDate(val1) && isDate(val2))
-		? val1.getTime() === val2.getTime()
-		: val1 === val2;
+	return isDate(val1) && isDate(val2) ? val1.getTime() === val2.getTime() : val1 === val2;
 }
 
-export default function shallowEqual(a, b) {
-	if (!a && !b) { return true; }
-	if (!a && b || a && !b) { return false; }
+function shallowEqual(a, b) {
+	if (!a && !b) {
+		return true;
+	}
+	if (!a && b || a && !b) {
+		return false;
+	}
 
-	let numKeysA = 0, numKeysB = 0, key;
+	var numKeysA = 0,
+	    numKeysB = 0,
+	    key = void 0;
 	for (key in b) {
 		numKeysB++;
-		if (/* !isPrimitive(b[key]) || */ (b.hasOwnProperty(key) && !a.hasOwnProperty(key)) || !isEqual(a[key], b[key])) {
+		if ( /* !isPrimitive(b[key]) || */b.hasOwnProperty(key) && !a.hasOwnProperty(key) || !isEqual(a[key], b[key])) {
 			// console.log(key, a, b);
 			return false;
 		}
@@ -51,3 +61,4 @@ export default function shallowEqual(a, b) {
 	}
 	return numKeysA === numKeysB;
 }
+//# sourceMappingURL=shallowEqual.js.map

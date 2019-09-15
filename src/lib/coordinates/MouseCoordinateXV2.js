@@ -1,43 +1,64 @@
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-import GenericChartComponent from "../GenericChartComponent";
-import { getMouseCanvas } from "../GenericComponent";
+var _react = require("react");
 
+var _react2 = _interopRequireDefault(_react);
 
-const propTypes = {
-	xPosition: PropTypes.func,
-	drawCoordinate: PropTypes.func,
-	displayFormat: PropTypes.func.isRequired,
-	at: PropTypes.oneOf(["bottom", "top"]),
-	orient: PropTypes.oneOf(["bottom", "top"]),
-	text: PropTypes.shape({
-		fontStyle: PropTypes.string,
-		fontWeight: PropTypes.string,
-		fontFamily: PropTypes.string,
-		fontSize: PropTypes.number,
-		fill: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
+var _propTypes = require("prop-types");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _GenericChartComponent = require("../GenericChartComponent");
+
+var _GenericChartComponent2 = _interopRequireDefault(_GenericChartComponent);
+
+var _GenericComponent = require("../GenericComponent");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var propTypes = {
+	xPosition: _propTypes2.default.func,
+	drawCoordinate: _propTypes2.default.func,
+	displayFormat: _propTypes2.default.func.isRequired,
+	at: _propTypes2.default.oneOf(["bottom", "top"]),
+	orient: _propTypes2.default.oneOf(["bottom", "top"]),
+	text: _propTypes2.default.shape({
+		fontStyle: _propTypes2.default.string,
+		fontWeight: _propTypes2.default.string,
+		fontFamily: _propTypes2.default.string,
+		fontSize: _propTypes2.default.number,
+		fill: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.string])
 	}),
-	bg: PropTypes.shape({
-		fill: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
-		stroke: PropTypes.string,
-		strokeWidth: PropTypes.number,
-		padding: PropTypes.shape({
-			left: PropTypes.number,
-			right: PropTypes.number,
-			top: PropTypes.number,
-			bottom: PropTypes.number
-		}),
+	bg: _propTypes2.default.shape({
+		fill: _propTypes2.default.oneOfType([_propTypes2.default.func, _propTypes2.default.string]),
+		stroke: _propTypes2.default.string,
+		strokeWidth: _propTypes2.default.number,
+		padding: _propTypes2.default.shape({
+			left: _propTypes2.default.number,
+			right: _propTypes2.default.number,
+			top: _propTypes2.default.number,
+			bottom: _propTypes2.default.number
+		})
 	}),
-	dx: PropTypes.number,
-	dy: PropTypes.number
+	dx: _propTypes2.default.number,
+	dy: _propTypes2.default.number
 };
 
-const defaultProps = {
-	xPosition,
-	drawCoordinate,
+var defaultProps = {
+	xPosition: xPosition,
+	drawCoordinate: drawCoordinate,
 	at: "bottom",
 	orient: "bottom",
 
@@ -63,81 +84,104 @@ const defaultProps = {
 	dy: 7
 };
 
-class MouseCoordinateXV2 extends Component {
-	constructor(props) {
-		super(props);
-		this.drawOnCanvas = this.drawOnCanvas.bind(this);
-	}
-	drawOnCanvas(ctx, moreProps) {
-		const { show, currentItem } = moreProps;
-		const { drawCoordinate } = this.props;
+var MouseCoordinateXV2 = function (_Component) {
+	_inherits(MouseCoordinateXV2, _Component);
 
-		if (show && currentItem != null) {
-			const shape = getXCoordinateInfo(ctx, this.props, moreProps);
-			drawCoordinate(ctx, shape, this.props, moreProps);
+	function MouseCoordinateXV2(props) {
+		_classCallCheck(this, MouseCoordinateXV2);
+
+		var _this = _possibleConstructorReturn(this, (MouseCoordinateXV2.__proto__ || Object.getPrototypeOf(MouseCoordinateXV2)).call(this, props));
+
+		_this.drawOnCanvas = _this.drawOnCanvas.bind(_this);
+		return _this;
+	}
+
+	_createClass(MouseCoordinateXV2, [{
+		key: "drawOnCanvas",
+		value: function drawOnCanvas(ctx, moreProps) {
+			var show = moreProps.show,
+			    currentItem = moreProps.currentItem;
+			var drawCoordinate = this.props.drawCoordinate;
+
+
+			if (show && currentItem != null) {
+				var shape = getXCoordinateInfo(ctx, this.props, moreProps);
+				drawCoordinate(ctx, shape, this.props, moreProps);
+			}
 		}
-	}
-	render() {
-		return (
-			<GenericChartComponent
-				clip={false}
-				canvasDraw={this.drawOnCanvas}
-				canvasToDraw={getMouseCanvas}
-				drawOn={["mousemove", "pan", "drag"]}
-			/>
-		);
-	}
-}
+	}, {
+		key: "render",
+		value: function render() {
+			return _react2.default.createElement(_GenericChartComponent2.default, {
+				clip: false,
+				canvasDraw: this.drawOnCanvas,
+				canvasToDraw: _GenericComponent.getMouseCanvas,
+				drawOn: ["mousemove", "pan", "drag"]
+			});
+		}
+	}]);
+
+	return MouseCoordinateXV2;
+}(_react.Component);
 
 MouseCoordinateXV2.defaultProps = defaultProps;
 MouseCoordinateXV2.propTypes = propTypes;
 
-
 function xPosition(props, moreProps) {
-	const { currentItem, xAccessor } = moreProps;
+	var currentItem = moreProps.currentItem,
+	    xAccessor = moreProps.xAccessor;
+
 	return xAccessor(currentItem);
 }
 function getXCoordinateInfo(ctx, props, moreProps) {
-	const { xPosition } = props;
-	const xValue = xPosition(props, moreProps);
-	const { at, displayFormat } = props;
-	const { text } = props;
-	const { xScale, chartConfig: { height } } = moreProps;
-	ctx.font = `${text.fontStyle} ${text.fontWeight} ${text.fontSize}px ${text.fontFamily}`;
+	var xPosition = props.xPosition;
 
-	const t = displayFormat(xValue);
-	const textWidth = ctx.measureText(t).width;
+	var xValue = xPosition(props, moreProps);
+	var at = props.at,
+	    displayFormat = props.displayFormat;
+	var text = props.text;
+	var xScale = moreProps.xScale,
+	    height = moreProps.chartConfig.height;
 
-	const y = at === "bottom" ? height : 0;
-	const x = Math.round(xScale(xValue));
+	ctx.font = text.fontStyle + " " + text.fontWeight + " " + text.fontSize + "px " + text.fontFamily;
+
+	var t = displayFormat(xValue);
+	var textWidth = ctx.measureText(t).width;
+
+	var y = at === "bottom" ? height : 0;
+	var x = Math.round(xScale(xValue));
 
 	return {
-		x,
-		y,
-		textWidth,
+		x: x,
+		y: y,
+		textWidth: textWidth,
 		text: t
 	};
 }
 
-function drawCoordinate(
-	ctx,
-	shape,
-	props,
-	moreProps
-) {
-	const { x, y, textWidth, text } = shape;
-	const { orient, dx, dy } = props;
+function drawCoordinate(ctx, shape, props, moreProps) {
+	var x = shape.x,
+	    y = shape.y,
+	    textWidth = shape.textWidth,
+	    text = shape.text;
+	var orient = props.orient,
+	    dx = props.dx,
+	    dy = props.dy;
+	var _props$bg = props.bg,
+	    padding = _props$bg.padding,
+	    fill = _props$bg.fill,
+	    stroke = _props$bg.stroke,
+	    strokeWidth = _props$bg.strokeWidth,
+	    _props$text = props.text,
+	    fontSize = _props$text.fontSize,
+	    textFill = _props$text.fill;
 
-	const {
-		bg: { padding, fill, stroke, strokeWidth },
-		text: { fontSize, fill: textFill }
-	} = props;
 
 	ctx.textAlign = "center";
 
-	const sign = orient === "top" ? -1 : 1;
-	const halfWidth = Math.round(textWidth / 2 + padding.right);
-	const height = Math.round(fontSize + padding.top + padding.bottom);
+	var sign = orient === "top" ? -1 : 1;
+	var halfWidth = Math.round(textWidth / 2 + padding.right);
+	var height = Math.round(fontSize + padding.top + padding.bottom);
 
 	ctx.strokeStyle = typeof stroke === "function" ? stroke(moreProps, ctx) : stroke;
 	ctx.fillStyle = typeof fill === "function" ? fill(moreProps, ctx) : fill;
@@ -160,9 +204,10 @@ function drawCoordinate(
 	ctx.fillStyle = typeof textFill === "function" ? textFill(moreProps, ctx) : textFill;
 
 	ctx.textBaseline = orient === "top" ? "alphabetic" : "hanging";
-	const pad = orient === "top" ? padding.bottom : padding.top;
+	var pad = orient === "top" ? padding.bottom : padding.top;
 
 	ctx.fillText(text, x, y + sign * (dy + pad + 2));
 }
 
-export default MouseCoordinateXV2;
+exports.default = MouseCoordinateXV2;
+//# sourceMappingURL=MouseCoordinateXV2.js.map

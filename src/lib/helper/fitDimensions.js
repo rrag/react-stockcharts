@@ -1,106 +1,154 @@
-import React, { Component } from "react";
-import ReactDOM from "react-dom";
+"use strict";
 
-import { isDefined } from "../utils";
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+exports.default = fitDimensions;
+
+var _react = require("react");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require("react-dom");
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _utils = require("../utils");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 function getDisplayName(Series) {
-	const name = Series.displayName || Series.name || "Series";
+	var name = Series.displayName || Series.name || "Series";
 	return name;
 }
 
-export default function fitDimensions(WrappedComponent, props = {}) {
+function fitDimensions(WrappedComponent) {
+	var props = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+	var _props$minWidth = props.minWidth,
+	    minWidth = _props$minWidth === undefined ? 100 : _props$minWidth,
+	    _props$minHeight = props.minHeight,
+	    minHeight = _props$minHeight === undefined ? 100 : _props$minHeight,
+	    ratio = props.ratio,
+	    width = props.width,
+	    height = props.height;
 
-	const {
-		minWidth = 100,
-		minHeight = 100,
-		ratio,
-		width,
-		height,
-	} = props;
 
 	function getDimensions(el) {
-		const w = el.parentNode.clientWidth;
-		const h = el.parentNode.clientHeight;
+		var w = el.parentNode.clientWidth;
+		var h = el.parentNode.clientHeight;
 
 		return {
-			width: isDefined(width) ? width : Math.max(w, minWidth),
-			height: isDefined(height) ? height : Math.max(h, minHeight),
+			width: (0, _utils.isDefined)(width) ? width : Math.max(w, minWidth),
+			height: (0, _utils.isDefined)(height) ? height : Math.max(h, minHeight)
 		};
 	}
-	class ResponsiveComponent extends Component {
-		constructor(props) {
-			super(props);
-			this.handleWindowResize = this.handleWindowResize.bind(this);
-			this.getWrappedInstance = this.getWrappedInstance.bind(this);
-			this.saveNode = this.saveNode.bind(this);
-			this.setTestCanvas = this.setTestCanvas.bind(this);
-			this.state = {};
-		}
-		saveNode(node) {
-			this.node = node;
-		}
-		setTestCanvas(node) {
-			this.testCanvas = node;
-		}
-		getRatio() {
-			if (isDefined(this.testCanvas)) {
-				const context = this.testCanvas.getContext("2d");
 
-				const devicePixelRatio = window.devicePixelRatio || 1;
-				const backingStoreRatio = context.webkitBackingStorePixelRatio ||
-								context.mozBackingStorePixelRatio ||
-								context.msBackingStorePixelRatio ||
-								context.oBackingStorePixelRatio ||
-								context.backingStorePixelRatio || 1;
+	var ResponsiveComponent = function (_Component) {
+		_inherits(ResponsiveComponent, _Component);
 
-				const ratio = devicePixelRatio / backingStoreRatio;
-				// console.log("ratio = ", ratio);
-				return ratio;
+		function ResponsiveComponent(props) {
+			_classCallCheck(this, ResponsiveComponent);
+
+			var _this = _possibleConstructorReturn(this, (ResponsiveComponent.__proto__ || Object.getPrototypeOf(ResponsiveComponent)).call(this, props));
+
+			_this.handleWindowResize = _this.handleWindowResize.bind(_this);
+			_this.getWrappedInstance = _this.getWrappedInstance.bind(_this);
+			_this.saveNode = _this.saveNode.bind(_this);
+			_this.setTestCanvas = _this.setTestCanvas.bind(_this);
+			_this.state = {};
+			return _this;
+		}
+
+		_createClass(ResponsiveComponent, [{
+			key: "saveNode",
+			value: function saveNode(node) {
+				this.node = node;
 			}
-			return 1;
-		}
-		componentDidMount() {
-			window.addEventListener("resize", this.handleWindowResize);
-			const dimensions = getDimensions(this.node);
-
-			/* eslint-disable react/no-did-mount-set-state */
-			this.setState({
-				...dimensions,
-				ratio: isDefined(ratio) ? ratio : this.getRatio(),
-			});
-			/* eslint-enable react/no-did-mount-set-state */
-		}
-		componentWillUnmount() {
-			window.removeEventListener("resize", this.handleWindowResize);
-		}
-		handleWindowResize() {
-			const node = ReactDOM.findDOMNode(this.node); // eslint-disable-line react/no-find-dom-node
-			this.setState(getDimensions(node));
-		}
-		getWrappedInstance() {
-			return this.node;
-		}
-		render() {
-			const ref = { ref: this.saveNode };
-
-			if (this.state.width) {
-				return <WrappedComponent
-					height={this.state.height}
-					width={this.state.width}
-					ratio={this.state.ratio}
-					{...this.props}
-					{...ref}
-				/>;
-			} else {
-				return <div {...ref}>
-					<canvas ref={this.setTestCanvas}  />
-				</div>;
+		}, {
+			key: "setTestCanvas",
+			value: function setTestCanvas(node) {
+				this.testCanvas = node;
 			}
-		}
-	}
+		}, {
+			key: "getRatio",
+			value: function getRatio() {
+				if ((0, _utils.isDefined)(this.testCanvas)) {
+					var context = this.testCanvas.getContext("2d");
 
-	ResponsiveComponent.displayName = `fitDimensions(${ getDisplayName(WrappedComponent) })`;
+					var devicePixelRatio = window.devicePixelRatio || 1;
+					var backingStoreRatio = context.webkitBackingStorePixelRatio || context.mozBackingStorePixelRatio || context.msBackingStorePixelRatio || context.oBackingStorePixelRatio || context.backingStorePixelRatio || 1;
+
+					var _ratio = devicePixelRatio / backingStoreRatio;
+					// console.log("ratio = ", ratio);
+					return _ratio;
+				}
+				return 1;
+			}
+		}, {
+			key: "componentDidMount",
+			value: function componentDidMount() {
+				window.addEventListener("resize", this.handleWindowResize);
+				var dimensions = getDimensions(this.node);
+
+				/* eslint-disable react/no-did-mount-set-state */
+				this.setState(_extends({}, dimensions, {
+					ratio: (0, _utils.isDefined)(ratio) ? ratio : this.getRatio()
+				}));
+				/* eslint-enable react/no-did-mount-set-state */
+			}
+		}, {
+			key: "componentWillUnmount",
+			value: function componentWillUnmount() {
+				window.removeEventListener("resize", this.handleWindowResize);
+			}
+		}, {
+			key: "handleWindowResize",
+			value: function handleWindowResize() {
+				var node = _reactDom2.default.findDOMNode(this.node); // eslint-disable-line react/no-find-dom-node
+				this.setState(getDimensions(node));
+			}
+		}, {
+			key: "getWrappedInstance",
+			value: function getWrappedInstance() {
+				return this.node;
+			}
+		}, {
+			key: "render",
+			value: function render() {
+				var ref = { ref: this.saveNode };
+
+				if (this.state.width) {
+					return _react2.default.createElement(WrappedComponent, _extends({
+						height: this.state.height,
+						width: this.state.width,
+						ratio: this.state.ratio
+					}, this.props, ref));
+				} else {
+					return _react2.default.createElement(
+						"div",
+						ref,
+						_react2.default.createElement("canvas", { ref: this.setTestCanvas })
+					);
+				}
+			}
+		}]);
+
+		return ResponsiveComponent;
+	}(_react.Component);
+
+	ResponsiveComponent.displayName = "fitDimensions(" + getDisplayName(WrappedComponent) + ")";
 
 	return ResponsiveComponent;
 }
-
+//# sourceMappingURL=fitDimensions.js.map

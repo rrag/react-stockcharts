@@ -1,4 +1,10 @@
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 /*
 https://github.com/ScottLogic/d3fc/blob/master/src/indicator/algorithm/calculator/stochasticOscillator.js
@@ -26,75 +32,90 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import { max, min, mean } from "d3-array";
+exports.default = function () {
 
-import { last, slidingWindow, zipper } from "../utils";
-import { FullStochasticOscillator as defaultOptions } from "./defaultOptionsForComputation";
+	var options = _defaultOptionsForComputation.FullStochasticOscillator;
 
-export default function() {
-
-	let options = defaultOptions;
-
-	let source = d => ({ open: d.open, high: d.high, low: d.low, close: d.close });
+	var source = function source(d) {
+		return { open: d.open, high: d.high, low: d.low, close: d.close };
+	};
 
 	function calculator(data) {
-		const { windowSize, kWindowSize, dWindowSize } = options;
+		var _options = options,
+		    windowSize = _options.windowSize,
+		    kWindowSize = _options.kWindowSize,
+		    dWindowSize = _options.dWindowSize;
 
-		const high = d => source(d).high,
-			low = d => source(d).low,
-			close = d => source(d).close;
 
-		const kWindow = slidingWindow()
-			.windowSize(windowSize)
-			.accumulator(values => {
+		var high = function high(d) {
+			return source(d).high;
+		},
+		    low = function low(d) {
+			return source(d).low;
+		},
+		    close = function close(d) {
+			return source(d).close;
+		};
 
-				const highestHigh = max(values, high);
-				const lowestLow = min(values, low);
+		var kWindow = (0, _utils.slidingWindow)().windowSize(windowSize).accumulator(function (values) {
 
-				const currentClose = close(last(values));
-				const k = (currentClose - lowestLow) / (highestHigh - lowestLow) * 100;
+			var highestHigh = (0, _d3Array.max)(values, high);
+			var lowestLow = (0, _d3Array.min)(values, low);
 
-				return k;
-			});
+			var currentClose = close((0, _utils.last)(values));
+			var k = (currentClose - lowestLow) / (highestHigh - lowestLow) * 100;
 
-		const kSmoothed = slidingWindow()
-			.skipInitial(windowSize - 1)
-			.windowSize(kWindowSize)
-			.accumulator(values => mean(values));
+			return k;
+		});
 
-		const dWindow = slidingWindow()
-			.skipInitial(windowSize - 1 + kWindowSize - 1)
-			.windowSize(dWindowSize)
-			.accumulator(values => mean(values));
+		var kSmoothed = (0, _utils.slidingWindow)().skipInitial(windowSize - 1).windowSize(kWindowSize).accumulator(function (values) {
+			return (0, _d3Array.mean)(values);
+		});
 
-		const stoAlgorithm = zipper()
-			.combine((K, D) => ({ K, D }));
+		var dWindow = (0, _utils.slidingWindow)().skipInitial(windowSize - 1 + kWindowSize - 1).windowSize(dWindowSize).accumulator(function (values) {
+			return (0, _d3Array.mean)(values);
+		});
 
-		const kData = kSmoothed(kWindow(data));
-		const dData = dWindow(kData);
+		var stoAlgorithm = (0, _utils.zipper)().combine(function (K, D) {
+			return { K: K, D: D };
+		});
 
-		const indicatorData = stoAlgorithm(kData, dData);
+		var kData = kSmoothed(kWindow(data));
+		var dData = dWindow(kData);
+
+		var indicatorData = stoAlgorithm(kData, dData);
 
 		return indicatorData;
 	}
-	calculator.undefinedLength = function() {
-		const { windowSize, kWindowSize, dWindowSize } = options;
+	calculator.undefinedLength = function () {
+		var _options2 = options,
+		    windowSize = _options2.windowSize,
+		    kWindowSize = _options2.kWindowSize,
+		    dWindowSize = _options2.dWindowSize;
+
 		return windowSize + kWindowSize + dWindowSize;
 	};
-	calculator.source = function(x) {
+	calculator.source = function (x) {
 		if (!arguments.length) {
 			return source;
 		}
 		source = x;
 		return calculator;
 	};
-	calculator.options = function(x) {
+	calculator.options = function (x) {
 		if (!arguments.length) {
 			return options;
 		}
-		options = { ...defaultOptions, ...x };
+		options = _extends({}, _defaultOptionsForComputation.FullStochasticOscillator, x);
 		return calculator;
 	};
 
 	return calculator;
-}
+};
+
+var _d3Array = require("d3-array");
+
+var _utils = require("../utils");
+
+var _defaultOptionsForComputation = require("./defaultOptionsForComputation");
+//# sourceMappingURL=sto.js.map

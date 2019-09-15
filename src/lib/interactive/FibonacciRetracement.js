@@ -1,270 +1,313 @@
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-import { isDefined, isNotDefined, noop } from "../utils";
-import {
-	terminate,
-	saveNodeType,
-	isHoverForInteractiveType,
-} from "./utils";
-import EachFibRetracement from "./wrapper/EachFibRetracement";
-import MouseLocationIndicator from "./components/MouseLocationIndicator";
-import HoverTextNearMouse from "./components/HoverTextNearMouse";
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-class FibonacciRetracement extends Component {
-	constructor(props) {
-		super(props);
+var _react = require("react");
 
-		this.handleStart = this.handleStart.bind(this);
-		this.handleEnd = this.handleEnd.bind(this);
-		this.handleDrawRetracement = this.handleDrawRetracement.bind(this);
+var _react2 = _interopRequireDefault(_react);
 
-		this.handleEdge1Drag = this.handleEdge1Drag.bind(this);
-		this.handleEdge2Drag = this.handleEdge2Drag.bind(this);
+var _propTypes = require("prop-types");
 
-		this.handleDrag = this.handleDrag.bind(this);
-		this.handleDragComplete = this.handleDragComplete.bind(this);
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
-		this.terminate = terminate.bind(this);
-		this.getSelectionState = isHoverForInteractiveType("retracements")
-			.bind(this);
+var _utils = require("../utils");
 
-		this.saveNodeType = saveNodeType.bind(this);
-		this.nodes = [];
+var _utils2 = require("./utils");
 
-		this.state = {
-		};
+var _EachFibRetracement = require("./wrapper/EachFibRetracement");
+
+var _EachFibRetracement2 = _interopRequireDefault(_EachFibRetracement);
+
+var _MouseLocationIndicator = require("./components/MouseLocationIndicator");
+
+var _MouseLocationIndicator2 = _interopRequireDefault(_MouseLocationIndicator);
+
+var _HoverTextNearMouse = require("./components/HoverTextNearMouse");
+
+var _HoverTextNearMouse2 = _interopRequireDefault(_HoverTextNearMouse);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var FibonacciRetracement = function (_Component) {
+	_inherits(FibonacciRetracement, _Component);
+
+	function FibonacciRetracement(props) {
+		_classCallCheck(this, FibonacciRetracement);
+
+		var _this = _possibleConstructorReturn(this, (FibonacciRetracement.__proto__ || Object.getPrototypeOf(FibonacciRetracement)).call(this, props));
+
+		_this.handleStart = _this.handleStart.bind(_this);
+		_this.handleEnd = _this.handleEnd.bind(_this);
+		_this.handleDrawRetracement = _this.handleDrawRetracement.bind(_this);
+
+		_this.handleEdge1Drag = _this.handleEdge1Drag.bind(_this);
+		_this.handleEdge2Drag = _this.handleEdge2Drag.bind(_this);
+
+		_this.handleDrag = _this.handleDrag.bind(_this);
+		_this.handleDragComplete = _this.handleDragComplete.bind(_this);
+
+		_this.terminate = _utils2.terminate.bind(_this);
+		_this.getSelectionState = (0, _utils2.isHoverForInteractiveType)("retracements").bind(_this);
+
+		_this.saveNodeType = _utils2.saveNodeType.bind(_this);
+		_this.nodes = [];
+
+		_this.state = {};
+		return _this;
 	}
-	handleDrawRetracement(xyValue) {
-		const { current } = this.state;
-		if (isDefined(current) && isDefined(current.x1)) {
-			this.mouseMoved = true;
+
+	_createClass(FibonacciRetracement, [{
+		key: "handleDrawRetracement",
+		value: function handleDrawRetracement(xyValue) {
+			var current = this.state.current;
+
+			if ((0, _utils.isDefined)(current) && (0, _utils.isDefined)(current.x1)) {
+				this.mouseMoved = true;
+				this.setState({
+					current: _extends({}, current, {
+						x2: xyValue[0],
+						y2: xyValue[1]
+					})
+				});
+			}
+		}
+	}, {
+		key: "handleDrag",
+		value: function handleDrag(index, xy) {
 			this.setState({
-				current: {
-					...current,
-					x2: xyValue[0],
-					y2: xyValue[1]
+				override: _extends({
+					index: index
+				}, xy)
+			});
+		}
+	}, {
+		key: "handleEdge1Drag",
+		value: function handleEdge1Drag(echo, newXYValue, origXYValue) {
+			var retracements = this.props.retracements;
+			var index = echo.index;
+
+
+			var dx = origXYValue.x1Value - newXYValue.x1Value;
+
+			this.setState({
+				override: {
+					index: index,
+					x1: retracements[index].x1 - dx,
+					y1: retracements[index].y1,
+					x2: retracements[index].x2,
+					y2: retracements[index].y2
 				}
 			});
 		}
-	}
-	handleDrag(index, xy) {
-		this.setState({
-			override: {
-				index,
-				...xy
-			}
-		});
-	}
-	handleEdge1Drag(echo, newXYValue, origXYValue) {
-		const { retracements } = this.props;
-		const { index } = echo;
+	}, {
+		key: "handleEdge2Drag",
+		value: function handleEdge2Drag(echo, newXYValue, origXYValue) {
+			var retracements = this.props.retracements;
+			var index = echo.index;
 
-		const dx = origXYValue.x1Value - newXYValue.x1Value;
 
-		this.setState({
-			override: {
-				index,
-				x1: retracements[index].x1 - dx,
-				y1: retracements[index].y1,
-				x2: retracements[index].x2,
-				y2: retracements[index].y2
-			}
-		});
-	}
-	handleEdge2Drag(echo, newXYValue, origXYValue) {
-		const { retracements } = this.props;
-		const { index } = echo;
+			var dx = origXYValue.x2Value - newXYValue.x2Value;
 
-		const dx = origXYValue.x2Value - newXYValue.x2Value;
-
-		this.setState({
-			override: {
-				index,
-				x1: retracements[index].x1,
-				y1: retracements[index].y1,
-				x2: retracements[index].x2 - dx,
-				y2: retracements[index].y2
-			}
-		});
-	}
-	handleDragComplete(moreProps) {
-		const { retracements } = this.props;
-		const { override } = this.state;
-		if (isDefined(override)) {
-			const { index, ...rest } = override;
-
-			const newRetracements = retracements.map(
-				(each, idx) =>
-					(idx === index
-						? { ...each, ...rest, selected: true }
-						: each)
-			);
-			this.setState(
-				{
-					override: null,
-				},
-				() => {
-					this.props.onComplete(newRetracements, moreProps);
+			this.setState({
+				override: {
+					index: index,
+					x1: retracements[index].x1,
+					y1: retracements[index].y1,
+					x2: retracements[index].x2 - dx,
+					y2: retracements[index].y2
 				}
-			);
+			});
 		}
-	}
-	handleStart(xyValue, moreProps) {
-		const { current } = this.state;
-		if (isNotDefined(current) || isNotDefined(current.x1)) {
-			this.mouseMoved = false;
-			this.setState(
-				{
+	}, {
+		key: "handleDragComplete",
+		value: function handleDragComplete(moreProps) {
+			var _this2 = this;
+
+			var retracements = this.props.retracements;
+			var override = this.state.override;
+
+			if ((0, _utils.isDefined)(override)) {
+				var index = override.index,
+				    rest = _objectWithoutProperties(override, ["index"]);
+
+				var newRetracements = retracements.map(function (each, idx) {
+					return idx === index ? _extends({}, each, rest, { selected: true }) : each;
+				});
+				this.setState({
+					override: null
+				}, function () {
+					_this2.props.onComplete(newRetracements, moreProps);
+				});
+			}
+		}
+	}, {
+		key: "handleStart",
+		value: function handleStart(xyValue, moreProps) {
+			var _this3 = this;
+
+			var current = this.state.current;
+
+			if ((0, _utils.isNotDefined)(current) || (0, _utils.isNotDefined)(current.x1)) {
+				this.mouseMoved = false;
+				this.setState({
 					current: {
 						x1: xyValue[0],
 						y1: xyValue[1],
 						x2: null,
 						y2: null
 					}
-				},
-				() => {
-					this.props.onStart(moreProps);
-				}
+				}, function () {
+					_this3.props.onStart(moreProps);
+				});
+			}
+		}
+	}, {
+		key: "handleEnd",
+		value: function handleEnd(xyValue, moreProps, e) {
+			var _this4 = this;
+
+			var _props = this.props,
+			    retracements = _props.retracements,
+			    appearance = _props.appearance,
+			    type = _props.type;
+			var current = this.state.current;
+
+
+			if (this.mouseMoved && (0, _utils.isDefined)(current) && (0, _utils.isDefined)(current.x1)) {
+				var newRetracements = retracements.concat(_extends({}, current, {
+					x2: xyValue[0],
+					y2: xyValue[1],
+					selected: true,
+					appearance: appearance,
+					type: type
+				}));
+
+				this.setState({
+					current: null
+				}, function () {
+					_this4.props.onComplete(newRetracements, moreProps, e);
+				});
+			}
+		}
+	}, {
+		key: "render",
+		value: function render() {
+			var _this5 = this;
+
+			var _state = this.state,
+			    current = _state.current,
+			    override = _state.override;
+			var retracements = this.props.retracements;
+			var _props2 = this.props,
+			    appearance = _props2.appearance,
+			    type = _props2.type;
+			var _props3 = this.props,
+			    currentPositionStroke = _props3.currentPositionStroke,
+			    currentPositionOpacity = _props3.currentPositionOpacity,
+			    currentPositionStrokeWidth = _props3.currentPositionStrokeWidth,
+			    currentPositionRadius = _props3.currentPositionRadius;
+			var _props4 = this.props,
+			    enabled = _props4.enabled,
+			    hoverText = _props4.hoverText;
+
+			var overrideIndex = (0, _utils.isDefined)(override) ? override.index : null;
+			var hoverTextWidthDefault = _extends({}, FibonacciRetracement.defaultProps.hoverText, hoverText);
+
+			var currentRetracement = (0, _utils.isDefined)(current) && (0, _utils.isDefined)(current.x2) ? _react2.default.createElement(_EachFibRetracement2.default, _extends({
+				interactive: false,
+				type: type,
+				appearance: appearance,
+				hoverText: hoverTextWidthDefault
+			}, current)) : null;
+			return _react2.default.createElement(
+				"g",
+				null,
+				retracements.map(function (each, idx) {
+					var eachAppearance = (0, _utils.isDefined)(each.appearance) ? _extends({}, appearance, each.appearance) : appearance;
+
+					var eachHoverText = (0, _utils.isDefined)(each.hoverText) ? _extends({}, hoverTextWidthDefault, each.hoverText) : hoverTextWidthDefault;
+
+					return _react2.default.createElement(_EachFibRetracement2.default, _extends({
+						key: idx,
+						ref: _this5.saveNodeType(idx),
+						index: idx,
+						type: each.type,
+						selected: each.selected
+					}, idx === overrideIndex ? override : each, {
+						hoverText: eachHoverText,
+						appearance: eachAppearance,
+						onDrag: _this5.handleDrag,
+						onDragComplete: _this5.handleDragComplete
+					}));
+				}),
+				currentRetracement,
+				_react2.default.createElement(_MouseLocationIndicator2.default, {
+					enabled: enabled,
+					snap: false,
+					r: currentPositionRadius,
+					stroke: currentPositionStroke,
+					opacity: currentPositionOpacity,
+					strokeWidth: currentPositionStrokeWidth,
+					onMouseDown: this.handleStart,
+					onClick: this.handleEnd,
+					onMouseMove: this.handleDrawRetracement
+				})
 			);
 		}
-	}
-	handleEnd(xyValue, moreProps, e) {
-		const { retracements, appearance, type } = this.props;
-		const { current } = this.state;
+	}]);
 
-		if (this.mouseMoved && isDefined(current) && isDefined(current.x1)) {
-			const newRetracements = retracements.concat({
-				...current,
-				x2: xyValue[0],
-				y2: xyValue[1],
-				selected: true,
-				appearance,
-				type,
-			});
-
-			this.setState(
-				{
-					current: null,
-				},
-				() => {
-					this.props.onComplete(newRetracements, moreProps, e);
-				}
-			);
-		}
-	}
-	render() {
-		const { current, override } = this.state;
-		const { retracements } = this.props;
-
-		const {
-			appearance,
-			type
-		} = this.props;
-		const {
-			currentPositionStroke,
-			currentPositionOpacity,
-			currentPositionStrokeWidth,
-			currentPositionRadius
-		} = this.props;
-
-		const { enabled, hoverText } = this.props;
-		const overrideIndex = isDefined(override) ? override.index : null;
-		const hoverTextWidthDefault = {
-			...FibonacciRetracement.defaultProps.hoverText,
-			...hoverText
-		};
-
-		const currentRetracement = isDefined(current) && isDefined(current.x2)
-			? <EachFibRetracement
-				interactive={false}
-				type={type}
-				appearance={appearance}
-				hoverText={hoverTextWidthDefault}
-				{...current}
-			/>
-			: null;
-		return (
-			<g>
-				{retracements.map((each, idx) => {
-					const eachAppearance = isDefined(each.appearance)
-						? { ...appearance, ...each.appearance }
-						: appearance;
-
-					const eachHoverText = isDefined(each.hoverText)
-						? { ...hoverTextWidthDefault, ...each.hoverText }
-						: hoverTextWidthDefault;
-
-					return (
-						<EachFibRetracement
-							key={idx}
-							ref={this.saveNodeType(idx)}
-							index={idx}
-							type={each.type}
-							selected={each.selected}
-							{...(idx === overrideIndex ? override : each)}
-							hoverText={eachHoverText}
-							appearance={eachAppearance}
-							onDrag={this.handleDrag}
-							onDragComplete={this.handleDragComplete}
-						/>
-					);
-				})}
-				{currentRetracement}
-				<MouseLocationIndicator
-					enabled={enabled}
-					snap={false}
-					r={currentPositionRadius}
-					stroke={currentPositionStroke}
-					opacity={currentPositionOpacity}
-					strokeWidth={currentPositionStrokeWidth}
-					onMouseDown={this.handleStart}
-					onClick={this.handleEnd}
-					onMouseMove={this.handleDrawRetracement}
-				/>
-			</g>
-		);
-	}
-}
+	return FibonacciRetracement;
+}(_react.Component);
 
 // onClick={this.handleClick}
 
 FibonacciRetracement.propTypes = {
-	enabled: PropTypes.bool.isRequired,
-	width: PropTypes.number,
+	enabled: _propTypes2.default.bool.isRequired,
+	width: _propTypes2.default.number,
 
-	onStart: PropTypes.func,
-	onComplete: PropTypes.func,
-	onSelect: PropTypes.func,
+	onStart: _propTypes2.default.func,
+	onComplete: _propTypes2.default.func,
+	onSelect: _propTypes2.default.func,
 
-	type: PropTypes.oneOf([
-		"EXTEND", // extends from -Infinity to +Infinity
-		"RAY", // extends to +/-Infinity in one direction
-		"BOUND" // extends between the set bounds
+	type: _propTypes2.default.oneOf(["EXTEND", // extends from -Infinity to +Infinity
+	"RAY", // extends to +/-Infinity in one direction
+	"BOUND" // extends between the set bounds
 	]).isRequired,
-	hoverText: PropTypes.object.isRequired,
+	hoverText: _propTypes2.default.object.isRequired,
 
-	currentPositionStroke: PropTypes.string,
-	currentPositionStrokeWidth: PropTypes.number,
-	currentPositionOpacity: PropTypes.number,
-	currentPositionRadius: PropTypes.number,
+	currentPositionStroke: _propTypes2.default.string,
+	currentPositionStrokeWidth: _propTypes2.default.number,
+	currentPositionOpacity: _propTypes2.default.number,
+	currentPositionRadius: _propTypes2.default.number,
 
-	retracements: PropTypes.array.isRequired,
+	retracements: _propTypes2.default.array.isRequired,
 
-	appearance: PropTypes.shape({
-		stroke: PropTypes.string.isRequired,
-		strokeWidth: PropTypes.number.isRequired,
-		strokeOpacity: PropTypes.number.isRequired,
-		fontFamily: PropTypes.string.isRequired,
-		fontSize: PropTypes.number.isRequired,
-		fontFill: PropTypes.string.isRequired,
-		edgeStroke: PropTypes.string.isRequired,
-		edgeFill: PropTypes.string.isRequired,
-		nsEdgeFill: PropTypes.string.isRequired,
-		edgeStrokeWidth: PropTypes.number.isRequired,
-		r: PropTypes.number.isRequired,
+	appearance: _propTypes2.default.shape({
+		stroke: _propTypes2.default.string.isRequired,
+		strokeWidth: _propTypes2.default.number.isRequired,
+		strokeOpacity: _propTypes2.default.number.isRequired,
+		fontFamily: _propTypes2.default.string.isRequired,
+		fontSize: _propTypes2.default.number.isRequired,
+		fontFill: _propTypes2.default.string.isRequired,
+		edgeStroke: _propTypes2.default.string.isRequired,
+		edgeFill: _propTypes2.default.string.isRequired,
+		nsEdgeFill: _propTypes2.default.string.isRequired,
+		edgeStrokeWidth: _propTypes2.default.number.isRequired,
+		r: _propTypes2.default.number.isRequired
 	}).isRequired
 };
 
@@ -273,18 +316,17 @@ FibonacciRetracement.defaultProps = {
 	type: "RAY",
 	retracements: [],
 
-	onStart: noop,
-	onComplete: noop,
-	onSelect: noop,
+	onStart: _utils.noop,
+	onComplete: _utils.noop,
+	onSelect: _utils.noop,
 
-	hoverText: {
-		...HoverTextNearMouse.defaultProps,
+	hoverText: _extends({}, _HoverTextNearMouse2.default.defaultProps, {
 		enable: true,
 		bgHeight: "auto",
 		bgWidth: "auto",
 		text: "Click to select object",
-		selectedText: "",
-	},
+		selectedText: ""
+	}),
 	currentPositionStroke: "#000000",
 	currentPositionOpacity: 1,
 	currentPositionStrokeWidth: 3,
@@ -301,8 +343,9 @@ FibonacciRetracement.defaultProps = {
 		edgeFill: "#FFFFFF",
 		nsEdgeFill: "#000000",
 		edgeStrokeWidth: 1,
-		r: 5,
+		r: 5
 	}
 };
 
-export default FibonacciRetracement;
+exports.default = FibonacciRetracement;
+//# sourceMappingURL=FibonacciRetracement.js.map

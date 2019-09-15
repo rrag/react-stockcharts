@@ -1,29 +1,27 @@
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
-import { merge, slidingWindow, identity } from "../utils";
+exports.default = function () {
 
-export default function() {
-
-	let windowSize = 1,
-		accumulator = identity,
-		mergeAs = identity;
+	var windowSize = 1,
+	    accumulator = _utils.identity,
+	    mergeAs = _utils.identity;
 
 	function algorithm(data) {
 
-		const defaultAlgorithm = slidingWindow()
-			.windowSize(windowSize)
-			.accumulator(accumulator);
+		var defaultAlgorithm = (0, _utils.slidingWindow)().windowSize(windowSize).accumulator(accumulator);
 
-		const calculator = merge()
-			.algorithm(defaultAlgorithm)
-			.merge(mergeAs);
+		var calculator = (0, _utils.merge)().algorithm(defaultAlgorithm).merge(mergeAs);
 
-		const newData = calculator(data);
+		var newData = calculator(data);
 
 		return newData;
 	}
 
-	algorithm.accumulator = function(x) {
+	algorithm.accumulator = function (x) {
 		if (!arguments.length) {
 			return accumulator;
 		}
@@ -31,14 +29,14 @@ export default function() {
 		return algorithm;
 	};
 
-	algorithm.windowSize = function(x) {
+	algorithm.windowSize = function (x) {
 		if (!arguments.length) {
 			return windowSize;
 		}
 		windowSize = x;
 		return algorithm;
 	};
-	algorithm.merge = function(x) {
+	algorithm.merge = function (x) {
 		if (!arguments.length) {
 			return mergeAs;
 		}
@@ -47,4 +45,7 @@ export default function() {
 	};
 
 	return algorithm;
-}
+};
+
+var _utils = require("../utils");
+//# sourceMappingURL=index.js.map

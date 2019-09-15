@@ -1,35 +1,47 @@
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
-import { rebind, merge } from "../utils";
+exports.default = function () {
 
-import { ema } from "../calculator";
-import baseIndicator from "./baseIndicator";
+	var base = (0, _baseIndicator2.default)().type(ALGORITHM_TYPE).accessor(function (d) {
+		return d.ema;
+	});
 
-const ALGORITHM_TYPE = "EMA";
+	var underlyingAlgorithm = (0, _calculator.ema)();
 
-export default function() {
+	var mergedAlgorithm = (0, _utils.merge)().algorithm(underlyingAlgorithm).merge(function (datum, indicator) {
+		datum.ema = indicator;
+	});
 
-	const base = baseIndicator()
-		.type(ALGORITHM_TYPE)
-		.accessor(d => d.ema);
+	var indicator = function indicator(data) {
+		var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { merge: true };
 
-	const underlyingAlgorithm = ema();
-
-	const mergedAlgorithm = merge()
-		.algorithm(underlyingAlgorithm)
-		.merge((datum, indicator) => { datum.ema = indicator; });
-
-	const indicator = function(data, options = { merge: true }) {
 		if (options.merge) {
-			if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
+			if (!base.accessor()) throw new Error("Set an accessor to " + ALGORITHM_TYPE + " before calculating");
 			return mergedAlgorithm(data);
 		}
 		return underlyingAlgorithm(data);
 	};
 
-	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type");
-	rebind(indicator, underlyingAlgorithm, "options", "undefinedLength");
-	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
+	(0, _utils.rebind)(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type");
+	(0, _utils.rebind)(indicator, underlyingAlgorithm, "options", "undefinedLength");
+	(0, _utils.rebind)(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;
-}
+};
+
+var _utils = require("../utils");
+
+var _calculator = require("../calculator");
+
+var _baseIndicator = require("./baseIndicator");
+
+var _baseIndicator2 = _interopRequireDefault(_baseIndicator);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ALGORITHM_TYPE = "EMA";
+//# sourceMappingURL=ema.js.map

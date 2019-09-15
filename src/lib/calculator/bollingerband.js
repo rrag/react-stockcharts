@@ -1,4 +1,10 @@
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 /*
 https://github.com/ScottLogic/d3fc/blob/master/src/indicator/algorithm/calculator/bollingerBands.js
@@ -26,55 +32,67 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import { mean, deviation } from "d3-array";
-
-import ema from "./ema";
-import { last, slidingWindow, zipper, path } from "../utils";
-
-import { BollingerBand as defaultOptions } from "./defaultOptionsForComputation";
-
-export default function() {
-	let options = defaultOptions;
+exports.default = function () {
+	var options = _defaultOptionsForComputation.BollingerBand;
 
 	function calculator(data) {
-		const { windowSize, multiplier, movingAverageType, sourcePath } = options;
+		var _options = options,
+		    windowSize = _options.windowSize,
+		    multiplier = _options.multiplier,
+		    movingAverageType = _options.movingAverageType,
+		    sourcePath = _options.sourcePath;
 
-		const source = path(sourcePath);
-		const meanAlgorithm = movingAverageType === "ema"
-			? ema().options({ windowSize, sourcePath })
-			: slidingWindow().windowSize(windowSize)
-				.accumulator(values => mean(values)).sourcePath(sourcePath);
 
-		const bollingerBandAlgorithm = slidingWindow()
-			.windowSize(windowSize)
-			.accumulator((values) => {
-				const avg = last(values).mean;
-				const stdDev = deviation(values, (each) => source(each.datum));
-				return {
-					top: avg + multiplier * stdDev,
-					middle: avg,
-					bottom: avg - multiplier * stdDev
-				};
+		var source = (0, _utils.path)(sourcePath);
+		var meanAlgorithm = movingAverageType === "ema" ? (0, _ema2.default)().options({ windowSize: windowSize, sourcePath: sourcePath }) : (0, _utils.slidingWindow)().windowSize(windowSize).accumulator(function (values) {
+			return (0, _d3Array.mean)(values);
+		}).sourcePath(sourcePath);
+
+		var bollingerBandAlgorithm = (0, _utils.slidingWindow)().windowSize(windowSize).accumulator(function (values) {
+			var avg = (0, _utils.last)(values).mean;
+			var stdDev = (0, _d3Array.deviation)(values, function (each) {
+				return source(each.datum);
 			});
+			return {
+				top: avg + multiplier * stdDev,
+				middle: avg,
+				bottom: avg - multiplier * stdDev
+			};
+		});
 
-		const zip = zipper()
-			.combine((datum, mean) => ({ datum, mean }));
+		var zip = (0, _utils.zipper)().combine(function (datum, mean) {
+			return { datum: datum, mean: mean };
+		});
 
-		const tuples = zip(data, meanAlgorithm(data));
+		var tuples = zip(data, meanAlgorithm(data));
 		return bollingerBandAlgorithm(tuples);
 	}
-	calculator.undefinedLength = function() {
-		const { windowSize } = options;
+	calculator.undefinedLength = function () {
+		var _options2 = options,
+		    windowSize = _options2.windowSize;
+
 		return windowSize - 1;
 	};
-	calculator.options = function(x) {
+	calculator.options = function (x) {
 		if (!arguments.length) {
 			return options;
 		}
-		options = { ...defaultOptions, ...x };
+		options = _extends({}, _defaultOptionsForComputation.BollingerBand, x);
 		return calculator;
 	};
 
-
 	return calculator;
-}
+};
+
+var _d3Array = require("d3-array");
+
+var _ema = require("./ema");
+
+var _ema2 = _interopRequireDefault(_ema);
+
+var _utils = require("../utils");
+
+var _defaultOptionsForComputation = require("./defaultOptionsForComputation");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+//# sourceMappingURL=bollingerband.js.map

@@ -1,74 +1,101 @@
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { format } from "d3-format";
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-import { drawOnCanvas, renderSVG } from "./EdgeCoordinateV3";
-import GenericChartComponent from "../GenericChartComponent";
-import { getAxisCanvas } from "../GenericComponent";
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-import { first, last, isDefined, functor, noop, strokeDashTypes } from "../utils";
+var _react = require("react");
 
-class EdgeIndicator extends Component {
-	constructor(props) {
-		super(props);
-		this.renderSVG = this.renderSVG.bind(this);
-		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require("prop-types");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _d3Format = require("d3-format");
+
+var _EdgeCoordinateV = require("./EdgeCoordinateV3");
+
+var _GenericChartComponent = require("../GenericChartComponent");
+
+var _GenericChartComponent2 = _interopRequireDefault(_GenericChartComponent);
+
+var _GenericComponent = require("../GenericComponent");
+
+var _utils = require("../utils");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var EdgeIndicator = function (_Component) {
+	_inherits(EdgeIndicator, _Component);
+
+	function EdgeIndicator(props) {
+		_classCallCheck(this, EdgeIndicator);
+
+		var _this = _possibleConstructorReturn(this, (EdgeIndicator.__proto__ || Object.getPrototypeOf(EdgeIndicator)).call(this, props));
+
+		_this.renderSVG = _this.renderSVG.bind(_this);
+		_this.drawOnCanvas = _this.drawOnCanvas.bind(_this);
+		return _this;
 	}
-	drawOnCanvas(ctx, moreProps) {
-		const edge = helper(this.props, moreProps);
-		const props = {
-			...this.props,
-			...edge,
-		};
-		drawOnCanvas(ctx, props);
-	}
-	renderSVG(moreProps) {
-		const edge = helper(this.props, moreProps);
-		const props = {
-			...this.props,
-			...edge,
-		};
-		return renderSVG(props);
-	}
-	render() {
-		return <GenericChartComponent
-			edgeClip
-			clip={false}
-			svgDraw={this.renderSVG}
-			canvasDraw={this.drawOnCanvas}
-			canvasToDraw={getAxisCanvas}
-			drawOn={["pan"]}
-		/>;
-	}
-}
+
+	_createClass(EdgeIndicator, [{
+		key: "drawOnCanvas",
+		value: function drawOnCanvas(ctx, moreProps) {
+			var edge = helper(this.props, moreProps);
+			var props = _extends({}, this.props, edge);
+			(0, _EdgeCoordinateV.drawOnCanvas)(ctx, props);
+		}
+	}, {
+		key: "renderSVG",
+		value: function renderSVG(moreProps) {
+			var edge = helper(this.props, moreProps);
+			var props = _extends({}, this.props, edge);
+			return (0, _EdgeCoordinateV.renderSVG)(props);
+		}
+	}, {
+		key: "render",
+		value: function render() {
+			return _react2.default.createElement(_GenericChartComponent2.default, {
+				edgeClip: true,
+				clip: false,
+				svgDraw: this.renderSVG,
+				canvasDraw: this.drawOnCanvas,
+				canvasToDraw: _GenericComponent.getAxisCanvas,
+				drawOn: ["pan"]
+			});
+		}
+	}]);
+
+	return EdgeIndicator;
+}(_react.Component);
 
 EdgeIndicator.propTypes = {
-	yAccessor: PropTypes.func,
+	yAccessor: _propTypes2.default.func,
 
-	type: PropTypes.oneOf(["horizontal"]),
-	className: PropTypes.string,
-	fill: PropTypes.oneOfType([
-		PropTypes.string,
-		PropTypes.func,
-	]),
-	lineStroke: PropTypes.oneOfType([
-		PropTypes.string,
-		PropTypes.func,
-	]),
-	textFill: PropTypes.oneOfType([
-		PropTypes.string,
-		PropTypes.func,
-	]),
-	itemType: PropTypes.oneOf(["first", "last"]).isRequired,
-	orient: PropTypes.oneOf(["left", "right"]),
-	edgeAt: PropTypes.oneOf(["left", "right"]),
-	displayFormat: PropTypes.func,
-	rectHeight: PropTypes.number,
-	rectWidth: PropTypes.number,
-	arrowWidth: PropTypes.number,
-	lineStrokeDasharray: PropTypes.oneOf(strokeDashTypes),
+	type: _propTypes2.default.oneOf(["horizontal"]),
+	className: _propTypes2.default.string,
+	fill: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.func]),
+	lineStroke: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.func]),
+	textFill: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.func]),
+	itemType: _propTypes2.default.oneOf(["first", "last"]).isRequired,
+	orient: _propTypes2.default.oneOf(["left", "right"]),
+	edgeAt: _propTypes2.default.oneOf(["left", "right"]),
+	displayFormat: _propTypes2.default.func,
+	rectHeight: _propTypes2.default.number,
+	rectWidth: _propTypes2.default.number,
+	arrowWidth: _propTypes2.default.number,
+	lineStrokeDasharray: _propTypes2.default.oneOf(_utils.strokeDashTypes)
 };
 
 EdgeIndicator.defaultProps = {
@@ -78,7 +105,7 @@ EdgeIndicator.defaultProps = {
 	orient: "left",
 	edgeAt: "left",
 	textFill: "#FFFFFF",
-	displayFormat: format(".2f"),
+	displayFormat: (0, _d3Format.format)(".2f"),
 	yAxisPad: 0,
 	rectHeight: 20,
 	rectWidth: 50,
@@ -90,68 +117,81 @@ EdgeIndicator.defaultProps = {
 	fill: "#8a8a8a",
 	opacity: 1,
 
-	stroke: noop,
+	stroke: _utils.noop,
 	strokeOpacity: 1,
-	strokeWidth: 3,
-	lineStroke: "#000000",
-	lineOpacity: 0.3,
-	lineStrokeDasharray: "ShortDash",
+	strokeWidth: 6,
+	lineStroke: "#FF0000",
+	lineOpacity: 0.9,
+	lineStrokeDasharray: "ShortDash"
 };
 
 function helper(props, moreProps) {
-	const { itemType, yAccessor } = props;
-	const { plotData } = moreProps;
+	var itemType = props.itemType,
+	    yAccessor = props.yAccessor;
+	var plotData = moreProps.plotData;
 
-	const item = itemType === "first"
-		? first(plotData, yAccessor)
-		: last(plotData, yAccessor);
+
+	var item = itemType === "first" ? (0, _utils.first)(plotData, yAccessor) : (0, _utils.last)(plotData, yAccessor);
 
 	// var currentItem = ChartDataUtil.getCurrentItemForChartNew(currentItems, forChart);
-	const edge = isDefined(item)
-		? getEdge(props, moreProps, item)
-		: null;
+	var edge = (0, _utils.isDefined)(item) ? getEdge(props, moreProps, item) : null;
 
 	return edge;
 }
 
 function getEdge(props, moreProps, item) {
-	const { type: edgeType, displayFormat, edgeAt, yAxisPad, orient, lineStroke } = props;
+	var edgeType = props.type,
+	    displayFormat = props.displayFormat,
+	    edgeAt = props.edgeAt,
+	    yAxisPad = props.yAxisPad,
+	    orient = props.orient,
+	    lineStroke = props.lineStroke;
+	var yAccessor = props.yAccessor,
+	    fill = props.fill,
+	    textFill = props.textFill,
+	    rectHeight = props.rectHeight,
+		rectWidth = props.rectWidth,
+	    arrowWidth = props.arrowWidth;
+	var fontFamily = props.fontFamily,
+	    fontSize = props.fontSize;
+	var stroke = props.stroke;
+	var xScale = moreProps.xScale,
+	    yScale = moreProps.chartConfig.yScale,
+	    xAccessor = moreProps.xAccessor,
+	    width = moreProps.width;
 
-	const { yAccessor, fill, textFill, rectHeight, rectWidth, arrowWidth } = props;
-	const { fontFamily, fontSize } = props;
-	const { stroke } = props;
 
-	const { xScale, chartConfig: { yScale }, xAccessor, width } = moreProps;
+	var yValue = yAccessor(item),
+	    xValue = xAccessor(item);
 
-	const yValue = yAccessor(item),
-		xValue = xAccessor(item);
+	var x1 = Math.round(xScale(xValue)),
+	    y1 = Math.round(yScale(yValue));
 
-	const x1 = Math.round(xScale(xValue)),
-		y1 = Math.round(yScale(yValue));
+	var left = 0,
+	    right = width;
 
-	const [left, right] = [0, width];
-	const edgeX = edgeAt === "left"
-		? left - yAxisPad
-		: right + yAxisPad;
+	var edgeX = edgeAt === "left" ? left - yAxisPad : right /* + yAxisPad */;
 
 	return {
 		// ...props,
 		coordinate: displayFormat(yValue),
 		show: true,
 		type: edgeType,
-		orient,
+		orient: orient,
 		edgeAt: edgeX,
-		fill: functor(fill)(item),
-		lineStroke: functor(lineStroke)(item),
-		stroke: functor(stroke)(item),
-		fontFamily, fontSize,
-		textFill: functor(textFill)(item),
-		rectHeight, rectWidth, arrowWidth,
-		x1,
-		y1,
+		fill: (0, _utils.functor)(fill)(item),
+		lineStroke: (0, _utils.functor)(lineStroke)(item),
+		stroke: (0, _utils.functor)(stroke)(item),
+		fontFamily: fontFamily, 
+		fontSize: fontSize,
+		textFill: (0, _utils.functor)(textFill)(item),
+		rectHeight: rectHeight, rectWidth: rectWidth, arrowWidth: arrowWidth,
+		x1: 0,//x1,
+		y1: y1,
 		x2: right,
-		y2: y1,
+		y2: y1
 	};
 }
 
-export default EdgeIndicator;
+exports.default = EdgeIndicator;
+//# sourceMappingURL=EdgeIndicator.js.map

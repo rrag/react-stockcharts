@@ -1,35 +1,47 @@
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
-import { rebind, merge } from "../utils";
-import { elderRay } from "../calculator";
+exports.default = function () {
 
-import baseIndicator from "./baseIndicator";
+	var base = (0, _baseIndicator2.default)().type(ALGORITHM_TYPE).accessor(function (d) {
+		return d.elderRay;
+	});
 
-const ALGORITHM_TYPE = "ElderRay";
+	var underlyingAlgorithm = (0, _calculator.elderRay)();
 
-export default function() {
+	var mergedAlgorithm = (0, _utils.merge)().algorithm(underlyingAlgorithm).merge(function (datum, indicator) {
+		datum.elderRay = indicator;
+	});
 
-	const base = baseIndicator()
-		.type(ALGORITHM_TYPE)
-		.accessor(d => d.elderRay);
+	var indicator = function indicator(data) {
+		var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { merge: true };
 
-	const underlyingAlgorithm = elderRay();
-
-	const mergedAlgorithm = merge()
-		.algorithm(underlyingAlgorithm)
-		.merge((datum, indicator) => { datum.elderRay = indicator; });
-
-	const indicator = function(data, options = { merge: true }) {
 		if (options.merge) {
-			if (!base.accessor()) throw new Error(`Set an accessor to ${ALGORITHM_TYPE} before calculating`);
+			if (!base.accessor()) throw new Error("Set an accessor to " + ALGORITHM_TYPE + " before calculating");
 			return mergedAlgorithm(data);
 		}
 		return underlyingAlgorithm(data);
 	};
 
-	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type");
-	rebind(indicator, underlyingAlgorithm, "options");
-	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
+	(0, _utils.rebind)(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type");
+	(0, _utils.rebind)(indicator, underlyingAlgorithm, "options");
+	(0, _utils.rebind)(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;
-}
+};
+
+var _utils = require("../utils");
+
+var _calculator = require("../calculator");
+
+var _baseIndicator = require("./baseIndicator");
+
+var _baseIndicator2 = _interopRequireDefault(_baseIndicator);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ALGORITHM_TYPE = "ElderRay";
+//# sourceMappingURL=elderRay.js.map

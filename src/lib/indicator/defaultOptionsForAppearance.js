@@ -1,20 +1,23 @@
+"use strict";
 
-
-export const themes = {
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+var themes = exports.themes = {
 	light: {
 		BollingerBand: {
 			stroke: {
 				top: "#964B00",
 				middle: "#000000",
-				bottom: "#964B00",
+				bottom: "#964B00"
 			},
-			fill: "#4682B4",
+			fill: "#4682B4"
 		},
 		ElderImpulse: {
 			stroke: {
 				up: "#6BA583",
 				down: "#FF0000",
-				neutral: "#0000FF",
+				neutral: "#0000FF"
 			}
 		},
 		MACD: {
@@ -23,8 +26,8 @@ export const themes = {
 			},
 			stroke: {
 				macd: "#FF0000",
-				signal: "#00F300",
-			},
+				signal: "#00F300"
+			}
 		},
 		FullStochasticOscillator: {
 			stroke: {
@@ -32,24 +35,24 @@ export const themes = {
 				middle: "#b8ab00",
 				bottom: "#37a600",
 				dLine: "#17becf",
-				kLine: "#ff7f0e",
-			},
-		},
+				kLine: "#ff7f0e"
+			}
+		}
 	},
 	dark: {
 		BollingerBand: {
 			stroke: {
 				top: "#964B00",
 				middle: "#FF6600",
-				bottom: "#964B00",
+				bottom: "#964B00"
 			},
-			fill: "#4682B4",
+			fill: "#4682B4"
 		},
 		ElderImpulse: {
 			stroke: {
 				up: "#6BA583",
 				down: "#FF0000",
-				neutral: "#0000FF",
+				neutral: "#0000FF"
 			}
 		},
 		MACD: {
@@ -58,8 +61,8 @@ export const themes = {
 			},
 			stroke: {
 				macd: "#ea2bff",
-				signal: "#74d400",
-			},
+				signal: "#74d400"
+			}
 		},
 		FullStochasticOscillator: {
 			stroke: {
@@ -69,11 +72,12 @@ export const themes = {
 				dLine: "#ea2bff",
 				kLine: "#74d400"
 			}
-		},
+		}
 	}
 };
 
-export const BollingerBand = themes.light.BollingerBand;
-export const ElderImpulse = themes.light.ElderImpulse;
-export const MACD = themes.light.MACD;
-export const FullStochasticOscillator = themes.light.FullStochasticOscillator;
+var BollingerBand = exports.BollingerBand = themes.light.BollingerBand;
+var ElderImpulse = exports.ElderImpulse = themes.light.ElderImpulse;
+var MACD = exports.MACD = themes.light.MACD;
+var FullStochasticOscillator = exports.FullStochasticOscillator = themes.light.FullStochasticOscillator;
+//# sourceMappingURL=defaultOptionsForAppearance.js.map

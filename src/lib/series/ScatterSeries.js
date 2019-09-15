@@ -1,115 +1,174 @@
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { nest as d3Nest } from "d3-collection";
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-import GenericChartComponent from "../GenericChartComponent";
-import { getAxisCanvas } from "../GenericComponent";
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-import { hexToRGBA, functor } from "../utils";
+var _react = require("react");
 
-class ScatterSeries extends Component {
-	constructor(props) {
-		super(props);
-		this.renderSVG = this.renderSVG.bind(this);
-		this.drawOnCanvas = this.drawOnCanvas.bind(this);
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require("prop-types");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _d3Collection = require("d3-collection");
+
+var _GenericChartComponent = require("../GenericChartComponent");
+
+var _GenericChartComponent2 = _interopRequireDefault(_GenericChartComponent);
+
+var _GenericComponent = require("../GenericComponent");
+
+var _utils = require("../utils");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ScatterSeries = function (_Component) {
+	_inherits(ScatterSeries, _Component);
+
+	function ScatterSeries(props) {
+		_classCallCheck(this, ScatterSeries);
+
+		var _this = _possibleConstructorReturn(this, (ScatterSeries.__proto__ || Object.getPrototypeOf(ScatterSeries)).call(this, props));
+
+		_this.renderSVG = _this.renderSVG.bind(_this);
+		_this.drawOnCanvas = _this.drawOnCanvas.bind(_this);
+		return _this;
 	}
-	drawOnCanvas(ctx, moreProps) {
-		const { xAccessor } = moreProps;
 
-		const points = helper(this.props, moreProps, xAccessor);
+	_createClass(ScatterSeries, [{
+		key: "drawOnCanvas",
+		value: function drawOnCanvas(ctx, moreProps) {
+			var xAccessor = moreProps.xAccessor;
 
-		drawOnCanvas(ctx, this.props, points);
-	}
-	renderSVG(moreProps) {
-		const { className, markerProps } = this.props;
-		const { xAccessor } = moreProps;
 
-		const points = helper(this.props, moreProps, xAccessor);
+			var points = helper(this.props, moreProps, xAccessor);
 
-		return <g className={className}>
-			{points.map((point, idx) => {
-				const { marker: Marker } = point;
-				return <Marker key={idx} {...markerProps} point={point} />;
-			})}
-		</g>;
-	}
-	render() {
-		return <GenericChartComponent
-			svgDraw={this.renderSVG}
-			canvasDraw={this.drawOnCanvas}
-			canvasToDraw={getAxisCanvas}
-			drawOn={["pan"]}
-		/>;
-	}
-}
+			_drawOnCanvas(ctx, this.props, points);
+		}
+	}, {
+		key: "renderSVG",
+		value: function renderSVG(moreProps) {
+			var _props = this.props,
+			    className = _props.className,
+			    markerProps = _props.markerProps;
+			var xAccessor = moreProps.xAccessor;
+
+
+			var points = helper(this.props, moreProps, xAccessor);
+
+			return _react2.default.createElement(
+				"g",
+				{ className: className },
+				points.map(function (point, idx) {
+					var Marker = point.marker;
+
+					return _react2.default.createElement(Marker, _extends({ key: idx }, markerProps, { point: point }));
+				})
+			);
+		}
+	}, {
+		key: "render",
+		value: function render() {
+			return _react2.default.createElement(_GenericChartComponent2.default, {
+				svgDraw: this.renderSVG,
+				canvasDraw: this.drawOnCanvas,
+				canvasToDraw: _GenericComponent.getAxisCanvas,
+				drawOn: ["pan"]
+			});
+		}
+	}]);
+
+	return ScatterSeries;
+}(_react.Component);
 
 ScatterSeries.propTypes = {
-	className: PropTypes.string,
-	yAccessor: PropTypes.func.isRequired,
-	marker: PropTypes.func,
-	markerProvider: PropTypes.func,
-	markerProps: PropTypes.object,
+	className: _propTypes2.default.string,
+	yAccessor: _propTypes2.default.func.isRequired,
+	marker: _propTypes2.default.func,
+	markerProvider: _propTypes2.default.func,
+	markerProps: _propTypes2.default.object
 };
 
 ScatterSeries.defaultProps = {
-	className: "react-stockcharts-scatter",
+	className: "react-stockcharts-scatter"
 };
 
 function helper(props, moreProps, xAccessor) {
-	const { yAccessor, markerProvider, markerProps } = props;
-	let { marker: Marker } = props;
-	const { xScale, chartConfig: { yScale }, plotData } = moreProps;
+	var yAccessor = props.yAccessor,
+	    markerProvider = props.markerProvider,
+	    markerProps = props.markerProps;
+	var Marker = props.marker;
+	var xScale = moreProps.xScale,
+	    yScale = moreProps.chartConfig.yScale,
+	    plotData = moreProps.plotData;
+
 
 	if (!(markerProvider || Marker)) throw new Error("required prop, either marker or markerProvider missing");
 
-	return plotData.map(d => {
+	return plotData.map(function (d) {
 
 		if (markerProvider) Marker = markerProvider(d);
 
-		const mProps = { ...Marker.defaultProps, ...markerProps };
+		var mProps = _extends({}, Marker.defaultProps, markerProps);
 
-		const fill = functor(mProps.fill);
-		const stroke = functor(mProps.stroke);
+		var fill = (0, _utils.functor)(mProps.fill);
+		var stroke = (0, _utils.functor)(mProps.stroke);
 
 		return {
 			x: xScale(xAccessor(d)),
 			y: yScale(yAccessor(d)),
-			fill: hexToRGBA(fill(d), mProps.opacity),
+			fill: (0, _utils.hexToRGBA)(fill(d), mProps.opacity),
 			stroke: stroke(d),
 			datum: d,
-			marker: Marker,
+			marker: Marker
 		};
 	});
 }
 
-function drawOnCanvas(ctx, props, points) {
+function _drawOnCanvas(ctx, props, points) {
+	var markerProps = props.markerProps;
 
-	const { markerProps } = props;
 
-	const nest = d3Nest()
-		.key(d => d.fill)
-		.key(d => d.stroke)
-		.entries(points);
+	var nest = (0, _d3Collection.nest)().key(function (d) {
+		return d.fill;
+	}).key(function (d) {
+		return d.stroke;
+	}).entries(points);
 
-	nest.forEach(fillGroup => {
-		const { key: fillKey, values: fillValues } = fillGroup;
+	nest.forEach(function (fillGroup) {
+		var fillKey = fillGroup.key,
+		    fillValues = fillGroup.values;
+
 
 		if (fillKey !== "none") {
 			ctx.fillStyle = fillKey;
 		}
 
-		fillValues.forEach(strokeGroup => {
+		fillValues.forEach(function (strokeGroup) {
 			// var { key: strokeKey, values: strokeValues } = strokeGroup;
-			const { values: strokeValues } = strokeGroup;
+			var strokeValues = strokeGroup.values;
 
-			strokeValues.forEach(point => {
-				const { marker } = point;
-				marker.drawOnCanvas({ ...marker.defaultProps, ...markerProps, fill: fillKey }, point, ctx);
+
+			strokeValues.forEach(function (point) {
+				var marker = point.marker;
+
+				marker.drawOnCanvas(_extends({}, marker.defaultProps, markerProps, { fill: fillKey }), point, ctx);
 			});
 		});
 	});
 }
 
-export default ScatterSeries;
+exports.default = ScatterSeries;
+//# sourceMappingURL=ScatterSeries.js.map

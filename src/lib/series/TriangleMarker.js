@@ -1,71 +1,68 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { hexToRGBA, functor } from "../utils";
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _react = require("react");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = require("prop-types");
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _utils = require("../utils");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function Triangle(props) {
+	var className = props.className,
+	    strokeWidth = props.strokeWidth,
+	    opacity = props.opacity,
+	    point = props.point,
+	    width = props.width;
 
-	const {
-		className, strokeWidth,
-		opacity, point, width
-	} = props;
 
-	const rotation = getRotationInDegrees(props, point);
+	var rotation = getRotationInDegrees(props, point);
 	if (rotation == null) return null;
 
-	const fillColor = getFillColor(props);
-	const strokeColor = getStrokeColor(props);
+	var fillColor = getFillColor(props);
+	var strokeColor = getStrokeColor(props);
 
-	const w = functor(width)(point.datum);
-	const { x, y } = point;
-	const { innerOpposite, innerHypotenuse } = getTrianglePoints(w);
-	const points = `
-		${x} ${y - innerHypotenuse},
-		${x + (w / 2)} ${y + innerOpposite},
-		${x - (w / 2)} ${y + innerOpposite}
-	`;
+	var w = (0, _utils.functor)(width)(point.datum);
+	var x = point.x,
+	    y = point.y;
 
-	return (
-		<polygon
-			className={className}
-			points={points}
-			stroke={strokeColor}
-			strokeWidth={strokeWidth}
-			fillOpacity={opacity}
-			fill={fillColor}
-			transform={rotation !== 0 ? `rotate(${ rotation }, ${ x }, ${ y })` : null}
-		/>
-	);
+	var _getTrianglePoints = getTrianglePoints(w),
+	    innerOpposite = _getTrianglePoints.innerOpposite,
+	    innerHypotenuse = _getTrianglePoints.innerHypotenuse;
+
+	var points = "\n\t\t" + x + " " + (y - innerHypotenuse) + ",\n\t\t" + (x + w / 2) + " " + (y + innerOpposite) + ",\n\t\t" + (x - w / 2) + " " + (y + innerOpposite) + "\n\t";
+
+	return _react2.default.createElement("polygon", {
+		className: className,
+		points: points,
+		stroke: strokeColor,
+		strokeWidth: strokeWidth,
+		fillOpacity: opacity,
+		fill: fillColor,
+		transform: rotation !== 0 ? "rotate(" + rotation + ", " + x + ", " + y + ")" : null
+	});
 }
 Triangle.propTypes = {
-	direction: PropTypes.oneOfType( [
-		PropTypes.oneOf( [
-			"top",
-			"bottom",
-			"left",
-			"right",
-			"hide"] ),
-		PropTypes.func
-	] ).isRequired,
-	stroke: PropTypes.oneOfType( [
-		PropTypes.string,
-		PropTypes.func
-	] ).isRequired,
-	fill: PropTypes.oneOfType( [
-		PropTypes.string,
-		PropTypes.func
-	] ).isRequired,
-	opacity: PropTypes.number.isRequired,
-	point: PropTypes.shape({
-		x: PropTypes.number.isRequired,
-		y: PropTypes.number.isRequired,
-		datum: PropTypes.object.isRequired,
+	direction: _propTypes2.default.oneOfType([_propTypes2.default.oneOf(["top", "bottom", "left", "right", "hide"]), _propTypes2.default.func]).isRequired,
+	stroke: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.func]).isRequired,
+	fill: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.func]).isRequired,
+	opacity: _propTypes2.default.number.isRequired,
+	point: _propTypes2.default.shape({
+		x: _propTypes2.default.number.isRequired,
+		y: _propTypes2.default.number.isRequired,
+		datum: _propTypes2.default.object.isRequired
 	}).isRequired,
-	className: PropTypes.string,
-	strokeWidth: PropTypes.number,
-	width: PropTypes.oneOfType([
-		PropTypes.number,
-		PropTypes.func
-	]).isRequired
+	className: _propTypes2.default.string,
+	strokeWidth: _propTypes2.default.number,
+	width: _propTypes2.default.oneOfType([_propTypes2.default.number, _propTypes2.default.func]).isRequired
 };
 Triangle.defaultProps = {
 	direction: "top",
@@ -73,34 +70,43 @@ Triangle.defaultProps = {
 	strokeWidth: 1,
 	opacity: 0.5,
 	fill: "#4682B4",
-	className: "react-stockcharts-marker-triangle",
+	className: "react-stockcharts-marker-triangle"
 };
-Triangle.drawOnCanvas = (props, point, ctx) => {
-	const { stroke, fill, opacity, strokeWidth } = props;
+Triangle.drawOnCanvas = function (props, point, ctx) {
+	var stroke = props.stroke,
+	    fill = props.fill,
+	    opacity = props.opacity,
+	    strokeWidth = props.strokeWidth;
+
 	ctx.strokeStyle = stroke;
 	ctx.lineWidth = strokeWidth;
 	if (fill !== "none") {
-		ctx.fillStyle = hexToRGBA(fill, opacity);
+		ctx.fillStyle = (0, _utils.hexToRGBA)(fill, opacity);
 	}
 	Triangle.drawOnCanvasWithNoStateChange(props, point, ctx);
 };
-Triangle.drawOnCanvasWithNoStateChange = (props, point, ctx) => {
+Triangle.drawOnCanvasWithNoStateChange = function (props, point, ctx) {
+	var width = props.width;
 
-	const { width } = props;
-	const w = functor(width)(point.datum);
-	const { x, y } = point;
-	const { innerOpposite, innerHypotenuse } = getTrianglePoints(w);
-	const rotationDeg = getRotationInDegrees(props, point);
+	var w = (0, _utils.functor)(width)(point.datum);
+	var x = point.x,
+	    y = point.y;
+
+	var _getTrianglePoints2 = getTrianglePoints(w),
+	    innerOpposite = _getTrianglePoints2.innerOpposite,
+	    innerHypotenuse = _getTrianglePoints2.innerHypotenuse;
+
+	var rotationDeg = getRotationInDegrees(props, point);
 
 	ctx.beginPath();
 	ctx.moveTo(x, y - innerHypotenuse);
-	ctx.lineTo(x + (w / 2), y + innerOpposite);
-	ctx.lineTo(x - (w / 2), y + innerOpposite);
+	ctx.lineTo(x + w / 2, y + innerOpposite);
+	ctx.lineTo(x - w / 2, y + innerOpposite);
 	ctx.stroke();
 
 	// TODO: rotation does not work
 	// example: https://gist.github.com/geoffb/6392450
-	if ( rotationDeg !== null && rotationDeg !== 0 ) {
+	if (rotationDeg !== null && rotationDeg !== 0) {
 		ctx.save();
 		ctx.translate(x, y);
 		ctx.rotate(rotationDeg * Math.PI / 180); // 45 degrees
@@ -109,34 +115,40 @@ Triangle.drawOnCanvasWithNoStateChange = (props, point, ctx) => {
 	}
 	ctx.fill();
 };
-export default Triangle;
+exports.default = Triangle;
+
 
 function getTrianglePoints(width) {
-	const innerHypotenuse = (width / 2) * (1 / Math.cos(30 * Math.PI / 180));
-	const innerOpposite = (width / 2) * (1 / Math.tan(60 * Math.PI / 180));
+	var innerHypotenuse = width / 2 * (1 / Math.cos(30 * Math.PI / 180));
+	var innerOpposite = width / 2 * (1 / Math.tan(60 * Math.PI / 180));
 	return {
-		innerOpposite,
-		innerHypotenuse
+		innerOpposite: innerOpposite,
+		innerHypotenuse: innerHypotenuse
 	};
 }
 
-function getFillColor( props ) {
-	const { fill, point } = props;
-	return fill instanceof Function ? fill( point.datum ) : fill;
+function getFillColor(props) {
+	var fill = props.fill,
+	    point = props.point;
+
+	return fill instanceof Function ? fill(point.datum) : fill;
 }
 
-function getStrokeColor( props ) {
-	const { stroke, point } = props;
-	return stroke instanceof Function ? stroke( point.datum ) : stroke;
+function getStrokeColor(props) {
+	var stroke = props.stroke,
+	    point = props.point;
+
+	return stroke instanceof Function ? stroke(point.datum) : stroke;
 }
 
-function getRotationInDegrees( props, point ) {
-	const { direction } = props;
-	const directionVal = direction instanceof Function ? direction( point.datum ) : direction;
-	if ( directionVal === "hide" ) return null;
+function getRotationInDegrees(props, point) {
+	var direction = props.direction;
 
-	let rotate = 0;
-	switch ( directionVal ) {
+	var directionVal = direction instanceof Function ? direction(point.datum) : direction;
+	if (directionVal === "hide") return null;
+
+	var rotate = 0;
+	switch (directionVal) {
 		case "bottom":
 			rotate = 180;
 			break;
@@ -149,3 +161,4 @@ function getRotationInDegrees( props, point ) {
 	}
 	return rotate;
 }
+//# sourceMappingURL=TriangleMarker.js.map

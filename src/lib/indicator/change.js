@@ -1,36 +1,44 @@
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
-import { rebind, merge } from "../utils";
+exports.default = function () {
 
-import { change } from "../calculator";
+	var base = (0, _baseIndicator2.default)().type(ALGORITHM_TYPE);
 
-import baseIndicator from "./baseIndicator";
+	var underlyingAlgorithm = (0, _calculator.change)();
 
-const ALGORITHM_TYPE = "Change";
+	var mergedAlgorithm = (0, _utils.merge)().algorithm(underlyingAlgorithm).merge(function (datum, indicator) {
+		datum.absoluteChange = indicator.absoluteChange;
+		datum.percentChange = indicator.percentChange;
+	});
 
-export default function() {
+	var indicator = function indicator(data) {
+		var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : { merge: true };
 
-	const base = baseIndicator()
-		.type(ALGORITHM_TYPE);
-
-	const underlyingAlgorithm = change();
-
-	const mergedAlgorithm = merge()
-		.algorithm(underlyingAlgorithm)
-		.merge((datum, indicator) => {
-			datum.absoluteChange = indicator.absoluteChange;
-			datum.percentChange = indicator.percentChange;
-		});
-
-	const indicator = function(data, options = { merge: true }) {
 		if (options.merge) {
 			return mergedAlgorithm(data);
 		}
 		return underlyingAlgorithm(data);
 	};
-	rebind(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type");
-	rebind(indicator, underlyingAlgorithm, "options");
-	rebind(indicator, mergedAlgorithm, "merge", "skipUndefined");
+	(0, _utils.rebind)(indicator, base, "id", "accessor", "stroke", "fill", "echo", "type");
+	(0, _utils.rebind)(indicator, underlyingAlgorithm, "options");
+	(0, _utils.rebind)(indicator, mergedAlgorithm, "merge", "skipUndefined");
 
 	return indicator;
-}
+};
+
+var _utils = require("../utils");
+
+var _calculator = require("../calculator");
+
+var _baseIndicator = require("./baseIndicator");
+
+var _baseIndicator2 = _interopRequireDefault(_baseIndicator);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ALGORITHM_TYPE = "Change";
+//# sourceMappingURL=change.js.map
