@@ -7,7 +7,7 @@ import { timeFormat } from "d3-time-format";
 import displayValuesFor from "./displayValuesFor";
 import GenericChartComponent from "../GenericChartComponent";
 
-import { isDefined, functor } from "../utils";
+import { isDefined, functor, last } from "../utils";
 import ToolTipText from "./ToolTipText";
 import ToolTipTSpanLabel from "./ToolTipTSpanLabel";
 
@@ -24,19 +24,21 @@ class OHLCTooltip extends Component {
 			volumeFormat,
 			ohlcFormat,
 			percentFormat,
-			displayTexts
+			displayTexts,
+			lastAsDefault
 		} = this.props;
 
 		const { chartConfig: { width, height } } = moreProps;
-		const { displayXAccessor } = moreProps;
+		const { displayXAccessor, fullData } = moreProps;
 
 		const currentItem = displayValuesFor(this.props, moreProps);
+        const displayItem = lastAsDefault ? currentItem || last(fullData) : currentItem;
 
 		let displayDate, open, high, low, close, volume, percent;
 		displayDate = open = high = low = close = volume = percent = displayTexts.na;
 
-		if (isDefined(currentItem) && isDefined(accessor(currentItem))) {
-			const item = accessor(currentItem);
+		if (isDefined(displayItem) && isDefined(accessor(displayItem))) {
+			const item = accessor(displayItem);
 			volume = isDefined(item.volume) ? volumeFormat(item.volume) : displayTexts.na;
 
 			displayDate = xDisplayFormat(displayXAccessor(item));
@@ -91,6 +93,7 @@ OHLCTooltip.propTypes = {
 	textFill: PropTypes.string,
 	labelFill: PropTypes.string,
 	displayTexts: PropTypes.object,
+	lastAsDefault: PropTypes.bool,
 };
 
 const displayTextsDefault = {
@@ -122,6 +125,7 @@ OHLCTooltip.defaultProps = {
 	origin: [0, 0],
 	children: defaultDisplay,
 	displayTexts: displayTextsDefault,
+	lastAsDefault: false,
 };
 
 function defaultDisplay(props, moreProps, itemsToDisplay) {
