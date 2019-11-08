@@ -32,7 +32,7 @@ class OHLCTooltip extends Component {
 		const { displayXAccessor, fullData } = moreProps;
 
 		const currentItem = displayValuesFor(this.props, moreProps);
-        const displayItem = lastAsDefault ? currentItem || last(fullData) : currentItem;
+		const displayItem = lastAsDefault ? currentItem || last(fullData) : currentItem;
 
 		let displayDate, open, high, low, close, volume, percent;
 		displayDate = open = high = low = close = volume = percent = displayTexts.na;

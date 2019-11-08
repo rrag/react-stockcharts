@@ -1,6 +1,6 @@
 {
-  "name": "react-stockcharts",
-  "version": "0.7.8",
+  "name": "@wlchn/react-stockcharts",
+  "version": "0.7.15",
   "description": "Highly customizable stock charts with ReactJS and d3",
   "main": "src/index.js",
   "module": "src/index.js",
@@ -28,7 +28,7 @@
     "version": "node scripts/updateVersion.js && git add \"src/index.js\"",
     "postversion": "git push origin `git rev-parse --abbrev-ref HEAD` && git push origin `git describe`",
     "npm:publish:next": "npm run release && cd build && npm publish --tag next",
-    "npm:publish:latest": "npm run release && cd build && npm publish",
+    "npm:publish:latest": "npm run release && cd build && npm publish --access=public",
     "info": "npm info react-stockcharts",
     "sourcemap:visualize": "source-map-explorer build/dist/react-stockcharts.min.js build/dist/react-stockcharts.min.js.map",
     "server": "cd build && python3 -m http.server 8090"
