@@ -78,10 +78,15 @@ export default function() {
   function calculator(rawData) {
     const { reversal, boxSize, sourcePath } = options;
 
+    /* prettier-ignore */
     const source =
       sourcePath === 'high/low'
-        ? d => ({ high: d.high, low: d.low })
-        : d => ({ high: d.close, low: d.close });
+        ? d => {
+          return { high: d.high, low: d.low };
+        }
+        : d => {
+          return { high: d.close, low: d.close };
+        };
 
     const pricingMethod = source;
     const columnData = [];
@@ -130,14 +135,9 @@ export default function() {
 
       if (columnData.length === 1 && column.boxes.length === 0) {
         const upwardMovement = Math.max(pricingMethod(d).high - column.open, 0); // upward movement
-        const downwardMovement = Math.abs(
-          Math.min(column.open - pricingMethod(d).low, 0),
-        ); // downward movement
+        const downwardMovement = Math.abs(Math.min(column.open - pricingMethod(d).low, 0)); // downward movement
         column.direction = upwardMovement > downwardMovement ? 1 : -1;
-        if (
-          boxSize * reversal < upwardMovement ||
-          boxSize * reversal < downwardMovement
-        ) {
+        if (boxSize * reversal < upwardMovement || boxSize * reversal < downwardMovement) {
           // enough movement to trigger a reversal
           box.toDate = dateAccessor(d);
           box.open = column.open;
@@ -159,17 +159,13 @@ export default function() {
       } else {
         // one or more boxes already formed in the current column
         const upwardMovement = Math.max(pricingMethod(d).high - box.open, 0); // upward movement
-        const downwardMovement = Math.abs(
-          Math.min(pricingMethod(d).low - box.open, 0),
-        ); // downward movement
+        const downwardMovement = Math.abs(Math.min(pricingMethod(d).low - box.open, 0)); // downward movement
 
         if (
           (column.direction > 0 &&
-            upwardMovement >
-              boxSize) /* rising column AND box can be formed */ ||
+            upwardMovement > boxSize) /* rising column AND box can be formed */ ||
           (column.direction < 0 &&
-            downwardMovement >
-              boxSize) /* falling column AND box can be formed */
+            downwardMovement > boxSize) /* falling column AND box can be formed */
         ) {
           // form another box
           box.close = box.open + column.direction * boxSize;

@@ -15,10 +15,15 @@ export default function() {
   function calculator(rawData) {
     const { reversalType, fixedBrickSize, sourcePath, windowSize } = options;
 
+    /* prettier-ignore */
     const source =
       sourcePath === 'high/low'
-        ? d => ({ high: d.high, low: d.low })
-        : d => ({ high: d.close, low: d.close });
+        ? d => {
+          return { high: d.high, low: d.low };
+        }
+        : d => {
+          return { high: d.close, low: d.close };
+        };
 
     const pricingMethod = source;
     let brickSize;
@@ -157,8 +162,7 @@ export default function() {
           brick = {};
         } else {
           if (idx === rawData.length - 1) {
-            brick.close =
-              direction > 0 ? pricingMethod(d).high : pricingMethod(d).low;
+            brick.close = direction > 0 ? pricingMethod(d).high : pricingMethod(d).low;
             brick.to = idx;
             brick.toDate = dateAccessor(d);
             dateMutator(brick, dateAccessor(d));
