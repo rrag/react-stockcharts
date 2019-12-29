@@ -22,7 +22,10 @@
     "babel:cjs": "cross-env BABEL_ENV=cjs babel src --out-dir build --source-maps",
     "babel:es": "cross-env BABEL_ENV=es babel src --out-dir build/es --source-maps",
     "release": "npm run clean && npm run babel:cjs && npm run babel:es && cp README.md build/ && node scripts/release.js",
-    "lint": "eslint --ext .js,.jsx src --fix",
+    "eslint:check": "eslint --ext js,jsx src",
+    "eslint:fix": "eslint --ext js,jsx src --fix",
+    "prettier:check": "prettier --check 'src/{**/*,*}.{js,jsx}'",
+    "prettier:fix": "prettier --write 'src/{**/*,*}.{js,jsx}'",
     "upgrade:patch": "npm version patch",
     "preversion": "npm run lint",
     "version": "node scripts/updateVersion.js && git add \"src/index.js\"",
@@ -82,6 +85,7 @@
     "modernizr": "^3.5.0",
     "ncp": "^2.0.0",
     "node-sass": "^4.9.0",
+    "prettier": "^1.19.1",
     "prismjs": "^1.8.4",
     "progress-bar-webpack-plugin": "^1.10.0",
     "react": "^16.1.1",
@@ -133,15 +137,15 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/rrag/react-stockcharts.git"
+    "url": "https://github.com/boteeco/react-stockcharts.git"
   },
   "bugs": {
-    "url": "https://github.com/rrag/react-stockcharts/issues"
+    "url": "https://github.com/boteeco/react-stockcharts/issues"
   },
   "maintainers": [
     {
-      "name": "rrag",
-      "email": "ragunath.ramaswamy@gmail.com"
+      "name": "VladBlow",
+      "email": "vladimir.tsibizow@gmail.com"
     }
   ]
 }
