@@ -15,7 +15,7 @@ If you like this project checkout <a href="https://gocharting.com" target="_blan
 
 Multiple [quick start examples](https://github.com/rrag/react-stockcharts-examples2)
 
-- svg and canvas for improved performance. 
+- svg and canvas for improved performance.
 - pan and zoom, on touch devices too
 
 #### Chart types
@@ -43,7 +43,7 @@ Multiple [quick start examples](https://github.com/rrag/react-stockcharts-exampl
 - ElderRay
 - Elder Impulse
 
-(more to come), 
+(more to come),
 
 and it is simple to create your own indicator too
 
@@ -67,18 +67,6 @@ npm install  --save react-stockcharts
 [Documentation](http://rrag.github.io/react-stockcharts)
 
 [Ready to use Examples](https://github.com/rrag/react-stockcharts-examples2)
-
-### Contributing
-
-Refer to [CONTRIBUTING.md](./CONTRIBUTING.md)
-
-### Stability
-
-This is alpha state software, the api will change with each minor version.
-
-### Roadmap
-
-[Roadmap](./docs/md/COMING-SOON.md)
 
 ### LICENSE
 
