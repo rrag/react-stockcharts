@@ -1,6 +1,4 @@
-
-
-import { head } from "../utils";
+import { head } from '../utils';
 
 /**
  * Bar width is based on the amount of items in the plot data and the distance between the first and last of those
@@ -10,20 +8,20 @@ import { head } from "../utils";
  * @return {number} the bar width.
  */
 export function plotDataLengthBarWidth(props, moreProps) {
-	const { widthRatio } = props;
-	const { xScale } = moreProps;
+  const { widthRatio } = props;
+  const { xScale } = moreProps;
 
-	const [l, r] = xScale.range();
+  const [l, r] = xScale.range();
 
-	const totalWidth = Math.abs(r - l);
-	if (xScale.invert != null) {
-		const [dl, dr] = xScale.domain();
-		const width = totalWidth / Math.abs(dl - dr);
-		return width * widthRatio;
-	} else {
-		const width = totalWidth / xScale.domain().length;
-		return width * widthRatio;
-	}
+  const totalWidth = Math.abs(r - l);
+  if (xScale.invert != null) {
+    const [dl, dr] = xScale.domain();
+    const width = totalWidth / Math.abs(dl - dr);
+    return width * widthRatio;
+  } else {
+    const width = totalWidth / xScale.domain().length;
+    return width * widthRatio;
+  }
 }
 
 /**
@@ -32,11 +30,13 @@ export function plotDataLengthBarWidth(props, moreProps) {
  * @return {Function} the width function.
  */
 export function timeIntervalBarWidth(interval) {
-	return function(props, moreProps) {
-		const { widthRatio } = props;
-		const { xScale, xAccessor, plotData } = moreProps;
+  return function(props, moreProps) {
+    const { widthRatio } = props;
+    const { xScale, xAccessor, plotData } = moreProps;
 
-		const first = xAccessor(head(plotData));
-		return Math.abs(xScale(interval.offset(first, 1)) - xScale(first)) * widthRatio;
-	};
+    const first = xAccessor(head(plotData));
+    return (
+      Math.abs(xScale(interval.offset(first, 1)) - xScale(first)) * widthRatio
+    );
+  };
 }

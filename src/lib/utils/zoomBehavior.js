@@ -1,42 +1,38 @@
-import {
-	getCurrentItem
-} from "./ChartDataUtil";
+import { getCurrentItem } from './ChartDataUtil';
 
-import {
-	last
-} from "./index";
+import { last } from './index';
 /* eslint-disable no-unused-vars */
 
 export function mouseBasedZoomAnchor({
-	xScale,
-	xAccessor,
-	mouseXY,
-	plotData,
-	fullData,
+  xScale,
+  xAccessor,
+  mouseXY,
+  plotData,
+  fullData,
 }) {
-	const currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
-	return xAccessor(currentItem);
+  const currentItem = getCurrentItem(xScale, xAccessor, mouseXY, plotData);
+  return xAccessor(currentItem);
 }
 
 export function lastVisibleItemBasedZoomAnchor({
-	xScale,
-	xAccessor,
-	mouseXY,
-	plotData,
-	fullData,
+  xScale,
+  xAccessor,
+  mouseXY,
+  plotData,
+  fullData,
 }) {
-	const lastItem = last(plotData);
-	return xAccessor(lastItem);
+  const lastItem = last(plotData);
+  return xAccessor(lastItem);
 }
 
 export function rightDomainBasedZoomAnchor({
-	xScale,
-	xAccessor,
-	mouseXY,
-	plotData,
-	fullData,
+  xScale,
+  xAccessor,
+  mouseXY,
+  plotData,
+  fullData,
 }) {
-	const [, end] = xScale.domain();
-	return end;
+  const [, end] = xScale.domain();
+  return end;
 }
 /* eslint-enable no-unused-vars */

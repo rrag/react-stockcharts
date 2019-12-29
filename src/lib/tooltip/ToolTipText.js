@@ -1,27 +1,30 @@
-
-
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class ToolTipText extends Component {
-	render() {
-		return <text
-			fontFamily={this.props.fontFamily}
-			fontSize={this.props.fontSize}
-			{...this.props}
-			className="react-stockcharts-tooltip">{this.props.children}</text>;
-	}
+  render() {
+    return (
+      <text
+        fontFamily={this.props.fontFamily}
+        fontSize={this.props.fontSize}
+        {...this.props}
+        className="react-stockcharts-tooltip"
+      >
+        {this.props.children}
+      </text>
+    );
+  }
 }
 
 ToolTipText.propTypes = {
-	fontFamily: PropTypes.string.isRequired,
-	fontSize: PropTypes.number.isRequired,
-	children: PropTypes.node.isRequired,
+  fontFamily: PropTypes.string.isRequired,
+  fontSize: PropTypes.number.isRequired,
+  children: PropTypes.node.isRequired,
 };
 
 ToolTipText.defaultProps = {
-	fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
-	fontSize: 11,
+  fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif',
+  fontSize: 11,
 };
 
 export default ToolTipText;

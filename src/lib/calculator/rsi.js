@@ -1,5 +1,3 @@
-
-
 /*
 https://github.com/ScottLogic/d3fc/blob/master/src/indicator/algorithm/calculator/relativeStrengthIndex.js
 
@@ -26,72 +24,70 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import { mean } from "d3-array";
+import { mean } from 'd3-array';
 
-import { isDefined, last, slidingWindow, path } from "../utils";
-import { RSI as defaultOptions } from "./defaultOptionsForComputation";
+import { isDefined, last, slidingWindow, path } from '../utils';
+import { RSI as defaultOptions } from './defaultOptionsForComputation';
 
 export default function() {
+  let options = defaultOptions;
 
-	let options = defaultOptions;
+  function calculator(data) {
+    const { windowSize, sourcePath } = options;
 
-	function calculator(data) {
-		const { windowSize, sourcePath } = options;
+    const source = path(sourcePath);
+    let prevAvgGain, prevAvgLoss;
+    const rsiAlgorithm = slidingWindow()
+      .windowSize(windowSize)
+      .accumulator(values => {
+        const avgGain = isDefined(prevAvgGain)
+          ? (prevAvgGain * (windowSize - 1) + last(values).gain) / windowSize
+          : mean(values, each => each.gain);
 
-		const source = path(sourcePath);
-		let prevAvgGain, prevAvgLoss;
-		const rsiAlgorithm = slidingWindow()
-			.windowSize(windowSize)
-			.accumulator((values) => {
+        const avgLoss = isDefined(prevAvgLoss)
+          ? (prevAvgLoss * (windowSize - 1) + last(values).loss) / windowSize
+          : mean(values, each => each.loss);
 
-				const avgGain = isDefined(prevAvgGain)
-					? (prevAvgGain * (windowSize - 1) + last(values).gain) / windowSize
-					: mean(values, (each) => each.gain);
+        const relativeStrength = avgGain / avgLoss;
+        const rsi = 100 - 100 / (1 + relativeStrength);
 
-				const avgLoss = isDefined(prevAvgLoss)
-					? (prevAvgLoss * (windowSize - 1) + last(values).loss) / windowSize
-					: mean(values, (each) => each.loss);
+        prevAvgGain = avgGain;
+        prevAvgLoss = avgLoss;
 
-				const relativeStrength = avgGain / avgLoss;
-				const rsi = 100 - (100 / (1 + relativeStrength));
+        return rsi;
+      });
 
-				prevAvgGain = avgGain;
-				prevAvgLoss = avgLoss;
+    const gainsAndLossesCalculator = slidingWindow()
+      .windowSize(2)
+      .undefinedValue(() => [0, 0])
+      .accumulator(tuple => {
+        const prev = tuple[0];
+        const now = tuple[1];
+        const change = source(now) - source(prev);
+        return {
+          gain: Math.max(change, 0),
+          loss: Math.abs(Math.min(change, 0)),
+        };
+      });
 
-				return rsi;
-			});
+    const gainsAndLosses = gainsAndLossesCalculator(data);
 
-		const gainsAndLossesCalculator = slidingWindow()
-			.windowSize(2)
-			.undefinedValue(() => [0, 0])
-			.accumulator(tuple => {
-				const prev = tuple[0];
-				const now = tuple[1];
-				const change = source(now) - source(prev);
-				return {
-					gain: Math.max(change, 0),
-					loss: Math.abs(Math.min(change, 0)),
-				};
-			});
+    const rsiData = rsiAlgorithm(gainsAndLosses);
 
-		const gainsAndLosses = gainsAndLossesCalculator(data);
+    return rsiData;
+  }
+  calculator.undefinedLength = function() {
+    const { windowSize } = options;
 
-		const rsiData = rsiAlgorithm(gainsAndLosses);
+    return windowSize - 1;
+  };
+  calculator.options = function(x) {
+    if (!arguments.length) {
+      return options;
+    }
+    options = { ...defaultOptions, ...x };
+    return calculator;
+  };
 
-		return rsiData;
-	}
-	calculator.undefinedLength = function() {
-		const { windowSize } = options;
-
-		return windowSize - 1;
-	};
-	calculator.options = function(x) {
-		if (!arguments.length) {
-			return options;
-		}
-		options = { ...defaultOptions, ...x };
-		return calculator;
-	};
-
-	return calculator;
+  return calculator;
 }

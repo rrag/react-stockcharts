@@ -1,5 +1,3 @@
-
-
 /*
 https://github.com/ScottLogic/d3fc/blob/master/src/indicator/algorithm/calculator/bollingerBands.js
 
@@ -26,55 +24,57 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import { mean, deviation } from "d3-array";
+import { mean, deviation } from 'd3-array';
 
-import ema from "./ema";
-import { last, slidingWindow, zipper, path } from "../utils";
+import ema from './ema';
+import { last, slidingWindow, zipper, path } from '../utils';
 
-import { BollingerBand as defaultOptions } from "./defaultOptionsForComputation";
+import { BollingerBand as defaultOptions } from './defaultOptionsForComputation';
 
 export default function() {
-	let options = defaultOptions;
+  let options = defaultOptions;
 
-	function calculator(data) {
-		const { windowSize, multiplier, movingAverageType, sourcePath } = options;
+  function calculator(data) {
+    const { windowSize, multiplier, movingAverageType, sourcePath } = options;
 
-		const source = path(sourcePath);
-		const meanAlgorithm = movingAverageType === "ema"
-			? ema().options({ windowSize, sourcePath })
-			: slidingWindow().windowSize(windowSize)
-				.accumulator(values => mean(values)).sourcePath(sourcePath);
+    const source = path(sourcePath);
+    /* prettier-ignore */
+    const meanAlgorithm =
+      movingAverageType === 'ema'
+        ? ema().options({ windowSize, sourcePath })
+        : slidingWindow()
+          .windowSize(windowSize)
+          .accumulator(values => mean(values))
+          .sourcePath(sourcePath);
 
-		const bollingerBandAlgorithm = slidingWindow()
-			.windowSize(windowSize)
-			.accumulator((values) => {
-				const avg = last(values).mean;
-				const stdDev = deviation(values, (each) => source(each.datum));
-				return {
-					top: avg + multiplier * stdDev,
-					middle: avg,
-					bottom: avg - multiplier * stdDev
-				};
-			});
+    const bollingerBandAlgorithm = slidingWindow()
+      .windowSize(windowSize)
+      .accumulator(values => {
+        const avg = last(values).mean;
+        const stdDev = deviation(values, each => source(each.datum));
+        return {
+          top: avg + multiplier * stdDev,
+          middle: avg,
+          bottom: avg - multiplier * stdDev,
+        };
+      });
 
-		const zip = zipper()
-			.combine((datum, mean) => ({ datum, mean }));
+    const zip = zipper().combine((datum, mean) => ({ datum, mean }));
 
-		const tuples = zip(data, meanAlgorithm(data));
-		return bollingerBandAlgorithm(tuples);
-	}
-	calculator.undefinedLength = function() {
-		const { windowSize } = options;
-		return windowSize - 1;
-	};
-	calculator.options = function(x) {
-		if (!arguments.length) {
-			return options;
-		}
-		options = { ...defaultOptions, ...x };
-		return calculator;
-	};
+    const tuples = zip(data, meanAlgorithm(data));
+    return bollingerBandAlgorithm(tuples);
+  }
+  calculator.undefinedLength = function() {
+    const { windowSize } = options;
+    return windowSize - 1;
+  };
+  calculator.options = function(x) {
+    if (!arguments.length) {
+      return options;
+    }
+    options = { ...defaultOptions, ...x };
+    return calculator;
+  };
 
-
-	return calculator;
+  return calculator;
 }

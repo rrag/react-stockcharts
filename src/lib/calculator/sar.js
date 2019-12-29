@@ -1,114 +1,117 @@
-
-
-import { mappedSlidingWindow, isNotDefined, isDefined } from "../utils";
-import { SAR as defaultOptions } from "./defaultOptionsForComputation";
+import { mappedSlidingWindow, isNotDefined, isDefined } from '../utils';
+import { SAR as defaultOptions } from './defaultOptionsForComputation';
 
 function calc(prev, now) {
-	const risingSar = prev.risingSar
-		+ prev.af * (prev.risingEp - prev.risingSar);
+  const risingSar = prev.risingSar + prev.af * (prev.risingEp - prev.risingSar);
 
-	const fallingSar = prev.fallingSar
-		- prev.af * (prev.fallingSar - prev.fallingEp);
+  const fallingSar =
+    prev.fallingSar - prev.af * (prev.fallingSar - prev.fallingEp);
 
-	const risingEp = Math.max(prev.risingEp, now.high);
-	const fallingEp = Math.min(prev.fallingEp, now.low);
+  const risingEp = Math.max(prev.risingEp, now.high);
+  const fallingEp = Math.min(prev.fallingEp, now.low);
 
-	return {
-		risingSar,
-		fallingSar,
-		risingEp,
-		fallingEp,
-	};
+  return {
+    risingSar,
+    fallingSar,
+    risingEp,
+    fallingEp,
+  };
 }
 
 export default function() {
+  let options = defaultOptions;
 
-	let options = defaultOptions;
+  function calculator(data) {
+    const { accelerationFactor, maxAccelerationFactor } = options;
 
-	function calculator(data) {
-		const { accelerationFactor, maxAccelerationFactor } = options;
+    const algorithm = mappedSlidingWindow()
+      .windowSize(2)
+      .undefinedValue(({ high, low }) => {
+        return {
+          risingSar: low,
+          risingEp: high,
+          fallingSar: high,
+          fallingEp: low,
+          af: accelerationFactor,
+        };
+      })
+      .accumulator(([prev, now]) => {
+        const { risingSar, fallingSar, risingEp, fallingEp } = calc(prev, now);
 
-		const algorithm = mappedSlidingWindow()
-			.windowSize(2)
-			.undefinedValue(({ high, low }) => {
-				return {
-					risingSar: low,
-					risingEp: high,
-					fallingSar: high,
-					fallingEp: low,
-					af: accelerationFactor,
-				};
-			})
-			.accumulator(([prev, now]) => {
+        if (
+          isNotDefined(prev.use) &&
+          risingSar > now.low &&
+          fallingSar < now.high
+        ) {
+          return {
+            risingSar,
+            fallingSar,
+            risingEp,
+            fallingEp,
+          };
+        }
 
-				const {
-					risingSar,
-					fallingSar,
-					risingEp,
-					fallingEp,
-				} = calc(prev, now);
+        /* prettier-ignore */
+        const use = isDefined(prev.use)
+          ? prev.use === 'rising'
+            ? risingSar > now.low
+              ? 'falling'
+              : 'rising'
+            : fallingSar < now.high
+              ? 'rising'
+              : 'falling'
+          : risingSar > now.low
+            ? 'falling'
+            : 'rising';
 
-				if (isNotDefined(prev.use)
-						&& risingSar > now.low
-						&& fallingSar < now.high) {
-					return {
-						risingSar,
-						fallingSar,
-						risingEp,
-						fallingEp,
-					};
-				}
+        /* eslint-disable indent */
+        const current =
+          prev.use === use
+            ? {
+                af: Math.min(
+                  maxAccelerationFactor,
+                  prev.af + accelerationFactor,
+                ),
+                fallingEp,
+                risingEp,
+                fallingSar,
+                risingSar,
+              }
+            : {
+                af: accelerationFactor,
+                fallingEp: now.low,
+                risingEp: now.high,
+                fallingSar: Math.max(prev.risingEp, now.high),
+                risingSar: Math.min(prev.fallingEp, now.low),
+              };
+        /* eslint-enable */
 
-				const use = isDefined(prev.use)
-					? prev.use === "rising"
-						? risingSar > now.low ? "falling" : "rising"
-						: fallingSar < now.high ? "rising" : "falling"
-					: risingSar > now.low
-						? "falling"
-						: "rising";
+        const { date, high, low } = now;
+        return {
+          date,
+          high,
+          low,
+          ...current,
+          use,
+          sar: use === 'falling' ? current.fallingSar : current.risingSar,
+        };
+      });
 
-				const current = prev.use === use
-					? {
-						af: Math.min(maxAccelerationFactor, prev.af + accelerationFactor),
-						fallingEp,
-						risingEp,
-						fallingSar,
-						risingSar,
-					}
-					: {
-						af: accelerationFactor,
-						fallingEp: now.low,
-						risingEp: now.high,
-						fallingSar: Math.max(prev.risingEp, now.high),
-						risingSar: Math.min(prev.fallingEp, now.low),
-					};
+    const calculatedData = algorithm(data).map(d => d.sar);
+    // console.log(calculatedData);
 
-				const { date, high, low } = now;
-				return {
-					date,
-					high,
-					low,
-					...current,
-					use,
-					sar: use === "falling" ? current.fallingSar : current.risingSar,
-				};
-			});
+    return calculatedData;
+  }
+  calculator.undefinedLength = function() {
+    return 1;
+  };
+  calculator.options = function(x) {
+    if (!arguments.length) {
+      return options;
+    }
+    options = { ...defaultOptions, ...x };
+    return calculator;
+  };
 
-		const calculatedData = algorithm(data).map(d => d.sar);
-		// console.log(calculatedData);
-
-		return calculatedData;
-	}
-	calculator.undefinedLength = function() {
-		return 1;
-	};
-	calculator.options = function(x) {
-		if (!arguments.length) {
-			return options;
-		}
-		options = { ...defaultOptions, ...x };
-		return calculator;
-	};
-
-	return calculator;
+  return calculator;
 }

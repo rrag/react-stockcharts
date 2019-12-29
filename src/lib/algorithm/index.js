@@ -1,50 +1,46 @@
-
-
-import { merge, slidingWindow, identity } from "../utils";
+import { merge, slidingWindow, identity } from '../utils';
 
 export default function() {
+  let windowSize = 1,
+    accumulator = identity,
+    mergeAs = identity;
 
-	let windowSize = 1,
-		accumulator = identity,
-		mergeAs = identity;
+  function algorithm(data) {
+    const defaultAlgorithm = slidingWindow()
+      .windowSize(windowSize)
+      .accumulator(accumulator);
 
-	function algorithm(data) {
+    const calculator = merge()
+      .algorithm(defaultAlgorithm)
+      .merge(mergeAs);
 
-		const defaultAlgorithm = slidingWindow()
-			.windowSize(windowSize)
-			.accumulator(accumulator);
+    const newData = calculator(data);
 
-		const calculator = merge()
-			.algorithm(defaultAlgorithm)
-			.merge(mergeAs);
+    return newData;
+  }
 
-		const newData = calculator(data);
+  algorithm.accumulator = function(x) {
+    if (!arguments.length) {
+      return accumulator;
+    }
+    accumulator = x;
+    return algorithm;
+  };
 
-		return newData;
-	}
+  algorithm.windowSize = function(x) {
+    if (!arguments.length) {
+      return windowSize;
+    }
+    windowSize = x;
+    return algorithm;
+  };
+  algorithm.merge = function(x) {
+    if (!arguments.length) {
+      return mergeAs;
+    }
+    mergeAs = x;
+    return algorithm;
+  };
 
-	algorithm.accumulator = function(x) {
-		if (!arguments.length) {
-			return accumulator;
-		}
-		accumulator = x;
-		return algorithm;
-	};
-
-	algorithm.windowSize = function(x) {
-		if (!arguments.length) {
-			return windowSize;
-		}
-		windowSize = x;
-		return algorithm;
-	};
-	algorithm.merge = function(x) {
-		if (!arguments.length) {
-			return mergeAs;
-		}
-		mergeAs = x;
-		return algorithm;
-	};
-
-	return algorithm;
+  return algorithm;
 }

@@ -1,5 +1,3 @@
-
-
 /*
 https://github.com/ScottLogic/d3fc/blob/master/src/indicator/algorithm/calculator/elderRay.js
 
@@ -26,53 +24,56 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import { mean } from "d3-array";
+import { mean } from 'd3-array';
 
-import ema from "./ema";
+import ema from './ema';
 
-import { ElderRay as defaultOptions } from "./defaultOptionsForComputation";
-import { isDefined, zipper, slidingWindow } from "../utils";
+import { ElderRay as defaultOptions } from './defaultOptionsForComputation';
+import { isDefined, zipper, slidingWindow } from '../utils';
 
 export default function() {
+  let options = defaultOptions;
+  let ohlc = d => ({ open: d.open, high: d.high, low: d.low, close: d.close });
 
-	let options = defaultOptions;
-	let ohlc = d => ({ open: d.open, high: d.high, low: d.low, close: d.close });
+  function calculator(data) {
+    const { windowSize, sourcePath, movingAverageType } = options;
 
-	function calculator(data) {
-		const { windowSize, sourcePath, movingAverageType } = options;
+    /* prettier-ignore */
+    const meanAlgorithm =
+      movingAverageType === 'ema'
+        ? ema().options({ windowSize, sourcePath })
+        : slidingWindow()
+          .windowSize(windowSize)
+          .accumulator(values => mean(values))
+          .sourcePath(sourcePath);
 
-		const meanAlgorithm = movingAverageType === "ema"
-			? ema().options({ windowSize, sourcePath })
-			: slidingWindow().windowSize(windowSize).accumulator(values => mean(values)).sourcePath(sourcePath);
+    const zip = zipper().combine((datum, mean) => {
+      const bullPower = isDefined(mean) ? ohlc(datum).high - mean : undefined;
+      const bearPower = isDefined(mean) ? ohlc(datum).low - mean : undefined;
+      return { bullPower, bearPower };
+    });
 
-		const zip = zipper()
-			.combine((datum, mean) => {
-				const bullPower = isDefined(mean) ? ohlc(datum).high - mean : undefined;
-				const bearPower = isDefined(mean) ? ohlc(datum).low - mean : undefined;
-				return { bullPower, bearPower };
-			});
+    const newData = zip(data, meanAlgorithm(data));
+    return newData;
+  }
+  calculator.undefinedLength = function() {
+    const { windowSize } = options;
+    return windowSize - 1;
+  };
+  calculator.ohlc = function(x) {
+    if (!arguments.length) {
+      return ohlc;
+    }
+    ohlc = x;
+    return calculator;
+  };
+  calculator.options = function(x) {
+    if (!arguments.length) {
+      return options;
+    }
+    options = { ...defaultOptions, ...x };
+    return calculator;
+  };
 
-		const newData = zip(data, meanAlgorithm(data));
-		return newData;
-	}
-	calculator.undefinedLength = function() {
-		const { windowSize } = options;
-		return windowSize - 1;
-	};
-	calculator.ohlc = function(x) {
-		if (!arguments.length) {
-			return ohlc;
-		}
-		ohlc = x;
-		return calculator;
-	};
-	calculator.options = function(x) {
-		if (!arguments.length) {
-			return options;
-		}
-		options = { ...defaultOptions, ...x };
-		return calculator;
-	};
-
-	return calculator;
+  return calculator;
 }
