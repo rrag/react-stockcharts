@@ -78,7 +78,7 @@ class InteractiveText extends Component {
 		}
 	}
 	handleDraw(moreProps, e) {
-		const { enabled } = this.props;
+		const { enabled, onDoubleClick } = this.props;
 		if (enabled) {
 			const {
 				mouseXY: [, mouseY],
@@ -99,9 +99,12 @@ class InteractiveText extends Component {
 		}/*  else {
 			this.handleClick(moreProps, e);
 		} */
+		if (onDoubleClick) {
+			onDoubleClick(moreProps, e);
+		}
 	}
 	render() {
-		const { textList, defaultText, hoverText } = this.props;
+		const { textList, defaultText, hoverText, onDoubleClick } = this.props;
 		const { override } = this.state;
 		return <g>
 			{textList.map((each, idx) => {
@@ -130,6 +133,7 @@ class InteractiveText extends Component {
 			<GenericChartComponent
 
 				onClick={this.handleDraw}
+				onDoubleClick={this.handleDraw}
 
 				svgDraw={noop}
 				canvasDraw={noop}
@@ -145,6 +149,7 @@ InteractiveText.propTypes = {
 	onChoosePosition: PropTypes.func.isRequired,
 	onDragComplete: PropTypes.func.isRequired,
 	onSelect: PropTypes.func,
+	onDoubleClick: PropTypes.func,
 
 	defaultText: PropTypes.shape({
 		bgFill: PropTypes.string.isRequired,
