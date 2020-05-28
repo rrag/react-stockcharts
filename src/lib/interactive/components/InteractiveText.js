@@ -38,7 +38,7 @@ class InteractiveText extends Component {
 		}
 		return false;
 	}
-	componentWillReceiveProps(nextProps) {
+	UNSAFE_componentWillReceiveProps(nextProps) {
 		this.calculateTextWidth = (
 			nextProps.text !== this.props.text
 			|| nextProps.fontStyle !== this.props.fontStyle
