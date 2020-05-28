@@ -265,7 +265,7 @@ class GenericComponent extends Component {
 			}
 		}
 	}
-	componentWillMount() {
+	UNSAFE_componentWillMount() {
 		const { subscribe, chartId } = this.context;
 		const { clip, edgeClip } = this.props;
 
@@ -277,7 +277,7 @@ class GenericComponent extends Component {
 				getPanConditions: this.getPanConditions,
 			}
 		);
-		this.componentWillReceiveProps(this.props, this.context);
+		this.UNSAFE_componentWillReceiveProps(this.props, this.context);
 	}
 	componentWillUnmount() {
 		const { unsubscribe } = this.context;
@@ -317,7 +317,7 @@ class GenericComponent extends Component {
 			this.drawOnCanvas();
 		}
 	}
-	componentWillReceiveProps(nextProps, nextContext) {
+	UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
 		const { xScale, plotData, chartConfig, getMutableState } = nextContext;
 
 		this.props.debug(nextContext);

@@ -125,11 +125,11 @@ class CandleStickChartWithText extends React.Component {
 	}
 	handleSelection(interactives, moreProps, e) {
 		if (this.state.enableInteractiveObject) {
-			const independentCharts = moreProps.currentCharts.filter(d => d !== 2)
+			const independentCharts = moreProps.currentCharts.filter(d => d !== 2);
 			if (independentCharts.length > 0) {
 				const first = head(independentCharts);
 
-				const morePropsForChart = getMorePropsForChart(moreProps, first)
+				const morePropsForChart = getMorePropsForChart(moreProps, first);
 				const {
 					mouseXY: [, mouseY],
 					chartConfig: { yScale },
@@ -216,30 +216,30 @@ class CandleStickChartWithText extends React.Component {
 		const keyCode = e.which;
 		console.log(keyCode);
 		switch (keyCode) {
-		case 46: {
+			case 46: {
 			// DEL
-			this.setState({
-				textList_1: this.state.textList_1.filter(d => !d.selected),
-				textList_3: this.state.textList_3.filter(d => !d.selected)
-			});
-			break;
-		}
-		case 27: {
+				this.setState({
+					textList_1: this.state.textList_1.filter(d => !d.selected),
+					textList_3: this.state.textList_3.filter(d => !d.selected)
+				});
+				break;
+			}
+			case 27: {
 			// ESC
-			this.node.terminate();
-			this.canvasNode.cancelDrag();
-			this.setState({
-				enableInteractiveObject: false
-			});
-			break;
-		}
-		case 68: // D - Draw drawing object
-		case 69: { // E - Enable drawing object
-			this.setState({
-				enableInteractiveObject: true
-			});
-			break;
-		}
+				this.node.terminate();
+				this.canvasNode.cancelDrag();
+				this.setState({
+					enableInteractiveObject: false
+				});
+				break;
+			}
+			case 68: // D - Draw drawing object
+			case 69: { // E - Enable drawing object
+				this.setState({
+					enableInteractiveObject: true
+				});
+				break;
+			}
 		}
 	}
 	render() {
@@ -309,6 +309,7 @@ class CandleStickChartWithText extends React.Component {
 							text="Lorem ipsum..."
 							onDragComplete={this.onDrawComplete}
 							textList={this.state.textList_1}
+							onDoubleClick={(m) => console.log(m)}
 						/>
 
 					</Chart>

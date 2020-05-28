@@ -206,6 +206,7 @@ TrendLine.propTypes = {
 	onStart: PropTypes.func.isRequired,
 	onComplete: PropTypes.func.isRequired,
 	onSelect: PropTypes.func,
+	onDoubleClick: PropTypes.func,
 
 	currentPositionStroke: PropTypes.string,
 	currentPositionStrokeWidth: PropTypes.number,

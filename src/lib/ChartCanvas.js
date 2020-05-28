@@ -940,12 +940,12 @@ class ChartCanvas extends Component {
 			setCursorClass: this.setCursorClass,
 		};
 	}
-	componentWillMount() {
+	UNSAFE_componentWillMount() {
 		const { fullData, ...state } = resetChart(this.props, true);
 		this.setState(state);
 		this.fullData = fullData;
 	}
-	componentWillReceiveProps(nextProps) {
+	UNSAFE_componentWillReceiveProps(nextProps) {
 		const reset = shouldResetChart(this.props, nextProps);
 
 		const interaction = isInteractionEnabled(this.state.xScale, this.state.xAccessor, this.state.plotData);

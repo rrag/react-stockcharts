@@ -22,6 +22,7 @@ class InteractiveText extends Component {
 
 		this.handleDraw = this.handleDraw.bind(this);
 		this.handleDrag = this.handleDrag.bind(this);
+		this.handleDoubleClick = this.handleDoubleClick.bind(this);
 		this.handleDragComplete = this.handleDragComplete.bind(this);
 		this.terminate = terminate.bind(this);
 
@@ -77,17 +78,32 @@ class InteractiveText extends Component {
 			});
 		}
 	}
-	handleDraw(moreProps, e) {
-		const { enabled, onDoubleClick } = this.props;
-		if (enabled) {
-			const {
-				mouseXY: [, mouseY],
-				chartConfig: { yScale },
-				xAccessor,
-				currentItem,
-			} = moreProps;
+	handleDoubleClick(moreProps, e) {
+		const { onDoubleClick } = this.props;
+		const {
+			mouseXY: [, mouseY],
+			chartConfig: { yScale },
+			xAccessor,
+			currentItem,
+		} = moreProps;
 
-			const xyValue = [xAccessor(currentItem), yScale.invert(mouseY)];
+		const xyValue = [xAccessor(currentItem), yScale.invert(mouseY)];
+
+		if (onDoubleClick) {
+			onDoubleClick(xyValue, moreProps, e);
+		}
+	}
+	handleDraw(moreProps, e) {
+		const { enabled } = this.props;
+		const {
+			mouseXY: [, mouseY],
+			chartConfig: { yScale },
+			xAccessor,
+			currentItem,
+		} = moreProps;
+
+		const xyValue = [xAccessor(currentItem), yScale.invert(mouseY)];
+		if (enabled) {
 
 			const { defaultText, onChoosePosition } = this.props;
 
@@ -96,16 +112,12 @@ class InteractiveText extends Component {
 				position: xyValue,
 			};
 			onChoosePosition(newText, moreProps, e);
-		}/*  else {
-			this.handleClick(moreProps, e);
-		} */
-		if (onDoubleClick) {
-			onDoubleClick(moreProps, e);
 		}
 	}
 	render() {
-		const { textList, defaultText, hoverText, onDoubleClick } = this.props;
+		const { textList, defaultText, hoverText } = this.props;
 		const { override } = this.state;
+
 		return <g>
 			{textList.map((each, idx) => {
 				const defaultHoverText = InteractiveText.defaultProps.hoverText;
@@ -133,7 +145,7 @@ class InteractiveText extends Component {
 			<GenericChartComponent
 
 				onClick={this.handleDraw}
-				onDoubleClick={this.handleDraw}
+				onDoubleClick={this.handleDoubleClick}
 
 				svgDraw={noop}
 				canvasDraw={noop}
