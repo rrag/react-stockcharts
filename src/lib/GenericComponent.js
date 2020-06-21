@@ -444,6 +444,7 @@ GenericComponent.defaultProps = {
 	onClickWhenHover: noop,
 	onClickOutside: noop,
 	onDragStart: noop,
+	onDoubleClick: noop,
 	onMouseMove: noop,
 	onMouseDown: noop,
 	debug: noop,

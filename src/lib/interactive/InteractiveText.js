@@ -22,6 +22,7 @@ class InteractiveText extends Component {
 
 		this.handleDraw = this.handleDraw.bind(this);
 		this.handleDrag = this.handleDrag.bind(this);
+		this.handleDouble = this.handleDouble.bind(this);
 		this.handleDoubleClick = this.handleDoubleClick.bind(this);
 		this.handleDragComplete = this.handleDragComplete.bind(this);
 		this.terminate = terminate.bind(this);
@@ -80,18 +81,17 @@ class InteractiveText extends Component {
 	}
 	handleDoubleClick(moreProps, e) {
 		const { onDoubleClick } = this.props;
-		const {
-			mouseXY: [, mouseY],
-			chartConfig: { yScale },
-			xAccessor,
-			currentItem,
-		} = moreProps;
+		const { currentText } = this.state;
 
-		const xyValue = [xAccessor(currentItem), yScale.invert(mouseY)];
-
-		if (onDoubleClick) {
-			onDoubleClick(xyValue, moreProps, e);
+		if (onDoubleClick && currentText !== null) {
+			onDoubleClick(currentText, moreProps, e);
 		}
+	}
+
+	handleDouble(props) {
+		this.setState({
+			currentText: props
+		});
 	}
 	handleDraw(moreProps, e) {
 		const { enabled } = this.props;
@@ -138,12 +138,12 @@ class InteractiveText extends Component {
 					position={getValueFromOverride(override, idx, "position", each.position)}
 
 					onDrag={this.handleDrag}
+					onDoubleClick={this.handleDouble}
 					onDragComplete={this.handleDragComplete}
 					edgeInteractiveCursor="react-stockcharts-move-cursor"
 				/>;
 			})}
 			<GenericChartComponent
-
 				onClick={this.handleDraw}
 				onDoubleClick={this.handleDoubleClick}
 
@@ -185,6 +185,7 @@ InteractiveText.defaultProps = {
 	onChoosePosition: noop,
 	onDragComplete: noop,
 	onSelect: noop,
+	onDoubleClick: noop,
 
 	defaultText: {
 		bgFill: "#D3D3D3",
