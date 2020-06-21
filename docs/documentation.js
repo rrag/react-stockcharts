@@ -109,6 +109,8 @@ const INTERACTIVE = {
 		require("./lib/page/InteractiveYCoordinatePage").default,
 		require("./lib/page/ClickHandlerCallbackPage").default,
 		require("./lib/page/BrushSupportPage").default,
+		require("./lib/page/ArrowsPage").default,
+		require("./lib/page/LabelArrowsPage").default,
 	]
 };
 

@@ -3,12 +3,13 @@ import PropTypes from "prop-types";
 
 import { noop } from "../../utils";
 import { saveNodeType, isHover } from "../utils";
-import { getXValue } from "../../utils/ChartDataUtil";
+import { getXValue, getCurrentItem } from "../../utils/ChartDataUtil";
 
 import HoverTextNearMouse from "../components/HoverTextNearMouse";
-import InteractiveText from "../components/InteractiveText";
+import ClickableCircle from "../components/ClickableCircle";
+import LabelArrow from "../components/LabelArrow";
 
-class EachText extends Component {
+class EachLabelArrow extends Component {
 	constructor(props) {
 		super(props);
 
@@ -16,7 +17,9 @@ class EachText extends Component {
 
 		this.handleDragStart = this.handleDragStart.bind(this);
 		this.handleDrag = this.handleDrag.bind(this);
-		this.handleDouble = this.handleDouble.bind(this);
+		this.handleEdge1Drag = this.handleEdge1Drag.bind(this)
+		this.handleEdge1DragStart = this.handleEdge1DragStart.bind(this)
+		this.handleDragComplete = this.handleDragComplete.bind(this)
 
 		this.isHover = isHover.bind(this);
 		this.saveNodeType = saveNodeType.bind(this);
@@ -66,71 +69,78 @@ class EachText extends Component {
 		onDrag(index, xyValue);
 	}
 	handleHover(moreProps) {
-		const {
-			position,
-			bgFill,
-			bgOpacity,
-			bgStroke,
-			bgStrokeWidth,
-			textFill,
-			fontFamily,
-			fontSize,
-			fontWeight,
-			fontStyle,
-			text,
-			hoverText,
-			selected,
-			onDoubleClick,
-		} = this.props;
-
-		if (moreProps.hovering) {
-			onDoubleClick({	position,
-				bgFill,
-				bgOpacity,
-				bgStroke,
-				bgStrokeWidth,
-				textFill,
-				fontFamily,
-				fontSize,
-				fontWeight,
-				fontStyle,
-				text,
-				hoverText,
-				selected, moreProps });
-		} else {
-			onDoubleClick(null);
-		}
-
 		if (this.state.hover !== moreProps.hovering) {
 			this.setState({
-				hover: moreProps.hovering
+				hover: moreProps.hovering,
 			});
 		}
 	}
-	handleDouble(moreProps, e) {
-		const { onDoubleClick, position } = this.props;
+	handleDragComplete(...rest) {
+		this.setState({
+			anchor: undefined
+		});
+		this.props.onDragComplete(...rest);
+	}
+	handleEdge1Drag(moreProps) {
+		const { index, onDrag } = this.props;
+		const {
+			mouseXY: [, mouseY],
+			chartConfig: { yScale },
+			xAccessor,
+			mouseXY,
+			plotData,
+			xScale,
+		} = moreProps;
 
-		onDoubleClick(moreProps, e, position);
+		const { dx, dy } = this.dragStartPosition;
+		const xValue = xScale.invert(
+			xScale(getXValue(xScale, xAccessor, mouseXY, plotData)) - dx
+		);
+		// xScale.invert(xScale(xAccessor(currentItem)) - dx);
+		const xyValue = [
+			xValue,
+			yScale.invert(mouseY - dy)
+		];
+
+		onDrag(index, xyValue);
+	}
+	handleEdge1DragStart(moreProps) {
+		const {
+			position,
+		} = this.props;
+		const { mouseXY } = moreProps;
+		const { chartConfig: { yScale }, xScale } = moreProps;
+		const [mouseX, mouseY] = mouseXY;
+
+		const [textCX, textCY] = position;
+		const dx = mouseX - xScale(textCX);
+		const dy = mouseY - yScale(textCY);
+		this.dragStartPosition = {
+			position, dx, dy
+		};
+		this.setState({
+			anchor: "edge2"
+		});
 	}
 	render() {
 		const {
+			type,
 			position,
-			bgFill,
-			bgOpacity,
-			bgStroke,
-			bgStrokeWidth,
-			textFill,
-			fontFamily,
-			fontSize,
-			fontWeight,
-			fontStyle,
-			text,
 			hoverText,
 			selected,
 			onDragComplete,
-			onDoubleClick
+
+			r,
+			edgeStrokeWidth,
+			edgeFill,
+			edgeStroke,
+			edgeInteractiveCursor,
+			stroke,
+			fill,
+			width,
+			id,
 		} = this.props;
-		const { hover } = this.state;
+		const { hover, anchor } = this.state;
 
 		const hoverHandler = {
 			onHover: this.handleHover,
@@ -144,29 +154,37 @@ class EachText extends Component {
 			...restHoverTextProps
 		} = hoverText;
 
-
 		return <g>
-			<InteractiveText
-				ref={this.saveNodeType("text")}
+			<ClickableCircle
+				ref={this.saveNodeType("edge1")}
+				show={selected || hover}
+				cx={position[0]}
+				cy={position[1]}
+				r={r}
+				fill={edgeFill}
+				stroke={anchor === "edge1" ? stroke : edgeStroke}
+				strokeWidth={edgeStrokeWidth}
+				strokeOpacity={1}
+				interactiveCursorClass={edgeInteractiveCursor}
+				onDragStart={this.handleEdge1DragStart}
+				onDrag={this.handleEdge1Drag}
+				onDragComplete={this.handleDragComplete} />
+			<LabelArrow
+				id={id}
+				ref={this.saveNodeType("labelarrow")}
+				type={type}
+				fill={fill}
+				width={width}
+				onHover={this.handleHover}
+				onUnHover={this.handleHover}
 				selected={selected || hover}
 				interactiveCursorClass="react-stockcharts-move-cursor"
 				{...hoverHandler}
 
 				onDragStart={this.handleDragStart}
 				onDrag={this.handleDrag}
-				onDoubleClick={onDoubleClick}
 				onDragComplete={onDragComplete}
 				position={position}
-				bgFill={bgFill}
-				bgOpacity={bgOpacity}
-				bgStroke={bgStroke || textFill}
-				bgStrokeWidth={bgStrokeWidth}
-				textFill={textFill}
-				fontFamily={fontFamily}
-				fontStyle={fontStyle}
-				fontWeight={fontWeight}
-				fontSize={fontSize}
-				text={text}
 			/>
 			<HoverTextNearMouse
 				show={hoverTextEnabled && hover}
@@ -176,7 +194,7 @@ class EachText extends Component {
 		</g>;
 	}
 }
-/*
+
 export function getNewXY(moreProps, snapTo) {
 	const { xScale, xAccessor, plotData, mouseXY } = moreProps;
 
@@ -186,47 +204,42 @@ export function getNewXY(moreProps, snapTo) {
 
 	return [x, y];
 }
- */
-EachText.propTypes = {
+
+EachLabelArrow.propTypes = {
 	index: PropTypes.number,
 
 	position: PropTypes.array.isRequired,
-	bgFill: PropTypes.string.isRequired,
-	bgOpacity: PropTypes.number.isRequired,
-	bgStrokeWidth: PropTypes.number.isRequired,
-	bgStroke: PropTypes.string,
-	textFill: PropTypes.string.isRequired,
 
-	fontWeight: PropTypes.string.isRequired,
-	fontFamily: PropTypes.string.isRequired,
-	fontStyle: PropTypes.string.isRequired,
-	fontSize: PropTypes.number.isRequired,
-
-	text: PropTypes.string.isRequired,
 	selected: PropTypes.bool.isRequired,
 
 	onDrag: PropTypes.func.isRequired,
 	onDragComplete: PropTypes.func.isRequired,
-	onDoubleClick: PropTypes.func.isRequired,
+	fill: PropTypes.string.isRequired,
+	width: PropTypes.number.isRequired,
 
 	hoverText: PropTypes.object.isRequired,
+    type: PropTypes.oneOf(["OPEN", "CLOSE"]).isRequired,
 };
 
-EachText.defaultProps = {
+EachLabelArrow.defaultProps = {
+	edgeStroke: "#000000",
+	edgeFill: "#FFFFFF",
+	edgeStrokeWidth: 2,
+	r: 5,
+	strokeWidth: 1,
+	strokeOpacity: 1,
+	strokeDasharray: "Solid",
+
 	onDrag: noop,
 	onDragComplete: noop,
-	onDoubleClick: noop,
-	bgOpacity: 1,
-	bgStrokeWidth: 1,
 	selected: false,
-	fill: "#8AAFE2",
+	width: 40,
+	type: "OPEN",
+	width: 40,
+	fill: "green",
 	hoverText: {
 		...HoverTextNearMouse.defaultProps,
-		enable: true,
-		bgHeight: "auto",
-		bgWidth: "auto",
-		text: "Click to select object",
 	}
 };
 
-export default EachText;
+export default EachLabelArrow;

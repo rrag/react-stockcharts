@@ -78,6 +78,7 @@ class CandlestickChart extends React.Component {
 		document.removeEventListener("keyup", this.onKeyPress);
 	}
 	handleSelection(interactives) {
+		console.log(interactives)
 		const state = toObject(interactives, each => {
 			return [
 				`trends_${each.chartId}`,
@@ -90,7 +91,6 @@ class CandlestickChart extends React.Component {
 		// this gets called on
 		// 1. draw complete of trendline
 		// 2. drag complete of trendline
-		console.log(trends_1);
 		this.setState({
 			enableTrendLine: false,
 			trends_1

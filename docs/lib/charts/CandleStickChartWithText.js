@@ -109,6 +109,7 @@ class CandleStickChartWithText extends React.Component {
 		this.handleSelection = this.handleSelection.bind(this);
 
 		this.saveCanvasNode = this.saveCanvasNode.bind(this);
+		this.handleOnDoubleClick = this.handleOnDoubleClick.bind(this);
 
 		this.handleDialogClose = this.handleDialogClose.bind(this);
 		this.handleTextChange = this.handleTextChange.bind(this);
@@ -242,6 +243,9 @@ class CandleStickChartWithText extends React.Component {
 			}
 		}
 	}
+	handleOnDoubleClick(text) {
+		console.log(text, "text");
+	}
 	render() {
 		const macdCalculator = macd()
 			.options({
@@ -309,7 +313,7 @@ class CandleStickChartWithText extends React.Component {
 							text="Lorem ipsum..."
 							onDragComplete={this.onDrawComplete}
 							textList={this.state.textList_1}
-							onDoubleClick={(m) => console.log(m)}
+							onDoubleClick={this.handleOnDoubleClick}
 						/>
 
 					</Chart>
