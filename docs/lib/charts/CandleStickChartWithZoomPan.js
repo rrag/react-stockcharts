@@ -121,6 +121,8 @@ class CandleStickChartWithZoomPan extends React.Component {
 					<OHLCTooltip origin={[-40, 0]}/>
 					<ZoomButtons
 						onReset={this.handleReset}
+						onZoom={(status) => console.log('ZOOMING', status)}
+						showing
 					/>
 				</Chart>
 				<Chart id={2}
