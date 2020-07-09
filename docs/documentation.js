@@ -111,6 +111,7 @@ const INTERACTIVE = {
 		require("./lib/page/BrushSupportPage").default,
 		require("./lib/page/ArrowsPage").default,
 		require("./lib/page/LabelArrowsPage").default,
+		require("./lib/page/LinePrecentPage").default,
 	]
 };
 

@@ -61,7 +61,7 @@ class MouseLocationIndicator extends Component {
 			if (isDefined(pos)) {
 				const { xValue, yValue, x, y } = pos;
 				this.mutableState = { x, y };
-				this.props.onMouseMove([xValue, yValue], e);
+				this.props.onMouseMove([xValue, yValue], e, moreProps);
 			}
 		}
 	}
