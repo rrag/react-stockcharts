@@ -8,7 +8,7 @@ export { default as Label } from "./Label";
 
 const halfWidth = 10;
 const bottomWidth = 3;
-const height = 20;
+const height = 50;
 
 export function buyPath({ x, y }) {
 	return `M${x} ${y} `

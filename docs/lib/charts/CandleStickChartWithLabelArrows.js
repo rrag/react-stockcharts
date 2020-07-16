@@ -119,6 +119,7 @@ class CandlestickChart extends React.Component {
         });
     }
     handleSelection(interactives, moreProps, e) {
+        console.log(interactives)
         if (this.state.enableInteractiveObject) {
             const independentCharts = moreProps.currentCharts.filter(
                 (d) => d !== 2

@@ -27,15 +27,12 @@ import {
     MACDTooltip,
 } from "react-stockcharts/lib/tooltip";
 import { ema, macd } from "react-stockcharts/lib/indicator";
-import { getMorePropsForChart } from "react-stockcharts/lib/interactive/utils";
 import { fitWidth } from "react-stockcharts/lib/helper";
 import {
-    FreeArrows,
-    InteractiveText,
-    LabelArrow,
+    Shape,
     DrawingObjectSelector,
 } from "react-stockcharts/lib/interactive";
-import { head, last, toObject } from "react-stockcharts/lib/utils";
+import { last, toObject } from "react-stockcharts/lib/utils";
 
 import { saveInteractiveNodes, getInteractiveNodes } from "./interactiveutils";
 
@@ -53,9 +50,9 @@ class CandlestickChart extends React.Component {
     constructor(props) {
         super(props);
         this.onKeyPress = this.onKeyPress.bind(this);
-        this.onDrawCompleteChart1 = this.onDrawCompleteChart1.bind(this);
-        this.onDrawCompleteChart3 = this.onDrawCompleteChart3.bind(this);
+        this.onDrawComplete = this.onDrawComplete.bind(this);
         this.handleSelection = this.handleSelection.bind(this);
+        this.handleCreateShape = this.handleCreateShape.bind(this);
 
         this.saveInteractiveNodes = saveInteractiveNodes.bind(this);
         this.getInteractiveNodes = getInteractiveNodes.bind(this);
@@ -64,10 +61,51 @@ class CandlestickChart extends React.Component {
 
         this.state = {
             enableInteractiveObject: true,
-            arrows_1: [],
-            arrows_3: [],
-            textList_1: [],
-            openArrowList_1: [],
+            shapes: [
+                {
+                    appearance: {
+                        edgeFill: "#FFFFFF",
+                        edgeStroke: "#000000",
+                        edgeStrokeWidth: 1,
+                        r: 6,
+                        stroke: "#e2ee2e",
+                        fill: "#e2ee2e",
+                    },
+                    height: 50,
+                    width: 50,
+                    degrees: 0,
+                    edgeAngleBottom: [1700.5, 51.6613383578776],
+                    edgeAngleTop: [1700.5, 53.9613383578776],
+                    edgeLeft: [1690, 53.061338357877595],
+                    edgeRight: [1708, 53.061338357877595],
+                    figure: "rectangle",
+                    selected: false,
+                    position: [1693, 53.7613383578776],
+                },
+                {
+                    appearance: {
+                        edgeFill: "#FFFFFF",
+                        edgeStroke: "#000000",
+                        edgeStrokeWidth: 1,
+                        r: 6,
+                        stroke: "#e2ae2e",
+                        fill: "#e1ae2e",
+
+                        angle: 40,
+                    },
+                    height: 50,
+                    width: 50,
+                    degrees: 0,
+                    edgeAngleTop: [0, 0],
+                    edgeAngleBottom: [0, 0],
+                    edgeLeft: [0, 0],
+                    edgeRight: [0, 0],
+                    figure: "triangle",
+                    selected: false,
+                    position: [1618, 52.0409476170415],
+                },
+            ],
+            trends_3: [],
         };
     }
     saveCanvasNode(node) {
@@ -79,62 +117,31 @@ class CandlestickChart extends React.Component {
     componentWillUnmount() {
         document.removeEventListener("keyup", this.onKeyPress);
     }
-
-    handleChoosePositionArrow(text, moreProps) {
-        this.componentWillUnmount();
-        const { id: chartId } = moreProps.chartConfig;
-
-        this.setState({
-            [`openArrowList_${chartId}`]: [
-                ...this.state[`openArrowList_${chartId}`],
-                text,
-            ],
-            enableInteractiveObject: false,
-            chartId,
-        });
-    }
     handleSelection(interactives, moreProps, e) {
-        const state = toObject(interactives, (each) => {
-            return [`arrows_${each.chartId}`, each.objects];
-        });
-        this.setState(state);
-    }
-    onDrawCompleteChart1(arrows_1) {
-        this.setState({
-            enableInteractiveObject: false,
-            arrows_1,
-        });
+        console.log(interactives, "interactives");
+        // console.log(interactives)
+        // const state = toObject(interactives, each => {
+        //     return [
+        //         'shapes',
+        //         each.objects,
+        //     ];
+        // });
+        // this.setState(state);
     }
     onDrawComplete(textList, moreProps) {
-        // this gets called on
-        // 1. draw complete of drawing object
-        // 2. drag complete of drawing object
         const { id: chartId } = moreProps.chartConfig;
 
-        this.setState({
-            enableInteractiveObject: true,
-            [`textList_${chartId}`]: textList,
-        });
-    }
-    onDrawCompleteArrow(openArrowList, moreProps) {
-        // this gets called on
-        // 1. draw complete of drawing object
-        // 2. drag complete of drawing object
-        const { id: chartId } = moreProps.chartConfig;
+        console.log(textList);
 
         this.setState({
             enableInteractiveObject: false,
-            [`openArrowList_${chartId}`]: openArrowList,
+            shapes: textList,
         });
     }
-    onDrawCompleteChart3(arrows_3) {
-        // this gets called on
-        // 1. draw complete of trendline
-        // 2. drag complete of trendline
-        console.log(arrows_3);
+    handleCreateShape(newShape, moreProps) {
         this.setState({
             enableInteractiveObject: false,
-            arrows_3,
+            shapes: [...this.state.shapes, newShape],
         });
     }
     onKeyPress(e) {
@@ -144,18 +151,13 @@ class CandlestickChart extends React.Component {
             case 46: {
                 // DEL
 
-                const arrows_1 = this.state.arrows_1.filter(
-                    (each) => !each.selected
-                );
-                const arrows_3 = this.state.arrows_3.filter(
+                const shapes = this.state.shapes.filter(
                     (each) => !each.selected
                 );
 
                 this.canvasNode.cancelDrag();
                 this.setState({
-                    arrows_1,
-                    arrows_3,
-                    textList_1,
+                    shapes,
                 });
                 break;
             }
@@ -306,15 +308,13 @@ class CandlestickChart extends React.Component {
                             },
                         ]}
                     />
-                    <FreeArrows
-                        ref={this.saveInteractiveNodes("FreeArrows", 1)}
+                    <Shape
+                        ref={this.saveInteractiveNodes("Shape", 1)}
                         enabled={this.state.enableInteractiveObject}
-                        type="ARROW"
-                        snap={false}
-                        snapTo={(d) => [d.high, d.low]}
-                        onStart={() => console.log("START")}
-                        onComplete={this.onDrawCompleteChart1}
-                        arrows={this.state.arrows_1}
+                        figure="buy"
+                        shapes={this.state.shapes}
+                        onDragComplete={this.onDrawComplete}
+                        onChoosePosition={this.handleCreateShape}
                     />
                 </Chart>
                 <Chart
@@ -371,10 +371,10 @@ class CandlestickChart extends React.Component {
                 </Chart>
                 <CrossHairCursor />
                 <DrawingObjectSelector
-                    enabled={!this.state.enableInteractiveObject}
+                    enabled={this.state.enableInteractiveObject}
                     getInteractiveNodes={this.getInteractiveNodes}
                     drawingObjectMap={{
-                        FreeArrows: "arrows",
+                        Shape: "shapes",
                     }}
                     onSelect={this.handleSelection}
                 />
@@ -394,6 +394,6 @@ CandlestickChart.defaultProps = {
     type: "svg",
 };
 
-const CandleStickChartWithFreeArrows = fitWidth(CandlestickChart);
+const CandleStickChartWithInteractiveShape = fitWidth(CandlestickChart);
 
-export default CandleStickChartWithFreeArrows;
+export default CandleStickChartWithInteractiveShape;

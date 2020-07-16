@@ -39,7 +39,6 @@ class Text extends Component {
 			children,
 		} = this.props;
 
-		console.log(xyProvider);
 		const [x, y] = xyProvider(moreProps);
 
 		return <text

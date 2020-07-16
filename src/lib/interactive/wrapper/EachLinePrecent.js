@@ -53,9 +53,8 @@ class EachLinePrecent extends Component {
         }
         return prevState;
     }
-    handleLineDragStart(coords, moreProps) {
+    handleLineDragStart() {
 		const { x1Value, y1Value, x2Value, y2Value } = this.props;
-		console.log('drag')
 
         this.dragStart = {
             x1Value,
@@ -68,8 +67,6 @@ class EachLinePrecent extends Component {
         const { index, onDrag } = this.props;
 
         const { x1Value, y1Value, x2Value, y2Value } = this.dragStart;
-
-		const { Edge1DItem, Edge2DItem } = this.state;
 
         const {
             xScale,
@@ -223,7 +220,6 @@ class EachLinePrecent extends Component {
 
         const { hover, anchor } = this.state;
         const { Edge1DItem, Edge2DItem } = this.state;
-        // const dir = head(lines).y1 > last(lines).y1 ? 3 : -1.3;
 
         const xyProvider = ({ xScale, chartConfig }) => {
             const { yScale } = chartConfig;

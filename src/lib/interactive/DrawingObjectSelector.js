@@ -24,7 +24,6 @@ class DrawingObjectSelector extends Component {
 		const interactives = this.getInteraction(moreProps);
 		const allSelected = getSelected(interactives);
 
-		// console.log(selected, interactives)
 		if (allSelected.length > 0) {
 			const selected = head(allSelected);
 			const item = {

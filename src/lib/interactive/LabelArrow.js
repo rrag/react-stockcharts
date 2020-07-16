@@ -127,7 +127,6 @@ class LabelArrow extends Component {
 							fill={each.appearance[each.type.toLowerCase()].fill}
 							width={each.width}
 							onDrag={this.handleDrag}
-							onDoubleClick={this.handleDouble}
 							onDragComplete={this.handleDragComplete}
 							edgeInteractiveCursor="react-stockcharts-move-cursor"
 						/>

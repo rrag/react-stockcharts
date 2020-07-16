@@ -12,11 +12,8 @@ import {
 } from "./utils";
 
 import EachLinePrecent from "./wrapper/EachLinePrecent";
-import StraightLine, { generateLine } from "./components/StraightLine";
 import MouseLocationIndicator from "./components/MouseLocationIndicator";
 import HoverTextNearMouse from "./components/HoverTextNearMouse";
-import Text from "./components/Text";
-
 class LinePrecent extends Component {
     constructor(props) {
         super(props);
@@ -151,7 +148,13 @@ class LinePrecent extends Component {
             currentPositionStrokeWidth,
         } = this.props;
         const { hoverText, percents } = this.props;
-        const { current, override, percent } = this.state;
+        const { current, override } = this.state;
+
+
+        const hoverTextWithDefault = {
+            ...LinePrecent.defaultProps.hoverText,
+            ...hoverText,
+        };
 
         const tempLine =
             isDefined(current) && isDefined(current.end) ? (
@@ -164,6 +167,7 @@ class LinePrecent extends Component {
                         x2Value={current.end[0]}
                         y2Value={current.end[1]}
                         stroke={appearance.stroke}
+                        hoverText={hoverTextWithDefault}
                         strokeWidth={appearance.strokeWidth}
                         strokeOpacity={appearance.strokeOpacity}
                         fontSize={appearance.fontSize}
@@ -171,6 +175,10 @@ class LinePrecent extends Component {
                         fontFamily={appearance.fontFamily}
                         firstItem={current.firstItem}
                         lastItem={current.lastItem}
+                        edgeStrokeWidth={appearance.edgeStrokeWidth}
+                        edgeInteractiveCursor="react-stockcharts-move-cursor"
+                        lineInteractiveCursor="react-stockcharts-move-cursor"
+                        {...current}
                     />
                 </g>
             ) : null;
@@ -181,11 +189,6 @@ class LinePrecent extends Component {
                     const eachAppearance = isDefined(each.appearance)
                         ? { ...appearance, ...each.appearance }
                         : appearance;
-
-                    const hoverTextWithDefault = {
-                        ...LinePrecent.defaultProps.hoverText,
-                        ...hoverText,
-                    };
 
                     return (
                         <EachLinePrecent
@@ -228,6 +231,9 @@ class LinePrecent extends Component {
                             edgeStroke={eachAppearance.edgeStroke}
                             edgeFill={eachAppearance.edgeFill}
                             edgeStrokeWidth={eachAppearance.edgeStrokeWidth}
+                            fontSize={eachAppearance.fontSize}
+                            fontFill={eachAppearance.fontFill}
+                            fontFamily={eachAppearance.fontFamily}
                             r={eachAppearance.r}
                             hoverText={hoverTextWithDefault}
                             onDrag={this.handleDragLine}

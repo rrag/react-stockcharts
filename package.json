@@ -49,7 +49,9 @@
     "lodash.flattendeep": "^4.4.0",
     "prop-types": "^15.6.0",
     "save-svg-as-png": "^1.4.5",
-    "styled-components": "^5.1.1"
+    "styled-components": "^5.1.1",
+    "svg-path-to-canvas": "^1.11.3",
+    "svg-pathdata": "^5.0.5"
   },
   "peerDependencies": {
     "react": "^15.0.0 || ^16.0.0",
