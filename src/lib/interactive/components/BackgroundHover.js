@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import GenericChartComponent from "../../GenericChartComponent";
 import { getMouseCanvas } from "../../GenericComponent";
 
-import { isDefined, noop, functor, hexToRGBA } from "../../utils";
+import { noop, hexToRGBA } from "../../utils";
 
 class BackgroundHover extends Component {
     constructor(props) {
@@ -34,29 +34,14 @@ class BackgroundHover extends Component {
         return false;
     }
     drawOnCanvas(ctx, moreProps) {
-        const {
-            xScale,
-            plotData,
-            mouseXY: [mouseX, mouseY],
-            chartConfig: { yScale },
-            xAccessor,
-            currentItem,
-        } = moreProps;
-        const { fill, opacity, width, height, cx, cy, degrees } = this.props;
+        const {  width, height } = this.props;
 
         const { rect } = helper(this.props, moreProps);
-        // const xFunc = functor(cx);
-        // const yFunc = functor(cy);
-
-        // const [xPos, yPos] = [xFunc({ xScale, xAccessor, datum: currentItem, plotData }), yFunc({ yScale, datum: currentItem, plotData })];
 
         ctx.globalCompositeOperation = "destination-over";
-        const radians = (5 / 180) * Math.PI;
         ctx.fillStyle = hexToRGBA("#74b9ff", 0.3);
 
         ctx.beginPath();
-        // ctx.translate(rect.x, rect.y);
-        // ctx.rotate(degrees);
         ctx.fillRect(rect.x, rect.y, width, height);
         ctx.setTransform(1, 1, 1, 1, 1, 0);
 

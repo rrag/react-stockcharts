@@ -83,14 +83,14 @@ class Shape extends React.Component {
 
 
         if (enabled) {
-            const { defaultShape, onChoosePosition, shapes } = this.props;
+            const { defaultShape, onChoosePosition, figure } = this.props;
 
             const position = [xyValue[0], xyValue[1]];
 
             const newShape = {
                 ...defaultShape,
                 selected: true,
-                figure: "buy",
+                figure,
                 position,
                 degrees: 0,
                 width: 50,

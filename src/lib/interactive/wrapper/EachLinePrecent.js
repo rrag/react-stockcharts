@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import { format } from "d3-format";
 
 import { ascending as d3Ascending } from "d3-array";
-import { noop, strokeDashTypes } from "../../utils";
-import { isNotDefined, saveNodeType, isHover } from "../utils";
+import { noop, strokeDashTypes, isDefined } from "../../utils";
+import { saveNodeType, isHover } from "../utils";
 import { getXValue } from "../../utils/ChartDataUtil";
 
 import StraightLine, { generateLine } from "../components/StraightLine";
@@ -53,8 +53,9 @@ class EachLinePrecent extends Component {
         }
         return prevState;
     }
+
     handleLineDragStart() {
-		const { x1Value, y1Value, x2Value, y2Value } = this.props;
+        const { x1Value, y1Value, x2Value, y2Value } = this.props;
 
         this.dragStart = {
             x1Value,
@@ -72,59 +73,68 @@ class EachLinePrecent extends Component {
             xScale,
             chartConfig: { yScale },
             xAccessor,
-			fullData,
-			plotData,
+            fullData,
         } = moreProps;
         const { startPos, mouseXY } = moreProps;
 
-        const x1 = xScale(x1Value);
-        const y1 = yScale(y1Value);
-        const x2 = xScale(x2Value);
-		const y2 = yScale(y2Value);
+        if (isDefined(mouseXY)) {
+            const x1 = xScale(x1Value);
+            const y1 = yScale(y1Value);
+            const x2 = xScale(x2Value);
+            const y2 = yScale(y2Value);
 
-        const dx = startPos[0] - mouseXY[0];
-        const dy = startPos[1] - mouseXY[1];
+            const dx = startPos[0] - mouseXY[0];
+            const dy = startPos[1] - mouseXY[1];
 
-        const newX1Value = getXValue(
-            xScale,
-            xAccessor,
-            [x1 - dx, y1 - dy],
-            fullData
-        );
-        const newY1Value = yScale.invert(y1 - dy);
-        const newX2Value = getXValue(
-            xScale,
-            xAccessor,
-            [x2 - dx, y2 - dy],
-            fullData
-		);
-        const newY2Value = yScale.invert(y2 - dy);
+            const newX1Value = getXValue(
+                xScale,
+                xAccessor,
+                [x1 - dx, y1 - dy],
+                fullData
+            );
+            const newY1Value = yScale.invert(y1 - dy);
+            const newX2Value = getXValue(
+                xScale,
+                xAccessor,
+                [x2 - dx, y2 - dy],
+                fullData
+            );
+            const newY2Value = yScale.invert(y2 - dy);
 
-        onDrag(index, {
-            x1Value: newX1Value,
-            y1Value: newY1Value,
-            x2Value: newX2Value,
-            y2Value: newY2Value,
-            firstItem: plotData.find((item) => item.idx.index === newX1Value),
-            lastItem: plotData.find((item) => item.idx.index === newX2Value),
-		});
-		this.setState({
-            anchor: "edge1",
-			move: true,
-			Edge1DItem: plotData.find((item) => item.idx.index === newX1Value),
-            Edge2DItem: plotData.find((item) => item.idx.index === newX2Value),
-        });
+            onDrag(index, {
+                x1Value: newX1Value,
+                y1Value: newY1Value,
+                x2Value: newX2Value,
+                y2Value: newY2Value,
+                firstItem: fullData.find(
+                    (item) => item.idx.index === newX1Value
+                ),
+                lastItem: fullData.find(
+                    (item) => item.idx.index === newX2Value
+                ),
+            });
+            this.setState({
+                anchor: "edge1",
+                move: true,
+                Edge1DItem: fullData.find(
+                    (item) => item.idx.index === newX1Value
+                ),
+                Edge2DItem: fullData.find(
+                    (item) => item.idx.index === newX2Value
+                ),
+            });
+        }
     }
     handleEdge1DragStart(moreProps) {
         this.setState({
-            anchor: "edge2",
+            anchor: "edge1",
             move: true,
             Edge1DItem: moreProps.currentItem,
         });
     }
     handleEdge2DragStart(moreProps) {
         this.setState({
-            anchor: "edge1",
+            anchor: "edge2",
             move: true,
             Edge2DItem: moreProps.currentItem,
         });
@@ -300,12 +310,7 @@ class EachLinePrecent extends Component {
                               (Edge1DItem.close - Edge2DItem.open) /
                                   Edge2DItem.open
                           )
-                        : null}
-						{/* {` P ${Edge1DItem && Edge2DItem
-                        ?
-                              (Edge1DItem.close - Edge2DItem.open).toFixed(2)
-
-                        : null}`} */}
+                        : '0%'}
                 </Text>
                 <HoverTextNearMouse
                     show={hoverTextEnabled && hover}
@@ -401,7 +406,7 @@ EachLinePrecent.defaultProps = {
     label: "5555%",
 
     fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
-	fontSize: 16,
+    fontSize: 16,
     fontFill: "#000000",
 
     edgeStroke: "#000000",

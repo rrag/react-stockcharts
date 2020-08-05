@@ -311,7 +311,7 @@ class CandlestickChart extends React.Component {
                     <Shape
                         ref={this.saveInteractiveNodes("Shape", 1)}
                         enabled={this.state.enableInteractiveObject}
-                        figure="buy"
+                        figure="star"
                         shapes={this.state.shapes}
                         onDragComplete={this.onDrawComplete}
                         onChoosePosition={this.handleCreateShape}
