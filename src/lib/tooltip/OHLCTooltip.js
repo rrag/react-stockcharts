@@ -23,6 +23,8 @@ class OHLCTooltip extends Component {
             ohlcFormat,
             percentFormat,
             displayTexts,
+            onChange,
+            visible,
         } = this.props;
 
         const {
@@ -48,8 +50,10 @@ class OHLCTooltip extends Component {
             high = ohlcFormat(item.high);
             low = ohlcFormat(item.low);
             close = ohlcFormat(item.close);
-			percentChange = percentFormat((item.close - item.open) / item.open);
-
+            percentChange = percentFormat((item.close - item.open) / item.open);
+            if (onChange) {
+                onChange({ displayDate, open, high, low, close, percentChange })
+            }
         }
 
         const { origin: originProp } = this.props;
@@ -96,6 +100,8 @@ OHLCTooltip.propTypes = {
     textFill: PropTypes.string,
     labelFill: PropTypes.string,
     displayTexts: PropTypes.object,
+    onChange: PropTypes.func,
+    visible: PropTypes.bool,
 };
 
 const displayTextsDefault = {
@@ -104,8 +110,8 @@ const displayTextsDefault = {
     h: " H: ",
     l: " L: ",
     c: " C: ",
-	v: " Vol: ",
-	p: " P: ",
+    v: " Vol: ",
+    p: " P: ",
     na: "n/a",
 };
 
@@ -140,6 +146,7 @@ function defaultDisplay(props, moreProps, itemsToDisplay) {
         fontFamily,
         fontSize,
         displayTexts,
+        visible,
     } = props;
     /* eslint-enable */
 
@@ -148,12 +155,13 @@ function defaultDisplay(props, moreProps, itemsToDisplay) {
         open,
         high,
         low,
-		close,
-		percentChange,
+        close,
+        percentChange,
         volume,
         x,
         y,
     } = itemsToDisplay;
+    if (!visible) return null
     return (
         <g
             className={`react-stockcharts-tooltip-hover ${className}`}
@@ -202,7 +210,7 @@ function defaultDisplay(props, moreProps, itemsToDisplay) {
                 <tspan key="value_Vol" fill={textFill}>
                     {volume}
                 </tspan>
-				<ToolTipTSpanLabel fill={labelFill} key="label_P">
+                <ToolTipTSpanLabel fill={labelFill} key="label_P">
                     {displayTexts.p}
                 </ToolTipTSpanLabel>
                 <tspan key="value_P" fill={textFill}>
