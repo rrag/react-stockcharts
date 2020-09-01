@@ -52,7 +52,7 @@ class OHLCTooltip extends Component {
             close = ohlcFormat(item.close);
             percentChange = percentFormat((item.close - item.open) / item.open);
             if (onChange) {
-                onChange({ displayDate, open, high, low, close, percentChange })
+                onChange({ displayDate, open, high, low, close, volume, percentChange })
             }
         }
 
