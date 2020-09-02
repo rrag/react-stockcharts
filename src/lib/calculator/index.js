@@ -10,6 +10,7 @@ export { default as renko } from "./renko";
 export { default as macd } from "./macd";
 export { default as rsi } from "./rsi";
 export { default as cci } from "./cci";
+export { default as obv } from "./obv";
 export { default as sto } from "./sto";
 export { default as atr } from "./atr";
 export { default as forceIndex } from "./forceIndex";
