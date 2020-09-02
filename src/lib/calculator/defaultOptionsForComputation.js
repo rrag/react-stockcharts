@@ -70,6 +70,10 @@ export const CCI = {
 	windowSize: 14,
 	// source: d => d.close, // "high", "low", "open", "close"
 };
+export const OBV = {
+	windowSize: 14,
+	// source: d => d.close, // "high", "low", "open", "close"
+};
 export const EMA = {
 	// source: d => d.close, // "high", "low", "open", "close"
 	sourcePath: "close",
