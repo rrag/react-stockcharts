@@ -5,7 +5,7 @@ import { sum } from "d3-array";
 import { ATR as defaultOptions } from "./defaultOptionsForComputation";
 import { slidingWindow, last, isDefined } from "../utils";
 
-export default function() {
+export default function () {
 
 	let options = defaultOptions;
 	let source = d => ({ open: d.open, high: d.high, low: d.low, close: d.close });
@@ -44,11 +44,11 @@ export default function() {
 
 		return newData;
 	}
-	calculator.undefinedLength = function() {
+	calculator.undefinedLength = function () {
 		const { windowSize } = options;
 		return windowSize - 1;
 	};
-	calculator.options = function(x) {
+	calculator.options = function (x) {
 		if (!arguments.length) {
 			return options;
 		}
@@ -56,7 +56,7 @@ export default function() {
 		return calculator;
 	};
 
-	calculator.source = function(x) {
+	calculator.source = function (x) {
 		if (!arguments.length) {
 			return source;
 		}

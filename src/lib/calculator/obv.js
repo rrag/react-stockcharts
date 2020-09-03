@@ -3,7 +3,7 @@
 import { max, min, mean } from "d3-array";
 
 import { OBV as defaultOptions } from "./defaultOptionsForComputation";
-import { slidingWindow, last } from "../utils";
+import { slidingWindow, last, current, mapValue } from "../utils";
 
 export default function () {
 
@@ -18,8 +18,9 @@ export default function () {
 		const obvAlgorithm = slidingWindow()
 			.windowSize(windowSize)
 			.source(source)
-			.accumulator((item) => {
-				const obvData = mean(item, volume)
+			.accumulator((item, index) => {
+				let obvData = current(item, volume)
+
 				return obvData;
 			});
 

@@ -1,7 +1,7 @@
 
 
 
-import { scaleOrdinal, schemeCategory10 } from  "d3-scale";
+import { scaleOrdinal, schemeCategory10 } from "d3-scale";
 import { bisector } from "d3-array";
 import noop from "./noop";
 import identity from "./identity";
@@ -38,7 +38,7 @@ export function path(loc = []) {
 	const key = Array.isArray(loc) ? loc : [loc];
 	const length = key.length;
 
-	return function(obj, defaultValue) {
+	return function (obj, defaultValue) {
 		if (length === 0) return isDefined(obj) ? obj : defaultValue;
 
 		let index = 0;
@@ -54,7 +54,7 @@ export function functor(v) {
 }
 
 export function createVerticalLinearGradient(stops) {
-	return function(moreProps, ctx) {
+	return function (moreProps, ctx) {
 		const { chartConfig: { height } } = moreProps;
 
 		const grd = ctx.createLinearGradient(0, height, 0, 0);
@@ -199,6 +199,7 @@ export function tail(array, accessor) {
 export const first = head;
 
 export function last(array, accessor) {
+
 	if (accessor && array) {
 		let value;
 		for (let i = array.length - 1; i >= 0; i--) {
@@ -209,6 +210,24 @@ export function last(array, accessor) {
 	}
 	const length = array ? array.length : 0;
 	return length ? array[length - 1] : undefined;
+}
+
+export function current(array, accessor) {
+	let lastTick, obvs = [], length = array.length, value = 0;
+	for (let i = 0; i < length; i++) {
+		let curTick = array[i];
+		if (i != 0) {
+			let lastObvValue = obvs[i - 1];
+			if (curTick[0] >= lastTick) {
+				value = lastObvValue + accessor(curTick);
+			} else {
+				value = lastObvValue - accessor(curTick);
+			}
+		}
+		obvs.push(Math.abs(value));
+		lastTick = curTick;
+	}
+	return Math.abs(value);
 }
 
 export function isDefined(d) {
@@ -266,7 +285,7 @@ export function hexToRGBA(inputHex, opacity) {
 		const g = parseInt(hex.substring(1 * multiplier, 2 * multiplier), 16);
 		const b = parseInt(hex.substring(2 * multiplier, 3 * multiplier), 16);
 
-		const result = `rgba(${ r }, ${ g }, ${ b }, ${ opacity })`;
+		const result = `rgba(${r}, ${g}, ${b}, ${opacity})`;
 
 		return result;
 	}
@@ -284,7 +303,7 @@ export function toObject(array, iteratee = identity) {
 }
 
 // copied from https://github.com/lodash/lodash/blob/master/mapValue.js
-export function mapValue(object, iteratee) {
+export function mapValue(object, iteratee = identity) {
 	object = Object(object);
 	// eslint-disable-next-line prefer-const
 	let result = {};
