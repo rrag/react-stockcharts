@@ -95,7 +95,6 @@ class CandlestickChart extends React.Component {
         document.removeEventListener("keyup", this.onKeyPress);
     }
     handleSelection(interactives) {
-        console.log(interactives);
         const state = toObject(interactives, (each) => {
             return [`trends_${each.chartId}`, each.objects];
         });

@@ -62,7 +62,7 @@ class CandleStickChartWithMACDIndicator extends React.Component {
 		const ema12 = ema()
 			.id(1)
 			.options({ windowSize: 12 })
-			.merge((d, c) => {d.ema12 = c;})
+			.merge((d, c) => { d.ema12 = c; })
 			.accessor(d => d.ema12);
 
 		const macdCalculator = macd()
@@ -71,7 +71,7 @@ class CandleStickChartWithMACDIndicator extends React.Component {
 				slow: 26,
 				signal: 9,
 			})
-			.merge((d, c) => {d.macd = c;})
+			.merge((d, c) => { d.macd = c; })
 			.accessor(d => d.macd);
 
 		const smaVolume50 = sma()
@@ -80,7 +80,7 @@ class CandleStickChartWithMACDIndicator extends React.Component {
 				windowSize: 50,
 				sourcePath: "volume",
 			})
-			.merge((d, c) => {d.smaVolume50 = c;})
+			.merge((d, c) => { d.smaVolume50 = c; })
 			.accessor(d => d.smaVolume50);
 
 		const calculatedData = smaVolume50(macdCalculator(ema12(ema26(initialData))));
@@ -97,7 +97,7 @@ class CandleStickChartWithMACDIndicator extends React.Component {
 			<ChartCanvas height={600}
 				width={width}
 				ratio={ratio}
-				margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
+				margin={{ left: 70, right: 70, top: 0, bottom: 30 }}
 				type={type}
 				seriesName="MSFT"
 				data={data}
@@ -107,7 +107,7 @@ class CandleStickChartWithMACDIndicator extends React.Component {
 			>
 				<Chart id={1} height={400}
 					yExtents={[d => [d.high, d.low], ema26.accessor(), ema12.accessor()]}
-					padding={{ top: 10, bottom: 20 }}
+					padding={{ top: 30, bottom: 20 }}
 				>
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right" orient="right" ticks={5} />
@@ -120,8 +120,8 @@ class CandleStickChartWithMACDIndicator extends React.Component {
 					/>
 
 					<CandlestickSeries />
-					<LineSeries yAccessor={ema26.accessor()} stroke={ema26.stroke()}/>
-					<LineSeries yAccessor={ema12.accessor()} stroke={ema12.stroke()}/>
+					<LineSeries yAccessor={ema26.accessor()} stroke={ema26.stroke()} />
+					<LineSeries yAccessor={ema12.accessor()} stroke={ema12.stroke()} />
 
 					<CurrentCoordinate yAccessor={ema26.accessor()} fill={ema26.stroke()} />
 					<CurrentCoordinate yAccessor={ema12.accessor()} fill={ema12.stroke()} />
@@ -136,10 +136,10 @@ class CandleStickChartWithMACDIndicator extends React.Component {
 						arrowWidth={2}
 					/>
 
-					<OHLCTooltip origin={[-40, 0]}/>
+					<OHLCTooltip origin={[-40, 0]} />
 					<MovingAverageTooltip
 						onClick={e => console.log(e)}
-						origin={[-38, 15]}
+						origin={[20, 30]}
 						options={[
 							{
 								yAccessor: ema26.accessor(),
@@ -160,7 +160,7 @@ class CandleStickChartWithMACDIndicator extends React.Component {
 					yExtents={[d => d.volume, smaVolume50.accessor()]}
 					origin={(w, h) => [0, h - 300]}
 				>
-					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")}/>
+					<YAxis axisAt="left" orient="left" ticks={5} tickFormat={format(".2s")} />
 
 					<MouseCoordinateY
 						at="left"
@@ -170,13 +170,13 @@ class CandleStickChartWithMACDIndicator extends React.Component {
 					/>
 
 					<BarSeries yAccessor={d => d.volume} fill={d => d.close > d.open ? "#6BA583" : "#FF0000"} />
-					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()}/>
+					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()} />
 				</Chart>
 				<Chart id={3} height={150}
 					yExtents={macdCalculator.accessor()}
 					origin={(w, h) => [0, h - 150]} padding={{ top: 10, bottom: 10 }}
 				>
-					<XAxis axisAt="bottom" orient="bottom"/>
+					<XAxis axisAt="bottom" orient="bottom" />
 					<YAxis axisAt="right" orient="right" ticks={2} />
 
 					<MouseCoordinateX
