@@ -306,10 +306,10 @@ class EachLinePrecent extends Component {
                     fill={fontFill}
                 >
                     {Edge1DItem && Edge2DItem
-                        ? percentFormat(
-                              (Edge1DItem.close - Edge2DItem.open) /
-                                  Edge2DItem.open
-                          )
+                        ? percentFormat(Math.abs(
+                            (Edge1DItem.close - Edge2DItem.open) /
+                            Edge2DItem.open)
+                        )
                         : '0%'}
                 </Text>
                 <HoverTextNearMouse
