@@ -22,14 +22,25 @@ export default function () {
 			.windowSize(windowSize)
 			.source(source)
 			.accumulator((values) => {
-				const highestHigh = max(values, high);
-				const lowestLow = min(values, low);
+				const highestHigh = high(last(values));
+				const lowestLow = low(last(values));
 				const currentClose = close(last(values));
 				const TP = (highestHigh + lowestLow + currentClose) / 3;
 				const smaTP = TP / windowSize;
 				const meanDeviation = TP / smaTP;
 				const cciData = (TP - smaTP) / (0.15 * meanDeviation)
 				return cciData;
+
+
+				// const highestHigh = high(last(values));
+				// const lowestLow = low(last(values));
+				// const currentClose = close(last(values));
+				// const TP = (highestHigh + lowestLow + currentClose) / 3;
+				// const sma = TP / windowSize;
+
+				// const meanDeviation = sma / windowSize;
+				// const cciData = (TP - sma) / (0.15 * meanDeviation)
+				// return cciData;
 			});
 
 		const newData = cciAlgorithm(data);
