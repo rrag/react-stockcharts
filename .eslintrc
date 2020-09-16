@@ -7,8 +7,8 @@
 		"sourceType": "module",
 		"ecmaFeatures": {
 			"jsx": true,
-			"experimentalObjectRestSpread": true,
-		},
+			"experimentalObjectRestSpread": true
+		}
 	},
 	"env": {
 		"browser": true,
@@ -19,7 +19,7 @@
 	"settings": {
 		"import/ignore": [
 			"node_modules",
-			"\\.(json|css|jpg|png|gif|eot|svg|ttf|woff|woff2|mp4|webm)$",
+			"\\.(json|css|jpg|png|gif|eot|svg|ttf|woff|woff2|mp4|webm)$"
 		],
 		"import/extensions": [".js", ".jsx"],
 		"import/resolver": {
@@ -81,6 +81,6 @@
 		"space-before-blocks": 2,
 		"space-before-function-paren": [2, "never"],
 		"space-infix-ops": [2, { "int32Hint": false}],
-		"spaced-comment": [2, "always", { "exceptions": ["-"] }],
+		"spaced-comment": [2, "always", { "exceptions": ["-"] }]
 	}
 }
