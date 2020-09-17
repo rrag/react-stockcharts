@@ -60,7 +60,6 @@ class EventCapture extends Component {
 			select(this.node)
 				.on(MOUSEENTER, this.handleEnter)
 				.on(MOUSELEAVE, this.handleLeave);
-			this.node.addEventListener("wheel", this.handleWheel, { passive: false });
 		}
 	}
 	componentDidUpdate() {
