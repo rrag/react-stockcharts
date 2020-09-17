@@ -21,6 +21,7 @@
     "babel:es:watch": "npm run babel:es -- -watch",
     "babel:cjs": "cross-env BABEL_ENV=cjs babel src --out-dir build --source-maps",
     "babel:es": "cross-env BABEL_ENV=es babel src --out-dir build/es --source-maps",
+    "babel:lib": "cross-env BABEL_ENV=cjs babel src/lib --out-dir lib --source-maps && cross-env BABEL_ENV=cjs babel src/index.js --out-file lib/index.js --source-maps",
     "release": "npm run clean && npm run babel:cjs && npm run babel:es && cp README.md build/ && node scripts/release.js",
     "lint": "eslint --ext .js,.jsx src --fix",
     "upgrade:patch": "npm version patch",
