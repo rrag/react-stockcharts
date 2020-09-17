@@ -527,7 +527,6 @@ class EventCapture extends Component {
 				: "react-stockcharts-crosshair-cursor";
 
 		const interactionProps = disableInteraction || {
-			onWheel: this.handleWheel,
 			onMouseDown: this.handleMouseDown,
 			onClick: this.handleClick,
 			onContextMenu: this.handleRightClick,
