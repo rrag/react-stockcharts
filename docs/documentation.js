@@ -82,6 +82,7 @@ const INDICATORS = {
 		require("./lib/page/RSIIndicatorPage").default,
 		require("./lib/page/CCIIndicatorPage").default,
 		require("./lib/page/OBVIndicatorPage").default,
+		require("./lib/page/ADXIndicatorPage").default,
 		require("./lib/page/StochasticIndicatorPage").default,
 		require("./lib/page/ForceIndexIndicatorPage").default,
 		require("./lib/page/ElderRayIndicatorPage").default,

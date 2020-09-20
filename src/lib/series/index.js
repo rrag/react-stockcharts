@@ -17,6 +17,7 @@ export { default as RenkoSeries } from "./RenkoSeries";
 export { default as MACDSeries } from "./MACDSeries";
 export { default as BollingerSeries } from "./BollingerSeries";
 export { default as RSISeries } from "./RSISeries";
+export { default as ADXSeries } from "./ADXSeries";
 export { default as StochasticSeries } from "./StochasticSeries";
 export { default as ElderRaySeries } from "./ElderRaySeries";
 export { default as VolumeProfileSeries } from "./VolumeProfileSeries";

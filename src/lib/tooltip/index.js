@@ -4,6 +4,7 @@ export { default as SingleValueTooltip } from "./SingleValueTooltip";
 export { default as MovingAverageTooltip } from "./MovingAverageTooltip";
 export { default as BollingerBandTooltip } from "./BollingerBandTooltip";
 export { default as RSITooltip } from "./RSITooltip";
+export { default as ADXTooltip } from "./ADXTooltip";
 export { default as StochasticTooltip } from "./StochasticTooltip";
 export { default as HoverTooltip } from "./HoverTooltip";
 export { default as ToolTipText } from "./ToolTipText";
