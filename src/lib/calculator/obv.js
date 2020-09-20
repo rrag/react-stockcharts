@@ -8,20 +8,29 @@ import { slidingWindow, last, current, mapValue } from "../utils";
 export default function () {
 
 	let options = defaultOptions;
-	let source = d => ({ volume: d.volume, });
+	let source = d => ({ close: d.close, volume: d.volume });
 
 	function calculator(data) {
 		const { windowSize } = options;
-		const volume = d => source(d).volume;
+		const close = d => source(d).close;
 
 
 		const obvAlgorithm = slidingWindow()
 			.windowSize(windowSize)
-			.source(source)
-			.accumulator((item, index) => {
-				let obvData = current(item, volume)
+			// .source(source)
+			.accumulator(([prev, curr]) => {
+				console.log(prev, curr)
+				let obv;
+				if (curr.close > prev.close) {
+					obv = Math.round(prev.volume - curr.volume, 2)
+				} else if (curr.close < prev.close) {
+					obv = Math.round(prev.volume - curr.volume, 2)
+				} else {
+					obv = Math.round(prev.volume, 2)
+				}
+				// let obvData = current(item, volume)
 
-				return obvData;
+				return obv;
 			});
 
 		const newData = obvAlgorithm(data);

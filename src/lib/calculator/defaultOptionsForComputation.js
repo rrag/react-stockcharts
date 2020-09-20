@@ -66,6 +66,10 @@ export const RSI = {
 	// source: d => d.close, // "high", "low", "open", "close"
 	sourcePath: "close", // "high", "low", "open", "close"
 };
+export const ADX = {
+	windowSize: 14,
+	sourcePath: "close",
+};
 export const CCI = {
 	windowSize: 14,
 	// source: d => d.close, // "high", "low", "open", "close"

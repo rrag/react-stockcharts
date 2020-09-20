@@ -18,12 +18,13 @@ export default function () {
 			low = d => source(d).low,
 			close = d => source(d).close;
 
+
 		const cciAlgorithm = slidingWindow()
 			.windowSize(windowSize)
 			.source(source)
 			.accumulator((values) => {
-				const highestHigh = high(last(values));
-				const lowestLow = low(last(values));
+				const highestHigh = max(values, low);
+				const lowestLow = min(values, high);
 				const currentClose = close(last(values));
 				const TP = (highestHigh + lowestLow + currentClose) / 3;
 				const smaTP = TP / windowSize;
@@ -31,16 +32,6 @@ export default function () {
 				const cciData = (TP - smaTP) / (0.15 * meanDeviation)
 				return cciData;
 
-
-				// const highestHigh = high(last(values));
-				// const lowestLow = low(last(values));
-				// const currentClose = close(last(values));
-				// const TP = (highestHigh + lowestLow + currentClose) / 3;
-				// const sma = TP / windowSize;
-
-				// const meanDeviation = sma / windowSize;
-				// const cciData = (TP - sma) / (0.15 * meanDeviation)
-				// return cciData;
 			});
 
 		const newData = cciAlgorithm(data);

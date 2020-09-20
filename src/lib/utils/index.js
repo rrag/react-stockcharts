@@ -2,7 +2,7 @@
 
 
 import { scaleOrdinal, schemeCategory10 } from "d3-scale";
-import { bisector } from "d3-array";
+import { bisector, max } from "d3-array";
 import noop from "./noop";
 import identity from "./identity";
 
@@ -345,4 +345,62 @@ export function forOwn(obj, iteratee) {
 	const object = Object(obj);
 	Object.keys(object)
 		.forEach(key => iteratee(object[key], key, object));
+}
+
+export function trueRange(high, low, previousClose) {
+	const range1 = high - low;
+	const range2 = Math.abs(high - previousClose);
+	const range3 = Math.abs(low - previousClose);
+
+	if (previousClose === 0) {
+		return range1;
+	}
+	return Math.max(range1, range2, range3);
+}
+
+export function dxCalculation(diffDI, sumDI) {
+	return (100 * (diffDI / sumDI));
+}
+
+export function adxCalculation(adxPrevious, timePeriod, dx) {
+	return ((adxPrevious * (timePeriod - 1)) + dx) / timePeriod;
+}
+
+export function plusDICalculation(plusDMSmooth, trSmooth) {
+	return (100 * (plusDMSmooth / trSmooth));
+}
+
+export function minusDICalculation(minusDMSmooth, trSmooth) {
+	return (100 * (minusDMSmooth / trSmooth));
+}
+
+export function trSmoothCalculation(trPrevious, timePeriod, tr) {
+	return trPrevious - (trPrevious / timePeriod) + tr;
+}
+
+export function plusDMSmoothCalculation(plusDMPrevious, timePeriod, plusDM) {
+	return plusDMPrevious - (plusDMPrevious / timePeriod) + plusDM;
+}
+
+export function minusDMSmoothCalculation(minusDMPrevious, timePeriod, minusDM) {
+	return minusDMPrevious - (minusDMPrevious / timePeriod) + minusDM;
+}
+
+export function plusDMCalculation(currentHigh, previousHigh, currentLow, previousLow) {
+	const highDiff = currentHigh - previousHigh;
+	const lowDiff = previousLow - currentLow;
+	if (highDiff > lowDiff) {
+		return max([highDiff, 0]);
+	}
+	return 0;
+}
+
+export function minusDMCalculation(currentHigh, previousHigh, currentLow, previousLow) {
+	const highDiff = currentHigh - previousHigh;
+	const lowDiff = previousLow - currentLow;
+
+	if (lowDiff > highDiff) {
+		return max([lowDiff, 0]);
+	}
+	return 0;
 }

@@ -11,7 +11,7 @@ import {
 	AreaSeries,
 	CandlestickSeries,
 	LineSeries,
-	RSISeries,
+	ADXSeries,
 } from "react-stockcharts/lib/series";
 import { XAxis, YAxis } from "react-stockcharts/lib/axes";
 import {
@@ -26,14 +26,14 @@ import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
 import {
 	OHLCTooltip,
 	MovingAverageTooltip,
-	RSITooltip,
+	ADXTooltip,
 	SingleValueTooltip,
 } from "react-stockcharts/lib/tooltip";
-import { ema, rsi, sma, atr } from "react-stockcharts/lib/indicator";
+import { ema, adx, sma, atr } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
 import { last } from "react-stockcharts/lib/utils";
 
-class CandleStickChartWithRSIIndicator extends React.Component {
+class CandleStickChartWithADXIndicator extends React.Component {
 	render() {
 		const ema26 = ema()
 			.id(0)
@@ -53,10 +53,10 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 			.merge((d, c) => { d.smaVolume50 = c; })
 			.accessor(d => d.smaVolume50);
 
-		const rsiCalculator = rsi()
+		const rsiCalculator = adx()
 			.options({ windowSize: 14 })
-			.merge((d, c) => { d.rsi = c; })
-			.accessor(d => d.rsi);
+			.merge((d, c) => { d.adx = c; })
+			.accessor(d => d.adx);
 
 		const atr14 = atr()
 			.options({ windowSize: 14 })
@@ -152,22 +152,22 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 					<AreaSeries yAccessor={smaVolume50.accessor()} stroke={smaVolume50.stroke()} fill={smaVolume50.fill()} />
 				</Chart>
 				<Chart id={3}
-					yExtents={[0, 100]}
+					yExtents={[0, 200]}
 					height={125} origin={(w, h) => [0, h - 250]}
 				>
 					<XAxis axisAt="bottom" orient="bottom" showTicks={false} outerTickSize={0} />
 					<YAxis axisAt="right"
 						orient="right"
-						tickValues={[30, 50, 70]} />
+						tickValues={[0, 50, 100]} />
 					<MouseCoordinateY
 						at="right"
 						orient="right"
 						displayFormat={format(".2f")} />
 
-					<RSISeries yAccessor={d => d.rsi} />
+					<ADXSeries yAccessor={d => d.adx} />
 
-					<RSITooltip origin={[-38, 15]}
-						yAccessor={d => d.rsi}
+					<ADXTooltip origin={[-38, 15]}
+						yAccessor={d => d.adx}
 						options={rsiCalculator.options()} />
 				</Chart>
 				<Chart id={8}
@@ -201,16 +201,16 @@ class CandleStickChartWithRSIIndicator extends React.Component {
 	}
 }
 
-CandleStickChartWithRSIIndicator.propTypes = {
+CandleStickChartWithADXIndicator.propTypes = {
 	data: PropTypes.array.isRequired,
 	width: PropTypes.number.isRequired,
 	ratio: PropTypes.number.isRequired,
 	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
 };
 
-CandleStickChartWithRSIIndicator.defaultProps = {
+CandleStickChartWithADXIndicator.defaultProps = {
 	type: "svg",
 };
-CandleStickChartWithRSIIndicator = fitWidth(CandleStickChartWithRSIIndicator);
+CandleStickChartWithADXIndicator = fitWidth(CandleStickChartWithADXIndicator);
 
-export default CandleStickChartWithRSIIndicator;
+export default CandleStickChartWithADXIndicator;
