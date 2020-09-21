@@ -17,7 +17,8 @@ class ADXTooltip extends Component {
 	}
 	renderSVG(moreProps) {
 		const { onClick, fontFamily, fontSize, yAccessor, displayFormat, className } = this.props;
-		const { options, labelFill, textFill } = this.props;
+		const { options, labelFill, textFill, apperance } = this.props;
+		const { stroke } = apperance;
 		const { displayValuesFor } = this.props;
 		const { chartConfig: { width, height } } = moreProps;
 
@@ -40,17 +41,11 @@ class ADXTooltip extends Component {
 				<ToolTipText x={0} y={0}
 					fontFamily={fontFamily} fontSize={fontSize}>
 					<ToolTipTSpanLabel fill={labelFill}>{tooltipLabel}</ToolTipTSpanLabel>
-					<tspan fill={textFill}>{adxVal}</tspan>
-				</ToolTipText>
-				<ToolTipText x={0} y={14}
-					fontFamily={fontFamily} fontSize={fontSize}>
+					<tspan fill={stroke.ALine}>{`${adxVal} `}</tspan>
 					<ToolTipTSpanLabel fill={labelFill}>{plusDILabel}</ToolTipTSpanLabel>
-					<tspan fill={textFill}>{plusDI}</tspan>
-				</ToolTipText>
-				<ToolTipText x={0} y={28}
-					fontFamily={fontFamily} fontSize={fontSize}>
+					<tspan fill={stroke.dLine}>{`${plusDI} `}</tspan>
 					<ToolTipTSpanLabel fill={labelFill}>{minusDILabel}</ToolTipTSpanLabel>
-					<tspan fill={textFill}>{minusDI}</tspan>
+					<tspan fill={stroke.kLine}>{`${minusDI} `}</tspan>
 				</ToolTipText>
 			</g>
 		);
@@ -71,6 +66,13 @@ ADXTooltip.propTypes = {
 	]).isRequired,
 	options: PropTypes.shape({
 		windowSize: PropTypes.number.isRequired,
+	}).isRequired,
+	appearance: PropTypes.shape({
+		stroke: {
+			ALine: PropTypes.string.isRequired,
+			dLine: PropTypes.string.isRequired,
+			kLine: PropTypes.string.isRequired,
+		}.isRequired,
 	}).isRequired,
 	className: PropTypes.string,
 	fontFamily: PropTypes.string,

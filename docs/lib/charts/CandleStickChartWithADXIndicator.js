@@ -33,6 +33,12 @@ import { ema, adx, sma, atr } from "react-stockcharts/lib/indicator";
 import { fitWidth } from "react-stockcharts/lib/helper";
 import { last } from "react-stockcharts/lib/utils";
 
+
+const adxAppearance = {
+	stroke: Object.assign({},
+		ADXSeries.defaultProps.stroke)
+};
+
 class CandleStickChartWithADXIndicator extends React.Component {
 	render() {
 		const ema26 = ema()
@@ -168,6 +174,7 @@ class CandleStickChartWithADXIndicator extends React.Component {
 
 					<ADXTooltip origin={[-38, 15]}
 						yAccessor={d => d.adx}
+						apperance={adxAppearance}
 						options={rsiCalculator.options()} />
 				</Chart>
 				<Chart id={8}
