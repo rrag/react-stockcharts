@@ -22,6 +22,7 @@
     "babel:cjs": "cross-env BABEL_ENV=cjs babel src --out-dir build --source-maps",
     "babel:es": "cross-env BABEL_ENV=es babel src --out-dir build/es --source-maps",
     "babel:lib": "cross-env BABEL_ENV=cjs babel src/lib --out-dir lib --source-maps && cross-env BABEL_ENV=cjs babel src/index.js --out-file index.js --source-maps",
+    "prepare": "npm run babel:lib",
     "release": "npm run clean && npm run babel:cjs && npm run babel:es && cp README.md build/ && node scripts/release.js",
     "lint": "eslint --ext .js,.jsx src --fix",
     "upgrade:patch": "npm version patch",
@@ -33,7 +34,6 @@
     "info": "npm info react-stockcharts",
     "sourcemap:visualize": "source-map-explorer build/dist/react-stockcharts.min.js build/dist/react-stockcharts.min.js.map",
     "server": "cd build && python3 -m http.server 8090",
-    "prepare": "npm run babel:lib"
   },
   "dependencies": {
     "d3-array": "^1.2.1",
