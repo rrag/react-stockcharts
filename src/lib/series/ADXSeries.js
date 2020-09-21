@@ -48,11 +48,9 @@ ADXSeries.propTypes = {
 	className: PropTypes.string,
 	yAccessor: PropTypes.func.isRequired,
 	stroke: PropTypes.shape({
-		top: PropTypes.string.isRequired,
-		middle: PropTypes.string.isRequired,
-		bottom: PropTypes.string.isRequired,
 		dLine: PropTypes.string.isRequired,
 		kLine: PropTypes.string.isRequired,
+		ALine: PropTypes.string.isRequired,
 	}).isRequired,
 	overSold: PropTypes.number.isRequired,
 	middle: PropTypes.number.isRequired,
@@ -63,9 +61,6 @@ ADXSeries.propTypes = {
 ADXSeries.defaultProps = {
 	className: "react-stockcharts-stochastic-series",
 	stroke: {
-		top: "#964B00",
-		middle: "#000000",
-		bottom: "#964B00",
 		dLine: "#EA2BFF",
 		kLine: "#74D400",
 		ALine: "#ff0000",
