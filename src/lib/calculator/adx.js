@@ -26,98 +26,39 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-import { mean, sum, max, min } from "d3-array";
-import { number } from "prop-types";
 
-import {
-	slidingWindow,
-	trueRange,
-	plusDMCalculation,
-	minusDMCalculation, last
-} from "../utils";
 import { ADX as defaultOptions } from "./defaultOptionsForComputation";
 
 export default function () {
 
 	let options = defaultOptions;
-	let source = d => ({ high: d.high, low: d.low, close: d.close, tp: d.tp, adx: d.adx });
-
 	function calculator(data) {
 		const { windowSize } = options;
 
-		// const high = d => source(d).high,
-		// 	low = d => source(d).low,
-		// 	close = d => source(d).close,
-		// 	tp = d => source(d).tp;
-
-		const FindDMIHiLowRange = slidingWindow()
-			.accumulator(([prev, curr]) => {
-
-				let DMIM, DMIP;
-				let hiDiff = curr.high - prev.high;
-				let loDiff = curr.low - prev.low;
-				let devN = (windowSize - 1) / windowSize;
-
-				if (hiDiff < 0 && loDiff < 0 || hiDiff == loDiff) {
-					DMIM = 0;
-					DMIP = 0;
-				}
-				if (hiDiff > loDiff) {
-					DMIP = hiDiff;
-					DMIM = 0;
-				}
-				if (hiDiff < loDiff) {
-					DMIM = loDiff;
-					DMIP = 0;
-				}
-
-				let tmp = Math.max(Math.abs(curr.high - curr.low), Math.abs(prev.close - curr.high))
-				let TR = Math.max(tmp, Math.abs(prev.close - curr.low));
-
-				let sumDMIM = Number();
-				let sumDMIP = Number();
-				let sumTR = Number();
-
-				sumDMIM = devN * sumDMIM + DMIM;
-				sumDMIP = devN * sumDMIP + DMIP;
-				sumTR = devN * sumTR + TR;
-
-				let plusDI = 100 * (sumDMIP / sumTR);
-				let minusDI = 100 * (sumDMIM / sumTR);
-
-				let DXval = ((100 * Math.abs(plusDI - minusDI) / (plusDI + minusDI)))
-
-				if (isNaN(DXval)) {
-					DXval = 0;
-				}
-
-				let adx = Number();
-				adx = ((adx * (windowSize - 1) + DXval) / windowSize)
-
-				return { plusDI: Math.abs(plusDI), minusDI: Math.abs(minusDI), adxValue: Math.abs(adx) }
-
-			})
-
 		const FindTR = (DMIP, DMIM, TR, Last, PrevLast) => {
 
-			let hiDiff = Last.high - PrevLast.high;
-			let loDiff = Last.low - PrevLast.low;
-
-			if (hiDiff < 0 && loDiff < 0 || hiDiff == loDiff) {
-				DMIM = 0;
-				DMIP = 0;
-			}
-			if (hiDiff > loDiff) {
-				DMIP = hiDiff;
-				DMIM = 0;
-			}
-			if (hiDiff < loDiff) {
-				DMIM = loDiff;
+			if (Last.high > PrevLast.high) {
+				DMIP = Last.high - PrevLast.high
+			} else {
 				DMIP = 0;
 			}
 
-			let tmp = Math.max(Math.abs(Last.high - Last.low), Math.abs(PrevLast.close - Last.high))
-			TR = Math.max(tmp, Math.abs(PrevLast.close - Last.low));
+			if (Last.low < PrevLast.low) {
+				DMIM = PrevLast.low - Last.low
+			} else {
+				DMIM = 0
+			}
+
+			if (DMIP > DMIM) {
+				DMIM = 0
+			} else if (DMIM > DMIP) {
+				DMIP = 0
+			} else if (DMIM = DMIP) {
+				DMIM = 0
+				DMIM = 0
+			}
+
+			TR = Math.max(Last.high - Last.low, Last.high - PrevLast.close, Last.low - PrevLast.close);
 
 			return { DMIP, DMIM, TR }
 		}
@@ -149,7 +90,7 @@ export default function () {
 				DIPline = 100 * (sumDMIP / sumTR)
 				DIMline = 100 * (sumDMIM / sumTR)
 
-				DXval = ((100 * Math.abs(DIPline - DIMline) / (DIPline + DIMline)))
+				DXval = ((DIPline - DIMline) / (DIPline + DIMline)) * 100
 
 				if (isNaN(DXval)) {
 					DXval = 0;
