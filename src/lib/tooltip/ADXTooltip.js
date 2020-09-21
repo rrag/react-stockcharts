@@ -17,8 +17,8 @@ class ADXTooltip extends Component {
 	}
 	renderSVG(moreProps) {
 		const { onClick, fontFamily, fontSize, yAccessor, displayFormat, className } = this.props;
-		const { options, labelFill, textFill, apperance } = this.props;
-		const { stroke } = apperance;
+		const { options, labelFill, textFill, appearance } = this.props;
+		const { stroke } = appearance;
 		const { displayValuesFor } = this.props;
 		const { chartConfig: { width, height } } = moreProps;
 
