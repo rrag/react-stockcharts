@@ -12,14 +12,10 @@ export default function () {
 
 	function calculator(data) {
 		const { windowSize } = options;
-		const close = d => source(d).close;
-
 
 		const obvAlgorithm = slidingWindow()
 			.windowSize(windowSize)
-			// .source(source)
 			.accumulator(([prev, curr]) => {
-				console.log(prev, curr)
 				let obv;
 				if (curr.close > prev.close) {
 					obv = Math.round(prev.volume - curr.volume, 2)
@@ -28,9 +24,8 @@ export default function () {
 				} else {
 					obv = Math.round(prev.volume, 2)
 				}
-				// let obvData = current(item, volume)
 
-				return obv;
+				return Math.abs(obv);
 			});
 
 		const newData = obvAlgorithm(data);
