@@ -137,7 +137,7 @@ class GannFan extends Component {
 					{...(idx === overrideIndex ? override : each)}
 					appearance={eachAppearance}
 					hoverText={hoverText}
-					onDrag={this.handleDragFan}
+					onDrag={selectionEnabled && this.handleDragFan}
 					onDragComplete={this.handleDragFanComplete}
 					selectionEnabled={selectionEnabled}
 				/>;
