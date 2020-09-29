@@ -139,6 +139,7 @@ class GannFan extends Component {
 					hoverText={hoverText}
 					onDrag={this.handleDragFan}
 					onDragComplete={this.handleDragFanComplete}
+					selectionEnabled={selectionEnabled}
 				/>;
 			})}
 			{tempChannel}
