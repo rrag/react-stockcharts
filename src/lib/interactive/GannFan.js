@@ -107,7 +107,7 @@ class GannFan extends Component {
 		}
 	}
 	render() {
-		const { enabled, appearance } = this.props;
+		const { enabled, appearance, selectionEnabled } = this.props;
 		const { currentPositionRadius, currentPositionStroke } = this.props;
 		const { currentPositionOpacity, currentPositionStrokeWidth } = this.props;
 		const { hoverText, fans } = this.props;
@@ -117,6 +117,7 @@ class GannFan extends Component {
 		const tempChannel = isDefined(current) && isDefined(current.endXY)
 			? <EachGannFan
 				interactive={false}
+				selectionEnabled={selectionEnabled}
 				{...current}
 				appearance={appearance}
 				hoverText={hoverText}

@@ -159,7 +159,7 @@ class EachGannFan extends Component {
 	}
 	getEdgeCircle({ xy, dragHandler, cursor, fill, edge }) {
 		const { hover } = this.state;
-		const { selected, appearance } = this.props;
+		const { selected, appearance, selectionEnabled } = this.props;
 		const { edgeStroke, edgeStrokeWidth, r } = appearance;
 		const { onDragComplete } = this.props;
 
@@ -172,14 +172,14 @@ class EachGannFan extends Component {
 			fill={fill}
 			stroke={edgeStroke}
 			strokeWidth={edgeStrokeWidth}
-			interactiveCursorClass={cursor}
+			interactiveCursorClass={selectionEnabled && cursor}
 
 			onDragStart={this.handleDragStart}
 			onDrag={dragHandler}
 			onDragComplete={onDragComplete} />;
 	}
 	render() {
-		const { startXY, endXY } = this.props;
+		const { startXY, endXY, selectionEnabled } = this.props;
 		const { interactive, appearance  } = this.props;
 		const {
 			edgeFill,
@@ -233,10 +233,10 @@ class EachGannFan extends Component {
 					fontFamily={fontFamily}
 					fontSize={fontSize}
 					fontFill={fontFill}
-					interactiveCursorClass="react-stockcharts-move-cursor"
+					interactiveCursorClass={selectionEnabled ? "react-stockcharts-move-cursor" : ""}
 
 					onDragStart={this.handleDragStart}
-					onDrag={this.handleFanDrag}
+					onDrag={selectionEnabled && this.handleFanDrag}
 					onDragComplete={onDragComplete}
 				/>
 				{line1Edge}
