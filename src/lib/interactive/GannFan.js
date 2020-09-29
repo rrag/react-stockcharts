@@ -33,12 +33,16 @@ class GannFan extends Component {
 		this.state = {};
 	}
 	handleDragFan(index, newXYValue) {
-		this.setState({
-			override: {
-				index,
-				...newXYValue
-			}
-		});
+		const { selectionEnabled } = this.props;
+		if (selectionEnabled) {
+			this.setState({
+				override: {
+					index,
+					...newXYValue
+				}
+			});
+		}
+
 	}
 	handleDragFanComplete(moreProps) {
 		const { override } = this.state;
@@ -137,7 +141,7 @@ class GannFan extends Component {
 					{...(idx === overrideIndex ? override : each)}
 					appearance={eachAppearance}
 					hoverText={hoverText}
-					onDrag={selectionEnabled && this.handleDragFan}
+					onDrag={this.handleDragFan}
 					onDragComplete={this.handleDragFanComplete}
 					selectionEnabled={selectionEnabled}
 				/>;

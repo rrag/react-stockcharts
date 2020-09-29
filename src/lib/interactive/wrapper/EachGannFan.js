@@ -49,35 +49,38 @@ class EachGannFan extends Component {
 		};
 	}
 	handleFanDrag(moreProps) {
-		const { index, onDrag } = this.props;
+		const { index, onDrag, selectionEnabled } = this.props;
 
-		const {
-			startXY, endXY,
-		} = this.dragStart;
+		if (selectionEnabled) {
+			const {
+				startXY, endXY,
+			} = this.dragStart;
 
-		const { xScale, chartConfig: { yScale }, xAccessor, fullData } = moreProps;
-		const { startPos, mouseXY } = moreProps;
+			const { xScale, chartConfig: { yScale }, xAccessor, fullData } = moreProps;
+			const { startPos, mouseXY } = moreProps;
 
-		const x1 = xScale(startXY[0]);
-		const y1 = yScale(startXY[1]);
-		const x2 = xScale(endXY[0]);
-		const y2 = yScale(endXY[1]);
+			const x1 = xScale(startXY[0]);
+			const y1 = yScale(startXY[1]);
+			const x2 = xScale(endXY[0]);
+			const y2 = yScale(endXY[1]);
 
-		const dx = startPos[0] - mouseXY[0];
-		const dy = startPos[1] - mouseXY[1];
+			const dx = startPos[0] - mouseXY[0];
+			const dy = startPos[1] - mouseXY[1];
 
-		const newX1Value = getXValue(xScale, xAccessor, [x1 - dx, y1 - dy], fullData);
-		const newY1Value = yScale.invert(y1 - dy);
-		const newX2Value = getXValue(xScale, xAccessor, [x2 - dx, y2 - dy], fullData);
-		const newY2Value = yScale.invert(y2 - dy);
+			const newX1Value = getXValue(xScale, xAccessor, [x1 - dx, y1 - dy], fullData);
+			const newY1Value = yScale.invert(y1 - dy);
+			const newX2Value = getXValue(xScale, xAccessor, [x2 - dx, y2 - dy], fullData);
+			const newY2Value = yScale.invert(y2 - dy);
 
-		// const newDy = newY2Value - endXY[1] + this.dragStart.dy;
+			// const newDy = newY2Value - endXY[1] + this.dragStart.dy;
 
-		onDrag(index, {
-			startXY: [newX1Value, newY1Value],
-			endXY: [newX2Value, newY2Value],
-			dy: this.dragStart.dy,
-		});
+			onDrag(index, {
+				startXY: [newX1Value, newY1Value],
+				endXY: [newX2Value, newY2Value],
+				dy: this.dragStart.dy,
+			});
+		}
+
 	}
 	handleLine1Edge1Drag(moreProps) {
 		const { index, onDrag } = this.props;
@@ -165,14 +168,14 @@ class EachGannFan extends Component {
 
 		return <ClickableCircle
 			ref={this.saveNodeType(edge)}
-			show={selected || hover}
+			show={selectionEnabled && (selected || hover)}
 			cx={xy[0]}
 			cy={xy[1]}
 			r={r}
 			fill={fill}
 			stroke={edgeStroke}
 			strokeWidth={edgeStrokeWidth}
-			interactiveCursorClass={selectionEnabled && cursor}
+			interactiveCursorClass={cursor}
 
 			onDragStart={this.handleDragStart}
 			onDrag={dragHandler}
@@ -233,10 +236,10 @@ class EachGannFan extends Component {
 					fontFamily={fontFamily}
 					fontSize={fontSize}
 					fontFill={fontFill}
-					interactiveCursorClass={selectionEnabled ? "react-stockcharts-move-cursor" : ""}
-
+					interactiveCursorClass={"react-stockcharts-move-cursor"}
+					selectionEnabled={selectionEnabled}
 					onDragStart={this.handleDragStart}
-					onDrag={selectionEnabled && this.handleFanDrag}
+					onDrag={this.handleFanDrag}
 					onDragComplete={onDragComplete}
 				/>
 				{line1Edge}
