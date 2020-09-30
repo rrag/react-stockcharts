@@ -168,7 +168,7 @@ function defaultDisplay(props, moreProps, itemsToDisplay) {
       ></rect>
       <g
         className={`react-stockcharts-tooltip-hover ${className}`}
-        transform={`translate(${x}, ${y + 8})`}
+        transform={`translate(${x + 60}, ${y + 8})`}
         onClick={onClick}
         fill="white"
       >
@@ -184,7 +184,7 @@ function defaultDisplay(props, moreProps, itemsToDisplay) {
           </ToolTipTSpanLabel>
           <tspan key="value" fill="white"
           >
-            {displayDate}
+            {displayDate} |
           </tspan>
           <ToolTipTSpanLabel fill="white"
             key="label_O">
@@ -192,7 +192,7 @@ function defaultDisplay(props, moreProps, itemsToDisplay) {
           </ToolTipTSpanLabel>
           <tspan key="value_O" fill="white"
           >
-            {open}
+            {open} |
           </tspan>
           <ToolTipTSpanLabel fill="white"
             key="label_H">
@@ -200,7 +200,7 @@ function defaultDisplay(props, moreProps, itemsToDisplay) {
           </ToolTipTSpanLabel>
           <tspan key="value_H" fill="white"
           >
-            {high}
+            {high} |
           </tspan>
           <ToolTipTSpanLabel fill="white"
             key="label_L">
@@ -208,7 +208,7 @@ function defaultDisplay(props, moreProps, itemsToDisplay) {
           </ToolTipTSpanLabel>
           <tspan key="value_L" fill="white"
           >
-            {low}
+            {low} |
           </tspan>
           <ToolTipTSpanLabel fill="white"
             key="label_C">
@@ -216,7 +216,7 @@ function defaultDisplay(props, moreProps, itemsToDisplay) {
           </ToolTipTSpanLabel>
           <tspan key="value_C" fill="white"
           >
-            {close}
+            {close} |
           </tspan>
           <ToolTipTSpanLabel fill="white"
             key="label_Vol">
@@ -224,7 +224,7 @@ function defaultDisplay(props, moreProps, itemsToDisplay) {
           </ToolTipTSpanLabel>
           <tspan key="value_Vol" fill="white"
           >
-            {volume}
+            {volume} |
           </tspan>
           <ToolTipTSpanLabel fill="white"
             key="label_P">
@@ -232,7 +232,7 @@ function defaultDisplay(props, moreProps, itemsToDisplay) {
           </ToolTipTSpanLabel>
           <tspan key="value_P" fill="white"
           >
-            {percentChange}
+            {percentChange} |
           </tspan>
         </ToolTipText>
       </g>
