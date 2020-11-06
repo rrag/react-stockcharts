@@ -34,10 +34,10 @@ class HoverTextNearMouse extends Component {
                     this.state.textWidth !== width ||
                     this.state.textHeight !== height
                 ) {
-                    this.setState({
-                        textWidth: width,
-                        textHeight: height,
-                    });
+                    // this.setState({
+                    //     textWidth: width,
+                    //     textHeight: height,
+                    // });
                 }
             }
         }
