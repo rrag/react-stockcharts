@@ -70,7 +70,7 @@ export default function financeDiscontinuousScale(
 				: ticksAtLevel.slice();
 
 			for (let j = start; j <= end; j++) {
-				if (index[j].level && index[j].level === i) {
+				if (index && index[j] && index[j].level && index[j].level === i) {
 					temp.push(index[j]);
 				}
 			}
