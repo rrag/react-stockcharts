@@ -21,34 +21,34 @@ export default function financeDiscontinuousScale(
 	function scale(x) {
 		return backingLinearScale(x);
 	}
-	scale.invert = function(x) {
+	scale.invert = function (x) {
 		const inverted = backingLinearScale.invert(x);
 		return Math.round(inverted * 10000) / 10000;
 	};
-	scale.domain = function(x) {
+	scale.domain = function (x) {
 		if (!arguments.length) return backingLinearScale.domain();
 		backingLinearScale.domain(x);
 		return scale;
 	};
-	scale.range = function(x) {
+	scale.range = function (x) {
 		if (!arguments.length) return backingLinearScale.range();
 		backingLinearScale.range(x);
 		return scale;
 	};
-	scale.rangeRound = function(x) {
+	scale.rangeRound = function (x) {
 		return backingLinearScale.range(x);
 	};
-	scale.clamp = function(x) {
+	scale.clamp = function (x) {
 		if (!arguments.length) return backingLinearScale.clamp();
 		backingLinearScale.clamp(x);
 		return scale;
 	};
-	scale.interpolate = function(x) {
+	scale.interpolate = function (x) {
 		if (!arguments.length) return backingLinearScale.interpolate();
 		backingLinearScale.interpolate(x);
 		return scale;
 	};
-	scale.ticks = function(m, flexTicks) {
+	scale.ticks = function (m, flexTicks) {
 		const backingTicks = backingLinearScale.ticks(m);
 		const ticksMap = map();
 
@@ -70,7 +70,7 @@ export default function financeDiscontinuousScale(
 				: ticksAtLevel.slice();
 
 			for (let j = start; j <= end; j++) {
-				if (index[j].level === i) {
+				if (index[j].level && index[j].level === i) {
 					temp.push(index[j]);
 				}
 			}
@@ -117,30 +117,30 @@ export default function financeDiscontinuousScale(
 
 		return ticks;
 	};
-	scale.tickFormat = function() {
-		return function(x) {
+	scale.tickFormat = function () {
+		return function (x) {
 			const d = Math.abs(head(index).index);
 			const { format, date } = index[Math.floor(x + d)];
 			return format(date);
 		};
 	};
-	scale.value = function(x) {
+	scale.value = function (x) {
 		const d = Math.abs(head(index).index);
 		if (isDefined(index[Math.floor(x + d)])) {
 			const { date } = index[Math.floor(x + d)];
 			return date;
 		}
 	};
-	scale.nice = function(m) {
+	scale.nice = function (m) {
 		backingLinearScale.nice(m);
 		return scale;
 	};
-	scale.index = function(x) {
+	scale.index = function (x) {
 		if (!arguments.length) return index;
 		index = x;
 		return scale;
 	};
-	scale.copy = function() {
+	scale.copy = function () {
 		return financeDiscontinuousScale(index, futureProvider, backingLinearScale.copy());
 	};
 	return scale;
