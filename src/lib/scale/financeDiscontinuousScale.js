@@ -120,10 +120,14 @@ export default function financeDiscontinuousScale(
 	scale.tickFormat = function () {
 		return function (x) {
 			const d = Math.abs(head(index).index);
-			const { format, date } = index[Math.floor(x + d)];
-			return format(date);
+			// const { format, date } = index[Math.floor(x + d)];
+			const indexMathfloor = index[Math.floor(x + d)],
+				format = indexMathfloor && indexMathfloor.format && indexMathfloor.format,
+				date = indexMathfloor && indexMathfloor.date && indexMathfloor.date;
+			return format && format(date);
 		};
 	};
+
 	scale.value = function (x) {
 		const d = Math.abs(head(index).index);
 		if (isDefined(index[Math.floor(x + d)])) {
