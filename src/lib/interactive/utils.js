@@ -69,6 +69,10 @@ export function getMorePropsForChart(moreProps, chartId) {
 	const { chartConfig: chartConfigList } = moreProps;
 	const chartConfig = find(chartConfigList, each => each.id === chartId);
 
+	if (isNotDefined(chartConfig)) {
+		return false;
+	}
+
 	const { origin } = chartConfig;
 	const mouseXY = getMouseXY(moreProps, origin);
 	return {

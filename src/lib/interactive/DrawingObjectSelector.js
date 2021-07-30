@@ -66,6 +66,14 @@ class DrawingObjectSelector extends Component {
 				const morePropsForChart = getMorePropsForChart(
 					moreProps, each.chartId
 				);
+				
+				if (morePropsForChart === false) {
+					return {
+						type: each.type,
+						chartId: each.chartId,
+						objects: []
+					};
+				}
 
 				const objects = each.node.getSelectionState(morePropsForChart);
 
