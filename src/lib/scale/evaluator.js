@@ -144,13 +144,15 @@ function showMax(width, threshold) {
 }
 
 function getFilteredResponse(data, left, right, xAccessor) {
-	const newLeftIndex = getClosestItemIndexes(data, left, xAccessor).right;
-	const newRightIndex = getClosestItemIndexes(data, right, xAccessor).left;
+    const closestLeftIndex = getClosestItemIndexes(data, left, xAccessor).right;
+    const closestRightIndex = getClosestItemIndexes(data, right, xAccessor).left;
 
-	const filteredData = data.slice(newLeftIndex, newRightIndex + 1);
-	// console.log(right, newRightIndex, dataForInterval.length);
+    // add extra data point on the sides, in case when
+    // the chart is maximum zoomed and data disappears from sides due filtering logic
+    const newLeftIndex = closestLeftIndex >= 1 ? closestLeftIndex - 1 : closestLeftIndex;
+    const newRightIndex = closestRightIndex < data.length ? closestRightIndex  + 1 : closestRightIndex;
 
-	return filteredData;
+    return data.slice(newLeftIndex, newRightIndex + 1);
 }
 
 export default function({
