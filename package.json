@@ -90,7 +90,7 @@
     "remarkable-loader": "^0.2.1",
     "rimraf": "^2.6.2",
     "sass-loader": "^6.0.6",
-    "shelljs": "^0.7.8",
+    "shelljs": "^0.8.5",
     "shortid": "^2.2.8",
     "style-loader": "^0.19.0",
     "url-loader": "^0.6.2",
