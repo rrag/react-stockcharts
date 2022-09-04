@@ -17,10 +17,10 @@ function buildConfig(mode) {
 	};
 
 	const devServer = {
-		contentBase: [
-			path.join(rootPath, "docs"),
-			path.join(rootPath, "build"),
-			path.join(rootPath, "node_modules"),
+		static: [
+			{ directory: path.resolve(rootPath, "docs") },
+			{ directory: path.resolve(rootPath, "build") },
+			{ directory: path.resolve(rootPath, "node_modules") },
 		],
 		host: process.env.IP, // "10.0.0.106", "localhost"
 		port: parseInt(process.env.PORT),
@@ -28,11 +28,22 @@ function buildConfig(mode) {
 
 	const context = rootPath;
 	const loadersForDocs = [
-		{ test: /\.jpg$/, loader: "file-loader" },
-		{ test: /\.(png|svg)$/, loader: "url-loader?mimetype=image/png" },
-		{ test: /\.md$/, loaders: ["html-loader", "remarkable-loader"] },
-		{ test: /\.scss$/, loaders: ["style-loader", "css-loader", "autoprefixer-loader", "sass-loader?outputStyle=expanded"] }
-	];
+        { test: /\.jpg$/, loader: "file-loader" },
+        {
+            test: /\.(png|svg)$/,
+            loader: "url-loader",
+            options: { mimetype: "image/png" },
+        },
+        { test: /\.md$/, loader: "html-loader" },
+        { test: /\.md$/, loader: "remarkable-loader" },
+        { test: /\.scss$/, loader: "style-loader" },
+        { test: /\.scss$/, loader: "css-loader" },
+        {
+            test: /\.scss$/,
+            loader: "sass-loader",
+            options: { sassOptions: { outputStyle: "expanded" } },
+        },
+    ];
 
 	console.log("MODE", mode);
 	return {
@@ -46,21 +57,26 @@ function buildConfig(mode) {
 			libraryTarget: "umd",
 			pathinfo: ifWatch(true, false), // since we have eval as devtool for watch, pathinfo gives line numbers which are close enough
 		},
-		devtool: ifWatch("cheap-source-map", "sourcemap"),
-		module: {
-			loaders: removeEmpty([
-				// { test: /\.json$/, loader: "json" },
-				{ test: /\.(js|jsx)$/, loaders: ["babel-loader"], exclude: /node_modules/ },
-				...loadersForDocs,
-			])
-		},
+        // devtool: ifWatch("^(inline-|hidden-|eval-)?(nosources-)?(cheap-(module-)?)?source-map$"),
+        module: {
+            rules: removeEmpty([
+                // { test: /\.json$/, loader: "json" },
+                {
+                    test: /\.(js|jsx)$/,
+                    loader: "babel-loader",
+                    exclude: /node_modules/m,
+                    options: { presets: ["@babel/env", "@babel/preset-react"] },
+                },
+                ...loadersForDocs,
+            ]),
+        },
 		performance: {
 			hints: false,
 		},
 		plugins: removeEmpty([
 			new ProgressBarPlugin(),
 			new webpack.NoEmitOnErrorsPlugin(),
-			new webpack.optimize.OccurrenceOrderPlugin(),
+			// new webpack.optimize.OccurrenceOrderPlugin(),
 
 			ifDocs(new webpack.DefinePlugin({
 				"process.env": {
@@ -69,14 +85,14 @@ function buildConfig(mode) {
 				},
 			})),
 			// ifProd(new webpack.optimize.DedupePlugin()),
-			ifDocs(new webpack.optimize.UglifyJsPlugin({
-				compress: {
-					screw_ie8: true,
-					warnings: false,
-					drop_console: true,
-				},
-				sourceMap: true,
-			})),
+			// ifDocs(new webpack.optimize.UglifyJsPlugin({
+			// 	compress: {
+			// 		screw_ie8: true,
+			// 		warnings: false,
+			// 		drop_console: true,
+			// 	},
+			// 	sourceMap: true,
+			// })),
 			new HtmlWebpackPlugin({
 				template: "./docs/pageTemplate.js",
 				inject: false,
@@ -107,7 +123,8 @@ function buildConfig(mode) {
 				"react-stockcharts": path.join(rootPath, "src"),
 			},
 			modules: ["docs", "node_modules"]
-		}
+		},
+        mode: "development",
 	};
 }
 

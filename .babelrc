@@ -1,10 +1,6 @@
 {
 	"presets": [
-		"react",
-		"stage-3"
-	],
-	"plugins": [
-		"transform-flow-strip-types"
+		"@babel/preset-env", "@babel/preset-react"
 	],
 	"env": {
 		"cjs": {

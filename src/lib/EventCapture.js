@@ -52,7 +52,7 @@ class EventCapture extends Component {
 	saveNode(node) {
 		this.node = node;
 	}
-	componentWillMount() {
+	UNSAFE_componentWillMount() {
 		this.focus = this.props.focus;
 	}
 	componentDidMount() {

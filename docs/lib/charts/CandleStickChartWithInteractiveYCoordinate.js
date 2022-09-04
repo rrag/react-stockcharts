@@ -8,7 +8,7 @@ import {
 	Modal,
 	Button,
 	FormGroup,
-	ControlLabel,
+	FormLabel,
 	FormControl,
 } from "react-bootstrap";
 
@@ -84,7 +84,7 @@ class Dialog extends React.Component {
 				<Modal.Body>
 					<form>
 						<FormGroup controlId="text">
-							<ControlLabel>Alert when crossing</ControlLabel>
+							<FormLabel>Alert when crossing</FormLabel>
 							<FormControl type="number" value={alert.yValue} onChange={this.handleChange} />
 						</FormGroup>
 					</form>

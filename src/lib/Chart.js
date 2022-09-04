@@ -16,7 +16,7 @@ class Chart extends PureComponent {
 		this.yScale = this.yScale.bind(this);
 		this.listener = this.listener.bind(this);
 	}
-	componentWillMount() {
+	UNSAFE_componentWillMount() {
 		const { id } = this.props;
 		const { subscribe } = this.context;
 		subscribe("chart_" + id,
