@@ -156,6 +156,7 @@ RSISeries.propTypes = {
 		bottom: PropTypes.string.isRequired,
 		outsideThreshold: PropTypes.string.isRequired,
 		insideThreshold: PropTypes.string.isRequired,
+		line: PropTypes.string.isRequired,
 	}).isRequired,
 	opacity: PropTypes.shape({
 		top: PropTypes.number.isRequired,

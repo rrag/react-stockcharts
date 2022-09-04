@@ -17,7 +17,7 @@ import {
 import {
 	Form,
 	FormGroup,
-	ControlLabel,
+	FormLabel,
 	FormControl,
 	Col,
 } from "react-bootstrap";
@@ -89,7 +89,7 @@ class ZoomAndPanPage extends React.Component {
 				<Row>
 					<Form horizontal>
 						<FormGroup controlId="formControlsSelectMultiple">
-							<Col componentClass={ControlLabel} sm={4}>
+							<Col componentClass={FormLabel} sm={4}>
 								Zoom anchor
 							</Col>
 							<Col sm={6}>

@@ -1,18 +1,20 @@
 {
 	"plugins": [
-		"import", "flowtype", "jsx-a11y", "react", "const-immutable"
+		"import", "jsx-a11y", "react", "const-immutable"
 	],
 	"parserOptions": {
-		"ecmaVersion": 6,
+		"ecmaVersion": "latest",
 		"sourceType": "module",
 		"ecmaFeatures": {
 			"jsx": true,
 			"experimentalObjectRestSpread": true,
 		},
 	},
+  "parser": "@babel/eslint-parser",
 	"env": {
 		"browser": true,
 		"node": true,
+    	"es2021": true,		
 		"es6": true,
 		"jest": true
 	},
@@ -34,53 +36,12 @@
 	"extends": [
 		"eslint:recommended",
 		"plugin:react/recommended",
-		"plugin:flowtype/recommended",
 		"plugin:import/errors",
 		"plugin:import/warnings"
 	],
 	"rules": {
-		"jsx-a11y/aria-role": "warn",
-		"jsx-a11y/img-redundant-alt": "warn",
-		"jsx-a11y/no-access-key": "warn",
-		"flowtype/define-flow-type": "warn",
-		"flowtype/require-valid-file-annotation": "warn",
-		"flowtype/use-flow-type": "warn",
-		"react/jsx-pascal-case": 1,
-		"react/jsx-uses-react": 1,
-		"react/jsx-uses-vars": 1,
-		"react/jsx-no-bind": 1,
-		"react/jsx-no-undef": 1,
-		"react/display-name": 0,
-		"react/prefer-es6-class": 1,
-		"react/prop-types": 1,
-		"react/react-in-jsx-scope": 1,
-
-		"const-immutable/no-mutation": 2,
-
-		"no-var": "error",
-		"prefer-const": "error",
-		"array-bracket-spacing": [2, "never"],
-		"block-scoped-var": 2,
-		"brace-style": [2, "1tbs", { "allowSingleLine": true }],
-		"comma-spacing": [2, {"before": false, "after": true}],
-		"eqeqeq": [2, "smart"],
-		"key-spacing": [2, { "beforeColon": false, "afterColon": true }],
-		"indent": [2, "tab", { "SwitchCase": 1 }],
-		"comma-dangle": 0,
-		"jsx-quotes": [2, "prefer-double"],
-		"no-mixed-spaces-and-tabs": [2, "smart-tabs"],
-		"no-trailing-spaces": [2, { "skipBlankLines": false }],
-		"no-undef": 2,
-		"no-console": 0,
-		"no-unused-vars": 2,
-		"object-curly-spacing": [2, "always"],
-		"quotes": [2, "double", "avoid-escape"],
-		"semi": [2, "always"],
-		"semi-spacing": [2, { "before": false, "after": true }],
-		"keyword-spacing": ["error", {"before": true, "after": true, "overrides": {}}],
-		"space-before-blocks": 2,
-		"space-before-function-paren": [2, "never"],
-		"space-infix-ops": [2, { "int32Hint": false}],
-		"spaced-comment": [2, "always", { "exceptions": ["-"] }],
+		"react/no-unknown-property": "warn",
+		"no-prototype-builtins": "warn",
+		"no-mixed-spaces-and-tabs": "warn"
 	}
 }
