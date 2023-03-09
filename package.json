@@ -31,7 +31,8 @@
     "npm:publish:latest": "npm run release && cd build && npm publish",
     "info": "npm info react-stockcharts",
     "sourcemap:visualize": "source-map-explorer build/dist/react-stockcharts.min.js build/dist/react-stockcharts.min.js.map",
-    "server": "cd build && python3 -m http.server 8090"
+    "server": "cd build && python3 -m http.server 8090",
+    "prepare": "npm run release"
   },
   "dependencies": {
     "d3-array": "^1.2.1",
@@ -51,8 +52,8 @@
     "save-svg-as-png": "^1.4.5"
   },
   "peerDependencies": {
-    "react": "^15.0.0 || ^16.0.0",
-    "react-dom": "^15.0.0 || ^16.0.0"
+    "react": "^17.0.0 || ^18.0.0",
+    "react-dom": "^17.0.0 || ^18.0.0"
   },
   "devDependencies": {
     "autoprefixer-loader": "^3.2.0",
@@ -81,12 +82,12 @@
     "json-loader": "^0.5.7",
     "modernizr": "^3.5.0",
     "ncp": "^2.0.0",
-    "node-sass": "^4.9.0",
+    "node-sass": "^7.0.3",
     "prismjs": "^1.8.4",
     "progress-bar-webpack-plugin": "^1.10.0",
-    "react": "^16.1.1",
+    "react": "18.2.0",
     "react-bootstrap": "^0.31.5",
-    "react-dom": "^16.1.1",
+    "react-dom": "18.2.0",
     "remarkable-loader": "^0.2.1",
     "rimraf": "^2.6.2",
     "sass-loader": "^6.0.6",
