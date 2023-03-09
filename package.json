@@ -32,7 +32,7 @@
     "info": "npm info react-stockcharts",
     "sourcemap:visualize": "source-map-explorer build/dist/react-stockcharts.min.js build/dist/react-stockcharts.min.js.map",
     "server": "cd build && python3 -m http.server 8090",
-    "prepare": "npm run release"
+    "postinstall": "npm run release"
   },
   "dependencies": {
     "d3-array": "^1.2.1",
